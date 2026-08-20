@@ -204,10 +204,16 @@ def so_pdf(request, pk):
 
 
 def _pdf_response(pdf: bytes, so):
-    """Download com o nome canônico da ordem (a '/' do código vira '-')."""
+    """Download com o nome canônico da ordem (a '/' do código vira '-').
+
+    ⚠ 2026-08-20, pedido do dono: o arquivo se chama **PACKING-LIST-<código>**.
+    O nome do arquivo é a primeira coisa que a transportadora lê, antes de
+    abrir o PDF — e o que ela precisa saber é que aquilo é um packing list, não
+    uma ordem de venda.
+    """
     from django.http import HttpResponse
     resp = HttpResponse(pdf, content_type='application/pdf')
-    fname = so.code.replace('/', '-') + '.pdf'
+    fname = 'PACKING-LIST-' + so.code.replace('/', '-') + '.pdf'
     resp['Content-Disposition'] = f'attachment; filename="{fname}"'
     return resp
 

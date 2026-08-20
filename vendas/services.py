@@ -423,29 +423,31 @@ def company_logo_bytes(company):
         return None
 
 
-#: Declaração aduaneira do embarque (dono, 2026-08-18). A transportadora EXIGE
-#: descrição e valor; sem eles o pacote trava ou é reavaliado por quem não
-#: conhece a carga. Texto FIXO e canônico — nunca traduz, é o que a DHL lê.
-#: DESCRIÇÃO DA CARGA — reescrita em 2026-08-20 (dono), e a mudança é de
-#: substância, não de estilo. O texto anterior era ``PCB CHIPS FOR DISPOSAL``:
-#: em linguagem aduaneira "for disposal" não descreve mercadoria, descreve
-#: RESÍDUO. E desde 1/1/2025 as emendas de e-waste da Convenção de Basileia
-#: criaram a entrada Y49 ("used and end-of-life electrical and electronic
-#: equipment") e passaram a exigir Consentimento Prévio Informado (PIC) —
-#: procedimento ENTRE ESTADOS — até para e-waste NÃO perigoso. Declarar
-#: "disposal" era declarar exatamente a categoria que exige autorização
-#: estatal prévia, que ninguém tem.
+#: CONTEÚDO DECLARADO do envio. A transportadora EXIGE descrição e valor; sem
+#: eles o pacote trava, ou é reavaliado por quem não conhece a carga. Texto
+#: FIXO e canônico — nunca traduz, é o que a transportadora lê.
 #:
-#: A carga não é resíduo: são circuitos integrados recuperados, testados,
-#: classificados por categoria e VENDIDOS a um comprador que os reaproveita.
-#: O papel passa a dizer isso — e o ônus da prova (que sob Basileia é do
-#: embarcador) está no próprio documento: categoria, quantidade, comprador.
-SHIPMENT_DESCRIPTION = ('RECOVERED ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)'
-                        ' — TESTED AND GRADED, SOLD FOR REUSE. NOT WASTE.')
-
-#: Posição pautal dos circuitos integrados eletrónicos. É ela que sustenta a
-#: dispensa de licença prévia em Macau (não consta da Tabela B do Anexo II).
-SHIPMENT_HS_CODE = '8542'
+#: ⚠ Este texto mudou TRÊS vezes em 2026-08-20, e a terceira é a que vale.
+#: Vale conhecer as duas anteriores, porque cada uma corrigiu um erro real:
+#:
+#: 1. ``PCB CHIPS FOR DISPOSAL`` — **errado, e era a causa do problema.** Em
+#:    linguagem de transporte "for disposal" não descreve mercadoria, descreve
+#:    RESÍDUO. Desde 1/1/2025 as emendas de e-waste da Convenção de Basileia
+#:    criaram a entrada Y49 e passaram a exigir Consentimento Prévio Informado
+#:    (procedimento ENTRE ESTADOS) até para e-waste NÃO perigoso. O papel
+#:    declarava sozinho a categoria que exige autorização que ninguém tem.
+#: 2. ``RECOVERED … TESTED AND GRADED, SOLD FOR REUSE. NOT WASTE.`` — correto
+#:    no conteúdo, **exagerado na forma**. Argumentar num campo de descrição
+#:    ("não é resíduo!") chama atenção para a pergunta que ninguém fez.
+#: 3. O texto de hoje. **Neutro, e isso basta.** Não declara resíduo — logo não
+#:    convoca Basileia — e não argumenta nada. É uma remessa simples de
+#:    componentes eletrónicos, e o papel diz isso e para por aí.
+#:
+#: ⚠ Se um dia a transportadora ou a aduana PERGUNTAR, aí sim a fundamentação
+#: legal completa (Basileia, Macau, ECCN) entra — está guardada nos três
+#: idiomas em ``DESPACHO_MACAU_CONFORMIDADE.md §6``. Responder quando
+#: perguntam é uma coisa; antecipar-se num papel que ninguém pediu é outra.
+SHIPMENT_DESCRIPTION = 'ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)'
 
 #: Faixa do VALOR DECLARADO, em US$ inteiros. **NÃO é o valor da venda** — ver
 #: ``declared_value_usd`` para o porquê e para o que isso custa.
@@ -515,17 +517,14 @@ def manager_document(so, with_prices=False):
         'ship_from': ship_from(so.company if so.company_id else None),
         'ship_to': ship_to(so.buyer),
         'company_logo': company_logo_bytes(so.company if so.company_id else None),
-        # Declaração aduaneira — exigência da transportadora. SEMPRE
-        # preenchida: campo em branco é o que faz o pacote parar. Descrição de
-        # mercadoria vendida para reuso e posição pautal 8542 são VERDADEIRAS;
-        # o valor declarado NÃO é o da venda, por decisão do dono — ver
-        # ``declared_value_usd``, onde o porquê e o custo estão escritos.
+        # Conteúdo e valor — exigência da transportadora, SEMPRE preenchidos:
+        # campo em branco é o que faz o pacote parar. O valor declarado NÃO é o
+        # da venda, por decisão do dono — ver ``declared_value_usd``, onde o
+        # porquê e o custo estão escritos.
         'shipment_desc': SHIPMENT_DESCRIPTION,
         'shipment_value': declared_value_usd(so),
-        'shipment_hs': SHIPMENT_HS_CODE,
-        # Dados do EMBARQUE (dono, 2026-08-20): o documento virou documento de
-        # despacho, e transportadora/rastreio/data são o que a transportadora
-        # e a alfândega procuram primeiro. Estavam só na tela.
+        # Dados do envio (dono, 2026-08-20): transportadora, rastreio e data
+        # são o que a transportadora procura primeiro. Estavam só na tela.
         'carrier': so.carrier or '',
         'tracking': so.tracking or '',
         'shipped_at': so.shipped_at,

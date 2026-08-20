@@ -171,9 +171,14 @@ def render_so_pdf(so, rows, total_rmb, total_usd, fx_rate, masked=False) -> byte
 
 #: Rótulo → (inglês, 繁體中文). Fonte ÚNICA dos textos do documento.
 _L = {
-    'so':         ('Sales order',          '銷售訂單'),
+    # ⚠ 2026-08-20: era 'Sales order' / 'Lot check'. Virou REFERÊNCIA e PACKING
+    # LIST a pedido do dono — *"não fale nada de aduana de Macao, nem que isso
+    # vai ser vendido, nem que a aduana vai conferir, ou que tem despacho"*.
+    # Não é uma exportação: é remessa simples. Papel que se anuncia como venda
+    # internacional pede tratamento de venda internacional.
+    'so':         ('Reference',            '參考編號', 'Referencia'),
     'lot':        ('Lot',                  '批次'),
-    'doc':        ('Lot check',            '批次核對'),
+    'doc':        ('Packing list',         '裝箱單', 'Lista de embalaje'),
     'draft':      ('quotation',            '報價'),
     'confirmed':  ('confirmed',            '已確認'),
     'cancelled':  ('cancelled',            '已取消'),
@@ -200,24 +205,12 @@ _L = {
     # documento de despacho passou a ser trilíngue, com o inglês como
     # principal. O `_t()` (bilíngue) continua lendo só os dois primeiros, então
     # o PDF do RESULTADO não muda; quem usa os três é o `_t3()`.
-    'customs':    ('Customs declaration',  '報關申報', 'Declaración aduanera'),
     'contents':   ('Description of contents', '內容物描述',
                    'Descripción del contenido'),
     'declared':   ('Declared value',       '申報價值', 'Valor declarado'),
-    'hs':         ('HS code',              '協調制度編碼', 'Código SA'),
     'carrier':    ('Carrier',              '承運人', 'Transportista'),
     'tracking':   ('Tracking number',      '追蹤號碼', 'Número de seguimiento'),
     'shipped_on': ('Shipped on',           '發貨日期', 'Enviado el'),
-    'annex':      ('Regulatory annex',     '法規附件', 'Anexo normativo'),
-    'a_nature':   ('1. Nature of the goods — not waste',
-                   '1. 貨物性質 — 非廢棄物',
-                   '1. Naturaleza de la mercancía — no es residuo'),
-    'a_licence':  ('2. Macao SAR import licensing',
-                   '2. 澳門特別行政區進口准照',
-                   '2. Licencia de importación de la RAE de Macao'),
-    'a_export':   ('3. Export control and end use',
-                   '3. 出口管制與最終用途',
-                   '3. Control de exportación y uso final'),
     # ── Documento do RESULTADO (dono, 2026-08-18) ──────────────────────────
     'result':     ('Purchase result',      '採購結果'),
     'expected':   ('Expected',             '預期'),
@@ -243,164 +236,6 @@ def _t(chave) -> str:
     """
     en, zh = _L[chave][0], _L[chave][1]
     return f'{en} ({zh})'
-
-
-#: ANEXO REGULATÓRIO do documento de despacho (dono, 2026-08-20: *"adicione a
-#: ele o anexo das leis também, cite tudo SEM ECONOMIZAR PALAVRAS, para NÃO
-#: ficar brechas"*).
-#:
-#: Três declarações, cada uma nos três idiomas, cada uma respondendo à
-#: pergunta que trava um pacote de circuito integrado com destino a Macau:
-#:
-#:   1. ISTO É RESÍDUO?  Não. Desde 1/1/2025 as emendas de e-waste da Convenção
-#:      de Basileia criaram a entrada Y49 e passaram a exigir Consentimento
-#:      Prévio Informado até para e-waste NÃO perigoso. O ônus da prova de que
-#:      a carga é mercadoria para reuso é do EMBARCADOR — então o papel carrega
-#:      a prova: recuperado, testado, classificado, vendido sob fatura.
-#:   2. PRECISA DE LICENÇA EM MACAU?  Não. A Lei n.º 7/2003 sujeita a licença
-#:      prévia SÓ o que consta da Tabela B do Anexo II, fixada pelo Despacho
-#:      n.º 209/2021 e alterada pelos 188/2022, 208/2022 e 110/2023 — cinco
-#:      famílias, nenhuma delas circuito integrado. Citar os quatro despachos,
-#:      e não só o de 2021, é o que fecha a brecha: quem confere sabe que a
-#:      lista mudou depois.
-#:   3. É CHIP CONTROLADO?  Não. O alvo dos controles americanos para Macau são
-#:      os ECCN 3A090 e 4A090 (computação avançada). Memória recuperada de
-#:      aparelho de consumo não é isso.
-#:
-#: ⚠ O texto é DECLARAÇÃO DO EMBARCADOR, não parecer jurídico — por isso
-#: termina com a linha de quem declara. Mudar aqui é mudar um documento legal:
-#: fale com o despachante antes.
-_ANEXO = (
-    ('a_nature', (
-        'The goods described in this document are electronic integrated '
-        'circuits recovered from end-of-life consumer electronic devices. '
-        'They have been individually identified by part number, functionally '
-        'tested, graded and classified by category, and are sold to the '
-        'consignee under a commercial invoice for direct reuse as electronic '
-        'components. They are NOT waste, NOT scrap and are NOT shipped for '
-        'disposal, recycling or recovery operations. Consequently they do not '
-        'fall within entry Y49 (used and end-of-life electrical and '
-        'electronic equipment) or entry A1181 of the Basel Convention on the '
-        'Control of Transboundary Movements of Hazardous Wastes and their '
-        'Disposal, as amended with effect from 1 January 2025, and no prior '
-        'informed consent (PIC) notification is applicable to this shipment. '
-        'The category and quantity table in this document, together with the '
-        'commercial invoice, constitutes the shipper\u2019s evidence of reuse '
-        'status.',
-        '本文件所列貨物為自報廢消費電子產品中回收之電子集成電路。每件均已按型號'
-        '識別、功能測試、分級並歸類，並依商業發票售予收貨人，作為電子元件直接'
-        '再使用。該等貨物並非廢棄物、並非廢料，亦非為處置、回收或再生作業而'
-        '付運。因此，不屬於《控制危險廢物越境轉移及其處置巴塞爾公約》（經修訂，'
-        '自二零二五年一月一日生效）之 Y49 條目（使用過及報廢電氣電子設備）或 '
-        'A1181 條目，本次付運無須事先知情同意（PIC）通知。本文件之類別及數量'
-        '表連同商業發票，構成發貨人關於再使用狀態之證明。',
-        'Las mercancías descritas en este documento son circuitos integrados '
-        'electrónicos recuperados de aparatos electrónicos de consumo al final '
-        'de su vida útil. Han sido identificadas individualmente por número de '
-        'parte, probadas funcionalmente, clasificadas por grado y categoría, y '
-        'se venden al consignatario mediante factura comercial para su '
-        'reutilización directa como componentes electrónicos. NO son residuo, '
-        'NO son chatarra y NO se envían para eliminación, reciclaje ni '
-        'operaciones de recuperación. En consecuencia, no están comprendidas '
-        'en la entrada Y49 (equipos eléctricos y electrónicos usados y al '
-        'final de su vida útil) ni en la entrada A1181 del Convenio de '
-        'Basilea sobre el Control de los Movimientos Transfronterizos de los '
-        'Desechos Peligrosos y su Eliminación, en su versión modificada con '
-        'efecto desde el 1 de enero de 2025, y no corresponde notificación de '
-        'consentimiento fundamentado previo (CFP) para este envío. El cuadro '
-        'de categorías y cantidades de este documento, junto con la factura '
-        'comercial, constituye la prueba del expedidor sobre la condición de '
-        'reutilización.')),
-    ('a_licence', (
-        'Under the external trade regime of the Macao Special Administrative '
-        'Region, established by Law No. 7/2003 of 23 June (External Trade '
-        'Law), as amended by Law No. 3/2016, prior import licensing applies '
-        'exclusively to the goods listed in Table B of Annex II, as fixed by '
-        'Chief Executive\u2019s Decision No. 209/2021 and subsequently amended '
-        'by Chief Executive\u2019s Decisions No. 188/2022, No. 208/2022 and '
-        'No. 110/2023. Table B covers only: (i) live animals, meat, products '
-        'of animal origin, fish, crustaceans and molluscs, vegetables, live '
-        'plants, seeds, mushroom spawn and animal or vegetable fertilisers; '
-        '(ii) vehicles; (iii) telecommunication and radio-communication '
-        'apparatus; (iv) arms, ammunition and explosives; (v) dangerous '
-        'substances of Class 7 (radioactive substances) and ionizing '
-        'radiation generators; and, by the 2023 supplement, certain chemical '
-        'compounds of HS headings 2806 to 2939. Electronic integrated '
-        'circuits, HS heading 8542, are NOT listed in Table B and are '
-        'therefore NOT subject to prior import licensing by the DSEDT or by '
-        'Macao Customs. The goods are loose integrated circuits and are not '
-        'telecommunication or radio-communication apparatus. A standard '
-        'import customs declaration is filed upon arrival. Macao is a free '
-        'port: no customs tariff applies to general merchandise, consumption '
-        'tax being levied only on alcohol, tobacco, fuel and motor vehicles.',
-        '根據澳門特別行政區對外貿易制度，即六月二十三日第7/2003號法律（對外貿易'
-        '法），經第3/2016號法律修改，事先進口准照僅適用於附件二表B所列貨物；該表'
-        '由第209/2021號行政長官批示訂定，並經第188/2022號、第208/2022號及'
-        '第110/2023號行政長官批示修改。表B僅涵蓋：（一）活動物、肉類、動物源產品、'
-        '魚類、甲殼類及軟體動物、蔬菜、活植物、種子、菌種及動植物肥料；（二）車輛；'
-        '（三）電訊及無線電通訊器材；（四）武器、彈藥及爆炸品；（五）第七類危險物質'
-        '（放射性物質）及電離輻射產生器；以及按二零二三年之補充，協調制度第2806至'
-        '2939節之若干化學品。電子集成電路（協調制度第8542節）並未列入表B，因此'
-        '無須經濟及科技發展局或澳門海關事先發出進口准照。本批貨物為散裝集成電路，'
-        '並非電訊或無線電通訊器材。貨物抵達時按一般程序遞交進口報關單。澳門為'
-        '自由港：一般貨物不徵收關稅，消費稅僅適用於酒精、煙草、燃料及機動車輛。',
-        'Con arreglo al régimen de comercio externo de la Región '
-        'Administrativa Especial de Macao, establecido por la Ley n.º 7/2003, '
-        'de 23 de junio (Ley del Comercio Externo), modificada por la Ley '
-        'n.º 3/2016, la licencia previa de importación se aplica '
-        'exclusivamente a las mercancías enumeradas en la Tabla B del Anexo '
-        'II, fijada por el Despacho del Jefe del Ejecutivo n.º 209/2021 y '
-        'modificada posteriormente por los Despachos n.º 188/2022, '
-        'n.º 208/2022 y n.º 110/2023. La Tabla B comprende únicamente: (i) '
-        'animales vivos, carne, productos de origen animal, pescado, '
-        'crustáceos y moluscos, hortalizas, plantas vivas, semillas, micelio '
-        'de setas y fertilizantes animales o vegetales; (ii) vehículos; (iii) '
-        'aparatos de telecomunicación y radiocomunicación; (iv) armas, '
-        'municiones y explosivos; (v) sustancias peligrosas de la Clase 7 '
-        '(sustancias radiactivas) y generadores de radiación ionizante; y, '
-        'por el suplemento de 2023, determinados compuestos químicos de las '
-        'partidas SA 2806 a 2939. Los circuitos integrados electrónicos, '
-        'partida SA 8542, NO figuran en la Tabla B y por lo tanto NO están '
-        'sujetos a licencia previa de importación por la DSEDT ni por la '
-        'Aduana de Macao. Las mercancías son circuitos integrados sueltos y '
-        'no constituyen aparatos de telecomunicación o radiocomunicación. A '
-        'la llegada se presenta la declaración aduanera de importación '
-        'ordinaria. Macao es puerto franco: no se aplica arancel aduanero a '
-        'la mercancía general, y el impuesto al consumo grava únicamente '
-        'alcohol, tabaco, combustibles y vehículos automotores.')),
-    ('a_export', (
-        'The goods are commodity memory integrated circuits (such as eMMC, '
-        'eMCP, uMCP, UFS, DDR and LPDDR devices) recovered from end-of-life '
-        'consumer devices. They are not advanced computing items and do not '
-        'meet the parameters of ECCN 3A090 or 4A090 of the United States '
-        'Commerce Control List, nor of the corresponding controls on advanced '
-        'computing items applicable to the Macao Special Administrative '
-        'Region. They are intended exclusively for legitimate civil and '
-        'commercial reuse. The shipper declares that the goods are not '
-        'intended, in whole or in part, for any military end use, for any '
-        'nuclear, chemical or biological weapons application, nor for any '
-        'end use or end user prohibited under the applicable export control '
-        'and sanctions regimes.',
-        '本批貨物為自報廢消費電子產品中回收之通用記憶體集成電路（如 eMMC、eMCP、'
-        'uMCP、UFS、DDR 及 LPDDR 器件），並非先進運算物項，不符合美國商業管制'
-        '清單 ECCN 3A090 或 4A090 之參數，亦不屬適用於澳門特別行政區之先進運算'
-        '物項管制範圍。貨物僅供合法民用及商業再使用。發貨人聲明：貨物之全部或'
-        '部分並非用於任何軍事最終用途、任何核子、化學或生物武器用途，亦非用於'
-        '適用之出口管制及制裁制度所禁止之任何最終用途或最終用戶。',
-        'Las mercancías son circuitos integrados de memoria de uso común '
-        '(como dispositivos eMMC, eMCP, uMCP, UFS, DDR y LPDDR) recuperados '
-        'de aparatos de consumo al final de su vida útil. No son artículos de '
-        'computación avanzada y no cumplen los parámetros del ECCN 3A090 ni '
-        '4A090 de la Lista de Control de Comercio de los Estados Unidos, ni '
-        'de los controles correspondientes sobre artículos de computación '
-        'avanzada aplicables a la Región Administrativa Especial de Macao. Se '
-        'destinan exclusivamente a la reutilización civil y comercial '
-        'legítima. El expedidor declara que las mercancías no se destinan, en '
-        'todo ni en parte, a ningún uso final militar, a ninguna aplicación '
-        'de armas nucleares, químicas o biológicas, ni a ningún uso final o '
-        'usuario final prohibido por los regímenes de control de exportación '
-        'y sanciones aplicables.')),
-)
 
 
 def _t3(chave) -> str:
@@ -470,32 +305,46 @@ def _img(fonte, altura=_LOGO_H):
 
 
 def render_so_manager_pdf(doc: dict) -> bytes:
-    """DOCUMENTO DE DESPACHO do lote — o papel que viaja com a caixa.
+    """PACKING LIST do lote — o papel que viaja com a caixa.
 
-    Reescrito em 2026-08-20 (dono) depois de a DHL exigir o fundamento legal
-    do embarque para Macau. O que ele é agora, e só isso: **informação de
-    despacho**. Identificação, remetente e destinatário, declaração aduaneira
-    (descrição, posição pautal, valor), procedência do fechamento,
-    transportadora/rastreio/data, a quantidade POR CATEGORIA WTC e o **anexo
-    regulatório** trilíngue.
+    ⚠ **Reescrito três vezes em 2026-08-20**, e vale saber por quê, porque o
+    caminho é o próprio raciocínio:
 
-    O que SAIU: as colunas de ¥/US$ e o resumo por tipo × capacidade. Nenhuma
-    das duas é informação de despacho — capacidade e preço são o comércio, e
-    comércio viaja na fatura, não na caixa.
+    1. Era um relatório de conferência com preço, marca e capacidade.
+    2. Virou "documento de despacho", com declaração aduaneira, código HS e
+       duas páginas de anexo legal — porque a DHL tinha travado um pacote.
+    3. Virou **packing list**, quando o sócio do dono apontou o erro de
+       enquadramento: *"não estamos fazendo exportação nem despacho... se você
+       colocar isso vai chamar atenção para outro assunto, que é o despacho
+       aduaneiro, aí só piora"*. É **remessa simples**, não venda
+       internacional com desembaraço.
 
-    ⚠ Com isso ``doc['with_prices']`` deixou de influenciar este render:
-    **admin e gerente recebem o MESMO documento**. A barreira de dinheiro
-    continua estrutural — não há coluna de valor aqui para esconder.
+    O princípio que sobrou, e que vale para qualquer papel deste sistema:
+    **documento que cita lei convida quem confere a ler a lei.** O que travava
+    o pacote era a palavra `DISPOSAL` na descrição — trocada por um texto
+    neutro, o problema morre sem precisar de anexo nenhum.
 
-    Trilíngue com inglês principal (inglês · 繁體 · español): o papel é lido
-    pela transportadora, pela alfândega de Macau e pelo próprio embarcador.
+    O que ele tem, e só isso: identificação, remetente e destinatário,
+    conteúdo e valor declarado, procedência do fechamento, transportadora /
+    rastreio / data, e a quantidade POR CATEGORIA WTC.
+
+    O que NÃO tem, por decisão explícita: preço (é comércio, viaja na
+    fatura), marca e capacidade (idem), código HS, título de declaração
+    aduaneira, anexo legal, estado da ordem e linha de assinatura.
+
+    ⚠ Com isso ``doc['with_prices']`` não influencia este render: **admin e
+    gerente recebem o MESMO documento**. A barreira de dinheiro é estrutural —
+    não há coluna de valor aqui para esconder.
+
+    Rótulos em inglês, com 繁體中文 e español entre parênteses: o papel é lido
+    pela transportadora e pelo destinatário, não por quem clicou. Por isso NÃO
+    passam por gettext — são canônicos.
 
     ``doc`` = ``vendas.services.manager_document(so, with_prices=…)`` —
     dicionário pronto, sem banco aqui (mesmo contrato do ``render_so_pdf``).
 
-    ⚠ A tabela traz SÓ o código de caixa WTC — nunca marca nem capacidade, para
-    ninguém (dono, 2026-08-20). Isto REVERTE o afrouxamento da F12 de
-    2026-08-18; ver o aviso em ``vendas/services.py``.
+    ⚠ A tabela traz SÓ o código de caixa WTC — nunca marca nem capacidade,
+    para ninguém (dono, 2026-08-20). Ver o aviso em ``vendas/services.py``.
     """
     font, bold, mono = 'Helvetica', 'Helvetica-Bold', 'Courier-Bold'
     # force=True: os ideogramas são CONTEÚDO deste documento, não tradução da
@@ -578,9 +427,11 @@ def render_so_manager_pdf(doc: dict) -> bytes:
          ('BOTTOMPADDING', (0, 1), (-1, 1), 4),
          ('LINEBELOW', (0, 1), (-1, 1), 1.2, _BLUE)])]
 
-    estado = _L.get(doc['status'], _L['cancelled'])
-    story += [Spacer(0, 4),
-              P(f"{_t('doc')} · {estado[0]} ({estado[1]})", st_sub)]
+    # ⚠ 2026-08-20: o subtítulo perdeu o ESTADO DA ORDEM (cotação/confirmada/
+    # cancelada). Estado de venda é informação comercial interna, e o dono
+    # pediu que o papel não diga que isso vai ser vendido. Sobra o que o
+    # documento é: um packing list.
+    story += [Spacer(0, 4), P(_t3('doc'), st_sub)]
 
     # ── 3. SHIP FROM × SHIP TO, lado a lado (leitura de transportadora) ─────
     def _caixa_endereco(chave, bloco):
@@ -624,25 +475,27 @@ def render_so_manager_pdf(doc: dict) -> bytes:
     ]))
     story += [Spacer(0, 10), enderecos]
 
-    # ── 3b. DECLARAÇÃO ADUANEIRA — exigência da transportadora ─────────────
-    # Descrição, posição pautal e valor SEMPRE preenchidos: campo em branco é o
-    # que faz o pacote parar, ou ser reavaliado por quem não conhece a carga.
+    # ── 3b. CONTEÚDO E VALOR — exigência da transportadora ─────────────────
+    # Descrição e valor SEMPRE preenchidos: campo em branco é o que faz o
+    # pacote parar, ou ser reavaliado por quem não conhece a carga.
     #
-    # ⚠ Os três vêm de FONTE ÚNICA em `services` (SHIPMENT_DESCRIPTION,
-    # SHIPMENT_HS_CODE, declared_value_usd) — aqui só se imprime, e é de
-    # propósito: quem quiser saber de onde vem o valor declarado lê a docstring
-    # da função, que diz que ele NÃO é o da venda e por quê. Nunca formatar
-    # `so.total_usd` aqui.
+    # ⚠ 2026-08-20, pedido do dono: **saiu o código HS e saiu o título
+    # "Customs declaration"**. Isto não é uma exportação, é remessa simples —
+    # e um papel que se anuncia como declaração aduaneira pede tratamento de
+    # declaração aduaneira. Sobram os dois campos que a transportadora
+    # realmente exige, sem rótulo que convide leitura extra.
+    #
+    # ⚠ Os dois vêm de FONTE ÚNICA em `services` (SHIPMENT_DESCRIPTION,
+    # declared_value_usd) — aqui só se imprime. Nunca formatar `so.total_usd`
+    # aqui: o valor declarado não é o da venda, e o porquê está na docstring.
     if doc.get('shipment_desc'):
         valor = doc.get('shipment_value')
-        aduana = Table(
-            [[P(_t3('contents'), st_cap), P(_t3('hs'), st_cap),
-              P(_t3('declared'), st_cap)],
+        conteudo = Table(
+            [[P(_t3('contents'), st_cap), P(_t3('declared'), st_cap)],
              [P(doc['shipment_desc'], st_shipn),
-              P(doc.get('shipment_hs') or '—', st_shipn),
               P(f'USD {valor}' if valor is not None else '—', st_shipn)]],
-            colWidths=[0.56 * avail, 0.16 * avail, 0.28 * avail])
-        aduana.setStyle(TableStyle([
+            colWidths=[0.68 * avail, 0.32 * avail])
+        conteudo.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.8, _INK),
             ('LINEAFTER', (0, 0), (0, -1), 0.4, _LINE),
             ('LEFTPADDING', (0, 0), (-1, -1), 9),
@@ -653,7 +506,7 @@ def render_so_manager_pdf(doc: dict) -> bytes:
             ('BOTTOMPADDING', (0, 0), (-1, 0), 1),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ]))
-        story += [Spacer(0, 8), P(_t3('customs'), st_sec), aduana]
+        story += [Spacer(0, 10), conteudo]
 
     # ── 4. Faixa de auditoria: fechamento + EMBARQUE ───────────────────────
     # O câmbio SAIU daqui em 2026-08-20 (dono): este documento deixou de ter
@@ -728,35 +581,22 @@ def render_so_manager_pdf(doc: dict) -> bytes:
     story.append(_grid([_t3('category'), _t3('qty')], corpo,
                        [0.78 * avail, 0.22 * avail]))
 
-    # ── 6. ANEXO REGULATÓRIO ───────────────────────────────────────────────
-    # As três perguntas que travam um pacote de circuito integrado com destino
-    # a Macau, respondidas com a lei citada por extenso e nos três idiomas.
-    # Vem DEPOIS da tabela de propósito: o conferente olha carga primeiro,
-    # fundamento depois — e o anexo é longo.
-    st_anx  = ParagraphStyle('anx', fontName=font, fontSize=7, leading=9.2,
-                             textColor=_INK, leftIndent=-6, spaceAfter=4,
-                             alignment=4)          # justificado
-    # ⚠ O parágrafo CHINÊS sai à ESQUERDA, não justificado. Motivo prático: o
-    # `_rich` parte o texto em runs (chinês na TTF, latino na Helvetica), e
-    # cada troca de fonte vira uma oportunidade de quebra. Justificando, o
-    # reportlab estica ESSAS folgas para fechar a linha e abre buracos de dois
-    # centímetros em volta de cada "Y49", "A1181", "3A090". Tipografia CJK não
-    # pede justificação — a coluna já fecha sozinha, porque o ideograma tem
-    # largura fixa.
-    st_anx_zh = ParagraphStyle('anxzh', parent=st_anx, alignment=0)
-    st_anxh = ParagraphStyle('anxh', fontName=bold, fontSize=7.5, leading=10,
-                             textColor=_INK, leftIndent=-6, spaceBefore=6,
-                             spaceAfter=2)
-    story += [Spacer(0, 14), P(_t3('annex'), st_sec)]
-    for chave, textos in _ANEXO:
-        story.append(P(_t3(chave), st_anxh))
-        for i, texto in enumerate(textos):
-            story.append(P(texto, st_anx_zh if i == 1 else st_anx))
-    # ⚠ 2026-08-20, pedido do dono: **sem linha de assinatura do embarcador**.
-    # O anexo é declaração da empresa e já sai sob o nome dela — o rodapé traz
-    # a origem do documento, e o SHIP FROM traz o remetente. Uma linha de
-    # assinatura vazia num papel que ninguém assina à mão é convite para alguém
-    # perguntar por que está em branco.
+    # ⚠ Aqui ficava o ANEXO REGULATÓRIO — duas páginas de fundamentação legal
+    # (Basileia, licenciamento em Macau, ECCN) em inglês, chinês e espanhol.
+    # **Removido em 2026-08-20**, no mesmo dia em que entrou, pelo argumento do
+    # sócio do dono: *"se você colocar isso vai chamar atenção para outro
+    # assunto, que é o despacho aduaneiro, aí só piora"*.
+    #
+    # Ele está certo, e o princípio vale além deste papel: **documento que cita
+    # lei convida quem confere a ler a lei.** Numa remessa simplificada de valor
+    # baixo, que normalmente passa sem conferência, duas páginas de argumento
+    # jurídico mudam a natureza da coisa — pedem para ser lidas.
+    #
+    # ⚠ O texto NÃO se perdeu: está em `DESPACHO_MACAU_CONFORMIDADE.md §6`, nos
+    # três idiomas, pronto para colar num e-mail. Ele é a resposta para quando
+    # PERGUNTAREM — responder é uma coisa, antecipar-se é outra. E o problema
+    # original já morre sem ele: quem chamava Basileia era a palavra `DISPOSAL`
+    # na descrição, e ela saiu.
 
     footer_txt = (f"{doc['so_code']} · {doc['lot_code']} · "
                   f"{_t('generated')} · {_fmt_dt(date.today())}")

@@ -1862,54 +1862,91 @@ financeiro" (só admin). Como ele era None para o gerente, as colunas de
 O crachá do cliente vira **"recebida pelo comprador"** quando o comprador acusa
 o recebimento, e a última etapa passou a se chamar **Pagamento** (era "Paga").
 
-📦 **O DOCUMENTO DO GERENTE VIRA DOCUMENTO DE DESPACHO** (dono, 2026-08-20:
-*"mude absolutamente tudo o que achar necessário, e adicione a ele o anexo das
-leis também, cite tudo SEM ECONOMIZAR PALAVRAS, para NÃO ficar brechas. Tudo em
-inglês, chinês e espanhol, sendo inglês o principal. Vamos tirar o detalhado por
-capacidade e preços deste report — vai ficar unicamente a quantidade por
-categoria WTC, o resto é tudo informação de despacho"*).
+📦 **O DOCUMENTO DO GERENTE VIRA UM PACKING LIST** (dono, 2026-08-20 — **três
+rodadas no mesmo dia**, e o caminho vale mais que o destino).
 
-**O que motivou:** a DHL travou um embarque de circuito integrado para Macau
-pedindo a base legal que permite a importação. Investigado em fonte oficial e
-escrito em `DESPACHO_MACAU_CONFORMIDADE.md` — o achado que importa não é a
-licença (HS 8542 não está na Tabela B; nunca precisou), é a **palavra
-`DISPOSAL`** que o nosso próprio papel imprimia. Desde **1/1/2025** as emendas
-de e-waste da Convenção de Basileia criaram a entrada **Y49** e passaram a
-exigir Consentimento Prévio Informado **até para e-waste NÃO perigoso**.
-Declarando "for disposal" o documento colocava a carga exatamente na categoria
-que hoje exige autorização entre Estados — e que não temos. Não era o
-transportador sendo difícil: era o papel dizendo a coisa errada.
+**Rodada 1 — o gatilho.** A DHL travou um embarque de circuito integrado para
+Macau pedindo a base legal da importação. Investigado em fonte oficial
+(`DESPACHO_MACAU_CONFORMIDADE.md`): HS 8542 não está na Tabela B, nunca precisou
+de licença. O que travava era o NOSSO papel, que imprimia `PCB CHIPS FOR
+DISPOSAL` — e desde **1/1/2025** as emendas de e-waste de Basileia criaram a
+entrada **Y49** e passaram a exigir Consentimento Prévio Informado **até para
+e-waste NÃO perigoso**. O documento declarava sozinho a categoria que exige
+autorização entre Estados. Não era o transportador sendo difícil: era o papel
+dizendo a coisa errada.
 
-**O papel deixou de ser relatório e virou documento de embarque.** Consequências:
+**Rodada 2 — a correção exagerada.** O papel virou "documento de despacho":
+descrição argumentativa (`RECOVERED … SOLD FOR REUSE. NOT WASTE.`), código HS,
+caixa de "Customs declaration", faixa de transportadora, valor declarado e um
+**anexo regulatório de duas páginas** em EN · 繁體中文 · ES citando Basileia,
+Lei n.º 7/2003 de Macau e ECCN 3A090/4A090. Tudo verdadeiro. Tudo demais.
 
-· **Preço saiu por inteiro, para TODO MUNDO — admin inclusive.** Não é máscara
-  de permissão, é natureza do documento: preço é comércio e viaja na fatura
-  comercial; quem lê este papel é conferente de alfândega. A única cifra que
-  sobrou é o **valor declarado**, que a transportadora exige.
-· **O valor declarado passou a ser o valor real da venda** (`total_usd`). Antes
-  era um número entre 200 e 290 USD, e valor declarado que não conversa com a
-  fatura é problema aduaneiro por si só — Macau é **porto franco** (sem tarifa
-  sobre mercadoria geral), então subdeclarar não economizava nada e só criava
-  exposição. ⚠ Decisão de negócio do dono, não de código: mudou o que o papel
-  afirma.
-· **Uma tabela só: categoria WTC × quantidade.** A tabela de tipo × capacidade
-  saiu — granularidade de operação interna não é informação de despacho, e cada
-  linha a mais é uma linha a mais para um conferente questionar.
-· **Caixa de declaração aduaneira em três colunas**: descrição · **HS 8542** ·
-  valor declarado. A descrição virou `RECOVERED ELECTRONIC INTEGRATED CIRCUITS
-  (MEMORY ICs) — TESTED AND GRADED, SOLD FOR REUSE. NOT WASTE.`
-  (`services.SHIPMENT_DESCRIPTION` / `SHIPMENT_HS_CODE` — fonte única, o PDF só
-  imprime).
-· **Faixa de despacho**: transportadora · rastreio · data de envio, desenhada só
-  quando houve despacho.
-· **O câmbio saiu do papel** (segue no dado, que a tela usa): sem valor de
-  mercadoria para converter, taxa de conversão é ruído numa folha que a alfândega
-  lê.
+**Rodada 3 — o enquadramento certo, e é o que vale.** O sócio do dono desmontou
+a premissa: *"não estamos fazendo exportação nem despacho... se você colocar
+isso vai chamar atenção para outro assunto, que é o despacho aduaneiro, aí só
+piora. Por isso usamos envio de remessa simplificada com valor baixo, que
+normalmente é isento disso."*
 
-🔒 **A TABELA SÓ DIZ EM QUAL CAIXA O CHIP VAI** (dono, 2026-08-20, vendo o PDF
-do admin: *"o que tem que sair aí é a categoria WTC dele, ou seja, em quais
-caixas eles vão; não tem que dizer a capacidade nem marca de nada — agora que vi
-que só acontece quando o admin gera, mas remova tb pra não ter confusão"*).
+Ele está certo, e o princípio generaliza para qualquer papel deste sistema:
+
+> **Documento que cita lei convida quem confere a ler a lei.**
+
+Numa remessa simplificada de valor baixo — que normalmente passa sem
+conferência — duas páginas de fundamentação jurídica mudam a natureza da coisa:
+pedem para ser lidas. E o problema original morre sem anexo nenhum, porque quem
+convocava Basileia era a **palavra** `DISPOSAL`, não a falta de argumento.
+
+**O que o papel é hoje** (instrução literal do dono: *"não fale nada de aduana
+de Macao, nem que isso vai ser vendido, nem que a aduana vai conferir, ou que
+tem despacho"*):
+
+| saiu | por quê |
+|---|---|
+| descrição argumentativa | vira `ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)` — neutro não declara resíduo, logo não convoca Basileia |
+| código HS | classificar mercadoria anuncia desembaraço |
+| título "Customs declaration" | idem — papel que se anuncia como declaração aduaneira pede tratamento de declaração aduaneira |
+| anexo regulatório (2 páginas) | o princípio acima |
+| rótulo "Sales order" → **Reference** | *"nem que isso vai ser vendido"* |
+| "Lot check" → **Packing list** | é o que o documento é |
+| estado da ordem (cotação/confirmada) | estado de venda é informação comercial interna |
+| linha de assinatura do embarcador | assinatura vazia convida pergunta |
+| preço, marca, capacidade, câmbio | comércio viaja na fatura, não na caixa |
+
+**O que ficou:** identificação (Reference + Lot), SHIP FROM × SHIP TO, conteúdo
++ valor declarado, procedência do fechamento, transportadora/rastreio/data, e a
+quantidade por categoria WTC. O arquivo baixa como **`PACKING-LIST-<código>.pdf`**
+— o nome do arquivo é a primeira coisa que a transportadora lê.
+
+⚠ **O anexo NÃO foi jogado fora**: está inteiro, nos três idiomas, em
+`DESPACHO_MACAU_CONFORMIDADE.md §6`. Ele é a resposta pronta para quando
+**perguntarem** — aí citar a lei é a jogada certa, porque é resposta, não
+antecipação. Copiar e colar num e-mail.
+
+💵 **O VALOR DECLARADO NÃO É O DA VENDA** (dono, 2026-08-20, em letra maiúscula:
+*"REMOVA O VALOR REAL DA VENDA! Não quero que apareça no despacho! O
+administrativo de ambas as empresas não podem ter acesso ao valor real da
+venda"*).
+
+Este item também mudou duas vezes no dia. De manhã o valor fictício (200–290 por
+hash) virou o real, com argumento aduaneiro; à tarde voltou a ser controlado,
+porque a razão verdadeira era de **SIGILO**: o papel circula pelo administrativo
+do cliente E do comprador, e o preço fechado entre eles é segredo de quem
+intermedia. É a F12/F11.3 chegando ao papel que viaja com a caixa. (E casa com a
+estratégia de remessa simplificada de valor baixo.)
+
+⚠ **Nem teto sobre o valor real** — teto vaza: abaixo do limite o campo
+entregaria a venda inteira. `declared_value_usd` **não toca em `so.total_usd`**:
+sem `min()`, sem caminho por onde o real chegue. Teste varia o total de US$ 1 a
+US$ 9.999.999 e exige que o declarado não se mova um centavo.
+
+Continua **estável por documento** (hash do código da OV, nunca `random`):
+imprimir duas vezes tem que dar o mesmo número, senão o papel que já foi para a
+transportadora deixa de bater com o segundo. E sai **sempre**, até em rascunho —
+campo em branco é o que faz o pacote parar.
+
+🔒 **A TABELA SÓ DIZ EM QUAL CAIXA O CHIP VAI** (dono, 2026-08-20, vendo o PDF do
+admin: *"o que tem que sair aí é a categoria WTC dele, ou seja, em quais caixas
+eles vão; não tem que dizer a capacidade nem marca de nada"*).
 
 O documento saía com `Samsung · eMCP 16GB` quando quem baixava era o ADMIN,
 porque a chamada carregava `unmasked=is_unmasked(request)`. Agora é só `B-06`,
@@ -1917,112 +1954,28 @@ para todo mundo.
 
 ⚠ **Isto REVERTE o afrouxamento da F12 de 2026-08-18** — e o motivo importa,
 porque muda ONDE a regra mora. Não é a máscara de permissão voltando: é o
-documento assumindo o que é. Marca e capacidade são COMÉRCIO, e comércio viaja
-na fatura, não na caixa. Por isso `manager_document` **perdeu o parâmetro
+documento assumindo o que é. Por isso `manager_document` **perdeu o parâmetro
 `unmasked`** em vez de ganhar um default — não sobrou nada para reativar — e o
-`spec` saiu do dicionário, não só do papel. O teste segura a assinatura da
-função, não só o texto do PDF.
+`spec` saiu do dicionário, não só do papel.
 
-⚠ Sentinela de teste que NÃO serve aqui: `eMMC`/`eMCP`. O anexo cita os dois
-como exemplo de memória de uso comum, e é essa frase que sustenta a declaração
-de uso final ("não é 3A090"). O que não pode vazar é **marca e capacidade** —
-que o anexo não menciona.
+⚠ **Duas correções de composição** que só apareceram com o PDF impresso na
+frente, e que sobrevivem à limpeza porque valem para qualquer PDF do sistema:
 
-💵 **O VALOR DECLARADO NÃO É O DA VENDA** (dono, 2026-08-20, em letra
-maiúscula: *"REMOVA O VALOR REAL DA VENDA! Não quero que apareça no despacho! O
-administrativo de ambas as empresas não podem ter acesso ao valor real da
-venda"*).
-
-Este item mudou DUAS vezes no mesmo dia e a segunda decisão é a que vale. De
-manhã o valor fictício (200–290 por hash) virou o valor real; à tarde voltou a
-ser controlado — porque a razão real não era aduaneira, era de SIGILO: **o
-documento de despacho circula pelo administrativo do cliente E do comprador**, e
-o preço fechado entre eles é segredo de quem intermedia. É a F12/F11.3 chegando
-ao papel que viaja com a caixa.
-
-⚠ **Nem teto sobre o valor real** — teto vaza. Abaixo do limite o campo
-entregaria a venda inteira. Por isso `declared_value_usd` **não toca em
-`so.total_usd`**: nada de `min()`, nada de caminho por onde o real chegue.
-Teste segura isso variando o total de US$ 1 a US$ 9.999.999 e exigindo que o
-declarado não se mova um centavo.
-
-Continua **estável por documento** (hash do código da OV, nunca `random`):
-imprimir duas vezes tem que dar o mesmo número, senão o papel que já foi para a
-transportadora deixa de bater com o segundo. E agora sai **sempre**, até em
-rascunho — como não depende mais do valor congelado, acabou o caso do traço, e
-campo em branco em declaração aduaneira é o que faz o pacote parar.
-
-⚠ **O custo, registrado para quem herdar isto:** o valor declarado não bate com
-a fatura comercial, e divergência é, por si só, motivo de retenção em qualquer
-aduana. O que atenua no caso concreto: **Macau é porto franco** (sem tarifa
-sobre mercadoria geral), então não há imposto sendo economizado — o efeito
-prático recai sobre **seguro e limite de responsabilidade da transportadora**,
-que ficam presos ao valor declarado. Decisão do dono sobre a declaração legal da
-empresa dele, tomada por escrito e com o custo dito. Muda num lugar só.
-
-✍️ **Sem linha de assinatura do embarcador** (dono, 2026-08-20). O rótulo
-`a_sign` saiu do `_L` junto — rótulo órfão num dicionário que o teste de glifo
-varre inteiro vira falha de fonte na próxima entrega. A origem do documento já
-sai no rodapé e no SHIP FROM; linha de assinatura vazia num papel que ninguém
-assina à mão é convite para alguém perguntar por que está em branco.
-
-📜 **ANEXO REGULATÓRIO, trilíngue, sem economizar palavras** (`_ANEXO` em
-`vendas/pdf.py`). Três declarações, cada uma respondendo à pergunta que trava um
-pacote, cada uma em **EN · 繁體中文 · ES**:
-
-1. **Natureza — não é resíduo.** Recuperado, identificado por part number,
-   testado, classificado, vendido sob fatura comercial para reuso direto. NÃO é
-   resíduo, NÃO é sucata, NÃO viaja para descarte/reciclagem/recuperação — logo
-   fora das entradas **Y49** e **A1181** de Basileia (versão em vigor desde
-   1/1/2025) e sem notificação PIC aplicável. O ônus da prova de reuso é do
-   EMBARCADOR: por isso a tabela de categoria e quantidade **é** parte da prova,
-   junto da fatura.
-2. **Licenciamento em Macau.** **Lei n.º 7/2003** de 23 de junho (Lei do
-   Comércio Externo), alterada pela **Lei n.º 3/2016**: licença prévia só para a
-   **Tabela B do Anexo II**, fixada pelo **Despacho n.º 209/2021** e alterada
-   pelos **188/2022, 208/2022 e 110/2023**. Circuito integrado (HS 8542) não
-   consta. ⚠ Citar os QUATRO despachos, e não só o de 2021, é o que fecha a
-   brecha — quem confere sabe que a lista mudou depois, e citação incompleta é
-   exatamente o que um conferente detecta.
-3. **Controle de exportação e uso final.** O alvo dos controles americanos para
-   Macau são os **ECCN 3A090 e 4A090** (computação avançada); memória recuperada
-   de aparelho de consumo não é isso, e o destino é reuso civil comercial.
-
-⚠ **Idioma do documento é do TRANSPORTE, não de quem clicou.** Os rótulos são
-canônicos (não passam por `gettext`) e o inglês é o principal — teste segurando
-isso com a sessão em pt-br, es e zh-hans. O chinês é **繁體** (Macau/HK/Taiwan),
-nunca o catálogo `zh-hans` da interface.
-
-⚠ **O espanhol é escolha do dono, não da geografia**: as línguas oficiais de
-Macau são **chinês e PORTUGUÊS**. Se o despachante pedir, trocar/somar é
-mecânico (`_L` + `_ANEXO` + `_t3`).
-
-⚠ **Isto é declaração legal com o nome do dono.** Mudar `_ANEXO`,
-`SHIPMENT_DESCRIPTION` ou `SHIPMENT_HS_CODE` é mudar o que a empresa afirma para
-uma alfândega — fale com o despachante antes, não é ajuste de interface.
-
-⚠ **Duas correções de composição que o PDF revelado expôs:**
-
-· **O parágrafo chinês não se justifica.** O `_rich` parte o texto em runs
-  (chinês na TTF, latino na Helvetica) e cada troca de fonte vira oportunidade
-  de quebra; justificado, o reportlab estica ESSAS folgas para fechar a linha e
-  abre um vão de dois centímetros em volta de cada `Y49`, `A1181`, `3A090`. O
-  pico do operador `Tw` batia em **101 pt**. À esquerda cai para ~2 pt — e
-  tipografia CJK não pede justificação, o ideograma tem largura fixa e a coluna
-  fecha sozinha. Teste mede o `Tw`, não a aparência.
+· **Parágrafo CJK não se justifica.** O `_rich` parte o texto em runs (chinês na
+  TTF, latino na Helvetica) e cada troca de fonte vira oportunidade de quebra;
+  justificado, o reportlab estica ESSAS folgas e abre vãos de dois centímetros
+  em volta de cada sigla latina. O pico do operador `Tw` batia em **101 pt**. À
+  esquerda cai para ~2 pt.
 · **SHIP TO em branco é DEFEITO visível, não caixa sumida.** A regra antiga
   ("comprador sem endereço = bloco ausente") produzia meia caixa vazia, sem nem
-  a palavra SHIP TO — que quem imprime lê como falha de impressão. A leitura
-  certa é a outra: falta o destinatário, vá preencher o cadastro. O bloco sai
-  SEMPRE, com travessão no lugar do dado. Nada é inventado: `ship_to()` continua
-  devolvendo `{}`.
+  a palavra SHIP TO — que quem imprime lê como falha de impressão. Sai SEMPRE,
+  com travessão. Nada é inventado: `ship_to()` continua devolvendo `{}`.
 
-⚠ **Armadilha de teste (custou tempo, fica registrada).** Depois do anexo, `b'\\245'`
-(o ¥ escapado) **deixou de servir de sentinela de dinheiro**: o PDF passou a
-embutir um subconjunto CJK grande e o índice de glifo de dois bytes pode conter o
-byte `0xA5`. A sentinela virou o RÓTULO da coluna (`b'Unit \\245'`,
-`b'Total \\245'`, `b'US$'` — `_SEM_DINHEIRO` em `vendas/tests.py`). Pelo mesmo
-motivo `b'Unit'` sozinho também não serve: o anexo cita "United States".
+⚠ **Armadilha de teste, registrada porque custou tempo:** `b'\\245'` (o ¥
+escapado) **não serve de sentinela de dinheiro** quando o PDF embute um
+subconjunto CJK grande — o índice de glifo de dois bytes pode conter o byte
+`0xA5`. A sentinela é o RÓTULO da coluna (`_SEM_DINHEIRO` em `vendas/tests.py`).
+Pelo mesmo motivo `b'Unit'` sozinho não serve se algum texto citar "United".
 
 🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
 CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com

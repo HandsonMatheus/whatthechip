@@ -213,6 +213,79 @@ Vale saber antes de precisar.
 próximo embarque. Se ele mudar uma palavra, eu mudo no código com teste — o que
 não dá é o papel dizer uma coisa e o despachante achar que diz outra.
 
+## 6. O anexo legal — FORA do papel, guardado aqui (20/08/2026)
+
+O anexo trilíngue chegou a ir impresso no documento e **saiu no mesmo dia**,
+depois do argumento do seu sócio: *"se você colocar isso vai chamar atenção
+para outro assunto, que é o despacho aduaneiro, aí só piora"*.
+
+Ele tem razão, e o motivo é simples: **um papel que cita lei convida quem
+confere a ler a lei.** Numa remessa simplificada de valor baixo, que
+normalmente passa sem conferência, duas páginas de fundamentação jurídica
+mudam a natureza da coisa — pedem para ser lidas. O documento voltou a ser o
+que precisa ser: um packing list neutro, que diz o que tem na caixa.
+
+⚠ **Mas o texto não se perde, e é por isso que ele está aqui.** Ele é a
+resposta pronta para o dia em que a transportadora ou a aduana PERGUNTAR — aí
+sim citar a lei é a jogada certa, porque você está respondendo, não se
+antecipando. Copie da seção abaixo, cole no e-mail, e mande.
+
+⚠ E o problema original **já está resolvido sem o anexo**: o que travava era a
+palavra `DISPOSAL` na descrição. `ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)`
+é neutra — não declara resíduo, e por isso não convoca Basileia.
+
+### 6.1 O texto, nos três idiomas
+
+#### 1. Nature of the goods — not waste
+#### 1. 貨物性質 — 非廢棄物
+#### 1. Naturaleza de la mercancía — no es residuo
+
+**EN**
+
+> The goods described in this document are electronic integrated circuits recovered from end-of-life consumer electronic devices. They have been individually identified by part number, functionally tested, graded and classified by category, and are sold to the consignee under a commercial invoice for direct reuse as electronic components. They are NOT waste, NOT scrap and are NOT shipped for disposal, recycling or recovery operations. Consequently they do not fall within entry Y49 (used and end-of-life electrical and electronic equipment) or entry A1181 of the Basel Convention on the Control of Transboundary Movements of Hazardous Wastes and their Disposal, as amended with effect from 1 January 2025, and no prior informed consent (PIC) notification is applicable to this shipment. The category and quantity table in this document, together with the commercial invoice, constitutes the shipper’s evidence of reuse status.
+
+**中文**
+
+> 本文件所列貨物為自報廢消費電子產品中回收之電子集成電路。每件均已按型號識別、功能測試、分級並歸類，並依商業發票售予收貨人，作為電子元件直接再使用。該等貨物並非廢棄物、並非廢料，亦非為處置、回收或再生作業而付運。因此，不屬於《控制危險廢物越境轉移及其處置巴塞爾公約》（經修訂，自二零二五年一月一日生效）之 Y49 條目（使用過及報廢電氣電子設備）或 A1181 條目，本次付運無須事先知情同意（PIC）通知。本文件之類別及數量表連同商業發票，構成發貨人關於再使用狀態之證明。
+
+**ES**
+
+> Las mercancías descritas en este documento son circuitos integrados electrónicos recuperados de aparatos electrónicos de consumo al final de su vida útil. Han sido identificadas individualmente por número de parte, probadas funcionalmente, clasificadas por grado y categoría, y se venden al consignatario mediante factura comercial para su reutilización directa como componentes electrónicos. NO son residuo, NO son chatarra y NO se envían para eliminación, reciclaje ni operaciones de recuperación. En consecuencia, no están comprendidas en la entrada Y49 (equipos eléctricos y electrónicos usados y al final de su vida útil) ni en la entrada A1181 del Convenio de Basilea sobre el Control de los Movimientos Transfronterizos de los Desechos Peligrosos y su Eliminación, en su versión modificada con efecto desde el 1 de enero de 2025, y no corresponde notificación de consentimiento fundamentado previo (CFP) para este envío. El cuadro de categorías y cantidades de este documento, junto con la factura comercial, constituye la prueba del expedidor sobre la condición de reutilización.
+
+#### 2. Macao SAR import licensing
+#### 2. 澳門特別行政區進口准照
+#### 2. Licencia de importación de la RAE de Macao
+
+**EN**
+
+> Under the external trade regime of the Macao Special Administrative Region, established by Law No. 7/2003 of 23 June (External Trade Law), as amended by Law No. 3/2016, prior import licensing applies exclusively to the goods listed in Table B of Annex II, as fixed by Chief Executive’s Decision No. 209/2021 and subsequently amended by Chief Executive’s Decisions No. 188/2022, No. 208/2022 and No. 110/2023. Table B covers only: (i) live animals, meat, products of animal origin, fish, crustaceans and molluscs, vegetables, live plants, seeds, mushroom spawn and animal or vegetable fertilisers; (ii) vehicles; (iii) telecommunication and radio-communication apparatus; (iv) arms, ammunition and explosives; (v) dangerous substances of Class 7 (radioactive substances) and ionizing radiation generators; and, by the 2023 supplement, certain chemical compounds of HS headings 2806 to 2939. Electronic integrated circuits, HS heading 8542, are NOT listed in Table B and are therefore NOT subject to prior import licensing by the DSEDT or by Macao Customs. The goods are loose integrated circuits and are not telecommunication or radio-communication apparatus. A standard import customs declaration is filed upon arrival. Macao is a free port: no customs tariff applies to general merchandise, consumption tax being levied only on alcohol, tobacco, fuel and motor vehicles.
+
+**中文**
+
+> 根據澳門特別行政區對外貿易制度，即六月二十三日第7/2003號法律（對外貿易法），經第3/2016號法律修改，事先進口准照僅適用於附件二表B所列貨物；該表由第209/2021號行政長官批示訂定，並經第188/2022號、第208/2022號及第110/2023號行政長官批示修改。表B僅涵蓋：（一）活動物、肉類、動物源產品、魚類、甲殼類及軟體動物、蔬菜、活植物、種子、菌種及動植物肥料；（二）車輛；（三）電訊及無線電通訊器材；（四）武器、彈藥及爆炸品；（五）第七類危險物質（放射性物質）及電離輻射產生器；以及按二零二三年之補充，協調制度第2806至2939節之若干化學品。電子集成電路（協調制度第8542節）並未列入表B，因此無須經濟及科技發展局或澳門海關事先發出進口准照。本批貨物為散裝集成電路，並非電訊或無線電通訊器材。貨物抵達時按一般程序遞交進口報關單。澳門為自由港：一般貨物不徵收關稅，消費稅僅適用於酒精、煙草、燃料及機動車輛。
+
+**ES**
+
+> Con arreglo al régimen de comercio externo de la Región Administrativa Especial de Macao, establecido por la Ley n.º 7/2003, de 23 de junio (Ley del Comercio Externo), modificada por la Ley n.º 3/2016, la licencia previa de importación se aplica exclusivamente a las mercancías enumeradas en la Tabla B del Anexo II, fijada por el Despacho del Jefe del Ejecutivo n.º 209/2021 y modificada posteriormente por los Despachos n.º 188/2022, n.º 208/2022 y n.º 110/2023. La Tabla B comprende únicamente: (i) animales vivos, carne, productos de origen animal, pescado, crustáceos y moluscos, hortalizas, plantas vivas, semillas, micelio de setas y fertilizantes animales o vegetales; (ii) vehículos; (iii) aparatos de telecomunicación y radiocomunicación; (iv) armas, municiones y explosivos; (v) sustancias peligrosas de la Clase 7 (sustancias radiactivas) y generadores de radiación ionizante; y, por el suplemento de 2023, determinados compuestos químicos de las partidas SA 2806 a 2939. Los circuitos integrados electrónicos, partida SA 8542, NO figuran en la Tabla B y por lo tanto NO están sujetos a licencia previa de importación por la DSEDT ni por la Aduana de Macao. Las mercancías son circuitos integrados sueltos y no constituyen aparatos de telecomunicación o radiocomunicación. A la llegada se presenta la declaración aduanera de importación ordinaria. Macao es puerto franco: no se aplica arancel aduanero a la mercancía general, y el impuesto al consumo grava únicamente alcohol, tabaco, combustibles y vehículos automotores.
+
+#### 3. Export control and end use
+#### 3. 出口管制與最終用途
+#### 3. Control de exportación y uso final
+
+**EN**
+
+> The goods are commodity memory integrated circuits (such as eMMC, eMCP, uMCP, UFS, DDR and LPDDR devices) recovered from end-of-life consumer devices. They are not advanced computing items and do not meet the parameters of ECCN 3A090 or 4A090 of the United States Commerce Control List, nor of the corresponding controls on advanced computing items applicable to the Macao Special Administrative Region. They are intended exclusively for legitimate civil and commercial reuse. The shipper declares that the goods are not intended, in whole or in part, for any military end use, for any nuclear, chemical or biological weapons application, nor for any end use or end user prohibited under the applicable export control and sanctions regimes.
+
+**中文**
+
+> 本批貨物為自報廢消費電子產品中回收之通用記憶體集成電路（如 eMMC、eMCP、uMCP、UFS、DDR 及 LPDDR 器件），並非先進運算物項，不符合美國商業管制清單 ECCN 3A090 或 4A090 之參數，亦不屬適用於澳門特別行政區之先進運算物項管制範圍。貨物僅供合法民用及商業再使用。發貨人聲明：貨物之全部或部分並非用於任何軍事最終用途、任何核子、化學或生物武器用途，亦非用於適用之出口管制及制裁制度所禁止之任何最終用途或最終用戶。
+
+**ES**
+
+> Las mercancías son circuitos integrados de memoria de uso común (como dispositivos eMMC, eMCP, uMCP, UFS, DDR y LPDDR) recuperados de aparatos de consumo al final de su vida útil. No son artículos de computación avanzada y no cumplen los parámetros del ECCN 3A090 ni 4A090 de la Lista de Control de Comercio de los Estados Unidos, ni de los controles correspondientes sobre artículos de computación avanzada aplicables a la Región Administrativa Especial de Macao. Se destinan exclusivamente a la reutilización civil y comercial legítima. El expedidor declara que las mercancías no se destinan, en todo ni en parte, a ningún uso final militar, a ninguna aplicación de armas nucleares, químicas o biológicas, ni a ningún uso final o usuario final prohibido por los regímenes de control de exportación y sanciones aplicables.
+
+---
+
 ## Fontes
 
 - [Lei n.º 7/2003 — Lei do Comércio Externo de Macau (PDF oficial, Boletim Oficial)](https://images.bo.dsaj.gov.mo/bo/i/2003/25/lei-7-2003.pdf)

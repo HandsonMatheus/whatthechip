@@ -956,7 +956,7 @@ class PdfConferenciaGerenteTests(TestCase):
             with translation.override(idioma):
                 junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
             self.assertIn(b'WTC categories', junto, idioma)
-            self.assertIn(b'Regulatory annex', junto, idioma)
+            self.assertIn(b'Packing list', junto, idioma)
             self.assertIn(b'Closed by', junto, idioma)
             self.assertNotIn(b'Categorias WTC', junto, idioma)
             self.assertNotIn(b'Fechado por', junto, idioma)
@@ -1016,14 +1016,24 @@ class PdfConferenciaGerenteTests(TestCase):
             self.assertIn(f'<{ord(ch):04X}>'.encode(), pdf,
                           f'sem glifo para {ch!r} na fonte embutida')
 
-    def test_subtitulo_sem_as_frases_removidas(self):
-        """Dono, 2026-08-18: fora 'documento sem valores' e 'valores
-        congelados'; o resto da linha (natureza + status) fica."""
+    def test_subtitulo_diz_o_que_o_papel_E_e_mais_nada(self):
+        """Dono, 2026-08-20 (3ª rodada): o subtítulo é **Packing list**, e só.
+
+        Saiu 'Lot check', saiu o ESTADO da ordem (cotação/confirmada) e saiu o
+        rótulo 'Sales order' do cabeçalho — *"não fale nada de aduana de Macao,
+        nem que isso vai ser vendido"*. Estado de venda é informação comercial
+        interna; num papel que a transportadora lê, é ruído que sugere
+        transação onde se quer ver só uma remessa.
+
+        (De 2026-08-18 continua valendo: nada de 'documento sem valores' nem
+        'valores congelados'.)
+        """
         texto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
-        self.assertIn(b'Lot check', texto)
-        self.assertIn(b'quotation', texto)                  # status do draft
-        self.assertNotIn(b'without values', texto)
-        self.assertNotIn(b'frozen', texto)
+        self.assertIn(b'Packing list', texto)
+        self.assertIn(b'Reference', texto)              # era 'Sales order'
+        for fora in (b'Lot check', b'Sales order', b'quotation',
+                     b'confirmed', b'without values', b'frozen'):
+            self.assertNotIn(fora, texto, fora)
 
     def test_so_e_lote_tem_o_mesmo_tamanho(self):
         """Pedido literal: 'nenhum é mais importante que o outro'. A prova é o
@@ -1322,7 +1332,7 @@ class PdfConferenciaGerenteTests(TestCase):
         do_gerente = _textos_do_pdf(self._pdf(self.manager))
         junto = b' '.join(do_admin)
         for igual_aos_dois in (b'WTC categories', b'SHIP TO', b'SHIP FROM',
-                               b'Closed by', b'Regulatory annex'):
+                               b'Closed by', b'Packing list'):
             self.assertIn(igual_aos_dois, junto)
         for nunca_mais in (b'US$', b'Total US$', b'US$ 23.10',
                            b'US$ 50.40', b'US$ 73.50'):
@@ -2488,28 +2498,32 @@ class CompradorPagamentoTests(TestCase):
         self.assertContains(tela, reverse('compras:pagar', args=[self.so.pk]))
 
 
-class DeclaracaoAduaneiraTests(TestCase):
-    """A declaração aduaneira do documento de embarque.
+class ConteudoDeclaradoTests(TestCase):
+    """O que o PACKING LIST diz sobre a carga (dono, três rodadas em 20/08).
 
-    ⚠ **REESCRITO em 2026-08-20** (dono), depois de a DHL exigir o fundamento
-    legal do embarque para Macau. O que mudou, e por quê:
+    ⚠ Este bloco tem valor de MEMÓRIA: o mesmo campo mudou três vezes num dia,
+    cada vez corrigindo um erro real, e é fácil alguém "restaurar" um deles
+    achando que melhora.
 
-    · a descrição era ``PCB CHIPS FOR DISPOSAL``. Em linguagem aduaneira "for
-      disposal" não descreve mercadoria, descreve RESÍDUO — e desde 1/1/2025 as
-      emendas de e-waste da Convenção de Basileia (entrada Y49) exigem
-      Consentimento Prévio Informado ENTRE ESTADOS até para e-waste não
-      perigoso. A carga não é resíduo: é circuito integrado recuperado,
-      testado, classificado e VENDIDO para reuso — e é isso que o papel diz;
-    · o valor declarado **não é o da venda**, e é assumido como tal. Chegou a
-      ser, por algumas horas em 20/08, e o dono reverteu no mesmo dia: *"REMOVA
-      O VALOR REAL DA VENDA! Não quero que apareça no despacho! O
-      administrativo de ambas as empresas não podem ter acesso ao valor real da
-      venda"*. O papel circula pelo administrativo do CLIENTE e do COMPRADOR, e
-      o preço fechado entre eles é segredo de quem intermedia — mesmo princípio
-      da F12 e da F11.3, aplicado ao documento que viaja com a caixa.
+    1. ``PCB CHIPS FOR DISPOSAL`` — **era a causa do bloqueio.** Em linguagem de
+       transporte "for disposal" não descreve mercadoria, descreve RESÍDUO, e
+       desde 1/1/2025 as emendas de e-waste de Basileia (entrada Y49) exigem
+       Consentimento Prévio Informado ENTRE ESTADOS até para e-waste não
+       perigoso. O papel declarava sozinho a categoria que exige autorização
+       que ninguém tem.
+    2. ``RECOVERED … TESTED AND GRADED, SOLD FOR REUSE. NOT WASTE.`` — correto
+       no conteúdo, **exagerado na forma**. Junto vieram código HS, título de
+       declaração aduaneira e duas páginas de anexo legal.
+    3. ``ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)`` — **neutro, e basta.**
+       O sócio do dono desmontou o enquadramento: *"não estamos fazendo
+       exportação nem despacho... se você colocar isso vai chamar atenção para
+       outro assunto, que é o despacho aduaneiro, aí só piora"*. É remessa
+       simples. Descrição neutra não declara resíduo, logo não convoca
+       Basileia — o problema morre sem precisar de argumento.
 
-      ⚠ Nem teto sobre o real: teto vaza abaixo do limite. A função não toca em
-      ``so.total_usd``, e um teste segura isso.
+    O princípio, que vale além deste papel: **documento que cita lei convida
+    quem confere a ler a lei.** A fundamentação completa está guardada em
+    ``DESPACHO_MACAU_CONFORMIDADE.md §6``, para o dia em que PERGUNTAREM.
     """
 
     @classmethod
@@ -2585,26 +2599,42 @@ class DeclaracaoAduaneiraTests(TestCase):
         valores = {services.declared_value_usd(so) for _ in range(20)}
         self.assertEqual(len(valores), 1)
 
-    def test_a_descricao_nao_declara_RESIDUO(self):
-        """A palavra que declarava resíduo saiu — e não pode voltar por
-        descuido: é ela que puxa o regime de Basileia para cima do pacote."""
-        desc = services.SHIPMENT_DESCRIPTION
-        self.assertNotIn('DISPOSAL', desc.upper())
-        self.assertNotIn('WASTE FOR', desc.upper())
-        self.assertIn('REUSE', desc.upper())
-        self.assertIn('NOT WASTE', desc.upper())
+    def test_a_descricao_e_neutra_e_nao_declara_RESIDUO(self):
+        """Duas coisas ao mesmo tempo, e as duas por motivo diferente.
 
-    def test_o_documento_carrega_descricao_HS_e_valor(self):
+        · ``DISPOSAL`` não pode voltar: é a palavra que puxa Basileia para
+          cima do pacote (erro nº 1).
+        · ``NOT WASTE`` / ``SOLD FOR REUSE`` também não: argumentar num campo
+          de descrição responde uma pergunta que ninguém fez, e chama atenção
+          para ela (erro nº 2). Neutro já resolve.
+        """
+        desc = services.SHIPMENT_DESCRIPTION
+        self.assertEqual(desc, 'ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)')
+        for argumento in ('DISPOSAL', 'WASTE', 'SCRAP', 'REUSE', 'SOLD',
+                          'RECOVERED'):
+            self.assertNotIn(argumento, desc.upper(), argumento)
+
+    def test_o_documento_carrega_descricao_e_valor_SEM_codigo_HS(self):
+        """O HS saiu (dono, 20/08): remessa simples não classifica mercadoria.
+        Código pautal num packing list anuncia desembaraço — e o assunto que
+        não interessa levantar é justamente esse."""
         so = self._so('M')
         with company_scope(self.company):
             doc = services.manager_document(so)
         self.assertEqual(doc['shipment_desc'], services.SHIPMENT_DESCRIPTION)
-        self.assertEqual(doc['shipment_hs'], '8542')
+        self.assertNotIn('shipment_hs', doc)
+        self.assertFalse(hasattr(services, 'SHIPMENT_HS_CODE'))
         self.assertEqual(doc['shipment_value'],
                          services.declared_value_usd(so))
         self.assertNotEqual(doc['shipment_value'], so.total_usd)
 
-    def test_o_PDF_imprime_os_tres(self):
+    def test_o_PDF_imprime_conteudo_e_valor_e_MAIS_NADA(self):
+        """A caixa tem dois campos: o que é, e quanto vale declarado.
+
+        Saíram o código HS e o título 'Customs declaration'. Papel que se
+        anuncia como declaração aduaneira pede tratamento de declaração
+        aduaneira — e isto é uma remessa simples.
+        """
         _sem_compressao(self)
         so = self._so('P')
         with company_scope(self.company):
@@ -2612,14 +2642,39 @@ class DeclaracaoAduaneiraTests(TestCase):
             from vendas.pdf import render_so_manager_pdf
             pdf = render_so_manager_pdf(doc)
         texto = b' '.join(_textos_do_pdf(pdf))
-        self.assertIn(b'SOLD FOR REUSE', texto)
-        self.assertIn(b'NOT WASTE', texto)
-        self.assertIn(b'8542', texto)
+        # ⚠ o PDF ESCAPA parêntese no stream: `\(MEMORY ICs\)`.
+        self.assertIn(rb'ELECTRONIC INTEGRATED CIRCUITS \(MEMORY ICs\)',
+                      texto)
+        self.assertIn(b'Description of contents', texto)
+        self.assertIn(b'Declared value', texto)
         self.assertIn(f"USD {doc['shipment_value']}".encode(), texto)
         # …e o total da venda não aparece em lugar nenhum do papel:
         self.assertNotIn(str(so.total_usd).encode(), texto)
-        self.assertIn(b'Declared value', texto)
-        self.assertIn(b'HS code', texto)
+        for fora in (b'HS code', b'8542', b'Customs declaration',
+                     b'Declaraci', b'NOT WASTE', b'SOLD FOR REUSE'):
+            self.assertNotIn(fora, texto, fora)
+
+    def test_o_papel_nao_fala_em_aduana_venda_nem_despacho(self):
+        """Dono, 2026-08-20: *"não fale nada de aduana de Macao, nem que isso
+        vai ser vendido, nem que a aduana vai conferir, ou que tem despacho"*.
+
+        Uma sentinela por assunto proibido, nos três idiomas do papel. Se
+        alguém restaurar o anexo, o título aduaneiro ou o rótulo 'Sales order',
+        cai aqui — e o motivo está escrito na docstring da classe.
+        """
+        _sem_compressao(self)
+        so = self._so('Q')
+        with company_scope(self.company):
+            from vendas.pdf import render_so_manager_pdf
+            pdf = render_so_manager_pdf(services.manager_document(so))
+        texto = b' '.join(_textos_do_pdf(pdf))
+        for assunto in (b'Macao', b'Macau',            # aduana de Macau
+                        b'Customs', b'Aduana', b'aduanera',
+                        b'Sales order', b'sold', b'Sold', b'SOLD',
+                        b'Basel', b'Basilea', b'Y49', b'A1181',
+                        b'ECCN', b'3A090', b'licens', b'Licencia',
+                        b'export', b'Export', b'exportaci'):
+            self.assertNotIn(assunto, texto, assunto)
 
     def test_SHIP_TO_aparece_mesmo_sem_endereco_cadastrado(self):
         """Meia caixa em branco se lê como falha de impressão. A leitura certa
@@ -2636,100 +2691,6 @@ class DeclaracaoAduaneiraTests(TestCase):
         texto = b' '.join(_textos_do_pdf(pdf))
         self.assertIn(b'SHIP TO', texto)
         self.assertIn(b'SHIP FROM', texto)
-
-
-class AnexoRegulatorioTests(TestCase):
-    """O ANEXO das leis no documento de despacho (dono, 2026-08-20:
-    *"adicione a ele o anexo das leis, cite tudo SEM ECONOMIZAR PALAVRAS, para
-    NÃO ficar brechas"*).
-
-    Três declarações, três idiomas, e cada uma responde a uma pergunta que
-    trava um pacote de circuito integrado com destino a Macau:
-
-    1. **é resíduo?** — não, e por isso Basileia (Y49) não se aplica;
-    2. **precisa de licença?** — não: a Tabela B do Anexo II da Lei 7/2003 não
-       lista a posição 8542. Citar os QUATRO despachos (209/2021 e as três
-       alterações) é o que fecha a brecha — quem confere sabe que a lista
-       mudou depois de 2021;
-    3. **é chip controlado?** — não: o alvo é ECCN 3A090/4A090.
-    """
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.company, cls.buyer, cls.brand = _setup('vd-anx')
-        User = get_user_model()
-        cls.user = User.objects.create_user('vd_anx')
-
-    def setUp(self):
-        set_current_company(self.company.pk)
-        self.addCleanup(set_current_company, None)
-        _sem_compressao(self)
-        with company_scope(self.company):
-            lot = Lot.open_for_company(self.company, self.user, 'x',
-                                       origin='phone')
-            InventoryEntry.all_companies.create(
-                lot=lot, part_number='ANX1', quantity=4, brand=self.brand,
-                chip_type='eMMC', company=self.company, price_kind='emmc',
-                price_gen='', price_tier_value=Decimal('16'),
-                price_tier_unit='GB')
-            so = services.create_draft_for_lot(lot, self.user)
-            services.mark_shipped(so, 'DHL', 'JDANX', None, self.user)
-            so.refresh_from_db()
-            from vendas.pdf import render_so_manager_pdf
-            self.pdf = render_so_manager_pdf(services.manager_document(so))
-        self.texto = b' '.join(_textos_do_pdf(self.pdf))
-
-    def test_cita_a_lei_de_macau_e_TODOS_os_despachos(self):
-        """Citar só o 209/2021 é a brecha: a Tabela B foi alterada depois."""
-        for pedaco in (b'Law No. 7/2003', b'Law No. 3/2016',
-                       b'Table B', b'Annex II',
-                       b'209/2021', b'188/2022', b'208/2022', b'110/2023'):
-            self.assertIn(pedaco, self.texto, pedaco)
-
-    def test_diz_que_8542_NAO_esta_na_tabela_B(self):
-        self.assertIn(b'8542', self.texto)
-        self.assertIn(b'not subject to prior import licensing',
-                      self.texto.lower().replace(b'not subject to prior import '
-                                                 b'licensing',
-                                                 b'not subject to prior import '
-                                                 b'licensing'))
-
-    def test_declara_que_NAO_e_residuo_citando_Basileia(self):
-        for pedaco in (b'Basel Convention', b'Y49', b'A1181',
-                       b'1 January 2025', b'NOT waste'):
-            self.assertIn(pedaco, self.texto, pedaco)
-
-    def test_declara_uso_final_e_os_ECCN(self):
-        for pedaco in (b'3A090', b'4A090', b'military end use'):
-            self.assertIn(pedaco, self.texto, pedaco)
-
-    def test_o_anexo_sai_nos_TRES_idiomas(self):
-        # inglês (principal) + espanhol no texto corrido; o chinês vai por
-        # glifo, que o teste de fonte cobre à parte.
-        self.assertIn(b'Regulatory annex', self.texto)
-        self.assertIn(b'Anexo normativo', self.texto)
-        self.assertIn(b'Ley n', self.texto)             # o corpo em espanhol
-        self.assertIn(b'Convenio de Basilea', self.texto)
-
-    def test_o_paragrafo_chines_nao_sai_justificado(self):
-        """Buraco de dois centímetros no meio da frase é defeito, não estilo.
-
-        O `_rich` parte o texto em runs (chinês na TTF, latino na Helvetica) e
-        cada troca de fonte vira oportunidade de quebra. Justificado, o
-        reportlab estica ESSAS folgas para fechar a linha — e um "Y49" no meio
-        de uma frase em chinês abria um vão enorme de cada lado.
-
-        A medida é o operador de espaçamento de palavra do PDF (``Tw``): com o
-        chinês justificado o pico batia em **101 pt**; à esquerda fica na casa
-        de 2 pt, que é o justificado normal do inglês e do espanhol.
-        """
-        import re
-        picos = [abs(float(v)) for v in
-                 re.findall(rb'([-\d.]+) Tw', self.pdf)]
-        self.assertTrue(picos, 'nenhum Tw no PDF — o regex parou de casar')
-        self.assertLess(max(picos), 8,
-                        'espaçamento de palavra gigante: algum parágrafo CJK '
-                        'voltou a ser justificado')
 
 
 class DespachoTests(TestCase):
