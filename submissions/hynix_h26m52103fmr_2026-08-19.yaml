@@ -1,0 +1,101 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H26M52103FMR (busca na bancada, 2026-08-19) — MESMO
+# padrão "forma sem sufixo" já visto várias vezes nesta família (H26M31003FPR, H26M64208EMR,
+# H26M41208HPR/H26M52208FPR/H26M78208CMR — ver hynix_h26m_formas_base_2026-07-14.yaml).
+# SEM fix de gramática — pn[4] já decodifica corretamente as duas chaves desta submissão
+# ('5'→16GB, '6'→32GB, grammar_complete=true no debug), é known_parts-only (Trilha B).
+#
+# ⚠ EXPANDIDO (2026-08-19, correção do dono): 1ª versão deste arquivo submeteu só o alvo da
+# bancada. Dono corrigiu: "vc so subiu um, esquece isso, busque mais, nunca podemos buscar só
+# 1, busque mais da mesma familia e suba no mesmo submit" — regra permanente já conhecida
+# (nunca 1 PN/rodada), reaplicada aqui. Busca ampliada achou o irmão real H26M64103EMR (mesmo
+# "miolo" de organização "...103...", capacidade diferente — mesmo padrão de cluster já visto
+# no resto da família) — incluído abaixo, mesmo arquivo.
+#
+# CHECAGEM NO DATASHEET OFICIAL (Rev 1.8/Set.2020, DigiKey — mesmo doc já citado no reasoning
+# existente da família): fui atrás da tabela "Product Line-up" (p.4) pra tentar confirmed —
+# ela só lista a linha de organização "...208..." (H26M41208HPR*/H26M52208FPR*/H26M64208EMR*/
+# H26M78208CMR*, 4 capacidades × 4 grades AAT/AIT/IT/CT). A linha "...103..." (FMR/EMR) NÃO
+# aparece nesta revisão do datasheet — é uma linha de produto diferente/mais nova, não
+# documentada neste PDF específico. Por isso os dois ficam confidence=manual (evidência de
+# distribuidor/agregador multi-fonte convergente, não datasheet oficial lido diretamente).
+#
+# ⚠ OBSERVAÇÃO DO DONO (motivo desta rodada): "tem variacoes dele mas com uma outra letra a
+# mais no final, no caso desse nao tem a letra a mais no final" — fuzzy_sugest. do debug só
+# oferecia as formas COM letra (H26M52103FMRA, H26M52103FMRI). Como essas duas já aparecem
+# como fuzzy_suggestions, já são known_part review_status=approved (regra permanente desta
+# sessão: fuzzy só lista aprovados — não pesquisei/resubmeti nenhuma das duas, seria
+# redundante). O PN da bancada é a forma BASE (sem letra), pn_not_in_db=true — é o único alvo
+# real desta rodada.
+#
+# COBERTURA DE CLUSTER: a chave de capacidade pn[4]='5'→16GB já tinha forma-base confirmada
+# em OUTRO SKU específico da mesma família (H26M52208FPR, 2026-07-14) — ou seja, o padrão
+# "forma sem letra é PN base real" já está estabelecido pra esta capacidade; esta rodada só
+# confirma que ESTE SKU específico (organização/geração "521 03" + sufixo "FMR", diferente de
+# "522 08"+"FPR") também é um PN real e distinto, não erro de digitação do fuzzy.
+#
+# FONTES (múltiplas, independentes, convergentes em 16GB):
+#   - AllDataSheet: entrada PRÓPRIA e dedicada (Part#=H26M52103FMR, id 1425082, 5 páginas,
+#     87.34KB, Manufacturer=HYNIX, Direct Link=skhynix.com oficial, Description="NAND
+#     Flash(SLC,MLC,eMMC,E2NAND3.0,(Solid State Drive))") — confirma existência como SKU
+#     catalogado oficialmente, não alias das formas com letra.
+#   - parts4laptops (loja/distribuidor com descrição própria): "IC Chip SK hynix
+#     H26M52103FMR (package: BGA-153), 16GB (128Gb) eMMC module (e-NAND), new" — 16GB
+#     direto, e o "128Gb" bate exato com a geração eMMC5.1 128Gb-por-die já documentada no
+#     reasoning da família (mesmo datasheet-base já usado nas confirmações anteriores).
+#   - Múltiplos distribuidores independentes convergindo em "16GB"/"16G": Censtry, AB
+#     Sunshine Electronics, Preduo, Lisleapex — todos SKHYNIX/SK Hynix consistente.
+#   - Uso real em campo: fórum Badcaps (thread de reparo, RT809H programador, TV Sony
+#     KD55X8505C) confirma o PN em uso físico real, não só listagem de catálogo.
+#   - WinSource (blog dedicado ao PN): artigo próprio "H26M52103FMR EMMC NAND Flash".
+#   - eBay/Amazon/AliExpress: múltiplas listagens de revenda, todas "16GB"/"16G" consistente.
+# Package FBGA-153 confirmado (bate com o package oficial da família, datasheet Rev 1.8 já
+# citado no reasoning existente). confidence=manual (metadado estruturado de múltiplas fontes
+# convergentes + uso de campo real, mas não abri o corpo técnico do datasheet AllDataSheet em
+# si — mesmo padrão de rigor já usado nas outras formas-base desta família).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m52103fmr_2026-08-19.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m52103fmr_2026-08-19.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M52103FMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425082/HYNIX/H26M52103FMR.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-08-19), lido SEM letra de sufixo (dono confirmou:
+      "tem variacoes dele mas com uma outra letra a mais no final, no caso desse nao tem a
+      letra a mais no final" — fuzzy_sugest. só oferecia H26M52103FMRA/H26M52103FMRI, já
+      aprovados). AllDataSheet tem entrada PRÓPRIA e dedicada pra esta forma exata (id
+      1425082, Direct Link=skhynix.com oficial, 5 páginas). parts4laptops confirma
+      diretamente "16GB (128Gb) eMMC module (e-NAND)" — bate com pn[4]='5' da gramática e
+      com a geração 128Gb-por-die já documentada no reasoning da família. Corroborado por
+      Censtry, AB Sunshine, Preduo, Lisleapex (distribuidores independentes, todos 16GB) +
+      uso real de campo confirmado no fórum Badcaps (reparo de TV Sony KD55X8505C via
+      RT809H) + artigo dedicado do blog WinSource. confidence=manual.
+
+  - part_number: "H26M64103EMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/3146"
+    notes: >
+      Irmão do PN alvo — mesmo "miolo" de organização "...103..." (FMR→EMR, capacidade
+      diferente), achado na varredura de cluster pedida pelo dono ("busque mais da mesma
+      familia"). Puris (catálogo próprio, fetch direto): "品牌：SKhynix / 型号：
+      H26M64103EMR / 规格：32GB eMMC 5.0" ("Marca: SKhynix / Modelo: H26M64103EMR /
+      Especificação: 32GB eMMC 5.0") — 32GB direto, bate com pn[4]='6' da gramática.
+      Corroborado por 6+ distribuidores/agregadores independentes convergindo em 32GB:
+      Jotrin, Censtry, Octopart, Preduo, AB Sunshine, NX Electronics (Nextron), Open
+      Hardware Portal — todos SKHYNIX/SK Hynix consistente. Checado contra o datasheet
+      oficial Rev 1.8/Set.2020 (mesmo doc. já citado no reasoning da família) — a tabela
+      Product Line-up dessa revisão só documenta a linha de organização "...208..."; a
+      linha "...103..." (FMR/EMR) é produto diferente/mais novo, não coberto por esse PDF
+      específico — por isso confidence=manual, não confirmed. confidence=manual.
