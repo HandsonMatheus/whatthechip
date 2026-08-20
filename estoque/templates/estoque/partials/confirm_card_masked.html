@@ -119,6 +119,12 @@
   </script>
   {% endif %}
 
+  {% comment %} O MESMO popup do card de plataforma (2026-08-19). Antes só o
+     superuser via o modal; gerente e operador ficavam com a lista embaixo, e
+     é justamente quem mais precisa do alerta — o typo deles vira lançamento
+     errado no lote. O partial não mostra spec nenhuma, só PNs. {% endcomment %}
+  {% include "estoque/partials/_fuzzy_modal.html" %}
+
   {% comment %} Preço: SÓ admin da empresa (price_quotes chega vazio pros demais
      — gate na view); mesmo bloco dual, sem identidade. {% endcomment %}
   {% if gateway_dest == 'aprovado' or gateway_dest == 'fila' %}

@@ -617,6 +617,87 @@ class PreviewFuzzyPopupTests(TestCase):
         self.assertNotIn("ov.style.display='flex'", body)   # mas NÃO auto-abre
 
 
+class PreviewFuzzyPopupMascaradoTests(TestCase):
+    """O popup do fuzzy tem que valer para GERENTE e OPERADOR também.
+
+    Bug relatado pelo dono (2026-08-19): *"para user admin ele mostra o fuzzy
+    em popup, mas para gerente e operador, não, mostra embaixo, como era
+    antes"*. O modal nasceu só no `confirm_card.html` (card de plataforma) e
+    nunca foi portado pro `confirm_card_masked.html` — quem NÃO é superuser
+    ficou com a lista inline, que é exatamente a UI que as operadoras
+    ignoravam e que motivou o popup em 2026-07-13.
+
+    E a ironia: quem mais precisa do alerta é justamente o operador — o typo
+    DELE é que vira lançamento errado no lote. Hoje os dois cards incluem o
+    mesmo `partials/_fuzzy_modal.html`."""
+
+    def setUp(self):
+        # SEM is_superuser de propósito: é o card MASCARADO que se quer testar.
+        self.user = get_user_model().objects.create_user(
+            username='op56', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.client.force_login(self.user)
+        self.lot = Lot.objects.create(number=56, origin='phone',
+                                      operator=self.user, company=self.company)
+
+    def _preview(self, pn):
+        url = reverse('estoque:preview', args=[self.lot.pk])
+        return self.client.get(url, {'pn': pn}).content.decode()
+
+    @patch('estoque.views.classify')
+    def test_popup_abre_sozinho_para_operador(self, mock_classify):
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='gramática', confidence='estimated',
+            fuzzy_suggestions=['KLMAG1JETD'])
+        body = self._preview('KLMAG1JET0')
+        self.assertIn('dcard', body)                        # é o card MASCARADO
+        self.assertIn('fuzzy-modal-overlay', body)          # popup presente
+        self.assertIn("ov.style.display='flex'", body)      # abre sozinho
+        self.assertIn('KLMAG1JETD', body)
+
+    @patch('estoque.views.classify')
+    def test_popup_nao_auto_abre_em_aprovado_mascarado(self, mock_classify):
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='banco de dados', confidence='confirmed',
+            fuzzy_suggestions=['KLMAG1JETD'])
+        body = self._preview('KLMAG1JETD')
+        self.assertIn('fuzzy-modal-overlay', body)
+        self.assertNotIn("ov.style.display='flex'", body)
+
+    @patch('estoque.views.classify')
+    def test_popup_mascarado_nao_vaza_spec(self, mock_classify):
+        """O popup entrou num card de SIGILO: só PN pode aparecer nele."""
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB', brand='Samsung',
+            classification_source='gramática', confidence='estimated',
+            fuzzy_suggestions=['KLMAG1JETD'])
+        body = self._preview('KLMAG1JET0')
+        ini = body.index('fuzzy-modal-overlay')
+        modal = body[ini:body.index('est-modal-footer', ini)]
+        for vazamento in ('eMMC', '16GB', 'Samsung'):
+            self.assertNotIn(vazamento, modal,
+                             f'{vazamento!r} vazou dentro do popup mascarado')
+
+    def test_os_dois_cards_usam_o_MESMO_partial(self):
+        """A garantia de que não desalinha de novo: um card não pode ganhar o
+        popup sem o outro, porque o markup é um arquivo só."""
+        import pathlib
+        from django.conf import settings
+        base = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates'
+                / 'estoque' / 'partials')
+        include = '{% include "estoque/partials/_fuzzy_modal.html" %}'
+        for nome in ('confirm_card.html', 'confirm_card_masked.html'):
+            texto = (base / nome).read_text(encoding='utf-8')
+            self.assertIn(include, texto, f'{nome} não inclui o popup')
+            self.assertNotIn('fuzzy-modal-overlay', texto,
+                             f'{nome} tem markup PRÓPRIO do popup — o ponto '
+                             f'do partial é justamente não haver dois')
+        self.assertTrue((base / '_fuzzy_modal.html').exists())
+
+
 class ResnapshotLoteTests(TestCase):
     """Passo 2: o resnapshot_lote revalua as entradas DEFASADAS (catálogo melhorou)."""
 

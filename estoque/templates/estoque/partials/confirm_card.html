@@ -75,71 +75,9 @@
   })();
   </script>
 
-  {% comment %}
-    POPUP evidente — abre SOZINHO quando o chip caiu em FILA/DESCONHECIDO (onde o
-    typo vira envio errado pra fila). Reusa o modal Carbon (.est-modal-*) e NÃO
-    cria string i18n nova. Fecha por X, clique fora, ESC ou o botão.
-  {% endcomment %}
-  <div class="est-modal-overlay" id="fuzzy-modal-overlay" role="dialog" aria-modal="true"
-       aria-labelledby="fuzzy-modal-title" style="z-index:950;">
-    <div class="est-modal" style="max-width:520px;">
-      <div class="est-modal-header">
-        <div class="est-modal-header-text">
-          <p class="est-modal-label">{% trans "VOCÊ QUIS DIZER?" %}</p>
-          <h2 class="est-modal-title" id="fuzzy-modal-title"
-              style="font-family:'IBM Plex Mono',monospace;word-break:break-all;">{{ pn }}</h2>
-        </div>
-        <button class="est-modal-close" type="button" aria-label="{% trans 'Cancelar' %}"
-                onclick="document.getElementById('fuzzy-modal-overlay').style.display='none';"
-                style="font-size:18px;">✕</button>
-      </div>
-      <div class="est-modal-body" style="max-height:56vh;overflow:auto;">
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          {% for s in gateway.typo.suggestions %}
-          <button type="button" class="wtc-fz-row"
-                  onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;document.getElementById('fuzzy-modal-overlay').style.display='none';i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-                  style="display:flex;align-items:center;width:100%;text-align:left;min-height:58px;
-                         padding:12px 16px;background:var(--surface-2,#f4f4f4);
-                         border:1px solid var(--border-subtle,#e0e0e0);border-left:4px solid #0f62fe;cursor:pointer;border-radius:8px;">
-            <span class="wtc-fz-pn" data-typed="{{ pn }}" data-suggestion="{{ s }}"
-                  style="font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,5vw,22px);font-weight:700;color:#0f62fe;word-break:break-all;">{{ s }}</span>
-          </button>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="est-modal-footer">
-        <button class="est-modal-btn-cancel" type="button" style="flex:1;"
-                onclick="document.getElementById('fuzzy-modal-overlay').style.display='none';">{% trans "Cancelar" %}</button>
-      </div>
-    </div>
-  </div>
-  <style>
-    .wtc-fz-row{transition:background .12s,border-color .12s;}
-    .wtc-fz-row:hover{background:#fff8e1;border-color:#ff832b;}
-    [data-theme="dark"] .wtc-fz-row{background:#1f1a00;}
-    [data-theme="dark"] .wtc-fz-row:hover{background:#2d2200;}
-  </style>
-  <script>
-  (function(){
-    var ov=document.getElementById('fuzzy-modal-overlay'); if(!ov) return;
-    ov.querySelectorAll('.wtc-fz-pn').forEach(function(el){
-      var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
-      while(i<t.length&&i<s.length&&s[i]===t[i])i++;
-      el.innerHTML='<span>'+s.slice(0,i)+'</span>'+
-                   '<span style="color:#198038;font-weight:700">'+s.slice(i)+'</span>';
-    });
-    function close(){ ov.style.display='none';
-      if(window.__wtcFuzzyKey){document.removeEventListener('keydown',window.__wtcFuzzyKey);window.__wtcFuzzyKey=null;} }
-    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
-    if(window.__wtcFuzzyKey) document.removeEventListener('keydown',window.__wtcFuzzyKey);
-    window.__wtcFuzzyKey=function(e){ if(e.key==='Escape') close(); };
-    document.addEventListener('keydown',window.__wtcFuzzyKey);
-    {% if gateway_dest == 'fila' or gateway_dest == 'desconhecido' %}
-    ov.style.display='flex';
-    {% endif %}
-  })();
-  </script>
   {% endif %}
+
+  {% include "estoque/partials/_fuzzy_modal.html" %}
 
   {# ── Card de resultado (.rc) ─────────────────────────────────── #}
   <div class="rc">
