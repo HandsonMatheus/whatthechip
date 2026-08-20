@@ -872,8 +872,9 @@ class PdfConferenciaGerenteTests(TestCase):
     · SO e LOTE no MESMO tamanho de fonte (pedido literal do dono);
     · quantidade por caixa WTC, com as MARCAS FUNDIDAS (o mesmo código
       aparecia repetido, uma vez por marca);
-    · quantidade por tipo × capacidade REAIS — afrouxamento consciente da F12
-      autorizado pelo dono nesta data;
+    · **só** a caixa WTC: nem marca, nem tipo, nem capacidade, para ninguém —
+      admin inclusive (dono, 2026-08-20, revertendo o afrouxamento da F12 que
+      ele mesmo tinha autorizado em 18/08);
     · o cabeçalho de auditoria (empresa, emissão, fechamento, quem fechou,
       câmbio travado) e o bloco SHIP TO 收貨人;
     · os dois logos: WhatTheChip e o da empresa-cliente.
@@ -1177,6 +1178,54 @@ class PdfConferenciaGerenteTests(TestCase):
         self.assertIn(b'B-06', junto)
         self.assertIn(b'WTC categories', junto)
 
+    def test_o_ADMIN_tambem_so_ve_a_caixa_WTC(self):
+        """Dono, 2026-08-20: *"o que tem que sair aí é a categoria WTC dele, ou
+        seja, em quais caixas eles vão; não tem que dizer a capacidade nem marca
+        de nada (agora que vi que só acontece quando o admin gera, mas remova tb
+        pra não ter confusão)"*.
+
+        ⚠ Isto REVERTE a decisão de 18/08. E o motivo importa, porque muda onde
+        a regra mora: **não é a máscara de permissão voltando** — é o documento
+        assumindo o que é. Marca e capacidade são COMÉRCIO, e comércio viaja na
+        fatura, não na caixa. Por isso somem para todo mundo e não sobrou
+        parâmetro que reative: `manager_document` não aceita mais `unmasked`.
+        """
+        import re
+        # ⚠ `eMMC`/`eMCP` NÃO servem de sentinela: o anexo cita os dois como
+        # exemplo de memória de uso comum, e é justamente essa frase que
+        # sustenta a declaração de uso final ("não é 3A090"). O que não pode
+        # vazar é MARCA e CAPACIDADE — que o anexo não menciona.
+        for papel, usuario in (('gerente', self.manager),
+                               ('admin', self.admin)):
+            junto = b' '.join(_textos_do_pdf(self._pdf(usuario)))
+            for vazado in (b'Samsung', b'SanDisk', b'Micron', b'SK Hynix',
+                           b'Toshiba', b'16GB', b'64GB', b'GB '):
+                self.assertNotIn(vazado, junto, f'{papel} viu {vazado!r}')
+            self.assertIn(b'B-06', junto, papel)
+            # …e TODA linha da tabela é código de caixa (LETRA-##), nunca
+            # rótulo real: o `doc` é a fonte, o PDF só desenha.
+            doc = services.manager_document(self.so, with_prices=True)
+            for linha in doc['wtc']:
+                self.assertRegex(linha['label'], r'^[A-Z]-\d{2}$|^—$',
+                                 f"{papel}: {linha['label']!r} não é caixa WTC")
+        # …e a assinatura do documento não pede o de-para: `manager_document`
+        # perdeu o parâmetro, não ganhou um default.
+        import inspect
+        self.assertNotIn('unmasked',
+                         inspect.signature(services.manager_document)
+                         .parameters)
+
+    def test_sem_linha_de_assinatura_do_embarcador(self):
+        """Dono, 2026-08-20: *"remova a assinatura do cliente do final do
+        documento"*. Linha de assinatura vazia num papel que ninguém assina à
+        mão é convite para alguém perguntar por que está em branco — e a origem
+        do documento já sai no rodapé e no SHIP FROM."""
+        junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
+        for vazado in (b'Declared by the shipper', b'Declarado por el expedidor'):
+            self.assertNotIn(vazado, junto, vazado)
+        from vendas.pdf import _L
+        self.assertNotIn('a_sign', _L)     # rótulo órfão também sai
+
     def test_sem_categoria_entra_e_os_totais_fecham_com_o_lote(self):
         """As 7 unidades sem chave (SoC) contam: sem elas o documento não bate
         com o lote físico, que é justamente o que ele serve para conferir."""
@@ -1185,8 +1234,9 @@ class PdfConferenciaGerenteTests(TestCase):
         self.assertEqual(doc['total_units'], 22)              # 11 + 4 + 7
         self.assertEqual(sum(r['qty'] for r in doc['wtc']) + doc['unkeyed'],
                          doc['total_units'])
-        self.assertEqual(sum(r['qty'] for r in doc['spec']) + doc['unkeyed'],
-                         doc['total_units'])
+        # E o resumo por tipo × capacidade não existe mais NEM no dado: não é
+        # informação de despacho, então não viaja no documento nem por engano.
+        self.assertNotIn('spec', doc)
 
     # ── cabeçalho de auditoria ──────────────────────────────────────────────
 
@@ -2485,8 +2535,44 @@ class DeclaracaoAduaneiraTests(TestCase):
 
     def test_o_valor_declarado_e_o_valor_da_venda(self):
         so = self._so('V')
+        self.assertLess(so.total_usd, services.SHIPMENT_DECLARED_MAX_USD)
         self.assertEqual(services.declared_value_usd(so), so.total_usd)
         self.assertIsNotNone(so.total_usd)
+
+    def test_o_valor_declarado_tem_TETO_de_290(self):
+        """Dono, 2026-08-20: *"o valor declarado TEM que ser no máximo 290,
+        senão fica difícil demais de controlar, esses lotes podem chegar a
+        valores estratosféricos"*.
+
+        É decisão de EXPOSIÇÃO, não de contabilidade: pacote de alto valor
+        declarado convida conferência, seguro e retenção.
+
+        ⚠ O custo fica registrado aqui para quem herdar isto: acima do teto o
+        valor declarado passa a divergir da fatura comercial, e divergência é,
+        por si só, motivo de retenção. A decisão é do dono e do despachante — o
+        sistema imprime o teto, não discute.
+        """
+        self.assertEqual(services.SHIPMENT_DECLARED_MAX_USD, Decimal('290.00'))
+        so = self._so('T')
+        so.total_usd = Decimal('9999.00')                   # lote estratosférico
+        self.assertEqual(services.declared_value_usd(so), Decimal('290.00'))
+        # …e no papel também, que é onde importa:
+        _sem_compressao(self)
+        with company_scope(self.company):
+            from vendas.pdf import render_so_manager_pdf
+            doc = services.manager_document(so)
+        self.assertEqual(doc['shipment_value'], Decimal('290.00'))
+        texto = b' '.join(_textos_do_pdf(render_so_manager_pdf(doc)))
+        self.assertIn(b'USD 290.00', texto)
+        self.assertNotIn(b'9999', texto)
+
+    def test_no_teto_exato_o_valor_ainda_e_o_da_venda(self):
+        """Fronteira: 290 é permitido, 290.01 vira 290. Teto é <=, não <."""
+        so = self._so('L')
+        so.total_usd = Decimal('290.00')
+        self.assertEqual(services.declared_value_usd(so), Decimal('290.00'))
+        so.total_usd = Decimal('290.01')
+        self.assertEqual(services.declared_value_usd(so), Decimal('290.00'))
 
     def test_MESMO_documento_MESMO_valor_sempre(self):
         """⚠ Continua valendo: imprimir duas vezes não pode dar valor

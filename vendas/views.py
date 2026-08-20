@@ -196,10 +196,10 @@ def so_pdf(request, pk):
     so = get_object_or_404(
         SalesOrder.objects.select_related('lot', 'lot__closed_by', 'buyer',
                                           'company'), pk=pk)
-    doc = services.manager_document(
-        so,
-        unmasked=is_unmasked(request),         # F12: rótulo real × C-###
-        with_prices=can_see_price(request))
+    # ⚠ Sem `unmasked`: o documento de DESPACHO só conhece o código de caixa
+    # WTC (dono, 2026-08-20). Marca e capacidade não são informação de
+    # despacho, então não é o request que decide — não há o que decidir.
+    doc = services.manager_document(so, with_prices=can_see_price(request))
     return _pdf_response(render_so_manager_pdf(doc), so)
 
 

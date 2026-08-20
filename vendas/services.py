@@ -254,20 +254,23 @@ def annotate_labels(lines, unmasked: bool):
     return lines
 
 
-# ═══ Documento do GERENTE (dono, 2026-08-18) ════════════════════════════════
+# ═══ Documento de DESPACHO (dono, 2026-08-18; reescrito em 2026-08-20) ══════
 #
 # O PDF que o gerente baixa deixou de ser "o PDF do admin com os números
-# tampados de ***" e virou um documento PRÓPRIO: conferência física do que
-# saiu do lote, ZERO dinheiro. Os dois resumos abaixo e o cabeçalho são a
-# fonte única dele — a view só transporta, o pdf.py só desenha.
+# tampados de ***" e virou um documento PRÓPRIO. Em 2026-08-20 ele deu o passo
+# seguinte e virou **documento de despacho**: o papel que viaja com a caixa e
+# que a alfândega lê. O resumo por categoria e o cabeçalho são a fonte única
+# dele — a view só transporta, o pdf.py só desenha.
 #
-# ⚠ DECISÃO EXPLÍCITA DO DONO (2026-08-18) que AFROUXA a F12 neste documento:
-# o resumo por tipo/capacidade mostra o rótulo REAL (eMMC 64GB) LADO A LADO
-# com o código de caixa (B-07) — ou seja, entrega ao gerente o de-para das
-# categorias DAQUELE lote. Foi perguntado e aprovado; não é descuido. Se um
-# dia voltar atrás, o ponto de reversão é UM: ``spec_summary`` sai do
-# ``manager_document`` (nada mais depende dele). O resto da máscara segue
-# valendo em toda parte — bancada, tabela, export, tela da OV.
+# ⚠ HISTÓRICO, para quem procurar a decisão antiga: em 2026-08-18 o dono
+# AFROUXOU a F12 aqui, deixando o rótulo real (eMMC 64GB) sair ao lado do
+# código de caixa. **Isso foi REVERTIDO em 2026-08-20**, a pedido dele: *"o que
+# tem que sair aí é a categoria WTC dele, ou seja, em quais caixas eles vão;
+# não tem que dizer a capacidade nem marca de nada"*. Note o motivo — não é a
+# máscara de permissão voltando, é o documento assumindo o que é: marca e
+# capacidade são COMÉRCIO, e comércio viaja na fatura, não na caixa. Por isso
+# some para todo mundo, admin inclusive, e não existe mais parâmetro que
+# reative.
 
 
 def _display_name(user) -> str:
@@ -444,6 +447,13 @@ SHIPMENT_DESCRIPTION = ('RECOVERED ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)'
 #: dispensa de licença prévia em Macau (não consta da Tabela B do Anexo II).
 SHIPMENT_HS_CODE = '8542'
 
+#: Teto do VALOR DECLARADO, em US$ (dono, 2026-08-20). Acima disto o papel
+#: imprime o teto, não o valor da venda — decisão de exposição do embarcador,
+#: não de contabilidade: lote grande vira pacote de alto valor declarado, e alto
+#: valor declarado convida conferência, seguro e retenção. Ver
+#: ``declared_value_usd`` para o que isso custa (divergência com a fatura).
+SHIPMENT_DECLARED_MAX_USD = Decimal('290.00')
+
 
 def declared_value_usd(so):
     """Valor declarado do embarque, em US$ — o valor COMERCIAL da carga.
@@ -464,20 +474,43 @@ def declared_value_usd(so):
     única linha frágil dele. Valor declarado divergente da fatura é, por si só,
     motivo de retenção.
 
+    ⚠ **E tem TETO** (dono, 2026-08-20): *"o valor declarado TEM que ser no
+    máximo 290, senão fica difícil demais de controlar, esses lotes podem chegar
+    a valores estratosféricos"*. Acima disso o papel imprime o teto. É decisão
+    de exposição do embarcador — lote grande vira pacote de alto valor
+    declarado, e alto valor declarado convida conferência, seguro e retenção.
+
+    Então o campo tem duas leituras: abaixo do teto ele **é** o valor da venda
+    (bate com a fatura, que é o ideal); acima, ele é o teto. ⚠ Nesse segundo
+    caso o valor declarado passa a divergir da fatura comercial — divergência é,
+    por si só, motivo de retenção, e quem responde por ela é o embarcador. O
+    sistema imprime o que foi mandado imprimir; a decisão é do dono e do
+    despachante.
+
     Ordem ainda sem valor congelado devolve ``None`` — e o PDF imprime o traço
     em vez de inventar número.
     """
-    return so.total_usd
-def manager_document(so, unmasked=False, with_prices=False):
-    """Tudo que o PDF do gerente desenha, pronto — sem uma linha de dinheiro.
+    if so.total_usd is None:
+        return None
+    return min(so.total_usd, SHIPMENT_DECLARED_MAX_USD)
+def manager_document(so, with_prices=False):
+    """Tudo que o documento de DESPACHO desenha, pronto — sem uma linha de
+    dinheiro de mercadoria.
 
-    ``unkeyed`` (chips do lote fora do grid de preço) entra nos DOIS resumos
-    como linha própria: sem ele os totais não fecham com o lote físico, que é
-    justamente o que este documento serve para conferir.
+    ⚠ **O rótulo é SEMPRE o código de caixa WTC** (dono, 2026-08-20: *"o que tem
+    que sair aí é a categoria WTC dele, ou seja, em quais caixas eles vão; não
+    tem que dizer a capacidade nem marca de nada"*). Não há mais parâmetro
+    ``unmasked``: a máscara aqui deixou de ser questão de PERMISSÃO e virou
+    questão de NATUREZA DO DOCUMENTO. Marca e capacidade não são informação de
+    despacho — são o comércio, e comércio viaja na fatura. Admin e gerente
+    recebem o mesmo papel, e nada de tipo/capacidade sobra nele.
+
+    ``unkeyed`` (chips do lote fora do grid de preço) entra como linha própria:
+    sem ele o total não fecha com o lote físico.
     """
-    lines = annotate_labels(list(so.lines.all()), unmasked)
+    lines = annotate_labels(list(so.lines.all()), False)
     money = line_money(so) if with_prices else None
-    wtc, spec = wtc_summary(lines, money), spec_summary(lines)
+    wtc = wtc_summary(lines, money)
     unkeyed = so.unkeyed_units or 0
     total = sum(r['qty'] for r in wtc) + unkeyed
     lot = so.lot
@@ -514,7 +547,6 @@ def manager_document(so, unmasked=False, with_prices=False):
         'fx_rate': lot.fx_rate if lot.fx_rate is not None else so.fx_usd_rate,
         'fx_from_lot': lot.fx_rate is not None,
         'wtc': wtc,
-        'spec': spec,
         'unkeyed': unkeyed,
         'total_units': total,
         # Dinheiro só existe na versão do ADMIN da empresa (dono 2026-08-18:

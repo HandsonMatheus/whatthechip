@@ -218,8 +218,6 @@ _L = {
     'a_export':   ('3. Export control and end use',
                    '3. 出口管制與最終用途',
                    '3. Control de exportación y uso final'),
-    'a_sign':     ('Declared by the shipper',
-                   '由發貨人聲明', 'Declarado por el expedidor'),
     # ── Documento do RESULTADO (dono, 2026-08-18) ──────────────────────────
     'result':     ('Purchase result',      '採購結果'),
     'expected':   ('Expected',             '預期'),
@@ -495,9 +493,9 @@ def render_so_manager_pdf(doc: dict) -> bytes:
     ``doc`` = ``vendas.services.manager_document(so, with_prices=…)`` —
     dicionário pronto, sem banco aqui (mesmo contrato do ``render_so_pdf``).
 
-    ⚠ A tabela "por tipo de chip" mostra o rótulo REAL ao lado do código de
-    caixa: afrouxamento da F12 aprovado pelo dono em 2026-08-18 (ver o aviso
-    em ``vendas/services.py``).
+    ⚠ A tabela traz SÓ o código de caixa WTC — nunca marca nem capacidade, para
+    ninguém (dono, 2026-08-20). Isto REVERTE o afrouxamento da F12 de
+    2026-08-18; ver o aviso em ``vendas/services.py``.
     """
     font, bold, mono = 'Helvetica', 'Helvetica-Bold', 'Courier-Bold'
     # force=True: os ideogramas são CONTEÚDO deste documento, não tradução da
@@ -755,8 +753,11 @@ def render_so_manager_pdf(doc: dict) -> bytes:
         story.append(P(_t3(chave), st_anxh))
         for i, texto in enumerate(textos):
             story.append(P(texto, st_anx_zh if i == 1 else st_anx))
-    story += [Spacer(0, 4), P(_t3('a_sign'), st_cap),
-              P(doc.get('company') or '—', st_val)]
+    # ⚠ 2026-08-20, pedido do dono: **sem linha de assinatura do embarcador**.
+    # O anexo é declaração da empresa e já sai sob o nome dela — o rodapé traz
+    # a origem do documento, e o SHIP FROM traz o remetente. Uma linha de
+    # assinatura vazia num papel que ninguém assina à mão é convite para alguém
+    # perguntar por que está em branco.
 
     footer_txt = (f"{doc['so_code']} · {doc['lot_code']} · "
                   f"{_t('generated')} · {_fmt_dt(date.today())}")

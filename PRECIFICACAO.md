@@ -1906,6 +1906,47 @@ transportador sendo difícil: era o papel dizendo a coisa errada.
   mercadoria para converter, taxa de conversão é ruído numa folha que a alfândega
   lê.
 
+🔒 **A TABELA SÓ DIZ EM QUAL CAIXA O CHIP VAI** (dono, 2026-08-20, vendo o PDF
+do admin: *"o que tem que sair aí é a categoria WTC dele, ou seja, em quais
+caixas eles vão; não tem que dizer a capacidade nem marca de nada — agora que vi
+que só acontece quando o admin gera, mas remova tb pra não ter confusão"*).
+
+O documento saía com `Samsung · eMCP 16GB` quando quem baixava era o ADMIN,
+porque a chamada carregava `unmasked=is_unmasked(request)`. Agora é só `B-06`,
+para todo mundo.
+
+⚠ **Isto REVERTE o afrouxamento da F12 de 2026-08-18** — e o motivo importa,
+porque muda ONDE a regra mora. Não é a máscara de permissão voltando: é o
+documento assumindo o que é. Marca e capacidade são COMÉRCIO, e comércio viaja
+na fatura, não na caixa. Por isso `manager_document` **perdeu o parâmetro
+`unmasked`** em vez de ganhar um default — não sobrou nada para reativar — e o
+`spec` saiu do dicionário, não só do papel. O teste segura a assinatura da
+função, não só o texto do PDF.
+
+⚠ Sentinela de teste que NÃO serve aqui: `eMMC`/`eMCP`. O anexo cita os dois
+como exemplo de memória de uso comum, e é essa frase que sustenta a declaração
+de uso final ("não é 3A090"). O que não pode vazar é **marca e capacidade** —
+que o anexo não menciona.
+
+💵 **TETO de US$ 290 no valor declarado** (dono, 2026-08-20: *"o valor declarado
+TEM que ser no máximo 290, senão fica difícil demais de controlar, esses lotes
+podem chegar a valores estratosféricos"*). `SHIPMENT_DECLARED_MAX_USD`; abaixo do
+teto o campo continua sendo o valor real da venda, acima ele é o teto.
+
+⚠ **O custo, registrado para quem herdar isto:** acima do teto o valor declarado
+passa a divergir da fatura comercial, e divergência é, por si só, motivo de
+retenção — foi exatamente o argumento que tirou o valor fictício de 200–290
+poucas horas antes. A diferença é que agora é decisão consciente de EXPOSIÇÃO
+(pacote de alto valor declarado convida conferência, seguro e retenção), tomada
+pelo dono, não um número inventado por hash. O sistema imprime o teto; quem
+responde pela divergência é o embarcador.
+
+✍️ **Sem linha de assinatura do embarcador** (dono, 2026-08-20). O rótulo
+`a_sign` saiu do `_L` junto — rótulo órfão num dicionário que o teste de glifo
+varre inteiro vira falha de fonte na próxima entrega. A origem do documento já
+sai no rodapé e no SHIP FROM; linha de assinatura vazia num papel que ninguém
+assina à mão é convite para alguém perguntar por que está em branco.
+
 📜 **ANEXO REGULATÓRIO, trilíngue, sem economizar palavras** (`_ANEXO` em
 `vendas/pdf.py`). Três declarações, cada uma respondendo à pergunta que trava um
 pacote, cada uma em **EN · 繁體中文 · ES**:

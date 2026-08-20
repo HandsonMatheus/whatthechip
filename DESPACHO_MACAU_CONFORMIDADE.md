@@ -157,6 +157,9 @@ despacho**:
 | sem base legal | **anexo regulatório** com as três declarações, em EN · 繁體中文 · ES |
 | valor declarado aleatório 200–290 USD | **valor real da venda** |
 | tabela de tipo × capacidade + preços | **uma tabela só: categoria WTC × quantidade** |
+| admin via `Samsung · eMCP 16GB` | **só a caixa (`B-06`), para todo mundo** |
+| — | valor declarado com **teto de US$ 290** |
+| linha de assinatura do embarcador | removida |
 | câmbio impresso | fora do papel (segue no dado) |
 | preço por categoria, unitário e total | **fora, para todo mundo — admin inclusive** |
 | — | faixa de **transportadora · rastreio · data de envio** |
@@ -186,12 +189,17 @@ espanhol.** Você pediu espanhol e eu fiz espanhol — só que quem lê do outro
 lê português. Se o despachante preferir, trocar (ou somar um quarto) é mecânico:
 é editar `_L` e `_ANEXO` em `vendas/pdf.py`. Me diz e eu faço.
 
-⚠ **2. O valor declarado agora é o valor real da venda.** Antes era um número
-entre 200 e 290 USD. Isso muda o que o papel afirma — mas o número antigo não
-comprava nada: **Macau é porto franco**, não há tarifa sobre mercadoria geral, e
-valor declarado que não bate com a fatura é problema aduaneiro por si só. Se você
-quiser voltar atrás, é uma linha (`services.declared_value_usd`) — mas eu não
-recomendo, e a decisão é sua.
+⚠ **2. O valor declarado é o valor real da venda, com teto de US$ 290.** Antes
+era um número inventado entre 200 e 290 por hash da OV. Agora é o valor de
+verdade — e, quando o lote passa de 290, sai 290.
+
+Vale ter claro o que o teto compra e o que ele custa. **Compra:** pacote de alto
+valor declarado convida conferência, seguro caro e retenção, e você disse que
+lote grande fica difícil de controlar. **Custa:** acima do teto o papel deixa de
+bater com a fatura comercial, e valor declarado divergente da fatura é, por si
+só, motivo de retenção — é o mesmo argumento que derrubou o número fictício. A
+diferença é que agora é decisão sua, consciente, e não um hash. Se o despachante
+preferir sem teto, é mudar `SHIPMENT_DECLARED_MAX_USD` e pronto.
 
 ⚠ **3. O texto do anexo é legal, com o seu nome.** Mostre ao despachante antes do
 próximo embarque. Se ele mudar uma palavra, eu mudo no código com teste — o que
