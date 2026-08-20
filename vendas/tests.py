@@ -2668,13 +2668,72 @@ class ConteudoDeclaradoTests(TestCase):
             from vendas.pdf import render_so_manager_pdf
             pdf = render_so_manager_pdf(services.manager_document(so))
         texto = b' '.join(_textos_do_pdf(pdf))
-        for assunto in (b'Macao', b'Macau',            # aduana de Macau
-                        b'Customs', b'Aduana', b'aduanera',
+        for assunto in (b'Macao', b'Macau',                  # aduana de Macau
+                        b'Customs', b'customs', b'Aduana', b'aduanera',
+                        b'clearance', b'despacho',
                         b'Sales order', b'sold', b'Sold', b'SOLD',
-                        b'Basel', b'Basilea', b'Y49', b'A1181',
-                        b'ECCN', b'3A090', b'licens', b'Licencia',
+                        b'invoice',                          # "vendido sob fatura"
+                        b'licens', b'Licencia',
                         b'export', b'Export', b'exportaci'):
             self.assertNotIn(assunto, texto, assunto)
+        # ⚠ O que NÃO está proibido, e é de propósito: Basileia, Y49, A1181 e
+        # ECCN. Eles descrevem a MERCADORIA (não é resíduo; não é computação
+        # avançada), não o trâmite. A instrução do dono foi sobre aduana, venda
+        # e despacho — o anexo sobre a carga ele quis MANTIDO, adaptado.
+        self.assertIn(b'Basel Convention', texto)
+        self.assertIn(b'ECCN 3A090', texto)
+
+    def test_o_anexo_declara_a_MERCADORIA_e_nao_o_tramite(self):
+        """Dono, 2026-08-20 (4ª rodada): *"cadê o anexo legal? você removeu
+        tudo em vez de adaptar"*.
+
+        O critério que define o anexo de hoje: **ele declara o que a mercadoria
+        É, e nada sobre o trâmite.** Duas seções — natureza (não é resíduo,
+        logo fora de Y49/A1181 de Basileia) e uso final (não é 3A090/4A090, uso
+        civil). A seção de licenciamento de importação em Macau saiu inteira, e
+        o vocabulário de aduana/venda/exportação saiu das duas que ficaram (o
+        teste irmão segura isso).
+        """
+        _sem_compressao(self)
+        so = self._so('X')
+        with company_scope(self.company):
+            from vendas.pdf import render_so_manager_pdf
+            pdf = render_so_manager_pdf(services.manager_document(so))
+        texto = b' '.join(_textos_do_pdf(pdf))
+        for esperado in (b'Annex', b'declaration on the goods',
+                         b'1. Nature of the goods', b'2. End use',
+                         b'NOT waste', b'NOT scrap',
+                         b'Y49', b'A1181', b'Basel Convention',
+                         b'1 January 2025',
+                         b'ECCN 3A090', b'4A090', b'military end use',
+                         b'Naturaleza de la mercanc',      # o corpo em espanhol
+                         b'Convenio de Basilea'):
+            self.assertIn(esperado, texto, esperado)
+        # …e o título NÃO se anuncia como regulatório: "Regulatory annex" era o
+        # nome da versão que citava despacho, e o nome é o que se lê de relance.
+        self.assertNotIn(b'Regulatory annex', texto)
+
+    def test_PACKING_LIST_e_TITULO_no_papel_nao_so_no_arquivo(self):
+        """Dono, 2026-08-20: *"cadê o nome PACKING LIST no PDF? você só mudou o
+        nome do arquivo"*.
+
+        Legenda cinza de 8pt embaixo dos códigos não é anúncio, é rodapé. A
+        prova é dupla: o nome é a PRIMEIRA coisa desenhada na folha (antes dos
+        códigos) e sai num corpo grande, não no corpo de legenda.
+        """
+        _sem_compressao(self)
+        import re
+        so = self._so('T')
+        with company_scope(self.company):
+            from vendas.pdf import render_so_manager_pdf
+            pdf = render_so_manager_pdf(services.manager_document(so))
+        fluxo = _conteudo_do_pdf(pdf).decode('latin-1')
+        pos_titulo = fluxo.index('(Packing list')
+        self.assertLess(pos_titulo, fluxo.index(f'({so.code}) Tj'),
+                        'o título sai DEPOIS dos códigos')
+        tam = float(re.findall(r'/F\d+ (\d+(?:\.\d+)?) Tf',
+                               fluxo[:pos_titulo])[-1])
+        self.assertGreaterEqual(tam, 13, f'título em {tam}pt — é legenda')
 
     def test_SHIP_TO_aparece_mesmo_sem_endereco_cadastrado(self):
         """Meia caixa em branco se lê como falha de impressão. A leitura certa

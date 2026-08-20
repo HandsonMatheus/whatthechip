@@ -213,25 +213,34 @@ Vale saber antes de precisar.
 próximo embarque. Se ele mudar uma palavra, eu mudo no código com teste — o que
 não dá é o papel dizer uma coisa e o despachante achar que diz outra.
 
-## 6. O anexo legal — FORA do papel, guardado aqui (20/08/2026)
+## 6. O anexo legal — a versão COMPLETA, guardada aqui (20/08/2026)
 
-O anexo trilíngue chegou a ir impresso no documento e **saiu no mesmo dia**,
-depois do argumento do seu sócio: *"se você colocar isso vai chamar atenção
-para outro assunto, que é o despacho aduaneiro, aí só piora"*.
+O papel que sai do sistema leva um anexo **enxuto**: duas seções, que declaram o
+que a mercadoria É — componentes funcionais testados para reuso (não resíduo,
+logo fora de Y49/A1181 de Basileia) e uso final civil (não é ECCN 3A090/4A090).
 
-Ele tem razão, e o motivo é simples: **um papel que cita lei convida quem
-confere a ler a lei.** Numa remessa simplificada de valor baixo, que
-normalmente passa sem conferência, duas páginas de fundamentação jurídica
-mudam a natureza da coisa — pedem para ser lidas. O documento voltou a ser o
-que precisa ser: um packing list neutro, que diz o que tem na caixa.
+O que ficou **de fora do papel**, e mora aqui:
 
-⚠ **Mas o texto não se perde, e é por isso que ele está aqui.** Ele é a
-resposta pronta para o dia em que a transportadora ou a aduana PERGUNTAR — aí
-sim citar a lei é a jogada certa, porque você está respondendo, não se
-antecipando. Copie da seção abaixo, cole no e-mail, e mande.
+- a seção de **licenciamento de importação em Macau** (Lei n.º 7/2003, Tabela B,
+  Despacho 209/2021 e as três alterações) — inteira;
+- o vocabulário de **aduana, venda e controle de exportação** nas outras duas.
 
-⚠ E o problema original **já está resolvido sem o anexo**: o que travava era a
-palavra `DISPOSAL` na descrição. `ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)`
+O motivo é o argumento do sócio: *"se você colocar isso vai chamar atenção para
+outro assunto, que é o despacho aduaneiro, aí só piora"*. Ele está certo, e o
+princípio generaliza:
+
+> **Papel que cita lei convida quem confere a ler a lei.**
+
+Numa remessa simplificada de valor baixo, que normalmente passa sem conferência,
+citar regime de importação muda a natureza da coisa. Declarar o que a carga
+**é** não tem esse efeito — é descrição, não argumento sobre trâmite.
+
+⚠ **Este texto é para RESPONDER, não para se antecipar.** No dia em que a
+transportadora ou a aduana perguntar, copie a seção que responde à pergunta e
+mande por e-mail. Aí citar a lei é exatamente a jogada certa.
+
+⚠ E o problema original **já está resolvido sem nada disto**: o que travava era
+a palavra `DISPOSAL` na descrição. `ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)`
 é neutra — não declara resíduo, e por isso não convoca Basileia.
 
 ### 6.1 O texto, nos três idiomas
