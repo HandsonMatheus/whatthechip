@@ -110,6 +110,17 @@ def _textos_do_pdf(pdf: bytes):
             for t in re.findall(rb'\((.*?)\) Tj', fluxo, re.S)]
 
 
+#: Sentinelas de DINHEIRO DE MERCADORIA no documento de despacho.
+#
+# ⚠ Não use ``b'\\245'`` cru (o ¥ escapado): desde que o anexo regulatório
+# entrou (2026-08-20) o PDF embute um subconjunto CJK grande, e o índice de
+# glifo de dois bytes de um ideograma qualquer pode conter o byte 0xA5 —
+# ``\245`` passa a aparecer no stream sem que exista um único ¥ desenhado.
+# A sentinela precisa ser o RÓTULO da coluna de dinheiro, que é ASCII e só
+# existe se a coluna existir: ``Unit ¥``, ``Total ¥``, ``Total US$``.
+_SEM_DINHEIRO = (b'Unit \\245', b'Total \\245', b'US$', b'***')
+
+
 def _sem_compressao(test):
     """Desliga a compressão de stream do reportlab SÓ no teste — sem isto o
     texto do PDF vira binário e nenhuma asserção de conteúdo é possível."""
@@ -918,18 +929,21 @@ class PdfConferenciaGerenteTests(TestCase):
     # ── estrutura ───────────────────────────────────────────────────────────
 
     def test_nenhuma_coluna_de_preco_existe(self):
-        import re
+        """⚠ 2026-08-20: preço saiu do documento para TODO MUNDO, admin
+        inclusive — ele virou documento de despacho, e preço é comércio, que
+        viaja na fatura. A única cifra que sobra é o VALOR DECLARADO da
+        aduana, que é exigência da transportadora e vai na caixa de qualquer
+        forma."""
         textos = _textos_do_pdf(self._pdf(self.manager))
         for txt in textos:
-            for proibido in (b'US$', b'\\245', b'Unit', b'***'):   # \245 = ¥
+            for proibido in _SEM_DINHEIRO:
                 self.assertNotIn(proibido, txt, f'vazou {proibido!r} no PDF')
-            # E nenhum texto tem cara de dinheiro (2 casas decimais). A taxa
-            # 0.1400 tem 4 e sobrevive de propósito — foi o que o dono pediu.
-            self.assertIsNone(re.search(rb'\d+\.\d{2}(?!\d)', txt),
-                              f'valor com cara de dinheiro no PDF: {txt!r}')
         junto = b' '.join(textos)
-        for esperado in (b'Category', b'Qty.', b'Type', b'Capacity', b'Total'):
+        for esperado in (b'Category', b'Qty.', b'Total'):
             self.assertIn(esperado, junto)
+        # …e a tabela de tipo × capacidade não existe mais:
+        self.assertNotIn(b'Capacity', junto)
+        self.assertNotIn(b'Summary by chip type', junto)
 
     def test_sai_em_ingles_mesmo_com_a_sessao_em_portugues(self):
         """Documento de embarque tem idioma do TRANSPORTE, não do usuário.
@@ -941,7 +955,7 @@ class PdfConferenciaGerenteTests(TestCase):
             with translation.override(idioma):
                 junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
             self.assertIn(b'WTC categories', junto, idioma)
-            self.assertIn(b'Summary by chip type', junto, idioma)
+            self.assertIn(b'Regulatory annex', junto, idioma)
             self.assertIn(b'Closed by', junto, idioma)
             self.assertNotIn(b'Categorias WTC', junto, idioma)
             self.assertNotIn(b'Fechado por', junto, idioma)
@@ -951,31 +965,52 @@ class PdfConferenciaGerenteTests(TestCase):
 
         A prova é dupla — o par existe na tabela e o ideograma chega ao PDF
         (glifo ausente na fonte sairia como quadradinho, não como texto)."""
-        from vendas.pdf import _L, _t
-        for chave, (en, zh) in _L.items():
+        from vendas.pdf import _L, _t, _t3
+        for chave, valores in _L.items():
+            en, zh = valores[0], valores[1]
             self.assertTrue(en and zh, f'{chave} sem par bilíngue')
             self.assertEqual(_t(chave), f'{en} ({zh})')
+            # 2026-08-20: o documento de DESPACHO é trilíngue. Chave com
+            # espanhol sai nos três; sem espanhol, `_t3` cai no bilíngue em
+            # vez de explodir — rótulo faltando é defeito de conteúdo, não
+            # motivo para o documento não sair.
+            if len(valores) > 2:
+                self.assertEqual(_t3(chave), f'{en} ({zh} · {valores[2]})')
+            else:
+                self.assertEqual(_t3(chave), _t(chave))
         # 繁體, não 简体: se alguém colar o catálogo zh-hans aqui, cai.
         self.assertEqual(_L['category'][1], '類別')
         self.assertEqual(_L['qty'][1], '數量')
-        self.assertEqual(_L['spec'][1], '晶片類型彙總')
         # Cada ideograma dos rótulos que o gerente vê tem que ter GLIFO na
         # fonte embutida — o CMap da TTF lista os pontos de código usados.
         # Sem glifo o reportlab desenha quadradinho e ninguém percebe.
         self._endereco()                  # p/ o bloco SHIP TO entrar também
+        # …e a faixa de DESPACHO (承運人/追蹤號碼/發貨日期) só é desenhada se a
+        # ordem foi despachada — sem isto os ideogramas dela nunca entram na
+        # fonte embutida e o teste acusaria falta de glifo que é falta de dado.
+        from datetime import date
+        self.so.carrier, self.so.tracking = 'DHL', '1234567890'
+        self.so.shipped_at = date.today()
+        self.so.save(update_fields=['carrier', 'tracking', 'shipped_at'])
         pdf = self._pdf(self.manager)
         self.assertIn(b'/BaseFont', pdf)               # a TTF foi embutida
         # Fora da conta: rótulo de preço (só na versão do admin), os status
         # que ESTE documento não está, e os rótulos do documento de RESULTADO
         # (outro PDF) — glifo só entra na fonte se for usado.
-        fora = {'unit_rmb', 'total_rmb', 'total_usd',
-                'confirmed', 'cancelled',
+        fora = {'unit_rmb', 'total_rmb', 'total_usd', 'fx', 'spec',
+                'capacity', 'type', 'confirmed', 'cancelled',
                 'result', 'received', 'settled', 'sent',
                 'rejected', 'accepted', 'brand', 'notes',
                 'expected', 'final', 'difference'}
-        for ch in set(''.join(zh for k, (_en, zh) in _L.items()
+        # ⚠ A conta é só dos caracteres que o `_rich` MANDA para a TTF (o
+        # `_CJK_RE`). Rótulo em chinês pode trazer pontuação latina — o travessão
+        # de '1. 貨物性質 — 非廢棄物', por exemplo — e essa sai em Helvetica, que
+        # não tem CMap para conferir. Exigir glifo dela na TTF é cobrar da fonte
+        # errada.
+        from pricing.pdf import _CJK_RE
+        for ch in set(''.join(v[1] for k, v in _L.items()
                               if k not in fora)):
-            if ch.isspace() or ch.isascii():
+            if not _CJK_RE.fullmatch(ch):
                 continue
             self.assertIn(f'<{ord(ch):04X}>'.encode(), pdf,
                           f'sem glifo para {ch!r} na fonte embutida')
@@ -1110,18 +1145,25 @@ class PdfConferenciaGerenteTests(TestCase):
         textos = _textos_do_pdf(self._pdf(self.manager))
         self.assertEqual(textos.count(b'B-06'), 1)
 
-    def test_resumo_por_tipo_e_capacidade(self):
-        """⚠ A F12 é afrouxada AQUI de propósito (dono, 2026-08-18): o rótulo
-        real sai ao lado do código de caixa. Se algum dia voltar atrás, este
-        teste é o que muda primeiro."""
+    def test_o_resumo_por_TIPO_saiu_do_documento(self):
+        """Dono, 2026-08-20: *"vamos tirar o detalhado por capacidade e preços
+        deste reporte, vai ficar unicamente a quantidade por categoria WTC"*.
+
+        O cálculo (`spec_summary`) CONTINUA existindo — ele alimenta a tela.
+        O que saiu é a tabela no papel de despacho: capacidade é comércio, e
+        comércio viaja na fatura, não na caixa."""
         spec = services.spec_summary(
             services.annotate_labels(list(self.so.lines.all()), False))
         self.assertEqual(
             [(r['type'], r['capacity'], r['qty']) for r in spec],
             [('eMMC', '16GB', 11), ('eMCP', '64GB', 4)])
-        textos = _textos_do_pdf(self._pdf(self.manager))
-        for esperado in (b'eMMC', b'16GB', b'eMCP', b'64GB'):
-            self.assertIn(esperado, textos)
+        junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
+        for fora_do_papel in (b'16GB', b'64GB', b'Capacity',
+                              b'Summary by chip type'):
+            self.assertNotIn(fora_do_papel, junto, fora_do_papel)
+        # …e a categoria, que é o que interessa ao despacho, fica:
+        self.assertIn(b'B-06', junto)
+        self.assertIn(b'WTC categories', junto)
 
     def test_sem_categoria_entra_e_os_totais_fecham_com_o_lote(self):
         """As 7 unidades sem chave (SoC) contam: sem elas o documento não bate
@@ -1159,7 +1201,11 @@ class PdfConferenciaGerenteTests(TestCase):
         junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
         self.assertIn(b'Ana Reis', junto)
         self.assertIn(self.company.name.encode(), junto)
-        self.assertIn(b'1 CNY = 0.1400 USD', junto)  # taxa de MERCADO, pública
+        # ⚠ 2026-08-20: o CÂMBIO saiu do PAPEL (segue no dado, que a tela usa).
+        # Este documento deixou de ter dinheiro de mercadoria, e taxa de
+        # conversão sem valor a converter é ruído numa folha que a alfândega lê.
+        self.assertNotIn(b'Exchange rate', junto)
+        self.assertNotIn(b'1 CNY', junto)
         self.assertNotIn(b'US$', junto)              # dinheiro segue fora
 
     def test_emissao_congela_na_confirmacao(self):
@@ -1201,22 +1247,26 @@ class PdfConferenciaGerenteTests(TestCase):
 
     # ── a versão do ADMIN: o MESMO documento, com preços ────────────────────
 
-    def test_admin_recebe_o_mesmo_documento_com_precos(self):
-        """RE-ESPECIFICADO em 2026-08-18 (2ª rodada). Antes o admin baixava o
-        PDF comercial antigo; agora é *um documento só* — mesmas seções, mais
-        as colunas de dinheiro (dono: "a única diferença é que tem preços")."""
+    def test_admin_recebe_EXATAMENTE_o_mesmo_documento(self):
+        """RE-ESPECIFICADO em 2026-08-20 (3ª rodada, dono). Em 2026-08-18 era
+        "um documento só, a única diferença é que tem preços". Agora não há
+        diferença NENHUMA: o papel virou documento de DESPACHO e preço saiu
+        dele para todo mundo — comércio viaja na fatura, não na caixa.
+
+        A barreira de dinheiro não enfraqueceu: ela ficou estrutural de vez.
+        Não existe coluna de valor aqui para esconder de ninguém."""
         self._endereco()
-        junto = b' '.join(_textos_do_pdf(self._pdf(self.admin)))
-        for igual_ao_gerente in (b'WTC categories', b'Summary by chip type',
-                                 b'SHIP TO', b'SHIP FROM', b'Closed by'):
-            self.assertIn(igual_ao_gerente, junto)
-        for so_do_admin in (b'Unit', b'Total US$'):
-            self.assertIn(so_do_admin, junto)
-        # B-06 = 11 eMMC 16GB x \xa5 15 = \xa5 165 / US$ 23.10
-        self.assertIn(b'US$ 23.10', junto)
-        # A-02 = 4 eMCP 64GB x \xa5 90 = \xa5 360 / US$ 50.40
-        self.assertIn(b'US$ 50.40', junto)
-        self.assertIn(b'US$ 73.50', junto)                     # total
+        do_admin = _textos_do_pdf(self._pdf(self.admin))
+        do_gerente = _textos_do_pdf(self._pdf(self.manager))
+        junto = b' '.join(do_admin)
+        for igual_aos_dois in (b'WTC categories', b'SHIP TO', b'SHIP FROM',
+                               b'Closed by', b'Regulatory annex'):
+            self.assertIn(igual_aos_dois, junto)
+        for nunca_mais in (b'US$', b'Total US$', b'US$ 23.10',
+                           b'US$ 50.40', b'US$ 73.50'):
+            self.assertNotIn(nunca_mais, junto, nunca_mais)
+        # o MESMO papel, byte a byte de texto:
+        self.assertEqual(do_admin, do_gerente)
 
     def test_valor_da_linha_e_do_total_batem(self):
         """A tabela de categorias FUNDE marcas — o total tem que continuar a
@@ -1269,13 +1319,17 @@ class PdfConferenciaGerenteTests(TestCase):
         self.assertEqual(b06['unpriced'], 6)
         self.assertEqual(b06['total_rmb'], Decimal('75.00'))      # só as 5 cotadas
 
-    def test_gerente_nao_ve_nada_disso(self):
-        """O mesmo lote, o mesmo documento — e zero dinheiro para o gerente."""
+    def test_gerente_nao_ve_preco_de_mercadoria(self):
+        """O mesmo lote, o mesmo documento — e nenhum preço de mercadoria.
+
+        ⚠ A única cifra que existe no papel é o VALOR DECLARADO da aduana, que
+        é exigência da transportadora e vai impresso na caixa de qualquer
+        forma. Preço por categoria, unitário e total de venda: nenhum."""
         junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
-        self.assertNotIn(b'US$', junto)
-        self.assertNotIn(b'Unit', junto)
+        # ⚠ `b'Unit'` não serve de sentinela: o anexo cita "United States".
+        for proibido in _SEM_DINHEIRO:
+            self.assertNotIn(proibido, junto, f'vazou {proibido!r} no PDF')
         self.assertNotIn(b'10.50', junto)
-        self.assertFalse(services.manager_document(self.so)['with_prices'])
 
 
 class CompradorComprasTests(TestCase):
@@ -2373,12 +2427,23 @@ class CompradorPagamentoTests(TestCase):
 
 
 class DeclaracaoAduaneiraTests(TestCase):
-    """O valor declarado no documento de embarque (dono, 2026-08-18).
+    """A declaração aduaneira do documento de embarque.
 
-    A transportadora EXIGE descrição e valor; campo em branco trava o pacote
-    ou faz alguém que não conhece a carga reavaliá-la. O valor é FICTÍCIO e
-    assumido como tal — é sucata para descarte, e o valor comercial é
-    justamente o que não pode viajar impresso na caixa.
+    ⚠ **REESCRITO em 2026-08-20** (dono), depois de a DHL exigir o fundamento
+    legal do embarque para Macau. O que mudou, e por quê:
+
+    · a descrição era ``PCB CHIPS FOR DISPOSAL``. Em linguagem aduaneira "for
+      disposal" não descreve mercadoria, descreve RESÍDUO — e desde 1/1/2025 as
+      emendas de e-waste da Convenção de Basileia (entrada Y49) exigem
+      Consentimento Prévio Informado ENTRE ESTADOS até para e-waste não
+      perigoso. A carga não é resíduo: é circuito integrado recuperado,
+      testado, classificado e VENDIDO para reuso — e é isso que o papel diz;
+    · o valor era FICTÍCIO (200–290, por hash da OV). Passou a ser o valor
+      COMERCIAL da venda. Macau é porto franco (sem tarifa sobre mercadoria
+      geral), então declarar o real não custa imposto — e valor divergente da
+      fatura é, por si só, motivo de retenção. Um documento que cita a lei em
+      três idiomas e carrega número inventado chama atenção para a única linha
+      frágil dele.
     """
 
     @classmethod
@@ -2391,7 +2456,7 @@ class DeclaracaoAduaneiraTests(TestCase):
         set_current_company(self.company.pk)
         self.addCleanup(set_current_company, None)
 
-    def _so(self, sufixo='A'):
+    def _so(self, sufixo='A', congelar=True):
         with company_scope(self.company):
             lot = Lot.open_for_company(self.company, self.user, 'a' + sufixo,
                                        origin='phone')
@@ -2400,43 +2465,137 @@ class DeclaracaoAduaneiraTests(TestCase):
                 brand=self.brand, chip_type='eMMC', company=self.company,
                 price_kind='emmc', price_gen='',
                 price_tier_value=Decimal('16'), price_tier_unit='GB')
-            return services.create_draft_for_lot(lot, self.user)
+            so = services.create_draft_for_lot(lot, self.user)
+            if congelar:
+                services.mark_shipped(so, 'DHL', 'JD' + sufixo, None, self.user)
+                so.refresh_from_db()
+            return so
 
-    def test_valor_fica_na_faixa_pedida(self):
-        for i in range(12):
-            valor = services.declared_value_usd(self._so(f'F{i}'))
-            self.assertGreaterEqual(valor, 200)
-            self.assertLessEqual(valor, 290)
+    def test_o_valor_declarado_e_o_valor_da_venda(self):
+        so = self._so('V')
+        self.assertEqual(services.declared_value_usd(so), so.total_usd)
+        self.assertIsNotNone(so.total_usd)
 
     def test_MESMO_documento_MESMO_valor_sempre(self):
-        """⚠ O ponto todo: imprimir duas vezes não pode dar valor diferente —
-        divergência de valor declarado é o que trava pacote na alfândega."""
+        """⚠ Continua valendo: imprimir duas vezes não pode dar valor
+        diferente — divergência de valor declarado é o que trava pacote na
+        alfândega. Agora sai de graça, porque o valor é congelado na OV."""
         so = self._so('E')
         valores = {services.declared_value_usd(so) for _ in range(20)}
         self.assertEqual(len(valores), 1)
 
-    def test_documentos_diferentes_valores_diferentes(self):
-        """Não é constante: cada OV tem o seu (é o "aleatório" do pedido)."""
-        valores = {services.declared_value_usd(self._so(f'D{i}'))
-                   for i in range(15)}
-        self.assertGreater(len(valores), 3)
-
-    def test_o_documento_carrega_descricao_e_valor(self):
+    def test_ordem_sem_valor_congelado_nao_INVENTA_numero(self):
+        so = self._so('R', congelar=False)
+        self.assertIsNone(services.declared_value_usd(so))
         with company_scope(self.company):
-            doc = services.manager_document(self._so('M'))
-        self.assertEqual(doc['shipment_desc'], 'PCB CHIPS FOR DISPOSAL')
-        self.assertIn(doc['shipment_value'], range(200, 291))
+            doc = services.manager_document(so)
+        self.assertIsNone(doc['shipment_value'])
 
-    def test_o_PDF_imprime_os_dois(self):
+    def test_a_descricao_nao_declara_RESIDUO(self):
+        """A palavra que declarava resíduo saiu — e não pode voltar por
+        descuido: é ela que puxa o regime de Basileia para cima do pacote."""
+        desc = services.SHIPMENT_DESCRIPTION
+        self.assertNotIn('DISPOSAL', desc.upper())
+        self.assertNotIn('WASTE FOR', desc.upper())
+        self.assertIn('REUSE', desc.upper())
+        self.assertIn('NOT WASTE', desc.upper())
+
+    def test_o_documento_carrega_descricao_HS_e_valor(self):
+        so = self._so('M')
+        with company_scope(self.company):
+            doc = services.manager_document(so)
+        self.assertEqual(doc['shipment_desc'], services.SHIPMENT_DESCRIPTION)
+        self.assertEqual(doc['shipment_hs'], '8542')
+        self.assertEqual(doc['shipment_value'], so.total_usd)
+
+    def test_o_PDF_imprime_os_tres(self):
         _sem_compressao(self)
+        so = self._so('P')
         with company_scope(self.company):
-            doc = services.manager_document(self._so('P'))
+            doc = services.manager_document(so)
             from vendas.pdf import render_so_manager_pdf
             pdf = render_so_manager_pdf(doc)
         texto = b' '.join(_textos_do_pdf(pdf))
-        self.assertIn(b'PCB CHIPS FOR DISPOSAL', texto)
+        self.assertIn(b'SOLD FOR REUSE', texto)
+        self.assertIn(b'NOT WASTE', texto)
+        self.assertIn(b'8542', texto)
         self.assertIn(f"USD {doc['shipment_value']}".encode(), texto)
         self.assertIn(b'Declared value', texto)
+        self.assertIn(b'HS code', texto)
+
+
+class AnexoRegulatorioTests(TestCase):
+    """O ANEXO das leis no documento de despacho (dono, 2026-08-20:
+    *"adicione a ele o anexo das leis, cite tudo SEM ECONOMIZAR PALAVRAS, para
+    NÃO ficar brechas"*).
+
+    Três declarações, três idiomas, e cada uma responde a uma pergunta que
+    trava um pacote de circuito integrado com destino a Macau:
+
+    1. **é resíduo?** — não, e por isso Basileia (Y49) não se aplica;
+    2. **precisa de licença?** — não: a Tabela B do Anexo II da Lei 7/2003 não
+       lista a posição 8542. Citar os QUATRO despachos (209/2021 e as três
+       alterações) é o que fecha a brecha — quem confere sabe que a lista
+       mudou depois de 2021;
+    3. **é chip controlado?** — não: o alvo é ECCN 3A090/4A090.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-anx')
+        User = get_user_model()
+        cls.user = User.objects.create_user('vd_anx')
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        _sem_compressao(self)
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.user, 'x',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='ANX1', quantity=4, brand=self.brand,
+                chip_type='eMMC', company=self.company, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.user)
+            services.mark_shipped(so, 'DHL', 'JDANX', None, self.user)
+            so.refresh_from_db()
+            from vendas.pdf import render_so_manager_pdf
+            self.pdf = render_so_manager_pdf(services.manager_document(so))
+        self.texto = b' '.join(_textos_do_pdf(self.pdf))
+
+    def test_cita_a_lei_de_macau_e_TODOS_os_despachos(self):
+        """Citar só o 209/2021 é a brecha: a Tabela B foi alterada depois."""
+        for pedaco in (b'Law No. 7/2003', b'Law No. 3/2016',
+                       b'Table B', b'Annex II',
+                       b'209/2021', b'188/2022', b'208/2022', b'110/2023'):
+            self.assertIn(pedaco, self.texto, pedaco)
+
+    def test_diz_que_8542_NAO_esta_na_tabela_B(self):
+        self.assertIn(b'8542', self.texto)
+        self.assertIn(b'not subject to prior import licensing',
+                      self.texto.lower().replace(b'not subject to prior import '
+                                                 b'licensing',
+                                                 b'not subject to prior import '
+                                                 b'licensing'))
+
+    def test_declara_que_NAO_e_residuo_citando_Basileia(self):
+        for pedaco in (b'Basel Convention', b'Y49', b'A1181',
+                       b'1 January 2025', b'NOT waste'):
+            self.assertIn(pedaco, self.texto, pedaco)
+
+    def test_declara_uso_final_e_os_ECCN(self):
+        for pedaco in (b'3A090', b'4A090', b'military end use'):
+            self.assertIn(pedaco, self.texto, pedaco)
+
+    def test_o_anexo_sai_nos_TRES_idiomas(self):
+        # inglês (principal) + espanhol no texto corrido; o chinês vai por
+        # glifo, que o teste de fonte cobre à parte.
+        self.assertIn(b'Regulatory annex', self.texto)
+        self.assertIn(b'Anexo normativo', self.texto)
+        self.assertIn(b'Ley n', self.texto)             # o corpo em espanhol
+        self.assertIn(b'Convenio de Basilea', self.texto)
 
 
 class DespachoTests(TestCase):

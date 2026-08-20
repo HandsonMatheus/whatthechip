@@ -1862,6 +1862,92 @@ financeiro" (só admin). Como ele era None para o gerente, as colunas de
 O crachá do cliente vira **"recebida pelo comprador"** quando o comprador acusa
 o recebimento, e a última etapa passou a se chamar **Pagamento** (era "Paga").
 
+📦 **O DOCUMENTO DO GERENTE VIRA DOCUMENTO DE DESPACHO** (dono, 2026-08-20:
+*"mude absolutamente tudo o que achar necessário, e adicione a ele o anexo das
+leis também, cite tudo SEM ECONOMIZAR PALAVRAS, para NÃO ficar brechas. Tudo em
+inglês, chinês e espanhol, sendo inglês o principal. Vamos tirar o detalhado por
+capacidade e preços deste report — vai ficar unicamente a quantidade por
+categoria WTC, o resto é tudo informação de despacho"*).
+
+**O que motivou:** a DHL travou um embarque de circuito integrado para Macau
+pedindo a base legal que permite a importação. Investigado em fonte oficial e
+escrito em `DESPACHO_MACAU_CONFORMIDADE.md` — o achado que importa não é a
+licença (HS 8542 não está na Tabela B; nunca precisou), é a **palavra
+`DISPOSAL`** que o nosso próprio papel imprimia. Desde **1/1/2025** as emendas
+de e-waste da Convenção de Basileia criaram a entrada **Y49** e passaram a
+exigir Consentimento Prévio Informado **até para e-waste NÃO perigoso**.
+Declarando "for disposal" o documento colocava a carga exatamente na categoria
+que hoje exige autorização entre Estados — e que não temos. Não era o
+transportador sendo difícil: era o papel dizendo a coisa errada.
+
+**O papel deixou de ser relatório e virou documento de embarque.** Consequências:
+
+· **Preço saiu por inteiro, para TODO MUNDO — admin inclusive.** Não é máscara
+  de permissão, é natureza do documento: preço é comércio e viaja na fatura
+  comercial; quem lê este papel é conferente de alfândega. A única cifra que
+  sobrou é o **valor declarado**, que a transportadora exige.
+· **O valor declarado passou a ser o valor real da venda** (`total_usd`). Antes
+  era um número entre 200 e 290 USD, e valor declarado que não conversa com a
+  fatura é problema aduaneiro por si só — Macau é **porto franco** (sem tarifa
+  sobre mercadoria geral), então subdeclarar não economizava nada e só criava
+  exposição. ⚠ Decisão de negócio do dono, não de código: mudou o que o papel
+  afirma.
+· **Uma tabela só: categoria WTC × quantidade.** A tabela de tipo × capacidade
+  saiu — granularidade de operação interna não é informação de despacho, e cada
+  linha a mais é uma linha a mais para um conferente questionar.
+· **Caixa de declaração aduaneira em três colunas**: descrição · **HS 8542** ·
+  valor declarado. A descrição virou `RECOVERED ELECTRONIC INTEGRATED CIRCUITS
+  (MEMORY ICs) — TESTED AND GRADED, SOLD FOR REUSE. NOT WASTE.`
+  (`services.SHIPMENT_DESCRIPTION` / `SHIPMENT_HS_CODE` — fonte única, o PDF só
+  imprime).
+· **Faixa de despacho**: transportadora · rastreio · data de envio, desenhada só
+  quando houve despacho.
+· **O câmbio saiu do papel** (segue no dado, que a tela usa): sem valor de
+  mercadoria para converter, taxa de conversão é ruído numa folha que a alfândega
+  lê.
+
+📜 **ANEXO REGULATÓRIO, trilíngue, sem economizar palavras** (`_ANEXO` em
+`vendas/pdf.py`). Três declarações, cada uma respondendo à pergunta que trava um
+pacote, cada uma em **EN · 繁體中文 · ES**:
+
+1. **Natureza — não é resíduo.** Recuperado, identificado por part number,
+   testado, classificado, vendido sob fatura comercial para reuso direto. NÃO é
+   resíduo, NÃO é sucata, NÃO viaja para descarte/reciclagem/recuperação — logo
+   fora das entradas **Y49** e **A1181** de Basileia (versão em vigor desde
+   1/1/2025) e sem notificação PIC aplicável. O ônus da prova de reuso é do
+   EMBARCADOR: por isso a tabela de categoria e quantidade **é** parte da prova,
+   junto da fatura.
+2. **Licenciamento em Macau.** **Lei n.º 7/2003** de 23 de junho (Lei do
+   Comércio Externo), alterada pela **Lei n.º 3/2016**: licença prévia só para a
+   **Tabela B do Anexo II**, fixada pelo **Despacho n.º 209/2021** e alterada
+   pelos **188/2022, 208/2022 e 110/2023**. Circuito integrado (HS 8542) não
+   consta. ⚠ Citar os QUATRO despachos, e não só o de 2021, é o que fecha a
+   brecha — quem confere sabe que a lista mudou depois, e citação incompleta é
+   exatamente o que um conferente detecta.
+3. **Controle de exportação e uso final.** O alvo dos controles americanos para
+   Macau são os **ECCN 3A090 e 4A090** (computação avançada); memória recuperada
+   de aparelho de consumo não é isso, e o destino é reuso civil comercial.
+
+⚠ **Idioma do documento é do TRANSPORTE, não de quem clicou.** Os rótulos são
+canônicos (não passam por `gettext`) e o inglês é o principal — teste segurando
+isso com a sessão em pt-br, es e zh-hans. O chinês é **繁體** (Macau/HK/Taiwan),
+nunca o catálogo `zh-hans` da interface.
+
+⚠ **O espanhol é escolha do dono, não da geografia**: as línguas oficiais de
+Macau são **chinês e PORTUGUÊS**. Se o despachante pedir, trocar/somar é
+mecânico (`_L` + `_ANEXO` + `_t3`).
+
+⚠ **Isto é declaração legal com o nome do dono.** Mudar `_ANEXO`,
+`SHIPMENT_DESCRIPTION` ou `SHIPMENT_HS_CODE` é mudar o que a empresa afirma para
+uma alfândega — fale com o despachante antes, não é ajuste de interface.
+
+⚠ **Armadilha de teste (custou tempo, fica registrada).** Depois do anexo, `b'\\245'`
+(o ¥ escapado) **deixou de servir de sentinela de dinheiro**: o PDF passou a
+embutir um subconjunto CJK grande e o índice de glifo de dois bytes pode conter o
+byte `0xA5`. A sentinela virou o RÓTULO da coluna (`b'Unit \\245'`,
+`b'Total \\245'`, `b'US$'` — `_SEM_DINHEIRO` em `vendas/tests.py`). Pelo mesmo
+motivo `b'Unit'` sozinho também não serve: o anexo cita "United States".
+
 🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
 CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com
 transportadora, rastreio e data (`SalesOrder.carrier/tracking/shipped_at/
