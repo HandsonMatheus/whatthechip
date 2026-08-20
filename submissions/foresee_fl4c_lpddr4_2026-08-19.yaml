@@ -1,0 +1,51 @@
+# Submissão known_parts — Foresee (Longsys), LPDDR4 standalone "FL4C" — irmã de baixa-voltagem
+# PADRÃO (não-X) da família FLXC já confirmada (2026-08-19). Origem: PN buscado na bancada
+# "FL4C2001GD9" (debug estoque, known=false, in_review_queue=true, 0 fuzzy_suggestions).
+#
+# ⚠ ESTRUTURA — mesmo esqueleto posicional já confirmado 2x nesta marca (NCLD4C/NCLDXC): raiz
+#   constante ("FL", aqui — igual à "NC" da linha legada) + 1 char de GERAÇÃO ("4"=LPDDR4 padrão
+#   vs "X"=LPDDR4X, já visto na `foresee.yaml`/FORESEE.md p/ FLXC) + "C" (pacote) + config + 3
+#   dígitos + "G" (capacidade — o dígito antes do G é o GB, regra já estabelecida p/ FLXC) + sufixo.
+#   "FL4C2001GD9" decompõe em FL+4+C+2+001+G+D9 → capacidade=1GB pela MESMA regra posicional
+#   (`pn[7]`) já documentada em FORESEE.md §2 pra FLXC.
+# ⚠ FONTE-CHAVE pro tipo: abri o datasheet OFICIAL da irmã confirmada FLXC2002G-N2 (D-00246,
+#   community.nxp.com) — a seção "4 Ordering Information" mostra EXPLICITAMENTE que a MESMA família
+#   de produto tem opção de voltagem "1.8V/1.1V/1.1V **ou 0.6V**" (a opção 0.6V É o que faz um chip
+#   ser "X"/LPDDR4X; sem ela, "1.1V" é LPDDR4 padrão) — exatamente o mesmo padrão já visto no
+#   datasheet NCLD4C/NCLDXC (regra de ouro desta marca: dígito "4"=padrão vs "X"=baixa-voltagem,
+#   mesma posição estrutural, agora confirmada numa 2ª geração de nomenclatura).
+# ⚠ EXISTÊNCIA do PN EXATO "FL4C2001GD9": confirmada em 2 distribuidores reais e independentes via
+#   DigiPart — Sierra IC Inc. (fabricante "FORE", 4.529un em estoque) e Green Light Electronics
+#   (fabricante "LONG"=LONGSYS, 587un, "OEM/CM ONLY"). NÃO é confusão com "FLXC" (busquei a
+#   possibilidade de erro de leitura X↔4 e "FLXC2001G"/"FLXC1001G" não aparecem em lugar nenhum,
+#   enquanto "FL4C2001GD9" bate exato nos 2 distribuidores) — é um PN real e distinto.
+# ⚠ NÃO achei outras capacidades da linha "FL4C" (tentei FL4C2002G/FL4C2004G sem sufixo no
+#   DigiPart, sem resultado — o agregador parece exigir o sufixo completo, que eu não posso
+#   adivinhar sem mais uma âncora real). Só a capacidade 1GB (a do PN buscado) está confirmada por
+#   ora. Gap para próxima rodada se mais PNs "FL4C*" aparecerem na bancada.
+# ⚠ confidence=manual (não confirmed): tenho existência forte (2 distribuidores) + tipo/capacidade
+#   por gramática posicional bem validada (mesma regra 2x confirmada em datasheet real), mas SEM
+#   datasheet aberto do FL4C2001GD9 especificamente (só da irmã FLXC2002G-N2).
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_fl4c_lpddr4_2026-08-19.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_fl4c_lpddr4_2026-08-19.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FL4C2001GD9"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "1GB"
+    confidence: manual
+    notes: >
+      ⭐ PN exato buscado na bancada. Existência confirmada via DigiPart (Exact Match): Sierra IC
+      Inc. (fabricante "FORE"=FORESEE, 4.529un) + Green Light Electronics (fabricante "LONG"=LONGSYS,
+      587un). Estrutura decodificada por analogia direta à irmã confirmada FLXC2002G-N2 (mesmo
+      esqueleto "FL"+geração+"C"+config+capacidade+"G"+sufixo, package 200-ball 10x14.5mm): aqui a
+      geração é "4" (LPDDR4 padrão) em vez de "X" (LPDDR4X) — o datasheet oficial D-00246 da FLXC2002G-N2
+      (Ordering Information) confirma que a MESMA plataforma tem opção de voltagem com e sem o modo
+      baixa-tensão 0.6V, exatamente o par que já diferencia NCLD4C/NCLDXC na linha legada. Capacidade
+      pela mesma regra posicional já estabelecida em FLXC (dígito antes do "G", aqui "001"→1): 1GB.
+      Descartei a hipótese de erro de leitura "X"→"4" (não achei "FLXC2001G"/"FLXC1001G" em fonte
+      nenhuma, enquanto "FL4C2001GD9" bate exato e independente em 2 distribuidores) — é um PN real
+      distinto, não um typo do operador.
+    source_url: "https://www.digipart.com/part/FL4C2001GD9"

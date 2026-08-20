@@ -1,0 +1,120 @@
+# Submissão known_parts — Foresee (Longsys), NOVA categoria LPDDR5 standalone "FL5P" +
+# reforço da FLXC/LPDDR4X já confirmada (2026-08-19). Origem: pedido do dono pra ampliar a
+# pesquisa depois do FL4C2001GD9 ("só achou esse? achar o máximo de chips possível em tier 1").
+#
+# ⭐ CATEGORIA NOVA: "FL5P" = LPDDR5 standalone. Não existia NENHUMA menção no FORESEE.md/yaml
+#   antes de hoje. Achada via portfólio DDR estruturado da RESTAR FRAMOS Technologies (distribuidor
+#   alemão sério, campo "Density" próprio por PN, taxonomy — não é busca solta) — a mesma tabela
+#   também lista TODOS os FLXC/F60C/NCLDXC já confirmados, com a MESMA densidade que eu já tinha
+#   validado por conta própria em cada um deles (cross-check perfeito, dá confiança na tabela
+#   inteira). Estrutura: mesmo esqueleto "FL"+geração+pacote+config+capacidade+G+sufixo já visto em
+#   FLXC/FL4C — aqui geração="5"(LPDDR5), pacote="P" (não "C" — pacote físico DIFERENTE: TFBGA315,
+#   maior que o VFBGA200 do FLXC/FL4C, esperado p/ LPDDR5 que tem mais pinos). Capacidade pela MESMA
+#   regra posicional (dígito antes do "G", pn[7]). Rótulo "Lexar Enterprise" na DigiKey de novo (é a
+#   MESMA pastilha Foresee — regra já documentada em FORESEE.md §3 pro FLXC).
+# ⭐ Confirmação direta: FL5P4008G-60 (abri a página própria da RESTAR FRAMOS — Specifications:
+#   Density=64Gbit, Package=TFBGA315) e FL5P2004G-60 (DigiKey: "SDRAM - Mobile LPDDR5 Memory IC
+#   4GByte (DRAM) LPDDR5 3200 MHz" — campo estruturado, fabricante "Lexar Enterprise", + Enrgtech +
+#   SemiKart + 2x Alibaba independentes). Os outros 3 (FL5P4006G-62/FL5P4006G-51/FL5P4004G-N5) só
+#   têm o campo "Density" da tabela RESTAR (sem página própria aberta) — confidence=manual.
+# ⭐ chip_type "LPDDR5" JÁ EXISTE em chips/chip_types.py (carries_generation=True, mesma família
+#   "lpddr") — não precisa de nenhuma declaração de tipo nova, o portão já aceita.
+#
+# BÔNUS (mesma tabela RESTAR): 3 PNs FLXC (LPDDR4X) com sufixo NOVO que NÃO estavam no arquivo
+#   original `foresee_lpddr4x_2026-07-15.yaml` (conferi linha a linha antes de incluir aqui —
+#   mesma capacidade já confirmada, só SKU/die/revisão diferente): FLXC4004G-W6 (4GB),
+#   FLXC4003G-W7 (3GB), FLXC2002G-W6 (2GB). Adiciono aqui pra não reabrir o arquivo antigo.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_fl5p_lpddr5_2026-08-19.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_fl5p_lpddr5_2026-08-19.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FL5P4008G-60"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    capacity: "8GB"
+    confidence: confirmed
+    notes: >
+      Página própria RESTAR FRAMOS Technologies (distribuidor alemão): "FORESEE – EMBEDDED LPDDR5",
+      Specifications: Density=64Gbit, Package=TFBGA315. 64Gbit÷8=8GB — bate exato com a regra
+      posicional já validada (dígito antes do "G", aqui pn[7]='8'). Corroborado por DigiPart/Haode
+      Technology (fabricante FORESEE, DC:2025+, 5.000un em estoque — data-code recente, condizente
+      com LPDDR5 ser lançamento novo da marca). Pacote TFBGA315 é FÍSICO DIFERENTE do VFBGA200 do
+      FLXC/FL4C (mais pinos, geração mais nova).
+    source_url: "https://www.restarframos.com/en/product-catalog/fl5p4008g-60"
+  - part_number: "FL5P2004G-60"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      DigiKey (fabricante "Lexar Enterprise", mesma pastilha Foresee — regra já documentada no
+      FORESEE.md p/ o FLXC): "SDRAM - Mobile LPDDR5 Memory IC 4GByte (DRAM) LPDDR5 3200 MHz" — campo
+      estruturado direto da meta-description do produto. Bate exato com a regra posicional (pn[7]='4'
+      →4GB). Corroborado por MAIS 4 fontes independentes: Enrgtech (UK), SemiKart (Índia), 2x listagem
+      Alibaba, e a tabela RESTAR FRAMOS (Density=32Gbit=4GB). É a capacidade com mais fontes
+      independentes já vista nesta marca.
+    source_url: "https://www.digikey.com/en/products/detail/lexar-enterprise/FL5P2004G-60/23567829"
+  - part_number: "FL5P4006G-62"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    capacity: "6GB"
+    confidence: manual
+    notes: >
+      Tabela portfólio DDR da RESTAR FRAMOS Technologies (campo "Density"=48Gbit taxonomy, não texto
+      solto): 48Gbit÷8=6GB, bate com a regra posicional (pn[7]='6'). Mesma tabela confirma EXATO (100%
+      de acerto) os outros 8 PNs já confirmados desta marca (FLXC/F60C/NCLDXC) — cross-check que dá
+      confiança na fonte mesmo sem abrir a página própria deste PN específico. confidence=manual (só
+      1 fonte, sem página própria aberta).
+    source_url: "https://www.restarframos.com/product/semiconductors/memory-components/ddr/fl5p4006g-62/"
+  - part_number: "FL5P4006G-51"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    capacity: "6GB"
+    confidence: manual
+    notes: >
+      Mesma tabela/fonte do FL5P4006G-62 (Density=48Gbit=6GB). Variante de sufixo diferente ("-51" vs
+      "-62") na MESMA capacidade — mesmo padrão já visto em outras famílias Foresee (múltiplos
+      die/revisão pro mesmo valor nominal). confidence=manual (só 1 fonte).
+    source_url: "https://www.restarframos.com/product/semiconductors/memory-components/ddr/fl5p4006g-51/"
+  - part_number: "FL5P4004G-N5"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    capacity: "4GB"
+    confidence: manual
+    notes: >
+      Mesma tabela/fonte (Density=32Gbit=4GB) — segunda variante confirmada da capacidade 4GB (a
+      primeira, FL5P2004G-60, é confirmed com fonte própria acima). Config de canal "4" em vez de "2"
+      no PN (mesmo padrão já visto no FLXC/FL4C — não afeta a capacidade, só pn[7] importa).
+      confidence=manual (só 1 fonte).
+    source_url: "https://www.restarframos.com/product/semiconductors/memory-components/ddr/fl5p4004g-n5/"
+  - part_number: "FLXC4004G-W6"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Variante de sufixo NOVA (conferida contra `foresee_lpddr4x_2026-07-15.yaml` — não estava lá)
+      da capacidade 4GB já confirmada 2x (FLXC2004G-30 via DigiKey, FLXC2004G-N1 via catálogo).
+      Fonte: tabela portfólio RESTAR FRAMOS (Density=32Gbit=4GB).
+    source_url: "https://www.restarframos.com/product/semiconductors/memory-components/ddr/flxc4004g-w6/"
+  - part_number: "FLXC4003G-W7"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "3GB"
+    confidence: confirmed
+    notes: >
+      Variante de sufixo NOVA (conferida — não estava no arquivo original) da capacidade 3GB já
+      confirmada (FLXC2003G-49/FLXC2003G-C7/FLXC4003G-50 no catálogo oficial). Fonte: tabela RESTAR
+      FRAMOS (Density=24Gbit=3GB).
+    source_url: "https://www.restarframos.com/product/semiconductors/memory-components/ddr/flxc4003g-w7/"
+  - part_number: "FLXC2002G-W6"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "2GB"
+    confidence: confirmed
+    notes: >
+      Variante de sufixo NOVA (conferida — não estava no arquivo original) da capacidade 2GB já
+      confirmada (FLXC2002G-N2 via DigiKey, FLXC2002G-C4 via catálogo). Fonte: tabela RESTAR FRAMOS
+      (Density=16Gbit=2GB).
+    source_url: "https://www.restarframos.com/product/semiconductors/memory-components/ddr/flxc2002g-w6/"

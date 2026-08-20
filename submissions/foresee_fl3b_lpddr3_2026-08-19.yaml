@@ -1,0 +1,56 @@
+# Submissão known_parts — Foresee (Longsys), FL3B1001G (LPDDR3 standalone, root "FL") — 2026-08-19.
+# Origem: PN de bancada. Busca exaustiva (DigiPart, netComponents, RESTAR FRAMOS, web search geral)
+# NÃO achou fonte Tier-1/Tier-2 confiável — só uma página de lookup de código aduaneiro e uma página
+# genérica que não abriram ao tentar confirmar (tratadas com suspeita: mesmo padrão de alucinação de
+# resumo de busca já flagrado várias vezes nesta marca). Inicialmente conclui que o PN podia nem
+# existir. O DONO corrigiu por observação FÍSICA DIRETA ("existe sim, estou vendo ele na minha
+# frente") — aceito como fato a EXISTÊNCIA do PN.
+#
+# ⚠ O QUE TEMOS x O QUE NÃO TEMOS:
+#   - Existência: CONFIRMADA (observação física do dono, não é fonte documental mas é evidência direta).
+#   - Specs (tipo=LPDDR3, capacidade=1GB): SÓ decodificadas ESTRUTURALMENTE pela gramática já validada
+#     do root "FL" (geração+pacote+config+capacidade+G) — NENHUM datasheet ou distribuidor independente
+#     encontrado especificamente para este PN:
+#       · pn[2]='3' = dígito de geração. Precedente direto: '4'=LPDDR4 (FL4C), 'X'=LPDDR4X (FLXC),
+#         '5'=LPDDR5 (FL5P) → por analogia, '3'=LPDDR3.
+#       · pn[3]='B' = letra de pacote. A MESMA combinação "3B" (geração+pacote) já é PROVADA como
+#         LPDDR3+pacote-B no root legado NCLD (NCLD3B1256M32/NCLD3B2256M32/etc., datasheet D-00151,
+#         ver submissions/foresee_ncld_legacy_2026-07-16.yaml) — "3B" significa a mesma coisa nos dois
+#         roots (legado NCLD e moderno FL) da mesma marca.
+#       · pn[7]='1' (dígito antes do "G") = capacidade, mesma regra já validada em
+#         FL4C2001GD9/FLXC*/FL5P* (ver submissions/foresee_fl4c_lpddr4_2026-08-19.yaml e
+#         foresee_fl5p_lpddr5_2026-08-19.yaml).
+#   Resultado do decode: LPDDR3, 1GB, sem sufixo visível (PN base, sem die/temperatura/revisão).
+#
+# ⚠ CONFIDENCE=ESTIMATED (não manual, não confirmed): diferente do FL4C2001GD9 (2 listagens DigiPart
+#   independentes) ou do FL5P (portfólio RESTAR FRAMOS + DigiKey), este PN não tem NENHUMA fonte
+#   documental ou de distribuidor corroborando — só a leitura física do dono + a gramática estrutural.
+#   Fica OCULTO na UI de triagem até confirmação manual (mecanismo padrão do projeto pra esse caso:
+#   "existe mas specs não documentadas"). Se aparecer datasheet/distribuidor real no futuro, promover
+#   pra manual/confirmed.
+# ⚠ source_url deixado vazio de propósito — não há página citável. Se o portão (schema) exigir uma
+#   string não-vazia, o dono provavelmente vai precisar apontar pra um placeholder ou o campo vai
+#   falhar no dry-run — sinalizando isso de antemão.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_fl3b_lpddr3_2026-08-19.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_fl3b_lpddr3_2026-08-19.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FL3B1001G"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: estimated
+    notes: >
+      Existência confirmada por observação física DIRETA do dono na bancada ("existe sim, estou
+      vendo ele na minha frente") — aceito como fato, apesar de busca exaustiva não ter achado
+      nenhuma fonte documental/distribuidor independente pra este PN específico. Specs decodificadas
+      ESTRUTURALMENTE pela gramática já validada do root "FL": pn[2]='3'=LPDDR3 (mesmo padrão de
+      '4'=LPDDR4 no FL4C, 'X'=LPDDR4X no FLXC, '5'=LPDDR5 no FL5P — todos já confirmados nesta
+      marca); pn[3]='B'=pacote, e a MESMA combinação "3B" já é confirmada = LPDDR3+pacote-B no root
+      legado NCLD (NCLD3B*, datasheet D-00151); pn[7]='1' (dígito antes do "G")=1GB, mesma regra
+      posicional do FL4C2001GD9/FLXC/FL5P. confidence=estimated (não manual) porque, diferente do
+      FL4C2001GD9 (2 fontes DigiPart), NENHUMA fonte externa foi encontrada pra este PN — só
+      inferência estrutural + confirmação física de existência. Fica oculto na triagem até revisão
+      manual do dono.
+    source_url: ""

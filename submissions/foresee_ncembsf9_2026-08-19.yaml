@@ -1,0 +1,61 @@
+# Submissão known_parts — Foresee (Longsys), família LEGADA "NCEMBSF9" de eMMC (2026-08-19).
+# Origem: PN de bancada "NCEMBSF916G" (debug estoque, known=false, in_review_queue=true, 0 fuzzy).
+# Sem hífen na busca; o PN real/catalogado é "NCEMBSF9-16G".
+#
+# ⭐ FONTE-OURO: datasheet OFICIAL da própria Shenzhen Longsys Electronics ("NCEMBSF9-xxG
+#   Specification", Rev A0, 2015/07/01, JEDEC eMMC 5.0), hospedado pela Pine64 (fabricante de SBC,
+#   mesmo padrão de mirror confiável já usado no Test Report NCEMASLD via Radxa). Aberto e lido na
+#   íntegra — Seção 2 "Product List" traz a família COMPLETA em uma tabela só:
+#     16GB → NCEMBSF9-16G → NAND 128Gb×1 → 14.4GB usável → 12x16x1.2mm → 169FBGA
+#     32GB → NCEMBSF9-32G → NAND 128Gb×2 → 28.8GB usável → 12x16x1.2mm → 169FBGA
+#   (capacidade nominal no campo `capacity`, seguindo a mesma convenção já usada em toda a família
+#   eMMC Foresee — FEMD/FEMK/FEMJ/NCEMASLD — de gravar o valor NOMINAL/rotulado, não o usável líquido).
+#   Confirma também interface = **eMMC 5.0** (JEDEC eMMC 5.0, "Backward compatible to eMMC4.41/4.51")
+#   — DIFERENTE do NCEMASLD (eMMC 5.1, ver foresee_ncemasld_legacy_2026-08-19.yaml). Não copiar a
+#   interface de um irmão pro outro sem checar: são famílias/gerações distintas dentro da mesma raiz "NC".
+#
+# ⚠ ESTRUTURA — mesmo esquema geral da raiz legada "NC" já documentado em NCLD/NCEMASLD:
+#   "NC" + código de TIPO 2 chars ("EM"=eMMC) + código de vendor/produto 4 chars ("BSF9") + capacidade
+#   literal (GB) + hífen opcional. Mais uma confirmação do esquema "NC"+<tipo 2ch>+<produto>+<capacidade>.
+#
+# ⚠ "-64G" NÃO submetido: aparece em listagens de revenda genérica (grandado.com, Alibaba) mencionando
+#   "NCEMBSF9-64G" junto dos -16G/-32G, mas SEM datasheet próprio, SEM distribuidor estruturado
+#   (DigiPart/LCSC/netComponents) com estoque real — e o datasheet oficial Rev A0 (fonte acima) só
+#   documenta 16G/32G como a família completa. Evidência fraca demais pra submeter mesmo como
+#   `estimated` com specs decididas (não sabemos capacidade/NAND/pacote reais) — sinalizado, não
+#   inventado. Se aparecer PN de bancada `NCEMBSF964G` ou fonte melhor, pesquisar de novo.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncembsf9_2026-08-19.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncembsf9_2026-08-19.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMBSF9-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    interface: "eMMC 5.0"
+    confidence: confirmed
+    notes: >
+      ⭐ PN de bancada foi "NCEMBSF916G" (sem hífen) — este é o PN real catalogado. FONTE PRIMÁRIA:
+      datasheet oficial Shenzhen Longsys Electronics "NCEMBSF9-xxG Specification" Rev A0 (2015/07/01,
+      JEDEC eMMC 5.0), hospedado pela Pine64, aberto e lido na íntegra. Seção 2 "Product List": Density
+      16GB, NAND 128Gb×1, Capacity(User Density 90%)=14.4GB, Package 12x16x1.2mm 169FBGA. Seção 7.8
+      Partition Configuration confirma: User 14.4GB / 14800MB / 30310400 setores. Capacidade nominal
+      16GB no campo capacity (convenção já usada em toda a família eMMC Foresee — usável líquido vai
+      só na nota). Performance: Seq.Write até 60MB/s, Seq.Read até 150MB/s (Seção 5.1). Corroborado por
+      datasheet4u (página própria, "NCEMBSF9-16G Datasheet PDF"), netCOMPONENTS, reverse-costing.com
+      (teardown próprio), Alibaba (múltiplas listagens).
+    source_url: "https://files.pine64.org/doc/datasheet/pine64/FORESEE_eMMC_NCEMBSF9-xxG%20SPEC%20A0%2020150730.pdf"
+  - part_number: "NCEMBSF9-32G"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    interface: "eMMC 5.0"
+    confidence: confirmed
+    notes: >
+      Mesmo datasheet oficial do irmão -16G (fonte primária acima), mesma tabela "Product List":
+      Density 32GB, NAND 128Gb×2, Capacity(User Density 90%)=28.8GB, mesmo pacote 12x16x1.2mm 169FBGA.
+      Seção 7.8 confirma: User 28.8GB / 29600MB / 60620800 setores. Performance: Seq.Write até 70MB/s,
+      Seq.Read até 150MB/s (maior que o -16G, mesma seção 5.1). Capacidade literal 32G=32GB, mesma
+      convenção da família. Corroborado por netCOMPONENTS (listagem própria), datasheet.lcsc.com
+      (mirror próprio, distinto do NCEMASLD), reverse-costing.com (teardown próprio), OMO Electronic,
+      múltiplas listagens Alibaba.
+    source_url: "https://files.pine64.org/doc/datasheet/pine64/FORESEE_eMMC_NCEMBSF9-xxG%20SPEC%20A0%2020150730.pdf"

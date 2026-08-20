@@ -1,0 +1,89 @@
+# Submissão known_parts — Foresee (Longsys), família LEGADA "NCEMASLD" de eMMC industrial
+# (2026-08-19). Origem: PN buscado na bancada "NCEMASLD32G" (debug estoque, known=false,
+# in_review_queue=true, 0 fuzzy_suggestions) — sem hífen na busca, mas o PN real/catalogado é
+# "NCEMASLD-32G" (confirmado em MÚLTIPLAS fontes, ver abaixo). Pedido padrão do dono desde as
+# rodadas anteriores: coletar o PN + toda a família/variantes, nunca só 1.
+#
+# ⚠ ESTRUTURA — mesma "raiz legada NC" já decifrada em NCLD (submissão foresee_ncld_legacy_*):
+#   "NC" (raiz Longsys legada) + código de TIPO de 2 chars ("LD"=LPDDR já visto; aqui "EM"=eMMC,
+#   espelhando o par pn[1:3] "EM"=eMMC já documentado pro prefixo MODERNO "FE_" em FORESEE.md §2) +
+#   código de vendor/produto de 4 chars ("ASLD") + capacidade (literal GB, mesma convenção eMMC de
+#   sempre) + hífen opcional. Ou seja: a raiz "NC" tem um esquema GERAL — "NC"+<tipo 2ch>+<produto>+
+#   <capacidade> — que vale tanto pra LPDDR (NCLD) quanto pra eMMC (NCEM). Insight novo, útil pra
+#   prever prefixos futuros na bancada (ex. "NCUF..." seria UFS, por analogia).
+# ⚠ FONTE-OURO pro 32G: Test Report OFICIAL da própria Longsys (papel timbrado "Longsys
+#   Confidential", hospedado pela Radxa como documentação de qualificação do Rock Pi) — abri o PDF
+#   e confirma "Brand: FORESEE / Model: NCEMASLD-32G / Capacidade: 29600 MByte / Dimensões:
+#   11.5x13x1.0mm / JEDEC v5.1 / Density 32GB, NAND 256Gb". É a fonte mais forte já vista nesta
+#   marca — teste de qualificação real, não datasheet comercial nem distribuidor.
+# ⚠ 64G e 128G seguem o MESMO die de 256Gb (2 e 4 dies respectivamente — 256Gb×2=64GB,
+#   256Gb×4=128GB, aritmética batendo exato com o dígito do PN), com código de datasheet próprio
+#   na LCSC/JLCPCB (C719491/C719493) + distribuidores reais com estoque — mas sem um documento
+#   próprio aberto (só o 32G teve o test report lido na íntegra). Capacidade pela convenção literal
+#   já validada sem exceção em 9+ irmãos eMMC desta marca.
+# ⚠ HIPÓTESE DE LINHAGEM (não bloqueia a submissão, é só contexto histórico): "ASLD" é o MESMO
+#   sufixo que aparece em "FSEIASLD-32G/64G/128G" (já documentado em FORESEE.md como equivalente
+#   legado de FEMDRM032G/064G/0128G). "NCEMASLD" pode ser um estágio AINDA MAIS ANTIGO do mesmo
+#   produto físico (Longsys pré-marca-Foresee → FSEIASLD → FEMDRM atual), dado o mesmo sufixo +
+#   mesmas 3 capacidades + mesmo pacote FBGA-153 + mesma linha industrial. Não afeta a classificação
+#   (chip_type/capacidade já bem confirmados por conta própria), só registrado como nota histórica.
+# ⚠ CLUSTER MAIOR NÃO PERSEGUIDO AGORA: o agregador DigiPart revelou uma família bem maior de
+#   irmãos "NCEM*" com códigos de produto DIFERENTES (não "ASLD"): NCEMAD9D-16G, NCEMAHBD-08G,
+#   NCEMASKG-16G, NCEMAD6B-32G/16G, NCEMAD7B-08G, NCEMAM59-08G, NCEMAH59-16G, NCEFEH58-16G,
+#   NCEMASD9-16G. Mesma raiz "NC"+"EM", códigos de vendor/produto diferentes, capacidades 8/16/32GB.
+#   NÃO submetidos agora (fora do escopo do PN buscado, "ASLD" já cobre o que foi pedido) — lote
+#   extra grande se o dono quiser essa família inteira.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncemasld_legacy_2026-08-19.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncemasld_legacy_2026-08-19.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMASLD-32G"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      ⭐ PN buscado na bancada foi "NCEMASLD32G" (sem hífen) — este é o PN real catalogado. FONTE
+      PRIMÁRIA: Test Report oficial Longsys (papel timbrado "Longsys Confidential", hospedado pela
+      Radxa como doc. de qualificação do Rock Pi), aberto e lido na íntegra: "Brand: FORESEE / Model:
+      NCEMASLD-32G / Capacidade: 29600 MByte / Dimensões: 11.5x13x1.0mm / JEDEC Standard v5.1 /
+      Density 32GB, NAND Type 256Gb / Boot partition 1: 4096KB / Boot partition 2: 4096KB / RPMB:
+      4096KB". Testes de qualificação completos (performance/elétrico/power-cycle/burn-in/wear
+      leveling/confiabilidade/endurance/compatibilidade SOC) todos "Pass". Capacidade nominal 32GB
+      (29600MB é o usável real, líquido de área reservada — convenção padrão eMMC, mantenho "32GB"
+      no campo capacity seguindo a mesma convenção nominal já usada em toda a família FEMD/FEMK/FEMJ).
+      Corroborado por: datasheet4u (página própria), Chipsmall, Arrow.com, DigiPart (distribuidores
+      reais), JLCPCB C520992 (Manufacturer=FORESEE, Package=FBGA-153), utmel, ecomponentshop.
+    source_url: "https://dl.radxa.com/rockpi/docs/hw/Test_Report_NCEMASLD-32G_20180313.pdf"
+  - part_number: "NCEMASLD-64G"
+    chip_type: "eMMC"
+    capacity: "64GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Mesma família/sufixo "ASLD" do NCEMASLD-32G (fonte primária acima). Datasheet próprio
+      catalogado na LCSC (C719491, "FORESEE eMMC NCEMASLD-xxG Datasheet") + JLCPCB C719491 mesmo
+      código; DigiPart agrega 4 distribuidores reais com estoque (ODG/Origin Data Global 4.411un
+      com tabela de preço por quantidade, Shenzhen Yuanxinai/LONGSYS 9.052un "NEW", Sierra IC 2.813un,
+      Green Light 534un). NAND: 256Gb×2 dies = 512Gb = 64GB — mesmo die-base de 256Gb confirmado no
+      test report do irmão 32G (256Gb×1 die), aritmética consistente. Capacidade literal 64G=64GB,
+      mesma convenção já validada sem exceção em toda a família eMMC Foresee. FBGA-153, 11.5x13mm
+      (mesmo footprint do 32G). Sem test report próprio aberto (só o do 32G foi lido na íntegra) —
+      ainda assim confirmed pela força combinada de datasheet catalogado + convenção literal +
+      consistência aritmética do die.
+    source_url: "https://datasheet.lcsc.com/lcsc/2008121142_FORESEE-NCEMASLD-64G_C719491.pdf"
+  - part_number: "NCEMASLD-128G"
+    chip_type: "eMMC"
+    capacity: "128GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Mesma família/sufixo "ASLD". Datasheet próprio catalogado na LCSC (C719493) + JLCPCB C719493
+      (Manufacturer=FORESEE, Package=BGA-153) + mirror Scribd ("Foresee-Ncemasld-128g C719493") +
+      DigiPart (listagem própria confirmada). NAND: 256Gb×4 dies = 1024Gb = 128GB — mesmo die-base
+      de 256Gb dos irmãos 32G/64G, aritmética consistente (1/2/4 dies = 32/64/128GB, progressão
+      limpa). Capacidade literal 128G=128GB, mesma convenção da família. Maior capacidade confirmada
+      da linha NCEMASLD. Sem test report próprio aberto — confirmed pela mesma força combinada do
+      irmão 64G (datasheet catalogado + convenção literal + consistência aritmética do die).
+    source_url: "https://datasheet.lcsc.com/lcsc/2008121142_FORESEE-NCEMASLD-128G_C719493.pdf"
