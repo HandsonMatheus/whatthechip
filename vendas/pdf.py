@@ -586,7 +586,16 @@ def render_so_manager_pdf(doc: dict) -> bytes:
 
     # ── 3. SHIP FROM × SHIP TO, lado a lado (leitura de transportadora) ─────
     def _caixa_endereco(chave, bloco):
+        # ⚠ O RÓTULO sai SEMPRE, com ou sem dado. Metade de caixa em branco,
+        # sem sequer dizer 'SHIP TO', se lê como falha de impressão — e num
+        # documento de embarque a leitura certa é a outra: **está faltando o
+        # destinatário**, vá preencher no cadastro do comprador. O travessão
+        # deixa o buraco visível para quem imprime, antes de ser visível para
+        # a transportadora.
         corpo = [P(_t(chave), st_cap)]
+        if not bloco:
+            corpo.append(P('\u2014', st_shipn))
+            return corpo
         if bloco.get('name'):
             corpo.append(P(bloco['name'], st_shipn))
         for linha in bloco.get('lines') or []:
@@ -598,29 +607,35 @@ def render_so_manager_pdf(doc: dict) -> bytes:
         return corpo
 
     de, para = doc.get('ship_from') or {}, doc.get('ship_to') or {}
-    if de or para:
-        # Uma caixa só, dividida ao meio: o remetente à esquerda e o
-        # destinatário à direita — o par que a transportadora procura junto.
-        enderecos = Table(
-            [[_caixa_endereco('ship_from', de) if de else '',
-              _caixa_endereco('ship_to', para) if para else '']],
-            colWidths=[0.5 * avail, 0.5 * avail])
-        enderecos.setStyle(TableStyle([
-            ('BOX', (0, 0), (-1, -1), 0.8, _INK),
-            ('LINEAFTER', (0, 0), (0, 0), 0.4, _LINE),
-            ('LEFTPADDING', (0, 0), (-1, -1), 9),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 9),
-            ('TOPPADDING', (0, 0), (-1, -1), 7),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ]))
-        story += [Spacer(0, 10), enderecos]
+    # Uma caixa só, dividida ao meio: o remetente à esquerda e o destinatário à
+    # direita — o par que a transportadora procura junto. Sai SEMPRE: este é um
+    # documento de embarque, e embarque sem remetente e destinatário no papel
+    # não existe. Faltando o dado, o campo aparece vazio e cobra quem cadastra.
+    enderecos = Table(
+        [[_caixa_endereco('ship_from', de),
+          _caixa_endereco('ship_to', para)]],
+        colWidths=[0.5 * avail, 0.5 * avail])
+    enderecos.setStyle(TableStyle([
+        ('BOX', (0, 0), (-1, -1), 0.8, _INK),
+        ('LINEAFTER', (0, 0), (0, 0), 0.4, _LINE),
+        ('LEFTPADDING', (0, 0), (-1, -1), 9),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 9),
+        ('TOPPADDING', (0, 0), (-1, -1), 7),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    ]))
+    story += [Spacer(0, 10), enderecos]
 
     # ── 3b. DECLARAÇÃO ADUANEIRA — exigência da transportadora ─────────────
-    # Descrição e valor SEMPRE preenchidos (dono, 2026-08-18): campo em branco
-    # é o que faz o pacote parar ou ser reavaliado por quem não conhece a
-    # carga. O valor é FICTÍCIO e assumido como tal — é sucata para descarte,
-    # e o valor comercial é justamente o que não pode viajar impresso na caixa.
+    # Descrição, posição pautal e valor SEMPRE preenchidos: campo em branco é o
+    # que faz o pacote parar, ou ser reavaliado por quem não conhece a carga.
+    #
+    # ⚠ Os três vêm de FONTE ÚNICA em `services` (SHIPMENT_DESCRIPTION,
+    # SHIPMENT_HS_CODE, declared_value_usd) — aqui só se imprime. E desde
+    # 2026-08-20 o valor é o REAL da venda, não mais um número fictício: a
+    # carga deixou de se declarar como descarte, mercadoria vendida tem valor,
+    # e Macau é porto franco (o número inventado não economizava tarifa
+    # nenhuma e só divergia da fatura comercial).
     if doc.get('shipment_desc'):
         valor = doc.get('shipment_value')
         aduana = Table(
@@ -724,14 +739,22 @@ def render_so_manager_pdf(doc: dict) -> bytes:
     st_anx  = ParagraphStyle('anx', fontName=font, fontSize=7, leading=9.2,
                              textColor=_INK, leftIndent=-6, spaceAfter=4,
                              alignment=4)          # justificado
+    # ⚠ O parágrafo CHINÊS sai à ESQUERDA, não justificado. Motivo prático: o
+    # `_rich` parte o texto em runs (chinês na TTF, latino na Helvetica), e
+    # cada troca de fonte vira uma oportunidade de quebra. Justificando, o
+    # reportlab estica ESSAS folgas para fechar a linha e abre buracos de dois
+    # centímetros em volta de cada "Y49", "A1181", "3A090". Tipografia CJK não
+    # pede justificação — a coluna já fecha sozinha, porque o ideograma tem
+    # largura fixa.
+    st_anx_zh = ParagraphStyle('anxzh', parent=st_anx, alignment=0)
     st_anxh = ParagraphStyle('anxh', fontName=bold, fontSize=7.5, leading=10,
                              textColor=_INK, leftIndent=-6, spaceBefore=6,
                              spaceAfter=2)
     story += [Spacer(0, 14), P(_t3('annex'), st_sec)]
     for chave, textos in _ANEXO:
         story.append(P(_t3(chave), st_anxh))
-        for texto in textos:
-            story.append(P(texto, st_anx))
+        for i, texto in enumerate(textos):
+            story.append(P(texto, st_anx_zh if i == 1 else st_anx))
     story += [Spacer(0, 4), P(_t3('a_sign'), st_cap),
               P(doc.get('company') or '—', st_val)]
 

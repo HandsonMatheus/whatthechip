@@ -1941,6 +1941,22 @@ mecânico (`_L` + `_ANEXO` + `_t3`).
 `SHIPMENT_DESCRIPTION` ou `SHIPMENT_HS_CODE` é mudar o que a empresa afirma para
 uma alfândega — fale com o despachante antes, não é ajuste de interface.
 
+⚠ **Duas correções de composição que o PDF revelado expôs:**
+
+· **O parágrafo chinês não se justifica.** O `_rich` parte o texto em runs
+  (chinês na TTF, latino na Helvetica) e cada troca de fonte vira oportunidade
+  de quebra; justificado, o reportlab estica ESSAS folgas para fechar a linha e
+  abre um vão de dois centímetros em volta de cada `Y49`, `A1181`, `3A090`. O
+  pico do operador `Tw` batia em **101 pt**. À esquerda cai para ~2 pt — e
+  tipografia CJK não pede justificação, o ideograma tem largura fixa e a coluna
+  fecha sozinha. Teste mede o `Tw`, não a aparência.
+· **SHIP TO em branco é DEFEITO visível, não caixa sumida.** A regra antiga
+  ("comprador sem endereço = bloco ausente") produzia meia caixa vazia, sem nem
+  a palavra SHIP TO — que quem imprime lê como falha de impressão. A leitura
+  certa é a outra: falta o destinatário, vá preencher o cadastro. O bloco sai
+  SEMPRE, com travessão no lugar do dado. Nada é inventado: `ship_to()` continua
+  devolvendo `{}`.
+
 ⚠ **Armadilha de teste (custou tempo, fica registrada).** Depois do anexo, `b'\\245'`
 (o ¥ escapado) **deixou de servir de sentinela de dinheiro**: o PDF passou a
 embutir um subconjunto CJK grande e o índice de glifo de dois bytes pode conter o

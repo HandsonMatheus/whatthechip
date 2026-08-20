@@ -1123,13 +1123,25 @@ class PdfConferenciaGerenteTests(TestCase):
         for contato in (b'Tang Dongmei', b'qq.com', b'63525754'):
             self.assertNotIn(contato, junto)
 
-    def test_ship_to_sem_endereco_nao_desenha_a_caixa(self):
-        """Nunca inventa destino: comprador sem endereço = bloco ausente (é
-        melhor a transportadora reclamar do que despachar errado)."""
+    def test_ship_to_sem_endereco_sai_VAZIO_e_nunca_inventado(self):
+        """Nunca inventa destino — mas também não some com o campo.
+
+        ⚠ **Mudou em 2026-08-20**, com o papel virando documento de DESPACHO.
+        Antes o bloco inteiro sumia quando o comprador não tinha endereço; o
+        resultado era meia caixa em branco, sem sequer a palavra SHIP TO, que
+        quem imprime lê como falha de impressão. A leitura certa é a outra:
+        **está faltando o destinatário**, vá preencher no cadastro. Embarque
+        sem remetente e destinatário no papel não existe — o campo aparece,
+        vazio, e cobra quem cadastra ANTES de a transportadora cobrar.
+
+        O que NÃO mudou: o dado continua vindo só do cadastro (`ship_to` segue
+        devolvendo `{}`), e nada é inventado para preencher o vão.
+        """
         self.assertEqual(services.ship_to(self.buyer), {})
         self.assertEqual(services.manager_document(self.so)['ship_to'], {})
-        self.assertNotIn(b'SHIP TO',
-                         b' '.join(_textos_do_pdf(self._pdf(self.manager))))
+        junto = b' '.join(_textos_do_pdf(self._pdf(self.manager)))
+        self.assertIn(b'SHIP TO', junto)
+        self.assertIn(b'SHIP FROM', junto)
 
     # ── conteúdo ────────────────────────────────────────────────────────────
 
@@ -2523,6 +2535,22 @@ class DeclaracaoAduaneiraTests(TestCase):
         self.assertIn(b'Declared value', texto)
         self.assertIn(b'HS code', texto)
 
+    def test_SHIP_TO_aparece_mesmo_sem_endereco_cadastrado(self):
+        """Meia caixa em branco se lê como falha de impressão. A leitura certa
+        é a outra: **falta o destinatário** — vá preencher no cadastro do
+        comprador. O rótulo sai sempre; o travessão denuncia o buraco para quem
+        imprime, antes de a transportadora denunciar.
+        """
+        _sem_compressao(self)
+        self.assertFalse(self.buyer.ship_to_address)      # fixture sem endereço
+        so = self._so('S')
+        with company_scope(self.company):
+            from vendas.pdf import render_so_manager_pdf
+            pdf = render_so_manager_pdf(services.manager_document(so))
+        texto = b' '.join(_textos_do_pdf(pdf))
+        self.assertIn(b'SHIP TO', texto)
+        self.assertIn(b'SHIP FROM', texto)
+
 
 class AnexoRegulatorioTests(TestCase):
     """O ANEXO das leis no documento de despacho (dono, 2026-08-20:
@@ -2596,6 +2624,26 @@ class AnexoRegulatorioTests(TestCase):
         self.assertIn(b'Anexo normativo', self.texto)
         self.assertIn(b'Ley n', self.texto)             # o corpo em espanhol
         self.assertIn(b'Convenio de Basilea', self.texto)
+
+    def test_o_paragrafo_chines_nao_sai_justificado(self):
+        """Buraco de dois centímetros no meio da frase é defeito, não estilo.
+
+        O `_rich` parte o texto em runs (chinês na TTF, latino na Helvetica) e
+        cada troca de fonte vira oportunidade de quebra. Justificado, o
+        reportlab estica ESSAS folgas para fechar a linha — e um "Y49" no meio
+        de uma frase em chinês abria um vão enorme de cada lado.
+
+        A medida é o operador de espaçamento de palavra do PDF (``Tw``): com o
+        chinês justificado o pico batia em **101 pt**; à esquerda fica na casa
+        de 2 pt, que é o justificado normal do inglês e do espanhol.
+        """
+        import re
+        picos = [abs(float(v)) for v in
+                 re.findall(rb'([-\d.]+) Tw', self.pdf)]
+        self.assertTrue(picos, 'nenhum Tw no PDF — o regex parou de casar')
+        self.assertLess(max(picos), 8,
+                        'espaçamento de palavra gigante: algum parágrafo CJK '
+                        'voltou a ser justificado')
 
 
 class DespachoTests(TestCase):
