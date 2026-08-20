@@ -252,14 +252,32 @@ maps:
   # como emcp_ram. Código sem confirmação → RAM "não mapeada" (NAND ainda decodifica).
   # Cada mapa CRESCE por família conforme confirmamos mais densidades.
   #
-  # KMD (LPDDR4X): 32GB-NAND (D6/X6)→3GB · 64GB-NAND (P6/H6)→4GB. Fontes: KMDX60018M-B425
-  #   (página oficial Samsung: 24Gb=3GB LPDDR4X), KMDD60018M/KMDP6001DA (Octopart/distrib.),
-  #   KMDH6001DA/KMDP60018M (golden pré-existente).
+  # ⚠ CORRIGIDO 2026-08-20 (bug de POSIÇÃO — achado em pesquisa cruzada por outro
+  #   chat, dossiê "KMDL6001DA", + verificação independente nesta sessão via
+  #   Preduo/Puris/13 known_parts de produção): a chave acima (D6/H6/P6/X6/V6/C6…)
+  #   é só o NAND (pn[3:5]). A RAM da família KMD NÃO depende dela — depende da
+  #   CAUDA do PN (pn[8:10]). Prova (mesmo pn[3:5], RAM diferente por cauda):
+  #   KMDP6001DA (P6+DA)=4GB × KMDP60018M (P6+8M)=3GB · KMDD6001DM (D6+DM)=4GB ×
+  #   KMDD60018M (D6+8M)=3GB · KMDX6001DM (X6+DM)=4GB × KMDX60018M (X6+8M)=3GB.
+  #   O fix de 2026-07-04 (comentário acima, "bug X6") consertou QUAL MAPA se lê
+  #   (compartilhado→por-família); não consertou QUAL POSIÇÃO. Por isso o mapa
+  #   agora é keyed pela CAUDA (decode_gen_pos=8, não mais 3) — e por não
+  #   depender do NAND, o MESMO mapa de 5 chaves cobre TODAS as densidades da
+  #   família (inclusive V6/C6, que antes não tinham RAM nenhuma mapeada).
+  #   5 chaves confirmadas (Preduo + Puris + known_parts confirmed/manual de
+  #   produção, zero contradição): 8M/BM→3GB (24Gb) · DA/DB/DM→4GB (32Gb).
+  #   Impacto medido em produção (2026-08-20, auditoria read-only): 1 chip
+  #   com RAM ERRADA (KMDP60018M, mostrava 4GB) + 4 chips sem RAM mapeada
+  #   (KMDV6001DA/DM) — todos corrigidos por este fix. ⚠ NÃO replicar por
+  #   analogia pra KMG/KMAG/KMAS (mesma exposição estrutural, mas NÃO
+  #   verificado ainda — regra #12 da marca: cada família exige o próprio
+  #   levantamento de peças reais antes de mexer).
   SAM_EMCP_RAM_KMD:
-  - [D6, LPDDR4X 3GB, '']
-  - [H6, LPDDR4X 4GB, '']
-  - [P6, LPDDR4X 4GB, '']
-  - [X6, LPDDR4X 3GB, '']
+  - [8M, LPDDR4X 3GB, '']
+  - [BM, LPDDR4X 3GB, '']
+  - [DA, LPDDR4X 4GB, '']
+  - [DB, LPDDR4X 4GB, '']
+  - [DM, LPDDR4X 4GB, '']
   # KMG (LPDDR3): TODOS os códigos confirmados → 3GB (24Gb LPDDR3); só o NAND varia. Fontes Tier-1:
   #   KMGD6001BM-B421 (datasheet Samsung Jan/2017: 32GB eMMC + 24Gb=3GB), KMGP6001BM-B514 (página
   #   oficial Samsung: 64GB + 24Gb=3GB), KMGX6001BA/BM (distribuidores "32+24 D3 LPDDR3").
@@ -1718,13 +1736,13 @@ families:
   decode_cap_pos: 3
   decode_cap_len: 2
   decode_cap_map: SAM_EMCP_NAND
-  decode_gen_pos: 3
+  decode_gen_pos: 8
   decode_gen_map: SAM_EMCP_RAM_KMD
   decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP Samsung LPDDR4X + eMMC 5.1. D = LPDDR4X (Galaxy A12, A22, A32 — entrada/mid-range 2020-2022). NÃO confundir com uMCPs KMG/KML que usam UFS. DECODE (corrigido 2026-07-04, bug X6): NAND por pn[3:5]→SAM_EMCP_NAND; RAM por pn[3:5]→SAM_EMCP_RAM_KMD (exata, só chaves LPDDR4X confirmadas: D6/X6=3GB, P6/H6=4GB). Não usa mais o SAM_EMCP_CAP compartilhado (misturava RAM de LPDDR4/LPDDR3). Destino: bancada reacondicional eMCP.'
-  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "D → LPDDR4X (SAM_EMCP_GEN)", "pn[3:5] → densidade: 1º char = NAND (D/X=32GB, P/H=64GB), par → RAM LPDDR4X (X6/D6=24Gb=3GB, P6/H6=32Gb=4GB)", "Fonte Tier-1: página oficial Samsung KMDX60018M-B425 = 32GB eMMC5.1 + 24Gb LPDDR4X"]'
+  tip: 'eMCP Samsung LPDDR4X + eMMC 5.1. D = LPDDR4X (Galaxy A12, A22, A32 — entrada/mid-range 2020-2022). NÃO confundir com uMCPs KMG/KML que usam UFS. DECODE (corrigido 2026-08-20, bug de POSIÇÃO — um nível abaixo do bug X6 de 2026-07-04): NAND por pn[3:5]→SAM_EMCP_NAND; RAM por pn[8:10] (a CAUDA, não a chave de NAND)→SAM_EMCP_RAM_KMD (exata, só caudas confirmadas: 8M/BM=3GB, DA/DB/DM=4GB — a RAM não depende do NAND, por isso 1 mapa só cobre qualquer chave). Não usa mais o SAM_EMCP_CAP compartilhado (misturava RAM de LPDDR4/LPDDR3). Destino: bancada reacondicional eMCP.'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "D → LPDDR4X (SAM_EMCP_GEN)", "pn[3:5] → NAND: D/X/C=32-64GB conforme SAM_EMCP_NAND (chave não decide RAM, só NAND)", "pn[8:10] → RAM: a CAUDA do PN (8M/BM=24Gb=3GB · DA/DB/DM=32Gb=4GB) — corrigido 2026-08-20, achado cruzando 13 known_parts de produção + Preduo/Puris: mesma chave pn[3:5], cauda diferente, RAM diferente (KMDP6001DA=4GB × KMDP60018M=3GB)", "Fonte Tier-1: página oficial Samsung KMDX60018M-B425 = 32GB eMMC5.1 + 24Gb LPDDR4X (NAND); RAM por cauda confirmada em 13 known_parts confirmed/manual sem contradição + Preduo/Puris cruzados"]'
 - prefix: KMF
   chip_type: eMCP
   subtype: LPDDR3

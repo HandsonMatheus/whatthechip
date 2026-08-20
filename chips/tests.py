@@ -1938,8 +1938,9 @@ _SAM_GOLDEN = {
     'KMAS9001PM': ('uMCP', '', 'UFS 3.1 256GB', 'LPDDR5 8GB', '', 'RENTÁVEL'),
     'KMDD60018M': ('eMCP', '', 'eMMC 5.1 32GB', 'LPDDR4X 3GB', '', 'RENTÁVEL'),
     'KMDH6001DA': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
-    'KMDP60018M': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KMDP60018M': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 3GB', '', 'RENTÁVEL'),  # 2026-08-20: era 4GB (bug de posição, RAM mora na cauda 8M, não na chave P6)
     'KMDP6001DA': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KMDV6001DA': ('eMCP', '', 'eMMC 5.1 128GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),  # 2026-08-20: chave V6 não tinha RAM mapeada antes do fix de cauda
     'KMDX60018M': ('eMCP', '', 'eMMC 5.1 32GB', 'LPDDR4X 3GB', '', 'RENTÁVEL'),
     'KMFE60012M': ('eMCP', '', 'eMMC 5.1 16GB', 'LPDDR3 2GB', '', 'RENTÁVEL'),
     'KMFN60012M': ('eMCP', '', 'eMMC 5.1 8GB', 'LPDDR3 1GB', '', 'RENTÁVEL'),
