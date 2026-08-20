@@ -1879,6 +1879,7 @@ _SAM_GOLDEN = {
     'K4W4G1646D': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'NÃO RENTÁVEL'),
     'K4XXXXXX': ('LPDDR1', '', '', '', "Código 'XX' não mapeado — consultar datasheet", 'NÃO RENTÁVEL'),
     'K4XXXXXX-BCPB': ('LPDDR1', '', '', '', "Código 'XX' não mapeado — consultar datasheet", 'NÃO RENTÁVEL'),
+    'K4Y50164UE': ('RDRAM', '512Mb', '', '', '', 'NÃO RENTÁVEL'),  # 2026-08-20: família nova, XDR DRAM (PS3 Cell RAM) — âncora golden obrigatória
     'K4ZAF325B': ('GDDR6', '', '', '', '', 'NÃO RENTÁVEL'),  # GDDR morto por tipo (2026-07-23)
     'K4ZAF325BC': ('GDDR6', '', '', '', '', 'NÃO RENTÁVEL'),
     'K524G2G': ('NOR Flash', '', '', '', '', 'NÃO RENTÁVEL'),

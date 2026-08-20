@@ -114,6 +114,21 @@ maps:
   - ['44', 144Mb, 16Mx9 por canal]
   - ['76', 576Mb, 64Mx9 por canal]
   - ['88', 288Mb, 32Mx9 por canal]
+  # SAM_XDR_CAP (2026-08-20): família K4Y, XDR DRAM (Rambus) — NÃO é o mesmo
+  # código de densidade do RDRAM clássico (K4R/RDRAM_CAP) apesar de ocupar a
+  # mesma posição pn[3:5] — geração Rambus diferente, mapa separado de
+  # propósito (mesma filosofia "1 mapa por família = zero ambiguidade" das
+  # famílias eMCP). Só a chave confirmada via fonte real entra aqui — chart
+  # comunitário (PS3 Developer wiki, tabela "Samsung memory product code")
+  # lista '10'=1G e '52'=512M também, mas SEM confirmação independente (a
+  # wiki é só 1 fonte) → ficam de fora até aparecer PN real com essas chaves.
+  # '50' tem 2 fontes convergentes: a mesma tabela da wiki E o link do
+  # datasheet arquivado (Wayback) hospedado nela, cujo PRÓPRIO CAMINHO da URL
+  # confirma "512Mbit/K4Y50164UE" — https://web.archive.org/web/20100119172135/
+  # http://www.samsung.com/global/system/business/semiconductor/product/2007/
+  # 6/11/XDR_RDRAM/XDRDRAM/Component/512Mbit/K4Y50164UE/ds_k4y50xx4ue_rev10.pdf
+  SAM_XDR_CAP:
+  - ['50', 512Mb, '']
   SAM_EMCP_CAP:
   - ['11', 4GB, 512MB]
   - ['21', 32GB, 2GB]
@@ -843,6 +858,24 @@ families:
   suffix_rules: ''
   tip: 'RDRAM Samsung / Rambus DRAM (1999–2003). ⚠ NÃO confundir com DDR5 (K4RA): K4R + NÚMERO = RDRAM, K4R + LETRA = DDR5. Barramento Rambus 18-bit (16-bit dados + 2-bit ECC). Densidade: chars 4-5 do PN (27=128Mb, 44=144Mb, 88=288Mb, 76=576Mb). Presente em: PlayStation 2, Pentium 4 primeiros (RDRIMM). OBSOLETO — destino: fluxo de resíduo (moagem/refino).'
   reasoning: ''
+- prefix: K4Y
+  chip_type: RDRAM
+  subtype: XDR
+  interface: DRSL
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_XDR_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'XDR DRAM Samsung / Rambus (2005–2010) — RAM principal do Cell (CPU) do PlayStation 3, não confundir com a RAM de vídeo do RSX (essa é GDDR3/K4J). Reaproveita o bucket "RDRAM" do chip_types.py (dead/commercial=False) — mesma classe de obsolescência do RDRAM clássico (K4R), tecnologia sucessora mas igualmente sem mercado B2B de reciclagem. Barramento DRSL (Differential Rambus Signaling Level), 1.8V/1.2V. Densidade: chars 4-5 do PN (50=512Mb confirmado). Exemplo confirmado: K4Y50164UE-JCB3 (100-ball FBGA, PS3 CECHGxx/CECHJxx/CECHKxx/CECH-20xx). Fonte: PS3 Developer wiki (tabela estruturada "Samsung memory product code") + datasheet oficial Samsung arquivado (Wayback, URL cita "512Mbit/K4Y50164UE" no próprio caminho). OBSOLETO — destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: '["K → Samsung Memory", "4 → DRAM", "Y → XDR DRAM (geração Rambus, sucessora do RDRAM clássico)", "pn[3:5] → densidade: 50=512Mb (SAM_XDR_CAP)", "pn[8] → interface DRSL (U), banks/organização não decodificados (não afetam rentabilidade — RDRAM é sempre NÃO RENTÁVEL por tipo)", "Fonte: PS3 Developer wiki, tabela estruturada de decode + datasheet Samsung arquivado citando o PN exato e a densidade"]'
 - prefix: K4RA
   chip_type: DDR5
   subtype: DDR5
