@@ -1,0 +1,78 @@
+# Submissão de known_parts — Samsung, família K4Y (XDR DRAM, Rambus — RAM do
+# Cell/CPU do PlayStation 3). Complementa o commit 75cea59 (gramática nova,
+# mesmo dia) — a gramática JÁ classifica estes PNs corretamente sozinha, mas
+# "a gramática já classifica certo" não é razão pra pular o registro no banco
+# (o banco confirmado é o objetivo do negócio, a gramática é só a rede de
+# segurança — são coisas separadas).
+#
+# PN do debug do operador: K4Y50164UE. Cluster pesquisado (pedido permanente:
+# nunca só 1 PN):
+# - K4Y50164UE — confirmado. Fonte: PS3 Developer wiki (tabela estruturada
+#   "Samsung memory product code", usada pra decodificar TODA a família) +
+#   link pro datasheet oficial Samsung arquivado (Wayback):
+#   https://web.archive.org/web/20100119172135/http://www.samsung.com/global/
+#   system/business/semiconductor/product/2007/6/11/XDR_RDRAM/XDRDRAM/
+#   Component/512Mbit/K4Y50164UE/ds_k4y50xx4ue_rev10.pdf — o próprio CAMINHO
+#   da URL confirma "512Mbit". Decode conferido campo a campo (densidade
+#   50=512M, organização 16=x16, banks 4=8, interface U=DRSL, revisão E=6th
+#   Gen, package J=BOC, power C=normal, speed B3=XDR 3.2Gbps) — bate 100% com
+#   o PN real, zero inconsistência.
+# - K4Y50164UC — confirmado, sibling (revisão de fabricação diferente: C=4th
+#   Gen em vez de E=6th Gen — mesma densidade). Fonte: mesma página da wiki,
+#   com seu PRÓPRIO link de datasheet oficial Samsung, também citando
+#   "512Mbit/K4Y50164UC" no caminho da URL:
+#   http://www.samsung.com/global/system/business/semiconductor/product/2007/
+#   6/11/XDR_RDRAM/XDRDRAM/Component/512Mbit/K4Y50164UC/ds_k4y50xx4uc_rev11.pdf
+#   (mesma verificação campo a campo, mesmo resultado 100% consistente).
+# - K4Y12324TE — NÃO registrado. A própria tabela-fonte marca a chave de
+#   densidade "12" como "?" (não confirmada nem pela wiki) — 3 campos do PN
+#   inteiro ficam sem decode confiável (densidade "12", interface "T", package
+#   "K"). Sem fonte real pra nenhum dos três → excluir, não adivinhar.
+# - K4Y54084UF (achado incidental numa busca, datasheet4u.com) — device
+#   diferente (54084 ≠ 50164), não faz parte deste cluster de PS3 (não
+#   apareceu na página da wiki do motherboard). Fora do escopo desta rodada.
+#
+# Nota de negócio: RDRAM/XDR é chip_type "dead" (commercial=False) no
+# chips/chip_types.py — sem caixa física, sem mercado B2B, sempre NÃO
+# RENTÁVEL. Mesmo assim entra no banco: a meta é ter cada PN confirmado por
+# fonte oficial, independente de valor comercial (mesmo racional já aplicado
+# a NOR Flash, ePoP, MCP legado — todos "dead" mas confirmados quando
+# encontrados).
+brand: "Samsung"
+known_parts:
+  - part_number: "K4Y50164UE"
+    chip_type: "RDRAM"
+    subtype: "XDR"
+    interface: "DRSL"
+    capacity: "512Mb"
+    confidence: confirmed
+    source_url: "https://www.psdevwiki.com/ps3/K4Y50164UE-JCB3"
+    notes: >
+      XDR DRAM (Rambus), RAM do Cell (CPU) do PlayStation 3 — família K4Y,
+      chave de densidade "50"=512Mb. Fonte: PS3 Developer wiki, tabela
+      estruturada "Samsung memory product code" (decodifica toda a família,
+      não é uma citação avulsa) + link pro datasheet oficial Samsung
+      arquivado no Wayback Machine, cujo próprio caminho de URL confirma
+      "512Mbit/K4Y50164UE": https://web.archive.org/web/20100119172135/
+      http://www.samsung.com/global/system/business/semiconductor/product/
+      2007/6/11/XDR_RDRAM/XDRDRAM/Component/512Mbit/K4Y50164UE/ds_k4y50xx4ue_rev10.pdf
+      Decode verificado campo a campo contra o PN real (todos os 10 caracteres
+      + sufixo "-JCB3") — 100% consistente, zero divergência. Presente nas
+      placas-mãe PS3 CECHGxx/CECHJxx/CECHKxx/CECH-20xx (100-ball FBGA).
+  - part_number: "K4Y50164UC"
+    chip_type: "RDRAM"
+    subtype: "XDR"
+    interface: "DRSL"
+    capacity: "512Mb"
+    confidence: confirmed
+    source_url: "https://www.psdevwiki.com/ps3/K4Y50164UC-JCB3"
+    notes: >
+      Sibling do K4Y50164UE — mesma densidade (512Mb), revisão de fabricação
+      anterior (C=4th Gen vs E=6th Gen no 10º caractere). Fonte: mesma tabela
+      estruturada da PS3 Developer wiki + datasheet oficial Samsung próprio
+      (não é o mesmo arquivo do UE — PN diferente, revisão diferente):
+      http://www.samsung.com/global/system/business/semiconductor/product/
+      2007/6/11/XDR_RDRAM/XDRDRAM/Component/512Mbit/K4Y50164UC/ds_k4y50xx4uc_rev11.pdf
+      (caminho da URL confirma "512Mbit/K4Y50164UC"). Presente nas
+      placas-mãe PS3 CECHAxx/CECHBxx/CECHCxx/CECHExx (104-ball FBGA — 1 ball a
+      mais que a revisão UE, mudança de package entre gerações).
