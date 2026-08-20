@@ -35,6 +35,24 @@
 # abaixo). Tentei FH08B08UCT1/FH16B08UCT1/FH128B08UCT1 e não achei nenhuma fonte independente —
 # não incluí, não adivinhei.
 #
+# ⚠ ADENDO 2026-08-20: dono colou um NOVO debug pro MESMO chip — PN físico "FH32B08UCT10C" (sem
+# hífen), que é a FH32B08UCT1 acima com o sufixo de lote/revisão "-0C" (o mesmo que já aparecia na
+# source_url do flashinfo.top de ontem) GRAVADO NO PACOTE FÍSICO desta unidade específica — ou
+# seja, minha suposição de sempre ("sufixo de revisão não é o que vem gravado no chip", usada pra
+# suprimir sufixos como "-M06U" no caso W627) NÃO vale universalmente; pra esse PN o "0C" é físico.
+# Não é chip novo pra identificar — é o MESMO FH32B08UCT1, só que a leitura da bancada desta vez
+# inclui o sufixo. Adicionei `FH32B08UCT1-0C` como known_part PRÓPRIO (mesmas specs da base, sem
+# reinventar) — não confio cegamente que a normalização do sistema (`part_number_norm`) vai
+# aparar um sufixo de 2 caracteres sem hífen sozinha; mais seguro cadastrar as duas formas do que
+# assumir. O dono sugeriu "cadastrar a gramática" (Trilha A) pra isso — não fiz: chip_type
+# "NAND Flash" aqui NÃO tem padrão posicional documentado (é lista fechada de 2 SKU conhecidos,
+# igual a TODOS os outros casos "legado" desta marca até hoje — MCAB/EC4B/627/TB29/NAND cru — que
+# viraram known_parts, nunca ChipFamily nova), e é profit_family="dead" (sucata, sem ganho em
+# decodificar capacidade automaticamente por posição). Se `known:false` persistir DEPOIS desta
+# entrega + dry-run + --commit + aprovação no admin, aí sim vale investigar normalização — mas o
+# motivo mais provável de `known:false` agora é simplesmente que o batch de ontem (FH32B08UCT1 +
+# FH64B08UCT1) ainda não foi rodado/aprovado, não um bug de sufixo.
+#
 # validar: python manage.py submit_known_parts submissions/kingston_nand_raw_2026-08-19.yaml
 
 brand: Kingston
@@ -89,3 +107,23 @@ known_parts:
       (achada por busca, não pelo debug) — sinalizando como sibling de fonte só web, não de leitura
       de bancada.
     source_url: https://flashinfo.top/FlashInfo?pn=FH64B08UCT1-60
+
+  # ── mesma FH32B08UCT1 acima, sufixo de lote "-0C" GRAVADO NO PACOTE desta unidade física ──
+  - part_number: FH32B08UCT1-0C
+    chip_type: NAND Flash
+    subtype: TLC
+    capacity: 32GB
+    interface: ''
+    device: TSOP48
+    confidence: confirmed
+    notes: >
+      MESMO chip físico da FH32B08UCT1 acima (mesma capacidade/célula/pacote/processo/fabricante) —
+      não é um SKU novo. Cadastrado como entrada própria porque o debug de estoque do dono capturou
+      o PN físico como "FH32B08UCT10C" (sem hífen) em 20/08/2026, ou seja o sufixo de lote/revisão
+      "-0C" está GRAVADO NO PACOTE desta unidade — diferente do padrão usual desta marca (onde
+      sufixo de revisão/distribuidor costuma ser só metadado de catálogo, não o que vem no chip;
+      ver caso W627/"-M06U" no arquivo eMMC standalone). Registrando as duas formas (com e sem
+      sufixo) em vez de assumir que a normalização do sistema vai aparar sozinha — mais seguro que
+      supor. Specs idênticas à FH32B08UCT1: 32GB literal, TLC, TSOP48, 15nm planar, célula Toshiba/
+      pacote marcado Kingston (confirmado fisicamente pelo dono).
+    source_url: https://flashinfo.top/FlashInfo?pn=FH32B08UCT1-0C
