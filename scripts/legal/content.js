@@ -1,0 +1,146 @@
+// Conteúdo do documento de esclarecimento legal, nos três idiomas.
+// Fonte dos fatos: DESPACHO_MACAU_CONFORMIDADE.md (pesquisa em fonte oficial).
+
+const EN = {
+  lang: 'ENGLISH',
+  title: 'LEGAL CLARIFICATION',
+  sub: 'Shipment of recovered electronic integrated circuits (memory ICs) to the Macao Special Administrative Region',
+  preambleH: 'Purpose of this document',
+  preamble: [
+    'This document is issued by the shipper at the request of the carrier or of the competent authority, in order to clarify the regulatory status of the goods described in the accompanying packing list. It addresses the three questions most commonly raised in respect of shipments of electronic integrated circuits destined for the Macao Special Administrative Region of the People’s Republic of China: whether the goods constitute waste, whether their importation requires prior licensing, and whether they are subject to controls applicable to advanced computing items.',
+    'The legal references cited below were verified against official primary sources, which are listed in full in the final section of this document.',
+  ],
+  s1H: '1. Nature of the goods — the goods are not waste',
+  s1: [
+    'The goods are electronic integrated circuits, specifically memory devices (such as eMMC, eMCP, uMCP, UFS, DDR and LPDDR devices), recovered from consumer electronic equipment.',
+    'Each unit has been individually identified by manufacturer part number, functionally tested, graded according to its condition and classified by category. The category and quantity table set out in the accompanying packing list reflects that classification and constitutes the shipper’s record of the tested and graded condition of every unit in the consignment.',
+    'The goods are functional electronic components intended for direct reuse as components. They are not waste and not scrap. They are not consigned for disposal, for recycling or for any recovery operation.',
+    'Consequently, the goods do not fall within entry Y49 (used and end-of-life electrical and electronic equipment) or within entry A1181 of the Basel Convention on the Control of Transboundary Movements of Hazardous Wastes and their Disposal, as amended by the electrical and electronic waste amendments which entered into force on 1 January 2025. The prior informed consent procedure established by that Convention accordingly does not apply to this consignment.',
+    'The shipper acknowledges that, under the Basel Convention framework, the burden of demonstrating that used equipment is destined for direct reuse rather than for waste operations rests with the shipper. That evidence is constituted by the individual identification, functional testing and grading of each unit, by the classification recorded in the accompanying packing list and by the commercial documentation held by the shipper, which is available to the competent authority upon request.',
+  ],
+  s2H: '2. Import licensing in the Macao Special Administrative Region',
+  s2: [
+    'The external trade regime of the Macao Special Administrative Region is established by Law No. 7/2003 of 23 June (External Trade Law), as amended by Law No. 3/2016.',
+    'Under that regime, prior import licensing applies exclusively to the goods listed in Table B of Annex II to that Law, as fixed by Chief Executive’s Decision No. 209/2021 and subsequently amended by Chief Executive’s Decisions No. 188/2022, No. 208/2022 and No. 110/2023.',
+    'Table B covers only the following families of goods: (i) live animals, meat, products of animal origin, fish, crustaceans and molluscs, vegetables, live plants, seeds, mushroom spawn and animal or vegetable fertilisers; (ii) vehicles; (iii) telecommunication and radio-communication apparatus; (iv) arms, ammunition and explosives; (v) dangerous substances of Class 7 (radioactive substances) and ionizing radiation generators; and, by virtue of the 2023 supplement, certain chemical compounds falling within Harmonized System headings 2806 to 2939.',
+    'Electronic integrated circuits, which fall within Harmonized System heading 8542, are not listed in Table B. They are therefore not subject to prior import licensing by the Macao Economic and Technological Development Bureau (DSEDT) or by the Macao Customs Service.',
+    'The goods forming this consignment are loose integrated circuits. They are not telecommunication or radio-communication apparatus within the meaning of family (iii) of Table B, and they do not incorporate any radio transmission function.',
+    'The Macao Special Administrative Region is a free port. No customs tariff applies to general merchandise; consumption tax is levied only on alcoholic beverages, tobacco, fuel and motor vehicles.',
+  ],
+  s3H: '3. End use and advanced computing controls',
+  s3: [
+    'The goods are commodity memory integrated circuits recovered from consumer equipment. They are not advanced computing items and do not meet the parameters of ECCN 3A090 or ECCN 4A090.',
+    'The shipper is aware that entities headquartered in the Macao Special Administrative Region are treated together with Country Group D:5 for the purposes of United States controls on advanced computing items. Those controls target high-performance processors and accelerators falling within ECCN 3A090 and 4A090. Commodity memory devices of the types listed in the accompanying packing list are not within that scope.',
+    'The goods are intended exclusively for legitimate civil and commercial use. The shipper declares that the goods are not intended, in whole or in part, for any military end use, for any nuclear, chemical or biological weapons application, nor for any end user subject to applicable sanctions.',
+  ],
+  s4H: '4. Primary sources',
+  closeH: 'Declaration',
+  close: 'The undersigned declares that the statements set out in this document are true and complete to the best of the shipper’s knowledge, and that the supporting records referred to above are available to the carrier and to the competent authority upon request.',
+  fCompany: 'Company',
+  fName: 'Name and position',
+  fDate: 'Date',
+  fSign: 'Signature',
+};
+
+const ES = {
+  lang: 'ESPAÑOL',
+  title: 'ACLARACIÓN LEGAL',
+  sub: 'Envío de circuitos integrados electrónicos recuperados (circuitos de memoria) a la Región Administrativa Especial de Macao',
+  preambleH: 'Objeto de este documento',
+  preamble: [
+    'El presente documento es emitido por el expedidor a solicitud del transportista o de la autoridad competente, con el fin de aclarar la situación regulatoria de las mercancías descritas en la lista de empaque que lo acompaña. Responde a las tres cuestiones que con mayor frecuencia se plantean respecto de envíos de circuitos integrados electrónicos con destino a la Región Administrativa Especial de Macao de la República Popular China: si las mercancías constituyen residuo, si su importación requiere licencia previa y si están sujetas a los controles aplicables a artículos de computación avanzada.',
+    'Las referencias legales citadas a continuación fueron verificadas en fuentes primarias oficiales, que se enumeran íntegramente en la sección final de este documento.',
+  ],
+  s1H: '1. Naturaleza de la mercancía — la mercancía no es residuo',
+  s1: [
+    'Las mercancías son circuitos integrados electrónicos, concretamente dispositivos de memoria (tales como eMMC, eMCP, uMCP, UFS, DDR y LPDDR), recuperados de equipos electrónicos de consumo.',
+    'Cada unidad ha sido identificada individualmente por el número de parte del fabricante, probada funcionalmente, clasificada según su estado y agrupada por categoría. El cuadro de categorías y cantidades que figura en la lista de empaque adjunta refleja dicha clasificación y constituye el registro del expedidor sobre la condición probada y clasificada de cada unidad del envío.',
+    'Las mercancías son componentes electrónicos funcionales destinados a su reutilización directa como componentes. No son residuo ni chatarra. No se consignan para eliminación, reciclaje ni para operación alguna de recuperación.',
+    'En consecuencia, las mercancías no están comprendidas en la entrada Y49 (equipos eléctricos y electrónicos usados y al final de su vida útil) ni en la entrada A1181 del Convenio de Basilea sobre el Control de los Movimientos Transfronterizos de los Desechos Peligrosos y su Eliminación, en su versión modificada por las enmiendas relativas a residuos eléctricos y electrónicos que entraron en vigor el 1 de enero de 2025. El procedimiento de consentimiento fundamentado previo establecido por dicho Convenio no resulta, por tanto, aplicable a este envío.',
+    'El expedidor reconoce que, en el marco del Convenio de Basilea, la carga de demostrar que el equipo usado se destina a reutilización directa y no a operaciones de residuo recae sobre el expedidor. Dicha prueba está constituida por la identificación individual, la prueba funcional y la clasificación de cada unidad, por la clasificación consignada en la lista de empaque adjunta y por la documentación comercial en poder del expedidor, que queda a disposición de la autoridad competente cuando así se solicite.',
+  ],
+  s2H: '2. Licencia de importación en la Región Administrativa Especial de Macao',
+  s2: [
+    'El régimen de comercio externo de la Región Administrativa Especial de Macao está establecido por la Ley n.º 7/2003, de 23 de junio (Ley del Comercio Externo), modificada por la Ley n.º 3/2016.',
+    'Con arreglo a dicho régimen, la licencia previa de importación se aplica exclusivamente a las mercancías enumeradas en la Tabla B del Anexo II de dicha Ley, fijada por el Despacho del Jefe del Ejecutivo n.º 209/2021 y modificada posteriormente por los Despachos del Jefe del Ejecutivo n.º 188/2022, n.º 208/2022 y n.º 110/2023.',
+    'La Tabla B comprende únicamente las siguientes familias de mercancías: (i) animales vivos, carne, productos de origen animal, pescado, crustáceos y moluscos, hortalizas, plantas vivas, semillas, micelio de setas y fertilizantes de origen animal o vegetal; (ii) vehículos; (iii) aparatos de telecomunicación y radiocomunicación; (iv) armas, municiones y explosivos; (v) sustancias peligrosas de la Clase 7 (sustancias radiactivas) y generadores de radiación ionizante; y, en virtud del suplemento de 2023, determinados compuestos químicos comprendidos en las partidas 2806 a 2939 del Sistema Armonizado.',
+    'Los circuitos integrados electrónicos, comprendidos en la partida 8542 del Sistema Armonizado, no figuran en la Tabla B. Por lo tanto, no están sujetos a licencia previa de importación por parte de la Dirección de Servicios de Economía y Desarrollo Tecnológico (DSEDT) ni de los Servicios de Aduanas de Macao.',
+    'Las mercancías que componen este envío son circuitos integrados sueltos. No constituyen aparatos de telecomunicación o radiocomunicación en el sentido de la familia (iii) de la Tabla B, y no incorporan función alguna de transmisión por radio.',
+    'La Región Administrativa Especial de Macao es puerto franco. No se aplica arancel aduanero a la mercancía general; el impuesto al consumo grava únicamente las bebidas alcohólicas, el tabaco, los combustibles y los vehículos automotores.',
+  ],
+  s3H: '3. Uso final y controles sobre computación avanzada',
+  s3: [
+    'Las mercancías son circuitos integrados de memoria de uso común recuperados de equipos de consumo. No son artículos de computación avanzada y no cumplen los parámetros del ECCN 3A090 ni del ECCN 4A090.',
+    'El expedidor tiene conocimiento de que las entidades con sede en la Región Administrativa Especial de Macao reciben el mismo tratamiento que el Grupo de Países D:5 a efectos de los controles de los Estados Unidos sobre artículos de computación avanzada. Dichos controles tienen por objeto procesadores y aceleradores de alto rendimiento comprendidos en los ECCN 3A090 y 4A090. Los dispositivos de memoria de uso común de los tipos enumerados en la lista de empaque adjunta quedan fuera de ese ámbito.',
+    'Las mercancías se destinan exclusivamente a un uso civil y comercial legítimo. El expedidor declara que las mercancías no se destinan, en todo ni en parte, a ningún uso final militar, a ninguna aplicación de armas nucleares, químicas o biológicas, ni a ningún usuario final sujeto a sanciones aplicables.',
+  ],
+  s4H: '4. Fuentes primarias',
+  closeH: 'Declaración',
+  close: 'El abajo firmante declara que las afirmaciones contenidas en este documento son verdaderas y completas según el leal saber y entender del expedidor, y que los registros de respaldo mencionados quedan a disposición del transportista y de la autoridad competente cuando así se solicite.',
+  fCompany: 'Empresa',
+  fName: 'Nombre y cargo',
+  fDate: 'Fecha',
+  fSign: 'Firma',
+};
+
+const PT = {
+  lang: 'PORTUGUÊS',
+  title: 'ESCLARECIMENTO LEGAL',
+  sub: 'Remessa de circuitos integrados electrónicos recuperados (circuitos de memória) para a Região Administrativa Especial de Macau',
+  preambleH: 'Objecto do presente documento',
+  preamble: [
+    'O presente documento é emitido pelo expedidor a pedido do transportador ou da autoridade competente, com o objectivo de esclarecer a situação regulamentar das mercadorias descritas na lista de embalagem que o acompanha. Responde às três questões mais frequentemente suscitadas a propósito de remessas de circuitos integrados electrónicos com destino à Região Administrativa Especial de Macau da República Popular da China: se as mercadorias constituem resíduo, se a sua importação carece de licenciamento prévio e se estão sujeitas aos controlos aplicáveis a artigos de computação avançada.',
+    'As referências legais adiante citadas foram verificadas em fontes primárias oficiais, integralmente enumeradas na secção final do presente documento.',
+  ],
+  s1H: '1. Natureza da mercadoria — a mercadoria não é resíduo',
+  s1: [
+    'As mercadorias são circuitos integrados electrónicos, concretamente dispositivos de memória (tais como eMMC, eMCP, uMCP, UFS, DDR e LPDDR), recuperados de equipamento electrónico de consumo.',
+    'Cada unidade foi individualmente identificada pelo número de referência do fabricante, testada funcionalmente, classificada de acordo com o seu estado e agrupada por categoria. O quadro de categorias e quantidades constante da lista de embalagem anexa reflecte essa classificação e constitui o registo do expedidor quanto à condição testada e classificada de cada unidade da remessa.',
+    'As mercadorias são componentes electrónicos funcionais destinados à reutilização directa enquanto componentes. Não são resíduo nem sucata. Não são consignadas para eliminação, reciclagem ou qualquer operação de recuperação.',
+    'Em consequência, as mercadorias não se enquadram na entrada Y49 (equipamento eléctrico e electrónico usado e em fim de vida) nem na entrada A1181 da Convenção de Basileia sobre o Controlo dos Movimentos Transfronteiriços de Resíduos Perigosos e sua Eliminação, na redacção dada pelas alterações relativas a resíduos eléctricos e electrónicos que entraram em vigor em 1 de Janeiro de 2025. O procedimento de consentimento prévio informado estabelecido por aquela Convenção não é, por conseguinte, aplicável à presente remessa.',
+    'O expedidor reconhece que, no quadro da Convenção de Basileia, o ónus de demonstrar que o equipamento usado se destina a reutilização directa, e não a operações de resíduo, recai sobre o expedidor. Essa prova é constituída pela identificação individual, pelo teste funcional e pela classificação de cada unidade, pela classificação consignada na lista de embalagem anexa e pela documentação comercial na posse do expedidor, que fica à disposição da autoridade competente quando solicitada.',
+  ],
+  s2H: '2. Licenciamento de importação na Região Administrativa Especial de Macau',
+  s2: [
+    'O regime do comércio externo da Região Administrativa Especial de Macau consta da Lei n.º 7/2003, de 23 de Junho (Lei do Comércio Externo), alterada pela Lei n.º 3/2016.',
+    'Nos termos desse regime, o licenciamento prévio de importação aplica-se exclusivamente às mercadorias constantes da Tabela B do Anexo II daquela Lei, fixada pelo Despacho do Chefe do Executivo n.º 209/2021 e posteriormente alterada pelos Despachos do Chefe do Executivo n.º 188/2022, n.º 208/2022 e n.º 110/2023.',
+    'A Tabela B abrange unicamente as seguintes famílias de mercadorias: (i) animais vivos, carne, produtos de origem animal, peixe, crustáceos e moluscos, produtos hortícolas, plantas vivas, sementes, micélio de cogumelos e fertilizantes de origem animal ou vegetal; (ii) veículos; (iii) aparelhos de telecomunicação e radiocomunicação; (iv) armas, munições e explosivos; (v) substâncias perigosas da Classe 7 (substâncias radioactivas) e geradores de radiação ionizante; e, por força do suplemento de 2023, determinados compostos químicos das posições 2806 a 2939 do Sistema Harmonizado.',
+    'Os circuitos integrados electrónicos, compreendidos na posição 8542 do Sistema Harmonizado, não constam da Tabela B. Não estão, por isso, sujeitos a licenciamento prévio de importação pela Direcção dos Serviços de Economia e Desenvolvimento Tecnológico (DSEDT) nem pelos Serviços de Alfândega de Macau.',
+    'As mercadorias que compõem a presente remessa são circuitos integrados soltos. Não constituem aparelhos de telecomunicação ou radiocomunicação na acepção da família (iii) da Tabela B, e não incorporam qualquer função de transmissão rádio.',
+    'A Região Administrativa Especial de Macau é porto franco. Não é aplicável direito aduaneiro à mercadoria em geral; o imposto de consumo incide apenas sobre bebidas alcoólicas, tabaco, combustíveis e veículos automotóveis.',
+  ],
+  s3H: '3. Utilização final e controlos de computação avançada',
+  s3: [
+    'As mercadorias são circuitos integrados de memória de uso corrente, recuperados de equipamento de consumo. Não são artigos de computação avançada e não preenchem os parâmetros do ECCN 3A090 nem do ECCN 4A090.',
+    'O expedidor tem conhecimento de que as entidades sediadas na Região Administrativa Especial de Macau são tratadas em conjunto com o Grupo de Países D:5 para efeitos dos controlos dos Estados Unidos sobre artigos de computação avançada. Esses controlos têm por objecto processadores e aceleradores de elevado desempenho compreendidos nos ECCN 3A090 e 4A090. Os dispositivos de memória de uso corrente dos tipos enumerados na lista de embalagem anexa não se inserem nesse âmbito.',
+    'As mercadorias destinam-se exclusivamente a utilização civil e comercial legítima. O expedidor declara que as mercadorias não se destinam, no todo ou em parte, a qualquer utilização final militar, a qualquer aplicação de armas nucleares, químicas ou biológicas, nem a qualquer utilizador final sujeito a sanções aplicáveis.',
+  ],
+  s4H: '4. Fontes primárias',
+  closeH: 'Declaração',
+  close: 'O abaixo assinado declara que as afirmações constantes do presente documento são verdadeiras e completas de acordo com o melhor conhecimento do expedidor, e que os registos de suporte acima referidos ficam à disposição do transportador e da autoridade competente quando solicitados.',
+  fCompany: 'Empresa',
+  fName: 'Nome e cargo',
+  fDate: 'Data',
+  fSign: 'Assinatura',
+};
+
+const FONTES = [
+  ['Law No. 7/2003 — External Trade Law of Macao (Official Gazette)',
+   'https://images.bo.dsaj.gov.mo/bo/i/2003/25/lei-7-2003.pdf'],
+  ['Chief Executive’s Decision No. 209/2021 — Macao notification to the WTO, Table B families',
+   'https://lic-public.wto.org/en/legislations/973'],
+  ['Chief Executive’s Decision No. 110/2023 — supplement to Table B (chemical compounds)',
+   'https://lic-public.wto.org/en/legislations/3021'],
+  ['Macao SAR Government portal — customs declaration (cites Decisions 209/2021, 188/2022, 208/2022, 110/2023)',
+   'https://www.gov.mo/pt/servicos/ps-1452/'],
+  ['Macao SAR Government portal — import licence (DSEDT)',
+   'https://www.gov.mo/en/services/ps-1320/'],
+  ['Macao Customs Service',
+   'https://www.customs.gov.mo/'],
+  ['Basel Convention electrical and electronic waste amendments in force since 1 January 2025 (entry Y49)',
+   'https://www.slrconsulting.com/us/insights/basel-convention-weee-amendments-2025/'],
+  ['US BIS — licence requirements for advanced computing items (ECCN 3A090 / 4A090), Country Group D:5 and Macao-headquartered entities',
+   'https://sanctionsnews.bakermckenzie.com/bis-clarifies-that-license-requirements-for-advanced-computing-items-to-country-group-d5-and-macau-headquartered-entities-remain-in-force-despite-ai-diffusion-rule-non-enforcement/'],
+];
+
+module.exports = { EN, ES, PT, FONTES };

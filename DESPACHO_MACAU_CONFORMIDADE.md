@@ -295,6 +295,34 @@ a palavra `DISPOSAL` na descrição. `ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs
 
 ---
 
+## 7. O documento que se ENVIA quando perguntam
+
+O §6 acima é a matéria-prima. O documento pronto para mandar é o
+**`ESCLARECIMENTO_LEGAL_MACAU_EN_ES_PT.docx`**, na raiz do repositório.
+
+São três versões completas e independentes — **inglês, espanhol e português**.
+Português, e não chinês, por um motivo concreto: as línguas oficiais de Macau
+são chinês e **português**, e quem lê do outro lado lê uma das duas.
+
+Cada versão traz: objecto do documento · natureza da mercadoria (Basileia,
+Y49/A1181, 1/1/2025, e o ónus da prova do expedidor) · licenciamento de
+importação em Macau (Lei 7/2003 + 3/2016, Tabela B, os quatro despachos, porto
+franco) · uso final e computação avançada (ECCN 3A090/4A090, Grupo D:5) · fontes
+primárias · bloco de assinatura.
+
+⚠ **Este documento é para RESPONDER, nunca para enviar junto com a caixa.** Se
+ele viajar com o pacote, reintroduz exatamente o problema que o packing list
+neutro resolveu.
+
+⚠ **É declaração assinada pela empresa.** Mostre ao despachante antes de assinar
+o primeiro — a secção 3 depende da classificação ECCN, que é ele quem confirma.
+
+**Para editar:** o `.docx` é GERADO. Mexa em `scripts/legal/content.js` (o
+texto) ou `build.js` (a forma) e rode `cd scripts/legal && node build.js`.
+Editar o `.docx` direto funciona uma vez e é desfeito na geração seguinte.
+
+---
+
 ## Fontes
 
 - [Lei n.º 7/2003 — Lei do Comércio Externo de Macau (PDF oficial, Boletim Oficial)](https://images.bo.dsaj.gov.mo/bo/i/2003/25/lei-7-2003.pdf)
