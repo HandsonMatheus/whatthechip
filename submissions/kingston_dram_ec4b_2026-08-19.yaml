@@ -1,0 +1,74 @@
+# Submissão known_parts — Kingston, família legada "EC4B" (DDR3L 4Gb x16, obsoleta)
+# Chat de marca Kingston, 2026-08-19. Pesquisa disparada pelo PN físico D2516EC4BXGGB, visto no
+# debug de estoque do próprio WTC ("known": false, in_review_queue: true).
+#
+# ACHADO: EC4B é uma família/geração ANTERIOR à "ECMD" já cadastrada em 2026-08-17 (mesmo prefixo
+# de densidade "2516" = 4Gb x16, mesmo pacote FBGA-96, mesma voltagem 1.35V) — velocidade mais
+# baixa (1600 Mbps/CL11 contra 1866/2133 da ECMD) e status "Obsolete" (Octopart: last tracked
+# 2020-12-30). Segundo caso confirmado do padrão "família legada não listada nos flyers vigentes"
+# (o primeiro foi "MCAB", caso D1216MCABXGGBS, 2026-08-17 — ver KINGSTON.md §7).
+#
+# TIER: Tier-1 direto (kingston.com/media.kingston.com) NÃO lista "EC4B" — os 3 flyers oficiais
+# vigentes só têm "ECMD" no prefixo 2516. confidence:confirmed aqui repousa em corroboração
+# tier-inferior DENSA (7+ fontes independentes concordando, nenhuma divergindo):
+#   Octopart (dado estruturado: density/org/voltage/speed/package/lifecycle todos batendo),
+#   alldatasheet, datasheet4u, harddiskdirect, datasheets.com, electronicsdatasheets.com,
+#   newtownspares, verical, censtry — ver source_url por item + notes com a lista completa.
+# Diferente do caso anterior D1216MCABXGGBS (onde "PC1600" era ruído ISOLADO, 1 fonte, descartado):
+# aqui "1600 Mbps/CL11" é o valor DOMINANTE e repetido em toda fonte que cita velocidade, nenhuma
+# contradiz — por isso tratado como corroborado, não como ruído.
+#
+# Busquei irmãs de outra capacidade/organização (D1216EC4B.../D2568EC4B.../D5128EC4B.../
+# B5116EC4B..., espelhando o espectro completo da família ECMD) e NÃO achei nenhuma — cluster desta
+# família parece ser só as 2 PN abaixo (base C-Temp + variante I-Temp). Não inventei as demais.
+#
+# chip_type/subtype = DDR3L, já existe no vocabulário — sem tipo novo, sem handshake pendente.
+# Nenhuma família nova no yaml (Trilha A não tocada) — 2 PNs exatos, Trilha B/known_parts.
+# Sufixo de empacotamento (-U tray / -R reel) OMITIDO do part_number, mesma regra da rodada anterior.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_dram_ec4b_2026-08-19.yaml
+# (sem --brand — não existe essa flag, confirmado rodando de verdade em 2026-08-17. Marca vem do
+# campo brand: abaixo — TEXTO puro, não bloco.)
+
+brand: Kingston
+
+known_parts:
+
+  # ── DDR3L — família legada "EC4B" (irmã obsoleta da "ECMD" atual, mesmo prefixo 2516=4Gb x16) ──
+  - part_number: D2516EC4BXGGB
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: >
+      PN físico do dono (debug de estoque, known:false). Densidade/organização: 256M x16 = 4Gb
+      (256*1048576*16 = 4.294.967.296 bit = 4Gbit) — bate EXATO com o prefixo "2516" já confirmado
+      em Tier-1 pra família irmã ECMD (D2516ECMDXGJD, mesma densidade/organização/pacote). Pacote
+      FBGA-96 (96-ball). Voltagem 1.35V. Velocidade 1600 Mbps / CL11 (DDR3L-1600) — confirmada
+      consistente (nenhuma fonte diverge) em: Octopart (campo estruturado "Speed Grade: 1600C11"),
+      harddiskdirect ("DDR3-1600MHz"), newtownspares (idem), datasheets.com. Temp 0~+95°C (C-Temp)
+      via datasheets.com. Status Obsolete, last tracked 2020-12-30 (Octopart) — geração anterior à
+      ECMD, descontinuada, não impede cadastro (recycler lida com legado o tempo todo). Fabricante
+      real "Kingston Technology Far East Co. Ltd." (alldatasheet). Tier-1 direto (kingston.com/
+      media.kingston.com) NÃO lista essa família — os 3 flyers oficiais vigentes só têm "ECMD" nesse
+      prefixo; confidence:confirmed apoiado em 7+ fontes tier-inferior independentes concordando,
+      não em datasheet Kingston hospedado. Busquei irmãs (2Gb/8Gb, x8) e não achei nenhuma.
+    source_url: https://octopart.com/part/kingston/D2516EC4BXGGB-U
+
+  - part_number: D2516EC4BXGGBI
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: >
+      Variante I-Temp (industrial) da D2516EC4BXGGB acima — mesma densidade/organização (256Mx16=
+      4Gb)/pacote FBGA-96/voltagem 1.35V/velocidade 1600Mbps. "I-Temp (Industrial Temperature
+      range)" rotulado explicitamente em electronicsdatasheets.com; faixa numérica exata
+      (-40~+95°C) NÃO republicada pra essa PN específica nas fontes encontradas — inferida por
+      analogia direta ao padrão Kingston já confirmado em Tier-1 na família irmã ECMD (onde sufixo
+      "I" = -40~+95°C contra 0~+95°C da versão base); sinalizando como inferência, não confirmação
+      própria. Confirmada em múltiplas fontes independentes: verical.com, electronicsdatasheets.com,
+      omo-ic.com, censtry.com. Mesmo status Obsolete esperado (irmã direta da base).
+    source_url: https://www.verical.com/datasheet/kingston-technology-dram-d2516ec4bxggbi-u-1926813.pdf

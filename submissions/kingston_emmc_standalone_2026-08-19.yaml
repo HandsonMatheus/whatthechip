@@ -1,0 +1,419 @@
+# Submissão known_parts — Kingston, eMMC standalone (linha "eMMC Embedded Flash")
+# Chat de marca Kingston, 2026-08-19. Pesquisa disparada pelo PN físico EMMC04GM627, visto no
+# debug de estoque do próprio WTC ("known": false, in_review_queue: true).
+#
+# ACHADO: fecha o gap "eMMC standalone" do KINGSTON.md §5 (nunca pesquisado até hoje). Kingston TEM
+# linha própria de eMMC embarcado avulso (kingston.com/en/embedded/emmc-embedded-flash), separada
+# do eMCP (que é eMMC+RAM composto, coberto por gramática). chip_type="eMMC" já existe no
+# vocabulário (chips/chip_types.py, categoria managed_nand) — sem tipo novo, sem handshake.
+# subtype fica VAZIO (mesma convenção do eMCP/UFS — não há geração de RAM pra carregar aqui).
+# capacidade é GB LITERAL (sem conta Gb÷8 — diferente da DRAM discreta, igual ao lado NAND do PN eMCP).
+#
+# ⚠ CORREÇÃO 2026-08-19 (pós-entrega inicial): a primeira versão deste arquivo tinha só as 2 PN
+# legadas (M627/W627) — os outros 18 PN do CLUSTER vigente (já extraídos dos 3 flyers oficiais na
+# MESMA rodada de pesquisa, inclusive EMMC04G-WT32) ficaram de fora. O dono teve que colar um NOVO
+# debug (EMMC04GWT32) pra eu perceber o buraco — eu já tinha os specs prontos e não submeti. Regra
+# 11 do KINGSTON.md ("pesquise o cluster inteiro") existia mas não era operacional o suficiente;
+# reforçada em §7/regra 11 pra deixar explícito: TODO PN visto em QUALQUER fonte buscada na rodada
+# entra no arquivo, não só o que casa com o padrão do alvo original. Este arquivo agora cobre as
+# 3 famílias vigentes (comercial/industrial/automotive) inteiras + o par legado "627".
+#
+# TIER: o par legado (M627/W627) NÃO está nos flyers oficiais vigentes — ver bloco de notas próprio
+# mais abaixo (corroboração tier-inferior, terceiro caso do padrão "família legada fora dos flyers
+# vigentes", depois de MCAB e EC4B — ver KINGSTON.md §7). Os outros 18 PN SÃO Tier-1 direto:
+# extraídos das 3 tabelas oficiais em media.kingston.com (comercial, industrial i-Temp, automotive) —
+# confidence:confirmed mais forte aqui, sem precisar de corroboração externa.
+#
+# EXCLUÍDO: "E04GS14DXI" (linha da tabela i-Temp, formato de PN destoante — sem o prefixo "EMMC"
+# que todo outro PN do catálogo usa). WebSearch não achou nenhuma fonte independente fora dos
+# espelhos do próprio flyer — provável artefato de extração de PDF, não um PN real. Não adivinhei.
+#
+# Busquei irmãs de outra capacidade (08G/16G/32G) pro par legado "627" e NÃO achei nenhuma — o
+# cluster legado parece ser só M627+W627. Já os 18 PN vigentes (1ª expansão) SÃO o cluster completo
+# dos 3 flyers (toda linha/capacidade/pacote publicado, nada deixado de fora por amostragem).
+#
+# ⚠ ADENDO 2026-08-19 (2ª expansão, mesmo dia): PN físico EMMC16GTB28 (novo debug do dono) revelou
+# que a linha eMMC standalone da Kingston tem MUITO mais gerações de sufixo coexistindo do que os
+# 3 flyers "vigentes" sozinhos mostram — achei pelo menos 4 famílias de sufixo paralelas
+# (TB28/TB29/TA29/TX29, todas de capacidades na faixa 16-128GB, pacotes e datasheets diferentes
+# entre si) além da já conhecida "627". Diferente do padrão anterior (1 geração legada isolada por
+# capacidade, visto em MCAB/EC4B/627), aqui parece ser NORMAL ter várias gerações coexistindo por
+# capacidade — Kingston revisou o pacote/processo várias vezes ao longo dos anos. Submeti as que
+# consegui confirmar com specs completos de fonte direta (5 PN novos, ver abaixo). EXCLUÍDO por
+# specs não confirmados (existência confirmada em 3+ distribuidores cada, mas nenhuma fonte aberta
+# rendeu tabela de specs completa apesar de 2 tentativas cada): `EMMC04G-M657` (irmã de MK27/M627 na
+# faixa 4G), `EMMC64G-TA29`/`EMMC32G-TA29`/`EMMC128-TA29` (outra geração 32-128G), `EMMC64G-TX29`/
+# `EMMC128-TX29`/`EMMC32G-TX29` (mais outra geração 32-128G), `EMMC64G-W525` (achado incidental,
+# nem sequer specs de capacidade confirmados). Não adivinhei nenhum — ver KINGSTON.md §5/§7 pro
+# gap documentado. Nota: `EMMC04G-M627` também aparece num SEGUNDO flyer oficial Kingston
+# (media.kingston.com/pdfs/emmc/eMMC_Product_flyer.pdf, achado nesta rodada) — reforça a
+# confirmação já existente via tier-inferior, não muda o confidence.
+#
+# ⚠ TERRENO NOVO: primeiro known_part de eMMC standalone deste chat — o mapeamento pro campo
+# `capacity` (em vez de emcp_nand/emcp_ram, que são só pro eMCP composto) é inferência minha por
+# analogia ao padrão já visto (Foresee também usa "eMMC/UFS literal-GB" por nota de memória do
+# projeto), não um precedente que eu tenha copiado de known_part Kingston anterior. Confira o
+# dry-run antes do --commit.
+#
+# brand: é TEXTO PURO (Brand.objects.filter(name=<valor>) direto) — nunca o bloco name/code/notes
+# do schema da GRAMÁTICA. Confirmado via AUTORIA.md §4 + commit dcad9ae, 2026-08-19 (mordeu 2x antes).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emmc_standalone_2026-08-19.yaml
+
+brand: Kingston
+
+known_parts:
+
+  # ── eMMC standalone — geração legada "627" (irmã obsoleta dos códigos atuais MT32/CT32/WT32) ──
+  - part_number: EMMC04G-M627
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      PN físico do dono (debug de estoque, known:false, marcação sem hífen "EMMC04GM627" — grafia
+      catalogada pela própria Kingston usa hífen, mesma convenção de normalização já vista nos
+      casos DRAM discreta). Capacidade 4GB literal (código "04G" do PN, sem conta Gb÷8 — convenção
+      eMMC/NAND, diferente da DRAM). eMMC 5.1 (JEDEC), pacote FBGA-153, NAND MLC, tensão NAND
+      2.7-3.6V / controlador 1.7-1.95V e 2.7-3.6V, leitura sequencial 250MB/s, gravação 25MB/s,
+      faixa de temperatura -25~+85°C (grau comercial, bate com a tabela do kingston.com/embedded:
+      "Commercial Grade: -25°C to +85°C"). Fabricante "Kingston Technology Far East Co. Ltd."
+      (alldatasheet — mesma entidade corporativa já confirmada nos casos DRAM). Tier-1 direto
+      (media.kingston.com) NÃO lista esse PN — o flyer vigente tem EMMC04G-MT32/-CT32 no mesmo
+      código de capacidade "04G"; confidence:confirmed apoiado em múltiplas fontes tier-inferior
+      concordando (alldatasheet, ic-components, LCSC "-A01", Utmel), nenhuma divergindo. Busquei
+      irmãs de outra capacidade (08G/16G/32G) e não achei nenhuma.
+    source_url: https://www.alldatasheet.com/datasheet-pdf/pdf/1441318/KINGSTON/EMMC04G-M627.html
+
+  - part_number: EMMC04G-W627
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Variante I-Temp (industrial) da mesma geração "627" — capacidade 4GB literal (código "04G"),
+      pacote FBGA-153, NAND MLC. eMMC 5.0 (JEDEC JESD84-B50) — versão DIFERENTE da M627 (5.1); não
+      forcei uma regra "mesma geração = mesma versão eMMC", reportei o que a fonte confirma pra
+      cada PN. Tensão VCC=3.3V, VCCQ=1.8V/3.3V. Temperatura -40~+85°C (bate com "Industrial Grade:
+      -40°C to +85°C" do kingston.com/embedded). Leitura sequencial 250MB/s, gravação 15MB/s.
+      Confirmado via datasheet Kingston espelhado no DigiKey (media.digikey.com, PDF do fabricante,
+      não um resumo de distribuidor) — mesmo formato "Field A/B/C/D" de decode (Produto-Capacidade-
+      RevHW-RevFW) citado no próprio datasheet. Suprimi o sufixo de revisão de firmware "-M06U" do
+      part_number (não é o que vem gravado no chip — mesma regra de sempre pra sufixo de
+      empacotamento/revisão de distribuidor).
+    source_url: https://media.digikey.com/pdf/Data%20Sheets/Kingston%20Technology%20PDFs/EMMC04G-W627-M06U.pdf
+
+  # ── eMMC standalone — catálogo comercial vigente (flyer emmc_flyer_us.pdf, Tier-1 direto) ──
+  - part_number: EMMC04G-MT32
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto — tabela do flyer comercial vigente (media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf).
+      Capacidade 4GB literal (código "04G" do PN). Pacote FBGA 11.5x13x0.8mm, NAND MLC. Grau
+      comercial: -25°C a +85°C (nota geral da página kingston.com/en/embedded/emmc-embedded-flash).
+      Esta é a família VIGENTE que sucede a geração legada "627" (ver EMMC04G-M627 acima, mesmo
+      código de capacidade "04G", família anterior/obsoleta).
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC04G-CT32
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesmo flyer/tabela da EMMC04G-MT32 acima — irmã de MESMA capacidade (4GB) em
+      pacote MENOR: FBGA 9.0x7.5x0.8mm (contra 11.5x13x0.8mm da MT32), mesma NAND MLC, mesmo grau
+      comercial -25°C a +85°C. Duas opções de pacote pra mesma densidade, ambas no PN oficial.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC08G-MV28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial. Capacidade 8GB literal (código "08G"). Pacote FBGA
+      11.5x13x0.8mm, NAND MLC, grau comercial -25°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC08G-CT32
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela — irmã de pacote pequeno da EMMC08G-MV28 (mesma capacidade 8GB):
+      FBGA 9.0x7.5x0.8mm, mesma NAND MLC, mesmo grau comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC16G-MW28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial. Capacidade 16GB literal (código "16G"). Pacote FBGA
+      11.5x13x0.9mm — nota o salto de espessura (0.9mm contra 0.8mm das capacidades menores). NAND
+      já é 3D TLC (não mais MLC) a partir desta densidade. Grau comercial -25°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC32G-TS0A
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial. Capacidade 32GB literal (código "32G"). Pacote FBGA
+      11.5x13x1.0mm, NAND 3D TLC, grau comercial -25°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC64G-TB9F
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial. Capacidade 64GB literal (código "64G"). Pacote pequeno
+      FBGA 8.0x8.5x0.8mm, NAND 3D TLC, grau comercial -25°C a +85°C. Duas opções de pacote pra 64GB
+      no catálogo vigente — ver EMMC64G-TY29 abaixo (pacote padrão maior, mesma densidade).
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC64G-TY29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial — irmã de pacote padrão da EMMC64G-TB9F acima (mesma
+      capacidade 64GB): FBGA 11.5x13x0.8mm, mesma NAND 3D TLC, mesmo grau comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC128-TY29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 128GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial. Capacidade 128GB literal — código de capacidade no PN
+      muda de padrão aqui: "128" sem sufixo "G" (diferente de "04G".."64G" abaixo de 128GB). Pacote
+      FBGA 11.5x13x0.8mm, NAND 3D TLC, grau comercial -25°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  - part_number: EMMC256-TY29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 256GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela comercial. Capacidade 256GB literal (mesmo padrão de código sem
+      "G" da 128GB). Pacote FBGA 11.5x13x1.0mm — nota mais espesso que a 128GB (mesmo sufixo de PN
+      "TY29" cobrindo espessuras diferentes por densidade). NAND 3D TLC, grau comercial -25°C a
+      +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/emmc_flyer_us.pdf
+
+  # ── eMMC standalone — catálogo industrial vigente (flyer itemp-emmc_flyer_us.pdf, Tier-1 direto) ──
+  - part_number: EMMC04G-WT32
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto — tabela do flyer industrial (i-Temp) vigente
+      (media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf). Capacidade 4GB literal (código "04G").
+      Pacote FBGA 11.5x13x0.8mm, NAND MLC, grau industrial -40°C a +85°C. Sucessora vigente da
+      geração legada "627" no grau industrial (ver EMMC04G-W627 acima — nota: aquela é eMMC 5.0,
+      esta é eMMC 5.1, versões JEDEC diferentes apesar do mesmo código de capacidade). Este é o PN
+      exato que o dono colou no debug em 19/08 depois do primeiro envio incompleto deste arquivo —
+      eu já tinha esse spec extraído desde a rodada anterior e não tinha submetido.
+    source_url: https://media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf
+
+  - part_number: EMMC08G-WV28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela industrial. Capacidade 8GB literal (código "08G"). Pacote FBGA
+      11.5x13x0.8mm, NAND MLC, grau industrial -40°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf
+
+  - part_number: EMMC16G-WW28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela industrial. Capacidade 16GB literal (código "16G"). Pacote FBGA
+      11.5x13x0.9mm, NAND MLC (ainda MLC nesta densidade no grau industrial — diferente do
+      comercial, que já passa pra 3D TLC em 16GB; ver EMMC16G-MW28 acima), grau industrial
+      -40°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf
+
+  - part_number: EMMC64G-IY29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela industrial. Capacidade 64GB literal (código "64G"). Pacote FBGA
+      11.5x13x0.8mm, NAND 3D TLC, grau industrial -40°C a +85°C. Note o sufixo de família "IY29"
+      (grau industrial) espelhando o "TY29" comercial na mesma densidade/pacote.
+    source_url: https://media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf
+
+  - part_number: EMMC128-IY29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 128GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela industrial. Capacidade 128GB literal (sem sufixo "G", mesmo
+      padrão da linha comercial acima de 64GB). Pacote FBGA 11.5x13x0.8mm, NAND 3D TLC, grau
+      industrial -40°C a +85°C.
+    source_url: https://media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf
+
+  - part_number: EMMC256-IY29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 256GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela industrial. Capacidade 256GB literal (sem sufixo "G"). Pacote
+      FBGA 11.5x13x1.0mm, NAND 3D TLC, grau industrial -40°C a +85°C. Maior densidade/grau mais
+      resistente do catálogo eMMC standalone Kingston vigente (fora automotivo).
+    source_url: https://media.kingston.com/pdfs/emmc/itemp-emmc_flyer_us.pdf
+
+  # ── eMMC standalone — catálogo automotivo vigente (flyer Automotive-Temp_emmc_flyer_EN.pdf, Tier-1) ──
+  - part_number: EMMC04G-AR0A
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto — tabela do flyer automotivo vigente
+      (media.kingston.com/pdfs/emmc/Automotive-Temp_emmc_flyer_EN.pdf). Capacidade 4GB literal
+      (código "04G"). Pacote FBGA 11.5x13x1.0mm, NAND MLC, grau automotivo -40°C a +105°C — faixa
+      mais ampla que comercial (-25~+85°C) e industrial (-40~+85°C), consistente com grau automotivo
+      em toda a indústria de memória.
+    source_url: https://media.kingston.com/pdfs/emmc/Automotive-Temp_emmc_flyer_EN.pdf
+
+  - part_number: EMMC08G-AR0A
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Tier-1 direto, mesma tabela automotiva. Capacidade 8GB literal (código "08G"). Pacote FBGA
+      11.5x13x1.0mm, NAND MLC, grau automotivo -40°C a +105°C.
+    source_url: https://media.kingston.com/pdfs/emmc/Automotive-Temp_emmc_flyer_EN.pdf
+
+  # ── eMMC standalone — 2ª geração de sufixo achada via PN físico EMMC16GTB28 (2ª expansão, mesmo dia) ──
+  - part_number: EMMC16G-TB28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      PN físico do dono (debug de estoque, known:false, "EMMC16GTB28" sem hífen). Capacidade 16GB
+      literal (código "16G"). Datasheet Kingston (fabricante "Kingston Solutions Inc.") espelhado
+      num anexo de fórum técnico da NXP — não distribuidor, cópia do documento do fabricante:
+      pacote FBGA-153, 11.5x13x0.8mm, NAND TLC, compatível com e·MMC Ver.4.4/4.41/4.5/5.0/5.1
+      (retrocompatível, alvo 5.1), VCC 3.3V / VCCQ 1.8V-3.3V, -25~+85°C (grau comercial), leitura
+      sequencial 270MB/s / gravação 90MB/s (modo HS400). Corroborado por 7 fontes de distribuidor
+      independentes (win-source, elnec, electronicsdatasheets, censtry×2, smh-tech, absunshine,
+      digipart), todas concordando PN+pacote, nenhuma divergindo. NÃO está na tabela do flyer
+      comercial vigente (emmc_flyer_us.pdf, que só lista EMMC16G-MW28 pra 16GB) — pacote mais fino
+      (0.8mm) e NAND "TLC" simples (vs "3D TLC" da MW28) sugere ser uma variante/pacote diferente,
+      não a mesma peça com nome trocado. Busquei irmãs de outra capacidade nesta MESMA geração de
+      sufixo e não achei (só 16G confirmado com "TB28" — ver EMMC16G-TB29/EMMC32G-TB29 abaixo, que é
+      uma geração VIZINHA mas com pacote/datasheet diferentes, não a mesma família).
+    source_url: https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/175662/4/eMMC%2016GB%20Comm.%20Temp.%20EMMC16G-TB28_Kingston.pdf
+
+  - part_number: EMMC16G-TB29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Achada buscando irmãs/gerações de EMMC16GTB28 (PN parecido, sufixo "29" em vez de "28") — NÃO
+      é a mesma peça: pacote bem maior/mais espesso (153-ball FBGA, 14.0x18.0x1.4mm, contra
+      11.5x13x0.8mm da TB28), datasheet conjunto próprio (Future Electronics, cópia do documento
+      Kingston Digital Inc., cobrindo EMMC16G-TB29 + EMMC32G-TB29 juntas). eMMC 5.1 (JEDEC
+      JESD84-B51), NAND TLC, VCC 3.3V / VCCQ 1.8V-3.3V, operação -25~+85°C / armazenamento
+      -40~+85°C, leitura sequencial 310MB/s / gravação 25MB/s (HS400). Pacote maior/mais espesso
+      sugere geração de package MAIS ANTIGA que TB28/MW28 (não confirmei ordem cronológica exata,
+      só a diferença física). Corroborado em alldatasheet, verical, trustedparts, avnet,
+      ersaelectronics, ecomponentshop — todos concordando PN+capacidade.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/EMMCnnn-Tn29-PZ90-v1.1.pdf
+
+  - part_number: EMMC32G-TB29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC16G-TB29 acima, MESMO datasheet conjunto (Future Electronics, cópia
+      Kingston Digital Inc.). Mesmo pacote 153-ball FBGA 14.0x18.0x1.4mm, mesma NAND TLC, mesma
+      eMMC 5.1 (JESD84-B51), mesma voltagem e faixa de temperatura (operação -25~+85°C /
+      armazenamento -40~+85°C). Leitura sequencial 300MB/s / gravação 45MB/s (HS400) — mais rápida
+      na gravação que a irmã de 16GB (25MB/s), mais devagar na leitura (300 contra 310MB/s).
+      Corroborado em alldatasheet, trustedparts, avnet, ersaelectronics.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/EMMCnnn-Tn29-PZ90-v1.1.pdf
+
+  - part_number: EMMC04G-MK27
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Achada pesquisando a vizinhança de sufixo do par legado M627/W627 (mesma raiz "M_27") — flyer
+      alternativo da Kingston (eMMC_Product_flyer.pdf, também em media.kingston.com) lista
+      EMMC04G-M627 + EMMC04G-MK27 + EMMC04G-M657 juntas como opções de 4GB. Datasheet Kingston
+      (fabricante "Kingston Digital Inc.") espelhado no DigiKey: pacote FBGA-153, NAND MLC
+      (configurável como pseudo-SLC), eMMC 5.1 (JEDEC JESD84-B51), VCC 3.3V / VCCQ 1.8V-3.3V,
+      operação -25~+85°C / armazenamento -40~+85°C, leitura sequencial 110MB/s / gravação 15MB/s
+      (HS400). Corroborado em alldatasheet, digikey, mouser, octopart, lcsc, microchipusa,
+      fusionww, smh-tech, absunshine. `EMMC04G-M657` (a 3ª opção do mesmo flyer) tem existência
+      confirmada nas mesmas fontes mas NENHUMA rendeu tabela de specs completa (2 tentativas via
+      alldatasheet+digikey) — excluído desta submissão, ver adendo no cabeçalho.
+    source_url: https://media.digikey.com/pdf/Data%20Sheets/Kingston%20Technology%20PDFs/EMMC04G-MK27-C01C.pdf
+
+  - part_number: EMMC08G-ML36
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade (8GB) da EMMC04G-MK27 acima, mesmo flyer alternativo
+      (eMMC_Product_flyer.pdf). Datasheet Kingston (fabricante "Kingston Digital Inc.") espelhado
+      no DigiKey: pacote 153-ball FBGA, 14x16mm, NAND MLC, eMMC 5.1 (JEDEC JESD84-B51), VCC 3.3V
+      (faixa 2.7-3.6V) / VCCQ 1.8V-3.3V (faixa 1.7-1.95V ou 2.7-3.6V), operação -25~+85°C /
+      armazenamento -40~+85°C, leitura sequencial 115MB/s / gravação 20MB/s (HS400). Corroborado em
+      digikey (2 revisões), octopart (2), lcsc, mouser (2 fontes + PDF próprio).
+    source_url: https://media.digikey.com/pdf/Data%20Sheets/Kingston%20Technology%20PDFs/EMMC08G-ML36-01B00.pdf

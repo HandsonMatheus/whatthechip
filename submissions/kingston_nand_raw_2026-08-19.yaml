@@ -1,0 +1,91 @@
+# Submissão known_parts — Kingston, NAND Flash cru (chip_type "NAND Flash", categoria nand_raw)
+# Chat de marca Kingston, 2026-08-19. Pesquisa disparada pelo PN físico FH32B08UCT1, visto no
+# debug de estoque do próprio WTC ("known": false, in_review_queue: true).
+#
+# ⚠ CORREÇÃO DE RUMO (mesmo dia): eu tinha concluído ERRADO que esse PN NÃO era Kingston — vi
+# fóruns chineses chamando o chip de "自封片" (die reempacotado, achado dentro de produto Kingston)
+# e um cross-reference (flashinfo.top) atribuindo o FABRICANTE DA CÉLULA a Toshiba, e daí conclui
+# que "brand=Kingston" era vazamento de contexto (mesma classe do erro K-prefix/OCR da regra 8).
+# O DONO corrigiu: leu o chip FISICAMENTE na bancada — "é kingston porque esta escrito kingston".
+# O teste certo NÃO é "onde o die foi fabricado" nem "de que produto foi tirado" — é O QUE ESTÁ
+# IMPRESSO NO PACOTE. Kingston empacota/marca NAND de terceiros sob a própria marca o tempo todo
+# (mesmo padrão dos módulos DIMM/eMCP, só que agora pra NAND cru avulso) — isso é normal na
+# indústria (private-label packaging), não um erro de leitura. Corrigido: KINGSTON.md regra 8
+# ganhou o teste certo (marcação do pacote, não origem/contexto do die); a pesquisa web sozinha
+# (fórum + cross-reference) NÃO deveria ter bastado pra descartar sem perguntar — leitura física do
+# dono é fonte mais forte pra IDENTIDADE (hierarquia §0.3, item 4).
+#
+# TIER: confidence:confirmed aqui é EXPLICITAMENTE autorizado pelo dono com fonte de menor tier
+# ("pode preencher com informação de menor tier, é sucata") — chip_type "NAND Flash" é
+# profit_family="dead" no chips/chip_types.py (preço fixo, não diferencia por spec fina), então o
+# padrão de rigor de Tier-1 não se aplica aqui do mesmo jeito que pra eMCP/DRAM/eMMC (linhas
+# rentáveis). Fonte usada: flashinfo.top (cross-reference de identificação de chip, usado pela
+# própria indústria de recondicionamento de pendrive/SSD chinesa) + confirmação física do dono.
+#
+# CONVENÇÃO NOVA (terreno novo — 1º known_part "NAND Flash" cru deste chat): chip_type="NAND Flash"
+# já existe no vocabulário (chips/chip_types.py, categoria nand_raw, profit_family="dead") — sem
+# tipo novo. subtype = CÉLULA (célula NAND: TLC/MLC/SLC), conforme o comentário de convenção do
+# próprio chip_types.py ("subtype limpo... célula p/ NAND"). capacidade = GB literal (código do PN
+# já é GB, mesma convenção NAND já usada no lado eMMC/eMCP). Pacote (TSOP48/BGA132) não tem campo
+# próprio no schema — usei `device` (inferência minha, não precedente copiado; confira o dry-run).
+# NÃO é o mesmo chip_type "K9" (esse é o balde genérico pra NAND cru NÃO identificado na bancada —
+# ver chips/chip_types.py linha 66-77; aqui o PN está identificado, então "NAND Flash" é o certo).
+#
+# Busquei irmãs de outra capacidade no mesmo padrão "FH[cap]B08UCT1" — achei FH64B08UCT1 (achado
+# abaixo). Tentei FH08B08UCT1/FH16B08UCT1/FH128B08UCT1 e não achei nenhuma fonte independente —
+# não incluí, não adivinhei.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_nand_raw_2026-08-19.yaml
+
+brand: Kingston
+
+known_parts:
+
+  # ── NAND Flash cru — PN físico do dono (debug de estoque, known:false) ──
+  - part_number: FH32B08UCT1
+    chip_type: NAND Flash
+    subtype: TLC
+    capacity: 32GB
+    interface: ''
+    device: TSOP48
+    confidence: confirmed
+    notes: >
+      PN físico do dono (debug de estoque, known:false) — dono confirmou fisicamente na bancada que
+      o pacote está marcado "Kingston" ("é kingston porque esta escrito kingston"), grande e antigo
+      ("antigasso"). Capacidade 32GB literal (código "32" do PN). Célula NAND TLC, processo 15nm
+      (NAND planar/2D — geração mais antiga que a irmã FH64B08UCT1 abaixo, que já é 3D NAND BiCS3;
+      bate com a descrição física "antigasso"). Pacote TSOP48 (inferido a partir da descrição física
+      do dono "é grande" — TSOP48 é o pacote clássico grande de NAND cru antigo, contra BGA132 que é
+      mais compacto/moderno; flashinfo.top lista os dois como possíveis pra esse PN, não escolhe
+      um). Cross-reference flashinfo.top: fabricante da CÉLULA/die = Toshiba/东苝 (die marking
+      983A98A376D1/983A98A37651) — mas o PACOTE/marca impressa é Kingston (confirmado fisicamente
+      pelo dono), então brand=Kingston está correto pro catálogo WTC (empacotamento/marca própria
+      sobre silício de terceiro, mesmo padrão dos módulos DIMM/eMCP da marca). Fóruns chineses de
+      produção de pendrive (mydigit.cn) chamam esse chip de "自封片" (die reempacotado), consistente
+      com essa leitura. chip_type "NAND Flash" é profit_family="dead" (preço fixo, sucata) —
+      confidence:confirmed aqui usa fonte de menor tier com autorização explícita do dono, dado o
+      contexto de baixo valor econômico do item.
+    source_url: https://flashinfo.top/FlashInfo?pn=FH32B08UCT1-0C
+
+  # ── irmã de capacidade, achada buscando o cluster "FH[cap]B08UCT1" ──
+  - part_number: FH64B08UCT1
+    chip_type: NAND Flash
+    subtype: TLC
+    capacity: 64GB
+    interface: Toggle
+    device: BGA132
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da FH32B08UCT1 acima, mesmo padrão de PN "FH[cap]B08UCT1". Capacidade 64GB
+      literal (código "64"). Célula NAND TLC, processo BiCS3 (3D NAND) — geração MAIS NOVA que a
+      irmã de 32GB (planar/15nm), apesar do PN parecido; não force a mesma geração só por
+      similaridade de nome. Pacote BGA132 (único listado pra esse PN no flashinfo.top, sem
+      ambiguidade TSOP/BGA como na 32GB). Interface/modo I/O "Toggle" (DDR Toggle mode, protocolo de
+      NAND cru — diferente do conceito de "versão eMMC" usado nos chips gerenciados desta marca,
+      reaproveitei o campo `interface` pelo mesmo propósito conceitual: como o host fala com o
+      chip). flashinfo.top já lista fabricante como "Kingston (金士顿)" diretamente nesta entrada
+      (não só "Toshiba" como na 32GB) — mesmo cross-reference explicitando célula Toshiba + marca
+      de pacote Kingston juntas, reforçando a leitura acima. Não confirmada fisicamente pelo dono
+      (achada por busca, não pelo debug) — sinalizando como sibling de fonte só web, não de leitura
+      de bancada.
+    source_url: https://flashinfo.top/FlashInfo?pn=FH64B08UCT1-60
