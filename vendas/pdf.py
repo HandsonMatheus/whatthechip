@@ -178,7 +178,7 @@ _L = {
     # internacional pede tratamento de venda internacional.
     'so':         ('Reference',            '參考編號', 'Referencia'),
     'lot':        ('Lot',                  '批次'),
-    'doc':        ('Packing list',         '裝箱單', 'Lista de embalaje'),
+    'doc':        ('Packing list',         '裝箱單', 'Lista de empaque'),
     'draft':      ('quotation',            '報價'),
     'confirmed':  ('confirmed',            '已確認'),
     'cancelled':  ('cancelled',            '已取消'),
