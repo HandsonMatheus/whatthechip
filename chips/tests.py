@@ -1762,6 +1762,19 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
     "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
     "THGBX2G7B2JLA01": ("NAND Flash", "16GB", "", "", "", "NÃO RENTÁVEL"),  # THGBX (2026-07-08, família nova) — decodifica 7B2=16GB (iFixit); NÃO RENTÁVEL é por TIPO (NAND raw sem controlador eMMC/UFS), não pela capacidade
     "THGBF7G8K4LBATR": ("UFS", "32GB", "", "", "", "RENTÁVEL"),  # THGBF (2026-07-09, revisado na 2ª rodada) — decode_cap_map reaproveita THGAF_CAP via pn[6:8]="G8"=32GB; 3 PNs (32/64/128GB) confirmam o padrão contra Octopart/Avnet, mas prefixo THGBF em si NUNCA confirmado Tier-1 — capacidade decodifica pela gramática, tipo/interface exato seguem sem Tier-1
+    # TC58NVG (2026-08-20, família NOVA — NAND Flash raw standalone, SLC, chip único). Decode posicional
+    # próprio (decode_cap_pos=7, mapa TC58NVG_CAP) via decoder OFICIAL Toshiba (MFOPR-916, 2010) — ver
+    # reasoning no yaml. subtype=SLC NAND fixo por família (100% dos PNs reais vistos usam célula S/2-level).
+    # NÃO RENTÁVEL é por TIPO (NAND raw sem controlador), igual ao THGBX — independente de capacidade.
+    # Âncora original TC58NVG0S3HBAI4 = PN da bancada, corrigido de typo (1→I na posição 14); já tem
+    # known_part confidence=confirmed próprio, mas o golden roda com --skip-known-parts (só gramática).
+    "TC58NVG0S3HBAI4": ("NAND Flash", "128MB", "", "", "", "NÃO RENTÁVEL"),  # posição7="0" → G0=1Gbit=128MB
+    "TC58NVG0S3HTA00": ("NAND Flash", "128MB", "", "", "", "NÃO RENTÁVEL"),  # irmão TSOP, mesma densidade
+    "TC58NVG1S3HTA00": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # posição7="1" → G1=2Gbit=256MB
+    "TC58NVG2S0HTA00": ("NAND Flash", "512MB", "", "", "", "NÃO RENTÁVEL"),  # posição7="2" → G2=4Gbit=512MB; posição9="0" (organização) não afeta a chave
+    "TC58NVG1S3ETA00": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # variante design rule 43nm (posição10="E") — mesma capacidade, prova que design rule não afeta a chave
+    "TC58NVG2S3ETA00": ("NAND Flash", "512MB", "", "", "", "NÃO RENTÁVEL"),  # variante 43nm
+    "TC58NVG1S3HTAI0": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # sufixo de pacote/modo "I0" diferente — mesma capacidade
 }
 _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). Cobre DDR1-5, LPDDR2-4X, eMMC, eMCP, UFS.
     "H26M74002HMR":      ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
@@ -1773,6 +1786,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "8Gb = 1GB por die [✓]", "RENTÁVEL"),
     "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "16Gb = 2GB por die [✓]", "RENTÁVEL"),  # 2GB=2048MB→16Gb (die DDR5 padrão)
     "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "4Gb = 512MB por die [✓]", "NÃO RENTÁVEL"),  # âncora H5GQ; GDDR morto por tipo (2026-07-23)
+    "HY5RS123235B":      ("GDDR3", "", "", "", "", "NÃO RENTÁVEL"),  # âncora HY5RS (família magra, 2026-08-20) — tipo pelo prefixo, capacidade só via known_part; GDDR morto por tipo independe de densidade
     "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "1Gb = 128MB por die [✓]", "NÃO RENTÁVEL"),
     "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),
     "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),

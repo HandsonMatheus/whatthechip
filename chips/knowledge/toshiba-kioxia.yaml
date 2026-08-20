@@ -66,6 +66,23 @@ maps:
   - [N, eMMC 5.0, '']
   - [T, eMMC 5.0, '']
   - [U, eMMC 5.1, '']
+  TC58NVG_CAP:
+  - [0, 128MB, '']
+  - [1, 256MB, '']
+  - [2, 512MB, '']
+  - [3, 1GB, '']
+  - [4, 2GB, '']
+  - [5, 4GB, '']
+  - [6, 8GB, '']
+  - [7, 16GB, '']
+  - [8, 32GB, '']
+  - [9, 64GB, '']
+  - [A, 3GB, '']
+  - [B, 6GB, '']
+  - [C, 12GB, '']
+  - [D, 24GB, '']
+  - [E, 48GB, '']
+  - [F, 96GB, '']
 families:
 - prefix: THGBM
   chip_type: eMMC
@@ -409,6 +426,24 @@ families:
   suffix_rules: ''
   tip: NAND Flash raw Toshiba. Prefixo TH58 cobre várias gerações (SLC, MLC, TLC).
   reasoning: ''
+- prefix: TC58NVG
+  chip_type: NAND Flash
+  subtype: SLC NAND
+  interface: 'Async/ONFI'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 15
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: TC58NVG_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NAND Flash raw (standalone) Toshiba — família TC58NVG (TC=chip único/mono; TH=multi-chip/stack, ver TH58 acima — mesma raiz, mas TC58NVG é a variante SLC Gbit-class de chip único, com decode PRÓPRIO). Célula: SLC (2-level) — fixo por família (subtype nunca é decodificado por posição, só a capacidade; ver chips/engine.py), confirmado em 100% dos PNs reais vistos até agora (posição 8 = "S", tabela oficial "S/H = 2 Level"). Capacidade: posição 7, dígito/letra logo após o prefixo — o "G" de "NVG" já É o primeiro caractere do símbolo de densidade oficial (ex. "G0"/"G7"), por isso o prefixo tem 7 chars (não 6) e SÓ decodifica dentro da faixa Gbit-class "G*"; nunca estender pra M*/T* (256Mb-512Mb ou 1Tb-2Tb) sem PN real confirmado nessas faixas — precisaria de família própria. Mapa TC58NVG_CAP: 0=128MB · 1=256MB · 2=512MB · 3=1GB · 4=2GB · 5=4GB · 6=8GB · 7=16GB · 8=32GB · 9=64GB (0/1/2 com PN real confirmado nesta rodada; 3-9 extraídos diretamente da tabela oficial, mesmo padrão binário) · A=3GB · B=6GB · C=12GB · D=24GB · E=48GB · F=96GB (chaves da tabela oficial incluídas por completude da fonte Tier-1, SEM PN real visto ainda usando essas letras — mesmo espírito das chaves "estimadas por padrão estrutural" já usadas no THGBM_CAP desta marca). Design rule (posição 10: H=24nm B-type, E=43nm) e pacote (TSOP "TA00" / BGA "BAI4" etc., posições 11+) variam livremente dentro da família sem afetar capacidade nem subtype. Rentabilidade: NAND raw pequeno (128MB-poucos GB, faixa vista até agora) tipicamente NÃO RENTÁVEL — ver ProfitabilityConfig. Distinguir de TH58 (multi-chip, sem decode), THGBM/THGBX/THGAF (eMMC/UFS gerenciado) e TYC/TYD (eMCP, NAND+RAM no mesmo pacote).'
+  reasoning: '["Achado original: PN da bancada \"TC58NVG0S3HBA14\" (WhatTheChip Debug, 2026-08-20), unknown=true, in_review_queue=true, zero sugestões fuzzy — família inexistente na gramática.", "Correção estrutural do typo: \"1\" (dígito) na posição 14 não é símbolo válido no decoder oficial (campo Channel/Mode só aceita I/K/M/R/S/U/V, nenhum dígito) — PN real é \"TC58NVG0S3HBAI4\" (letra I). Decode posição-a-posição completo e cross-check independente já no known_part submetido (submissions/toshiba-kioxia_tc58nvg0s3hbai4_2026-08-20.yaml).", "Fonte Tier-1: \"Part Number Decoder for Toshiba NAND Flash\" (MFOPR-916, Toshiba Corporation, set/2010) — documento oficial do fabricante, regra vigente pra NAND 56/43/32/24nm, lido na íntegra via transcrição pdf4pro.com (mirror studylib.net). Tabela de densidade completa do documento: M8=256Mb=32MB · M9=512Mb=64MB · G0=1Gb=128MB · G1=2Gb=256MB · G2=4Gb=512MB · G3=8Gb=1GB · G4=16Gb=2GB · GA=24Gb=3GB · G5=32Gb=4GB · GB=48Gb=6GB · G6=64Gb=8GB · GC=96Gb=12GB · G7=128Gb=16GB · GD=192Gb=24GB · G8=256Gb=32GB · GE=384Gb=48GB · G9=512Gb=64GB · GF=768Gb=96GB · T0=1Tb=128GB · T1=2Tb=256GB — só o subconjunto \"G*\" (0-9,A-F) entrou no TC58NVG_CAP porque nenhum PN real confirmado usa M* ou T* sob este prefixo; se aparecer, precisa de família própria, não estender esta.", "Tabela de célula (mesmo documento): S ou H = 2 Level (SLC) · D ou E = 4 Level (MLC) · T ou U = 8 Level (TLC) — as duas letras de cada par são o MESMO tipo de célula (variante de controle de processo, não célula diferente). Todos os PNs reais confirmados nesta família usam \"S\" na posição 8 → subtype fixo \"SLC NAND\".", "2026-08-20 (pedido do dono: \"pesquisa mais primos e irmãos... maximo possivel numa rodada em tier 1\"): WebSearch encontrou 6 PNs-irmãos reais adicionais, cruzados contra agregadores de datasheet, todos consistentes com o decode posição-7: TC58NVG0S3HTA00 (128MB, pacote TSOP) · TC58NVG1S3HTA00 (256MB, TSOP, 24nm) · TC58NVG2S0HTA00 (512MB, TSOP, 24nm — posição 9=\"0\" em vez de \"3\", variante de organização que não afeta a chave de capacidade) · TC58NVG1S3ETA00 (256MB, variante 43nm/posição10=\"E\") · TC58NVG2S3ETA00 (512MB, 43nm) · TC58NVG1S3HTAI0 (256MB, sufixo de pacote/modo diferente \"I0\"). As 3 densidades vistas (128/256/512MB, posição 7=\"0\"/\"1\"/\"2\") batem exatamente com a tabela oficial, e a variação de posições 9/10/11+ (organização, design rule, pacote) nunca muda a capacidade — mesmo padrão estrutural já visto nas famílias-irmãs THGBM/THGBX desta marca (só o campo de densidade dedicado importa).", "Design deliberado: gramática (não known_part avulso) pra estes 6 PNs adicionais — como a família decodifica a capacidade posicionalmente, eles já classificam corretamente (chip_type=NAND Flash, subtype=SLC NAND, capacidade certa) sem precisar de known_part individual; ficam pn_not_in_db=True mas com specs corretas via gramática, cobrindo também qualquer PN futuro da mesma família (gramática resolve infinitos PNs de uma vez, known_part resolve só 1 — só o TC58NVG0S3HBAI4, âncora original já confirmada em 5 parâmetros técnicos independentes, tem known_part confirmed dedicado).", "Estrutura do engine confirmada em chips/engine.py (~L437-566) antes deste desenho: decode_cap_map preenche r[\"capacity\"] diretamente pra qualquer chip_type não-eMCP (genérico, seguro generalizar por família inteira); subtype NUNCA é decodificado por posição — é sempre o valor estático de ChipFamily.subtype (por isso \"SLC NAND\" é assumido fixo pra família, não decodificado por PN)."]'
 - prefix: THGBX
   chip_type: NAND Flash
   subtype: ''
