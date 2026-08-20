@@ -1,5 +1,5 @@
 # Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
-# PN alvo (busca 2026-08-19): K4B4G0446D — grammar já decodifica certo hoje
+# PN alvo (busca 2026-08-20): K4B4G0446D — grammar já decodifica certo hoje
 # (pn[3:5]='4G' via DRAM_PC global → 4Gb=512MB, profitable=RENTÁVEL,
 # grammar_complete=true) — mas o PN exato não estava confirmado no banco, e o
 # campo Interface saía vazio ("—") porque largura NUNCA foi um decode

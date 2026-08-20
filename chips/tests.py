@@ -1830,7 +1830,7 @@ _SAM_GOLDEN = {
     'K4AAG165W': ('DDR4', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
     'K4B2G1646F': ('DDR3', '', '', '', '2Gb = 256MB por die [~]', 'RENTÁVEL'),
     'K4B8G0846D': ('DDR3', '', '', '', '8Gb = 1GB por die [✓]', 'RENTÁVEL'),
-    'K4B4G0446D': ('DDR3', '', '', '', '4Gb = 512MB por die [✓]', 'RENTÁVEL'),  # 2026-08-19: largura x4 (04), 1º golden da família com essa largura
+    'K4B4G0446D': ('DDR3', '', '', '', '4Gb = 512MB por die [✓]', 'RENTÁVEL'),  # 2026-08-20: largura x4 (04), 1º golden da família com essa largura
     'K4D553235FGC33': ('GDDR2', '32MB', '', '', '0.25Gb = 32MB por die [✓]', 'NÃO RENTÁVEL'),  # densidade DERIVADA (2026-07-11)
     'K4D263238KFC40': ('GDDR2', '16MB', '', '', '0.125Gb = 16MB por die [✓]', 'NÃO RENTÁVEL'),
     'K4E6E304': ('LPDDR3', '2GB', '', '', '', 'RENTÁVEL'),

@@ -643,7 +643,7 @@ families:
   decode_gen_len: 1
   decode_density_type: pc
   suffix_rules: ''
-  tip: 'DDR3/DDR3L Samsung (2007–2016). B = DDR3. Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). Largura: pn[5:7] → 04=x4 · 08=x8 · 16=x16 · 33=x32 (fonte: página "Ordering Information" do datasheet oficial Samsung, confirma as 4 — só 08/16 documentadas até 2026-08-19). Tensão: sufixo BC=DDR3 1.5V · BY=DDR3L 1.35V. ⚠ NÃO misturar DDR3 com DDR3L na bancada. Destino por densidade: 1Gb (128MB) → resíduo (moagem/refino — sem liquidez B2B em 2026); ≥2Gb (256MB+) → checar demanda antes de reacondicionar.'
+  tip: 'DDR3/DDR3L Samsung (2007–2016). B = DDR3. Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). Largura: pn[5:7] → 04=x4 · 08=x8 · 16=x16 · 33=x32 (fonte: página "Ordering Information" do datasheet oficial Samsung, confirma as 4 — só 08/16 documentadas até 2026-08-20). Tensão: sufixo BC=DDR3 1.5V · BY=DDR3L 1.35V. ⚠ NÃO misturar DDR3 com DDR3L na bancada. Destino por densidade: 1Gb (128MB) → resíduo (moagem/refino — sem liquidez B2B em 2026); ≥2Gb (256MB+) → checar demanda antes de reacondicionar.'
   reasoning: '["K → Samsung Memory", "4 → 4th-gen DRAM", "B → DDR3 (inclui DDR3L — distinção pela tensão do sufixo)", "Densidade: pn[3:5] via DRAM_PC — 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB)", "Largura: pn[5:7] — 04=x4 (server/ECC) · 08=x8 (DIMMs/SO-DIMM) · 16=x16 (embarcados) · 33=x32 (GPU/gráfico) — confirmado na página Ordering Information do datasheet oficial (K4B4G0446D, alldatasheet mirror, Dec.2012)", "Tensão: sufixo BC=DDR3 1.5V | BY=DDR3L 1.35V — NÃO misturar na bancada"]'
 - prefix: K4D
   chip_type: GDDR2

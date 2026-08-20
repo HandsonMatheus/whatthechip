@@ -1,5 +1,5 @@
 # Submissão de known_parts — Samsung, família KMD (eMCP LPDDR4X + eMMC 5.1).
-# PN alvo da busca (2026-08-19): KMDL6001DA — pn_not_in_db=true, chave pn[3:5]="L6"
+# PN alvo da busca (2026-08-20): KMDL6001DA — pn_not_in_db=true, chave pn[3:5]="L6"
 # NÃO existe em NENHUM dos dois mapas da família (SAM_EMCP_NAND nem
 # SAM_EMCP_RAM_KMD) → "⚠ cap. não mapeada" nos dois lados, profitable=INDETERMINADO.
 #
