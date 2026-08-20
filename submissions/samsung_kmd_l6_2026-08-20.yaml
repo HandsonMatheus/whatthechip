@@ -3,24 +3,42 @@
 # NÃO existe em NENHUM dos dois mapas da família (SAM_EMCP_NAND nem
 # SAM_EMCP_RAM_KMD) → "⚠ cap. não mapeada" nos dois lados, profitable=INDETERMINADO.
 #
-# ⚠ RESULTADO: KMDL6001DA fica DE FORA desta submissão — NENHUM known_part
-# registrado para ele. Pesquisa extensa (fdnext/GitHub — decoder estruturado
-# que cita página oficial Samsung por PN exato para praticamente toda a família
-# KMD —, página oficial semiconductor.samsung.com [URL do modelo redireciona pra
-# categoria genérica, sem specs], win-source, DigiPart, Octopart, Alibaba,
-# distribuidores diversos) NÃO achou capacidade (NAND nem RAM) para a chave "L6".
-# A ÚNICA menção real do PN completo "KMDL6001DA-B425" (+ top-mark "DL6DAB") foi
-# um vídeo de reparo (YouTube, "FLASH64 KMDL6001DA-B425 (DL6DAB) DEAD eMMC...")
-# que PROVA a existência do chip mas NÃO afirma capacidade — "FLASH64" no título
-# é ambíguo (pode ser numeração de série do canal, não a capacidade do chip) e eu
-# não vou adivinhar a partir disso. Regra do dono (2026-07-15, sem exceção):
-# "NAO podemos subir PNs sem capacidade no banco de dados, NUNCA!" — como não há
-# fonte Tier-1 (nem Tier-2 sólida) pra capacidade, sigo "excluir, não adivinhar":
-# NÃO registro KMDL6001DA. Sem mudança de gramática também (mapas são "EXATA,
-# jamais aproximada" — não dá pra acrescentar "L6" a nenhum dos dois mapas sem
-# fonte). Fica como lacuna documentada, igual ao padrão já usado pra outras
-# chaves não confirmadas da própria família (ver comentário no yaml: C6 e V6
-# também já estão faltando no mapa de RAM, achado incidental abaixo).
+# HISTÓRICO DA RODADA 1 (mais cedo, 2026-08-20): pesquisa exaustiva em Tier-1
+# (Samsung oficial, fdnext/GitHub), Tier-2 (Octopart — "no listings for this
+# part") e Tier-3 (Puris, Preduo, WinSource, Alibaba, Jotrin, Utsource, LCSC,
+# IC-Components, incl. os 4 tails-irmãos KMDL60018M/6001DM/6001DB/6001BM) NÃO
+# achou capacidade (NAND nem RAM) pra chave "L6" em NENHUMA fonte citável. Toda
+# busca "KMDL*" devolvia ruído das chaves vizinhas (V6/C6/D6/P6/X6), nunca L6.
+# Conclusão da rodada 1: excluir, não adivinhar — NENHUM known_part registrado.
+#
+# ⚠ RODADA 2 (mesmo dia, 2026-08-20) — REVERTIDA por decisão explícita do dono,
+# fontes NÃO-Tier-1/2/3: o dono trouxe 4 fontes de comunidade de assistência
+# técnica (abaixo até de distribuidor B2B na hierarquia do projeto — mais perto
+# de "especulação informada" que de fonte decisiva):
+#   1. Facebook (grupo de ferramenta de bancada) — log de dump real de programador:
+#      "EMMC ROM 1 (Main User Data) Capacity: 59632 MB". Aritmética conferida:
+#      59632 MB é consistente com a área de usuário TÍPICA de um eMMC 5.1 de
+#      64GB real (a diferença pro nominal vem de área reservada/RPMB/boot —
+#      eMMC 64GB comumente reporta ~58-61GB usável). Não contradiz 64GB, mas é
+#      1 screenshot de 1 técnico, não verificável por mim.
+#   2. Scribd "Grade Android" — doc colaborativo de terceiros — lista KMDL6001DA
+#      (código JZ385) sob "A+++ 64GB / PILIHAN 64GB".
+#   3. Instagram (F64 Multi-Programming) — nota de firmware mapeia
+#      KMDL6001DA-B425 (ID interno "DL6DAB") a "procedimentos de engenharia de
+#      eMMC 5.1 64GB" pro Galaxy A05 (SM-A055F).
+#   4. Referência solta "FFU IN A065M. SAMSUNG. KMDL6001DA" (Galaxy A06).
+#   Nenhuma dessas 4 é datasheet/Octopart/distribuidor B2B rastreável — é
+#   community/ferramenta de reparo. Sinalizei isso explicitamente ao dono (AskUserQuestion,
+#   recomendando NÃO submeter) e ele escolheu prosseguir mesmo assim, com
+#   confidence=confirmed — override explícito e ciente da regra "NAO podemos
+#   subir PNs sem capacidade, NUNCA!" (2026-07-15) e da regra eMCP-só-Tier-1
+#   (memória wtc-emcp-capacidade-so-tier1). Registrado abaixo EXATAMENTE com
+#   essa ressalva nas notes, pra qualquer revisor futuro (inclusive o próprio
+#   dono na aprovação in-admin) ver a proveniência real, não uma citação
+#   maquiada de Tier-1. Escopo contido: só este PN exato via known_part — a
+#   chave "L6" NÃO foi acrescentada ao mapa compartilhado SAM_EMCP_NAND (isso
+#   afetaria qualquer outro PN futuro com chave L6, risco muito maior que 1
+#   known_part pontual).
 #
 # CLUSTER pesquisado (pedido permanente: nunca só 1 PN por rodada):
 # - KMDH6001DA (10 chars, SEM sufixo) — chave "H6", JÁ confirmada nos dois mapas
@@ -68,3 +86,32 @@ known_parts:
       exatamente com o mapa já confirmado (nenhuma divergência). Reforça (não
       substitui) a citação já existente no yaml, que já usava "KMDH6001DA" como
       uma das fontes originais da própria chave H6.
+  - part_number: "KMDL6001DA"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: ""
+    notes: >
+      ⚠ CONFIDENCE=CONFIRMED POR DECISÃO EXPLÍCITA DO DONO (2026-08-20),
+      NÃO por fonte Tier-1/2/3 no padrão usual do projeto — ver o comentário
+      de cabeçalho "RODADA 2" acima para o histórico completo da decisão.
+      Fontes reais usadas (nenhuma é datasheet/Octopart/distribuidor B2B
+      rastreável): (1) Facebook, grupo de ferramenta de bancada — log de dump
+      real de programador mostrando "EMMC ROM 1 (Main User Data) Capacity:
+      59632 MB" (consistente com área de usuário típica de eMMC 5.1 64GB real,
+      conferido por aritmética — não é prova, é plausibilidade); (2) Scribd
+      "Grade Android", doc colaborativo de terceiros, KMDL6001DA (código JZ385)
+      listado em "A+++ 64GB/PILIHAN 64GB"; (3) Instagram, firmware da
+      ferramenta F64 Multi-Programming, mapeia KMDL6001DA-B425 (ID interno
+      "DL6DAB") a procedimentos de engenharia eMMC 5.1 64GB pro Galaxy A05
+      (SM-A055F); (4) referência solta a FFU do Galaxy A06 (SM-A065M) citando
+      "SAMSUNG. KMDL6001DA". RAM (LPDDR4X 4GB) vem da CAUDA "DA" já confirmada
+      pelo fix estrutural de posição desta mesma sessão (SAM_EMCP_RAM_KMD,
+      commit d90d55a) — essa parte É rigor normal do projeto, só o NAND é que
+      é override. Rodada 1 (mais cedo hoje) tinha pesquisado Tier-1/2/3
+      exaustivamente pra essa chave "L6" e não achado nada — ver histórico
+      acima. known_part escopado só a este PN exato; NÃO alterei o mapa
+      compartilhado SAM_EMCP_NAND (chave "L6" continua ausente dele).
