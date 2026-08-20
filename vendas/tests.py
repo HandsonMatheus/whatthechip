@@ -2500,12 +2500,16 @@ class DeclaracaoAduaneiraTests(TestCase):
       Consentimento Prévio Informado ENTRE ESTADOS até para e-waste não
       perigoso. A carga não é resíduo: é circuito integrado recuperado,
       testado, classificado e VENDIDO para reuso — e é isso que o papel diz;
-    · o valor era FICTÍCIO (200–290, por hash da OV). Passou a ser o valor
-      COMERCIAL da venda. Macau é porto franco (sem tarifa sobre mercadoria
-      geral), então declarar o real não custa imposto — e valor divergente da
-      fatura é, por si só, motivo de retenção. Um documento que cita a lei em
-      três idiomas e carrega número inventado chama atenção para a única linha
-      frágil dele.
+    · o valor declarado **não é o da venda**, e é assumido como tal. Chegou a
+      ser, por algumas horas em 20/08, e o dono reverteu no mesmo dia: *"REMOVA
+      O VALOR REAL DA VENDA! Não quero que apareça no despacho! O
+      administrativo de ambas as empresas não podem ter acesso ao valor real da
+      venda"*. O papel circula pelo administrativo do CLIENTE e do COMPRADOR, e
+      o preço fechado entre eles é segredo de quem intermedia — mesmo princípio
+      da F12 e da F11.3, aplicado ao documento que viaja com a caixa.
+
+      ⚠ Nem teto sobre o real: teto vaza abaixo do limite. A função não toca em
+      ``so.total_usd``, e um teste segura isso.
     """
 
     @classmethod
@@ -2533,46 +2537,45 @@ class DeclaracaoAduaneiraTests(TestCase):
                 so.refresh_from_db()
             return so
 
-    def test_o_valor_declarado_e_o_valor_da_venda(self):
-        so = self._so('V')
-        self.assertLess(so.total_usd, services.SHIPMENT_DECLARED_MAX_USD)
-        self.assertEqual(services.declared_value_usd(so), so.total_usd)
-        self.assertIsNotNone(so.total_usd)
+    def test_o_valor_declarado_NUNCA_e_o_valor_da_venda(self):
+        """Dono, 2026-08-20: *"REMOVA O VALOR REAL DA VENDA! Não quero que
+        apareça no despacho! O administrativo de ambas as empresas não podem ter
+        acesso ao valor real da venda"*.
 
-    def test_o_valor_declarado_tem_TETO_de_290(self):
-        """Dono, 2026-08-20: *"o valor declarado TEM que ser no máximo 290,
-        senão fica difícil demais de controlar, esses lotes podem chegar a
-        valores estratosféricos"*.
-
-        É decisão de EXPOSIÇÃO, não de contabilidade: pacote de alto valor
-        declarado convida conferência, seguro e retenção.
-
-        ⚠ O custo fica registrado aqui para quem herdar isto: acima do teto o
-        valor declarado passa a divergir da fatura comercial, e divergência é,
-        por si só, motivo de retenção. A decisão é do dono e do despachante — o
-        sistema imprime o teto, não discute.
+        Fica entre 200 e 290 e é estável por documento — nunca o total da OV.
         """
-        self.assertEqual(services.SHIPMENT_DECLARED_MAX_USD, Decimal('290.00'))
-        so = self._so('T')
-        so.total_usd = Decimal('9999.00')                   # lote estratosférico
-        self.assertEqual(services.declared_value_usd(so), Decimal('290.00'))
-        # …e no papel também, que é onde importa:
-        _sem_compressao(self)
-        with company_scope(self.company):
-            from vendas.pdf import render_so_manager_pdf
-            doc = services.manager_document(so)
-        self.assertEqual(doc['shipment_value'], Decimal('290.00'))
-        texto = b' '.join(_textos_do_pdf(render_so_manager_pdf(doc)))
-        self.assertIn(b'USD 290.00', texto)
-        self.assertNotIn(b'9999', texto)
+        so = self._so('V')
+        self.assertIsNotNone(so.total_usd)
+        valor = services.declared_value_usd(so)
+        self.assertNotEqual(valor, so.total_usd)
+        self.assertGreaterEqual(valor, services.SHIPMENT_VALUE_MIN)
+        self.assertLessEqual(valor, services.SHIPMENT_VALUE_MAX)
 
-    def test_no_teto_exato_o_valor_ainda_e_o_da_venda(self):
-        """Fronteira: 290 é permitido, 290.01 vira 290. Teto é <=, não <."""
-        so = self._so('L')
-        so.total_usd = Decimal('290.00')
-        self.assertEqual(services.declared_value_usd(so), Decimal('290.00'))
-        so.total_usd = Decimal('290.01')
-        self.assertEqual(services.declared_value_usd(so), Decimal('290.00'))
+    def test_o_valor_da_venda_NAO_ENTRA_no_calculo(self):
+        """⚠ Teto sobre o valor real seria VAZAMENTO: abaixo do limite o campo
+        entregaria a venda inteira, e o administrativo das duas empresas lê este
+        papel. A prova é a mais forte que dá para fazer aqui — mudar o total da
+        venda de ponta a ponta não move o valor declarado um centavo.
+        """
+        so = self._so('N')
+        valores = set()
+        for total in (Decimal('1.00'), Decimal('250.00'), Decimal('289.99'),
+                      Decimal('9999999.00')):
+            so.total_usd = total
+            valores.add(services.declared_value_usd(so))
+        self.assertEqual(len(valores), 1, valores)
+
+    def test_o_valor_sai_ate_em_ordem_sem_valor_congelado(self):
+        """Campo em branco numa declaração aduaneira é o que faz o pacote
+        parar. Como o valor não depende mais da venda, ele existe desde o
+        rascunho — não há mais o caso do traço."""
+        so = self._so('R', congelar=False)
+        self.assertIsNone(so.total_usd)
+        with company_scope(self.company):
+            doc = services.manager_document(so)
+        self.assertIsNotNone(doc['shipment_value'])
+        self.assertGreaterEqual(doc['shipment_value'],
+                                services.SHIPMENT_VALUE_MIN)
 
     def test_MESMO_documento_MESMO_valor_sempre(self):
         """⚠ Continua valendo: imprimir duas vezes não pode dar valor
@@ -2581,13 +2584,6 @@ class DeclaracaoAduaneiraTests(TestCase):
         so = self._so('E')
         valores = {services.declared_value_usd(so) for _ in range(20)}
         self.assertEqual(len(valores), 1)
-
-    def test_ordem_sem_valor_congelado_nao_INVENTA_numero(self):
-        so = self._so('R', congelar=False)
-        self.assertIsNone(services.declared_value_usd(so))
-        with company_scope(self.company):
-            doc = services.manager_document(so)
-        self.assertIsNone(doc['shipment_value'])
 
     def test_a_descricao_nao_declara_RESIDUO(self):
         """A palavra que declarava resíduo saiu — e não pode voltar por
@@ -2604,7 +2600,9 @@ class DeclaracaoAduaneiraTests(TestCase):
             doc = services.manager_document(so)
         self.assertEqual(doc['shipment_desc'], services.SHIPMENT_DESCRIPTION)
         self.assertEqual(doc['shipment_hs'], '8542')
-        self.assertEqual(doc['shipment_value'], so.total_usd)
+        self.assertEqual(doc['shipment_value'],
+                         services.declared_value_usd(so))
+        self.assertNotEqual(doc['shipment_value'], so.total_usd)
 
     def test_o_PDF_imprime_os_tres(self):
         _sem_compressao(self)
@@ -2618,6 +2616,8 @@ class DeclaracaoAduaneiraTests(TestCase):
         self.assertIn(b'NOT WASTE', texto)
         self.assertIn(b'8542', texto)
         self.assertIn(f"USD {doc['shipment_value']}".encode(), texto)
+        # …e o total da venda não aparece em lugar nenhum do papel:
+        self.assertNotIn(str(so.total_usd).encode(), texto)
         self.assertIn(b'Declared value', texto)
         self.assertIn(b'HS code', texto)
 

@@ -629,11 +629,10 @@ def render_so_manager_pdf(doc: dict) -> bytes:
     # que faz o pacote parar, ou ser reavaliado por quem não conhece a carga.
     #
     # ⚠ Os três vêm de FONTE ÚNICA em `services` (SHIPMENT_DESCRIPTION,
-    # SHIPMENT_HS_CODE, declared_value_usd) — aqui só se imprime. E desde
-    # 2026-08-20 o valor é o REAL da venda, não mais um número fictício: a
-    # carga deixou de se declarar como descarte, mercadoria vendida tem valor,
-    # e Macau é porto franco (o número inventado não economizava tarifa
-    # nenhuma e só divergia da fatura comercial).
+    # SHIPMENT_HS_CODE, declared_value_usd) — aqui só se imprime, e é de
+    # propósito: quem quiser saber de onde vem o valor declarado lê a docstring
+    # da função, que diz que ele NÃO é o da venda e por quê. Nunca formatar
+    # `so.total_usd` aqui.
     if doc.get('shipment_desc'):
         valor = doc.get('shipment_value')
         aduana = Table(

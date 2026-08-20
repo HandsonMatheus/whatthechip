@@ -1928,18 +1928,37 @@ como exemplo de memória de uso comum, e é essa frase que sustenta a declaraç�
 de uso final ("não é 3A090"). O que não pode vazar é **marca e capacidade** —
 que o anexo não menciona.
 
-💵 **TETO de US$ 290 no valor declarado** (dono, 2026-08-20: *"o valor declarado
-TEM que ser no máximo 290, senão fica difícil demais de controlar, esses lotes
-podem chegar a valores estratosféricos"*). `SHIPMENT_DECLARED_MAX_USD`; abaixo do
-teto o campo continua sendo o valor real da venda, acima ele é o teto.
+💵 **O VALOR DECLARADO NÃO É O DA VENDA** (dono, 2026-08-20, em letra
+maiúscula: *"REMOVA O VALOR REAL DA VENDA! Não quero que apareça no despacho! O
+administrativo de ambas as empresas não podem ter acesso ao valor real da
+venda"*).
 
-⚠ **O custo, registrado para quem herdar isto:** acima do teto o valor declarado
-passa a divergir da fatura comercial, e divergência é, por si só, motivo de
-retenção — foi exatamente o argumento que tirou o valor fictício de 200–290
-poucas horas antes. A diferença é que agora é decisão consciente de EXPOSIÇÃO
-(pacote de alto valor declarado convida conferência, seguro e retenção), tomada
-pelo dono, não um número inventado por hash. O sistema imprime o teto; quem
-responde pela divergência é o embarcador.
+Este item mudou DUAS vezes no mesmo dia e a segunda decisão é a que vale. De
+manhã o valor fictício (200–290 por hash) virou o valor real; à tarde voltou a
+ser controlado — porque a razão real não era aduaneira, era de SIGILO: **o
+documento de despacho circula pelo administrativo do cliente E do comprador**, e
+o preço fechado entre eles é segredo de quem intermedia. É a F12/F11.3 chegando
+ao papel que viaja com a caixa.
+
+⚠ **Nem teto sobre o valor real** — teto vaza. Abaixo do limite o campo
+entregaria a venda inteira. Por isso `declared_value_usd` **não toca em
+`so.total_usd`**: nada de `min()`, nada de caminho por onde o real chegue.
+Teste segura isso variando o total de US$ 1 a US$ 9.999.999 e exigindo que o
+declarado não se mova um centavo.
+
+Continua **estável por documento** (hash do código da OV, nunca `random`):
+imprimir duas vezes tem que dar o mesmo número, senão o papel que já foi para a
+transportadora deixa de bater com o segundo. E agora sai **sempre**, até em
+rascunho — como não depende mais do valor congelado, acabou o caso do traço, e
+campo em branco em declaração aduaneira é o que faz o pacote parar.
+
+⚠ **O custo, registrado para quem herdar isto:** o valor declarado não bate com
+a fatura comercial, e divergência é, por si só, motivo de retenção em qualquer
+aduana. O que atenua no caso concreto: **Macau é porto franco** (sem tarifa
+sobre mercadoria geral), então não há imposto sendo economizado — o efeito
+prático recai sobre **seguro e limite de responsabilidade da transportadora**,
+que ficam presos ao valor declarado. Decisão do dono sobre a declaração legal da
+empresa dele, tomada por escrito e com o custo dito. Muda num lugar só.
 
 ✍️ **Sem linha de assinatura do embarcador** (dono, 2026-08-20). O rótulo
 `a_sign` saiu do `_L` junto — rótulo órfão num dicionário que o teste de glifo

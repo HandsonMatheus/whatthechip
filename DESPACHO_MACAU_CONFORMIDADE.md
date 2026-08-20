@@ -155,10 +155,9 @@ despacho**:
 | descrição `PCB CHIPS FOR DISPOSAL` | `RECOVERED ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs) — TESTED AND GRADED, SOLD FOR REUSE. NOT WASTE.` |
 | sem código HS | **HS 8542** na caixa de declaração |
 | sem base legal | **anexo regulatório** com as três declarações, em EN · 繁體中文 · ES |
-| valor declarado aleatório 200–290 USD | **valor real da venda** |
+| valor declarado aleatório 200–290 USD | **mantido** — 200–290, estável por hash da OV |
 | tabela de tipo × capacidade + preços | **uma tabela só: categoria WTC × quantidade** |
 | admin via `Samsung · eMCP 16GB` | **só a caixa (`B-06`), para todo mundo** |
-| — | valor declarado com **teto de US$ 290** |
 | linha de assinatura do embarcador | removida |
 | câmbio impresso | fora do papel (segue no dado) |
 | preço por categoria, unitário e total | **fora, para todo mundo — admin inclusive** |
@@ -189,17 +188,26 @@ espanhol.** Você pediu espanhol e eu fiz espanhol — só que quem lê do outro
 lê português. Se o despachante preferir, trocar (ou somar um quarto) é mecânico:
 é editar `_L` e `_ANEXO` em `vendas/pdf.py`. Me diz e eu faço.
 
-⚠ **2. O valor declarado é o valor real da venda, com teto de US$ 290.** Antes
-era um número inventado entre 200 e 290 por hash da OV. Agora é o valor de
-verdade — e, quando o lote passa de 290, sai 290.
+⚠ **2. O valor declarado continua NÃO sendo o valor da venda** — e agora com o
+motivo certo escrito. Eu tinha trocado pelo valor real de manhã, com argumento
+aduaneiro; você reverteu à tarde com um argumento melhor, que é de SIGILO: *"o
+administrativo de ambas as empresas não podem ter acesso ao valor real da
+venda"*. É verdade e eu não tinha pesado — este papel circula pelo
+administrativo do cliente e do comprador, e o preço entre eles é justamente o
+que você intermedia.
 
-Vale ter claro o que o teto compra e o que ele custa. **Compra:** pacote de alto
-valor declarado convida conferência, seguro caro e retenção, e você disse que
-lote grande fica difícil de controlar. **Custa:** acima do teto o papel deixa de
-bater com a fatura comercial, e valor declarado divergente da fatura é, por si
-só, motivo de retenção — é o mesmo argumento que derrubou o número fictício. A
-diferença é que agora é decisão sua, consciente, e não um hash. Se o despachante
-preferir sem teto, é mudar `SHIPMENT_DECLARED_MAX_USD` e pronto.
+Fica 200–290, estável por hash do código da OV (mesmo documento = mesmo número,
+sempre). Não pus teto sobre o valor real porque **teto vaza**: abaixo de 290 o
+campo entregaria a venda inteira. O código não toca no total da venda, e tem
+teste segurando isso.
+
+**O que isso custa, para você levar ao despachante:** valor declarado que não
+bate com a fatura comercial é, por si só, motivo de retenção em qualquer aduana.
+O que atenua no caso concreto — Macau é porto franco, não há tarifa sobre
+mercadoria geral, então não há imposto sendo economizado. O efeito prático real
+recai sobre **seguro e limite de responsabilidade da transportadora**: se a
+caixa sumir, a DHL responde até o valor declarado, não até o valor da carga.
+Vale saber antes de precisar.
 
 ⚠ **3. O texto do anexo é legal, com o seu nome.** Mostre ao despachante antes do
 próximo embarque. Se ele mudar uma palavra, eu mudo no código com teste — o que

@@ -447,52 +447,49 @@ SHIPMENT_DESCRIPTION = ('RECOVERED ELECTRONIC INTEGRATED CIRCUITS (MEMORY ICs)'
 #: dispensa de licença prévia em Macau (não consta da Tabela B do Anexo II).
 SHIPMENT_HS_CODE = '8542'
 
-#: Teto do VALOR DECLARADO, em US$ (dono, 2026-08-20). Acima disto o papel
-#: imprime o teto, não o valor da venda — decisão de exposição do embarcador,
-#: não de contabilidade: lote grande vira pacote de alto valor declarado, e alto
-#: valor declarado convida conferência, seguro e retenção. Ver
-#: ``declared_value_usd`` para o que isso custa (divergência com a fatura).
-SHIPMENT_DECLARED_MAX_USD = Decimal('290.00')
+#: Faixa do VALOR DECLARADO, em US$ inteiros. **NÃO é o valor da venda** — ver
+#: ``declared_value_usd`` para o porquê e para o que isso custa.
+SHIPMENT_VALUE_MIN, SHIPMENT_VALUE_MAX = 200, 290
 
 
-def declared_value_usd(so):
-    """Valor declarado do embarque, em US$ — o valor COMERCIAL da carga.
+def declared_value_usd(so) -> int:
+    """Valor declarado do embarque, em US$ inteiros entre 200 e 290.
 
-    ⚠ Mudou em 2026-08-20 (dono). Antes era um número FICTÍCIO entre 200 e 290,
-    estável por hash do código da OV. A lógica de então: "é sucata para
-    descarte, o valor aduaneiro não é o comercial". Duas coisas derrubaram isso:
+    ⚠ **NÃO é o valor comercial da carga, e é assumido como tal.** Decisão do
+    dono, 2026-08-20, textual: *"REMOVA O VALOR REAL DA VENDA! Não quero que
+    apareça no despacho! O administrativo de ambas as empresas não podem ter
+    acesso ao valor real da venda"*. O documento de despacho circula pelo
+    administrativo do cliente E do comprador, e o preço fechado entre eles é
+    segredo comercial de quem intermedia — o mesmo princípio da F12 e da F11.3,
+    aplicado ao papel que viaja com a caixa.
 
-    · a carga deixou de se declarar como descarte (ver SHIPMENT_DESCRIPTION) —
-      mercadoria vendida tem valor, e é o da venda;
-    · **Macau é porto franco**: não há tarifa de importação sobre mercadoria
-      geral (imposto de consumo só em álcool, tabaco, combustível e veículos).
-      Declarar o valor real não custa imposto nenhum — o inventado não tinha
-      upside e tinha o downside inteiro.
+    Por isso a função **não toca em ``so.total_usd``**: não há teto, não há
+    ``min()``, não há caminho por onde o valor real chegue aqui. Teto seria
+    vazamento parcial — abaixo de 290 o campo entregaria a venda inteira.
 
-    E o downside era grande: um documento que cita a lei em três idiomas e
-    carrega um valor que não bate com a fatura comercial chama atenção para a
-    única linha frágil dele. Valor declarado divergente da fatura é, por si só,
-    motivo de retenção.
+    "Aleatório", mas **estável por documento**: sai de um hash do código da OV,
+    não de ``random``. Se o gerente imprimir duas vezes e sair valor diferente,
+    o papel que já foi para a transportadora deixa de bater com o segundo — e
+    divergência de valor declarado é exatamente o que trava um pacote na
+    alfândega. Mesmo documento, mesmo número, sempre. Por isso também sai
+    SEMPRE, mesmo em ordem ainda sem valor congelado: campo em branco numa
+    declaração aduaneira é o que faz o pacote parar.
 
-    ⚠ **E tem TETO** (dono, 2026-08-20): *"o valor declarado TEM que ser no
-    máximo 290, senão fica difícil demais de controlar, esses lotes podem chegar
-    a valores estratosféricos"*. Acima disso o papel imprime o teto. É decisão
-    de exposição do embarcador — lote grande vira pacote de alto valor
-    declarado, e alto valor declarado convida conferência, seguro e retenção.
-
-    Então o campo tem duas leituras: abaixo do teto ele **é** o valor da venda
-    (bate com a fatura, que é o ideal); acima, ele é o teto. ⚠ Nesse segundo
-    caso o valor declarado passa a divergir da fatura comercial — divergência é,
-    por si só, motivo de retenção, e quem responde por ela é o embarcador. O
-    sistema imprime o que foi mandado imprimir; a decisão é do dono e do
-    despachante.
-
-    Ordem ainda sem valor congelado devolve ``None`` — e o PDF imprime o traço
-    em vez de inventar número.
+    ⚠ **O que isto custa, registrado para quem herdar o código:** o valor
+    declarado não bate com a fatura comercial, e valor declarado divergente da
+    fatura é, por si só, motivo de retenção — em qualquer aduana. O que
+    ATENUA aqui: Macau é porto franco (sem tarifa sobre mercadoria geral), então
+    não há imposto sendo economizado; o efeito prático é sobre seguro e limite
+    de responsabilidade da transportadora, que ficam presos ao valor declarado.
+    Isto é decisão do dono sobre a declaração legal da empresa dele, tomada por
+    escrito e com o custo dito. Se um dia mudar, muda AQUI, num lugar só.
     """
-    if so.total_usd is None:
-        return None
-    return min(so.total_usd, SHIPMENT_DECLARED_MAX_USD)
+    import hashlib
+    semente = hashlib.md5((so.code or str(so.pk)).encode()).hexdigest()
+    faixa = SHIPMENT_VALUE_MAX - SHIPMENT_VALUE_MIN + 1
+    return SHIPMENT_VALUE_MIN + int(semente[:8], 16) % faixa
+
+
 def manager_document(so, with_prices=False):
     """Tudo que o documento de DESPACHO desenha, pronto — sem uma linha de
     dinheiro de mercadoria.
@@ -519,9 +516,10 @@ def manager_document(so, with_prices=False):
         'ship_to': ship_to(so.buyer),
         'company_logo': company_logo_bytes(so.company if so.company_id else None),
         # Declaração aduaneira — exigência da transportadora. SEMPRE
-        # preenchida (campo em branco é o que faz o pacote parar) e, desde
-        # 2026-08-20, VERDADEIRA: descrição de mercadoria vendida para reuso,
-        # posição pautal 8542 e o valor comercial da própria venda.
+        # preenchida: campo em branco é o que faz o pacote parar. Descrição de
+        # mercadoria vendida para reuso e posição pautal 8542 são VERDADEIRAS;
+        # o valor declarado NÃO é o da venda, por decisão do dono — ver
+        # ``declared_value_usd``, onde o porquê e o custo estão escritos.
         'shipment_desc': SHIPMENT_DESCRIPTION,
         'shipment_value': declared_value_usd(so),
         'shipment_hs': SHIPMENT_HS_CODE,
