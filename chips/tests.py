@@ -1671,6 +1671,21 @@ _RAY_GOLDEN = {
     "RS70BT7G4S16G":    ("eMMC", "128GB", "", "", "", "RENTÁVEL"),
     "RS512M32LO4":      ("LPDDR4", "2GB", "", "", "", "RENTÁVEL"),  # KnownPart em prod
     "RS512M32LZ4":      ("LPDDR4", "2GB", "", "", "", "RENTÁVEL"),  # KnownPart em prod
+    # DDR3/DDR3L/DDR4 DISCRETA (não mobile/LPDDR) — família nova 2026-08-20, achada a partir de um
+    # PN real 100% não-classificado no gateway do estoque (RS512M16Z2DD). Gramática decide só o
+    # TIPO (decode_cap_pos=null em todas as 9); densidade exata (density_gbit) vem de known_part —
+    # mesmo padrão já usado por outras marcas pra DDR4/DDR3 sem decode posicional (ver _PMK_GOLDEN/
+    # _GIGA_GOLDEN). Por isso capacity="" e rentabilidade=INDETERMINADO em todas (specs insuficientes
+    # pra decisão comercial — não é bug, é o handshake funcionando corretamente sem capacidade).
+    "RS512M16Z2DD-62DT":  ("DDR4",  "", "", "", "", "INDETERMINADO"),  # Tier-1 szrayson.com; 8Gb=512Mx16
+    "RS256M16ZADD-75DT":  ("DDR4",  "", "", "", "", "INDETERMINADO"),  # Tier-2 LCSC; 4Gb=256Mx16
+    "RS512M8ZADD-75DT":   ("DDR4",  "", "", "", "", "INDETERMINADO"),  # Tier-2 LCSC; 4Gb=512Mx8 (irmã x8 da acima)
+    "RS1G16Z4DD-62DT":    ("DDR4",  "", "", "", "", "INDETERMINADO"),  # Tier-1 szrayson.com; 16Gb=1Gx16
+    "RS128M16V8DB-107AT": ("DDR3",  "", "", "", "", "INDETERMINADO"),  # Tier-1 szrayson.com; 2Gb=128Mx16, 1.5V
+    "RS256M16V0DB-107AT": ("DDR3",  "", "", "", "", "INDETERMINADO"),  # Tier-2 LCSC; 4Gb=256Mx16, 1.5V
+    "RS512M16VADF-107AT": ("DDR3",  "", "", "", "", "INDETERMINADO"),  # Glochip (Tier 2/3, apoio); 8Gb=512Mx16, 1.5V
+    "RS128M16VMDD-107BT": ("DDR3L", "", "", "", "", "INDETERMINADO"),  # Glochip (Tier 2/3, apoio); 2Gb=128Mx16, 1.35V
+    "RS256M16VMDC-107BT": ("DDR3L", "", "", "", "", "INDETERMINADO"),  # Glochip (Tier 2/3, apoio); 4Gb=256Mx16, 1.35V
 }
 _KST_GOLDEN = {  # eMCP: specs em emcp_nand/emcp_ram; rentab pela RAM (512MB→descarta, 1GB+→rentável)
     "04EMCP04-NL2DM627": ("eMCP", "", "eMMC 5.0 4GB",  "LPDDR3 512MB", "", "NÃO RENTÁVEL"),
