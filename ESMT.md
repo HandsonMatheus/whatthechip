@@ -9,11 +9,13 @@
 > (princípio), fontes, o *porquê*** e ponteiros — igual ao `SK_HYNIX.md`, que serviu de modelo para este
 > arquivo.
 >
-> ⚠️ **Estado em 2026-08-05: 1ª família mapeada (M15T — DDR3(L) SDRAM), ainda NÃO carregada no sistema.**
-> `chips/knowledge/esmt.yaml` (rascunho, 4 famílias) e `submissions/esmt_m15t_2026-08-05.yaml` (4
-> known_parts) já existem e passaram no portão Pydantic (validado standalone, fora do Django) — falta
-> rodar `load_brands --brand esmt` (dry-run) no ambiente local real antes de qualquer `--commit`. §3/§6/§8
-> atualizados com o que foi confirmado; o resto da marca (outros prefixos/tipos) continua esqueleto.
+> ⚠️ **Estado em 2026-08-20: 3 famílias mapeadas (M15T/DDR3L, M14D+M14F/DDR2, M15F/DDR3 — 16 prefixos),
+> ainda NÃO carregadas no sistema.** `chips/knowledge/esmt.yaml` (rascunho, 16 famílias) e 4 arquivos de
+> submissão (`submissions/esmt_m15t_2026-08-05.yaml`, `esmt_m15t_x8_2026-08-05.yaml`,
+> `esmt_m14d_2026-08-20.yaml`, `esmt_m15f_2026-08-20.yaml` — 16 known_parts no total) já existem e
+> passaram no portão Pydantic (validado standalone, fora do Django) — falta rodar `load_brands --brand
+> esmt` (dry-run) no ambiente local real antes de qualquer `--commit`. §3/§6/§8 atualizados com o que foi
+> confirmado; o resto da escada de prefixo (M12L, M13S/M13D, M16U, M53D–M56Z) continua esqueleto.
 
 ---
 
@@ -144,7 +146,9 @@ Preduo > IA > especulação — importadores **nunca** rebaixam um registro `con
 | SRAM / NOR Flash / catálogo (prováveis pelo perfil industrial) | `"SRAM"`/`"NOR Flash"`/etc. | descritivo (categoria `catalog` — chip_type MANDA, não normaliza) | — | conforme o tipo |
 
 **Regras absolutas** (idênticas em todo o WTC): `subtype` nunca carrega densidade/bus width/tensão/
-qualificador de mercado. `density_gbit` = Gb por die (é o campo do `KnownPart` que você preenche; `dram_density` é o derivado pelo engine — não confundir, `CLAUDE.md §6`). `capacity` = pacote em bytes, nunca Gbit.
+qualificador de mercado. `density_gbit` = Gb por die (é o campo do `KnownPart` que você preenche; `dram_density` é o derivado pelo engine — não confundir, `CLAUDE.md §6`). ⚠ **Sub-1Gb TEM que ser fracionário
+em `Gb`** (ex. `"0.5Gb"` pra 512Mb — nunca `"512Mb"`, o parser numérico do engine só reconhece o sufixo
+literal `Gb`; ver §4, achado 2026-08-20). `capacity` = pacote em bytes, nunca Gbit.
 `emcp_ram` = `"LPDDR{n} {cap}GB"` (tipo antes). `tip`/`notes` = todo o resto (tensão, velocidade,
 organização, avisos, proveniência).
 
@@ -226,8 +230,8 @@ LPDDR `{chip_type}+{cap GB}G` · eMCP `EMCP{nand}+{ram}` · eMMC `EMMC{cap}GB` �
 ```
 M12L / M52S / M52D  → SDR SDRAM
 M13S / M13D          → DDR / LPDDR
-M14D / M14F          → DDR2 SDRAM
-M15T / M15F          → DDR3 / DDR3L SDRAM  ← a família confirmada abaixo
+M14D / M14F          → DDR2 SDRAM             ← CONFIRMADO 2026-08-20, ver §3.3
+M15T / M15F          → DDR3L / DDR3 SDRAM     ← CONFIRMADO — M15T em 2026-08-05 (§3.2), M15F em 2026-08-20 (§3.4). NÃO é só par de voltagem igual M14D/M14F: DDR3 e DDR3L são chip_types DISTINTOS em chip_types.py, e o M15F mapeia pro tipo diferente (DDR3, não DDR3L) — ver §3.4
 M16U                 → DDR4 SDRAM
 M53D                 → LPDDR
 M54D                 → LPDDR2
@@ -235,7 +239,9 @@ M55D                 → LPDDR3
 M56Z                 → LPDDR4X
 ```
 Cada prefixo dessa lista precisa da MESMA verificação Tier-1 antes de virar família na gramática — isso é
-só um mapa de onde procurar "outros tipos" no futuro, não uma confirmação.
+só um mapa de onde procurar "outros tipos" no futuro, não uma confirmação. A doc de terceiros acertou o
+M14D/M14F de primeira (DDR2 SDRAM) — bom sinal de que o resto da escada também deve estar certo, mas
+**ainda** não é confirmação, cada prefixo precisa da própria pesquisa Tier-1/2.
 
 ### 3.2 M15T — DDR3(L) SDRAM (confirmado 2026-08-05)
 
@@ -278,19 +284,111 @@ sufixo, mas não testei o `_match_family` do engine de verdade (precisa do Djang
 (DDR3) OU 1.35V (DDR3L), diferente da SK Hynix (que separa H5TQ/H5TC em prefixos distintos por tensão).
 **Decisão do dono (2026-08-05): registrar como `DDR3L`** no nosso `chip_type`/`subtype`.
 
+### 3.3 M14D / M14F — DDR2 SDRAM (confirmado 2026-08-20)
+
+Mesmo padrão literal do M15T (`M14D <densidade> <largura x> <total de palavras em M, todos os bancos> A`),
+mas densidade em **Mb** (sem letra "G") quando sub-1Gb, e **com "G"** a partir de 1Gb — mesma lógica do
+M15T, só que aqui aparecem os dois regimes porque a família cobre densidades bem menores (128Mb–1Gb):
+
+| PN confirmado | Densidade | Organização | Conta (bits) | Capacidade | Fontes |
+|---|---|---|---|---|---|
+| M14D**128**16**8**A | 128Mb | x16, 4 bancos (2M/banco) | 2.097.152 × 16 × 4 = 134.217.728 | 128Mb = 16MB | 2 (Suntsu-PDF + Satron) |
+| M14D**256**16**16**A | 256Mb | x16, 4 bancos* (16M/banco) | 16.777.216 × 16 = 268.435.456 | 256Mb = 32MB | 2 (Alldatasheet + Satron) |
+| M14D**512**16**32**A | 512Mb | x16, 4 bancos (8M/banco) | 8.388.608 × 16 × 4 = 536.870.912 | 512Mb = 64MB | 4 (Alldatasheet+LCSC+Sekorm+Satron) — **PN ao vivo do debug 2026-08-20** |
+| M14F**512**16**32**A | 512Mb | x16, 4 bancos* — **1.55V** (M14D=1.8V) | idem acima | 512Mb = 64MB | 1 só (Satron) ⚠ revisar |
+| M14D**1G**16**64**A | 1Gb | x16, 8 bancos (8M/banco) | 8.388.608 × 16 × 8 = 1.073.741.824 | 1Gb = 128MB | 4 (Alldatasheet+oficial+Satron+Novitronic) |
+| M14D**1G**8**128**A | 1Gb | x8, 8 bancos* | 128M × 8 = 1.073.741.824 | 1Gb = 128MB | 1 só (Satron) ⚠ revisar |
+
+*bancos não confirmados diretamente nesse PN específico — inferido por padrão JEDEC DDR2 (4 bancos até
+512Mb, 8 bancos a partir de 1Gb), confirmado diretamente nos irmãos 128Mb/512Mb (4 bancos) e 1Gb x16 (8
+bancos) desta mesma família. Não afeta a densidade calculada (independe de quantos bancos a compõem).
+
+⚠ **M14F = par de voltagem do M14D, prefixo SEPARADO** (diferente do M15T, que usa 1 prefixo só pras duas
+tensões do DDR3(L)) — ESMT decidiu separar D(1.8V)/F(1.55V) no DDR2. Não existe `"DDR2L"` no vocabulário
+de `chip_types.py` (só `"DDR2"`) — **M14F também mapeia pra `chip_type=DDR2`**, confirmado pelo portão
+Pydantic (não é decisão arbitrária, é a única forma que resolve a um tipo canônico válido).
+
+⚠ **Densidade sub-1Gb — achado metodológico importante (2026-08-20):** `density_gbit` **tem** que ser
+escrito como fração de `Gb` (`"0.5Gb"`, `"0.25Gb"`, `"0.125Gb"`), **nunca** como `"512Mb"`/`"256Mb"`/
+`"128Mb"`. Motivo, confirmado lendo `chips/engine.py` direto: o parser `_extract_gbit()` usa
+`_GBIT_RE = re.compile(r'(\d+(?:\.\d+)?)\s*Gb\b')` — só reconhece o sufixo literal `"Gb"`; `"512Mb"` NÃO
+bate (é `"Mb"`, não `"Gb"`), então `density_gbit_num` ficaria `None` mesmo com o campo "preenchido" — a
+mesma classe de bug do caso H5AN (`density_gbit` populado mas invisível pro engine). Provado rodando o
+regex real (copiado de `engine.py`) contra os dois formatos no ambiente de validação standalone — ver
+§8. Todas as famílias ESMT anteriores (M15T) eram ≥1Gb, então essa armadilha nunca tinha aparecido antes
+nesta marca. Também populei `density_gb` (ex. `"64MB"`) pra manter a leitura humana clara — o engine
+monta `dram_density = "0.5Gb = 64MB por die [✓]"` (`chips/engine.py::_known_dram_density`).
+
+### 3.4 M15F — DDR3 SDRAM (confirmado 2026-08-20)
+
+Mesmo padrão literal do M15T (`M15F <densidade> <largura x> <total de palavras em M, todos os bancos> A`),
+gatilho: PN **ao vivo do debug de estoque** (`M15F1G1664A`, 100% desconhecido, `fuzzy_suggestions` apontava
+`M15T1G1664A` e `M14D1G1664A` — nenhum dos dois é o PN real):
+
+| PN confirmado | Densidade | Organização | Conta (bits) | Capacidade | Fontes |
+|---|---|---|---|---|---|
+| M15F**1G**16**64**A | 1Gb | x16, 8 bancos (8M/banco) | 8.388.608 × 16 × 8 = 1.073.741.824 | 1Gb = 128MB | 3 (oficial esmt.com.tw + Satron + Alldatasheet) — **PN ao vivo do debug 2026-08-20** |
+| M15F**2G**16**128**A | 2Gb | x16, 8 bancos (16M/banco) | 16.777.216 × 16 × 8 = 2.147.483.648 | 2Gb = 256MB | listagem Alldatasheet + 4 distribuidores (existência) ⚠ revisar |
+| M15F**4G**16**256**A | 4Gb | x16, 8 bancos (32M/banco) | 33.554.432 × 16 × 8 = 4.294.967.296 | 4Gb = 512MB | 4 (Alldatasheet+Sekorm+Satron+listagem) — tensão com 1 divergência, ver abaixo |
+| M15F**512**16**32**A | 512Mb | x16, 8 bancos (4M/banco) | 4.194.304 × 16 × 8 = 536.870.912 | 512Mb = 64MB | 3 (Satron+Alldatasheet+datasheetspdf) |
+
+⚠ **`M15F` NÃO é "o mesmo tipo, outra tensão" como o M14D/M14F — é um `chip_type` DIFERENTE.**
+`chips/chip_types.py` tem `"DDR3"` e `"DDR3L"` como entradas **distintas** (confirmado lendo o arquivo
+direto, não suposição) — diferente do DDR2, onde `"DDR2L"` não existe e M14D/M14F foram forçados pro
+mesmo `chip_type=DDR2`. Todo datasheet/título indexado chama a família M15F de **"DDR3 SDRAM"** (sem
+"(L)"), contra **"DDR3(L) SDRAM"** do M15T — e a única confirmação direta de tensão que achei
+(`M15F1G1664A`, página oficial `esmt.com.tw`) é **1.5V-only**, contra o 1.35V/1.5V dual do M15T. Por
+isso: **`chip_type=DDR3` (não `DDR3L`) pro M15F inteiro.** Isso **não muda rentabilidade** — `DDR3` e
+`DDR3L` têm o mesmo `ChipTypeSpec` (`dram_pc`/`ddr`/`ddr`, `carries_generation=True`, `commercial=True`),
+confirmado rodando os dois lado a lado no ambiente de validação — só deixa o tipo/label exibido mais
+preciso.
+
+⚠ **Uma divergência de tensão não resolvida:** a tabela da Satron cita `M15F4G16256A` especificamente
+como `"1.35V/1.5V"` (dual, como se fosse DDR3L), enquanto Alldatasheet e Sekorm (2 fontes independentes,
+citando o próprio título do datasheet) chamam esse mesmo PN de `"DDR3 SDRAM"` sem "(L)" — mesmo padrão dos
+outros 3 M15F, todos 1.5V-only onde a tensão foi confirmada. Mantive `chip_type=DDR3` pelo sinal mais
+consistente (nome do datasheet, repetido), mas sinalizei a divergência na `notes` do known_part — pode ser
+erro de tabela do distribuidor, ou um sub-sufixo específico dual-rated dentro do mesmo PN base (não
+decodifico sufixo de pedido nesta marca, §3.2). Se a tensão exata importar pro caso de uso, vale o dono
+conferir o datasheet oficial diretamente.
+
+⚠ **`M15F4G8512A`** (par x8 esperado do `M15F4G16256A`, mesmo padrão do M15T2G8256A/M15T4G8512A) apareceu
+**1 única vez**, numa listagem agregada do Alldatasheet (busca por prefixo "M15") — sem página dedicada
+própria (busquei direto por ID e não achou) nem qualquer menção em Satron/Sekorm/LCSC/IC-Components apesar
+de busca dirigida. Não incluí no yaml nem na submissão (regra de ouro #12 — essencial não confirmável em
+Tier-1/2 exclui o PN inteiro, nunca estimar). Pode ser um PN real e obscuro, ou pode ser a ferramenta de
+busca confundindo com a linha vizinha do `M15T4G8512A` — não dá pra saber sem uma fonte dedicada.
+
+`M15F2G16128A` também ficou 1 degrau abaixo dos outros 3: a organização só veio da mesma listagem agregada
+(não uma página dedicada), embora a EXISTÊNCIA do PN esteja bem corroborada por 4 distribuidores
+independentes (`datasheet4u.com` ×2 sufixos, `electronicsdatasheets.com`, `datasheet-pdf.com`,
+`edinventory.com`). Confiança tratada como o `M15T2G8256A` da 1ª família (submetido, mas sinalizado pro
+dono revisar com atenção extra).
+
 ---
 
 ## 4. Armadilhas e Decisões Arquiteturais
 
-**[A PREENCHER]** — nenhuma armadilha ESMT-específica confirmada ainda; esta seção cresce conforme a
-pesquisa avança (mesmo padrão do `SK_HYNIX.md §3`). Enquanto isso, de olho nas armadilhas **sistêmicas**
-já provadas em outras marcas (`CLAUDE.md §7`) — têm boa chance de reaparecer aqui:
-
+- **Densidade sub-1Gb precisa de `density_gbit` fracionário em `Gb`** (`"0.5Gb"`, não `"512Mb"`) — senão
+  `density_gbit_num` fica `None` em silêncio (`_extract_gbit`/`_GBIT_RE` só reconhece o sufixo `"Gb"`
+  literal). Achado ao vivo no M14D/M14F (§3.3, 2026-08-20) — primeira família ESMT sub-1Gb.
+- **`WebFetch` pode citar a organização certa e ainda errar a "densidade total" que ele mesmo calcula**
+  (visto 2x na rodada dos x8 do M15T, 2026-08-05) — sempre refazer a conta na mão a partir da organização
+  citada (NxM x largura x bancos), nunca colar o total que a ferramenta ofereceu de bônus. Ver §7.
+- **M14D/M14F: prefixo separado por voltagem no DDR2** (D=1.8V, F=1.55V), diferente do M15T que usa 1
+  prefixo só pras duas tensões do DDR3(L). Sem `"DDR2L"` no vocabulário — os dois mapeiam pra `DDR2`.
+- **M15T/M15F NÃO segue o mesmo padrão do M14D/M14F** — parece par de voltagem por analogia de prefixo,
+  mas `DDR3`/`DDR3L` são `chip_type`s DISTINTOS em `chip_types.py` (diferente de `DDR2`/`"DDR2L"`, onde
+  só um existe). Sempre CONFIRMAR o vocabulário antes de assumir "mesmo padrão de uma família parecida" —
+  quase presumi DDR3L pro M15F por analogia com M14F antes de checar (§3.4, 2026-08-20).
+- **Listagem agregada do Alldatasheet (busca por prefixo) pode citar PN que não existe em nenhuma fonte
+  dedicada** (`M15F4G8512A`, §3.4/§6, 2026-08-20) — tratar citação só-em-listagem como pista, não
+  confirmação; sempre tentar achar a página dedicada ou 2ª fonte antes de incluir.
 - Unidade Gb×GB confundida (o erro mais comum do domínio inteiro).
 - `decode_density_type` + `decode_cap_map` juntos na mesma família (mutuamente exclusivos).
 - Tipo/geração morta retornando INDETERMINADO em vez de NÃO RENTÁVEL (checar geração ANTES de exigir
-  capacidade, se a ESMT tiver famílias legadas descontinuadas — SDRAM puro já é sempre NÃO RENTÁVEL por
-  tipo, `chip_types.py`).
+  capacidade) — **confirmado que isso já vale pra DDR2** (§5): `assess_profitability` aplica "DDR2 ou
+  inferior → NÃO RENTÁVEL" por GERAÇÃO (não por tipo-morto categórico como SDRAM puro).
 - `subtype` verboso vazando pro label da caixa (mitigado por `canonical_gen`, mas escrever limpo mesmo
   assim no write-time).
 
@@ -308,6 +406,20 @@ sempre em MB/GB, nunca Gbit (senão vira INDETERMINADO = bloqueador); SDRAM puro
 esse veredito já existe no código, não precisa (re)decidir. Tipo comercial novo que a ESMT trouxer e que
 ainda não exista em `chip_types.py` → precisa do handshake de rentabilidade antes de virar família ativa
 (§2.1 passo 5).
+
+**DDR2 (M14D/M14F) — confirmado 2026-08-20, distinção importante:** `DDR2` é categoria `dram_pc` (comercial,
+NÃO `dram_legacy`/morta-por-tipo) — a regra que zera a família não é "tipo morto", é **geração dentro de um
+tipo vivo**: `assess_profitability` (`chips/engine.py`) aplica "DDR standalone: DDR2 ou inferior → NÃO
+RENTÁVEL" por LIMIAR DE GERAÇÃO, igual já documentado pro NT5TU da Nanya. Efeito prático é o mesmo (sempre
+NÃO RENTÁVEL, qualquer capacidade), mas o MECANISMO é diferente de "SDRAM puro" — não confundir os dois ao
+explicar o veredito.
+
+**DDR3 (M15F) vs DDR3L (M15T) — confirmado 2026-08-20:** os dois têm o **mesmo `ChipTypeSpec`** em
+`chip_types.py` (`dram_pc`/`ddr`/`ddr`, `carries_generation=True`, `commercial=True` — confirmado
+comparando os dois registros lado a lado no ambiente de validação). Ou seja, **rentabilidade não muda**
+entre `DDR3` e `DDR3L` — ambos ficam acima do limiar "DDR2 ou inferior" e o veredito real depende do
+`ProfitabilityConfig` atual (mutável), igual já vale pro M15T — **não é previsível sem rodar `classify()`
+localmente**, diferente do DDR2 (M14D/M14F), que É um veredito fixo.
 
 *Nota de contexto (não é rentabilidade, é onde a marca cai na UI de preço hoje):* ESMT está no grupo "sem
 aba própria" do `PROMPT_PRECOS.md` — usa a tabela genérica de preço, não uma aba dedicada. Isso pode mudar;
@@ -336,8 +448,17 @@ confirmar em `PRECIFICACAO.md` antes de assumir que ainda vale.
 - [ ] **Golden test + handshake de rentabilidade** — `_ESMT_GOLDEN` em `chips/tests.py` (rascunho abaixo,
   falta o dono ou uma sessão futura colar no arquivo real); `DDR3L` já existe em `chip_types.py`
   (`profit_family="ddr"`), então não deve precisar de handshake novo — a confirmar rodando a suíte.
-- [ ] **Descobrir o resto do catálogo ESMT** (SDR SDRAM M12L, DDR2 M14D, LPDDR M53D–M56Z, DDR4 M16U —
-  ver §3.1) — cada um exige a mesma pesquisa Tier-1 do zero, nenhum foi verificado ainda.
+- [x] **DDR2 M14D/M14F pesquisado** — 2026-08-20, ver §3.3. Gatilho: PN ao vivo do debug de estoque
+  (`M14D5121632A`) veio 100% desconhecido. 6 PNs submetidos (128Mb/256Mb/512Mb×2tensão/1Gb×2interface);
+  2 deles (`M14F5121632A`, `M14D1G8128A`) só com 1 fonte — revisar com atenção extra antes de aprovar.
+- [x] **DDR3 M15F pesquisado** — 2026-08-20, ver §3.4. Gatilho: PN ao vivo do debug de estoque
+  (`M15F1G1664A`) veio 100% desconhecido. 4 PNs submetidos (512Mb/1Gb/2Gb/4Gb x16); `chip_type=DDR3`
+  (não `DDR3L` — tipo distinto do M15T, não par de voltagem simples); 2 deles (`M15F2G16128A` — só
+  listagem agregada — e a nota de tensão divergente do `M15F4G16256A`) sinalizados pro dono revisar.
+  `M15F4G8512A` (par x8 esperado) NÃO incluído — só 1 menção sem fonte dedicada, ver §3.4.
+- [ ] **Descobrir o resto do catálogo ESMT** (SDR SDRAM M12L/M52S/M52D, DDR/LPDDR M13S/M13D, LPDDR
+  M53D–M56Z, DDR4 M16U — ver §3.1) — cada um exige a mesma pesquisa Tier-1/2 do zero, nenhum foi
+  verificado ainda. M15T/M15F (DDR3/DDR3L) e M14D/M14F (DDR2) já confirmados.
 
 ### Rascunho de golden (para `chips/tests.py::_ESMT_GOLDEN` — NÃO colado no arquivo real, eu não edito `.py`)
 
@@ -349,9 +470,23 @@ confirmar em `PRECIFICACAO.md` antes de assumir que ainda vale.
 "M15T8G16512A"  → "DDR3L", "DDR3L", "8Gb",  <A CONFIRMAR>
 "M15T2G8256A"   → "DDR3L", "DDR3L", "2Gb",  <A CONFIRMAR>
 "M15T4G8512A"   → "DDR3L", "DDR3L", "4Gb",  <A CONFIRMAR>
+"M14D128168A"   → "DDR2",  "DDR2",  "0.125Gb", NÃO RENTÁVEL (geração DDR2, chips/engine.py — não depende do ProfitabilityConfig)
+"M14D2561616A"  → "DDR2",  "DDR2",  "0.25Gb",  NÃO RENTÁVEL (idem)
+"M14D5121632A"  → "DDR2",  "DDR2",  "0.5Gb",   NÃO RENTÁVEL (idem) — PN ao vivo do debug 2026-08-20
+"M14F5121632A"  → "DDR2",  "DDR2",  "0.5Gb",   NÃO RENTÁVEL (idem)
+"M14D1G1664A"   → "DDR2",  "DDR2",  "1Gb",     NÃO RENTÁVEL (idem)
+"M14D1G8128A"   → "DDR2",  "DDR2",  "1Gb",     NÃO RENTÁVEL (idem)
+"M15F1G1664A"   → "DDR3",  "DDR3",  "1Gb",  <A CONFIRMAR — depende do ProfitabilityConfig atual> — PN ao vivo do debug 2026-08-20
+"M15F2G16128A"  → "DDR3",  "DDR3",  "2Gb",  <A CONFIRMAR>
+"M15F4G16256A"  → "DDR3",  "DDR3",  "4Gb",  <A CONFIRMAR>
+"M15F5121632A"  → "DDR3",  "DDR3",  "0.5Gb", <A CONFIRMAR>
 ```
-Não preenchi o veredito de rentabilidade — é dado mutável (`ProfitabilityConfig`, admin) e eu não tenho
-visibilidade dele daqui; rodar `classify()` localmente preenche essa coluna.
+Não preenchi o veredito de rentabilidade do M15T (DDR3L) nem do M15F (DDR3) — é dado mutável
+(`ProfitabilityConfig`, admin) e eu não tenho visibilidade dele daqui; rodar `classify()` localmente
+preenche essa coluna pros dois (mesmo `ChipTypeSpec`, confirmado §5, então devem dar o mesmo veredito entre
+si, mas nenhum dos dois é fixo). Já o M14D/M14F (DDR2) **é previsível sem `ProfitabilityConfig`**: "DDR2
+ou inferior → NÃO RENTÁVEL" é limiar de GERAÇÃO fixo em `assess_profitability`, não um valor configurável
+no admin — por isso já preenchi o veredito.
 
 ---
 
@@ -370,13 +505,41 @@ Ver §0.3 (hierarquia completa, ainda sem precedente testado). Confirmadas na pr
 - **DigChip** (`digchip.com`) — aggregator; título do resultado de busca às vezes já cita densidade/tipo
   mesmo quando a página em si não abre (mesmo bloqueio do esmt.com.tw).
 
-Outros a tentar: Octopart, LCSC, DigiKey. Evitar como fonte de capacidade: qualquer distribuidor sem
-rastreio (ex. listagens de marketplace tipo Alibaba — servem só pra confirmar que o PN circula no
-mercado, nunca pra spec) e resumo de IA sem verificação — mesmo cuidado que todas as outras marcas do
-WTC. ⚠ Qualquer resumo de conteúdo extraído por `WebFetch` pode errar a ARITMÉTICA sozinho mesmo citando
-a organização certa (visto ao vivo: o próprio `WebFetch` "somou" densidade errada 2x nesta rodada,
-esquecendo de multiplicar pelos 8 bancos) — sempre refazer a conta na mão a partir da organização citada,
-nunca colar o total que a ferramenta calculou.
+Confirmadas na prática (2026-08-20, rodada M14D/M14F):
+- **LCSC** (`lcsc.com`) — distribuidor B2B rastreável; hospeda o PDF do datasheet oficial diretamente
+  (`datasheet.lcsc.com/...`), então o CONTEÚDO abre normalmente via `WebFetch` (sem o bloqueio do
+  esmt.com.tw). Bom quando o domínio oficial não abre.
+- **Sekorm** (`en.sekorm.com`) — aggregator chinês; já viu uso na rodada M15T também. Título/descrição da
+  página costuma citar organização completa com boa precisão (bateu exato com Alldatasheet no caso
+  M14D5121632A).
+- **Mirrors S3 de distribuidor** (ex. `suntsu-products-s3-bucket.s3.amazonaws.com`) — alguns
+  distribuidores hospedam o PDF puro num bucket público; quando abre, é o datasheet oficial completo
+  (conteúdo, não só título) e não sofre o bloqueio do domínio oficial.
+- **Novitronic**, **IC-Components** — distribuidores menores com página por PN; úteis pra confirmar
+  EXISTÊNCIA/ordering code, raramente têm organização detalhada.
+
+Confirmadas na prática (2026-08-20, rodada M15F):
+- **Página oficial de produtos** `esmt.com.tw/en/Products/DRAM/...` (não o PDF do datasheet, a página de
+  LISTAGEM da categoria) — diferente do PDF individual (que bloqueia), essa página HTML abre normal via
+  `WebFetch` e traz uma TABELA completa do catálogo atual (part number, densidade, organização, voltagem)
+  — ótima fonte Tier-1 quando existe pra categoria. Não é exaustiva pra peças legadas/descontinuadas (não
+  listou `M15F5121632A`/`M15F2G16128A`/`M15F4G16256A`, só o `M15F1G1664A` ainda vendido) — cruzar com
+  Alldatasheet/Satron pra completar a família.
+- **`satronel.com/.../ddr3-sdram.html`** — mesma família de tabela (distribuidor) já usada com sucesso na
+  rodada DDR2; aqui cobriu 4 dos 5 candidatos M15F de uma vez, incluindo voltagem e package.
+- **Listagem Alldatasheet por PREFIXO** (`alldatasheet.net/view.jsp?Searchword=M15...`) — retorna todos os
+  PNs indexados que começam com aquele prefixo numa tabela só, cada linha já com a organização citada;
+  MUITO mais eficiente que buscar PN por PN quando a família inteira é desconhecida — mas ⚠ **tratar como
+  pista, não confirmação**: um PN apareceu só nessa listagem (`M15F4G8512A`) e não teve página dedicada
+  nem qualquer outra fonte — não foi incluído (§3.4/§6).
+
+Outros a tentar: Octopart, DigiKey. Evitar como fonte de capacidade: qualquer distribuidor sem rastreio
+(ex. listagens de marketplace tipo Alibaba — servem só pra confirmar que o PN circula no mercado, nunca
+pra spec) e resumo de IA sem verificação — mesmo cuidado que todas as outras marcas do WTC. ⚠ Qualquer
+resumo de conteúdo extraído por `WebFetch` pode errar a ARITMÉTICA sozinho mesmo citando a organização
+certa (visto ao vivo 2x na rodada M15T x8, e de novo na rodada M14D — o próprio `WebFetch` já chamou
+"128Mb" de "8 megabits" e confundiu densidade-por-banco com densidade total) — sempre refazer a conta na
+mão a partir da organização citada, nunca colar o total que a ferramenta calculou.
 
 ---
 
@@ -416,6 +579,48 @@ nunca colar o total que a ferramenta calculou.
   existente-mas-bloqueado). Sinalizado explicitamente pro dono revisar esse PN com atenção extra antes de
   aprovar. `submissions/esmt_m15t_x8_2026-08-05.yaml` é um arquivo NOVO (não editei o já entregue/possivel-
   mente já consumido da 1ª rodada — `submissions/` é formulário de uso único, não re-sincroniza).
+- **2026-08-20 — 3ª rodada: família DDR2 M14D/M14F, disparada por PN ao vivo do debug de estoque.** O dono
+  colou a saída do debug de `M14D5121632A` (100% desconhecido, `in_review_queue: true`) e pediu pra
+  pesquisar "ele e todos os irmãos e primos", **Tier-1 OU Tier-2** (barra mais solta que as rodadas
+  anteriores — só Tier-1). Antes de pesquisar, resinquei TUDO do disco (duas semanas tinham se passado
+  desde a última rodada — `chip_types.py`/`engine.py`/`schema.py` já tinham mtimes mais recentes que a
+  última entrega) em vez de confiar no cache local, aplicando a lição de [[wtc-reler-antes-sobrescrever-doc-compartilhado]]
+  antes mesmo de reescrever qualquer coisa. Achados: (1) família confirmada — mesmo padrão literal do
+  M15T, densidade+organização no próprio PN, mas em Mb (sub-1Gb) — ver §3.3; (2) tabela da Satron
+  (`satronel.com`) deu o catálogo quase inteiro de uma vez (6 combos), cross-validada contra Alldatasheet/
+  LCSC/Sekorm/Suntsu-PDF nos PNs mais documentados; (3) **achado metodológico com potencial impacto
+  cross-marca:** `density_gbit` sub-1Gb precisa ser fracionário em `"Gb"` (`"0.5Gb"`, não `"512Mb"`) pro
+  parser `_extract_gbit`/`_GBIT_RE` do engine reconhecer — provado rodando o regex real contra os dois
+  formatos no ambiente standalone; nenhuma família ESMT anterior tinha densidade sub-1Gb, então essa
+  armadilha nunca tinha aparecido nesta marca (mas pode já afetar OUTRAS marcas com known_parts DDR
+  sub-1Gb — registrado na memória do projeto pra checar); (4) M14F = par de voltagem do M14D (1.55V vs
+  1.8V), prefixo separado (diferente do M15T/DDR3(L)) — mapeia pra `chip_type=DDR2` igual ao M14D, já que
+  `"DDR2L"` não existe no vocabulário (confirmado pelo portão, não decisão arbitrária); (5) DDR2 inteiro é
+  sempre NÃO RENTÁVEL por GERAÇÃO (`assess_profitability`), não por tipo-morto categórico como SDRAM puro
+  — mesmo efeito final do NT5TU da Nanya, mecanismo diferente, não confundir (§5). 2 dos 6 PNs
+  (`M14F5121632A`, `M14D1G8128A`) só tiveram 1 fonte apesar de busca dedicada — sinalizados pro dono
+  revisar com atenção extra, mesmo padrão do `M15T2G8256A` na rodada anterior.
+- **2026-08-20 — 4ª rodada, mesmo dia: família DDR3 M15F, disparada por PN ao vivo do debug de estoque.**
+  Poucas horas depois da rodada M14D, o dono colou a saída do debug de `M15F1G1664A` (100% desconhecido,
+  `fuzzy_suggestions` apontando `M15T1G1664A` e `M14D1G1664A` — nenhum dos dois é o PN real). Resinquei
+  `ESMT.md`/`esmt.yaml`/`chip_types.py`/`engine.py` do disco antes de editar (mesmo dia da rodada
+  anterior, sem gap — mas a disciplina vale de qualquer forma); nenhum mtime tinha mudado desde a última
+  entrega, sem drift. Achados: (1) família confirmada — mesmo padrão literal, mas aqui a "letra da
+  família" (T vs F) NÃO segue o padrão do M14D/M14F: pensei em mapear `M15F` pra `DDR3L` por analogia
+  direta com "F = par de voltagem", mas ao CONFIRMAR o vocabulário (`chips/chip_types.py`) descobri que
+  `DDR3` e `DDR3L` são chip_types DISTINTOS (diferente do `DDR2`/inexistente-`DDR2L`) — decisão certa foi
+  `chip_type=DDR3`, baseada em toda citação de datasheet chamar a família de "DDR3 SDRAM" (sem "(L)") e
+  na única tensão confirmada (`M15F1G1664A`, página oficial) ser 1.5V-only, não dual; (2) a página oficial
+  de LISTAGEM de produtos (`esmt.com.tw/en/Products/DRAM/...`, não o PDF individual) abriu normalmente via
+  `WebFetch` e deu uma tabela Tier-1 completa do catálogo ATUAL — só não é exaustiva pra peças legadas; a
+  tabela da Satron (mesmo padrão já usado no DDR2) preencheu o resto; (3) **achado de processo:** uma
+  listagem agregada do Alldatasheet por prefixo citou `M15F4G8512A` (par x8 esperado) mas o PN não tem
+  página dedicada nem qualquer outra fonte — tratei como pista não confirmada e EXCLUÍ da submissão (regra
+  de ouro #12), em vez de confiar cegamente na listagem; (4) uma única divergência de tensão não resolvida
+  (`M15F4G16256A`: Satron diz "1.35V/1.5V", Alldatasheet+Sekorm chamam de "DDR3" sem "(L)") — documentada
+  e sinalizada em vez de escolhida em silêncio. 4 PNs submetidos (512Mb–4Gb, todos x16); 2 sinalizados pro
+  dono revisar com atenção extra (`M15F2G16128A` por sourcing fino, `M15F4G16256A` pela divergência de
+  tensão).
 
 > O inventário de chaves/mapas vai viver no **`esmt.yaml`** (gramática, quando existir); os **known_parts**
 > confirmados (com a proveniência Tier-1 nas `notes`) vivem no **banco** (Opção 2), submetidos via
@@ -425,6 +630,11 @@ nunca colar o total que a ferramenta calculou.
 ---
 
 > **Regra de trabalho:** eu crio/edito o `esmt.yaml`. O dono roda `load_brands --brand esmt` (sempre
-> dry-run antes do `--commit`) e o `submit_known_parts` (idem). **Ponto mais importante:** esta marca não
-> tem NENHUM precedente confirmado ainda — atestar a IDENTIDADE em Tier-1 antes de qualquer decode, nunca
-> extrapolar chave por padrão numérico nem por analogia com outra marca (regra de ouro #9).
+> dry-run antes do `--commit`) e o `submit_known_parts` (idem). **Estado em 2026-08-20:** 3 famílias
+> confirmadas (M15T/DDR3L, M14D+M14F/DDR2, M15F/DDR3 — 16 prefixos, 16 known_parts submetidos em 4
+> rodadas) — mas o resto da escada de prefixo (§3.1: M12L, M13S/M13D, M16U, M53D–M56Z) segue **sem nenhum
+> precedente confirmado**. Continua valendo pra QUALQUER prefixo novo: atestar a IDENTIDADE em Tier-1/2
+> antes de qualquer decode, nunca extrapolar chave por padrão numérico nem por analogia com outra marca ou
+> com outro prefixo ESMT já confirmado — a analogia M14D/M14F→M15T/M15F quase levou a mapear `M15F` pro
+> `chip_type` errado (`DDR3L` em vez de `DDR3`) nesta própria rodada, só não aconteceu porque o vocabulário
+> foi checado antes de decidir (regra de ouro #9).

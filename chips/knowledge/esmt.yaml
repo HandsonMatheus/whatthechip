@@ -94,3 +94,192 @@ families:
       "M15T4G8512A(2S) datasheet - 4Gb DDR3(L) SDRAM") + datasheet oficial existe em
       esmt.com.tw no mesmo padrao de URL dos demais M15T confirmados. Ver submissao
       para o detalhe completo do sourcing.
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # M14D / M14F -- DDR2 SDRAM (2026-08-20, PN ao vivo do debug de estoque:
+  # M14D5121632A veio 100% desconhecido). DDR2 = geracao abaixo do minimo
+  # comercial (DDR3+) -- SEMPRE NAO RENTAVEL por chips/engine.py::assess_profitability
+  # (mesma regra ja documentada em nanya.yaml::NT5TU). Sem "DDR2L" no vocabulario de
+  # chip_types.py (so "DDR2" existe) -- M14F (variante 1.55V) tambem mapeia pra
+  # chip_type=DDR2 (nao ha tipo alternativo valido; confirmado pelo portao Pydantic).
+  # ───────────────────────────────────────────────────────────────────────────
+  - prefix: M14D128168A
+    chip_type: DDR2
+    subtype: DDR2
+    interface: x16
+    priority: 100
+    active: true
+    tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
+    reasoning: >
+      ESMT M14D128168A -- DDR2 SDRAM 128Mb, x16, 4 bancos (2M x16 x4 bancos =
+      2.097.152 x 16 x 4 = 134.217.728 bit = 128Mb = 16MB). 2 fontes: PDF hospedado
+      pela Suntsu (distribuidor, mirror do datasheet oficial "M14D128168A-1.5BG2Y",
+      publicado mai/2017 rev 1.2, citacao direta "2M x 16 Bit x 4 Banks", VDD=1.8V,
+      SSTL_18, BGA 84-pin) + tabela da Satron Electronics (satronel.com: 128Mb,
+      Organization "8Mbx16" -- bate exato: 2M/banco x4bancos=8M total de palavras).
+
+  - prefix: M14D2561616A
+    chip_type: DDR2
+    subtype: DDR2
+    interface: x16
+    priority: 100
+    active: true
+    tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
+    reasoning: >
+      ESMT M14D2561616A -- DDR2 SDRAM 256Mb, x16. 2 fontes: existencia confirmada via
+      Alldatasheet (titulo) + tabela da Satron Electronics (satronel.com: 256Mb,
+      Organization "16Mbx16" -- 16M total de palavras x16bit = 256Mbit, bate exato).
+      Numero de bancos (4) INFERIDO por padrao JEDEC DDR2 (confirmado diretamente
+      nos irmaos 128Mb e 512Mb desta mesma familia, nao neste PN especifico) -- nao
+      afeta a densidade (que nao depende de banco individual), so a documentacao.
+
+  - prefix: M14D5121632A
+    chip_type: DDR2
+    subtype: DDR2
+    interface: x16
+    priority: 100
+    active: true
+    tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
+    reasoning: >
+      ESMT M14D5121632A -- DDR2 SDRAM 512Mb, x16, 4 bancos (8M x16 x4 bancos =
+      8.388.608 x 16 x 4 = 536.870.912 bit = 512Mb = 64MB). PN ao vivo do debug de
+      estoque (2026-08-20), veio 100% desconhecido. 4 fontes convergentes: Alldatasheet
+      ID 302732 (citacao direta "8M x 16 Bit x 4 Banks DDR II SDRAM", pub. fev/2009
+      rev 1.1) + LCSC (datasheet oficial hospedado, part "M14D5121632A-2.5BG2A") +
+      Sekorm (citacao direta identica: "8M x 16 Bit x 4 Banks DDR II SDRAM", faixa de
+      temperatura -40..105C) + tabela da Satron (512Mb, "32Mbx16", bate exato).
+
+  - prefix: M14F5121632A
+    chip_type: DDR2
+    subtype: DDR2
+    interface: x16
+    priority: 100
+    active: true
+    tip: 'DDR2 SDRAM ESMT (PC/desktop legado), variante 1.55V do M14D5121632A. Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade.'
+    reasoning: >
+      ESMT M14F5121632A -- DDR2 SDRAM 512Mb, x16, mesma organizacao do M14D5121632A
+      (par de voltagem: M14F=1.55V vs M14D=1.8V -- ESMT usa PREFIXO separado pra
+      voltagem no DDR2, diferente do DDR3(L) que usa 1 prefixo so; nao ha "DDR2L" no
+      vocabulario de chip_types.py, entao mapeia pra DDR2 igual ao M14D -- confirmado
+      pelo portao, nao decisao arbitraria). CONFIANCA MENOR que os outros 5 desta
+      familia: SO 1 fonte (tabela da Satron Electronics, satronel.com: 512Mb,
+      Organization "32Mbx16", 1.55V, 84 Ball BGA, 400/533MHz) -- nenhuma segunda fonte
+      encontrada apesar de busca dedicada. Revisar com atencao extra antes de aprovar.
+
+  - prefix: M14D1G1664A
+    chip_type: DDR2
+    subtype: DDR2
+    interface: x16
+    priority: 100
+    active: true
+    tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
+    reasoning: >
+      ESMT M14D1G1664A -- DDR2 SDRAM 1Gb, x16, 8 bancos (8M x16 x8 bancos = 8.388.608
+      x 16 x 8 = 1.073.741.824 bit = 1Gb = 128MB). Bem documentado: Alldatasheet
+      (citacao direta "8M x 16 Bit x 8 Banks DDR II SDRAM") + datasheet oficial
+      esmt.com.tw/upload/pdf/ESMT/datasheets/M14D1G1664A(2S).pdf (URL existe/resolve,
+      conteudo bloqueado pra leitura, mesmo padrao ja visto na familia M15T) + tabela
+      Satron (1Gb, "64Mbx16") + listagem Novitronic (distribuidor).
+
+  - prefix: M14D1G8128A
+    chip_type: DDR2
+    subtype: DDR2
+    interface: x8
+    priority: 100
+    active: true
+    tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
+    reasoning: >
+      ESMT M14D1G8128A -- DDR2 SDRAM 1Gb, organizacao x8 (par x8 do M14D1G1664A,
+      pacote diferente: 60 Ball BGA em vez de 84). CONFIANCA MENOR que a maioria dos
+      outros 5 desta familia: SO 1 fonte (tabela da Satron Electronics, satronel.com:
+      1Gb, Organization "128Mbx8" -- 128M total de palavras x8bit = 1024Mbit = 1Gb,
+      bate exato com a aritmetica e com o "128" ja no proprio nome do PN) -- nenhuma
+      segunda fonte encontrada apesar de busca dedicada. Revisar com atencao extra
+      antes de aprovar.
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # M15F -- DDR3 SDRAM (2026-08-20, PN ao vivo do debug de estoque: M15F1G1664A
+  # veio 100% desconhecido, fuzzy_suggestions apontava M15T1G1664A/M14D1G1664A --
+  # nenhum dos dois e o PN real). DIFERENTE do M14D/M14F: aqui "DDR3" e "DDR3L" SAO
+  # dois chip_types distintos e validos em chip_types.py (confirmado via grep, nao
+  # suposicao) -- entao M15F mapeia pra chip_type=DDR3 (nao DDR3L), refletindo que
+  # o datasheet chama a familia inteira de "DDR3 SDRAM" (sem "(L)"), diferente do
+  # M15T que e "DDR3(L) SDRAM" (dual 1.35V/1.5V). Nao muda rentabilidade -- DDR3 e
+  # DDR3L tem o MESMO ChipTypeSpec (dram_pc/ddr/ddr, carries_generation=True) --
+  # so o label/tipo exibido fica mais preciso. M15F4G8512A (par x8 do M15F4G16256A,
+  # citado 1x numa listagem agregada do Alldatasheet) NAO entrou -- sem pagina
+  # dedicada nem em nenhuma outra fonte apos busca dirigida, ver ESMT.md §3.4/§6.
+  # ───────────────────────────────────────────────────────────────────────────
+  - prefix: M15F1G1664A
+    chip_type: DDR3
+    subtype: DDR3
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15F1G1664A -- DDR3 SDRAM 1Gb, 8M x16bit x8 bancos (8.388.608 x 16 x 8 =
+      1.073.741.824 bit = 1Gb = 128MB). PN AO VIVO do debug de estoque (2026-08-20),
+      veio 100% desconhecido -- known:false, in_review_queue:true, fuzzy_suggestions
+      apontava M15T1G1664A e M14D1G1664A (nenhum e o PN real). 3 fontes: pagina
+      oficial de produtos esmt.com.tw/en/Products/DRAM/DDR3(L)%20SDRAM (tabela
+      completa do catalogo atual, linha "1Gb | M15F1G1664A (2S) | 64Mbx16 | 1.5V") +
+      tabela da Satron Electronics (satronel.com: 512Mb..1Gb, M15F1G1664A(2S)/(2C),
+      64Mbx16, 1.5V, 96 Ball BGA) + Alldatasheet ID 1284530 (citacao direta "8M x 16
+      Bit x 8 Banks DDR3 SDRAM", sem "(L)"). Par M15T1G1664A (DDR3L, ja confirmado)
+      tem a MESMA organizacao, diferindo em tensao/tipo -- ver §4 do ESMT.md.
+
+  - prefix: M15F2G16128A
+    chip_type: DDR3
+    subtype: DDR3
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15F2G16128A -- DDR3 SDRAM 2Gb, 16M x16bit x8 bancos (16.777.216 x 16 x 8
+      = 2.147.483.648 bit = 2Gb = 256MB). Par x16 1 degrau acima do M15F1G1664A.
+      Organizacao citada via listagem Alldatasheet de prefixo "M15" ("16M x 16 Bit x
+      8 Banks DDR3 SDRAM"); existencia cruzada em 4 fontes distribuidoras adicionais
+      (datasheet4u.com sufixos -EFBG2L e -DEBG2LS, electronicsdatasheets.com -8CBG,
+      datasheet-pdf.com -DEBG2L, edinventory.com -8CBG). NAO apareceu na tabela da
+      Satron (que lista os outros 3 M15F desta familia) -- confianca 1 degrau abaixo
+      dos demais, mesmo padrao do M15T2G8256A na 1a familia desta marca.
+
+  - prefix: M15F4G16256A
+    chip_type: DDR3
+    subtype: DDR3
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15F4G16256A -- DDR3 SDRAM 4Gb, 32M x16bit x8 bancos (33.554.432 x 16 x 8
+      = 4.294.967.296 bit = 4Gb = 512MB). 4 fontes: Alldatasheet ID 1284528 (pagina
+      dedicada, citacao direta "32M x 16 Bit x 8 Banks DDR3 SDRAM", sem "(L)") +
+      Sekorm (en.sekorm.com/doc/2032998.html, mesma citacao) + tabela da Satron
+      Electronics (satronel.com: 4Gb, M15F4G16256A(2S), "256Mbx16" -- bate exato) +
+      listagem Alldatasheet de prefixo "M15". ATENCAO -- unica divergencia de tensao
+      encontrada nesta rodada: a Satron cita esse PN especifico como "1.35V/1.5V"
+      (dual, igual DDR3L), enquanto TODAS as outras citacoes (titulo do datasheet no
+      Alldatasheet e no Sekorm) chamam o chip de "DDR3 SDRAM" sem "(L)" -- mesmo
+      padrao dos outros 3 M15F desta familia, todos 1.5V-only onde a tensao foi
+      confirmada. Mantive chip_type=DDR3 (nao DDR3L) por ser o sinal mais consistente
+      (nome do datasheet, repetido em 2 fontes independentes) contra 1 unico valor de
+      tensao discordante (pode ser erro de tabela do distribuidor, ou sub-sufixo
+      dual-rated dentro do mesmo PN base -- nao decodifico sufixo de pedido nesta
+      marca). Nao afeta rentabilidade (DDR3 e DDR3L tem o mesmo ChipTypeSpec), so o
+      label/tipo exibido -- ver §4 do ESMT.md.
+
+  - prefix: M15F5121632A
+    chip_type: DDR3
+    subtype: DDR3
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15F5121632A -- DDR3 SDRAM 512Mb, 4M x16bit x8 bancos (4.194.304 x 16 x 8
+      = 536.870.912 bit = 512Mb = 64MB). 3 fontes: tabela da Satron Electronics
+      (satronel.com: 512Mb, "32Mbx16" total de palavras -- 32M x16bit = 536.870.912
+      bit, bate exato -- 1.5V, 96 Ball BGA) + listagem Alldatasheet de prefixo "M15"
+      ("4M x 16 Bit x 8 Banks DDR3 SDRAM") + titulo indexado datasheetspdf.com
+      ("M15F5121632A SDRAM Datasheet pdf - DDR3 SDRAM"). Densidade SUB-1Gb --
+      density_gbit fracionario ("0.5Gb"), mesma armadilha ja documentada no M14D/M14F
+      (ver §1/§3.3 do ESMT.md).
