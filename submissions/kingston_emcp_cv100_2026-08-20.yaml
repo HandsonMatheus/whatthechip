@@ -1,0 +1,100 @@
+# Submissão known_parts — Kingston, família eMCP "08EMCP" (8GB eMMC 5.0), geração de sufixo "CV100"
+# Chat de marca Kingston, 2026-08-20. Disparado pelo PN físico do debug de estoque `08EMCP08EL3CV100`
+# (known_exact:false, classification_source:"gramática", confidence:"estimated").
+#
+# DIAGNÓSTICO: diferente do caso 08EMCP04NL2AV1 (rodada anterior, mesmo dia) — aqui o token do PN
+# físico é "EL3" (LPDDR3/221-ball pela convenção já documentada da família), e o default da gramática
+# TAMBÉM é sempre LPDDR3 — então pra ESTE PN específico o subtype que a gramática mostra (LPDDR3) já
+# está CORRETO por coincidência (não é o mesmo bug de mis-classificação do caso NL2/AV1). O gap aqui
+# é só known_exact:false / confidence:"estimated" — falta known_part confirmado, e o campo "interface"
+# vem vazio no JSON cru da gramática (ela empacota "eMMC 5.0" dentro de emcp_nand como string solta,
+# não no campo interface — o schema do known_part usa os campos corretos e separados, ver convenção
+# abaixo).
+#
+# CONTEXTO: sufixo "CV100" já era gap sinalizado (KINGSTON.md §5 / notas da submissão AV100, achado
+# incidental buscando "AV100", nunca pesquisado a fundo: "vi também CV100, BT227, DT527, EL2BV100...
+# sem perseguir"). Esta rodada pesquisou CV100 a fundo (mesmo padrão AV100: prefixo 08EMCP + token
+# NL2/EL3 decodificam certo por gramática, só o sufixo de geração muda).
+#
+# CLUSTER encontrado (Jotrin + Octopart + ERSA Electronics + bax.com.ua, cross-referenciados,
+# 2026-08-20):
+#   EL3 (LPDDR3), 08EMCP08 (8GB NAND + 1GB RAM): CV100 (sem revisão) e CV100-C50
+#   NL2 (LPDDR2), 08EMCP08 (8GB NAND + 1GB RAM): CV100 (sem revisão)
+# Confirmação forte pro EL3CV100 base: bax.com.ua vende a peça já USADA com leitura real do chip via
+# ferramenta de programador (Z3X Easy Jtag + E-Mate Pro eMMC Tool) — não é só texto de catálogo de
+# distribuidor, é dump do CSD register do silício: "1GB ОЗП + 8 GB Флеш пам'яті", "Extended CSD rev
+# 1.7 (MMC 5.0)" — bate exatamente com NAND=8GB/RAM=1GB/eMMC 5.0 esperados pelo prefixo 08EMCP08.
+#
+# Tentei e NÃO achei (excluído, não adivinhado):
+#   - "08EMCP04" (RAM=512MB) em nenhuma variante CV100 (nem NL2 nem EL3) — só existe a capacidade de
+#     RAM "08" (1GB) pra essa geração, em todas as fontes consultadas.
+#   - Outros códigos de revisão além de "-C50" (tentei C06/C30 por analogia à família AV100) — não
+#     achei nenhuma fonte citando essas variantes pra CV100 especificamente.
+#
+# NÃO PERSEGUIDO nesta rodada (achado incidentalmente buscando CV100, mesmo padrão de escopo já usado
+# na entrega AV100): a família 08EMCP tem AINDA MAIS gerações de sufixo — BT227 (existe em 04 e 08),
+# BS100, CU100 — apareceram juntas numa mesma listagem Alibaba (mesmo pacote BGA221). BS100 e CU100
+# são achados NOVOS desta rodada (não estavam nem na lista "não perseguido" da entrega AV100). Seguem
+# sinalizadas no KINGSTON.md §5 pra rodada futura dedicada — não é o gatilho desta vez.
+#
+# Convenção de campos: idêntica à entrega AV100 (KINGSTON.md §1) — chip_type="eMCP", subtype=geração
+# da RAM (LPDDR2/LPDDR3), interface="eMMC 5.0" (toda a família 08EMCP), emcp_nand=GB direto,
+# emcp_ram="LPDDR{n} {cap}" (cap=Gbit÷8: código RAM "08"→8Gbit÷8=1GB). device vazio (eMCP não usa
+# esse campo, só NAND cru usa pra pacote).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emcp_cv100_2026-08-20.yaml
+
+brand: Kingston
+
+known_parts:
+
+  # ── PN físico do debug de estoque (known_exact:false, subtype já correto por coincidência) ──
+  - part_number: 08EMCP08-EL3CV100
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 1GB
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 20/08/2026 (lido sem hífen: "08EMCP08EL3CV100"),
+      known_exact:false — gramática da família 08EMCP decodifica NAND(8GB)/RAM(1GB) certo e desta vez
+      o subtype default (LPDDR3) já bate com o token real "EL3" (diferente do caso 08EMCP04NL2AV1 de
+      mais cedo hoje, onde o token era NL2/LPDDR2 e a gramática errava) — mas segue known_exact:false
+      / confidence "estimated" por falta de known_part confirmado. Geração de sufixo "CV100", achada
+      como catálogo próprio (sem código de revisão) em múltiplas fontes: Jotrin, Octopart, Apogeeweb.
+      Confirmação forte via bax.com.ua — peça usada vendida com leitura real do CSD register do chip
+      (ferramenta Z3X Easy Jtag + E-Mate Pro eMMC Tool): "1GB ОЗП + 8 GB Флеш пам'яті", "Extended CSD
+      rev 1.7 (MMC 5.0)" — dump de silício real, não só texto de catálogo. Tentei achar variante de
+      RAM=512MB (08EMCP04-EL3CV100) e outros códigos de revisão (C06/C30, por analogia à AV100) — não
+      achei em nenhuma fonte, não incluídos.
+    source_url: https://bax.com.ua/ua/p697840001-mikroshema-pamyati-kingston.html
+
+  - part_number: 08EMCP08-EL3CV100-C50
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 1GB
+    confidence: confirmed
+    notes: >
+      Irmã de revisão da 08EMCP08-EL3CV100 acima — mesmo prefixo/token/geração, sufixo de revisão
+      "-C50". Mesmas specs (8GB NAND + 1GB RAM, LPDDR3, eMMC 5.0). Fonte: Jotrin, Octopart, HKin,
+      Brokerforum (múltiplos distribuidores catalogam essa revisão especificamente).
+    source_url: https://octopart.com/08emcp08-el3cv100-c50-kingston-84940056
+
+  # ── irmã LPDDR2 (token NL2), mesma geração "CV100", mesma capacidade 08EMCP08 ──
+  - part_number: 08EMCP08-NL2CV100
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 1GB
+    confidence: confirmed
+    notes: >
+      Irmã LPDDR2 (token "NL2" = LPDDR2/162-ball, mesma regra da família) da EL3CV100 acima — mesmo
+      prefixo 08EMCP08 (8GB NAND + 1GB RAM), geração de sufixo "CV100", sem código de revisão listado.
+      Descrição direta do distribuidor: "eMCP 8GB eMMC5.0 + 8Gb LPDDR2" (8Gbit LPDDR2 = 1GB, bate com
+      o código RAM "08" do PN). Fonte: ERSA Electronics (774-08EMCP08-NL2CV100, 2681 unidades em
+      estoque).
+    source_url: https://www.ersaelectronics.com/p/kingston-08emcp08-nl2cv100-32448097

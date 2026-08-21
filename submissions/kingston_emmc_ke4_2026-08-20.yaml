@@ -1,0 +1,171 @@
+# Submissão known_parts — Kingston, linha "eMMC gerenciado" prefixo KE4 (standalone, sem RAM combo)
+# Chat de marca Kingston, 2026-08-20. Disparado pelo PN físico `KE4CN2L2SA5H2A` no debug de estoque
+# (known:false, TUDO vazio — chip_type/brand/família nenhum, nem fallback genérico bateu).
+#
+# CONTEXTO: essa linha já era um gap sinalizado (KINGSTON.md §5, achado lateral em 2026-08-19
+# buscando outra coisa via RS Components, nunca pesquisado a fundo). Esta rodada pesquisou a fundo.
+#
+# ⚠ DESCOBERTA IMPORTANTE: a linha "KE4" tem PELO MENOS DUAS gerações/formatos de PN bem diferentes:
+#   (a) forma CURTA `KE4CN[dígito][letra][dígito]A` (9 chars, ex. KE4CN2H5A) — confirmada em 6-7
+#       PNs via RS Components (distribuidor estruturado, capacidade+pacote no campo próprio).
+#   (b) forma LONGA `KE4CN2L2[...]` (14+ chars, ex. KE4CN2L2HA5A2A-A58A) — mesmo prefixo "KE4CN2L2"
+#       do PN físico do debug.
+#
+# ATUALIZAÇÃO 2026-08-20 (mesmo dia) — dono pediu confirmar em tier 2, tentei mais fontes e achei:
+# Win Source (via agregador Octopart, 2 buscas independentes confirmaram o mesmo PN sozinho na
+# página, sem mistura com outro registro) lista `KE4CN2L2SA5H2A` como "4GB + 4GB" / "162 Ball Fbga
+# Tsb 19NM". Interpretação: 2 dies NAND de 4GB empilhados no mesmo pacote = **8GB total** — bate com
+# o dígito "2" logo depois de "KE4CN" (mesma posição que na forma CURTA significa "4GB", ex.
+# KE4CN2H5A=4GB — aqui o "2" provavelmente descreve o die UNITÁRIO de 4GB, e o resto do PN longo
+# descreve o empilhamento/revisão que a forma curta não precisa ter por ser die único). "Tsb" no
+# meio da descrição do pacote é abreviação de **Toshiba** — mesmo padrão já visto em FH32B08UCT1/
+# FH64B08UCT1 (Kingston empacota célula NAND de terceiro sob a própria marca; aqui o terceiro é
+# Toshiba de novo). Processo 19nm.
+# ⚠ Contraponto não escondido: cross-referenciei o PN via serviceemmc.com (lista de equivalência
+# eMMC↔aparelho, comum em assistência técnica) → `KE4CN2L2SA5H2A` = usado no Huawei Y221-U22. O
+# GSMArena lista a Y221-U22 com "4GB" de armazenamento interno (não 8GB) — pode ser só arredondamento
+# de marketing / espaço de sistema reservado (comum nesse segmento de aparelho de entrada ~2014,
+# onde o "GB nominal" já historicamente sobra bem menos de usável), ou pode ser uma variante regional
+# com chip diferente — não day pra saber ao certo qual. Documentei os dois lados; capacidade
+# registrada abaixo é a do CHIP (8GB, fonte direta pro PN), não a do "storage" anunciado do aparelho.
+#
+# CLUSTER CONFIRMADO (forma curta, todos via RS Components — título do produto atribui "Kingston",
+# campos estruturados de capacidade/pacote/pin-count):
+#   KE4CN2H5A → 4GByte, 153-Pin BGA
+#   KE4CN3H5A → 8GByte, 153-Pin BGA
+#   KE4CN3K6A → 8GByte, 169-Pin BGA
+#   KE4CN4A5A → 16GByte, 153-Pin BGA
+#   KE4CN4K6A → 16GByte, 169-Pin BGA
+#   KE4BT4B6A → 16GByte, 169-Pin FBGA (prefixo "KE4BT", não "KE4CN" — variante de linha, incluído
+#               mesmo assim por ser o mesmo padrão geral KE4 + specs igualmente confirmados na RS)
+# Versão eMMC: só 1 PN da família (KE4CN5B6A, excluído abaixo) tinha na página "Designed to JEDEC
+# 4.5 specification" explícito — apliquei "eMMC 4.5" aos 6 PNs acima por inferência de família (
+# mesmo prefixo/geração/pacote, catalogados em sequência pela própria RS), não confirmado PN a PN.
+#
+# EXCLUÍDO — `KE4CN5B6A`: RS mostra capacidade "32Gbit" (não "GByte" como todos os outros — texto
+# genuinamente diferente, não parece erro de digitação da RS). Se for GByte por padrão de dobra
+# (2→4GB,3→8GB,4→16GB,5→32GB) seria 32GB; se for Gbit literal ÷8 seria só 4GB — os dois são
+# plausíveis e a página não desambiguou. Não incluí — spec contraditória, não adivinhei qual.
+#
+# NÃO PERSEGUIDO nesta rodada: achei também "KE4CN2H5A-A58" e "KE4CN2H5C" (variantes de sufixo/
+# revisão da forma curta, via findchips) sem abrir specs — fica sinalizado, não é o gatilho desta
+# rodada (o PN do debug é forma longa, não curta).
+#
+# Convenção de campos: chip_type="eMMC" (standalone, SEM combo de RAM — "Cell Type: NAND" na RS,
+# nenhuma menção de LPDDR) — mesma convenção já usada pro eMMC standalone `EMMC…G-…` (KINGSTON.md
+# §1: subtype vazio, interface=versão eMMC, capacity=GB literal). `device` = pacote/pin-count
+# (mesma inferência de campo já usada na submissão NAND cru, não existe campo dedicado no schema).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emmc_ke4_2026-08-20.yaml
+
+brand: Kingston
+
+known_parts:
+
+  - part_number: KE4CN2H5A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 4GB
+    device: 153-Pin BGA
+    confidence: confirmed
+    notes: >
+      Linha "eMMC gerenciado" Kingston prefixo KE4 (forma curta), gap sinalizado desde 2026-08-19
+      (achado lateral, nunca pesquisado a fundo até esta rodada, disparada por KE4CN2L2SA5H2A no
+      debug de estoque — PN diferente, forma longa, não confirmado, ver cabeçalho). Capacidade 4GByte
+      e pacote 153-Pin BGA direto do campo estruturado da RS Components (título do produto atribui
+      "Kingston"). Versão eMMC "4.5" aplicada por inferência de família — confirmada explicitamente
+      só na sibling KE4CN5B6A ("Designed to JEDEC 4.5 specification"), não nesta página específica.
+      Dimensões físicas 11.5x13x1mm (RS), NAND cell, Taiwan origin — sem menção de RAM/LPDDR, então
+      é eMMC standalone (não eMCP).
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7852322/
+
+  - part_number: KE4CN3H5A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 8GB
+    device: 153-Pin BGA
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da KE4CN2H5A acima, mesmo padrão de PN (dígito de capacidade "3"→8GB,
+      pacote 153-Pin BGA). Fonte: RS Components (título do produto).
+    source_url: https://au.rs-online.com/web/p/flash-memory/7852331
+
+  - part_number: KE4CN3K6A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 8GB
+    device: 169-Pin BGA
+    confidence: confirmed
+    notes: >
+      Irmã de pacote da KE4CN3H5A acima — mesma capacidade (8GB) mas 169-Pin BGA em vez de 153-Pin
+      (dígito final "6" em vez de "5" — pattern consistente nas 2 opções de pacote vistas em toda a
+      família curta). Dimensões físicas 12x16x1mm (RS, maior que o pacote de 153 pinos, consistente
+      com mais pinos). Fonte: RS Components.
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7852334
+
+  - part_number: KE4CN4A5A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 16GB
+    device: 153-Pin BGA
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade (dígito "4"→16GB), pacote 153-Pin BGA. Fonte: RS Components (título do
+      produto + página do produto confirmam "16 Gbyte").
+    source_url: https://sg.rs-online.com/web/p/flash-memory/7852338
+
+  - part_number: KE4CN4K6A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 16GB
+    device: 169-Pin BGA
+    confidence: confirmed
+    notes: >
+      Irmã de pacote da KE4CN4A5A acima — mesma capacidade (16GB), 169-Pin BGA em vez de 153-Pin.
+      Fonte: RS Components (título do produto).
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7852347
+
+  - part_number: KE4BT4B6A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 16GB
+    device: 169-Pin FBGA
+    confidence: confirmed
+    notes: >
+      Mesma capacidade (16GB) e contagem de pinos (169) da KE4CN4K6A acima, mas prefixo "KE4BT" em
+      vez de "KE4CN" (BT em vez de CN na 5ª/6ª posição) — variante de linha dentro da família KE4,
+      pacote descrito como "FBGA" (fine-pitch BGA) em vez de "BGA" simples. Incluído porque tem a
+      mesma força de fonte (RS Components, título do produto) que as demais desta entrega — não
+      investiguei o que exatamente "BT" vs "CN" diferencia (pode ser fábrica, revisão, fornecedor
+      de die — não adivinhei).
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7610367
+
+  # ── PN físico do debug de estoque que disparou toda a rodada (forma LONGA, resolvido tier-2) ──
+  - part_number: KE4CN2L2SA5H2A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 8GB
+    device: 162-Ball FBGA
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 20/08/2026 (o que disparou toda esta rodada de
+      pesquisa) — inicialmente sem fonte confirmada, dono pediu tentar tier 2, achei: Win Source
+      (via agregador Octopart, PN sozinho na página em 2 buscas independentes) lista "4GB + 4GB" /
+      "162 Ball Fbga Tsb 19NM". Capacidade = 8GB total (2 dies NAND de 4GB empilhados no mesmo
+      pacote — o dígito "2" logo após "KE4CN" bate com a mesma posição da forma curta desta família,
+      onde "2"=4GB por die, ex. KE4CN2H5A). "Tsb" na descrição do pacote = Toshiba (fabricante da
+      célula) — mesmo padrão já visto em FH32B08UCT1/FH64B08UCT1: Kingston empacota NAND de terceiro
+      sob a própria marca. Processo 19nm. Cross-referência serviceemmc.com liga esse PN ao aparelho
+      Huawei Y221-U22 — mas o GSMArena lista a Y221-U22 com "4GB" de armazenamento anunciado, não
+      8GB (pode ser arredondamento de marketing/espaço reservado de sistema, comum em aparelho de
+      entrada ~2014, ou variante regional com chip diferente — não confirmado qual). Capacidade
+      registrada é a do CHIP (fonte direta pro PN via distribuidor), não a do "storage" anunciado do
+      aparelho — discrepância documentada, não escondida.
+    source_url: https://octopart.com/search?q=KE4CN2L2SA5H2A

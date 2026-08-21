@@ -42,12 +42,23 @@
 # consegui confirmar com specs completos de fonte direta (5 PN novos, ver abaixo). EXCLUÍDO por
 # specs não confirmados (existência confirmada em 3+ distribuidores cada, mas nenhuma fonte aberta
 # rendeu tabela de specs completa apesar de 2 tentativas cada): `EMMC04G-M657` (irmã de MK27/M627 na
-# faixa 4G), `EMMC64G-TA29`/`EMMC32G-TA29`/`EMMC128-TA29` (outra geração 32-128G), `EMMC64G-TX29`/
-# `EMMC128-TX29`/`EMMC32G-TX29` (mais outra geração 32-128G), `EMMC64G-W525` (achado incidental,
-# nem sequer specs de capacidade confirmados). Não adivinhei nenhum — ver KINGSTON.md §5/§7 pro
-# gap documentado. Nota: `EMMC04G-M627` também aparece num SEGUNDO flyer oficial Kingston
+# faixa 4G), `EMMC64G-W525` (achado incidental, nem sequer specs de capacidade confirmados).
+# `EMMC64G-TA29`/`EMMC32G-TA29`/`EMMC128-TA29` e `EMMC64G-TX29`/`EMMC128-TX29`/`EMMC32G-TX29` foram
+# RESOLVIDAS na rodada de 2026-08-20 (ver adendo abaixo) — não ficam mais na lista de excluídos.
+# Não adivinhei nenhum PN excluído — ver KINGSTON.md §5/§7 pro gap documentado. Nota: `EMMC04G-M627`
+# também aparece num SEGUNDO flyer oficial Kingston
 # (media.kingston.com/pdfs/emmc/eMMC_Product_flyer.pdf, achado nesta rodada) — reforça a
 # confirmação já existente via tier-inferior, não muda o confidence.
+#
+# ⚠ ADENDO 2026-08-20 (3ª expansão) — `EMMC64G-TA29` voltou no debug de estoque do dono (PN físico
+# real, known:false), disparando nova tentativa nas duas gerações que tinham sido excluídas ontem
+# por "specs não confirmados". Dessa vez achei bem mais fonte que nas 2 tentativas de ontem:
+# datasheet oficial Kingston (Future Electronics, documento único cobrindo EMMC16G-TB29-90F01 +
+# EMMC32G-TB29-90F01 + EMMC32G-TA29-90F01 + EMMC64G-TA29-90F01 + EMMC128-TA29-90F01 juntas) +
+# distribuidores de peso (Arrow, Avnet, DigiKey, Mouser, TrustedParts, Octopart) pras duas gerações
+# TA29 e TX29. Lição igual à do caso KE4 mais cedo hoje: "não achei em 2 tentativas" não é "não
+# existe fonte" — insistir com mais distribuidores resolveu o que ontem tinha ficado como gap. TA29
+# e TX29 (32/64/128GB cada) entraram como known_parts confirmados abaixo — 6 PN novos.
 #
 # ⚠ TERRENO NOVO: primeiro known_part de eMMC standalone deste chat — o mapeamento pro campo
 # `capacity` (em vez de emcp_nand/emcp_ram, que são só pro eMCP composto) é inferência minha por
@@ -417,3 +428,96 @@ known_parts:
       armazenamento -40~+85°C, leitura sequencial 115MB/s / gravação 20MB/s (HS400). Corroborado em
       digikey (2 revisões), octopart (2), lcsc, mouser (2 fontes + PDF próprio).
     source_url: https://media.digikey.com/pdf/Data%20Sheets/Kingston%20Technology%20PDFs/EMMC08G-ML36-01B00.pdf
+
+  # ── eMMC standalone — geração de sufixo "TA29", resolvida 2026-08-20 (3ª expansão) ──
+  - part_number: EMMC64G-TA29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      PN físico do dono (debug de estoque, known:false, "EMMC64GTA29" sem hífen) — mesmo PN que
+      tinha ficado excluído ontem (2026-08-19) por "specs não confirmados" após só 2 tentativas de
+      fonte; hoje o dono confirmou o PN de novo via debug real e insisti mais. Datasheet oficial
+      Kingston (Future Electronics, documento único "EMMC64G-TA29-90F01.pdf" que cobre também
+      EMMC16G-TB29/EMMC32G-TB29/EMMC32G-TA29/EMMC128-TA29 no mesmo PDF — Field A/B/C = capacidade/
+      revisão HW/revisão FW): capacidade 64GB literal (código "64G"), eMMC 5.1 (JEDEC JESD84-B51),
+      pacote FBGA153 (153-ball BGA), barramento de 10 fios com suporte a 1/4/8-bit data width.
+      Corroborado em Arrow, Avnet, TrustedParts, Octopart, electronicsdatasheets, alldatasheet —
+      todos concordando PN+capacidade, nenhum divergindo. PN registrado sem sufixo de revisão de
+      firmware (ex. "-90F01"/"-PZ90"/"-PE90") porque o debug do dono não trouxe nenhum — mesma
+      convenção já usada nas outras entradas deste arquivo (PN base, sem revisão de firmware).
+    source_url: https://www1.futureelectronics.com/doc/Kingston/EMMC64G-TA29-90F01.pdf
+
+  - part_number: EMMC32G-TA29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC64G-TA29 acima, MESMO datasheet oficial Kingston (Future
+      Electronics, documento conjunto cobrindo os 5 PN da família TB29/TA29). Mesmo pacote FBGA153,
+      mesma eMMC 5.1 (JESD84-B51), mesmo barramento 10 fios 1/4/8-bit. Capacidade 32GB literal
+      (código "32G"). Corroborado em Arrow (EMMC32G-TA29-PE90), Avnet, Octopart.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/EMMC64G-TA29-90F01.pdf
+
+  - part_number: EMMC128-TA29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 128GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC64G-TA29 acima, MESMO datasheet oficial Kingston. Mesmo pacote
+      FBGA153, mesma eMMC 5.1, mesmo barramento. Capacidade 128GB literal (código "128", sem sufixo
+      "G" — mesmo padrão já visto nas famílias TY29/IY29 acima de 64GB). Corroborado em TrustedParts,
+      Octopart.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/EMMC64G-TA29-90F01.pdf
+
+  # ── eMMC standalone — geração de sufixo "TX29", resolvida 2026-08-20 (mesma rodada da TA29) ──
+  - part_number: EMMC32G-TX29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Achada junto com a TA29 na mesma rodada (dono pediu insistir em tier 2 depois do PN físico
+      EMMC64GTA29 no debug) — geração de sufixo VIZINHA à TA29, mas datasheet/pacote próprios, não a
+      mesma família (mesmo padrão já visto TB28≠TB29 neste arquivo). Confirmado via Mouser
+      (EMMC32G-TX29-8AD11): capacidade 32GB literal, eMMC 5.1 (HS400), NAND 3D TLC, pacote SMD/SMT
+      13x11.5x0.8mm, Taiwan, "Lifecycle Status: Obsolete" (geração descontinuada — não impede
+      cadastro, só indica que não é mais vendida como novo). Corroborado em DigiKey
+      (EMMC32G-TX29-8AC01/-8AC02), Avnet, alldatasheet, AB Sunshine.
+    source_url: https://www.mouser.com/ProductDetail/Kingston/EMMC32G-TX29-8AD11
+
+  - part_number: EMMC64G-TX29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC32G-TX29 acima, mesma geração de sufixo "TX29". Capacidade 64GB
+      literal (código "64G") — versão eMMC/pacote aplicados por inferência de família (mesma
+      geração/datasheet da irmã de 32GB, não confirmado individualmente pra esta capacidade
+      específica, sinalizando a diferença de rigor). Corroborado em DigiKey (EMMC64G-TX29-8AC01),
+      Octopart, Ampheo, Avnet.
+    source_url: https://www.digikey.com/en/products/detail/kingston/EMMC64G-TX29-8AC01/13627695
+
+  - part_number: EMMC128-TX29
+    chip_type: eMMC
+    subtype: ''
+    capacity: 128GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade das EMMC32G-TX29/EMMC64G-TX29 acima, mesma geração de sufixo "TX29".
+      Capacidade 128GB literal (sem sufixo "G", mesmo padrão das famílias TY29/IY29/TA29 acima de
+      64GB) — pacote confirmado como FBGA153 via listagem de programador Elnec (banco de dados de
+      pacotes pra gravação de firmware, fonte técnica não comercial). Versão eMMC aplicada por
+      inferência de família (mesma geração/datasheet das irmãs de 32/64GB). Corroborado em DigiKey
+      (EMMC128-TX29-8AC01), Octopart, SnapEDA, Avnet.
+    source_url: https://www.digikey.com/en/products/detail/kingston/EMMC128-TX29-8AC01/13627685
