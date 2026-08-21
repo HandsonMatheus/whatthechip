@@ -1,0 +1,173 @@
+brand: Rayson
+known_parts:
+  - part_number: RS512M16Z2DD-62DT
+    chip_type: DDR4
+    subtype: DDR4
+    density_gbit: 8Gb
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240722/1721629301111066.pdf"
+    notes: >
+      Rayson HI-TECH — fonte TIER-1 (datasheet oficial szrayson.com, título "DDR4 Datasheet
+      RS512M16Z2DD-62DT"). Esta é a linha de DDR4 DISCRETA (não mobile/LPDDR) que faltava por
+      completo na gramática — é o PN real que chegou classificado 100% em branco no gateway do
+      estoque em 2026-08-20 (known=false, família=—, in_review_queue=true). Chart de PN: "Z2 =
+      DDR4"; organização "512Meg x 16"; VDD=VDDQ=1.2V±60mV; DDR4-3200 (velocidade -62), CL
+      22-22-22; package 96-ball FBGA 7.5x13mm; 0~95C. Densidade: 512M x 16 = 8.192Mb = 8Gb (conta
+      refeita à mão — o datasheet declara "8Gb: x4, x8, x16 DDR4 SDRAM" no cabeçalho, confere).
+      ATENÇÃO: a indasina.com lista este MESMO PN como "Rayson Mobile LPDDR4X SDRAM" — rótulo
+      ERRADO do distribuidor, não confiar nele pra chip_type de nenhum PN Rayson sem cruzar com
+      Tier-1/Tier-2. Corroboração Tier-2: datasheet.lcsc.com/datasheet/pdf/90751d7cdb4f32b0f2ed8f2de2cbbfc1.pdf?productCode=C41356073
+      (mesma peça, mesmos valores).
+  - part_number: RS256M16ZADD-75DT
+    chip_type: DDR4
+    subtype: DDR4
+    density_gbit: 4Gb
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/2988d5aeb4ccf279b2290c79566b204d.pdf?productCode=C2840165"
+    notes: >
+      Rayson HI-TECH. Datasheet Tier-2 (LCSC C2840165, PDF direto, título "4Gb: x4, x8, x16 DDR4
+      SDRAM" — documento cobre esta peça x16 e a irmã x8 RS512M8ZADD-75DT, ambas nesta entrega).
+      Organização "256Meg x 16"; VDD=VDDQ=1.2V±60mV (VPP=2.5V -125mV/+250mV); velocidade -75 =
+      DDR4-2666 CL18 (família também oferece -83/2400 e -93/2133); package 96-ball FBGA ~7.5x13mm;
+      0~95C. Densidade: 256M x 16 = 4.096Mb = 4Gb (conta refeita à mão). ATENÇÃO: um distribuidor
+      Tier-3 (micro-chip.com) chamou isso de "4 Gigabyte" — é erro de unidade dele (confundiu Gb
+      com GB); 4Gb é a densidade correta, 512MB seria a capacidade em bytes se fosse preciso
+      converter (não é o campo usado aqui — DDR discreta usa density_gbit, não capacity).
+  - part_number: RS512M8ZADD-75DT
+    chip_type: DDR4
+    subtype: DDR4
+    density_gbit: 4Gb
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/2988d5aeb4ccf279b2290c79566b204d.pdf?productCode=C2840165"
+    notes: >
+      Rayson HI-TECH. Mesmo datasheet Tier-2 do RS256M16ZADD-75DT acima (LCSC C2840165) — esta é a
+      variante de organização x8 (largura de barramento 8 bits em vez de 16) da MESMA família 4Gb,
+      não um PN isolado. Organização "512Meg x 8" (documentada no datasheet como "64 Meg x 8 x 8
+      Banks" por banco); mesma tensão/velocidade/temperatura da irmã x16 (1.2V, DDR4-2666/2400/2133,
+      0~95C); package 78-ball FBGA (x4/x8 usam 78-ball, x16 usa 96-ball, conforme o mesmo doc).
+      Densidade: 512M x 8 = 4.096Mb = 4Gb (conta refeita à mão — mesma densidade da irmã x16,
+      configuração de barramento diferente, capacidade por die igual).
+  - part_number: RS1G16Z4DD-62DT
+    chip_type: DDR4
+    subtype: DDR4
+    density_gbit: 16Gb
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240722/1721629326630807.pdf"
+    notes: >
+      Rayson HI-TECH — fonte TIER-1 (datasheet oficial szrayson.com, título "DDR4 Datasheet
+      RS1G16Z4DD-62DT 96-Ball, Revision 1.0"). Chart de PN: "1G16 = 1 Gig x 16 / Z4 = [família] /
+      D = 1.2V / 62 = 3200Mb/s/pin / DD = 96-ball FBGA-7.5x13 / T = 0C a +95C". Densidade: 1024M x
+      16 = 16.384Mb = 16Gb (conta refeita à mão). ATENÇÃO: o PRÓPRIO datasheet oficial da Rayson
+      escreve "16 Gigabyte" pra densidade num ponto do documento — isso é erro de unidade do
+      FABRICANTE (Gb confundido com GB), não deste known_part; 16Gb (densidade) é o valor correto
+      pra density_gbit, consistente com a linguagem "Gb" usada no resto da família (8Gb/4Gb acima).
+      Se algum dia essa peça aparecer com capacity em vez de density_gbit em outro lugar do
+      sistema, NÃO usar "16GB" — seria a densidade em bits mal-convertida, não a capacidade real.
+  - part_number: RS256M16Z0DC-75DT
+    chip_type: DDR4
+    subtype: DDR4
+    density_gbit: 4Gb
+    confidence: distributor
+    source_url: "https://www.glochip.com/en/rayson.html"
+    notes: >
+      Rayson HI-TECH. ATENÇÃO tier de fonte: única fonte encontrada é a tabela de categoria da
+      Glochip (Tier 2/3, apoio — RAYSON.md §0.3), não achei Tier-1 nem Tier-2 primário (LCSC/
+      JLCPCB/Octopart/Alldatasheet, todos buscados, zero resultado) apesar de busca dedicada; a
+      página individual da Glochip pra este PN retornou 404 (só a linha da tabela de categoria
+      ficou disponível). Linha: "RS256M16Z0DC-75DT — Capacity: 4Gb — Organization: 256M x 16 —
+      Speed: 2667Mbps — Package: FBGA 96", 1.2V, 0~85C. Densidade confere com a fórmula: 256M x 16
+      = 4.096Mb = 4Gb. confidence=distributor reflete o teto real da fonte (uma tabela Tier 2/3, não
+      confirmada em datasheet) — dono avalia antes de aprovar.
+  - part_number: RS1G16Z3DK-62DT
+    chip_type: DDR4
+    subtype: DDR4
+    density_gbit: 16Gb
+    confidence: distributor
+    source_url: "https://www.glochip.com/en/rayson/RS1G16Z3DK-62DT.html"
+    notes: >
+      Rayson HI-TECH. ATENÇÃO tier de fonte: única fonte é a Glochip (Tier 2/3, apoio) — página
+      individual confirma "Density: 16Gb", "Package: 96 FBGA" mas não usa a palavra "DDR4"
+      explicitamente nessa página específica (a tabela de categoria da mesma Glochip, sim, lista
+      como DDR4 ao lado dos outros PNs "Z" desta entrega). Não achei Tier-1/Tier-2 primário apesar
+      de busca dedicada. Densidade confere com a fórmula: 1024M x 16 = 16.384Mb = 16Gb. ATENÇÃO
+      adicional: existe TAMBÉM um "RS1G16Z3DK-75DT" (mesma base, sufixo de velocidade diferente)
+      citado por 2 fontes Tier-3 que não bateram entre si e que não consegui abrir pra confirmar —
+      por isso NÃO incluí o -75DT nesta entrega (excluído por fonte insuficiente/conflitante,
+      apenas o -62DT, mais bem evidenciado, entrou). confidence=distributor reflete o teto real da
+      fonte — dono avalia antes de aprovar.
+  - part_number: RS128M16V8DB-107AT
+    chip_type: DDR3
+    subtype: DDR3
+    density_gbit: 2Gb
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240719/1721369288341069.pdf"
+    notes: >
+      Rayson HI-TECH — fonte TIER-1 (datasheet oficial szrayson.com, título "DDR3 Datasheet
+      RS128M16V8DB-107AT 96-Ball", Revision 1.0, 27/04/2023). Esta é a linha de DDR3 DISCRETA (não
+      mobile/LPDDR3) que faltava por completo na gramática. Chart de PN: "V8 = DDR3". Organização
+      "128M x 16 x 8 Banks". VDD=VDDQ=+1.5V±0.075V; DDR3-1866 (velocidade -107), CL13-13-13;
+      package 96-ball FBGA 8x14x1.2mm; 0~95C (refresh 64ms/8192-ciclos até 85C, 32ms/8192-ciclos
+      85~95C). Densidade: 128M x 16 = 2.048Mb = 2Gb (conta refeita à mão — o datasheet confirma
+      "2Gb" diretamente).
+  - part_number: RS256M16V0DB-107AT
+    chip_type: DDR3
+    subtype: DDR3
+    density_gbit: 4Gb
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/db383dee4aedf73fe09aeaa6698bd8e9.pdf?productCode=C2840164"
+    notes: >
+      Rayson HI-TECH. Datasheet Tier-2 (LCSC C2840164, PDF direto, título "4Gb: x4, x8, x16 DDR3
+      SDRAM" — documento cobre esta peça x16 e organiza também variantes x4/x8 da mesma família
+      4Gb, mas SÓ esta x16 teve sufixo de PN completo confirmável; as variantes x4/x8 ficaram de
+      fora desta entrega por incerteza no sufixo exato, ver observação no relatório de entrega).
+      Organização "256M x 16 x 8 Banks". VDD=VDDQ=+1.5V±0.075V; DDR3-1866 (velocidade -107),
+      CL13; package 96-ball FBGA 8x14mm; 0~95C. Densidade: 256M x 16 = 4.096Mb = 4Gb (conta
+      refeita à mão — uma ferramenta de leitura automática chegou a rotular isso "4 Gigabytes" em
+      um resumo intermediário, o que é o erro clássico Gb/GB; o valor certo pra density_gbit é
+      4Gb, não 4GB).
+  - part_number: RS512M16VADF-107AT
+    chip_type: DDR3
+    subtype: DDR3
+    density_gbit: 8Gb
+    confidence: distributor
+    source_url: "https://www.glochip.com/ddr3/rayson.html"
+    notes: >
+      Rayson HI-TECH. ATENÇÃO tier de fonte: única fonte é a tabela dedicada de DDR3 Rayson da
+      Glochip (Tier 2/3, apoio) — buscado 2x com resultado consistente, mas nenhum datasheet
+      PDF localizado em Tier-1/Tier-2 primário. Linha: "RS512M16VADF-107AT | 8Gb | 512M x 16 |
+      1866Mbps | 1.5V | 0~85C | FBGA 96 | Mass Production". Densidade confere com a fórmula: 512M
+      x 16 = 8.192Mb = 8Gb. Corroboração fraca (só PN, sem specs): listagem multi-SKU Alibaba/ZJI
+      e uma página ic37.com. confidence=distributor reflete o teto real da fonte — dono avalia
+      antes de aprovar.
+  - part_number: RS128M16VMDD-107BT
+    chip_type: DDR3L
+    subtype: DDR3L
+    density_gbit: 2Gb
+    confidence: distributor
+    source_url: "https://www.glochip.com/ddr3/rayson.html"
+    notes: >
+      Rayson HI-TECH. ACHADO NOVO: variante 1.35V (DDR3L) da linha DDR3 discreta — chip_type
+      DDR3L já existe como valor válido no sistema (usado por outras marcas, ex. PMK/PieceMakers).
+      ATENÇÃO tier de fonte: única fonte é a tabela dedicada de DDR3 Rayson da Glochip (Tier 2/3,
+      apoio) — nenhum datasheet PDF localizado em Tier-1/Tier-2 primário apesar de busca. Linha:
+      "RS128M16VMDD-107BT | 2Gb | 128M x 16 | 1866Mbps | 1.35V | 0~85C | FBGA 96 | Mass
+      Production" — note o "B" no sufixo de velocidade (-107BT) em vez do "A" da linha 1.5V
+      (-107AT), consistente com ser uma peça distinta, não erro de digitação. Densidade confere
+      com a fórmula: 128M x 16 = 2.048Mb = 2Gb (mesma densidade da V8DB 1.5V, tensão diferente).
+      confidence=distributor reflete o teto real da fonte — dono avalia antes de aprovar. ATENÇÃO
+      extra: existe um "RS128M16VMDC-107AT" citado em fontes Tier-3 fracas que CONTRADIZ esta
+      linha (tensão/sufixo diferentes) e que a própria Glochip não lista na tabela dedicada —
+      exclu­ído desta entrega por conflito não resolvido, não confundir os dois.
+  - part_number: RS256M16VMDC-107BT
+    chip_type: DDR3L
+    subtype: DDR3L
+    density_gbit: 4Gb
+    confidence: distributor
+    source_url: "https://www.glochip.com/ddr3/rayson.html"
+    notes: >
+      Rayson HI-TECH. Par da RS128M16VMDD-107BT acima na mesma linha DDR3L (1.35V) — mesma
+      ressalva de fonte (só Glochip, Tier 2/3 apoio, sem datasheet Tier-1/Tier-2 primário
+      localizado). Linha: "RS256M16VMDC-107BT | 4Gb | 256M x 16 | 1866Mbps | 1.35V | 0~85C |
+      FBGA 96 | Mass Production". Densidade confere com a fórmula: 256M x 16 = 4.096Mb = 4Gb
+      (mesma densidade da V0DB 1.5V, tensão diferente). confidence=distributor — dono avalia
+      antes de aprovar.

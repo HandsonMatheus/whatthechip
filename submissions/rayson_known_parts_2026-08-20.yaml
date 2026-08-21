@@ -1,0 +1,227 @@
+brand: Rayson
+known_parts:
+  - part_number: RS1G32LF4D2BDS-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 4GB
+    confidence: confirmed
+    source_url: "https://atta.szlcsc.com/upload/public/pdf/source/20210629/C2840160_7526521853C249FB891BD41FEDC21753.pdf"
+    notes: >
+      Rayson HI-TECH. Datasheet Tier-2 (PDF hospedado no CDN da LCSC, conteúdo do fabricante,
+      C2840160): "LF4 = Mobile LPDDR4X SDRAM"; "1G32 = 1 Gig x 32"; VDDQ documentado em DUAS
+      faixas para a mesma peça: baixa 0.57-0.65V (nom. 0.60V, modo 4X) OU 1.06-1.17V (nom. 1.10V,
+      modo 4). É peça "unificada" LPDDR4/LPDDR4X — a tensão real depende de como a placa-mãe
+      onde foi soldada alimenta o VDDQ, não é fixa pelo PN/marcação. Por isso chip_type=LPDDR4
+      (não 4X) — ver nota de padrão no relatório de entrega 2026-08-20. Capacidade: formula
+      1G x 32 / 8 = 4GB, confere com "32Gb total" do datasheet (32Gb / 8 = 4GB). Package FBGA-200
+      10x14.5x0.95mm. Corroboração: item.szlcsc.com/3018309.html (LCSC, PN e package confirmados).
+  - part_number: RS1G32LO4D2BDS-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 4GB
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/0247232bb6fb5edb9997eb09574fe974.pdf?productCode=C7464030"
+    notes: >
+      Rayson HI-TECH. Datasheet Tier-2 (LCSC C7464030, PDF direto): "produto LPDDR4X/LPDDR4";
+      "VDDQ = 0.57-0.65V; 0.60V nominal Ou VDDQ = 1.06-1.17V; 1.10V nominal" (peça unificada,
+      mesma ressalva de RS1G32LF4D2BDS-53BT — chip_type=LPDDR4, não 4X). Capacidade declarada
+      DIRETO no datasheet: "Total package density is 4GB (32Gb)" — confere com a fórmula
+      1G x 32 / 8 = 4GB. Package 200-ball FBGA 10x14.5x0.8mm max. Corroboração: cópia espelhada
+      do datasheet combinado Rayson (RS512M32LO4D1BDS-53BT + RS1G32LO4D2BDS-53BT) em
+      file.elecfans.com/web2/M00/49/EB/poYBAGKjFoGAKRq9AHUfazciCho348.pdf, mesmos valores.
+  - part_number: RS1G32LV4D2BDS-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 4GB
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/69e1a8c393fe6708b3aaa098003e598b.pdf"
+    notes: >
+      Rayson HI-TECH. Datasheet combinado Tier-2 (LCSC, cobre RS1G32LV4D2BDS-53BT e
+      RS2G32LV4D4BDT-53BT juntos): "low VDDQ = 0.57-0.65V; 0.60V nominal" / "1.06-1.17V; 1.10V
+      nominal" (mesmo padrão dual-tensão das outras LPDDR4/4X "unificadas" desta entrega —
+      chip_type=LPDDR4, não 4X); "1G32 = 1 Gig x 32"; "2 channels x16 I/O x 1 rank"; speed grade
+      "-53 = 3733Mbps". Capacidade: fórmula 1G x 32 / 8 = 4GB, confere com LCSC
+      (lcsc.com/product-detail/C52145900.html) que lista "32Gbit" (32/8=4GB) e package
+      FBGA-200(10x14.5).
+  - part_number: RS256M32LZ4D2BNP-62BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 1GB
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240719/1721368117430292.pdf"
+    notes: >
+      Rayson HI-TECH — fonte TIER-1 (datasheet oficial szrayson.com). Capacidade declarada DIRETO
+      no datasheet, Tabela 3: "1GB(8Gb)" (densidade por die 4Gb x 2 dies = 8Gb / 8 = 1GB) — confere
+      com a fórmula 256M x 32 / 8 = 1GB. "LZ4 = LPDDR4X/LPDDR4"; "VDD1 1.80V, VDD2 1.10V, VDDQ
+      0.60V ou 1.10V" (peça unificada, mesma ressalva — chip_type=LPDDR4, não 4X); "3200Mb/s/pin";
+      -25C a +85C. Corroborado em Tier-2: datasheet.lcsc.com/datasheet/pdf/faef667dedf19b23bd2d6117857c97f1.pdf?productCode=C2840155
+      (mesmos valores: "256M32=256Meg x 32", "32Mb x16 DQ x8 banks x2channels x1 rank", densidade
+      por die 4Gb).
+  - part_number: RS512M32LM4D2BDS-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 2GB
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/2c63685cad3c8a72da1c128bd7751114.pdf?productCode=C2840158"
+    notes: >
+      Rayson HI-TECH. Datasheet Tier-2 (LCSC C2840158, PDF direto), título "LPDDR4/LPDDR4X SDRAM
+      RS512M32LM4D2BDS, RS1G32LM4D4BDT": "this datasheet is for LPDDR4 and LPDDR4X unified product
+      based on LPDDR4X information"; VDDQ dual 0.60V(nom)/1.10V(nom) — mesma ressalva desta
+      entrega, chip_type=LPDDR4, não 4X. Capacidade: densidade total "16Gb" (tabela "512M32 | 16Gb
+      | 64Mbx16DQx8banksx2channels | 2 dies") / 8 = 2GB, confere com a fórmula 512M x 32 / 8 = 2GB.
+      Corroboração Tier-3 (apoio): indasina.com/news/1557.html lista como substituto do
+      Artmemtech ATL4X1632A descontinuado, mesma tensão tripla 1.8/1.1/0.6V, 16Gb, x32, FBGA-200.
+  - part_number: RS512M32LO4D1BDS-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 2GB
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240719/1721368155932183.pdf"
+    notes: >
+      Rayson HI-TECH — fonte TIER-1 (datasheet oficial szrayson.com, capa: "LPDDR4/4X Datasheet
+      RS512M32LO4D1BDS-53BT 200-ball"). Capacidade declarada DIRETO: "Total Capacity: 2GB (16
+      gigabits per package)" — confere com a fórmula 512M x 32 / 8 = 2GB. Chart de part number:
+      "LO4 = LPDDR4X/LPDDR4"; "VDDQ = 0.57-0.65V; 0.60V nominal Ou VDDQ = 1.06-1.17V; 1.10V
+      nominal"; "LPDDR4X pad definitions are the same as LPDDR4, except ODT_CA pins" — peça
+      unificada, mesma ressalva desta entrega: chip_type=LPDDR4, não 4X.
+  - part_number: RS2G32LF4D4BDT-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 8GB
+    confidence: confirmed
+    source_url: "https://www.glochip.com/rayson/RS2G32LF4D4BDT-53BT.html"
+    notes: >
+      Rayson HI-TECH. ATENÇÃO tier de fonte: a ficha na LCSC/JLCPCB para este PN específico está
+      delistada (404 em product-detail e em toda rota de PDF testada) — a única fonte com o dado
+      buscável diretamente é Glochip (Tier 2/3, apoio): "Capacity: 8GB", package FBGA 200,
+      -25~85C, 3733Mbps. Capacidade confere com a fórmula 2G x 32 / 8 = 8GB (mesmo depth code
+      usado nos demais PNs desta família, já validado). chip_type=LPDDR4 (não 4X): o datasheet
+      combinado que cobre este PN (mesmo título encontrado em buscas: "LPDDR4/LPDDR4X SDRAM
+      RS1G32LF4D2BDS-53BT, RS2G32LF4D4BDT-53BT Features") não foi aberto diretamente para ESTE PN
+      (só o irmão RS1G32LF4D2BDS-53BT foi lido linha a linha, mesma família "LF4" = unificada
+      dual-tensão) — por isso mantenho LPDDR4 puro por precaução, não LPDDR4X.
+  - part_number: RS2G32LV4D4BDT-53BT
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 8GB
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/69e1a8c393fe6708b3aaa098003e598b.pdf?productCode=C41368084"
+    notes: >
+      Rayson HI-TECH. Datasheet Tier-2 (LCSC C41368084, PDF direto, combinado com
+      RS1G32LV4D2BDS-53BT): "2 Gig x 32"; "64Gb total... Equivalent to 8GB" — confere com a
+      fórmula 2G x 32 / 8 = 8GB. VDDQ "or low VDDQ = 0.57-0.65V; 0.60V nominal" (além da faixa
+      1.06-1.17V) — mesma peça unificada dual-tensão desta entrega, chip_type=LPDDR4, não 4X
+      (a etiqueta "LV4 = Mobile LPDDR4X SDRAM" no chart de PN é o nome da FAMÍLIA/série do
+      datasheet, não uma afirmação de tensão fixa — a tabela de VDDQ do mesmo documento lista as
+      duas opções). LCSC (lcsc.com/product-detail/C41368084.html): "Capacity/Density: 64Gbit"
+      (64/8=8GB), package TFBGA-200(10x14.5mm), atualmente fora de estoque.
+  - part_number: RS256M32LD3D1LMZ-125BT
+    chip_type: LPDDR3
+    subtype: LPDDR3
+    capacity: 1GB
+    confidence: confirmed
+    source_url: "https://lcsc.com/product-detail/SDRAM_Rayson-RS256M32LD3D1LMZ-125BT_C2840152.html"
+    notes: >
+      Rayson HI-TECH. LCSC C2840152 (Tier-2, página com tabela de specs): "Memory Size: 8Gbit" —
+      8Gb / 8 = 1GB, confere com a fórmula 256M x 32 / 8 = 1GB. Package FBGA-178, 1.7V-1.95V,
+      800MHz, -25~85C. ATENÇÃO discrepância de rótulo: tanto LCSC quanto JLCPCB
+      (jlcpcb.com/partdetail/Rayson-RS256M32LD3D1LMZ125BT/C2840152) escrevem "DDR3 SDRAM" /
+      "Memory Format: DDR3 SDRAM" no campo estruturado, não "LPDDR3" — provável imprecisão de
+      extração automática do distribuidor (o pacote FBGA-178 é classe mobile, e o PN usa a
+      mesma âncora "L"+"D3" já provada em RAYSON.md §2 para LPDDR3; o par-irmão
+      RS512M32LD3D2LMZ-125BT abaixo usa a mesma família "D3" e tem confirmação em prosa explícita
+      "LPDDR3-SDRAM"). Classifico como LPDDR3 pela anatomia do PN + o irmão, mas registro a
+      discrepância para revisão — dono pode rebaixar para confidence=manual se preferir mais
+      cautela.
+  - part_number: RS512M32LD3D2LMZ-125BT
+    chip_type: LPDDR3
+    subtype: LPDDR3
+    capacity: 2GB
+    confidence: confirmed
+    source_url: "https://lcsc.com/product-detail/SDRAM_Rayson-RS512M32LD3D2LMZ-125BT_C2840153.html"
+    notes: >
+      Rayson HI-TECH. LCSC C2840153 (Tier-2): abre com a frase "LPDDR3-SDRAM is a high-speed
+      synchronous DRAM device internally configured as an 8-bank memory..." — confirmação
+      explícita de LPDDR3 (sem a discrepância de rótulo do PN irmão acima). Densidade "16Gbit" —
+      16Gb / 8 = 2GB, confere com a fórmula 512M x 32 / 8 = 2GB. Package FBGA-178, 1.7V-1.95V,
+      800MHz, 275mA, -25~85C. Corroboração: jlcpcb.com/partdetail/Rayson-RS512M32LD3D2LMZ125BT/C2840153
+      ("LPDDR3 SDRAM FBGA-178").
+  - part_number: RS70B08G3S03F
+    chip_type: eMMC
+    capacity: 8GB
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240722/1721634167740556.pdf"
+    notes: >
+      Rayson HI-TECH — fonte TIER-1 (datasheet oficial eMMC 5.1 szrayson.com, Tabela 1.3-1
+      "Product List"). NAND declarada DIRETO: "64Gb x1" — 64Gb / 8 = 8GB, confere com o código de
+      capacidade "08G" do PN. User Data Area: 7.400MB (90% do bruto, padrão eMMC). Package TFBGA-153
+      11.5x13x0.92mm. Corroboração Tier-2: lcsc.com/product-detail/eMMC_Rayson-RS70B08G3S03F_C22364054.html
+      ("Memory Size: 8GB", seq. read 160MB/s, write 110MB/s).
+  - part_number: RS70B16G4S15G
+    chip_type: eMMC
+    capacity: 16GB
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/eMMC_Rayson-RS70B16G4S15G_C41368088.html"
+    notes: >
+      Rayson HI-TECH. LCSC C41368088 (Tier-2): "Memory Size: 16GB" declarado direto — confere com
+      o código de capacidade "16G" do PN. eMMC 5.1, seq. read até 310MB/s, write até 190MB/s.
+  - part_number: RS70B32G4S15G
+    chip_type: eMMC
+    capacity: 32GB
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/C22375657.html"
+    notes: >
+      Rayson HI-TECH. LCSC C22375657 (Tier-2): "Capacity: 32GB" — confere com o código "32G" do
+      PN. eMMC5.1 JEDEC, package TFBGA-153(11.5x13), seq. read 310MB/s / write 190MB/s.
+      Corroboração Tier-3 (apoio): indasina.com/product/rs70b32g4s15g-rayson-emmc5-1-32gb —
+      "256Gb" de NAND, 256Gb / 8 = 32GB, confere.
+  - part_number: RS70B64G4S16G
+    chip_type: eMMC
+    capacity: 64GB
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/C41368089.html"
+    notes: >
+      Rayson HI-TECH. LCSC C41368089 (Tier-2): "Capacity: 64GB" — confere com o código "64G" do
+      PN. Compatível com eMMC 4.41/4.51/5.0/5.1, package TFBGA-153(11.5x13), seq. read 310MB/s /
+      write 210MB/s.
+  - part_number: RS70BT7G4S16G
+    chip_type: eMMC
+    capacity: 128GB
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/C41368090.html"
+    notes: >
+      Rayson HI-TECH. Reconfirma o único código de capacidade NÃO numérico da marca ("T7G" =
+      128GB — RAYSON.md §3). LCSC C41368090 (Tier-2): "Capacity: 128GB", seq. read 310MB/s /
+      write 251MB/s (consistente com HS400, teto de 400MB/s), TFBGA-153(11.5x13), -25~85C.
+      Corroboração Tier-3 (apoio): indasina.com/product/rs70bt7g4s16g-rayson-emmc5-1-inventory —
+      NAND "512Gb x 2" (2 dies) — 512Gb x2 / 8 = 128GB, confere exatamente.
+  - part_number: RS70B16G4S06F
+    chip_type: eMMC
+    capacity: 16GB
+    confidence: distributor
+    source_url: "https://www.indasina.com/product/rs70b16g4s06f-emmc-16gb-rayson-electronic-component-wholesalers"
+    notes: >
+      Rayson HI-TECH. ATENÇÃO tier de fonte: nenhum Tier-1 (szrayson.com) ou Tier-2
+      (LCSC/JLCPCB/Octopart/Alldatasheet) foi localizado pra este PN específico apesar de busca
+      dedicada (site:lcsc.com, site:octopart.com, site:alldatasheet.com, site:jlcpcb.com
+      retornaram zero). Existência e capacidade corroboradas por DUAS fontes Tier-3 (apoio)
+      independentes que concordam: indasina.com (título "RS70B16G4S06F eMMC 16GB Rayson...") e
+      en.manduic.com/cpzx/rayson (tabela "MLC models", lista "RS70B16G4S06F (16GB)"). Capacidade
+      confere com o código "16G" do PN (mesmo código já confirmado em Tier-2 no PN irmão
+      RS70B16G4S15G). Sem figura de densidade NAND bruta encontrada. confidence=distributor
+      reflete honestamente o teto real da fonte — dono avalia se aceita ou pede fonte melhor
+      antes de aprovar (mesmo padrão do caso KMDL6001DA, 2026-08-20).
+  - part_number: RS70B16G4S10F
+    chip_type: eMMC
+    capacity: 16GB
+    confidence: distributor
+    source_url: "https://www.indasina.com/product/rs70b16g4s10f-emmc5-1-16-gb-rayson-electronic-component-supplier"
+    notes: >
+      Rayson HI-TECH. ATENÇÃO tier de fonte: mesma situação do PN RS70B16G4S06F acima — nenhum
+      Tier-1/Tier-2 localizado apesar de busca dedicada. Existência e capacidade corroboradas por
+      DUAS fontes Tier-3 (apoio) independentes: indasina.com/product/rs70b16g4s10f-... ("NAND
+      Flash Type: 128Gb x1", "User Density: 14,912 MB" — 128Gb / 8 = 16GB, confere com o código
+      "16G" do PN e com o formato de tabela idêntico ao datasheet Tier-1 confirmado de
+      RS70B08G3S03F) e indasina.com/news/6571.html (substituto do Samsung KLMAG1JENB-B041, eMMC
+      5.1, 16GB). Aritmética NAND consistente é o que me deixa mais confortável aqui do que no
+      06F acima, mas ainda é fonte Tier-3 — confidence=distributor, dono avalia antes de aprovar.

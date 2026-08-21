@@ -234,3 +234,165 @@ families:
   suffix_rules: ''
   tip: 'eMMC Rayson — prefixo RS70B genérico. Capacidade não decodificada automaticamente (PN fora do mapa atual). Leia os caracteres 6-7 do PN para a capacidade: 08G=8GB · 16G=16GB · 32G=32GB · 64G=64GB · T7G=128GB. Se for nova capacidade (ex: 4GB, 256GB): adicionar ao mapa RAY_EMMC_CAP no yaml. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
   reasoning: ''
+- prefix: RS512M16Z
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 DISCRETO Rayson (não mobile/LPDDR — família nova 2026-08-20, achada a partir de um PN 100% não-classificado no gateway do estoque). 512M×16, 8Gb por die. Tier-1: DDR4-3200, VDD=VDDQ=1.2V, FBGA200 7.5×13mm. Gramática decide só o TIPO (DDR4); densidade exata (density_gbit, não capacity) vem de known_part confirmado — ver RS512M16Z2DD-62DT. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier-1: szrayson.com/static/upload/file/20240722/1721629301111066.pdf (datasheet oficial RS512M16Z2DD-62DT, 2026-08-20)'
+- prefix: RS256M16Z
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 DISCRETO Rayson — 256M×16, 4Gb por die. Tier-2: DDR4-2666/2400/2133, VDD=VDDQ=1.2V, FBGA96 ~7.5×13mm. Cobre variantes de letra (ZA/Z0) na mesma profundidade/largura. Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier-2: datasheet.lcsc.com/datasheet/pdf/2988d5aeb4ccf279b2290c79566b204d.pdf?productCode=C2840165 (LCSC, RS256M16ZADD-75DT, 2026-08-20)'
+- prefix: RS512M8Z
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 DISCRETO Rayson — variante de organização x8 (512M×8), mesma família 4Gb da RS256M16ZADD (largura de barramento diferente, densidade por die igual), FBGA78. Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier-2: datasheet.lcsc.com/datasheet/pdf/2988d5aeb4ccf279b2290c79566b204d.pdf?productCode=C2840165 (LCSC, RS512M8ZADD-75DT — mesmo doc da RS256M16ZADD-75DT, 2026-08-20)'
+- prefix: RS1G16Z
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 DISCRETO Rayson — 1G×16, 16Gb por die. Tier-1: DDR4-3200, VDD=VDDQ=1.2V, FBGA200 7.5×13mm. Cobre variantes de letra (Z4/Z3) na mesma profundidade/largura. Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier-1: szrayson.com/static/upload/file/20240722/1721629326630807.pdf (datasheet oficial RS1G16Z4DD-62DT, 2026-08-20)'
+- prefix: RS128M16V8
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3 DISCRETO Rayson (não mobile/LPDDR3 — família nova 2026-08-20, mesma rodada da DDR4 acima). 128M×16, 2Gb por die, 1.5V. Tier-1: DDR3-1866, FBGA96 8×14mm. Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ Não confundir com a variante DDR3L 1.35V da mesma profundidade (prefixo RS128M16VM, família separada — a letra distingue tensão/tipo aqui). ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier-1: szrayson.com/static/upload/file/20240719/1721369288341069.pdf (datasheet oficial RS128M16V8DB-107AT, 2026-08-20)'
+- prefix: RS256M16V0
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3 DISCRETO Rayson — 256M×16, 4Gb por die, 1.5V. Tier-2: DDR3-1866, FBGA96 8×14mm. Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ Não confundir com a variante DDR3L 1.35V da mesma profundidade (prefixo RS256M16VM, família separada). ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier-2: datasheet.lcsc.com/datasheet/pdf/db383dee4aedf73fe09aeaa6698bd8e9.pdf?productCode=C2840164 (LCSC, RS256M16V0DB-107AT, 2026-08-20)'
+- prefix: RS512M16VA
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3 DISCRETO Rayson — 512M×16, 8Gb por die, 1.5V. Fonte Tier 2/3 (Glochip, apoio — sem datasheet Tier-1/2 primário localizado ainda, buscado 2026-08-20). Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier 2/3 (Glochip, apoio): glochip.com/ddr3/rayson.html — RS512M16VADF-107AT, sem datasheet Tier-1/2 primário localizado (2026-08-20)'
+- prefix: RS128M16VM
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3L DISCRETO Rayson (1.35V, achado inesperado 2026-08-20 — nem estava no gap table da bíblia até então). 128M×16, 2Gb por die — mesma densidade da RS128M16V8 (DDR3 1.5V), tensão diferente, família separada porque chip_type difere. Fonte Tier 2/3 (Glochip, apoio — sem datasheet Tier-1/2 primário localizado). Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier 2/3 (Glochip, apoio): glochip.com/ddr3/rayson.html — RS128M16VMDD-107BT, sem datasheet Tier-1/2 primário localizado (2026-08-20)'
+- prefix: RS256M16VM
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3L DISCRETO Rayson (1.35V). 256M×16, 4Gb por die — mesma densidade da RS256M16V0 (DDR3 1.5V), tensão diferente, família separada. Fonte Tier 2/3 (Glochip, apoio — sem datasheet Tier-1/2 primário localizado). Gramática decide só o TIPO; densidade exata vem de known_part. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  reasoning: 'Tier 2/3 (Glochip, apoio): glochip.com/ddr3/rayson.html — RS256M16VMDC-107BT, sem datasheet Tier-1/2 primário localizado (2026-08-20)'
