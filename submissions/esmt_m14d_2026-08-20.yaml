@@ -1,0 +1,129 @@
+# ACHADO METODOLOGICO IMPORTANTE (2026-08-20): pra densidade sub-1Gb, `density_gbit`
+# TEM que ser fracionario em "Gb" (ex. "0.5Gb"), NUNCA "512Mb". Motivo: o parser
+# numerico do engine (chips/engine.py::_extract_gbit, regex `_GBIT_RE = r'(\d+(?:\.\d+)?)\s*Gb\b'`)
+# so reconhece o sufixo literal "Gb" -- "512Mb" NAO bate no regex (é "Mb", nao "Gb"),
+# entao density_gbit_num ficaria None mesmo com o campo "preenchido", quebrando a
+# rentabilidade/preco em silencio (mesma classe de bug do caso H5AN, ver convention.py).
+# Populei tambem `density_gb` (formato "NNMb" -> "NNMB", ex. "64MB") pra manter a
+# leitura humana clara -- o engine mostra "0.5Gb = 64MB por die [OK]" (chips/engine.py::_known_dram_density).
+# Esta e a 1a familia ESMT desta chat com densidade sub-1Gb; nenhuma família anterior
+# (M15T, todas >=1Gb) precisou dessa checagem.
+
+brand: "ESMT"
+known_parts:
+  - part_number: "M14D128168A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "0.125Gb"
+    density_gb: "16MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://suntsu-products-s3-bucket.s3.us-west-1.amazonaws.com/memory_datasheets/M14D128168A-1-5BG2Y.pdf"
+    notes: >
+      ESMT DDR2 SDRAM, 2M x16bit x4 bancos = 2.097.152 x 16 x 4 = 134.217.728 bit =
+      128Mb = 16MB. 2 fontes: PDF hospedado pela Suntsu (distribuidor, mirror do
+      datasheet oficial "M14D128168A-1.5BG2Y", pub. mai/2017 rev 1.2, citacao direta
+      "2M x 16 Bit x 4 Banks", VDD=1.8V, SSTL_18, BGA 84-pin) + tabela da Satron
+      Electronics (satronel.com/products/semiconductors/memoriy_ic/sdram/ddr2-sdram.html:
+      128Mb, Organization "8Mbx16" -- 2M/banco x4bancos=8M total de palavras, bate
+      exato). DDR2 = sempre NAO RENTAVEL por geracao (chips/engine.py), independente
+      de capacidade -- mesma regra ja documentada em nanya.yaml::NT5TU.
+
+  - part_number: "M14D2561616A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/302727/ESMT/M14D2561616A.html"
+    notes: >
+      ESMT DDR2 SDRAM, 256Mb, x16. 2 fontes: existencia confirmada via Alldatasheet
+      (source_url, titulo) + tabela da Satron Electronics (satronel.com: 256Mb,
+      Organization "16Mbx16" -- 16M total de palavras x16bit = 268.435.456 bit =
+      256Mb = 32MB, bate exato). Numero de bancos (4) INFERIDO por padrao JEDEC DDR2
+      -- confirmado diretamente nos irmaos 128Mb e 512Mb desta familia, nao neste PN
+      especifico; nao afeta a densidade (independente de banco individual), so a
+      documentacao. DDR2 = sempre NAO RENTAVEL por geracao, independente de capacidade.
+
+  - part_number: "M14D5121632A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/302732/ESMT/M14D5121632A.html"
+    notes: >
+      ESMT DDR2 SDRAM, 8M x16bit x4 bancos = 8.388.608 x 16 x 4 = 536.870.912 bit =
+      512Mb = 64MB. PN AO VIVO do debug de estoque (2026-08-20), veio 100%
+      desconhecido -- known:false, in_review_queue:true. 4 fontes convergentes:
+      Alldatasheet ID 302732 (source_url, citacao direta "8M x 16 Bit x 4 Banks DDR
+      II SDRAM", pub. fev/2009 rev 1.1) + LCSC (datasheet oficial hospedado,
+      lcsc.com/datasheet/..._M14D5121632A-2-5BG2A_C492194.pdf) + Sekorm
+      (en.sekorm.com/doc/3675540.html, citacao direta identica: "8M x 16 Bit x 4
+      Banks DDR II SDRAM", -40..105C) + tabela Satron (512Mb, "32Mbx16", bate exato).
+      DDR2 = sempre NAO RENTAVEL por geracao, independente de capacidade.
+
+  - part_number: "M14F5121632A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://satronel.com/products/semiconductors/memoriy_ic/sdram/ddr2-sdram.html"
+    notes: >
+      ESMT DDR2 SDRAM, mesma organizacao do M14D5121632A (512Mb, x16) -- par de
+      voltagem: M14F=1.55V vs M14D=1.8V. ESMT usa PREFIXO separado (D/F) pra
+      voltagem no DDR2, diferente do DDR3(L) que usa 1 prefixo so pras duas tensoes;
+      nao ha "DDR2L" no vocabulario de chip_types.py, entao mapeia pra chip_type=DDR2
+      igual ao M14D (confirmado pelo portao Pydantic, nao decisao arbitraria).
+      CONFIANCA MENOR que a maioria da familia: SO 1 fonte (tabela da Satron
+      Electronics, satronel.com: 512Mb, Organization "32Mbx16", 1.55V, 84 Ball BGA,
+      400/533MHz) -- nenhuma segunda fonte encontrada apesar de busca dedicada com
+      "M14F5121632A" em alldatasheet/lcsc/octopart/digchip/ic-components. Recomendo
+      revisar com atencao extra antes de aprovar. DDR2 = sempre NAO RENTAVEL por
+      geracao, independente de capacidade.
+
+  - part_number: "M14D1G1664A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/M14D1G1664A(2S).pdf"
+    notes: >
+      ESMT DDR2 SDRAM, 8M x16bit x8 bancos = 8.388.608 x 16 x 8 = 1.073.741.824 bit =
+      1Gb = 128MB. Bem documentado: Alldatasheet (citacao direta "8M x 16 Bit x 8
+      Banks DDR II SDRAM") + datasheet oficial esmt.com.tw (source_url -- URL
+      existe/resolve, conteudo bloqueado pra leitura, mesmo padrao ja visto na
+      familia M15T) + tabela Satron (1Gb, "64Mbx16") + listagem Novitronic
+      (distribuidor). DDR2 = sempre NAO RENTAVEL por geracao, independente de
+      capacidade.
+
+  - part_number: "M14D1G8128A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://satronel.com/products/semiconductors/memoriy_ic/sdram/ddr2-sdram.html"
+    notes: >
+      ESMT DDR2 SDRAM, 1Gb, organizacao x8 (par x8 do M14D1G1664A, pacote diferente:
+      60 Ball BGA em vez de 84). CONFIANCA MENOR que a maioria da familia: SO 1 fonte
+      (tabela da Satron Electronics, satronel.com: 1Gb, Organization "128Mbx8" --
+      128M total de palavras x8bit = 1.073.741.824 bit = 1Gb, bate exato com a
+      aritmetica e com o "128" ja no proprio nome do PN) -- nenhuma segunda fonte
+      encontrada apesar de busca dedicada. Recomendo revisar com atencao extra antes
+      de aprovar. DDR2 = sempre NAO RENTAVEL por geracao, independente de capacidade.
+
+# Familia M14D/M14F inteira (6 PNs) = SEMPRE NAO RENTAVEL por geracao
+# (chips/engine.py::assess_profitability, "DDR2 ou inferior -> NAO RENTAVEL",
+# independente de capacidade) -- mesma regra ja em vigor pro NT5TU da Nanya. Ainda
+# assim submeto os known_parts (nao so a gramatica) porque: (1) o PN M14D5121632A
+# veio de um caso AO VIVO no debug de estoque, precisa de classificacao completa
+# (nao so "tipo=DDR2, resto vazio"); (2) pedido explicito do dono nesta rodada foi
+# "popular o maximo possivel", tier 1 OU tier 2.
