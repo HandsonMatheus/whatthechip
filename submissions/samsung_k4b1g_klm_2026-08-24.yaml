@@ -1,0 +1,105 @@
+# Submissão de known_parts — Samsung, famílias K4B (DDR3 discreta) + KLM (eMMC).
+# Gerada a partir de 2 PNs de debug colados pelo dono (2026-08-24): K4B1G0846D e
+# KLM4G1FEAC — ambos decodificam pela gramática hoje, mas nenhum tinha known_part
+# confirmado no banco. Pesquisa Tier-1 + cluster ("achados no caminho"), conforme
+# padrão do chat (ver wtc-objetivo-banco-nao-gramatica / pesquisar-cluster-inteiro).
+#
+# K4B1G0846D (alvo): datasheet oficial Samsung (alldatasheet mirror #411807, Direct
+# Link samsung.com/Products/Semiconductor) — "1Gb D-die DDR3 SDRAM Specification",
+# organizado 32Mx4/16Mx8/8Mx16 x8banks. PN base tem "08" em pn[5:7] = x8 (código de
+# largura já confirmado Tier-1 em rodada anterior, ver samsung_k4b_x4_2026-08-20.yaml).
+# 1Gbit÷8=128MB/die — mesmo formato de campo (`capacity` em MB, não `density_gbit`)
+# já usado por todos os irmãos desta família no seed/submissões anteriores.
+#
+# VARREDURA DO CLUSTER (fuzzy_suggestions do debug original): K4B1G0846I, K4B4G0846D,
+# K4B8G0846D, K4B2G0446D já estavam no seed local (confidence manual/confirmed,
+# valores batem com Samsung Semiconductor Global oficial, checado agora) — sem gap,
+# não resubmetidos. K4B2G0846C já estava em submissions/samsung_k4b_2026-07-14.yaml —
+# idem. Nenhum gap real sobrando no cluster K4B desta rodada além do próprio alvo.
+#
+# KLM4G1FEAC (alvo): FONTE TIER-1 FORTE — brochura oficial Samsung "Samsung eMMC"
+# (2013, download.semiconductor.samsung.com, mirror lido na íntegra em
+# pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html), tabela "Samsung
+# eMMC Part Number Matrix": KLM4G1FEAC-B031 = 4GB, Flash 32Gb×1, MMC Class 5.0,
+# Seq R/W 700MB/s, pacote 11x10x0.8mm, status MP (produção em massa).
+#
+# ⚠ ACHADO INCIDENTAL (registrado 1x, não investigado/corrigido na gramática — só
+# o banco é meu trabalho agora): a mesma tabela oficial mostra que pn[6]='F' sozinho
+# NÃO determina a geração eMMC nesta família — KLM4G1FE3B(4.41)/KLM4G1FEAC(5.0)/
+# KLM4G1FEPD(5.0)/KLM4G1FETE(5.1) têm TODOS pn[6]='F', gerações diferentes; quem
+# muda é o sufixo final de 2 letras. Não mexo na gramática por isso — cada PN exato
+# vira known_part confirmed com a geração certa, que já vence a gramática sozinho
+# (Regra de ouro #6).
+#
+# KLM8G1GEAC (achado no caminho, mesma tabela oficial): 8GB, Flash 64Gb×1, MMC Class
+# 5.0, Seq R/W 700MB/s, pacote 11.5x13x1.0mm, status MP. Não estava no seed nem em
+# nenhuma submissão anterior.
+#
+# KLM4G1FETE (CORREÇÃO — achado no caminho): já existe no seed com confidence=manual,
+# interface="eMMC 4.5", mas a própria nota do seed admite "datasheet não encontrado
+# em Alldatasheet" — foi extrapolação por analogia com FE3B/FEPD, não fonte direta.
+# Achei agora a página OFICIAL Samsung Semiconductor Global para este SKU exato, com
+# a própria URL categorizada em "/estorage/emmc/emmc-5-1/klm4g1fete-b041/" — ou seja,
+# é eMMC 5.1, não 4.5. Corroborado por LCSC (KLM4G1FETE-B041, "4GB 300/19 MB/s",
+# eMMC 5.1, 153FBG 11x10x0.8mm, HS400). ⚠ Como `interface` já vem preenchido (com
+# valor ERRADO) no registro atual, `--fill-empty` sozinho pode não sobrescrever —
+# se o audit não aplicar a correção automaticamente, ajustar manual no admin
+# (/admin/chips/knownpart/): interface "eMMC 4.5"→"eMMC 5.1", confidence manual→confirmed.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B1G0846D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411807/SAMSUNG/K4B1G0846D.html"
+    notes: >
+      PN alvo (base, sem sufixo de grade). Datasheet oficial Samsung "1Gb D-die
+      DDR3 SDRAM Specification" (alldatasheet mirror #411807, 60 páginas, Direct
+      Link samsung.com/Products/Semiconductor) — organizado 32Mx4/16Mx8/8Mx16
+      x8banks; pn[5:7]="08" = x8 (código de largura já confirmado Tier-1 em
+      rodada anterior, ver samsung_k4b_x4_2026-08-20.yaml). 1Gbit÷8=128MB/die.
+
+  - part_number: "KLM4G1FEAC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      PN alvo (base, sem sufixo -B031). Brochura oficial Samsung "Samsung eMMC"
+      (2013, download.semiconductor.samsung.com), tabela "Samsung eMMC Part
+      Number Matrix", linha "Standard eMMC": 4 GB · KLM4G1FEAC-B031 · Flash
+      32Gb×1 · MMC Class 5.0 · Seq R/W 700MB/s · pacote 11x10x0.8mm · status MP
+      (produção em massa). Fonte Tier-1 direta do fabricante.
+
+  - part_number: "KLM8G1GEAC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Achado no caminho (mesma brochura oficial Samsung "Samsung eMMC" 2013,
+      tabela "Samsung eMMC Part Number Matrix", linha "Standard eMMC"): 8 GB ·
+      KLM8G1GEAC-B031 · Flash 64Gb×1 · MMC Class 5.0 · Seq R/W 700MB/s · pacote
+      11.5x13x1.0mm · status MP. Não estava no seed nem em submissão anterior.
+
+  - part_number: "KLM4G1FETE"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.1"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/estorage/emmc/emmc-5-1/klm4g1fete-b041/"
+    notes: >
+      ⚠ CORREÇÃO de registro existente (seed local tinha confidence=manual,
+      interface="eMMC 4.5", nota admitindo "datasheet não encontrado... chute
+      por analogia" com FE3B/FEPD). Achado no caminho da pesquisa de KLM4G1FEAC:
+      página OFICIAL Samsung Semiconductor Global para este SKU exato, URL
+      categorizada em .../estorage/emmc/emmc-5-1/klm4g1fete-b041/ — confirma
+      eMMC 5.1, não 4.5. Corroborado por LCSC (KLM4G1FETE-B041, "4GB 300/19
+      MB/s", eMMC 5.1, pacote 153FBG 11x10x0.8mm, HS400).
