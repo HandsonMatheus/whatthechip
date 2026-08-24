@@ -16,9 +16,11 @@
 > passaram no portão Pydantic (validado standalone, fora do Django) — falta rodar `load_brands --brand
 > esmt` (dry-run) no ambiente local real antes de qualquer `--commit`. §3/§6/§8 atualizados com o que foi
 > confirmado; o resto da escada de prefixo (M12L, M13S/M13D, M16U, M53D–M56Z) continua esqueleto. **NOVO
-> 2026-08-24:** primeira categoria eMCP da marca (`FM6BD4G2GA`, PN ao vivo do debug, identidade confirmada)
-> — SÓ a família (gramática) foi criada; NENHUM known_part submetido (geração da RAM não confirmável em
-> Tier-1/2, conflito genuíno entre fontes — ver §3.5). Pendência aberta com o dono.
+> 2026-08-24:** primeira categoria eMCP da marca (`FM6BD4G2GA`, PN ao vivo do debug, 17ª família) — em 2
+> levas: 1ª leva achou conflito genuíno na geração da RAM (Elnec inconsistente consigo mesma) e não
+> submeteu known_part; dono pediu "pesquise mais"; 2ª leva achou página oficial nova da ESMT (linha
+> MCP/eMCP só usa LPDDR2/LPDDR4x) + irmão confirmado (`FM6BD1G1GMB`=LPDDR2) e RESOLVEU — 1 known_part
+> submetido (`confidence: confirmed` via convergência de fontes, não datasheet direto — ver §3.5).
 
 ---
 
@@ -381,7 +383,7 @@ independentes (`datasheet4u.com` ×2 sufixos, `electronicsdatasheets.com`, `data
 `edinventory.com`). Confiança tratada como o `M15T2G8256A` da 1ª família (submetido, mas sinalizado pro
 dono revisar com atenção extra).
 
-### 3.5 FM6 — eMCP, NAND + DRAM Multi-Chip Package (PARCIAL, 2026-08-24 — só gramática, sem known_part)
+### 3.5 FM6 — eMCP, NAND + DRAM Multi-Chip Package (confirmado 2026-08-24, em 2 levas)
 
 **Gatilho:** PN ao vivo do debug de estoque, `FM6BD4G2GA` (24/08/2026 09:46:44), 100% desconhecido —
 `known:false`, `in_review_queue:true`, **`fuzzy_suggestions` VAZIO** (diferente de toda rodada anterior
@@ -443,19 +445,59 @@ estrito, ou uso solto/genérico do termo por quem escreveu a página.
   vazio/só estoque-preço (Censtry, DigiPart), ou fetch sem retorno de conteúdo (Jotrin).
 - Octopart não retornou página própria pro PN nesta busca.
 
-**Decisão (regra de ouro #12): NENHUM known_part submetido para `FM6BD4G2GA` nesta rodada.** Geração+
-capacidade de RAM (`emcp_ram`) é campo essencial e o conflito é genuíno (não thin-sourced, é
-auto-contraditório na única fonte que tentou responder). A família (gramática) foi criada mesmo assim
-porque `chip_type=eMCP` em si ESTÁ bem confirmado (identidade + categoria, 9+ fontes) — só a geração
-específica de RAM fica em aberto. `subtype` usa descritor genérico
+**Decisão da 1ª leva (regra de ouro #12): NENHUM known_part submetido nesse momento.** Geração+capacidade
+de RAM (`emcp_ram`) é campo essencial e o conflito parecia genuíno (não thin-sourced, era
+auto-contraditório na única fonte que tinha tentado responder). A família (gramática) foi criada mesmo
+assim porque `chip_type=eMCP` em si ESTAVA bem confirmado (identidade + categoria, 9+ fontes) — só a
+geração específica de RAM ficou em aberto. `subtype` usou descritor genérico
 (`"embedded Multi-Chip Package (NAND + Mobile DRAM)"`) em vez de comprometer com uma geração LPDDR não
-confirmada — mesmo padrão já usado no prefixo `KM` da Samsung (`samsung.yaml`), ver §1.
+confirmada — mesmo padrão usado no prefixo `KM` da Samsung (`samsung.yaml`), ver §1.
 
-**Por regra de ouro #11 (spec ambígua nunca decido sozinho) — pendência para o dono:** este PN veio de um
-debug de ESTOQUE, ou seja, existe uma peça física real no sistema. Se o dono tiver o datasheet oficial
-baixado (o link resolve mas o conteúdo não abre via `WebFetch`), acesso à marcação física do chip, ou
-puder confirmar a geração da RAM por outro canal, isso resolve a pendência — caso contrário, fica como gap
-aberto (§6) até a próxima rodada com mais tempo/outra fonte.
+**Por regra de ouro #11, perguntei ao dono** (pergunta de múltipla escolha: "tenho datasheet/chip físico"
+/ "deixa pendente" / "pesquise mais") — **respondeu "pesquise mais".**
+
+#### 2ª leva (mesma rodada) — geração da RAM RESOLVIDA
+
+Duas fontes novas resolveram o que a 1ª leva não conseguiu:
+
+1. **Página OFICIAL da ESMT sobre a linha MCP/eMCP** — confirmada em **inglês**
+   ([esmt.com.tw/en/product/subcategory/mcm](https://www.esmt.com.tw/en/product/subcategory/mcm)) E em
+   **chinês** ([esmt.com.tw/tw/product/subcategory/mcm](https://www.esmt.com.tw/tw/product/subcategory/mcm))
+   — diz textualmente: *"MCP (Multi‑Chip Package) integrates NAND Flash, LPDDR memory, and a controller
+   into a single BGA chip (...) ESMT offers a variety of NAND + LPDDR2/LPDDR4x capacity combinations."*
+   Ou seja: **a linha INTEIRA da ESMT só usa LPDDR2 OU LPDDR4x** — nunca "Mobile DDR"/LPDDR1, o termo que a
+   Elnec (já sinalizada não confiável) tinha sugerido. Essa é a página de categoria que eu já tinha tentado
+   antes (`/en/Products/eMCP/eMCP-12-58`, sem sucesso) — o caminho certo era uma URL de estrutura NOVA do
+   site (`/en/product/subcategory/mcm`, minúsculo, "subcategory"), achada só nesta 2ª leva.
+2. **icschip.com, listagem detalhada e limpa do irmão CONFIRMADO `FM6BD1G1GMB`** (mesmo stem `FM6BD`):
+   *"1.8V 1Gb NAND Flash (128Mbx8)"* + *"1.8V 1Gb LPDDR2 SDRAM (32Mbx32)"* — aritmética bate exata nos
+   dois (128M×8bit=1Gb NAND; 32M×32bit=1Gb RAM) — CONFIRMA duas coisas de uma vez: que os dígitos do PN
+   nesta subfamília são **Gb** (mesma convenção já usada em TODA a escada M1x/M5x da marca) e que o irmão
+   é **LPDDR2** especificamente.
+
+Com isso, por analogia estrutural (`FM6BD<nand>G<ram>GA`), `FM6BD4G2GA` decodifica como **4Gb NAND + 2Gb
+RAM, LPDDR2** — reforçado por 2 sinais adicionais: o título indexado do DigChip ("4G+2G") já citado na 1ª
+leva, e um **comparável de outro fabricante** com a MESMA combinação de densidade (Micron
+`MT29RZ4B2DZZHHWD`, Digikey: *"4Gbit (NAND), 2Gbit (LPDDR2)"*) — confirma que 4Gb NAND + 2Gb LPDDR2 é uma
+configuração padrão real de mercado, não coincidência de leitura. `LPDDR4x` fica eliminado por
+implausibilidade: sempre emparelhado com NAND multi-GB em produtos reais, nunca com uma densidade tão
+pequena quanto a vista aqui. A discordância da Elnec fica mais bem explicada agora — a resposta dela
+("Mobile DDR", RAM=4Gbit) não bate com NENHUMA das 2 opções que a própria ESMT diz que existem pra essa
+linha, o que reforça que era extração ruim daquela página específica, não um dado alternativo válido.
+
+**Decisão final: known_part submetido com `confidence: confirmed`**, mas via **convergência de 4 sinais**
+(bounding statement oficial + analogia com irmão confirmado + eliminação por plausibilidade de densidade +
+comparável cross-fabricante) — não um datasheet direto do próprio PN (que seguiu inacessível em toda fonte
+tentada, 25+ tentativas no total entre as 2 levas). Primeiro known_part desta marca confirmado dessa forma
+(sem um único documento que descreva o PN exato diretamente) — sinalizado pro dono revisar com atenção
+extra, mesmo tratamento já dado a `M15F2G16128A`/`M15T2G8256A` por sourcing indireto em rodadas anteriores.
+
+⚠ **Nota de formato — sem precedente nesta marca:** `emcp_nand`/`emcp_ram` seguem a convenção documentada
+em GB (§1), então os valores viraram `"0.5GB"` (4Gb) e `"LPDDR2 0.25GB"` (2Gb) — primeiro valor eMCP
+sub-1GB desta marca. Diferente do `density_gbit` sub-1Gb (que tem regex confirmado no engine,
+`_GBIT_RE`), `emcp_nand`/`emcp_ram` são campos de texto livre no `schema.py` (sem validação de formato) —
+não sei como `assess_profitability`/o label da caixa tratam um valor fracionário de GB nesses campos
+especificamente (não li essa parte do `engine.py` nesta rodada). Vale o dono conferir antes de aprovar.
 
 ---
 
@@ -492,6 +534,13 @@ aberto (§6) até a próxima rodada com mais tempo/outra fonte.
   ver aviso em §3.1) — não presumir que "não bate com nenhum prefixo conhecido" significa erro de leitura
   do PN ou família ainda-não-catalogada da MESMA série; pode ser uma série de produto inteiramente
   diferente (aqui: eMCP vs. DRAM standalone).
+- **Página de categoria oficial que não renderiza pode ter uma URL alternativa/mais nova que funciona**
+  (achado 2026-08-24, `FM6BD4G2GA` 2ª leva, §3.5/§8) — `esmt.com.tw/en/Products/eMCP/eMCP-12-58` nunca
+  expôs tabela via `WebFetch`, mas `esmt.com.tw/en/product/subcategory/mcm` (estrutura de URL DIFERENTE,
+  minúscula, "subcategory" em vez de "Products") tinha o texto que faltava. O site da ESMT parece ter 2
+  estruturas de URL coexistindo (antiga `/en/Products/<Categoria>/...` e nova `/en/product/subcategory/
+  <slug>` ou `/tw/product/subcategory/<slug>`) — quando a 1ª não render conteúdo útil, vale tentar a outra
+  antes de concluir "página vazia"/desistir da fonte oficial.
 - Unidade Gb×GB confundida (o erro mais comum do domínio inteiro).
 - `decode_density_type` + `decode_cap_map` juntos na mesma família (mutuamente exclusivos).
 - Tipo/geração morta retornando INDETERMINADO em vez de NÃO RENTÁVEL (checar geração ANTES de exigir
@@ -529,13 +578,13 @@ entre `DDR3` e `DDR3L` — ambos ficam acima do limiar "DDR2 ou inferior" e o ve
 `ProfitabilityConfig` atual (mutável), igual já vale pro M15T — **não é previsível sem rodar `classify()`
 localmente**, diferente do DDR2 (M14D/M14F), que É um veredito fixo.
 
-**eMCP (FM6) — parcial, 2026-08-24:** `chip_types.py` mostra `profit_family="emcp"` pro `ChipTypeSpec` do
+**eMCP (FM6) — confirmado 2026-08-24:** `chip_types.py` mostra `profit_family="emcp"` pro `ChipTypeSpec` do
 `eMCP` — um "family" de rentabilidade DIFERENTE de `"ddr"` (usado por DDR2/DDR3/DDR3L). **Não li a regra
 exata de `assess_profitability` pra `profit_family="emcp"` nesta rodada** (fora do escopo pontual desta
 pesquisa) — não presumir que segue a mesma lógica de limiar de geração do DDR2, nem que se comporta como
 DDR3/DDR3L. Fica como gap explícito (§6): confirmar o mecanismo de rentabilidade pra eMCP antes de tratar
-qualquer veredito como previsível. Sem known_part submetido ainda pra essa família (§3.5), então isso nem
-chegaria a ser testável em `classify()` de qualquer forma.
+qualquer veredito como previsível. Já existe 1 known_part confirmado (`FM6BD4G2GA`, §3.5) — então isso É
+testável em `classify()` assim que o dono aprovar, mas eu não rodei esse teste aqui.
 
 *Nota de contexto (não é rentabilidade, é onde a marca cai na UI de preço hoje):* ESMT está no grupo "sem
 aba própria" do `PROMPT_PRECOS.md` — usa a tabela genérica de preço, não uma aba dedicada. Isso pode mudar;
@@ -575,25 +624,24 @@ confirmar em `PRECIFICACAO.md` antes de assumir que ainda vale.
 - [ ] **Descobrir o resto do catálogo ESMT** (SDR SDRAM M12L/M52S/M52D, DDR/LPDDR M13S/M13D, LPDDR
   M53D–M56Z, DDR4 M16U — ver §3.1) — cada um exige a mesma pesquisa Tier-1/2 do zero, nenhum foi
   verificado ainda. M15T/M15F (DDR3/DDR3L) e M14D/M14F (DDR2) já confirmados.
-- [x] **eMCP `FM6BD4G2GA` pesquisado (PARCIAL) — 2026-08-24, ver §3.5.** Gatilho: PN ao vivo do debug de
+- [x] **eMCP `FM6BD4G2GA` pesquisado e CONFIRMADO — 2026-08-24, ver §3.5.** Gatilho: PN ao vivo do debug de
   estoque, 100% desconhecido, `fuzzy_suggestions` vazio. Identidade confirmada (9+ fontes); primeira
-  categoria eMCP da marca (`chip_type="eMCP"`, `is_emcp=true`, categoria `managed_mcp` — diferente de
-  `dram_pc`). Família (gramática) criada com `subtype` genérico. **NENHUM known_part submetido** — geração
-  da RAM tem conflito genuíno entre fontes (Elnec auto-inconsistente entre 2 chamadas), não resolvido.
-  Pendência explícita com o dono (regra de ouro #11).
-- [ ] **Resolver a geração da RAM de `FM6BD4G2GA`** (§3.5) — precisa de datasheet oficial que abra, acesso
-  físico ao chip, ou outra fonte Tier-1/2 que não seja o Elnec (já provado não-confiável pra este PN
-  específico). Só depois disso um known_part pode ser submetido.
-- [ ] **Mapear o resto da família FM6/eMCP** (`FM6BD1G1GMB`, `FM62D1G1GMB` já vistos como irmãos
-  confirmados só de passagem — não pesquisados a fundo nem submetidos; possíveis outros membros
-  `FM6xDxGxGxx` com outras combinações NAND×RAM) — nenhuma pesquisa dedicada ao cluster ainda, só ao PN
-  único do debug (§2.3 pede pesquisar o cluster inteiro, não cumprido nesta rodada por causa do bloqueio
-  de geração de RAM).
+  categoria eMCP da marca (`chip_type="eMCP"`, `is_emcp=true`, `subtype="LPDDR2"`, categoria `managed_mcp`
+  — diferente de `dram_pc`). Em 2 levas: 1ª leva achou conflito aparente na geração da RAM (Elnec
+  auto-inconsistente) e não submeteu known_part; dono pediu "pesquise mais"; 2ª leva resolveu via página
+  oficial nova (`esmt.com.tw/en(ou tw)/product/subcategory/mcm`) + irmão confirmado. **1 known_part
+  submetido** (`FM6BD4G2GA`, 4Gb NAND + 2Gb LPDDR2, `confidence: confirmed` via convergência de fontes —
+  sinalizado pro dono revisar com atenção extra, é o primeiro caso confirmado assim nesta marca).
+- [ ] **Mapear o resto da família FM6/eMCP** (`FM6BD1G1GMB`/`FM62D1G1GMB` confirmados só de passagem, como
+  apoio pra resolver `FM6BD4G2GA` — não pesquisados a fundo nem submetidos como known_part próprio;
+  `FM6BD4G2GXA-1.8BLCI` visto 1x, PN relacionado mas distinto, não investigado; possíveis outros membros
+  `FM6xDxGxGxx` com outras combinações NAND×RAM) — nenhuma pesquisa dedicada ao cluster inteiro ainda, só
+  ao PN do debug + o irmão usado como apoio (§2.3 pede pesquisar o cluster inteiro — pendente pra próxima
+  rodada desta família).
 - [ ] **Confirmar o mecanismo de rentabilidade pra `profit_family="emcp"`** em `assess_profitability`
   (`chips/engine.py`) — só confirmei que o `ChipTypeSpec` existe e usa esse `profit_family`, não li a regra
-  de negócio em si (§5).
-- [ ] **Explorar `esmt.com.tw/tw/product/subcategory/mcm`** ("Multi-chip Memory") — subcategoria
-  identificada como possivelmente relevante pra eMCP mas não explorada nesta rodada (§3.5/§7).
+  de negócio em si (§5). Também não confirmei como o engine trata um `emcp_nand`/`emcp_ram` fracionário
+  (`"0.5GB"`/`"0.25GB"`) — primeiro caso desta marca, campo de texto livre sem validação no `schema.py`.
 
 ### Rascunho de golden (para `chips/tests.py::_ESMT_GOLDEN` — NÃO colado no arquivo real, eu não edito `.py`)
 
@@ -616,9 +664,10 @@ confirmar em `PRECIFICACAO.md` antes de assumir que ainda vale.
 "M15F4G16256A"  → "DDR3",  "DDR3",  "4Gb",  <A CONFIRMAR>
 "M15F5121632A"  → "DDR3",  "DDR3",  "0.5Gb", <A CONFIRMAR>
 ```
-`FM6BD4G2GA` (eMCP) NÃO entra neste rascunho de golden ainda — golden precisa de um PN-âncora com
-capacidade CONFIRMADA, e nenhum known_part foi submetido pra essa família ainda (§3.5/§6). Entra na próxima
-rodada que resolver a geração da RAM.
+`FM6BD4G2GA` (eMCP) agora TEM known_part confirmado (§3.5), mas ainda não entrou neste rascunho de golden
+— faltaria antes confirmar como `profit_family="emcp"` se comporta em `assess_profitability` (gap aberto,
+§6), pra não escrever um veredito de rentabilidade chutado. Entra na próxima rodada que ler essa parte do
+`engine.py`.
 
 Não preenchi o veredito de rentabilidade do M15T (DDR3L) nem do M15F (DDR3) — é dado mutável
 (`ProfitabilityConfig`, admin) e eu não tenho visibilidade dele daqui; rodar `classify()` localmente
@@ -694,6 +743,15 @@ Confirmadas na prática (2026-08-24, rodada eMCP `FM6BD4G2GA`, ver §3.5):
   EXISTÊNCIA do PN (todos indexam `FM6BD4G2GA` com múltiplos sufixos de pedido), mas nenhum expôs specs
   técnicas via `WebFetch` nesta rodada (Cloudflare, conteúdo vazio, ou só estoque/preço) — tratar como
   corroboração de identidade, não de spec, até uma fonte com conteúdo técnico real aparecer.
+- **`esmt.com.tw/en/product/subcategory/mcm`** (e o equivalente `/tw/`) — a URL de categoria oficial que
+  FUNCIONOU (achada só na 2ª leva, §3.5/§8, depois de `/en/Products/eMCP/eMCP-12-58` não render nada útil)
+  — texto institucional em prosa (não tabela), mas com uma frase-chave que valeu por si só: delimitou a
+  linha MCP/eMCP inteira da marca a só 2 gerações de RAM possíveis (LPDDR2/LPDDR4x). Boa fonte pra
+  bounding statements de categoria mesmo sem listar PN individual.
+- **icschip.com** — distribuidor com listagem detalhada e limpa por PN (densidade + organização + package
+  + velocidade + temperatura, tudo com unidade explícita Gb/GB) — funcionou bem pro irmão `FM6BD1G1GMB`
+  quando `elnec.com` (mesmo PN, ver acima) e outros distribuidores (Jotrin/Censtry/etc., pro
+  `FM6BD4G2GA` propriamente) não deram conteúdo técnico usável.
 
 ---
 
@@ -803,6 +861,26 @@ Confirmadas na prática (2026-08-24, rodada eMCP `FM6BD4G2GA`, ver §3.5):
   incluindo a página de categoria oficial eMCP da ESMT (existe, mas não expõe tabela via `WebFetch` —
   provável renderização JS) e 6 páginas de distribuidor (todas confirmam existência, nenhuma expôs specs).
   Pendência explícita deixada pro dono no fechamento do chat.
+- **2026-08-24 — 5ª rodada, 2ª leva (mesmo dia): geração da RAM RESOLVIDA, dono pediu "pesquise mais".**
+  Perguntei ao dono via múltipla escolha (tenho datasheet/deixa pendente/pesquise mais) e ele escolheu
+  "pesquise mais". Tentei ~10 ângulos novos (LCSC, Octopart direto, outros programadores de chip além da
+  Elnec, GitHub raw pra um doc `esmt_emcp.md` que não existe, páginas de categoria alternativas) até achar
+  a virada: a URL de categoria oficial certa não era a que eu já tinha tentado
+  (`/en/Products/eMCP/eMCP-12-58`, que não renderiza tabela) — era uma estrutura de site DIFERENTE e mais
+  nova (`/en/product/subcategory/mcm`, minúsculo), achada ao seguir um link de busca. Essa página (em
+  inglês E em chinês) afirma textualmente que a linha MCP/eMCP inteira da ESMT só usa "LPDDR2/LPDDR4x" —
+  nunca "Mobile DDR" (o termo que a Elnec tinha sugerido). Cruzando com uma listagem limpa e detalhada do
+  icschip.com pro irmão confirmado `FM6BD1G1GMB` ("1.8V 1Gb NAND Flash (128Mbx8)" + "1.8V 1Gb LPDDR2 SDRAM
+  (32Mbx32)", aritmética batendo exata nos dois), ficou resolvido: `FM6BD4G2GA` = 4Gb NAND + 2Gb LPDDR2
+  RAM (LPDDR4x eliminado por implausibilidade de densidade — sempre vem com NAND multi-GB nos produtos
+  reais). Submeti 1 known_part com `confidence: confirmed`, mas via convergência de 4 sinais indiretos
+  (bounding statement oficial + analogia com irmão confirmado + eliminação por densidade + comparável de
+  outro fabricante com a mesma combinação — Micron `MT29RZ4B2DZZHHWD`), não um datasheet direto do PN
+  exato — sinalizei isso explicitamente pro dono revisar com atenção extra, é o primeiro known_part desta
+  marca confirmado sem nenhum documento que descreva o PN exato diretamente. Lição: quando a 1ª leva de
+  pesquisa não resolve, vale tentar estruturas de URL alternativas do site oficial antes de desistir — a
+  página que faltava não era "mais uma tentativa da mesma URL", era um caminho do site inteiramente
+  diferente que eu não tinha mapeado ainda.
 
 > O inventário de chaves/mapas vai viver no **`esmt.yaml`** (gramática, quando existir); os **known_parts**
 > confirmados (com a proveniência Tier-1 nas `notes`) vivem no **banco** (Opção 2), submetidos via
@@ -813,14 +891,14 @@ Confirmadas na prática (2026-08-24, rodada eMCP `FM6BD4G2GA`, ver §3.5):
 
 > **Regra de trabalho:** eu crio/edito o `esmt.yaml`. O dono roda `load_brands --brand esmt` (sempre
 > dry-run antes do `--commit`) e o `submit_known_parts` (idem). **Estado em 2026-08-24:** 4 famílias
-> mapeadas (M15T/DDR3L, M14D+M14F/DDR2, M15F/DDR3, FM6/eMCP-parcial — 17 prefixos, mas ainda só 16
-> known_parts submetidos em 4 rodadas — a 5ª rodada, eMCP, NÃO gerou known_part, só gramática) — e o resto
-> da escada de prefixo (§3.1: M12L, M13S/M13D, M16U, M53D–M56Z) segue **sem nenhum precedente confirmado**,
-> além de agora saber que a própria escada não é o catálogo inteiro (§3.1/§3.5 — prefixo `FM`/eMCP é uma
-> linha separada). Continua valendo pra QUALQUER prefixo novo: atestar a IDENTIDADE em Tier-1/2 antes de
-> qualquer decode, nunca extrapolar chave por padrão numérico nem por analogia com outra marca ou com outro
-> prefixo ESMT já confirmado — a analogia M14D/M14F→M15T/M15F quase levou a mapear `M15F` pro `chip_type`
-> errado (`DDR3L` em vez de `DDR3`) na 4ª rodada, só não aconteceu porque o vocabulário foi checado antes
-> de decidir (regra de ouro #9). **Pendência aberta com o dono desde a 5ª rodada:** geração da RAM de
-> `FM6BD4G2GA` não confirmável em Tier-1/2 (conflito genuíno, não thin-sourcing) — nenhum known_part
-> submetido até resolver (§3.5).
+> mapeadas (M15T/DDR3L, M14D+M14F/DDR2, M15F/DDR3, FM6/eMCP — 17 prefixos, 17 known_parts submetidos em 5
+> rodadas) — e o resto da escada de prefixo (§3.1: M12L, M13S/M13D, M16U, M53D–M56Z) segue **sem nenhum
+> precedente confirmado**, além de agora saber que a própria escada não é o catálogo inteiro (§3.1/§3.5 —
+> prefixo `FM`/eMCP é uma linha separada). Continua valendo pra QUALQUER prefixo novo: atestar a IDENTIDADE
+> em Tier-1/2 antes de qualquer decode, nunca extrapolar chave por padrão numérico nem por analogia com
+> outra marca ou com outro prefixo ESMT já confirmado — a analogia M14D/M14F→M15T/M15F quase levou a
+> mapear `M15F` pro `chip_type` errado (`DDR3L` em vez de `DDR3`) na 4ª rodada, só não aconteceu porque o
+> vocabulário foi checado antes de decidir (regra de ouro #9). **`FM6BD4G2GA` (5ª rodada) é o primeiro
+> known_part desta marca confirmado por convergência de fontes indiretas, sem datasheet direto do PN exato
+> — revisar com atenção extra (§3.5).** Gap aberto: não confirmei como `assess_profitability` trata
+> `profit_family="emcp"` nem um `emcp_nand`/`emcp_ram` fracionário (§5/§6).

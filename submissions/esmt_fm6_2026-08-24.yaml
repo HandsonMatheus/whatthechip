@@ -1,0 +1,110 @@
+# ESMT FM6BD4G2GA -- eMCP, NAND + DRAM Multi-Chip Package (5a rodada, 2026-08-24, 2a
+# leva). Disparado por PN AO VIVO do debug de estoque: FM6BD4G2GA veio 100%
+# desconhecido (known:false, in_review_queue:true), fuzzy_suggestions VAZIO -- nem um
+# vizinho proximo existia. PRIMEIRA peca eMCP desta marca nesta chat.
+#
+# HISTORICO DESTA RODADA (2 levas, ver ESMT.md §3.5/§8 pro detalhe completo): na 1a
+# leva de pesquisa, a geracao da RAM parecia ter um conflito genuino entre fontes (a
+# unica fonte que tentou descrever o PN exato, Elnec via WebFetch, deu respostas
+# MUTUAMENTE INCONSISTENTES em 2 chamadas na MESMA URL) -- por regra de ouro #12,
+# NENHUM known_part foi submetido naquele momento, so a familia (gramatica), e o dono
+# foi consultado via pergunta de multipla escolha. O dono respondeu "pesquise mais".
+# Essa 2a leva encontrou 2 fontes novas que RESOLVEM a geracao da RAM:
+#   1. Pagina OFICIAL da ESMT sobre a linha MCP/eMCP (confirmada em INGLES
+#      esmt.com.tw/en/product/subcategory/mcm E CHINES
+#      esmt.com.tw/tw/product/subcategory/mcm) -- diz textualmente "ESMT offers a
+#      variety of NAND + LPDDR2/LPDDR4x capacity combinations" -- a linha INTEIRA da
+#      ESMT so usa LPDDR2 ou LPDDR4x, nunca "Mobile DDR" (o termo que a Elnec,
+#      ja sinalizada nao-confiavel, tinha sugerido).
+#   2. icschip.com, listagem detalhada e limpa do irmao CONFIRMADO FM6BD1G1GMB (mesmo
+#      stem "FM6BD"): "1.8V 1Gb NAND Flash (128Mbx8)" + "1.8V 1Gb LPDDR2 SDRAM
+#      (32Mbx32)" -- aritmetica bate exata nos dois, confirma LPDDR2 pro irmao E
+#      confirma que os digitos do PN sao Gb (gigabit), mesma convencao da escada
+#      M1x/M5x inteira desta marca.
+# Densidade de 2Gb RAM tambem elimina a opcao LPDDR4x por plausibilidade (LPDDR4x
+# sempre vem com NAND de dezenas/centenas de GB em produtos reais, nunca sub-1GB) --
+# e um comparavel de OUTRO fabricante (Micron MT29RZ4B2DZZHHWD, Digikey: "4Gbit
+# (NAND), 2Gbit (LPDDR2)") confirma que 4Gb+2Gb e uma combinacao padrao real da
+# industria, nao coincidencia de leitura.
+#
+# CONFIANCA: "confirmed" via CONVERGENCIA de 4 sinais independentes (bounding
+# statement oficial ESMT + analogia com irmao confirmado + eliminacao por
+# plausibilidade de densidade + comparavel cross-fabricante) -- NAO um datasheet
+# direto do PN exato (que segue inacessivel/bloqueado em toda fonte tentada). Primeiro
+# known_part desta marca confirmado dessa forma -- recomendo o dono revisar com
+# atencao extra, mesmo tratamento ja dado a M15F2G16128A/M15T2G8256A por sourcing
+# indireto nas rodadas anteriores.
+#
+# NOTA DE FORMATO -- emcp_nand/emcp_ram em GB (convencao ESMT.md §1): primeiro valor
+# eMCP sub-1GB desta marca (0.5GB NAND = 4Gb; 0.25GB RAM = 2Gb). schema.py nao valida
+# formato desses 2 campos (texto livre) -- diferente do density_gbit sub-1Gb, que TEM
+# regex confirmado no engine (_GBIT_RE). Nao li a logica de profit_family="emcp" em
+# assess_profitability nesta rodada -- vale conferir como o engine trata esse valor
+# fracionario antes de aprovar.
+
+brand: "ESMT"
+known_parts:
+  - part_number: "FM6BD4G2GA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "0.5GB"
+    emcp_ram: "LPDDR2 0.25GB"
+    interface: ""
+    confidence: confirmed
+    source_url: "https://www.esmt.com.tw/en/product/subcategory/mcm"
+    notes: >
+      ESMT eMCP (NAND Flash + DRAM Multi-Chip Package), 4Gb NAND + 2Gb LPDDR2 RAM. PN
+      AO VIVO do debug de estoque (2026-08-24 09:46:44), veio 100% desconhecido --
+      known:false, in_review_queue:true, fuzzy_suggestions VAZIO (nem vizinho proximo
+      existia). PRIMEIRA peca eMCP desta marca nesta chat.
+
+      IDENTIDADE: 9+ fontes distribuidoras independentes confirmam o PN exato (Jotrin,
+      2 sufixos -2.5BLE/-2.5BLGE; Censtry, mesmos 2 sufixos; IC-Components; Ariat-Tech;
+      Allelco; DigiPart, que tambem lista um relacionado "FM6BD4G2GXA-1.8BLCI",
+      distinto; Alibaba).
+
+      DENSIDADE (4Gb NAND + 2Gb RAM): por analogia estrutural direta com o irmao
+      CONFIRMADO `FM6BD1G1GMB` (mesmo stem "FM6BD"), documentado em detalhe limpo por
+      icschip.com como "1.8V 1Gb NAND Flash (128Mbx8)" + "1.8V 1Gb LPDDR2 SDRAM
+      (32Mbx32)" -- aritmetica bate exata (128M×8bit=1Gb; 32M×32bit=1Gb), confirmando
+      que os digitos do PN nesta sub-familia sao Gb, igual ao resto da escada M1x/M5x
+      da marca. FM6BD4G2GA decodifica entao como 4Gb NAND + 2Gb RAM -- corroborado por
+      titulo indexado do DigChip ("4G+2G") e por um comparavel de outro fabricante com
+      a MESMA combinacao de densidade (Micron MT29RZ4B2DZZHHWD, Digikey: "4Gbit NAND,
+      2Gbit LPDDR2" -- confirma que 4Gb+2Gb e uma configuracao padrao real de mercado).
+
+      GERACAO DA RAM = LPDDR2: confirmado por 2 fontes independentes -- (1) pagina
+      oficial da ESMT sobre a linha MCP/eMCP, em ingles E chines
+      (esmt.com.tw/en(ou tw)/product/subcategory/mcm), afirma que a linha INTEIRA usa
+      "NAND + LPDDR2/LPDDR4x" (nunca "Mobile DDR"/LPDDR1); (2) o irmao confirmado
+      FM6BD1G1GMB e explicitamente LPDDR2 (mesma fonte icschip.com acima). LPDDR4x
+      eliminado por implausibilidade -- sempre emparelhado com NAND multi-GB em
+      produtos reais, nunca sub-1GB como aqui.
+
+      HISTORICO DE 2 LEVAS NESTA RODADA: uma 1a tentativa de confirmar a geracao da
+      RAM via a unica fonte que descreve o PN exato (Elnec, elnec.com/en/device/ESMT/
+      FM6BD4G2GA-2.5BLE, via WebFetch) deu respostas MUTUAMENTE INCONSISTENTES em 2
+      chamadas separadas pra MESMA URL (RAM ora "4Gbit", termo "Mobile DDR" em ambas)
+      -- tratada como fonte nao-confiavel, NENHUM known_part foi submetido naquele
+      momento (regra de ouro #12), so a familia. O dono foi consultado (pergunta de
+      multipla escolha) e respondeu "pesquise mais" -- essa 2a leva achou as 2 fontes
+      acima, que resolvem a geracao independentemente da Elnec (que alias nao bate com
+      NENHUMA das 2 opcoes que a propria ESMT diz que existem: reforca que era so uma
+      extracao ruim daquela pagina, nao um dado alternativo real).
+
+      FORMATO: emcp_nand/emcp_ram convertidos de Gb pra GB por convencao (ESMT.md §1)
+      -- primeiro valor sub-1GB desta marca em eMCP (0.5GB/0.25GB). schema.py nao
+      valida formato (campo texto livre); nao li a logica de profit_family="emcp" em
+      assess_profitability nesta rodada -- recomendo conferir antes de aprovar.
+
+      CONFIANCA "confirmed" via convergencia de 4 sinais (bounding oficial + analogia
+      irmao confirmado + eliminacao por densidade + comparavel cross-fabricante), nao
+      datasheet direto do PN exato (inacessivel em toda fonte tentada, 25+ tentativas
+      no total nesta rodada). Primeiro known_part desta marca confirmado assim --
+      revisar com atencao extra antes de aprovar.
+
+# Comando pra rodar (dry-run primeiro, --commit depois de eu confirmar que passou):
+#   python manage.py submit_known_parts submissions/esmt_fm6_2026-08-24.yaml
+#   python manage.py submit_known_parts submissions/esmt_fm6_2026-08-24.yaml --commit
+# (sem --user, ver ESMT.md §2.2 passo 4). Precisa do "load_brands --brand esmt
+# --commit" ja ter rodado antes pelo menos 1x nesse ambiente (ESMT.md §0.1 topo).

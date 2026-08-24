@@ -288,30 +288,27 @@ families:
   # FM6 -- eMCP (NAND + DRAM Multi-Chip Package) -- PRIMEIRA categoria eMCP desta
   # marca (2026-08-24). PN ao vivo do debug de estoque: FM6BD4G2GA veio 100%
   # desconhecido, fuzzy_suggestions VAZIO (nem sugestao proxima existia). Identidade
-  # confirmada (9+ fontes distribuidoras independentes), mas a GERACAO da RAM
-  # (emcp_ram) NAO e confirmavel com confianca -- ver reasoning abaixo e ESMT.md §3.5.
-  # NAO e o mesmo esquema de nomenclatura do M12L/M13x/M14x/M15x/M16U/M5xD (ladder de
-  # §3.1) -- prefixo "FM" e uma FAMILIA DE FAMILIAS separada, primeira vez vista nesta
-  # marca. subtype usa descritor GENERICO (mesmo padrao do prefixo "KM" da Samsung em
-  # samsung.yaml) em vez de comprometer com uma geracao LPDDR nao confirmada -- regra
-  # de ouro #9 (specs derivadas podem estar erradas mesmo com identidade confirmada).
-  # NENHUM known_part submetido nesta rodada (regra de ouro #12 -- ver submissao NAO
-  # criada, motivo detalhado no ESMT.md §3.5/§6).
+  # E geracao da RAM CONFIRMADAS (ver reasoning abaixo e ESMT.md §3.5) -- resolvido
+  # numa 2a leva de pesquisa na MESMA rodada, apos o dono pedir "pesquise mais" diante
+  # do achado inicial de conflito na fonte Elnec. NAO e o mesmo esquema de nomenclatura
+  # do M12L/M13x/M14x/M15x/M16U/M5xD (ladder de §3.1) -- prefixo "FM" e uma FAMILIA DE
+  # FAMILIAS separada, primeira vez vista nesta marca.
   # ───────────────────────────────────────────────────────────────────────────
   - prefix: FM6BD4G2GA
     chip_type: eMCP
-    subtype: "embedded Multi-Chip Package (NAND + Mobile DRAM)"
+    subtype: "LPDDR2"
     interface: ""
     is_emcp: true
     priority: 100
     active: true
     reasoning: >
-      ESMT FM6BD4G2GA -- eMCP (NAND Flash + DRAM Multi-Chip Package). PN AO VIVO do
-      debug de estoque (2026-08-24 09:46:44), veio 100% desconhecido -- known:false,
-      in_review_queue:true, fuzzy_suggestions VAZIO (diferente de todas as rodadas
-      anteriores desta marca, nem um vizinho proximo por edit-distance existia no
-      banco). NAO segue o padrao "M1x"/"M5x" da escada de §3.1 -- prefixo "FM" e uma
-      linha de nomenclatura SEPARADA, nunca vista antes nesta marca.
+      ESMT FM6BD4G2GA -- eMCP (NAND Flash + DRAM Multi-Chip Package), 4Gb NAND + 2Gb
+      LPDDR2 RAM. PN AO VIVO do debug de estoque (2026-08-24 09:46:44), veio 100%
+      desconhecido -- known:false, in_review_queue:true, fuzzy_suggestions VAZIO
+      (diferente de todas as rodadas anteriores desta marca, nem um vizinho proximo
+      por edit-distance existia no banco). NAO segue o padrao "M1x"/"M5x" da escada de
+      §3.1 -- prefixo "FM" e uma linha de nomenclatura SEPARADA, nunca vista antes
+      nesta marca.
 
       IDENTIDADE: confirmada via 9+ fontes distribuidoras independentes citando o PN
       exato (Jotrin, 2 sufixos: FM6BD4G2GA-2.5BLE e FM6BD4G2GA-2.5BLGE; Censtry, mesmos
@@ -322,40 +319,48 @@ families:
       is_emcp=True, aliases=("emcp",)) -- categoria DIFERENTE de "dram_pc" usada em
       TODAS as familias DRAM ja confirmadas desta marca (M15T/M14D+M14F/M15F).
 
-      DENSIDADE (NAND+RAM) -- inferida por padrao de nomenclatura, NAO confirmada em
-      fonte de conteudo direta: irmao CONFIRMADO por fonte de conteudo limpa e
-      detalhada, FM6BD1G1GMB (e o par FM62D1G1GMB, mesmo stem "FM6_D"), e 1Gb NAND +
-      1Gb RAM (LPDDR2). Por analogia estrutural (FM6BD<nand>G<ram>GA), FM6BD4G2GA
-      decodificaria como 4Gb NAND + 2Gb RAM -- corroborado por 1 titulo indexado do
-      DigChip lendo "4G+2G (NAND Flash + mobile...)", que bate com essa leitura.
+      DENSIDADE (4Gb NAND + 2Gb RAM) -- por analogia estrutural (FM6BD<nand>G<ram>GA)
+      com um irmao CONFIRMADO por fonte de conteudo limpa e detalhada (icschip.com):
+      `FM6BD1G1GMB` = "1.8V 1Gb NAND Flash (128Mbx8)" + "1.8V 1Gb LPDDR2 SDRAM
+      (32Mbx32)" -- aritmetica bate exata nos dois (128M×8=1Gb NAND; 32M×32=1Gb RAM) --
+      CONFIRMA que os digitos do PN nesta sub-familia sao Gb (gigabit), mesma
+      convencao ja usada em TODA a escada M1x/M5x desta marca. Por essa mesma
+      convencao, FM6BD4G2GA decodifica como 4Gb NAND + 2Gb RAM -- corroborado por 1
+      titulo indexado do DigChip lendo "4G+2G (NAND Flash + mobile...)" e por um PAR
+      DENSIDADE IDENTICO num produto eMCP comparavel de OUTRO fabricante (Micron
+      MT29RZ4B2DZZHHWD, Digikey: "4Gbit (NAND), 2Gbit (LPDDR2)") -- confirma que
+      4Gb+2Gb e uma combinacao padrao real da industria, nao um erro de leitura.
 
-      GERACAO DA RAM -- NAO RESOLVIDO, conflito genuino: a unica fonte que tentou
-      descrever o PN exato (Elnec, elnec.com/en/device/ESMT/FM6BD4G2GA-2.5BLE, via
-      WebFetch) deu respostas MUTUAMENTE INCONSISTENTES em 2 chamadas separadas pra
-      MESMA URL (1a: "NAND x8 4Gbit / DRAM Mobile DDR SDRAM x16 4Gbit"; 2a: "family
-      code '64' = NAND(x16)+mobile DDR SDRAM(x16), DRAM 4Gbit") -- as duas dizem RAM=
-      4Gbit, o que CONTRADIZ a leitura por padrao de nomenclatura + DigChip (2Gbit).
-      Tratado como sinal de EXTRACAO NAO CONFIAVEL daquela pagina especifica (a propria
-      ferramenta nao bateu consigo mesma), nao como uma 2a fonte independente -- ver
-      ESMT.md §4/§7. O termo "Mobile DDR" tambem e ambiguo (pode ser LPDDR1/"Mobile
-      DDR" no sentido JEDEC estrito, ou uso solto/generico do termo). Pesquisa extensa
-      nesta rodada (20+ tentativas de busca/fetch): pagina oficial de categoria eMCP
-      da ESMT (esmt.com.tw/en/Products/eMCP/eMCP-12-58) existe mas NAO expoe tabela de
-      specs via WebFetch (provavel renderizacao JS -- mesmo padrao de bloqueio ja
-      documentado pros PDFs oficiais individuais desta marca, ver §7); doc de
-      terceiros ja usado como referencia de nomenclatura (GitHub iTXTech/fdnext) NAO
-      cobre prefixo "FM"/eMCP, só DRAM standalone (M12L...M56Z); paginas de
-      distribuidor (Jotrin/Censtry/IC-Components/Ariat-Tech/DigiPart) confirmam
-      EXISTENCIA mas nenhuma expos tabela de specs tecnicas (bloqueio Cloudflare,
-      conteudo vazio, ou so estoque/preco).
+      GERACAO DA RAM = LPDDR2 -- RESOLVIDO numa 2a leva de pesquisa (o dono pediu
+      "pesquise mais" apos o achado inicial de conflito). 2 fontes independentes
+      confirmam: (1) pagina OFICIAL da ESMT sobre a linha MCP/eMCP -- confirmada em
+      INGLES (esmt.com.tw/en/product/subcategory/mcm) E CHINES
+      (esmt.com.tw/tw/product/subcategory/mcm) -- diz textualmente "ESMT offers a
+      variety of NAND + LPDDR2/LPDDR4x capacity combinations" -- ou seja, a linha
+      INTEIRA da ESMT so usa LPDDR2 OU LPDDR4x, nunca "Mobile DDR"/LPDDR1 (o termo que
+      a fonte Elnec, ja sinalizada como nao-confiavel, tinha sugerido); (2) o irmao
+      confirmado `FM6BD1G1GMB` (mesmo stem "FM6BD") e explicitamente LPDDR2
+      (icschip.com, citacao direta acima). Densidade de 2Gb RAM tambem e muito mais
+      plausivel pra LPDDR2 (linha de baixa/media capacidade) do que LPDDR4x
+      (tipicamente emparelhado com NAND de dezenas/centenas de GB em produtos reais,
+      nunca sub-1GB) -- elimina a 2a opcao que a ESMT lista. A discordancia da Elnec
+      (2 chamadas WebFetch na MESMA URL deram respostas diferentes entre si, ambas
+      dizendo RAM=4Gbit e "Mobile DDR") fica agora melhor explicada: nao bate com
+      NENHUMA das 2 opcoes que a propria ESMT diz que existem pra essa linha --
+      reforca que era extracao ruim daquela pagina especifica, nao um dado alternativo
+      valido. Ver trilha completa (incluindo o achado inicial nao-resolvido) no
+      ESMT.md §3.5 e §8 -- documentado nos dois estagios, nao só o resultado final.
 
-      DECISAO: por regra de ouro #12 (spec essencial nao confirmavel em Tier-1/2 ->
-      excluir), NENHUM known_part submetido pra este PN nesta rodada -- geracao+
-      capacidade de RAM (emcp_ram) e campo essencial e genuinamente conflitante, nao
-      so thin-sourced. Familia (gramatica) criada mesmo assim porque chip_type=eMCP
-      em si ESTA bem confirmado (identidade + categoria) -- so a geracao especifica de
-      RAM fica em aberto; subtype usa descritor GENERICO (mesmo padrao ja usado pelo
-      prefixo "KM" da Samsung em samsung.yaml pra ambiguidade de geracao entre
-      known_parts) em vez de comprometer com uma geracao nao confirmada. Por regra de
-      ouro #11, sinalizado ao dono no chat -- PN veio de debug de ESTOQUE (peca fisica
-      real), entao datasheet baixado ou inspecao fisica do dono resolveria.
+      CONFIANCA: "confirmed", mas via CONVERGENCIA de fontes (bounding statement
+      oficial + analogia com irmao confirmado + eliminacao por plausibilidade de
+      densidade + corroboracao cross-fabricante) em vez de 1 datasheet direto do PN
+      exato -- primeiro known_part desta marca confirmado dessa forma. Sinalizado pro
+      dono revisar com atencao extra (mesmo tratamento ja dado a M15F2G16128A/
+      M15T2G8256A por sourcing indireto). Campo emcp_nand/emcp_ram convertido de Gb
+      pra GB por convencao (ESMT.md §1) -- primeira vez que a marca tem um valor
+      eMCP sub-1GB (0.5GB NAND, 0.25GB RAM); nao ha precedente desta marca pra esse
+      formato fracionario especifico em emcp_nand/emcp_ram (schema.py nao valida
+      formato, campo livre) -- diferente do density_gbit sub-1Gb (que tem regex
+      confirmado no engine), aqui e so convencao de documentacao, nao regra de portao
+      -- vale o dono conferir como o engine renderiza/calcula rentabilidade pra
+      profit_family="emcp" antes de aprovar (gap ainda aberto, nao lido nesta rodada).
