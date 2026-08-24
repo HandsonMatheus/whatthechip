@@ -45,6 +45,23 @@
 # valor ERRADO) no registro atual, `--fill-empty` sozinho pode não sobrescrever —
 # se o audit não aplicar a correção automaticamente, ajustar manual no admin
 # (/admin/chips/knownpart/): interface "eMMC 4.5"→"eMMC 5.1", confidence manual→confirmed.
+#
+# ⚠ RODADA 2 (dono colou novo debug KLM4G1YEMD — mesma família, tabela oficial já
+# fetchada por completo na rodada 1). Em vez de só resolver o alvo, completei as
+# DUAS linhas inteiras da "Samsung eMMC Part Number Matrix" (mesma fonte Tier-1 já
+# citada acima, pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html) —
+# só faltava density 4/8GB de cada linha (já resolvidas), o resto (16/32/64/128GB)
+# nunca tinha sido buscado:
+#   - "Standard eMMC" (status MP): faltavam 16/32/64/128GB (KLMAG2GEAC/KLMBG4GEAC/
+#     KLMCG8GEAC/KLMDGAGEAC) — só 4/8GB (KLM4G1FEAC/KLM8G1GEAC) tinham sido
+#     submetidos na rodada 1. 128GB é eMMC 4.5 (única exceção da linha — tabela
+#     mostra "4.5" explícito só nessa linha, as outras 4 são 5.0).
+#   - "High-Performance eMMC-Pro" (status CS): KLM4G1YEMD (alvo, 4GB) + faltavam
+#     16/32/64GB (KLMAG2WEMB/KLMBG4WEMC/KLMCG8WEMC). 8GB (KLM8G1WEMB) JÁ estava no
+#     seed (confirmed, eMMC 5.0) — não resubmetido. Toda a linha é eMMC 5.0.
+# Nenhum PN novo pesquisado fora da tabela já lida — é fechamento de cobertura de
+# uma fonte Tier-1 que eu mesmo já tinha aberto por completo, só não tinha usado
+# inteira (ver [[wtc-pesquisar-cluster-inteiro-nao-so-1-pn]]).
 brand: "Samsung"
 known_parts:
   - part_number: "K4B1G0846D"
@@ -103,3 +120,103 @@ known_parts:
       categorizada em .../estorage/emmc/emmc-5-1/klm4g1fete-b041/ — confirma
       eMMC 5.1, não 4.5. Corroborado por LCSC (KLM4G1FETE-B041, "4GB 300/19
       MB/s", eMMC 5.1, pacote 153FBG 11x10x0.8mm, HS400).
+
+  - part_number: "KLMAG2GEAC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "Standard eMMC" da brochura oficial Samsung (mesma
+      tabela "Samsung eMMC Part Number Matrix" já usada pra KLM4G1FEAC/
+      KLM8G1GEAC): 16 GB · KLMAG2GEAC-B031 · Flash 64Gb×2 · MMC Class 5.0 ·
+      Seq R/W 2000MB/s · pacote 11.5x13x1.0mm · status MP.
+
+  - part_number: "KLMBG4GEAC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "Standard eMMC" (mesma tabela oficial): 32 GB ·
+      KLMBG4GEAC-B031 · Flash 64Gb×4 · MMC Class 5.0 · Seq R/W 2000MB/s ·
+      pacote 11.5x13x1.0mm · status MP.
+
+  - part_number: "KLMCG8GEAC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "Standard eMMC" (mesma tabela oficial): 64 GB ·
+      KLMCG8GEAC-B031 · Flash 64Gb×8 · MMC Class 5.0 · Seq R/W 2000MB/s ·
+      pacote 11.5x13x1.2mm · status MP.
+
+  - part_number: "KLMDGAGEAC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "Standard eMMC" (mesma tabela oficial). ⚠ ÚNICA exceção
+      de geração da linha — tabela mostra "4.5" explícito (as outras 4 densidades
+      são 5.0): 128 GB · KLMDGAGEAC-B001 · Flash 64Gb×16 · MMC Class 4.5 · Seq
+      R/W 2000MB/s · pacote 11.5x13x1.4mm · status MP.
+
+  - part_number: "KLM4G1YEMD"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      PN alvo desta rodada (base, sem sufixo -C031). Linha "High-Performance
+      eMMC-Pro" da mesma brochura oficial Samsung: 4 GB · KLM4G1YEMD-C031 ·
+      Flash 32Gb×1 · MMC Class 5.0 · Seq R/W 200MB/s · pacote 11.5x13x0.8mm ·
+      status CS (Customer Sample — linha diferente do "MP" da Standard eMMC).
+
+  - part_number: "KLMAG2WEMB"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "High-Performance eMMC-Pro" (mesma tabela oficial,
+      irmã de KLM8G1WEMB já confirmado no seed): 16 GB · KLMAG2WEMB-B031 ·
+      Flash 64Gb×2 · MMC Class 5.0 · Seq R/W 700MB/s · pacote 11.5x13x0.8mm ·
+      status CS.
+
+  - part_number: "KLMBG4WEMC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "High-Performance eMMC-Pro" (mesma tabela oficial):
+      32 GB · KLMBG4WEMC-B031 · Flash 64Gb×4 · MMC Class 5.0 · Seq R/W
+      1500MB/s · pacote 11.5x13x1.0mm · status CS.
+
+  - part_number: "KLMCG8WEMC"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: >
+      Completa a linha "High-Performance eMMC-Pro" (mesma tabela oficial):
+      64 GB · KLMCG8WEMC-B031 · Flash 64Gb×8 · MMC Class 5.0 · Seq R/W
+      1500MB/s · pacote 11.5x13x1.0mm · status CS.
