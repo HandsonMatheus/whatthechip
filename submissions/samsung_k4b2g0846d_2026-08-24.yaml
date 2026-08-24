@@ -14,6 +14,22 @@
 # sem sufixo → chip_type "DDR3" (rótulo genérico, mesmo critério já usado pros
 # irmãos no seed). 2Gbit÷8=256MB/die — mesma aritmética/formato (`capacity` em
 # MB) já padronizado nesta família.
+#
+# ⚠ RODADA 2 (mesmo dia, a pedido do dono "pesquise mais, colete o máximo possível
+# da mesma família"): varredura sistemática da GRADE completa densidade×largura da
+# família K4B (1G/2G/4G/8G × x4/x8/x16/x32), cruzando contra seed+submissões
+# anteriores pra achar buracos reais:
+#   - 1G×x4, 8G×x4: NENHUM PN dessas duas colunas estava confirmado em lugar
+#     nenhum (só 2G×x4 e 4G×x4 já tinham known_part) — preenchidos abaixo.
+#   - x32 ("33"): pesquisado extensivamente (busca direta, padrão numérico
+#     K4B*G3346, "x32"+DDR3+Samsung, ângulo GDDR/gráfico) — ZERO PN real
+#     encontrado em qualquer fonte. O código "33" está documentado na legenda
+#     Ordering Information do datasheet oficial (mesma fonte que confirmou 04/08/16
+#     em rodada anterior), mas nenhum produto K4B x32 parece ter sido de fato
+#     fabricado/distribuído — não invento PN pra isso (excluir, não adivinhar).
+#   - Bônus: K4B4G0846B (B-die, construção DDP = dual-die-package) — densidade/
+#     largura já cobertas por D/E-die, mas die-gen B ainda não estava confirmado
+#     nessa célula específica (4G×x8); achado explícito no datasheet oficial.
 brand: "Samsung"
 known_parts:
   - part_number: "K4B2G0846D"
@@ -30,3 +46,61 @@ known_parts:
       completo: K4B2G0846D-HYH9/HYK0 (datasheets360, HY=DDR3L 1.35V) — mesmo
       padrão BC/BY já confirmado nos irmãos da família (K4B1G0846I,
       K4B2G0846C). 256Mx8 organização, 78FBGA. 2Gbit÷8=256MB/die.
+
+  - part_number: "K4B1G0446D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411806/SAMSUNG/K4B1G0446D.html"
+    notes: >
+      Preenche o buraco da coluna x4 na densidade 1G (rodada 2, varredura da
+      grade completa). Datasheet oficial Samsung dedicado (alldatasheet mirror
+      #411806, "1Gb D-die DDR3 SDRAM Specification", Direct Link
+      samsung.com/Products/Semiconductor, MESMO documento-família/estilo do
+      #411807 já usado pro irmão K4B1G0846D) — "organizado como 32Mbit x4
+      I/Os x8banks, 16Mbit x8 I/Os x8banks ou 8Mbit x16 I/Os x8banks" — confirma
+      x4 oficialmente pra esta densidade. Corroborado por datasheets.com
+      (K4B1G0446D-HCH9, "82-pin FBGA", HC=DDR3 1.5V). 1Gbit÷8=128MB/die.
+
+  - part_number: "K4B8G0446D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.datasheets.com/samsung/k4b2g0446d-hck0"
+    notes: >
+      Preenche o buraco da coluna x4 na densidade 8G (rodada 2, varredura da
+      grade completa). ⚠ SEM datasheet dedicado Tier-1 encontrado (Samsung
+      oficial e AllDatasheet não indexam a página específica deste PN, apesar
+      de busca extensiva — só os irmãos 1G/2G/4G×x4 têm datasheet dedicado).
+      Confirmado por convergência Tier-3 forte (6 fontes independentes,
+      mesma especificação): censtry.com, absunshine.com, datasheets.com e
+      prodisknetwork.com convergem em "K4B8G0446D-MYK0 Samsung DDR3-1600MHz
+      2Gx4 (8GB) 1.35V DRAM Memory Chip"; listagem Alibaba mostra o par de
+      tensão completo "K4B8G0446D-MCK0 K4B8G0446D-MCH9 K4B8G0446B-MYF8" (MC=DDR3
+      1.5V, MY=DDR3L 1.35V — mesmo padrão de sufixo já visto em K4B8G0846D/
+      K4B8G1646D no seed). 2Gx4 = 8Gbit÷4 endereços — mesma densidade/aritmética
+      da família (8Gbit÷8=1GB/die, igual K4B8G0846D/K4B8G1646D já confirmados).
+      source_url aponta pro registro mais estável achado (datasheets.com,
+      irmão HCK0 da mesma família DDR/DRAM 512MX4 usado como referência de
+      formato) — revisar se dono achar fonte Tier-1/2 mais direta.
+
+  - part_number: "K4B4G0846B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://html.alldatasheet.com/html-pdf/411810/SAMSUNG/K4B4G0846B/1509/5/K4B4G0846B.html"
+    notes: >
+      Bônus (rodada 2): die-gen B ainda não confirmado na célula 4G×x8 (só
+      D/E-die estavam no seed). Datasheet oficial Samsung dedicado
+      (alldatasheet mirror #411810, "DDP 4Gb B-die DDR3 SDRAM Specification")
+      + K4B4G0846B-MCF8 também indexado (alldatasheet). ⚠ "DDP" = Dual Die
+      Package — 2 dies empilhados formando o componente de 4Gb (construção
+      diferente do monolítico D/E-die), mas eletricamente/comercialmente é o
+      mesmo DDR3 4Gb x8 pro propósito da bancada (tipo/capacidade/destino
+      iguais). 4Gbit÷8=512MB/die — mesma aritmética já usada pros irmãos.
