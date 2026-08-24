@@ -1,4 +1,6 @@
-# Submissão de known_parts — Samsung, PN KMYFE0B0CA (família "KM" genérica eMCP).
+# Submissão de known_parts — Samsung, PN KMYFE0B0CA (família "KM" genérica eMCP)
+# + KMYFG0C0CM (irmão real, achado ao pesquisar mais a pedido do dono — ver bloco
+# antes da 2ª entrada, mais abaixo).
 # PN 100% desconhecido no debug (nand/ram "não mapeada", grammar_complete=false,
 # fuzzy_suggestions vazio). A 3ª letra do PN ('Y') NÃO existe no SAM_EMCP_GEN da
 # gramática (D/F/G/I/J/K/L/N/Q/R/S/V — sem 'Y') nem no tip da família — não é
@@ -68,3 +70,63 @@ known_parts:
       primeira vez que os próprios analistas viam esse tipo de pacote Samsung.
       ⚠ Não se encaixa limpo no schema padrão de eMCP (emcp_ram/emcp_nand
       assumem 1 componente cada) — revisar manual no admin antes de aprovar.
+
+  # ── Pesquisei mais, a pedido do dono ("e só achou esse?") ──────────────────
+  # Achei 1 irmão REAL: KMYFG0C0CM (mesma 3ª letra 'Y', mesma composição de 3
+  # dies). Fonte igualmente forte: MESMA série de teardown IHS/iSuppli (autor
+  # "IHS Electronics & Media", publicado via Electronics360/GlobalSpec) que
+  # documentou o KMYFE0B0CA no Bold 9000 — desta vez no BlackBerry (RIM) Storm
+  # 9530 (2008-11-14, CDMA/EvDO+WCDMA). Fetch direto da página primária (não só
+  # resumo de busca):
+  #   "MCP - Samsung Semiconductor - KMYFG0C0CM-D302 - 8Gb MLC moviNAND Flash +
+  #   1Gb OneNAND Flash + 1Gb Mobile SDRAM" ($7.50 no BOM do Storm 9530, vs
+  #   $10.45 no Bold 9000 — custo diferente, composição de memória idêntica).
+  # PN completo com sufixo: "KMYFG0C0CM-D302" (mesmo padrão do alvo, que também
+  # tem sufixo "-D300" confirmado na mesma fonte). Corroborado (não como fonte
+  # de spec, só de existência do PN) por 2 distribuidores HK/Shenzhen
+  # (ssfkg.com, icqqg.com) que listam ambos os PNs como "MCP SAMSUNG" em BGA.
+  #
+  # Busquei ativamente por MAIS irmãos antes de parar:
+  #   - Brochura oficial "Samsung Fusion Memory" (pdf.directindustry.com) —
+  #     confirma que existe uma linha de produto formal "moviMCP" (NAND/OneNAND
+  #     + mDRAM, até 4GB) que contextualiza a categoria, mas NÃO lista um PN
+  #     exato — não é uma "Part Number Matrix" como a brochura de eMMC que usei
+  #     hoje mais cedo. Não force o rótulo "moviMCP" nos 2 known_parts (é
+  #     contexto, não confirmação por PN).
+  #   - BlackBerry Bold 9700 (próxima geração, 2009): usa Samsung
+  #     KAT00F00NM-AE77 — prefixo DIFERENTE ("KAT", não "KMY"), pacote PoP de
+  #     só 2 componentes (2Gb OneNAND + 2Gb SDRAM, sem NAND/moviNAND), e a
+  #     PRÓPRIA fonte IHS marca como "(Estimated)". NÃO é irmão da família KMY
+  #     — é outra família, com fonte mais fraca (estimativa, não medição). Não
+  #     submeti (excluir, não adivinhar) — fica registrado aqui caso o dono
+  #     queira um dia pesquisar a família "KAT" à parte, com fonte melhor.
+  #   - BlackBerry Storm2 9550 e Curve 8900: pesquisado, zero teardown com PN
+  #     de memória encontrado (nenhuma fonte cobre o componente exato).
+  #   - Tentativas de PN por padrão (KMYJE*, KMYGE*): zero evidência real —
+  #     não inventado.
+  # Conclusão: cluster "KMY" real = 2 PNs (KMYFE0B0CA + KMYFG0C0CM). Não é
+  # "só achei 1 e parei" — é o tamanho real do cluster nas fontes existentes.
+  - part_number: "KMYFG0C0CM"
+    chip_type: "eMCP"
+    subtype: "embedded Multi-Chip Package (LPDDR + eMMC)"
+    interface: ""
+    emcp_nand: "moviNAND ~1GB (NAND MLC 8Gb + controlador) + OneNAND 1GB"
+    emcp_ram: "SDRAM 1GB (pré-LPDDR, não é LPDDR — ver notes)"
+    confidence: confirmed
+    source_url: "https://electronics360.globalspec.com/article/2198/blackberry-rim-storm-9530-mobile-phone-teardown"
+    notes: >
+      Irmão real de KMYFE0B0CA, achado ao pesquisar mais (a pedido do dono)
+      além do PN alvo original. Fonte: teardown IHS/iSuppli (via
+      Electronics360/GlobalSpec, "IHS Electronics & Media") do BlackBerry (RIM)
+      Storm 9530 — mesma metodologia/série editorial que documentou o
+      KMYFE0B0CA no Bold 9000 (fetch direto da página primária, não resumo de
+      busca): "MCP - Samsung Semiconductor - KMYFG0C0CM-D302 - 8Gb MLC moviNAND
+      Flash + 1Gb OneNAND Flash + 1Gb Mobile SDRAM" ($7.50 no BOM). Mesma
+      composição de 3 dies do KMYFE0B0CA (moviNAND+OneNAND+SDRAM pré-LPDDR),
+      mesmo mismatch de schema eMCP padrão (RAM não é LPDDR, NAND tem 2
+      tecnologias distintas) — mesma ressalva se aplica: capacidade total
+      ~3GB, RENTÁVEL claro por capacidade, mas `emcp_ram` em texto livre pode
+      não bater no regex do `assess_profitability` (ver caso irmão). PN
+      completo "KMYFG0C0CM-D302" (sufixo confirmado na mesma fonte). ⚠ Mesma
+      recomendação: revisar manual no admin antes de aprovar — não se encaixa
+      limpo no schema padrão de eMCP.
