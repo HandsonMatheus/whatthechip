@@ -1,0 +1,32 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
+# PN alvo (busca 2026-08-24): K4B2G0846D — grammar já decodifica certo hoje
+# (pn[3:5]='2G' via DRAM_PC global → 2Gb=256MB, profitable=RENTÁVEL,
+# grammar_complete=true), mas o PN exato não estava confirmado no banco (nem seed,
+# nem submissões anteriores — só o irmão C-die K4B2G0846C e o irmão F-die
+# K4B2G0846F já estavam cobertos).
+#
+# K4B2G0846D (alvo, base): AllDatasheet + Octopart confirmam datasheet oficial
+# Samsung dedicado — "2Gb D-die DDR3(L) SDRAM", organização 256Mx8, pacote 78FBGA.
+# Par de tensão completo confirmado: K4B2G0846D-HCH9 (octopart, datasheet PDF
+# direto "K4B2G0846D-HCH9-Samsung-datasheet-138897464.pdf", HC=DDR3 1.5V) +
+# K4B2G0846D-HYH9/HYK0 (datasheets360, HY=DDR3L 1.35V) — mesmo padrão de par
+# BC/BY já visto nos irmãos da família (K4B1G0846I, K4B2G0846C etc.). Base PN
+# sem sufixo → chip_type "DDR3" (rótulo genérico, mesmo critério já usado pros
+# irmãos no seed). 2Gbit÷8=256MB/die — mesma aritmética/formato (`capacity` em
+# MB) já padronizado nesta família.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B2G0846D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411718/SAMSUNG/K4B2G0846D.html"
+    notes: >
+      PN alvo (base, sem sufixo de grade). Datasheet oficial Samsung dedicado
+      (alldatasheet mirror #411718, "DDR3 SDRAM Memory") + Octopart hospeda o
+      PDF direto do sufixo K4B2G0846D-HCH9 (HC=DDR3 1.5V). Par de tensão
+      completo: K4B2G0846D-HYH9/HYK0 (datasheets360, HY=DDR3L 1.35V) — mesmo
+      padrão BC/BY já confirmado nos irmãos da família (K4B1G0846I,
+      K4B2G0846C). 256Mx8 organização, 78FBGA. 2Gbit÷8=256MB/die.
