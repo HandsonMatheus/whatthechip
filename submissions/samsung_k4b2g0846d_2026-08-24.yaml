@@ -104,3 +104,39 @@ known_parts:
       diferente do monolítico D/E-die), mas eletricamente/comercialmente é o
       mesmo DDR3 4Gb x8 pro propósito da bancada (tipo/capacidade/destino
       iguais). 4Gbit÷8=512MB/die — mesma aritmética já usada pros irmãos.
+
+  - part_number: "K4B1G0846F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347881/samsung/k4b1g0846f.html"
+    notes: >
+      RODADA 3 (novo debug do dono) — PN alvo, base sem sufixo. Datasheet
+      oficial Samsung dedicado (alldatasheet mirror #347881, 23 páginas,
+      "DDR3 SDRAM Memory"). Corroborado por fonte de altíssima qualidade:
+      TechInsights (empresa de engenharia reversa/análise de processo)
+      publicou relatório "Samsung K4B1G0846F-HCF8 48 nm 1GB DDR3 SDRAM -
+      Process Analysis Report" — confirma silício real, não só papel.
+      Suf. HCF8/HCH9 também indexados (datasheets360, datasheets.com).
+      Die-gen F ainda não confirmado nessa célula (1G×x8 já tinha D-die e
+      I-die). 1Gbit÷8=128MB/die.
+
+  - part_number: "K4B1G0446F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347880/SAMSUNG/K4B1G0446F.html"
+    notes: >
+      Bônus (achado durante a pesquisa do K4B1G0446D na rodada 2, mesma fonte
+      já aberta então — irmão F-die listado em "Similar Part No."). Datasheet
+      oficial Samsung dedicado (alldatasheet mirror #347880, 23 páginas, "DDR3
+      SDRAM Memory"). Die-gen F ainda não confirmado nessa célula (1G×x4 só
+      tinha D-die, da rodada 2). 1Gbit÷8=128MB/die.
+
+# ⚠ NÃO incluído: K4B1G1646F (1G×x16, F-die) — pesquisado, ZERO evidência
+# encontrada (só achei K4B1G1646G, die-gen diferente). Não incluo por
+# analogia/padrão — sem fonte real, fica de fora (excluir, não adivinhar).
