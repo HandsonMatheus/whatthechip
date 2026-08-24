@@ -1,0 +1,70 @@
+# Submissão de known_parts — Samsung, PN KMYFE0B0CA (família "KM" genérica eMCP).
+# PN 100% desconhecido no debug (nand/ram "não mapeada", grammar_complete=false,
+# fuzzy_suggestions vazio). A 3ª letra do PN ('Y') NÃO existe no SAM_EMCP_GEN da
+# gramática (D/F/G/I/J/K/L/N/Q/R/S/V — sem 'Y') nem no tip da família — não é
+# omissão de documentação, é ausência real no mapa. Não mexi na gramática por
+# isso (fora de escopo — pesquisar+confirmar known_part é o trabalho).
+#
+# Zero achado em Octopart (sem listagens), zero no índice mestre Puris/emcplist
+# (nenhum PN "KMY*" catalogado), zero em distribuidor comum.
+#
+# ⚠⚠ ACHADO — este NÃO é um eMCP padrão de 2 componentes (LPDDR+eMMC) como a
+# família "KM" assume. Fonte Tier-1/2 de altíssima qualidade: artigo da EDN
+# (revista técnica respeitada, publicado 2008-09-19) "RIM's Blackberry Bold",
+# citando análise de decapsulamento (die-level) feita pelos analistas da
+# Semiconductor Insights (SI — empresa de engenharia reversa de semicondutores,
+# hoje parte da TechInsights, a MESMA categoria de fonte que citei hoje para
+# K4B1G0846F). Texto direto do artigo:
+#   "The Bold's memory concerns are addressed by one Samsung multi-chip package
+#   featuring the markings of KMYFE0B0CA. This is the first time the analysts
+#   at Semiconductor Insights (SI) had come across this kind of Samsung device...
+#   Based on the markings, the package was to contain three types of memory–
+#   1 GB of moviNAND, 1 GB of OneNAND and 1 GB of SDRAM. Once the package was
+#   decapped... there was no disputing which die were the SDRAM and the OneNand
+#   devices. There were, however, disagreements over the moviNAND... What we saw
+#   were two distinct dies, when we were expecting one. One photo corresponded
+#   to 8 Gb of MLC NAND flash... The other die was the memory controller."
+#
+# Ou seja: pacote de ATÉ 4 DIES fisicamente distintos (SDRAM + OneNAND + NAND MLC
+# 8Gb=1GB + controlador), não o par simples RAM+eMMC que os campos emcp_ram/
+# emcp_nand do schema assumem. É um chip histórico/raro (BlackBerry Bold, 2008 —
+# primeira vez que a própria SI via esse tipo de pacote Samsung), então:
+#   - "SDRAM" aqui é SDRAM móvel PRÉ-LPDDR (2008, antes do LPDDR2 virar padrão
+#     móvel ~2009-2010) — NÃO é "LPDDR{n} {cap}GB" como a convenção pede.
+#     Escrevi o texto real (SDRAM) em vez de forçar um rótulo LPDDR falso.
+#   - NAND-side é NAND(moviNAND, controlador+flash) + OneNAND (tecnologia Flash
+#     DIFERENTE, não é eMMC) — também não é um "eMMC N GB" simples.
+# Registrei como aproximação honesta (emcp_ram/emcp_nand em texto livre — o
+# portão não valida formato desses 2 campos, só schema.py:182-183, str livre),
+# com a ressalva completa nas notes. capacidade total ~3GB combinados
+# (SDRAM 1GB + moviNAND-ish ~1GB + OneNAND 1GB) → claramente RENTÁVEL
+# independente da composição exata interna (não sensível ao detalhe disputado).
+# ⚠ Recomendo o dono revisar manual no admin antes de aprovar — é o único
+# known_part de hoje que não se encaixa limpo no schema padrão de eMCP.
+brand: "Samsung"
+known_parts:
+  - part_number: "KMYFE0B0CA"
+    chip_type: "eMCP"
+    subtype: "embedded Multi-Chip Package (LPDDR + eMMC)"
+    interface: ""
+    emcp_nand: "moviNAND ~1GB (NAND MLC 8Gb + controlador, 2 dies) + OneNAND 1GB"
+    emcp_ram: "SDRAM 1GB (pré-LPDDR, não é LPDDR — ver notes)"
+    confidence: confirmed
+    source_url: "https://www.edn.com/rims-blackberry-bold/"
+    notes: >
+      PN alvo, 100% desconhecido no debug. Fonte: artigo EDN "RIM's Blackberry
+      Bold" (2008-09-19), citando análise de decapsulamento da Semiconductor
+      Insights (hoje TechInsights) — a mesma categoria de fonte usada hoje pra
+      K4B1G0846F. ⚠⚠ Pacote de ATÉ 4 dies físicos (SDRAM + OneNAND + NAND MLC
+      8Gb + controlador NAND) — NÃO é o par simples LPDDR+eMMC que o schema
+      eMCP assume. Os próprios analistas da SI tiveram "disagreements" sobre se
+      a designação "moviNAND" é válida (esperavam 1 die, acharam 2 — NAND flash
+      + controlador separados). "SDRAM" é RAM móvel PRÉ-LPDDR (dispositivo de
+      2008; LPDDR2 só virou padrão móvel ~2009-2010) — por isso NÃO escrevi
+      "LPDDR{n} {cap}GB" (seria inventar geração LPDDR que não existe aqui).
+      Capacidade total ~3GB combinados entre os 3 tipos de memória — RENTÁVEL
+      claro, independente da composição interna exata (que segue em aberto até
+      hoje pra própria SI). Dispositivo histórico/raro (BlackBerry Bold 2008) —
+      primeira vez que os próprios analistas viam esse tipo de pacote Samsung.
+      ⚠ Não se encaixa limpo no schema padrão de eMCP (emcp_ram/emcp_nand
+      assumem 1 componente cada) — revisar manual no admin antes de aprovar.
