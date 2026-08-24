@@ -2265,6 +2265,41 @@ _ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 6 famílias DDR
     # golden, e o GoldenObrigatorioTests ficou vermelho. Mesmo padrão magro.
     "M15T2G8256A":  ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 2Gb x8
     "M15T4G8512A":  ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 4Gb x8
+
+    # M14D/M14F -- DDR2 SDRAM, 6 famílias MAGRAS (rodada 2026-08-20, ver esmt.yaml e
+    # submissions/esmt_m14d_2026-08-20.yaml). DDR2 < cfg.ddr_min_gen (3=DDR3 mínimo) --
+    # NÃO RENTÁVEL já na gramática pura, sem density/known_part (mesmo padrão do NT5TU
+    # da Nanya, ver _NANYA_GOLDEN acima). Dívida do incidente 2026-08-24 (AUTORIA.md
+    # §3.3) -- família entrou no yaml sem âncora, GoldenObrigatorioTests ficou vermelho
+    # pra TODAS as marcas.
+    "M14D128168A":   ("DDR2", "", "", "", "", "NÃO RENTÁVEL"),   # 128Mb x16
+    "M14D2561616A":  ("DDR2", "", "", "", "", "NÃO RENTÁVEL"),   # 256Mb x16
+    "M14D5121632A":  ("DDR2", "", "", "", "", "NÃO RENTÁVEL"),   # 512Mb x16
+    "M14F5121632A":  ("DDR2", "", "", "", "", "NÃO RENTÁVEL"),   # 512Mb x16, 1.55V (par do M14D5121632A)
+    "M14D1G1664A":   ("DDR2", "", "", "", "", "NÃO RENTÁVEL"),   # 1Gb x16
+    "M14D1G8128A":   ("DDR2", "", "", "", "", "NÃO RENTÁVEL"),   # 1Gb x8
+
+    # M15F -- DDR3 SDRAM (não-L), 4 famílias MAGRAS (rodada 2026-08-20, ver esmt.yaml e
+    # submissions/esmt_m15f_2026-08-20.yaml). DDR3 == cfg.ddr_min_gen -- passa a trava de
+    # geração, mas sem decode_density_type a gramática pura não tem Gb/GB pra avaliar o
+    # limiar (cfg.ddr3_min_gbit) -- INDETERMINADO honesto, mesmo padrão já usado pelos
+    # M15T desta marca (acima) e por NT5CC/NT5PA da Nanya. Dívida do mesmo incidente
+    # 2026-08-24 acima.
+    "M15F1G1664A":   ("DDR3", "", "", "", "", "INDETERMINADO"),   # 1Gb x16
+    "M15F2G16128A":  ("DDR3", "", "", "", "", "INDETERMINADO"),   # 2Gb x16
+    "M15F4G16256A":  ("DDR3", "", "", "", "", "INDETERMINADO"),   # 4Gb x16
+    "M15F5121632A":  ("DDR3", "", "", "", "", "INDETERMINADO"),   # 512Mb x16
+
+    # FM6BD4G2GA -- eMCP (NAND+DRAM MCP), 1ª categoria eMCP desta marca (rodada
+    # 2026-08-24, ver esmt.yaml §FM6 e submissions/esmt_fm6_2026-08-24.yaml). Família
+    # magra sem decode_cap_map/decode_gen_map -- is_emcp=True cai no Caminho 3 do bloco
+    # eMCP (chips/engine.py): sem mapa próprio, extrai a geração do SUBTYPE ("LPDDR2")
+    # via regex, e monta emcp_nand/emcp_ram com o placeholder "cap. não mapeada" (mesmo
+    # mecanismo já provado por TYC0FH121638RA/_TK_GOLDEN e SD5DH26A4G/_SD_GOLDEN).
+    # LPDDR2 < cfg.emcp_min_lpddr_gen (3) -- NÃO RENTÁVEL só por geração, ANTES de checar
+    # GB (fix 2026-05-27 no assess_profitability) -- exatamente a classe de bug que este
+    # golden existe pra pegar (AUTORIA.md §3.3). Dívida do mesmo incidente 2026-08-24.
+    "FM6BD4G2GA": ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR2 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
 }
 
 
