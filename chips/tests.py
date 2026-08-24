@@ -1818,6 +1818,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H9HCNNNCPMAL":      ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
     "H9HCNNNECMML":      ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),
     "H9HKNNNCTUMUBR-NMH": ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),  # 1º golden da família H9HK (2026-07-09) — sem cobertura antes; PN buscado na bancada, C=4GB confirmado por WinSource (32Gb/8) + já mapeado
+    "H9AG9G5ANB":        ("eMCP", "", "eMMC 5.1 64GB", "LPDDR4X 4GB", "", "RENTÁVEL"),  # âncora H9AG (família nova, 2026-08-24) — datasheet oficial uttc.com.tw lido na íntegra, Ordering Information conferida
     "H9HP16AECMMD":      ("eMCP", "", "eMMC 5.1 128GB", "LPDDR4X 6GB", "", "RENTÁVEL"),
     "H9HP27ABUMMDAR-KEM": ("eMCP", "", "eMMC 5.1 32GB", "LPDDR4X 2GB", "", "RENTÁVEL"),  # chave RAM 'AB' nova no mapa compartilhado H9HP/H9HQ (2026-07-09) — Preduo + Puris concordam
     "H9HQ22AECMMDAR-KEM": ("uMCP", "", "UFS 2.1 256GB", "LPDDR4X 6GB", "", "RENTÁVEL"),  # chave NAND '22' nova no mapa (2026-07-09) — Preduo + distribuidor concordam, mesmo padrão de pares 15/16 e 53/54

@@ -89,6 +89,9 @@ maps:
   - ['3', LPDDR1 1GB, '']
   - ['4', LPDDR1 512MB, '']
   - ['8', LPDDR1 1GB, '']
+  HYX_H9AG_NAND_CAP:
+  - [8G, 32GB, '']
+  - [9G, 64GB, '']
   HYX_H9HP_NAND_CAP:
   - ['16', 128GB, '']
   - ['27', 32GB, '']
@@ -176,6 +179,9 @@ maps:
   - [AD, LPDDR4X 3GB, '']
   - [AE, LPDDR4X 6GB, '']
   - [AF, LPDDR4X 8GB, '']
+  - [5A, LPDDR4X 4GB, '']
+  - [DM, LPDDR4X 3GB, '']
+  - [EA, LPDDR4X 6GB, '']
   HYX_LPDDR4_H9HC_CAP:
   - ['4', 512MB, '']
   - ['8', 1GB, '']
@@ -543,6 +549,24 @@ families:
   suffix_rules: ''
   tip: 'eMCP SK Hynix família H9D — LPDDR1 Mobile DDR (H9DP), era ~2012-2015. ⚠ GERAÇÃO CORRIGIDA 2026-07-09: era rotulada LPDDR2 (assunção não atestada); o datasheet do H9DP32A4JJBCGR diz "eNAND 4GB(x8) / Mobile DDR 4Gb(x32, 2CS)", "LPDDR 400Mbps" = LPDDR1 (irmã do H9DA, também Mobile DDR). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 32=4GB · 64=8GB · AG=16GB. pn[7] = capacidade RAM (1 char): 2=256MB · 4=512MB · 8=1GB · 3=1GB. ⚠ RAM usa 1 char em pn[7] (não 2) — pn[6]=''A'' é código de controlador fixo, ignorar. ⚠ ''8'' e ''3'' resultam ambos em 1GB — organização de barramento diferente, mesma capacidade. ⚠ Mapa NAND próprio (HYX_H9D_NAND_CAP): ''AG''=16GB não existe no mapa H9TQ/H9TP. Ex: H9DPAGA3JJMC = 16GB eMMC + 1GB LPDDR1 ✓ Ex: H9DP64A8JJMC = 8GB eMMC + 1GB LPDDR1 ✓ Ex: H9DP32A4JJAC = 4GB eMMC + 512MB LPDDR1 ✓ Componente OBSOLETO — LPDDR1 (gen 1 < mínimo) → sempre NÃO RENTÁVEL. Destino: REFINO DE METAIS.'
   reasoning: 'Geração LPDDR1 atestada pelo datasheet SK Hynix do H9DP32A4JJBCGR ("Mobile DDR 4Gb", "LPDDR 400Mbps") — corrige assunção LPDDR2 anterior (2026-07-09). Prefixo define a geração; irmã H9DA também Mobile DDR/LPDDR1.'
+- prefix: H9AG
+  chip_type: eMCP
+  subtype: LPDDR4X
+  interface: eMMC 5.1 + LPDDR4X
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_H9AG_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_LPDDR4X_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix com LPDDR4X (H9AG), família NOVA (2026-08-24). Chip combinado eMMC 5.1 + RAM de alta velocidade — mesma estrutura de H9HP/H9HQ, mapa de NAND PRÓPRIO (não compartilhado: ''9G'' aqui é 64GB, valor diferente de qualquer código H9HP/H9HQ). pn[4:6] = capacidade NAND: 8G=32GB · 9G=64GB. pn[6:8] = capacidade RAM: 5A=4GB · DM=3GB · EA=6GB (chaves novas no mapa COMPARTILHADO HYX_LPDDR4X_RAM_CAP — mesmo mapa do H9HP/H9HQ, sem colisão com AB/AC/AD/AE/AF já existentes). Datasheet oficial SK Hynix (Rev 0.2/Set.2020, via uttc.com.tw) confirma Ordering Information completa do PN-alvo: 64GB(x8) eMMC + 4GB(x16) LPDDR4X, 254-ball FBGA, Vcc(NAND)=2.7-3.6V, VDD1/2/VDDQ=1.8V/1.1V/0.6V, LPD4 4266/CL32. Diagrama de blocos DRAM confirma a conta: 4 canais × 8Gb = 32Gb = 4GB. Ex: H9AG9G5ANBX100 = 64GB eMMC + 4GB LPDDR4X ✓ (Ordering Information lida na íntegra). Destino: bancada eMCP premium (requer equipamento LPDDR4X).'
+  reasoning: '["Família nova — PN da bancada H9AG9G5ANB (2026-08-24) veio known=false, prefixo H9AG nunca visto. Confirmado real via datasheet OFICIAL SK Hynix completo (uttc.com.tw/wp-content/uploads/2025/12/H9AG9G5ANBX100_Rev0.2.pdf, Rev 0.2/Set.2020, SK hynix Confidential) — li o corpo inteiro: capa, features, block diagram, Ordering Information E o guia de numeração posição-a-posição.", "Ordering Information (posições 1-14): H9A=tipo/modo, pn[4:6]=densidade NAND (código G9G5 do guia interno bate com pn[3:7] 1-indexed = pn[4:8] 0-indexed do split cap/gen do engine), pn[6:8]=densidade RAM, resultando density table oficial: 64GB(x8) eMMC + 4GB(x16) LPDDR4X — bate exato com pn[4:6]=9G/pn[6:8]=5A.", "Cross-check aritmético dentro do PRÓPRIO datasheet: DRAM Block Diagram mostra 4 canais (CS0_A/CS0_B/CS1_A/CS1_B) de 8Gb x16 cada = 4×8Gb = 32Gb = 32Gb÷8 = 4GB — bate exato com a Ordering Information (4GB) e resolve a ambiguidade Gb/GB que a MAIORIA dos distribuidores (AB Sunshine, Win-Source, SZComponents) erra escrevendo só ''LPDDR4(32GB)'' sem a conversão — o valor certo é 4GB, não 32GB.", "Mapa NAND (HYX_H9AG_NAND_CAP) é PRÓPRIO da família, não compartilhado — confirmado por 2 irmãos achados no cluster (Preduo, densidade estruturada ''NAND+RAM_Gb''): H9AG8GDMNBX113 (código 8G=32GB, RAM DM=24Gb=3GB) e H9AG9GEANBX101 (código 9G=64GB igual ao alvo, RAM EA=48Gb=6GB) — 2ª confirmação independente de 9G=64GB.", "Mapa RAM (HYX_LPDDR4X_RAM_CAP) é o MESMO já compartilhado por H9HP/H9HQ — as 3 chaves novas (5A/DM/EA) não colidem com nenhuma das 5 já existentes (AB/AC/AD/AE/AF), mesma metodologia de extensão segura já usada quando H9HQ ganhou a chave ''22'' em 2026-07-09."]'
 - prefix: H9HP
   chip_type: eMCP
   subtype: LPDDR4X
