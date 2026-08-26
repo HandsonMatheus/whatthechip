@@ -1,0 +1,141 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3 standard-voltage standalone, JÁ
+# MAPEADA — irmã do H5TC/DDR3L, mesma tensão-padrão 1.5V ao invés de 1.35V).
+# Gerado a partir da investigação do PN H5TQ2G83DFR (busca na bancada, 2026-08-26, mesmo dia
+# das rodadas H5TC2G43CFR/H5TC8G63CMR) — MESMO padrão "die-revision-letter" já visto váras
+# vezes nesta família: dentro da MESMA densidade, uma letra final diferente é uma REVISÃO/
+# DOCUMENTO de datasheet distinto; pn[6:8] ("43"/"83"/"63") é a LARGURA de barramento
+# (x4/x8/x16), não muda a densidade total. A gramática já decodifica certo (pn[4:6]="2G"→
+# dram_density="2Gb = 256MB por die [✓]", grammar_complete=true no debug) — é known_parts-only
+# (Trilha B), sem fix de gramática. Objetivo é o BANCO, não a gramática já decodificar certo
+# (correção do dono, 2026-08-24 — ver [[wtc-objetivo-banco-nao-gramatica]]).
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): fuzzy_suggestions do debug
+# ("H5TC2G83DFR", "H5TQ1G83DFR", "H5TQ2G63DFR", "H5TQ2G83BFR", "H5TQ2G83CFR") + varredura
+# própria via AllDataSheet ("Similar Part No."/"Similar Description" da página do alvo).
+# ANTES de pesquisar each um, CHEQUEI o que já está em submissões commitadas deste repo (grep
+# em submissions/*.yaml no HEAD) pra não pesquisar/resubmeter à toa (regra
+# [[wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar]]):
+#   JÁ SUBMETIDO em rodada anterior (não repetido aqui): H5TQ2G63DFR e H5TQ2G83CFR (nota do
+#   próprio hynix_h5tq2g_rev_e_2026-08-20.yaml: "ambos já known_parts" / "já é known_part
+#   aprovado via fuzzy_sugest."), H5TQ2G63BFR e H5TQ2G83BFR (hynix_h5tq_rev_b_2026-08-20.yaml),
+#   H5TQ2G43EFR e H5TQ2G83EFR (hynix_h5tq2g_rev_e_2026-08-20.yaml).
+#   NOVOS nesta rodada (confirmados abaixo): H5TQ2G83DFR (ALVO), H5TQ2G83AFR, H5TQ2G83FFR,
+#   H5TQ2G43AFR, H5TQ2G43BFR, H5TQ2G43CFR — nenhum destes 6 aparece em nenhuma submissão
+#   commitada do repo.
+#   TENTADO e NÃO achado em nenhuma fonte (excluir, não adivinhar): H5TQ2G43DFR (par x4 do
+#   alvo, mesma revisão D — o datasheet oficial do alvo, lido na íntegra, só nomeia as
+#   variantes x8/x16 desta revisão, nenhuma x4).
+#
+# ARITMÉTICA (2Gb÷8=256MB, confirmada em toda fonte da leva): "2Gb" é a densidade bruta em
+# gigabit, igual em qualquer largura de barramento. x8: 256M×8=2048Mbit=2Gb. x4:
+# 512M×4=2048Mbit=2Gb (bate com a descrição estruturada do H5TQ2G43BFR: "512MX4... PBGA82").
+# Bate exato com o decode ATUAL da gramática (debug mostrava "2Gb = 256MB por die [✓]").
+#
+# FONTES:
+#   H5TQ2G83DFR (ALVO) — datasheet oficial SK Hynix Rev.1.1/Mai.2012, corpo lido NA ÍNTEGRA via
+#     fetch direto da página 1/34 (capa): "2Gb DDR3 SDRAM... H5TQ2G83DFR-xxC H5TQ2G63DFR-xxC
+#     H5TQ2G83DFR-xxI H5TQ2G63DFR-xxI H5TQ2G83DFR-xxJ H5TQ2G63DFR-xxJ H5TQ2G83DFR-xxL
+#     H5TQ2G63DFR-xxL" — as 4 variantes de grade de velocidade (C/I/J/L) do PAR x8/x16 citadas
+#     juntas no mesmo documento oficial (só x8+x16 nesta revisão — nenhuma x4, daí a exclusão
+#     do H5TQ2G43DFR acima). confidence=confirmed (corpo técnico lido, não só metadado).
+#   H5TQ2G83AFR / H5TQ2G83FFR / H5TQ2G43AFR / H5TQ2G43BFR / H5TQ2G43CFR: cada um com página
+#     AllDataSheet PRÓPRIA e dedicada (Part# exato, tamanho de arquivo/página distintos,
+#     Manufacturer=HYNIX, Direct Link=skhynix.com) — só a página de metadado/preview foi
+#     aberta, não o corpo do PDF (mesma limitação de viewer JS já documentada nesta família).
+#     H5TQ2G43BFR e H5TQ2G43CFR têm ainda descrição estruturada corroborando (digchip/
+#     datasheets360/datasheet4u: "512MX4... PBGA82" e "2,147,483,648-bit CMOS DDR3"
+#     respectivamente — ambos 2Gbit, bate exato). confidence=manual (datasheet dedicado do
+#     fabricante, mesmo rigor já usado nas outras entregas manual desta família).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq2g_matriz_2026-08-26.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq2g_matriz_2026-08-26.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ2G83DFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/534220/HYNIX/H5TQ2G83DFR.html"
+    notes: >
+      PN ALVO da bancada (2026-08-26). Datasheet oficial SK Hynix (Rev.1.1/Mai.2012) lido NA
+      ÍNTEGRA via fetch direto (página 1/34, capa): "2Gb DDR3 SDRAM... H5TQ2G83DFR-xxC
+      H5TQ2G63DFR-xxC H5TQ2G83DFR-xxI H5TQ2G63DFR-xxI H5TQ2G83DFR-xxJ H5TQ2G63DFR-xxJ
+      H5TQ2G83DFR-xxL H5TQ2G63DFR-xxL" — par x8/x16 desta revisão, 4 grades de velocidade.
+      2Gb÷8=256MB — bate exato com o decode atual da gramática (debug já mostrava "2Gb =
+      256MB por die [✓]"). confidence=confirmed (corpo técnico lido, não só metadado). Par
+      x16 (H5TQ2G63DFR) já é known_part de rodada anterior — não resubmetido aqui.
+
+  - part_number: "H5TQ2G83AFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332940/HYNIX/H5TQ2G83AFR.html"
+    notes: >
+      Irmão de revisão (cluster, achado na varredura "Similar Description" da página do
+      alvo). AllDataSheet: página PRÓPRIA e dedicada (id 332940, 456KB/30P,
+      Manufacturer=HYNIX, Direct Link=skhynix.com oficial, categoria "2Gb/DDR3/SDRAM"). NÃO
+      consegui abrir o corpo do PDF (viewer JS) — confidence=manual.
+
+  - part_number: "H5TQ2G83FFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/534223/HYNIX/H5TQ2G83FFR.html"
+    notes: >
+      Irmão de revisão, código de revisão F (cluster, achado na varredura "Similar
+      Description" da página do alvo). AllDataSheet: página PRÓPRIA e dedicada (id 534223,
+      399KB/33P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial). Corpo do PDF não
+      aberto — confidence=manual.
+
+  - part_number: "H5TQ2G43AFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332939/HYNIX/H5TQ2G43AFR.html"
+    notes: >
+      Par x4 da revisão A (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 332939,
+      456KB/30P — mesmo tamanho/contagem do par x8, consistente com par do mesmo
+      documento-fonte), Manufacturer=HYNIX, Direct Link=skhynix.com oficial. Corpo do PDF
+      não aberto — confidence=manual.
+
+  - part_number: "H5TQ2G43BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332936/HYNIX/H5TQ2G43BFR.html"
+    notes: >
+      Irmão de revisão x4 (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 332936,
+      513KB/35P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial). Descrição estruturada
+      corroborante (digchip/datasheet4u): "DDR3 DRAM... 512MX4... PBGA82" —
+      512M×4=2048Mbit=2Gb, bate exato. Corpo do PDF em si não aberto — confidence=manual.
+
+  - part_number: "H5TQ2G43CFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533421/HYNIX/H5TQ2G43CFR.html"
+    notes: >
+      Irmão de revisão x4 (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 533421,
+      402KB/33P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial). Descrição estruturada
+      corroborante: "2,147,483,648-bit CMOS DDR3" = 2^31 bits = 2Gbit exato. Corpo do PDF em
+      si não aberto — confidence=manual.
