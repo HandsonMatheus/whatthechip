@@ -1,0 +1,89 @@
+# Submissão de known_parts — Toshiba-Kioxia, cluster TYD0GH221 (eMCP eMMC+LPDDR3, 221ball)
+#
+# PN da bancada (WhatTheChip Debug, 2026-08-20): TYD0GH221664RA. Compartilha os 9 primeiros
+# caracteres + sufixo EXATOS com a âncora desta família (TYD0GH221651RA, já confirmada 8GB
+# NAND + 1GB LPDDR3 via Preduo Tier-3): "TYD0GH221[XXXX]RA" — só o número de lote (posições
+# 9-12) muda (1664 vs 1651). É o padrão "cluster de lote" que a PRÓPRIA família já documenta
+# no tip (TYC: "TYC0FH12[XXXX]RA = mesmas specs, só lote diferente"; mesma lógica pro TYD).
+#
+# Existência confirmada em dezenas de distribuidores reais (DigiPart agregando NetSource,
+# Ariat/TAEC — nome oficial "Toshiba Electronic Devices and Storage Corporation", ITD, Chipsea,
+# Sierra IC, Haode, GlobalTek, etc.) — mas NENHUM traz capacidade explícita em título/spec
+# (só código de pacote genérico "869"/"674"/"583", sem "GB"/"8+8"). Diferente da submissão
+# anterior (TYD0GH121661RA), não achei um anúncio tipo Alibaba com título "8+8" para nenhum
+# destes 3 PNs especificamente — a confirmação aqui é 100% via "cluster de lote" (mesmo
+# prefixo+RAM-code+sufixo da âncora), não por fonte própria de capacidade.
+#
+# Busca adicional (pedido do dono: "pesquisa mais primos e irmãos"): o cross-reference "See
+# Also" do DigiPart nas páginas de TYD0GH221664RA/TYD0GH221640RA/TYD0GH221644RC voltou
+# consistentemente listando os 3 PNs como relacionados entre si E com a âncora TYD0GH221651RA
+# — trouxe 2 primos REAIS adicionais do mesmo cluster "TYD0GH221": TYD0GH221640RA e
+# TYD0GH221644RC. Nenhum dos dois tem capacidade explícita em fonte alguma encontrada
+# (mesma limitação do PN da bancada) — incluídos pela MESMA lógica de cluster de lote.
+#
+# ⚠ Sinal de ruído descartado (não usado): shengyuic.com descreve TYD0GH221640RA como
+# "TFBGA162" (pacote da família TYC, não TYD/BGA-221) — único distribuidor entre ~10 páginas
+# a dizer isso, todos os outros mostram códigos de pacote consistentes com BGA-221. Tratado
+# como erro de cadastro do distribuidor (Tier-3 isolado, contradiz o consenso), não como sinal
+# real — mas registrado aqui por transparência.
+#
+# NÃO incluídos: TYD0GH221664RA10T / TYD0GH221664RA10C (sufixo extra de 3 chars, achados no
+# DigiPart) — excedem pn_length=14 da família, provavelmente code de data/lote do fabricante
+# anexado pelo distribuidor, não uma variante de spec; fora do escopo (o PN da bancada é de 14
+# chars, sem esse sufixo).
+#
+# confidence=distributor — mesmo nível já usado na âncora e nas 2 submissões anteriores desta
+# família nesta sessão (TYD0GH121661RA, TYD0GH231624RC), mas aqui a base é puramente
+# estrutural (cluster de lote idêntico à âncora), não uma fonte com capacidade explícita.
+# Se o dono preferir um nível de confiança mais conservador pra este trio (cluster sem fonte
+# própria de capacidade), sinalizar — mas o padrão já é o mesmo usado no TYC (irmãos de lote).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd_221664_cluster_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd_221664_cluster_2026-08-20.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TYD0GH221664RA"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/TYD0GH221664RA"
+    notes: >
+      PN da bancada (WhatTheChip Debug, 2026-08-20). Cluster de lote da âncora desta família
+      (TYD0GH221651RA, 8GB NAND + 1GB LPDDR3, Preduo Tier-3) — os 9 primeiros caracteres +
+      sufixo são IDÊNTICOS ("TYD0GH221...RA"), só o número de lote muda (1664 vs 1651). Mesmo
+      padrão "cluster de lote" já documentado no tip da família-irmã TYC. Existência confirmada
+      em dezenas de distribuidores (DigiPart: NetSource/Ariat-TAEC/ITD/Chipsea/Sierra IC/Haode/
+      GlobalTek/New Strength) — nenhum com capacidade explícita em título/spec, só código de
+      pacote genérico (869/674/583, consistente com BGA-221). Sem fonte própria de capacidade
+      — confiança apoiada no cluster de lote, não em anúncio com "8+8"/GB explícito.
+  - part_number: "TYD0GH221640RA"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/TYD0GH221640RA"
+    notes: >
+      Primo achado via cross-reference "See Also" do DigiPart nas páginas do cluster
+      TYD0GH221664RA/TYD0GH221651RA (pedido do dono: pesquisar mais primos/irmãos). Mesmo
+      cluster de lote "TYD0GH221...RA" da âncora — só o número muda (0640). Existência
+      confirmada em ~10 distribuidores reais. ⚠ 1 distribuidor isolado (shengyuic.com) descreve
+      como "TFBGA162" (pacote da família-irmã TYC, não do TYD) — todos os outros ~9 mostram
+      código de pacote consistente com BGA-221; tratado como erro de cadastro isolado (Tier-3
+      único, contradiz o consenso), não como sinal de capacidade/pacote diferente. Sem fonte
+      própria de capacidade — mesma base do cluster de lote.
+  - part_number: "TYD0GH221644RC"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/TYD0GH221644RC"
+    notes: >
+      Primo achado via cross-reference "See Also" do DigiPart (mesma rodada dos 2 PNs acima).
+      Mesmo cluster de lote "TYD0GH221...RC" da âncora (sufixo "RC", não "RA" — mesma variante
+      de sufixo já vista em TYD0GH231624RC, sem impacto documentado na capacidade). Existência
+      confirmada em ~9 distribuidores reais (NetSource/PESE/Ariat-TAEC/YIC/GlobalTek/ITD/New
+      Strength/IC-Components/Chipsea/Sierra IC). Sem fonte própria de capacidade — mesma base
+      do cluster de lote.

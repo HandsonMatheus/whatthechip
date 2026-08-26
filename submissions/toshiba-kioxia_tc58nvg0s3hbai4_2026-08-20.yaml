@@ -1,0 +1,77 @@
+# Submissão de known_parts — Toshiba-Kioxia, TC58NVG0S3HBAI4 (NAND raw, SLC)
+#
+# PN da bancada (WhatTheChip Debug, 20/08/2026): "TC58NVG0S3HBA14" — known=false, sem
+# família nenhuma no engine (chip_type/subtype/tudo vazio, in_review_queue=true).
+#
+# ⚠ CORREÇÃO DE LEITURA: "TC58NVG0S3HBA14" (dígito "1" na 14ª posição) NÃO existe na
+# nomenclatura oficial Toshiba — é estruturalmente inválido. O PN real é
+# "TC58NVG0S3HBAI4" (letra "I", não dígito "1") — troca clássica de leitura em marcação
+# BGA minúscula (I maiúsculo × 1 são quase idênticos nessa fonte/tamanho).
+#
+# Prova estrutural (não é só achismo): decodifiquei caractere-a-caractere pelo decoder
+# OFICIAL da Toshiba (fonte Tier-1 abaixo) e a 14ª posição é o campo "Channel/Mode",
+# cuja tabela de símbolos SÓ aceita LETRAS (I, K, M, R, S, U, V) — nenhum dígito aparece
+# nessa tabela. "1" não é símbolo válido nessa posição; "I" é. As outras 14 posições são
+# IDÊNTICAS entre a leitura da bancada e o PN corrigido (só essa 1 posição difere) — ver
+# comparação char-a-char, sem outras hipóteses de erro de leitura.
+#
+# Fonte Tier-1: "Part Number Decoder for Toshiba NAND Flash" (MFOPR-916, Toshiba
+# Corporation, Sep/2010) — documento OFICIAL do fabricante, regra vigente pra NAND
+# 56nm/43nm/32nm/24nm. Lido na íntegra via transcrição:
+# https://pdf4pro.com/view/part-number-decoder-for-toshiba-nand-flash-17bb74.html
+# (documento espelhado também em studylib.net e originalmente da Toshiba Memory Division)
+#
+# Decodificação posição-a-posição de TC58NVG0S3HBAI4 (15 caracteres):
+#   TC58 = chip único (Mono, não Stack — "TC"; "TH" seria multi-chip)
+#   N    = NAND padrão (não Toggle-mode)
+#   V    = tipo de tensão (símbolo da tabela Vcc/VccQ)
+#   G0   = densidade = 1 Gbit = 128MB (tabela: "G0 1(=2^0) Gbits =128MB")
+#   S    = SLC — 2 Level, 1 bit/cell (tabela: "S / H*1 = 2 Level")
+#   3    = organização x8, página 2KB / bloco 128KB (tabela: "3 = x8, 2KB/128KB")
+#   H    = design rule 24nm B-type (tabela: "H = 24nm B-type")
+#   BA   = pacote BGA, lead-free + halogen-free
+#   I    = modo/canal "Single" (temperatura industrial, -40~85°C — consistente com o
+#          "i: Mode, I = Normal (Industrial)" do guia anterior de 2003, mesma convenção)
+#   4    = tamanho do pacote BGA ~9x11mm (tabela Details-4)
+#
+# Cross-check independente: busca web trouxe resumos de agregadores de datasheet
+# (AllDataSheet/FindIC) pro MESMO PN "TC58NVG0S3HBAI4" descrevendo: tecnologia 24nm,
+# organização (2048+128)x8 bit, 3.3V, pacote 63BGA 9x11mm, temperatura -40°C a 85°C —
+# bate EXATAMENTE com a decodificação acima em todos os pontos independentes
+# (24nm=H ✓, x8/2KB=3 ✓, 3.3V=V ✓, BGA 9x11=BA+4 ✓, industrial -40~85°C=I ✓). Contagem
+# de esferas "63" vs "60" (do decoder) é a única pequena divergência — dimensão física
+# (9x11mm) bate exato, tratando como o mesmo pacote real.
+#
+# Convenção do projeto (chip_types.py, NAND raw): chip_type="NAND Flash",
+# subtype="SLC NAND" (célula), capacity em bytes.
+#
+# confidence=confirmed — fonte é o decoder OFICIAL do fabricante (não estimativa/
+# distribuidor), lido na íntegra, com todas as posições batendo contra o real datasheet
+# do PN corrigido.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tc58nvg0s3hbai4_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tc58nvg0s3hbai4_2026-08-20.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TC58NVG0S3HBAI4"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://pdf4pro.com/view/part-number-decoder-for-toshiba-nand-flash-17bb74.html"
+    notes: >
+      PN da bancada veio como "TC58NVG0S3HBA14" (dígito 1) — CORRIGIDO pra
+      "TC58NVG0S3HBAI4" (letra I): "1" não é símbolo válido na posição 14 (campo
+      Channel/Mode, tabela só aceita I/K/M/R/S/U/V), confirma troca de leitura I↔1.
+      Decodificado integralmente pelo "Part Number Decoder for Toshiba NAND Flash"
+      (MFOPR-916, Toshiba Corporation, 2010 — documento oficial do fabricante, regra
+      vigente pra NAND 56/43/32/24nm): TC58=chip único, N=NAND padrão, G0=1Gbit=128MB,
+      S=SLC (2-level), 3=x8/2KB página/128KB bloco, H=24nm B-type, BA=BGA lead-free+
+      halogen-free, I=modo industrial (-40~85°C), 4=pacote BGA ~9x11mm. Cross-check
+      independente: resumos de agregadores de datasheet pro MESMO PN corrigido
+      descrevem 24nm/x8/(2048+128)B por página/3.3V/63BGA 9x11mm/-40~85°C — bate exato
+      com a decodificação em todos os pontos (só a contagem de esferas 60 vs 63 diverge
+      por pouco; dimensão física 9x11mm bate exato). NAND raw standalone (não eMCP/eMMC)
+      — chip_type/subtype seguem a convenção do projeto (chip_types.py).

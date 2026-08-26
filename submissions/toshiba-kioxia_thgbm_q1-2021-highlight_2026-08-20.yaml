@@ -1,0 +1,109 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBM (eMMC)
+#
+# Pedido do dono (2026-08-20): buscar mais irmãos/primos de THGBMJG6C1LBAIL, banco de dados é o
+# objetivo (não a gramática). Achei o documento oficial KIOXIA "Managed Flash Memory Solutions —
+# Product Highlight, Q1/2021" (mesma fonte já usada antes nesta marca pra confirmar a família
+# THGAF) — ele lista uma TABELA com vários PN da família THGBM (consumer + industrial grade) numa
+# página só. 7 PNs novos (não submetidos antes) confirmados nesta rodada, TODOS usando chaves de
+# capacidade e geração JÁ EXISTENTES na gramática (5D1/6C1/7C1/7C2/8C2/8C4/9C8 — nenhuma chave
+# nova, só identidade de PN nova com fonte própria):
+#
+#   Consumer Grade (-25 a 85°C):
+#     THGBMNG5D1LBAIT   4GB   eMMC 5.0   FG NAND   pacote 11x10x0.8mm
+#     THGBMJG7C1LBAIL   16GB  eMMC 5.1   pacote 11.5x13x0.8mm
+#     THGBMJG8C2LBAIL   32GB  eMMC 5.1   pacote 11.5x13x0.8mm
+#   Industrial Grade (-40 a 105°C, Tc=115°C max):
+#     THGBMJG6C1LBAU7   8GB   eMMC 5.1   FG NAND   pacote 11.5x13x1.2mm
+#     THGBMJG7C2LBAU8   16GB  eMMC 5.1   pacote 11.5x13x1.2mm
+#     THGBMJG8C4LBAU8   32GB  eMMC 5.1   pacote 11.5x13x1.2mm
+#     THGBMJG9C8LBAU8   64GB  eMMC 5.1   pacote 11.5x13x1.2mm
+#
+# Fonte Tier-1: "Copyright © 2020 KIOXIA Corporation... Managed Flash Memory Solutions | Product
+# Highlight | Q1/2021 | v.1.1" — PDF oficial do fabricante, tabela "MANAGED FLASH | e-MMC" com
+# Part Number/Capacity/e-MMC Version/Process/Max Data Rate/Supply Voltage/Operating Temp/Package
+# lado a lado. Lido na íntegra via:
+# https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276
+# (mirror LCSC do datasheet oficial; mesmo documento já citado antes na família THGAF desta marca)
+#
+# NÃO incluído: THGBMNG5D1LBAIL (mesma linha da tabela, capacidade 4GB/eMMC5.0) — já confirmado
+# em rodada anterior desta marca (2026-07-08, ver reasoning do THGBM no yaml: "datasheet
+# THGBMNG5D1LBAIL (LCSC C391255, rev1.0 2018)") — não repetido pra evitar duplicata.
+#
+# Cross-check adicional: THGBMJG7C1LBAIL também confirmado independentemente via LCSC (ficha
+# estruturada própria, não só o PDF highlight): "Memory Size 16GB · Interface eMMC 5.1" — bate
+# exato com a tabela Kioxia. THGBMJG6C1LBAU7 também confirmado por Anglia ("KIOXIA EUROPE... EMMC
+# 8GB NAND FLASH") e Utmel ("Memory Size 8GB... Package FBGA-153") — 3 fontes independentes
+# convergindo no mesmo valor.
+#
+# confidence=confirmed — datasheet oficial do fabricante com tabela explícita PN+capacidade+
+# versão, mesmo padrão de confiança já usado nas outras confirmações Tier-1 desta família.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_q1-2021-highlight_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_q1-2021-highlight_2026-08-20.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBMNG5D1LBAIT"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA "Managed Flash Memory Solutions Product Highlight Q1/2021" (consumer
+      grade): "THGBMNG5D1LBAIT 4GB 5.0 FG NAND ... 11 x 10 x 0.8" mm. pn[5]="N"→eMMC5.0 (já no
+      THGBM_GEN) + pn[7:10]="5D1"→4GB (já no THGBM_CAP) — chaves já confirmadas, só identidade de
+      PN nova. Irmã da mesma linha da tabela (THGBMNG5D1LBAIL, pacote 11.5x13x0.8mm) já é
+      known_part confirmado de rodada anterior (2026-07-08) — não repetida.
+  - part_number: "THGBMJG7C1LBAIL"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA Q1/2021 (consumer grade): "THGBMJG7C1LBAIL 16GB 5.1". pn[7:10]="7C1"
+      →16GB, já confirmado no THGBM_CAP. Cross-check independente: ficha estruturada própria da
+      LCSC (lcsc.com/product-detail/eMMC_KIOXIA-THGBMJG7C1LBAIL_C879825.html) — "Memory Size
+      16GB · Interface eMMC 5.1" — bate exato com a tabela oficial.
+  - part_number: "THGBMJG8C2LBAIL"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA Q1/2021 (consumer grade): "THGBMJG8C2LBAIL 32GB 5.1". pn[7:10]="8C2"
+      →32GB, já confirmado no THGBM_CAP.
+  - part_number: "THGBMJG6C1LBAU7"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA Q1/2021 (industrial grade, -40 a 105°C, Tc=115°C max): "THGBMJG6C1LBAU7
+      8GB 5.1 FG NAND ... 11.5 x 13 x 1.2". pn[7:10]="6C1"→8GB, já confirmado. Cross-check
+      independente: Anglia ("KIOXIA EUROPE (PREV TOSHIBA) TFBGA153 EMMC 8GB NAND FLASH") e Utmel
+      ("Memory Size: 8 GB · Package: FBGA-153") — 2 fontes adicionais convergindo no mesmo valor.
+  - part_number: "THGBMJG7C2LBAU8"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA Q1/2021 (industrial grade): "THGBMJG7C2LBAU8 16GB". pn[7:10]="7C2"
+      →16GB, já confirmado no THGBM_CAP.
+  - part_number: "THGBMJG8C4LBAU8"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA Q1/2021 (industrial grade): "THGBMJG8C4LBAU8 32GB". pn[7:10]="8C4"
+      →32GB, já confirmado no THGBM_CAP.
+  - part_number: "THGBMJG9C8LBAU8"
+    chip_type: "eMMC"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/d13f57ada5388526cdd7cc63ef9f9410.pdf?productCode=C5365276"
+    notes: >
+      Tabela oficial KIOXIA Q1/2021 (industrial grade): "THGBMJG9C8LBAU8 64GB". pn[7:10]="9C8"
+      →64GB, já confirmado no THGBM_CAP.

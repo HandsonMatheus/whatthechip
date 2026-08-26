@@ -1,0 +1,74 @@
+# Submissão de known_parts — Toshiba-Kioxia, família TYD (eMCP eMMC+LPDDR3)
+#
+# "Primo" do PN da bancada TYD0GH121661RA, achado varrendo o cluster TYD por pedido do
+# dono (2026-08-20): TYD0GH231624RC, código de RAM pn[6:8]="23" (diferente do "12" e do
+# "22" já vistos nesta família — mais um código confirmado).
+#
+# Fonte: gsmbdshop.com (Mobile-Repair, Bangladesh) — NÃO é marketplace de venda genérico,
+# é um catálogo de compatibilidade de ferramenta de flash (UFI BOX). Ficha estruturada real
+# (não gerada por IA — os campos batem com o que uma ferramenta de flash PRECISA pra
+# funcionar; spec errada = ferramenta falha, então tem incentivo real de precisão):
+#   PART -TYD0GH231624RC · PRODUCT -TOSHIBA-008G92-162 · BGA -162 · ROOM -7.28 ·
+#   RAM -1GB · BOOT -4096 KIB · RPMB -512KIB · VCC -3.3 · VCCQ -3.0 ·
+#   EXT_CSD -1.6 (MMC v4.5, v4.51)
+# https://www.gsmbdshop.com/product/toshiba-tyd0gh231624rc-8gb1-emmc-good-tast-ufi-box-selle-in-bd-price-gsma2zhelp-com/
+#
+# Validação cruzada da FONTE (não do PN): o mesmo site tem uma ficha equivalente pro
+# TYC0FH121638RA (golden JÁ confirmado nesta marca, subtype LPDDR2) — "RAM -512MB",
+# batendo com um módulo LPDDR2 real (256/512MB/1GB são os tamanhos usuais dessa
+# geração). Ou seja, o site acerta em um PN que JÁ temos certeza — evidência de que os
+# campos são extraídos de teste/uso real da ferramenta de flash, não texto genérico.
+#
+# Aritmética: NAND = código interno Toshiba "008G" = 8GB (direto, sem conversão Gb/GB) —
+# confirmado por "ROOM -7.28" (≈91% de 8GB bruto, overhead típico de eMMC pra boot/RPMB/
+# reserva, bate). RAM = campo explícito "RAM -1GB" (já em GB, sem ambiguidade Gb/GB).
+#
+# ⚠ Nota de pacote: BGA-162, DIFERENTE do BGA-221 da âncora desta família
+# (TYD0GH221651RA) e do TYD0GH121661RA (também 221-ball, já submetido). O `chip_type`/
+# `pn_length` (14) batem com a família TYD existente e o engine não modela contagem de
+# esferas — não bloqueia o known_part — mas é sinal de que a família TYD cobre pelo
+# menos 2 pacotes físicos diferentes sob o mesmo prefixo textual.
+#
+# NÃO incluídos nesta leva (existência confirmada, capacidade NÃO): TYD0HH231632RC,
+# TYD0HH231633RC, TYD0HH231634RC, TYD0HH251623RC — todos aparecem em múltiplos
+# distribuidores reais (OMO Electronic, HKin.com, Octopart) mas sem ficha técnica
+# confiável. Um único anúncio AliExpress (não confirmado por 2ª fonte) sugere
+# TYD0HH231632RC = 16GB NAND + 2GB RAM em pacote BGA-221 (diferente do BGA-162 do
+# TYD0GH231624RC, mesmo os dois compartilhando o código de RAM "23") — CONTRADIZ a
+# suposição de que o código "23" sozinho implica a mesma capacidade/pacote, então não
+# extrapolo por analogia. TYD0HH121662RA (irmão direto do PN da bancada, mesmo código
+# "12") permanece sem nenhuma fonte de capacidade apesar de nova rodada extensa de
+# pesquisa (Preduo, Puris, Octopart, YIC, Allelco, IC-Components, rf-china.com, digipart,
+# gsmbdshop, dzsc.com, jotrin, hkinventory) — excluído, sem adivinhar.
+#
+# Nenhuma fonte Tier-1 (datasheet oficial TAEC) foi encontrada pra NENHUM PN desta
+# família nesta rodada — consistente com o histórico já conhecido da família TYD/TYC
+# (âncoras anteriores também só Tier-3).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd_231624_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd_231624_2026-08-20.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TYD0GH231624RC"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://www.gsmbdshop.com/product/toshiba-tyd0gh231624rc-8gb1-emmc-good-tast-ufi-box-selle-in-bd-price-gsma2zhelp-com/"
+    notes: >
+      Achado pesquisando primos/irmãos de TYD0GH121661RA (família TYD, eMMC+LPDDR3).
+      Código de RAM pn[6:8]="23" (3º código confirmado desta família, além de "22" e
+      "12"). Fonte: gsmbdshop.com, catálogo de compatibilidade UFI BOX (ferramenta de
+      flash) — ficha real, não marketplace: "PRODUCT -TOSHIBA-008G92-162, BGA -162,
+      ROOM -7.28, RAM -1GB, BOOT -4096 KIB, RPMB -512KIB, VCC -3.3, VCCQ -3.0, EXT_CSD
+      -1.6". Aritmética: NAND = código interno "008G" = 8GB direto; confirmado por ROOM
+      7.28GB (~91% de 8GB bruto, overhead eMMC típico). RAM = campo explícito "1GB", já
+      em GB. Validação da fonte: o mesmo site tem ficha equivalente e correta pro
+      TYC0FH121638RA (golden já confirmado desta marca, LPDDR2) — "RAM -512MB", batendo
+      com módulo LPDDR2 real — evidência de que o site reflete uso/teste real da
+      ferramenta de flash, não texto genérico/gerado. Pacote BGA-162 (diferente do
+      BGA-221 da âncora TYD0GH221651RA e do TYD0GH121661RA já submetido) — engine não
+      modela contagem de esferas, não bloqueia. Sem fonte Tier-1 (datasheet TAEC)
+      disponível publicamente, consistente com o resto da família.

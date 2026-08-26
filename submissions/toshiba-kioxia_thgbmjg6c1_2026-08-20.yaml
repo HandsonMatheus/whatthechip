@@ -1,0 +1,55 @@
+# Submissão de known_parts — Toshiba-Kioxia, THGBMJG6C1LBAIL (eMMC, família THGBM)
+#
+# PN da bancada (WhatTheChip Debug, 2026-08-20): THGBMJG6C1LBAIL. Já classifica CERTO pela
+# gramática hoje (grammar_complete=true, capacidade=8GB via chave "6C1" já confirmada, interface
+# eMMC 5.1 via pn[5]="J" já confirmado) — mas pn_not_in_db=true / confidence=estimated, sem
+# known_part próprio. Esta submissão fecha esse gap com fonte Tier-1 direta.
+#
+# Fonte Tier-1: datasheet OFICIAL KIOXIA, dedicado a este PN exato — "THGBMJG6C1LBAIL, © 2019
+# KIOXIA Corporation, October 1st, 2019, e-MMC Module". Confirma:
+#   - "THGBMJG6C1LBAIL is 8GB density of e-MMC Module product housed in 153 ball BGA package"
+#   - "JEDEC / MMCA Version 5.1 interface" (bate com pn[5]="J"→eMMC5.1 já no THGBM_GEN)
+#   - Pacote: P-WFBGA153-1113-0.50 (11.5mm x 13mm, H0.8mm max.)
+#   - NAND: 1 x 64Gbit 15nm
+#   - Tabela "Density Specifications": "8GB THGBMJG6C1LBAIL ... User Area Density 7,818,182,656
+#     Bytes ... SEC_COUNT 0xE90000" — capacidade em bytes exatos, não arredondado
+#   - CID Register, Product name (PNM): "0x30 30 38 47 42 30" = ASCII "008GB0" — o PRÓPRIO chip
+#     se identifica como 8GB no registro interno (confirmação redundante independente da tabela)
+# PDF lido na íntegra: https://bbs.aw-ol.com/assets/uploads/files/1725055023454-thgbmjg6c1lbail.pdf
+# (mirror; também indexado em datasheet4u.com, DigiKey, LCSC, JLCPCB como "KIOXIA THGBMJG6C1LBAIL")
+#
+# confidence=confirmed — datasheet oficial do fabricante dedicado a este PN exato (não
+# distribuidor, não inferência de cluster) — nível mais alto, igual ao padrão já usado nas
+# outras confirmações Tier-1 desta família (ex. THGBMBG6D1KBAIL via catálogo oficial).
+#
+# Primos/irmãos (pedido padrão desta sessão): os outros gen-letters da MESMA chave de
+# capacidade "6C1" (THGBMFG6C1LBAIL, THGBMFG6C1LBAIT, THGBMHG6C1LBAIL, THGBMUG6C1LBAIL,
+# THGBMFG7C1LBAIL) JÁ aparecem no fuzzy_suggestions do próprio debug — ou seja, já são
+# KnownPart aprovado no banco (regra: fuzzy só lista aprovado, não pesquisar de novo). Busquei
+# por um possível irmão de sufixo "T" (THGBMJG6C1LBAIT, padrão L/T já visto em outras chaves
+# desta família) — não encontrado em nenhuma fonte; não incluído (não invento).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbmjg6c1_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbmjg6c1_2026-08-20.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBMJG6C1LBAIL"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://bbs.aw-ol.com/assets/uploads/files/1725055023454-thgbmjg6c1lbail.pdf"
+    notes: >
+      PN da bancada (WhatTheChip Debug, 2026-08-20). Já decodificava certo pela gramática
+      (grammar_complete=true, 6C1=8GB + J=eMMC5.1, ambos já confirmados antes nesta família) —
+      esta submissão upgrada de confidence=estimated (só gramática) pra confirmed (datasheet
+      dedicado). Fonte: datasheet OFICIAL KIOXIA de outubro/2019, específico deste PN exato —
+      "8GB density of e-MMC Module ... JEDEC/MMCA Version 5.1 interface ... P-WFBGA153-1113-0.50
+      ... 1 x 64Gbit 15nm". Tabela "Density Specifications" confirma 7.818.182.656 bytes de área
+      de usuário (SEC_COUNT 0xE90000). CID Register (Product Name) = ASCII "008GB0" — o próprio
+      chip se autoidentifica como 8GB, confirmação redundante independente da tabela de
+      densidade. PDF: bbs.aw-ol.com (mirror), também indexado em DigiKey/LCSC/JLCPCB/
+      datasheet4u.com como KIOXIA THGBMJG6C1LBAIL. Irmãos de mesma chave "6C1" com outras
+      letras de geração (F/H/U) já são known_part aprovado (apareceram no fuzzy_suggestions do
+      debug) — não repesquisados.

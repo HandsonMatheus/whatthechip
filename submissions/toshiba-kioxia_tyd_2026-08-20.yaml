@@ -1,0 +1,63 @@
+# Submissão de known_parts — Toshiba-Kioxia, família TYD (eMCP eMMC+LPDDR3, 221ball)
+#
+# PN da bancada (WhatTheChip Debug): TYD0GH121661RA. A família TYD já existe na gramática
+# (magra, sem decode_cap_map — capacidade sempre resolvida via known_part pontual, nunca
+# posicional). O código de RAM pn[6:8]="12" era inédito: só "22"→1GB LPDDR3 estava
+# confirmado até aqui (âncora TYD0GH221651RA, Preduo Tier-3, "8+8 Toshiba").
+#
+# Pesquisa extensa em Tier-1/2/3 não achou datasheet nem spec real pra esse PN: Preduo,
+# Puris (as 2 fontes que confirmaram a âncora "22"), Octopart (Tier-2 do projeto — devolveu
+# categoria ERRADA, "IC Opamp Gp 1 Circuit 8DIP", sinal de zero dado paramétrico real),
+# YIC, Allelco, IC-Components (3 distribuidores reais/rastreáveis que estocam o PN) e
+# rf-china.com (a MESMA fonte que resolveu o cluster TY8A0A/TYAB0A desta marca, mas não
+# tem entrada de memória pra "TYD" — só componentes passivos não relacionados). Os 3
+# distribuidores têm ficha técnica claramente gerada por IA (fala de "power sequencing",
+# "clock jitter", "level translators" — nada a ver com um eMCP real); não servem de fonte.
+#
+# Confirmação veio de 2 fontes convergentes, ambas de marketplace/observação direta
+# (padrão já usado nesta marca pro cluster TY8A0A — dono aceitou Tier-3 explicitamente
+# pra esse PN em 2026-08-20):
+#   1) Anúncio Alibaba ES, título "MSMWTRPM TYD0GH121661RA 221FBGA EMCP 8 + 8"
+#   2) Dono confirmou em sites de venda "8GB + 1GB" (2026-08-20)
+#
+# Aritmética (mesma conta já usada na âncora desta família):
+#   NAND = 8 (GB, 1º número da notação "8+8"/"8GB+1GB", sem ambiguidade Gb/GB) = 8GB eMMC
+#   RAM  = 8 (Gb, 2º número da notação bruta "+8") ÷ 8 = 1GB LPDDR3
+# As duas fontes convergem em "8GB NAND + 1GB LPDDR3", e bate EXATAMENTE com a âncora
+# TYD0GH221651RA (mesmo eMMC+LPDDR3 221ball, mesma notação "8+8") — só muda o código de
+# RAM pn[6:8] ("12" vs "22"), plausivelmente variante de lote/fornecedor, não de capacidade.
+#
+# confidence=distributor (mesmo nível já usado pra âncora desta família e pro cluster
+# TY8A0A/TYAB0A) — fonte é marketplace + observação direta, não datasheet oficial.
+#
+# NÃO incluído: TYD0HH121662RA (irmão real, mesmo código de RAM "12", NAND-letra "H" em
+# vez de "G" — existência confirmada via YIC/IC-Components/Octopart "similar", mas SEM
+# capacidade própria confirmada por nenhuma fonte). Fica de fora até ter confirmação
+# própria — não estendo por analogia.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd_2026-08-20.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TYD0GH121661RA"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://spanish.alibaba.com/product-detail/MSMWTRPM-TYD0GH121661RA-221FBGA-EMCP-8-8-1600718908806.html"
+    notes: >
+      PN da bancada (WhatTheChip Debug). Família TYD (eMMC+LPDDR3, 221ball) já existe na
+      gramática, magra (sem decode_cap_map) — capacidade sempre via known_part pontual.
+      Código de RAM pn[6:8]="12" inédito até agora (só "22"→1GB LPDDR3 confirmado, âncora
+      TYD0GH221651RA, Preduo Tier-3 "8+8 Toshiba"). Confirmado por 2 fontes convergentes:
+      (1) anúncio Alibaba ES, título "MSMWTRPM TYD0GH121661RA 221FBGA EMCP 8 + 8"; (2)
+      dono confirmou em sites de venda "8GB + 1GB" (2026-08-20). Aritmética: NAND=8(GB,
+      1º número, sem ambiguidade Gb/GB)=8GB eMMC; RAM=8(Gb, 2º número bruto "+8")÷8=1GB
+      LPDDR3 — mesma conta da âncora da família. Bate exatamente com TYD0GH221651RA (mesmo
+      eMMC+LPDDR3 221ball, só muda o código de RAM "12" vs "22" — plausível variante de
+      lote/fornecedor, não de capacidade). Pesquisa extensa em Tier-1/2/3 (Preduo, Puris,
+      Octopart, YIC, Allelco, IC-Components, rf-china.com, digipart) não achou datasheet
+      nem spec real — os agregadores que estocam o PN têm ficha técnica gerada por IA,
+      sem valor de fonte (ver cabeçalho do arquivo).
