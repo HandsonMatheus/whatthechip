@@ -39,10 +39,24 @@ def _discover_brands():
     """AUTODESCOBERTA: as marcas do deploy são TODOS os `chips/knowledge/*.yaml` —
     soltar um yaml novo já entra no deploy, sem editar este arquivo. **Samsung 1ª**:
     ela define os mapas GLOBAIS `DRAM_PC`/`DRAM_MOBILE` (brand=None) que as densidades
-    das outras marcas referenciam."""
+    das outras marcas referenciam.
+
+    ⚠ Arquivo começando com `_` NÃO é marca (2026-08-24). O `GlobalMapGuardTests`
+    escreve um `_guardtest.yaml` DENTRO desta pasta e apaga no `finally` — mas se a
+    suíte morre no meio (Ctrl-C, timeout, crash), o arquivo fica. Aí o glob o adota
+    como marca e ele vira um passo do deploy: foi visto como `[2/16] load_brands
+    {'brand': '_guardtest'}` numa rodada real. Como esse fixture define de propósito
+    um mapa GLOBAL (`DRAM_PC`) sendo não-Samsung, o `load_brands` levanta CommandError
+    — ou seja, **um resto de teste esquecido no disco aborta o deploy do catálogo no
+    passo 2 de 16**, com a Samsung já gravada e as outras 11 marcas não. O `_` é a
+    convenção de "privado" em Python; aqui ele passa a valer para o disco também."""
     nomes = sorted(
-        os.path.splitext(os.path.basename(p))[0]
-        for p in glob.glob(os.path.join(_KNOWLEDGE_DIR, "*.yaml"))
+        nome
+        for nome in (
+            os.path.splitext(os.path.basename(p))[0]
+            for p in glob.glob(os.path.join(_KNOWLEDGE_DIR, "*.yaml"))
+        )
+        if not nome.startswith("_")
     )
     if "samsung" in nomes:
         nomes = ["samsung"] + [n for n in nomes if n != "samsung"]

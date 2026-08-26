@@ -2860,3 +2860,47 @@ class SugestaoPrefixoRankingTests(TestCase):
         )
         self.assertNotIn('K4B4G1646Z', self._sugestoes(),
                          "PN 'submitted' vazou pra sugestão")
+
+
+class DeployCatalogDescobertaTests(SimpleTestCase):
+    """Resto de teste no disco NÃO pode virar passo do deploy do catálogo.
+
+    Achado 2026-08-24 (rodada do dono). O `GlobalMapGuardTests` escreve um
+    `chips/knowledge/_guardtest.yaml` e apaga no `finally` — mas se a suíte
+    morre no meio, o arquivo fica. O `_discover_brands` do `deploy_catalog`
+    varre `chips/knowledge/*.yaml` por glob, então adotava o fixture como
+    marca: apareceu literalmente como ``[2/16] load_brands {'brand':
+    '_guardtest'}`` numa saída real.
+
+    O estrago não é cosmético. Esse fixture define de propósito um mapa
+    GLOBAL (`DRAM_PC`) sendo uma marca não-Samsung — exatamente o que o
+    `load_brands` recusa com `CommandError`. Ou seja: **um arquivo esquecido
+    aborta o deploy no passo 2 de 16**, com a Samsung já gravada e as outras
+    11 marcas não. Catálogo meio montado em produção.
+
+    Convenção fixada: `_` no início = privado, nunca é marca.
+    """
+
+    def test_yaml_com_underscore_nao_vira_marca(self):
+        import os
+        from chips.management.commands.deploy_catalog import (
+            _discover_brands, _KNOWLEDGE_DIR)
+        path = os.path.join(_KNOWLEDGE_DIR, "_descobertatest.yaml")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write("brand: {name: X, code: X}\nfamilies: []\n")
+        try:
+            marcas = _discover_brands()
+        finally:
+            os.unlink(path)
+        self.assertNotIn("_descobertatest", marcas,
+                         "yaml com '_' entrou no deploy como marca")
+        self.assertNotIn("_guardtest", marcas)
+
+    def test_marcas_de_verdade_continuam_sendo_descobertas(self):
+        """A blindagem não pode engolir marca legítima."""
+        from chips.management.commands.deploy_catalog import _discover_brands
+        marcas = _discover_brands()
+        for esperada in ("samsung", "micron", "sandisk", "toshiba-kioxia"):
+            self.assertIn(esperada, marcas)
+        self.assertEqual(marcas[0], "samsung",
+                         "Samsung tem que ser a 1ª (define os mapas globais)")
