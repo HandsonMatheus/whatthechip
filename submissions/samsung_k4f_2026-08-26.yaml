@@ -1,0 +1,93 @@
+# Submissão de known_parts — Samsung, família K4F (LPDDR4 standalone, não-eMCP).
+# PN alvo (debug 2026-08-26): K4F2E3S4HAMGCL. Cap-key pn[3:5]="2E" JÁ é
+# LPDDR4_CAP confirmado (1.5GB/12Gb) desde 2026-07-06 (ver
+# submissions/samsung_k4f_2026-07-06.yaml, PN irmão K4F2E3S4HMMHCJ) — o debug
+# mostrar "1.5GB"/confidence=estimated é a gramática funcionando certo, não bug
+# (conferido antes de pesquisar, pra não desconfiar à toa).
+#
+# ⚠ MESMO PADRÃO do achado de hoje sobre match por STRING EXATA (ver
+# [[wtc-known-part-match-string-exata-sufixo]]): o PN irmão já confirmado em
+# julho (K4F2E3S4HMMHCJ) NÃO é o mesmo componente do alvo — diverge já na
+# posição 9 ('M' vs 'A' do alvo), ou seja, é um die-rev DIFERENTE, mesma
+# cap-key '2E', string totalmente distinta. A base real do alvo é
+# "K4F2E3S4HA" (die-rev 'A'), nunca antes submetida. Essa base tem 3 variantes
+# CONFIRMADAS direto no site oficial
+# Samsung Semiconductor Global (GFCL/TFCL/THCL, todas tituladas "(12 Gb)"),
+# mais 3 via distribuidor forte convergente (GHCL/GUCL/TUCL — mesmas specs
+# "12Gb, x32, 4266Mbps, 200FBGA" em múltiplas fontes independentes) — mesmo
+# padrão de mistura Tier-1+distribuidor já aceito nesta família em julho
+# (caso K4FBE3D4HM-AGCJ). O sufixo exato do debug, "-MGCL", NÃO está entre os
+# 3 oficiais, mas bate exato via Alibaba: "K4F2E3S4HA-MGCL LPDDR4 1.5GB
+# 4266mbps" — mesma capacidade, mesma velocidade, mesmo die-rev 'A' da base
+# já confirmada.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4F2E3S4HAMGCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://www.alibaba.com/product-detail/K4F2E3S4HA-MGCL-LPDDR4-1-5GB-4266Mbps_1601266425916.html"
+    notes: >
+      PN alvo (string completa, é assim que o operador leu no chip). Cap-key
+      '2E' já é Tier-1 confirmado (1.5GB/12Gb) desde 2026-07-06. Sufixo exato
+      "-MGCL" não está nas 3 páginas oficiais Samsung da base (GFCL/TFCL/
+      THCL), mas bate exato via Alibaba (1.5GB, 4266Mbps — mesma spec da
+      base). Mesmo padrão já aceito nesta família em julho (K4FBE3D4HM-AGCJ,
+      confirmado só via distribuidor Tier-2 quando o sufixo exato não estava
+      entre os oficiais).
+
+  - part_number: "K4F2E3S4HAGFCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4f2e3s4ha-gfcl/"
+    notes: "Sufixo oficial Samsung Semiconductor Global, título '(12 Gb)' — mesma base do alvo."
+
+  - part_number: "K4F2E3S4HATFCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4f2e3s4ha-tfcl/"
+    notes: "Sufixo oficial Samsung Semiconductor Global, título '(12 Gb)' — mesma base do alvo."
+
+  - part_number: "K4F2E3S4HATHCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4f2e3s4ha-thcl/"
+    notes: "Sufixo oficial Samsung Semiconductor Global, título '(12 Gb)' — mesma base do alvo."
+
+  - part_number: "K4F2E3S4HAGHCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://www.component-ua.com/products/K4F2E3S4HA-GHCL/10223448"
+    notes: "Sem página oficial Samsung dedicada achada, mas confirmado convergente (component-ua, key-components — '12Gb, x32, 4266Mbps, 200FBGA', idêntico às 3 variantes oficiais desta base)."
+
+  - part_number: "K4F2E3S4HAGUCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://www.ovaga.com/products/detail/k4f2e3s4ha-gucl"
+    notes: "Sem página oficial Samsung dedicada achada, mas confirmado convergente (Ovaga, JLCPCB — mesma spec '12Gb, x32, 4266Mbps, 200FBGA')."
+
+  - part_number: "K4F2E3S4HATUCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://jlcpcb.com/partdetail/Samsung-K4F2E3S4HATUCL/C2920212"
+    notes: "Sem página oficial Samsung dedicada achada, mas confirmado convergente (JLCPCB — mesma spec '12Gb, x32, 4266Mbps, 200FBGA')."
