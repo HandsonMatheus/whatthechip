@@ -193,11 +193,11 @@ badge = (lotes a conferir) + (lotes com saldo em aberto)
 Não conta `transit` nem quitado. **Zero ⇒ string vazia, não `0`.** Um único context processor; toda tela do
 painel recalcula no load. Hoje só existe o ponto do sino de notificações, sem número.
 
-### 4.3 `BlockedQuote` — a fila de cotação travada
+### 4.3 `BlockedQuote` — a fila de cotação travada ✅ (Etapa 6)
 
 Derivado, não armazenado: agregação dos lotes em `sem_preco` por (tipo, linha), com `orders`, `units` e
-`since` (data do lote travado mais antigo). A matéria-prima já existe em `services.draft_pendencias`
-(`vendas/services.py:1381`) — falta agregar e expor no resumo de preços.
+`since` (data do lote travado mais antigo). Entregue em `vendas/services.py::blocked_quotes` — ver
+**Etapa 6** no §9.
 
 Spec §3.5 crava a distinção que importa: **lacuna** (`miss`, célula vazia que ninguém está vendendo, pode
 esperar) × **travado** (lote já fechado que a plataforma não consegue precificar, **fila de trabalho**).
@@ -281,7 +281,7 @@ Cada etapa fecha sozinha, com teste, e não deixa a tela pela metade.
 | **3** | CSV da lista + badge do nav | 2 |
 | **4** | `LotNote` + aba Observações + PDF com autoria "Conferência" | C4 |
 | **5** | CSV por aba + modal de pagamento completo + carteira + rastreio clicável | 4 |
-| **6** | `BlockedQuote` no resumo de preços | C2 |
+| **6** ✅ | `BlockedQuote` no resumo de preços | C2 |
 | **7** | SSD + K9 nas telas de preço, piso do SSD | C3 |
 | **8** | Catálogo parametrizado | 7 |
 | **9** | Aplicar o design v2 em todos os templates do comprador | 1–8 |
@@ -597,6 +597,82 @@ carteira move. O ¥ ao lado é leitura conciliável, derivada da taxa travada �
 
 ⚠ **Depois do deploy:** cadastrar a carteira em `/admin/vendas/wallet/`. Até lá a aba de Pagamentos
 mostra "Carteira ainda não cadastrada" — que é o comportamento certo, não uma pendência de código.
+
+### ✅ Etapa 6 — a fila de cotação travada (`BlockedQuote`, §3.5) (2026-08-26)
+
+O `falta preço` do cliente visto **do lado de quem pode resolver**. A Etapa 3 decidiu não somá-lo ao
+badge de Compras justamente porque lá não há o que fazer a respeito; aqui é onde ele aparece.
+
+| Onde | O quê |
+|---|---|
+| `vendas/services.py` | `blocked_quotes(buyer)` — agrega os rascunhos sem preço por (tipo, linha) |
+| `pricing/views.py` | `_travados(request)` (uma vez por request) · `_kind_nav` passa a devolver **duas** contagens · a faixa no Resumo · a marca por linha na grade |
+| `partner_home.html` | a **faixa** no topo + a coluna dizendo `travando N pedidos` |
+| `partner_kind.html` | o **aviso vermelho** no topo + a marca na linha exata |
+| `partner_base.html` | o selo **vermelho** na barra de tipos, antes do âmbar |
+| `parceiro.css` | `.blk*` (faixa) · `.blkw*` (aviso) · `.ptype__b--block` · o gabarito da barra com dois selos |
+
+**Derivado, nunca armazenado.** Uma tabela `BlockedQuote` teria de ser mantida em sincronia com o grid a
+cada preço aprovado — e cache que erra aqui manda o comprador cotar o que já cotou. É o bug de 2026-08-18
+na outra ponta ("aprovei o preço e a lista continua dizendo que falta") esperando para acontecer de novo.
+Há teste cravando que **cotar a linha esvazia a fila na leitura seguinte**, sem congelar nada.
+
+**Duas contagens, duas marcas.** A barra de tipos tinha uma só, âmbar. Somar as duas apagaria a diferença
+que decide o que ele abre primeiro:
+
+| Marca | Conta | O que é |
+|---|---|---|
+| âmbar | **lacuna** | célula sem cotação numa caixa que ninguém está vendendo — pode esperar |
+| vermelha | **travado** | lote **já fechado** que a plataforma não consegue precificar — fila de trabalho |
+
+O vermelho vem **antes** do âmbar. E o gabarito da barra precisou mudar: `.ptype` era uma grade de duas
+colunas e o segundo selo caía para a linha de baixo, sob o nome do tipo. `grid-auto-flow:column` resolve
+sem tocar no caso de um selo só — coluna implícita só existe quando há item nela.
+
+**`ordens` NÃO é a soma dos `orders` das linhas.** Um lote com duas categorias sem preço aparece nas duas
+linhas; somar contaria o mesmo pedido duas vezes e a faixa mentiria o dobro. São conjuntos de `pk`.
+
+**A geração DOBRA** (`fold_gen`), aqui como no motor: a chave gravada pode ser `LPDDR4X` e a linha que ele
+edita é `LPDDR4`. Nomear a linha pela chave crua o mandaria procurar o que a tabela dele não tem.
+
+**`since` é a data do LOTE**, não a da ordem. As duas coincidem em prod (o rascunho nasce NO fechamento),
+mas quem manda no relógio é a caixa — e `created_at` fica só como fallback de dado anterior ao `closed_at`.
+
+**⚠ A escolha desta etapa: conta TODO rascunho, despachado ou não.** `orders_for_buyer` esconde rascunho
+antes do despacho — decisão do dono de 18/08, *"mostrar seria prometer caixa que ninguém postou"*. Aquilo é
+a lista de **compras**: promessa de caixa. A fila não mostra compra nenhuma — a entrada é uma **linha do
+grid**, e há teste cravando que ela não carrega lote, cliente nem vendedor. E o lote fechado hoje e ainda
+não postado é o caso **mais** urgente: sem o preço dele a ordem não congela, não fatura e não recebe. Fila
+que esconde metade dos itens não é fila.
+
+*Se o dono preferir o contrário*, é uma linha: somar `.filter(Q(shipped_at__isnull=False))` ao queryset de
+`blocked_quotes`. O efeito colateral é a fila passar a subestimar o trabalho, e a decisão fica documentada
+no docstring da função.
+
+**Três paradas, e por que não uma.** (1) A **faixa** no Resumo é a ordem em que ele deve abrir as tabelas
+hoje — cada célula é um link para a grade que resolve, e ela **desaparece quando zera**: não é painel, é
+fila. (2) A **coluna** do Resumo troca `N sem cotação` por `travando N pedidos`: as duas são verdade, só
+uma explica a urgência, e a contagem exata está a um clique. (3) O **aviso no topo da grade** existe para
+quem chegou pela barra e não pela faixa — sem ele o selo vermelho o larga numa tabela de trinta linhas sem
+dizer qual delas trava.
+
+**Na matriz por marca a marca vai no cabeçalho da linha**, e é o **número**, não a frase: a primeira coluna
+é `sticky` e `nowrap`, e "travando 2 pedidos" a alargaria o bastante para empurrar colunas de marca para
+fora da tela. A frase inteira está no `title` e, por extenso, no aviso do topo. Na tabela unificada, que
+tem coluna Estado, a frase sai por extenso e **vence** o selo "Não cotado".
+
+**A linha travada nem sempre existe no grid.** Quando a plataforma não consegue precificar porque a tabela
+não **tem** a linha, não há o que marcar — e é por isso que o aviso do topo é separado da marca. Há teste
+para esse caso.
+
+**Sem grade, sem link** (SSD linear, K9 fixo — Etapa 7): a célula continua na fila, só não vira `<a>`.
+Esconder o que trava seria pior que não ter para onde ir.
+
+24 testes (14 script + 10 interface) · 6 msgids novos nos 3 catálogos.
+
+⚠ **Asserção que não prova nada:** `assertIn('ptn-tag--block', html)` passa pelo **CSS embutido** do
+`partner_base`, não pela tela. As asserções cravam a classe **como ela é servida** (`ptn-tag
+ptn-tag--block`). Foi um `assertNotIn` que denunciou — o `assertIn` teria passado calado.
 
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 

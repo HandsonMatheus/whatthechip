@@ -105,6 +105,10 @@
     .ptn-tag--review   { background:var(--blue-20); color:var(--blue-70); }
     .ptn-tag--pending  { background:#fff1c2; color:var(--amber-70); }
     .ptn-tag--nobuy    { background:#ffd7d9; color:var(--red-70); }
+    /* PEDIDO TRAVADO (§3.5): chapa fixa, texto fixo — mesma razão do
+       .ptype__b, a chapa não inverte com o tema e a cor do texto se
+       decide contra ela. */
+    .ptn-tag--block    { background:#a2191f; color:#fff; }
     .ptn-tag--quoted   { background:#defbe6; color:var(--green-70); }
     .ptn-tag--inherited{ background:var(--ink-20); color:var(--ink-70); }
     .ptn-input { width:88px; padding:6px 8px; border:1px solid var(--ink-50);
@@ -241,10 +245,20 @@
         <span class="ptype__t">{% trans "Todos os preços" %}</span>
       </a>
       {% comment %} Navegação POR TIPO (dono 2026-07-27). Nomes de tipo são
-         canônicos — nunca traduzem. {% endcomment %}
-      {% for k, lbl, pend in kind_nav %}
+         canônicos — nunca traduzem.
+
+         DUAS contagens, duas marcas (spec v2 §3.5). Somá-las apagaria a
+         diferença que decide o que ele abre primeiro:
+           vermelha = pedido TRAVADO — lote já fechado que a plataforma não
+                      consegue precificar sem esta tabela. Fila de trabalho.
+           âmbar    = lacuna — célula sem cotação numa caixa que ninguém está
+                      vendendo. Pode esperar.
+         A vermelha vem ANTES da âmbar na linha, e é por isso que ela existe.
+      {% endcomment %}
+      {% for k, lbl, pend, trav in kind_nav %}
       <a href="{% url 'pricing:partner_kind' k %}" class="ptype{% if active_kind == k %} on{% endif %}">
         <span class="ptype__t">{{ lbl }}</span>
+        {% if trav %}<span class="ptype__b ptype__b--block" title="{% blocktrans trimmed count n=trav %}{{ n }} pedido travado esperando esta tabela{% plural %}{{ n }} pedidos travados esperando esta tabela{% endblocktrans %}">{{ trav }}</span>{% endif %}
         {% if pend %}<span class="ptype__b">{{ pend }}</span>{% endif %}
       </a>
       {% endfor %}

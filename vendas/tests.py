@@ -4197,6 +4197,10 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
         rotas = (reverse('compras:list'),
                  reverse('compras:detail', args=[self.so.pk]),
                  reverse('pricing:partner_home'),
+                 # a grade entrou na lista em 2026-08-26 (Etapa 6): ganhou
+                 # comentários novos, e é a tela onde a fila de cotação
+                 # travada aparece.
+                 reverse('pricing:partner_kind', args=['emcp']),
                  reverse('pricing:partner_how'))
         for rota in rotas:
             resp = self.client.get(rota)
@@ -4419,3 +4423,263 @@ class TaxaDeServicoERepasseTests(TestCase):
         self.assertNotContains(tela, 'Taxa de serviço')
         self.assertNotContains(tela, f'US$ {inv.net_usd}')
         self.assertContains(tela, f'US$ {inv.total_usd}')   # ele deve o cheio
+
+
+class FilaDeCotacaoTravadaTests(TestCase):
+    """`blocked_quotes` — a fila de cotação travada (spec v2 do comprador §3.5).
+
+    É o `falta preço` do cliente visto do lado de quem pode resolver. A spec
+    faz UMA distinção, e ela é a coisa toda:
+
+        lacuna    célula vazia numa caixa que ninguém está vendendo — espera
+        travado   lote JÁ FECHADO que a plataforma não consegue precificar —
+                  fila de trabalho
+
+    O que estes testes seguram, em ordem de importância:
+
+    1. **A agregação é por (tipo, linha)**, e `ordens` NÃO é a soma dos
+       `orders` das linhas — um lote com duas categorias sem preço aparece nas
+       duas e seria contado duas vezes.
+    2. **A geração DOBRA** (`fold_gen`): a chave gravada pode ser `LPDDR4X` e a
+       linha que ele edita é `LPDDR4`. Mandá-lo procurar uma linha que a tabela
+       não tem seria pior que não avisar.
+    3. **`since` é a data do LOTE**, não a da ordem: o que espera é a caixa.
+    4. **Só rascunho.** Confirmada tem preço congelado linha a linha.
+    5. **Isolamento**: a fila é do comprador, e não vaza do rival.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.emp_a, cls.buyer, cls.brand = _setup('vd-blk')
+        # Comprador de PLATAFORMA — é o que o Wu Quan é em prod, e é o que faz
+        # a fila atravessar empresas.
+        cls.buyer.company = None
+        cls.buyer.save(update_fields=['company'])
+        cls.emp_b = Company.objects.create(name='Vd blk B', slug='vd-blk-b')
+        cls.emp_c = Company.objects.create(name='Vd blk C', slug='vd-blk-c')
+        cls.rival = Buyer.all_companies.create(company=cls.emp_c,
+                                               name='Rival blk',
+                                               slug='rival-blk')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('vd_blk_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.emp_a.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+
+    # ── fixtures ────────────────────────────────────────────────────────────
+
+    def _travado(self, company, sufixo, *, kind='ufs', gen='',
+                 tier=Decimal('256'), unit='GB', qty=5, dias=0,
+                 buyer=None, despachar=False):
+        """Lote FECHADO cuja categoria não está no grid: rascunho `sem_preco`.
+
+        `create_draft_for_lot` nunca levanta (padrão F8) — a caixa existe, e é
+        justamente isso que trava a cotação.
+        """
+        from datetime import timedelta
+        with company_scope(company):
+            lot = Lot.open_for_company(company, self.parceiro,
+                                       'blk' + sufixo, origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='BLK' + sufixo, quantity=qty,
+                brand=self.brand, chip_type=kind.upper(), company=company,
+                price_kind=kind, price_gen=gen,
+                price_tier_value=tier, price_tier_unit=unit)
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            Lot.all_companies.filter(pk=lot.pk).update(
+                status=Lot.STATUS_CLOSED,
+                closed_at=timezone.now() - timedelta(days=dias))
+            if despachar:
+                services.mark_shipped(so, 'DHL', 'BK' + sufixo, None,
+                                      self.parceiro)
+            so.refresh_from_db()
+            return so
+
+    # ── a agregação ─────────────────────────────────────────────────────────
+
+    def test_script_agrega_por_tipo_e_linha_com_pedidos_unidades_e_desde(self):
+        """Duas caixas de EMPRESAS diferentes na MESMA linha do grid viram UMA
+        entrada — é a linha que ele vai cotar, não a caixa."""
+        self._travado(self.emp_a, 'A1', qty=40, dias=9)
+        self._travado(self.emp_b, 'A2', qty=70, dias=3)
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(len(fila['linhas']), 1)
+        linha = fila['linhas'][0]
+        self.assertEqual(linha['kind'], 'ufs')
+        self.assertEqual(linha['row'], 'UFS 256GB')
+        self.assertEqual(linha['orders'], 2)
+        self.assertEqual(linha['units'], 110)
+        self.assertEqual(fila['ordens'], 2)
+        self.assertEqual(fila['units'], 110)
+        self.assertEqual(fila['tipos'], 1)
+        self.assertEqual(fila['por_tipo'], {'ufs': 2})
+        # `since` é a do lote MAIS ANTIGO — quem espera há mais tempo manda.
+        from datetime import timedelta
+        self.assertEqual(linha['since'].date(),
+                         (timezone.now() - timedelta(days=9)).date())
+
+    def test_script_ordens_nao_e_a_soma_dos_pedidos_das_linhas(self):
+        """UM lote com DUAS categorias sem preço aparece nas duas linhas — e
+        continua sendo UM pedido travado. Somar as linhas o contaria duas
+        vezes, e a faixa mentiria o dobro."""
+        with company_scope(self.emp_a):
+            lot = Lot.open_for_company(self.emp_a, self.parceiro, 'blk2',
+                                       origin='phone')
+            for pn, kind, tier in (('D1', 'ufs', Decimal('256')),
+                                   ('D2', 'ufs', Decimal('512'))):
+                InventoryEntry.all_companies.create(
+                    lot=lot, part_number=pn, quantity=10, brand=self.brand,
+                    chip_type='UFS', company=self.emp_a, price_kind=kind,
+                    price_gen='', price_tier_value=tier, price_tier_unit='GB')
+            services.create_draft_for_lot(lot, self.parceiro)
+            Lot.all_companies.filter(pk=lot.pk).update(
+                status=Lot.STATUS_CLOSED, closed_at=timezone.now())
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(len(fila['linhas']), 2)
+        self.assertEqual([l['orders'] for l in fila['linhas']], [1, 1])
+        self.assertEqual(fila['ordens'], 1)          # UM pedido, não dois
+        self.assertEqual(fila['por_tipo'], {'ufs': 1})
+        self.assertEqual(fila['units'], 20)          # unidade não dobra
+
+    def test_script_a_fila_e_ordenada_pela_espera_mais_antiga(self):
+        self._travado(self.emp_a, 'O1', tier=Decimal('128'), dias=2)
+        self._travado(self.emp_a, 'O2', tier=Decimal('256'), dias=30)
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual([l['row'] for l in fila['linhas']],
+                         ['UFS 256GB', 'UFS 128GB'])
+
+    def test_script_since_e_a_data_do_LOTE_e_nao_a_da_ordem(self):
+        """As duas coincidem em prod (o rascunho nasce NO fechamento), mas quem
+        manda no relógio é o lote: é a caixa que está esperando."""
+        from datetime import timedelta
+        so = self._travado(self.emp_a, 'S1', dias=45)
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(fila['linhas'][0]['since'].date(),
+                         (timezone.now() - timedelta(days=45)).date())
+        self.assertNotEqual(fila['linhas'][0]['since'].date(),
+                            so.created_at.date())
+
+    def test_script_lote_sem_data_de_fechamento_cai_na_data_da_ordem(self):
+        """Dado antigo, anterior ao `closed_at`: a fila não pode sumir por
+        falta de carimbo — cai na criação da ordem, que é o mesmo instante."""
+        so = self._travado(self.emp_a, 'S2')
+        Lot.all_companies.filter(pk=so.lot_id).update(closed_at=None)
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(len(fila['linhas']), 1)
+        self.assertEqual(fila['linhas'][0]['since'], so.created_at)
+
+    # ── a geração DOBRA ─────────────────────────────────────────────────────
+
+    def test_script_geracao_dobra_para_a_linha_que_ele_realmente_edita(self):
+        """`LPDDR4X` gravado na chave resolve na linha-base `LPDDR4` do grid.
+        Nomear a linha pela chave crua mandaria o comprador procurar o que a
+        tabela dele não tem."""
+        self._travado(self.emp_a, 'F1', kind='lpddr', gen='LPDDR4X',
+                      tier=Decimal('6'))
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(len(fila['linhas']), 1)
+        self.assertEqual(fila['linhas'][0]['gen'], 'LPDDR4')
+        self.assertEqual(fila['linhas'][0]['row'], 'LPDDR4 6GB')
+
+    def test_script_duas_geracoes_da_mesma_base_somam_na_mesma_linha(self):
+        self._travado(self.emp_a, 'F2', kind='lpddr', gen='LPDDR4',
+                      tier=Decimal('6'), qty=20)
+        self._travado(self.emp_b, 'F3', kind='lpddr', gen='LPDDR4X',
+                      tier=Decimal('6'), qty=30)
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(len(fila['linhas']), 1)
+        self.assertEqual(fila['linhas'][0]['orders'], 2)
+        self.assertEqual(fila['linhas'][0]['units'], 50)
+
+    # ── quem entra e quem não entra ─────────────────────────────────────────
+
+    def test_script_conta_o_rascunho_que_ainda_NAO_saiu(self):
+        """Escolha deliberada: `orders_for_buyer` esconde rascunho antes do
+        despacho porque a lista de COMPRAS é promessa de caixa. A fila não
+        mostra compra nenhuma — não nomeia lote, cliente nem vendedor — e o
+        lote fechado hoje é o caso mais urgente: sem preço ele não congela,
+        não fatura e não recebe."""
+        so = self._travado(self.emp_a, 'N1')       # NÃO despachado
+        self.assertIsNone(so.shipped_at)
+        self.assertNotIn(so.pk, {o.pk for o in
+                                 services.orders_for_buyer(self.buyer)})
+        self.assertEqual(services.blocked_quotes(self.buyer)['ordens'], 1)
+
+    def test_script_a_fila_nao_nomeia_lote_cliente_nem_vendedor(self):
+        """O que autoriza contar o rascunho invisível: a entrada é uma LINHA
+        DO GRID, não uma caixa. Se um dia carregar identidade de lote, a
+        decisão de contá-lo antes do despacho precisa ser revista."""
+        self._travado(self.emp_a, 'N2')
+        linha = services.blocked_quotes(self.buyer)['linhas'][0]
+        self.assertEqual(set(linha), {'kind', 'gen', 'tier_value', 'tier_unit',
+                                      'box', 'row', 'orders', 'units',
+                                      'since'})
+
+    def test_script_ordem_confirmada_nunca_esta_travada(self):
+        """`confirm()` recusa qualquer pendência — não existe confirmada sem
+        preço. Cotar a linha e congelar esvazia a fila."""
+        from pricing.models import PriceList
+        so = self._travado(self.emp_a, 'C1', despachar=True)
+        self.assertEqual(services.blocked_quotes(self.buyer)['ordens'], 1)
+        with company_scope(self.emp_a):
+            generica = PriceList.all_companies.get(buyer=self.buyer,
+                                                   brand=None)
+            Price.all_companies.create(
+                price_list=generica, kind='ufs', gen='',
+                tier_value=Decimal('256'), tier_unit='GB',
+                status=STATUS_QUOTED, price_min=Decimal('40'),
+                price_max=Decimal('40'))
+            services.confirm(so, self.parceiro)
+        self.assertEqual(services.blocked_quotes(self.buyer)['ordens'], 0)
+        self.assertEqual(services.blocked_quotes(self.buyer)['linhas'], [])
+
+    def test_script_cotar_a_linha_tira_a_caixa_da_fila_sem_congelar(self):
+        """O bug de 2026-08-18 na outra ponta: ele aprova o preço que faltava
+        e a tela continua dizendo que falta. A fila lê AO VIVO."""
+        from pricing.models import PriceList
+        self._travado(self.emp_a, 'C2')
+        with company_scope(self.emp_a):
+            generica = PriceList.all_companies.get(buyer=self.buyer,
+                                                   brand=None)
+            Price.all_companies.create(
+                price_list=generica, kind='ufs', gen='',
+                tier_value=Decimal('256'), tier_unit='GB',
+                status=STATUS_QUOTED, price_min=Decimal('40'),
+                price_max=Decimal('40'))
+        self.assertEqual(services.blocked_quotes(self.buyer)['ordens'], 0)
+
+    def test_script_categoria_cotada_nao_entra_na_fila(self):
+        """`_setup` já cota eMMC 16GB: caixa inteira cotada, fila vazia."""
+        with company_scope(self.emp_a):
+            lot = Lot.open_for_company(self.emp_a, self.parceiro, 'blkok',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='OK1', quantity=7, brand=self.brand,
+                chip_type='eMMC', company=self.emp_a, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            services.create_draft_for_lot(lot, self.parceiro)
+        fila = services.blocked_quotes(self.buyer)
+        self.assertEqual(fila['ordens'], 0)
+        self.assertEqual(fila['linhas'], [])
+        self.assertEqual(fila['units'], 0)
+        self.assertEqual(fila['tipos'], 0)
+
+    def test_script_a_fila_e_do_comprador_e_nao_vaza_do_rival(self):
+        self._travado(self.emp_a, 'R1')
+        self.assertEqual(services.blocked_quotes(self.buyer)['ordens'], 1)
+        self.assertEqual(services.blocked_quotes(self.rival)['ordens'], 0)
+
+    def test_script_caixa_da_linha_e_o_codigo_que_a_bancada_usa(self):
+        """`box` é o vocabulário que ele e a bancada compartilham — o código
+        da categoria, não um rótulo inventado na tela."""
+        from pricing.models import CategoryCode
+        self._travado(self.emp_a, 'B1')
+        linha = services.blocked_quotes(self.buyer)['linhas'][0]
+        self.assertEqual(linha['box'],
+                         CategoryCode.label_for_key('ufs', '', Decimal('256'),
+                                                    'GB', create=False))
+        self.assertNotEqual(linha['box'], '—')

@@ -2744,3 +2744,225 @@ class CategoryCodeAdminTests(TestCase):
         adm = CategoryCodeAdmin(CategoryCode, dj_admin.site)
         self.assertFalse(adm.has_delete_permission(None))
         self.assertFalse(adm.has_add_permission(None))
+
+
+class FilaDeCotacaoTravadaNaTelaTests(TestCase):
+    """A fila de cotação travada nas TRÊS paradas da spec v2 §3.5.
+
+    O caminho completo, e a razão de ser três e não uma:
+
+    1. **Faixa no topo do Resumo** — a ordem em que ele deve abrir as tabelas
+       hoje. Cada célula é um LINK para a grade que resolve; a faixa DESAPARECE
+       quando zera, porque não é painel, é fila.
+    2. **Coluna do Resumo** — `travando N pedidos` no lugar de `N sem cotação`.
+       As duas são verdade; só uma explica a urgência.
+    3. **Barra de tipos + topo da grade** — quem chega pela barra não passou
+       pela faixa. Sem o aviso, o selo vermelho o larga numa tabela de trinta
+       linhas sem dizer QUAL delas trava.
+
+    Duas contagens, duas marcas: a âmbar conta LACUNA (célula sem cotação numa
+    caixa que ninguém está vendendo — pode esperar), a vermelha conta PEDIDO
+    TRAVADO (lote já fechado). Somá-las apagaria a diferença.
+
+    ⚠ **A linha travada nem sempre existe no grid.** Quando a plataforma não
+    consegue precificar porque a tabela NÃO TEM a linha, não há o que marcar —
+    e é justamente por isso que o aviso do topo existe separado da marca.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'Blk Co', 'blk-co')
+        cls.generica = _setup_wuquan.generica
+        # DDR3 2Gb: cotada na Samsung — existe para a matriz ter uma célula viva.
+        Price.all_companies.create(
+            price_list=cls.lista, kind='ddr', gen='DDR3',
+            tier_value=Decimal('2'), tier_unit='Gb', status=STATUS_QUOTED,
+            price_min=Decimal('3'), price_max=Decimal('3'))
+        # DDR4 8Gb: SEM cotação em NENHUMA lista — é a linha que trava, e ela
+        # existe no grid (é o caso em que dá para marcar a linha exata).
+        for lst in (cls.lista, cls.generica):
+            Price.all_companies.create(
+                price_list=lst, kind='ddr', gen='DDR4',
+                tier_value=Decimal('8'), tier_unit='Gb',
+                status=STATUS_UNQUOTED)
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('blk_parceiro')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        self.client.force_login(self.parceiro)
+
+    def _travar(self, sufixo, *, kind='ufs', gen='', tier=Decimal('256'),
+                unit='GB', qty=40):
+        """Lote FECHADO com categoria sem preço no grid → rascunho `sem_preco`.
+
+        ⚠ Os imports moram AQUI, não em `setUpTestData`: o Django faz
+        `deepcopy` dos atributos de classe a cada teste, e módulo não copia
+        ("cannot pickle 'module' object").
+        """
+        from django.utils import timezone
+        from estoque.models import InventoryEntry, Lot
+        from vendas import services as vendas_services
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.parceiro,
+                                       'blk' + sufixo, origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='BK' + sufixo, quantity=qty,
+                brand=self.samsung, chip_type=kind.upper(),
+                company=self.company, price_kind=kind, price_gen=gen,
+                price_tier_value=tier, price_tier_unit=unit)
+            so = vendas_services.create_draft_for_lot(lot, self.parceiro)
+            self.assertIsNotNone(so, 'fixture não gerou rascunho')
+            Lot.all_companies.filter(pk=lot.pk).update(
+                status=Lot.STATUS_CLOSED, closed_at=timezone.now())
+            return so
+
+    def _ddr(self, sufixo, qty=40):
+        return self._travar(sufixo, kind='ddr', gen='DDR4',
+                            tier=Decimal('8'), unit='Gb', qty=qty)
+
+    def _faixa(self, html):
+        """Só o pedaço da faixa — o resto da página também tem links de tipo."""
+        i = html.index('class="blk"')
+        return html[i:html.index('</div>', html.index('class="blk__l"', i))]
+
+    # ── 1ª parada: a faixa do Resumo ────────────────────────────────────────
+
+    def test_interface_a_faixa_abre_o_resumo_com_pedidos_unidades_e_link(self):
+        self._travar('F1', qty=110)
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertIn('class="blk"', html)
+        self.assertIn('1 pedido travado esperando a sua cotação', html)
+        self.assertIn('110 un. em 1 tabela', html)
+        # a célula nomeia a LINHA exata, a caixa, e LEVA para a grade
+        faixa = self._faixa(html)
+        self.assertIn('UFS 256GB', faixa)
+        self.assertIn('110 un.', faixa)
+        self.assertIn('href="/partner/tipo/ufs/"', faixa)
+
+    def test_interface_a_faixa_some_quando_zera(self):
+        """Não é painel: sem fila, sem faixa. Um bloco vazio permanente treina
+        o olho a ignorar justamente o dia em que ele significa alguma coisa."""
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertNotIn('class="blk"', html)
+        self.assertNotIn('esperando a sua cotação', html)
+
+    def test_interface_a_faixa_da_o_plural_certo_e_uma_celula_por_linha(self):
+        self._travar('P1', tier=Decimal('128'), qty=10)
+        self._travar('P2', tier=Decimal('512'), qty=20)
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertIn('2 pedidos travados esperando a sua cotação', html)
+        self.assertIn('30 un. em 1 tabela', html)
+        self.assertEqual(html.count('class="blk__i"'), 2)
+
+    # ── 2ª parada: a coluna do Resumo ───────────────────────────────────────
+
+    def test_interface_a_coluna_diz_travando_no_lugar_da_lacuna(self):
+        """DDR tem lacuna (DDR3 2Gb na genérica, DDR4 8Gb nas duas) E trava um
+        pedido. As duas são verdade — a que aparece é a que explica a
+        urgência; a contagem exata está a um clique, na grade."""
+        semfila = self.client.get('/partner/precos/').content.decode()
+        self.assertIn('ptn-tag--pending', semfila)      # lacuna, sozinha
+        self.assertNotIn('travando', semfila)
+        self._ddr('C1')
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertIn('travando 1 pedido', html)
+        self.assertIn('ptn-tag ptn-tag--block', html)
+
+    # ── 3ª parada: a barra de tipos e o topo da grade ───────────────────────
+
+    def test_interface_a_barra_tem_o_selo_vermelho_ANTES_do_ambar(self):
+        """A vermelha vem primeiro porque é ela que decide a ordem em que ele
+        abre as tabelas hoje."""
+        self._ddr('B1')
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertIn('ptype__b--block', html)
+        # o primeiro link do tipo na página é o da BARRA (o <aside> vem antes
+        # do <main>) — é lá que os dois selos convivem
+        item = html[html.index('href="/partner/tipo/ddr/"'):]
+        item = item[:item.index('</a>')]
+        self.assertLess(item.index('ptype__b--block'),
+                        item.rindex('class="ptype__b"'))
+
+    def test_interface_a_grade_unificada_avisa_no_topo_e_marca_a_linha(self):
+        """Coluna Estado da linha exata dizendo `travando`, no lugar de
+        `Não cotado` — e o aviso vermelho no topo para quem chegou pela barra."""
+        Price.all_companies.create(
+            price_list=self.generica, kind='ufs', gen='',
+            tier_value=Decimal('256'), tier_unit='GB',
+            status=STATUS_UNQUOTED)
+        self._travar('G1', qty=90)
+        html = self.client.get('/partner/tipo/ufs/').content.decode()
+        self.assertIn('class="blkw"', html)
+        self.assertIn('1 pedido está travado', html)
+        self.assertIn('90 un. que a plataforma não consegue precificar', html)
+        self.assertIn('travando 1 pedido', html)
+        self.assertIn('ptn-tag ptn-tag--block', html)
+        self.assertNotIn('Não cotado', html)     # a marca VENCE o selo neutro
+
+    def test_interface_a_matriz_marca_a_LINHA_porque_nao_tem_coluna_estado(self):
+        """Na matriz por marca cada célula é um campo — não há coluna de
+        estado. A trava é da LINHA: o preço que falta pode estar em qualquer
+        coluna dela.
+
+        Aqui o selo é o NÚMERO com a frase no título — a primeira coluna é
+        `sticky` e `nowrap`, e a frase por extenso empurraria colunas de marca
+        para fora da tela.
+        """
+        self._ddr('M1', qty=60)
+        html = self.client.get('/partner/tipo/ddr/').content.decode()
+        self.assertIn('class="blkw"', html)
+        self.assertIn('60 un. que a plataforma não consegue precificar', html)
+        self.assertIn('title="travando 1 pedido"', html)
+        # a marca fica no CABEÇALHO da linha DDR4, antes das células dela
+        corpo = html[html.rindex('ptn-matrix__gen'):]
+        i = corpo.index('ptn-tag ptn-tag--block')
+        self.assertLess(i, corpo.index('name="p'))
+        # …e o que se lê na célula é o NÚMERO, não a frase
+        self.assertIn('>1</span>', corpo[i:i + 220])
+
+    def test_interface_grade_sem_trava_nao_ganha_aviso_nenhum(self):
+        Price.all_companies.create(
+            price_list=self.generica, kind='ufs', gen='',
+            tier_value=Decimal('256'), tier_unit='GB',
+            status=STATUS_UNQUOTED)
+        html = self.client.get('/partner/tipo/ufs/').content.decode()
+        self.assertNotIn('class="blkw"', html)
+        self.assertNotIn('travando', html)
+        self.assertIn('Não cotado', html)        # o selo neutro, intacto
+
+    def test_interface_linha_que_o_grid_nem_tem_avisa_no_topo_do_mesmo_jeito(self):
+        """O caso mais duro: a tabela não tem a linha, então não há o que
+        marcar. Calar aqui deixaria o selo vermelho da barra sem explicação
+        nenhuma na página que ele abre.
+
+        ⚠ A ausência se crava na CLASSE COMO ELA É SERVIDA (`ptn-tag
+        ptn-tag--block`): `ptn-tag--block` sozinho existe no CSS embutido do
+        `partner_base`, e um `assertNotIn` desses nunca poderia passar — nem
+        o `assertIn` dos outros testes provaria coisa alguma.
+        """
+        self._travar('T1', qty=25)               # UFS 256GB, sem linha no grid
+        html = self.client.get('/partner/tipo/ufs/').content.decode()
+        self.assertIn('class="blkw"', html)
+        self.assertIn('UFS 256GB', html)
+        self.assertNotIn('ptn-tag ptn-tag--block', html)
+
+    def test_interface_a_fila_nao_atravessa_para_outro_comprador(self):
+        User = get_user_model()
+        outra = Company.objects.create(name='Blk outra', slug='blk-outra')
+        rival = Buyer.all_companies.create(company=outra, name='Rival blk-t',
+                                           slug='rival-blk-t')
+        PriceList.all_companies.create(buyer=rival, brand=None)
+        estranho = User.objects.create_user('blk_estranho')
+        rival.users.add(estranho)
+        self._travar('X1')
+        self.client.force_login(estranho)
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertNotIn('class="blk"', html)
+        self.assertNotIn('esperando a sua cotação', html)

@@ -135,14 +135,54 @@ def _fx_info(buyer):
     return fx_display(buyer)
 
 
-def _kind_nav(buyer):
-    """[(kind, label, pendentes)] p/ a sidebar — badge = não-cotados do tipo."""
+def _travados(request):
+    """A fila de cotação travada do comprador, UMA vez por request.
+
+    A barra de tipos vive em toda tela de preço e o Resumo pede a mesma coisa
+    duas vezes (a barra e a tabela). `blocked_quotes` re-resolve cotação viva
+    de cada rascunho contra o grid — pagar isso duas vezes na mesma página
+    seria desperdício silencioso.
+    """
+    fila = getattr(request, '_wtc_travados', None)
+    if fila is None:
+        from django.urls import reverse
+        from vendas.services import blocked_quotes
+        fila = blocked_quotes(request.buyer)
+        # Cada célula da faixa é um LINK para a grade que resolve — fila sem
+        # caminho é só má notícia. Tipo sem grade (SSD linear, K9 fixo) fica
+        # sem link em vez de apontar para um 404: ele continua na fila,
+        # porque esconder o que trava seria pior que não ter para onde ir.
+        for t in fila['linhas']:
+            t['url'] = (reverse('pricing:partner_kind', args=[t['kind']])
+                        if t['kind'] in _NAV_KINDS else '')
+            # O título da célula é o TIPO (a tabela que ele vai abrir) e a
+            # linha exata vem em mono ao lado — a mesma hierarquia da barra.
+            t['tipo'] = _KIND_LABEL.get(t['kind'], t['kind'])
+        request._wtc_travados = fila
+    return fila
+
+
+def _kind_nav(request):
+    """[(kind, label, lacunas, travados)] p/ a sidebar — DUAS contagens.
+
+    Somar as duas apagaria justamente a diferença que importa (spec v2 §3.5):
+
+    · **lacuna** (âmbar) — célula sem cotação numa caixa que ninguém está
+      vendendo. Pode esperar.
+    · **travado** (vermelho) — lote JÁ FECHADO que a plataforma não consegue
+      precificar sem esta tabela. É fila de trabalho.
+
+    O vermelho vem ANTES do âmbar na linha: é ele que decide em que ordem o
+    comprador abre as tabelas hoje.
+    """
     from django.db.models import Count
     pend = {d['kind']: d['n']
             for d in Price.all_companies
-            .filter(price_list__buyer=buyer, status=STATUS_UNQUOTED)
+            .filter(price_list__buyer=request.buyer, status=STATUS_UNQUOTED)
             .values('kind').annotate(n=Count('id'))}
-    return [(k, _KIND_LABEL[k], pend.get(k, 0)) for k in _NAV_KINDS]
+    trav = _travados(request)['por_tipo']
+    return [(k, _KIND_LABEL[k], pend.get(k, 0), trav.get(k, 0))
+            for k in _NAV_KINDS]
 
 
 @partner_required
@@ -169,12 +209,21 @@ def partner_kind(request, kind):
             price__price_list__buyer=request.buyer, price__kind=kind,
             review_status=PriceChangeRequest.REVIEW_PENDING)}
 
+    # §3.5, terceira parada do caminho: quem chegou pela BARRA (e não pela
+    # faixa do Resumo) não viu a fila. O aviso vermelho no topo e a marca na
+    # linha exata existem para ele — sem isso o selo da barra manda o
+    # comprador para uma tabela de trinta linhas sem dizer QUAL trava.
+    trav_deste = [t for t in _travados(request)['linhas']
+                  if t['kind'] == kind]
+    trav_linha = {(t['kind'], t['gen'], t['tier_value'], t['tier_unit']):
+                  t['orders'] for t in trav_deste}
     ctx = {'buyer': request.buyer, 'kind': kind,
            'kind_label': _KIND_LABEL[kind],
            'unified': kind in UNIFIED_KINDS,
            'ranged': kind in ('emcp', 'umcp'),
-           'kind_nav': _kind_nav(request.buyer), 'active_kind': kind,
+           'kind_nav': _kind_nav(request), 'active_kind': kind,
            'fx_info': _fx_info(request.buyer),
+           'travados': trav_deste,
            'active_pk': None}
 
     def _pend_disp(q):
@@ -202,6 +251,10 @@ def partner_kind(request, kind):
                            if p.status == STATUS_QUOTED else '')
             p.maxin_disp = (_fmt(p.price_max)
                             if p.status == STATUS_QUOTED else '')
+            # §3.5: na coluna Estado, `travando N pedidos` no lugar de
+            # `Não cotado`. As duas são verdade — só uma explica a urgência.
+            p.travado = trav_linha.get((p.kind, p.gen, p.tier_value,
+                                        p.tier_unit), 0)
         return rows
 
     if kind in UNIFIED_KINDS:
@@ -247,8 +300,13 @@ def partner_kind(request, kind):
                                else _fmt(p.price_min)
                                if p.status == STATUS_QUOTED else '')
             cells.append((pl, p))
+        # A matriz por marca não tem coluna Estado (cada célula é um campo),
+        # então a marca vai no CABEÇALHO da linha — que é o que a spec chama
+        # de "a linha exata". A trava é da LINHA, não de uma marca: o preço
+        # que falta pode estar em qualquer coluna dela.
         linhas.append({'gen': gen, 'tier': _fmt(tier), 'unit': unit,
-                       'cells': cells})
+                       'cells': cells,
+                       'travado': trav_linha.get((kind, gen, tier, unit), 0)})
     ctx.update({'linhas': linhas, 'col_lists': col_lists})
     return render(request, 'pricing/partner_kind.html', ctx)
 
@@ -272,17 +330,24 @@ def partner_home(request):
     for d in rows.values('kind', 'status').annotate(n=Count('id')):
         por_kind.setdefault(d['kind'], {})[d['status']] = d['n']
     from .models import UNIFIED_KINDS
+    nav = _kind_nav(request)
     kinds_resumo = [
         {'kind': k, 'label': lbl, 'unified': k in UNIFIED_KINDS,
          'dual': k == 'emmc',        # celular unificado × PCB por marca
          'quoted': por_kind.get(k, {}).get(STATUS_QUOTED, 0),
-         'pending': pend}
-        for k, lbl, pend in _kind_nav(buyer)]
+         'pending': pend,
+         # §3.5: a coluna "Cotadas" diz `travando N pedidos` no lugar de
+         # `N sem cotação` quando as duas coisas são verdade. As duas SÃO —
+         # mas só uma explica a urgência, e é ela que o comprador precisa ler.
+         'travados': trav}
+        for k, lbl, pend, trav in nav]
     return render(request, 'pricing/partner_home.html', {
         'buyer': buyer, 'lists': lists, 'nav_lists': lists, 'active_pk': None,
-        'kind_nav': _kind_nav(buyer), 'active_kind': None,
+        'kind_nav': nav, 'active_kind': None,
         'fx_info': _fx_info(buyer),
         'kinds_resumo': kinds_resumo,
+        # A FAIXA da fila (§3.5). Some quando zera: não é painel, é fila.
+        'fila': _travados(request),
         'pending': pending, 'stale': stale, 'quoted': quoted,
         'staleness_days': PricingConfig.get_config().staleness_days,
     })
@@ -335,7 +400,7 @@ def partner_list(request, list_pk):
         'f_kind': f_kind, 'f_state': f_state,
         'kind_choices': kind_choices, 'state_choices': STATUS_CHOICES,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
-        'kind_nav': _kind_nav(request.buyer), 'active_kind': None,
+        'kind_nav': _kind_nav(request), 'active_kind': None,
         'fx_info': _fx_info(request.buyer),
     })
 
@@ -348,7 +413,7 @@ def partner_how(request):
     return render(request, 'pricing/partner_how.html', {
         'buyer': request.buyer,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': 'how',
-        'kind_nav': _kind_nav(request.buyer), 'active_kind': None,
+        'kind_nav': _kind_nav(request), 'active_kind': None,
         'fx_info': _fx_info(request.buyer),
     })
 
@@ -417,7 +482,7 @@ def partner_notifications(request):
     return render(request, 'pricing/partner_notifications.html', {
         'buyer': buyer, 'itens': itens,
         'nav_lists': _lists_with_stats(buyer), 'active_pk': 'notifications',
-        'kind_nav': _kind_nav(buyer), 'active_kind': None,
+        'kind_nav': _kind_nav(request), 'active_kind': None,
         'fx_info': _fx_info(buyer),
     })
 

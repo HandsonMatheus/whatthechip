@@ -5,6 +5,30 @@
 
 <h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">{% blocktrans trimmed with name=buyer.name %}Bem-vindo, <strong style="font-weight:600;">{{ name }}</strong>{% endblocktrans %}</h1>
 
+{% comment %}
+  A FILA DE COTAÇÃO TRAVADA (spec v2 §3.5) — abre a tela porque é a fila de
+  trabalho dele: tabela incompleta pode esperar, lote FECHADO sem preço não.
+  Cada célula linka para a grade que resolve; sem link só quando o tipo ainda
+  não tem grade (SSD linear, K9 fixo — Etapa 7). A faixa DESAPARECE quando
+  zera: não é painel, é fila.
+{% endcomment %}
+{% if fila.ordens %}
+<div class="blk">
+  <div class="blk__h">
+    <span class="blk__t">{% blocktrans trimmed count n=fila.ordens %}{{ n }} pedido travado esperando a sua cotação{% plural %}{{ n }} pedidos travados esperando a sua cotação{% endblocktrans %}</span>
+    <span class="blk__d">{% blocktrans trimmed count t=fila.tipos with u=fila.units %}{{ u }} un. em {{ t }} tabela · a plataforma não consegue emitir a ordem sem o seu preço{% plural %}{{ u }} un. em {{ t }} tabelas · a plataforma não consegue emitir a ordem sem o seu preço{% endblocktrans %}</span>
+  </div>
+  <div class="blk__l">
+    {% for t in fila.linhas %}
+    {% if t.url %}<a class="blk__i" href="{{ t.url }}">{% else %}<div class="blk__i">{% endif %}
+      <div class="blk__n">{{ t.tipo }}<em>{{ t.row }}</em></div>
+      <div class="blk__m">{% blocktrans trimmed count n=t.orders with box=t.box units=t.units since=t.since|date:"d/m/y" %}caixa {{ box }} · <b>{{ n }} pedido</b> · {{ units }} un. · desde {{ since }}{% plural %}caixa {{ box }} · <b>{{ n }} pedidos</b> · {{ units }} un. · desde {{ since }}{% endblocktrans %}</div>
+    {% if t.url %}</a>{% else %}</div>{% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
 <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
   <div class="ptn-kpi">
     <span style="font-size:12px;color:#6f6f6f;">{% trans "Chips sem cotação" %}</span>
@@ -69,7 +93,12 @@
           {% elif k.dual %}<span style="background:#fff1c2;color:#8a6d00;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "celular × PCB" %}</span>
           {% else %}<span style="color:#6f6f6f;font-size:11px;margin-left:6px;">{% trans "por marca" %}</span>{% endif %}</td>
         <td>{% if k.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ k.quoted }}</span>{% else %}—{% endif %}</td>
-        <td>{% if k.pending %}<span class="ptn-tag ptn-tag--pending">{{ k.pending }}</span>{% else %}—{% endif %}</td>
+        {% comment %} §3.5: `travando N pedidos` NO LUGAR de `N sem cotação`
+           quando as duas coisas são verdade. As duas são — mas só uma explica
+           a urgência, e a contagem exata de lacunas está a um clique, na
+           grade. O selo âmbar da barra de tipos continua contando lacuna. {% endcomment %}
+        <td>{% if k.travados %}<span class="ptn-tag ptn-tag--block">{% blocktrans trimmed count n=k.travados %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
+          {% elif k.pending %}<span class="ptn-tag ptn-tag--pending">{{ k.pending }}</span>{% else %}—{% endif %}</td>
         <td><a href="{% url 'pricing:partner_kind' k.kind %}" style="color:#0f62fe;font-weight:600;">{% trans "Editar" %} →</a></td>
       </tr>
       {% empty %}

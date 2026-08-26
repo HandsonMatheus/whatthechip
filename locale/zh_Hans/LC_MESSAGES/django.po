@@ -3447,6 +3447,51 @@ msgstr "尚无付款记录。请将 US$ 金额转入上方钱包并在此登记�
 msgid "acima do saldo · máx US$ {n}"
 msgstr "超出余额 · 最多 US$ {n}"
 
+#: pricing/templates/pricing/partner_base.html:257
+msgid "%(n)s pedido travado esperando esta tabela"
+msgid_plural "%(n)s pedidos travados esperando esta tabela"
+msgstr[0] "%(n)s 个订单卡在这张表上"
+
+#: pricing/templates/pricing/partner_home.html:20
+msgid "%(n)s pedido travado esperando a sua cotação"
+msgid_plural "%(n)s pedidos travados esperando a sua cotação"
+msgstr[0] "%(n)s 个订单卡住，等待您的报价"
+
+#: pricing/templates/pricing/partner_home.html:21
+msgid ""
+"%(u)s un. em %(t)s tabela · a plataforma não consegue emitir a ordem sem o "
+"seu preço"
+msgid_plural ""
+"%(u)s un. em %(t)s tabelas · a plataforma não consegue emitir a ordem sem o "
+"seu preço"
+msgstr[0] "%(u)s 件，涉及 %(t)s 张表 · 没有您的价格，平台无法开单"
+
+#: pricing/templates/pricing/partner_home.html:27
+msgid "caixa %(box)s · <b>%(n)s pedido</b> · %(units)s un. · desde %(since)s"
+msgid_plural ""
+"caixa %(box)s · <b>%(n)s pedidos</b> · %(units)s un. · desde %(since)s"
+msgstr[0] "箱 %(box)s · <b>%(n)s 个订单</b> · %(units)s 件 · 自 %(since)s"
+
+#: pricing/templates/pricing/partner_home.html:77
+#: pricing/templates/pricing/partner_kind.html:86
+#: pricing/templates/pricing/partner_kind.html:117
+msgid "travando %(n)s pedido"
+msgid_plural "travando %(n)s pedidos"
+msgstr[0] "卡住 %(n)s 个订单"
+
+#: pricing/templates/pricing/partner_kind.html:25
+msgid ""
+"<b>%(n)s pedido está travado</b> desde %(since)s esperando o preço de "
+"<b>%(row)s</b> (caixa %(box)s) — %(units)s un. que a plataforma não consegue"
+" precificar sem você."
+msgid_plural ""
+"<b>%(n)s pedidos estão travados</b> desde %(since)s esperando o preço de "
+"<b>%(row)s</b> (caixa %(box)s) — %(units)s un. que a plataforma não consegue"
+" precificar sem você."
+msgstr[0] ""
+"<b>%(n)s 个订单卡住</b>，自 %(since)s 起等待 <b>%(row)s</b>（箱 %(box)s）的价格 — %(units)s "
+"件，没有您平台无法定价。"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

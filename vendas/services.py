@@ -1104,6 +1104,110 @@ def buys_badge(buyer) -> int:
     return total
 
 
+# ── A FILA DE COTAÇÃO TRAVADA (spec v2 do comprador §3.5) ────────────────────
+# É o `falta preço` do cliente visto do lado de quem pode resolver. A spec faz
+# UMA distinção e ela é a coisa toda:
+#
+#   lacuna   célula vazia numa caixa que ninguém está vendendo ....  pode esperar
+#   travado  lote JÁ FECHADO que a plataforma não consegue precificar  FILA DE
+#                                                                      TRABALHO
+#
+# Derivado, nunca armazenado: é a agregação dos rascunhos sem preço por
+# (tipo, linha). Não existe modelo `BlockedQuote` — teria que ser mantido em
+# sincronia com o grid a cada preço aprovado, e um cache que erra aqui manda o
+# comprador cotar o que já cotou.
+
+
+def blocked_quotes(buyer):
+    """A fila: o que a falta de preço DELE está segurando, por linha do grid.
+
+    Devolve ``{linhas, ordens, units, tipos, por_tipo}``:
+
+    · ``linhas`` — uma entrada por (tipo, linha do grid), a mais antiga
+      primeiro. É fila: quem espera há mais tempo aparece em cima.
+      ``{kind, gen, tier_value, tier_unit, box, row, orders, units, since}``
+    · ``ordens`` — pedidos DISTINTOS travados. **Não é a soma dos `orders`**:
+      um lote com duas categorias sem preço aparece nas duas linhas e seria
+      contado duas vezes. É o número da faixa ("N pedidos travados").
+    · ``units`` e ``tipos`` — unidades presas e quantas tabelas travam. É a
+      segunda linha da faixa ("N un. em M tabelas").
+    · ``por_tipo`` — pedidos distintos por tipo, para o selo VERMELHO da barra
+      de tipos (o âmbar continua contando célula sem cotação: são duas contas
+      diferentes e somá-las apaga justamente a diferença que importa).
+
+    ⚠ **Conta TODO rascunho, despachado ou não** — e é uma escolha, não
+    descuido. `orders_for_buyer` esconde rascunho antes do
+    despacho ("mostrar seria prometer caixa que ninguém postou", dono
+    2026-08-18), mas aquilo é a lista de COMPRAS: promessa de caixa. Isto aqui
+    não mostra compra nenhuma — não nomeia lote, cliente nem vendedor, só diz
+    que uma linha do grid está segurando N pedidos. E o lote fechado hoje e
+    ainda não postado é o caso MAIS urgente da fila: sem o preço dele a ordem
+    não congela, não fatura e não recebe. Fila que esconde metade dos itens
+    não é fila. Para restringir ao que ele já vê em Compras, basta somar
+    ``.filter(Q(shipped_at__isnull=False))`` ao queryset abaixo.
+
+    ⚠ Só RASCUNHO. Ordem confirmada tem preço congelado linha a linha — o
+    `confirm()` recusa qualquer pendência. Não existe ordem confirmada travada.
+    """
+    from tenancy.scope import company_scope
+    from pricing.engine import BuyerPricingContext
+    from pricing.models import CategoryCode, fold_gen
+    ctx = None
+    baldes, ordens = {}, set()
+    for comp in _empresas_ativas():
+        with company_scope(comp):
+            qs = (SalesOrder.objects
+                  .filter(buyer=buyer, status=STATUS_DRAFT)
+                  .select_related('lot')
+                  .prefetch_related('lines'))
+            for so in qs:
+                if ctx is None:
+                    ctx = BuyerPricingContext(buyer)
+                # `since` é a data do LOTE, não a da ordem: o que espera é a
+                # caixa fechada. O rascunho nasce NO fechamento, então as duas
+                # datas coincidem — mas quem manda no relógio é o lote, e
+                # `created_at` é só o fallback de dado antigo sem `closed_at`.
+                quando = (so.lot.closed_at if so.lot_id and so.lot.closed_at
+                          else so.created_at)
+                for line, q in live_quotes(so, ctx):
+                    if q.status == 'PRICED':
+                        continue
+                    # A geração DOBRA (fold_gen), aqui como no motor: a chave
+                    # gravada pode ser `LPDDR4X` e a linha do grid que ele
+                    # edita é `LPDDR4`. Mandá-lo procurar `LPDDR4X` numa
+                    # tabela que não tem essa linha seria pior que não avisar.
+                    gen = fold_gen(line.kind, line.gen or '')
+                    chave = (line.kind, gen, line.tier_value, line.tier_unit)
+                    b = baldes.setdefault(chave, {
+                        'kind': line.kind, 'gen': gen,
+                        'tier_value': line.tier_value,
+                        'tier_unit': line.tier_unit,
+                        'box': CategoryCode.label_for_key(
+                            line.kind, gen, line.tier_value,
+                            line.tier_unit, create=False) or '—',
+                        'row': f'{gen or line.type_label} '
+                               f'{line.capacity_label}'.strip(),
+                        'pedidos': set(), 'units': 0, 'since': quando})
+                    b['pedidos'].add(so.pk)
+                    b['units'] += line.quantity
+                    if quando < b['since']:
+                        b['since'] = quando
+                    ordens.add(so.pk)
+    por_tipo = {}
+    for b in baldes.values():
+        por_tipo.setdefault(b['kind'], set()).update(b['pedidos'])
+    linhas = []
+    for b in sorted(baldes.values(), key=lambda x: (x['since'], x['row'])):
+        b = dict(b)
+        b['orders'] = len(b.pop('pedidos'))
+        linhas.append(b)
+    # `units` soma sem risco de dobra: cada linha da ordem cai em UM balde só.
+    return {'linhas': linhas, 'ordens': len(ordens),
+            'units': sum(b['units'] for b in linhas),
+            'tipos': len(por_tipo),
+            'por_tipo': {k: len(v) for k, v in por_tipo.items()}}
+
+
 # ── A lista de compras: busca, filtro, período e ordenação ───────────────────
 # Spec v2 do comprador §5.3. Até 2026-08-26 a lista era "MVP de propósito: sem
 # filtro nem paginação", com ordem fixa por data.

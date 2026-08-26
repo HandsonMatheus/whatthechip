@@ -3639,6 +3639,67 @@ msgstr ""
 msgid "acima do saldo · máx US$ {n}"
 msgstr "above the balance · max US$ {n}"
 
+#: pricing/templates/pricing/partner_base.html:257
+msgid "%(n)s pedido travado esperando esta tabela"
+msgid_plural "%(n)s pedidos travados esperando esta tabela"
+msgstr[0] "%(n)s order blocked waiting on this table"
+msgstr[1] "%(n)s orders blocked waiting on this table"
+
+#: pricing/templates/pricing/partner_home.html:20
+msgid "%(n)s pedido travado esperando a sua cotação"
+msgid_plural "%(n)s pedidos travados esperando a sua cotação"
+msgstr[0] "%(n)s order blocked waiting for your quote"
+msgstr[1] "%(n)s orders blocked waiting for your quote"
+
+#: pricing/templates/pricing/partner_home.html:21
+msgid ""
+"%(u)s un. em %(t)s tabela · a plataforma não consegue emitir a ordem sem o "
+"seu preço"
+msgid_plural ""
+"%(u)s un. em %(t)s tabelas · a plataforma não consegue emitir a ordem sem o "
+"seu preço"
+msgstr[0] ""
+"%(u)s units in %(t)s table · the platform cannot issue the order without "
+"your price"
+msgstr[1] ""
+"%(u)s units in %(t)s tables · the platform cannot issue the order without "
+"your price"
+
+#: pricing/templates/pricing/partner_home.html:27
+msgid "caixa %(box)s · <b>%(n)s pedido</b> · %(units)s un. · desde %(since)s"
+msgid_plural ""
+"caixa %(box)s · <b>%(n)s pedidos</b> · %(units)s un. · desde %(since)s"
+msgstr[0] ""
+"box %(box)s · <b>%(n)s order</b> · %(units)s units · since %(since)s"
+msgstr[1] ""
+"box %(box)s · <b>%(n)s orders</b> · %(units)s units · since %(since)s"
+
+#: pricing/templates/pricing/partner_home.html:77
+#: pricing/templates/pricing/partner_kind.html:86
+#: pricing/templates/pricing/partner_kind.html:117
+msgid "travando %(n)s pedido"
+msgid_plural "travando %(n)s pedidos"
+msgstr[0] "blocking %(n)s order"
+msgstr[1] "blocking %(n)s orders"
+
+#: pricing/templates/pricing/partner_kind.html:25
+msgid ""
+"<b>%(n)s pedido está travado</b> desde %(since)s esperando o preço de "
+"<b>%(row)s</b> (caixa %(box)s) — %(units)s un. que a plataforma não consegue"
+" precificar sem você."
+msgid_plural ""
+"<b>%(n)s pedidos estão travados</b> desde %(since)s esperando o preço de "
+"<b>%(row)s</b> (caixa %(box)s) — %(units)s un. que a plataforma não consegue"
+" precificar sem você."
+msgstr[0] ""
+"<b>%(n)s order is blocked</b> since %(since)s waiting for the price of "
+"<b>%(row)s</b> (box %(box)s) — %(units)s units the platform cannot price "
+"without you."
+msgstr[1] ""
+"<b>%(n)s orders are blocked</b> since %(since)s waiting for the price of "
+"<b>%(row)s</b> (box %(box)s) — %(units)s units the platform cannot price "
+"without you."
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

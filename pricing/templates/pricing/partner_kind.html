@@ -25,6 +25,20 @@
   {% if ranged %}<span style="color:#6f6f6f;font-size:13px;">{% trans "faixa mín–máx em ¥" %}</span>{% endif %}
 </div>
 
+{% comment %}
+  §3.5, terceira parada: quem chega pela BARRA de tipos não passou pela faixa
+  do Resumo. Sem este aviso o selo vermelho da barra o larga numa tabela de
+  trinta linhas sem dizer QUAL delas trava. Uma caixa só, uma frase por linha
+  travada — com uma linha (o caso comum) sai exatamente a frase do desenho.
+{% endcomment %}
+{% if travados %}
+<div class="blkw">
+  {% for t in travados %}
+  <div class="blkw__i">⚠ {% blocktrans trimmed count n=t.orders with since=t.since|date:"d/m/y" row=t.row box=t.box units=t.units %}<b>{{ n }} pedido está travado</b> desde {{ since }} esperando o preço de <b>{{ row }}</b> (caixa {{ box }}) — {{ units }} un. que a plataforma não consegue precificar sem você.{% plural %}<b>{{ n }} pedidos estão travados</b> desde {{ since }} esperando o preço de <b>{{ row }}</b> (caixa {{ box }}) — {{ units }} un. que a plataforma não consegue precificar sem você.{% endblocktrans %}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <form method="post" action="{% url 'pricing:partner_kind_save' kind %}">
 {% csrf_token %}
 
@@ -63,7 +77,11 @@
           {% endif %}
         </td>
         <td>
-          {% if r.status == 'quoted' %}<span class="ptn-tag ptn-tag--quoted">{% trans "Cotado" %}</span>
+          {% comment %} A linha que TRAVA PEDIDO diz isso na própria coluna de
+             estado, e VENCE "não cotado": as duas afirmações são verdade, mas
+             só uma explica por que esta linha é urgente. {% endcomment %}
+          {% if r.travado %}<span class="ptn-tag ptn-tag--block">{% blocktrans trimmed count n=r.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
+          {% elif r.status == 'quoted' %}<span class="ptn-tag ptn-tag--quoted">{% trans "Cotado" %}</span>
           {% elif r.status == 'no_buy' %}<span class="ptn-tag ptn-tag--nobuy">{% trans "Não compro" %}</span>
           {% elif r.status == 'not_made' %}<span class="ptn-tag ptn-tag--inherited">{% trans "Não fabricado" %}</span>
           {% else %}<span class="ptn-tag ptn-tag--pending">{% trans "Não cotado" %}</span>{% endif %}
@@ -93,7 +111,17 @@
       <tr class="ptn-matrix__gen"><td colspan="{{ col_lists|length|add:1 }}">{{ linha.gen }}</td></tr>
       {% endif %}{% endifchanged %}
       <tr>
-        <td>{{ linha.tier }}{{ linha.unit }}</td>
+        {% comment %} A matriz por marca não tem coluna de estado — cada célula
+           é um campo. Então a marca de travado vai no CABEÇALHO da linha, que
+           é a "linha exata" da spec: a trava é da LINHA, e o preço que falta
+           pode estar em qualquer coluna dela.
+
+           Aqui o selo é o NÚMERO, não a frase — a primeira coluna é `sticky` e
+           `nowrap`, e "travando 2 pedidos" a alargaria o bastante para empurrar
+           colunas de marca para fora da tela. A frase inteira está no título e,
+           por extenso, no aviso do topo. Mesma convenção do selo da barra. {% endcomment %}
+        <td>{{ linha.tier }}{{ linha.unit }}{% if linha.travado %}
+          <span class="ptn-tag ptn-tag--block" style="margin-left:6px;" title="{% blocktrans trimmed count n=linha.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}">{{ linha.travado }}</span>{% endif %}</td>
         {% for pl, p in linha.cells %}
         <td>
           {% if p %}
