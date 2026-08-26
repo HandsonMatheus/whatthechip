@@ -1,0 +1,126 @@
+# Submissão de known_parts — SK Hynix, família H5TC (DDR3L standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H5TC8G63CMR (busca na bancada, 2026-08-26, mesmo dia
+# da rodada H5TC2G43CFR) — MESMO padrão "die-revision-letter" já visto váras vezes nesta
+# família: dentro da MESMA densidade, uma letra final diferente é uma REVISÃO/DOCUMENTO de
+# datasheet distinto; pn[6:8] ("43"/"83"/"63") é a LARGURA de barramento (x4/x8/x16), não muda
+# a densidade total. A gramática já decodifica certo (pn[4:6]="8G"→dram_density="8Gb = 1GB por
+# die [✓]", grammar_complete=true no debug) — é known_parts-only (Trilha B), sem fix de
+# gramática. Objetivo é o BANCO, não a gramática já decodificar certo (correção do dono,
+# 2026-08-24 — ver [[wtc-objetivo-banco-nao-gramatica]]).
+#
+# ⚠ NOVIDADE NESTA DENSIDADE — sufixo fixo muda de "FR" (2Gb/4Gb, vistos nas rodadas
+# anteriores) para "MR" (8Gb): H5TC8G63CMR = revisão "C" + sufixo fixo "MR" (não "CFR"). O
+# datasheet da revisão A confirma o padrão: capa do documento lista literalmente
+# "H5TC8G43AMR-xxA / H5TC8G83AMR-xxA / H5TC8G63AMR-xxA" — letra de revisão + "MR" fixo, mesma
+# estrutura da família em todas densidades, só o sufixo de 2 letras muda por densidade.
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): fuzzy_suggestions do debug
+# ("H5TC8G63AMR", "H5TC4G63CFR", "H5TC8G83AMR", "H5TQ8G63AMR") apontou a revisão A como irmã
+# mais próxima do alvo (mesma densidade 8Gb). Busca confirmou as 3 larguras da revisão A
+# (43/83/63) com datasheet oficial ÚNICO cobrindo as três. Já a revisão C do PRÓPRIO alvo
+# (H5TC8G63CMR) só apareceu em fontes de distribuidor — NENHUMA busca (AllDataSheet direto,
+# site:alldatasheet.com, digchip, Octopart) achou datasheet do fabricante hospedado
+# especificamente pra revisão C. Tentei também localizar os pares x4/x8 da revisão C
+# (H5TC8G43CMR / H5TC8G83CMR) — NENHUM resultado em nenhuma fonte; não incluídos (excluir, não
+# adivinhar). Também notei de passagem uma revisão "M" nesta densidade (H5TC8G43MMR/
+# H5TC8G83MMR, ids AllDataSheet 533419-533423) — fora do escopo desta rodada (não hintada pelo
+# fuzzy_suggestions, não pesquisada a fundo; possível rodada futura).
+#
+# ARITMÉTICA (8Gb÷8=1GB, confirmada em todo datasheet/distribuidor da leva — inclusive descrição
+# estruturada do digchip "DDR3L SDRAM... 512Mx16 (8Gb)"): "8Gb" é a densidade bruta em gigabit,
+# igual em qualquer largura de barramento (x4/x8/x16 só mudam pinagem/organização, não o total
+# de bits do die). Bate exato com o decode ATUAL da gramática (debug mostrava "8Gb = 1GB por
+# die [✓]").
+#
+# NOTA TÉCNICA — "Dual Die Package": a capa do datasheet da revisão A diz "8Gb DDR3L SDRAM (Dual
+# Die Package)" — pacote com 2 dies internos. Não muda o decode: pn[4:6]="8G" já é a densidade
+# POR DIE na convenção desta família (mesma leitura "por die" que o engine já mostra), então o
+# pacote ter 2 dies internamente não altera capacity/density_gbit — só uma nota de curiosidade
+# técnica, sem impacto no schema.
+#
+# FONTES:
+#   H5TC8G63AMR / H5TC8G43AMR / H5TC8G83AMR (revisão A, cluster hintado por fuzzy_suggestions):
+#     datasheet oficial SK Hynix Rev.0.4/Abr.2013 (AllDataSheet id 533427/533418/533424), corpo
+#     lido NA ÍNTEGRA via fetch direto da página 1/35 (capa) — texto: "8Gb DDR3L SDRAM (Dual Die
+#     Package)... H5TC8G43AMR-xxA H5TC8G83AMR-xxA H5TC8G63AMR-xxA" — as TRÊS larguras nomeadas
+#     juntas no mesmo documento oficial. confidence=confirmed (corpo técnico lido, não só
+#     metadado — mesmo padrão do H5TC2G43CFR/H5TC2G83CFR na rodada de 2026-08-26 anterior).
+#   H5TC8G63CMR (ALVO): NENHUM datasheet do fabricante encontrado hospedado (AllDataSheet não
+#     tem página própria pra esta forma nem pro sufixo -PBA, apesar de 3 buscas direcionadas).
+#     Corroborado por MUITAS fontes de distribuidor convergentes e independentes: Datasheets360,
+#     Octopart (agregador de estoque autorizado — maior peso que revenda avulsa), digchip
+#     (descrição estruturada: "DRAM, DDR3, SK hynix DDR3-1600 512Mx16 (8Gb) 1.35V" — bate exato
+#     com 512M×16÷8=8Gb=1GB), AB Sunshine, Kynix, NX Electronics/Nextron, Alibaba, eBay — todos
+#     "H5TC8G63CMR-PBA", DDR3L 512Mx16 FBGA96 8Gb 1.35V EOL. Um título de busca isolado usou
+#     "(8GB)" solto — não é conflito real, o corpo/descrição estruturada de TODAS as outras
+#     fontes confirma 8Gb/512Mx16 (nunca confiar só num rótulo/resumo, refazer a conta na mão).
+#     confidence=manual (convergência multi-fonte forte, mas sem corpo de datasheet do
+#     fabricante lido — teto de manual, não confirmed).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc8g_2026-08-26.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc8g_2026-08-26.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC8G63CMR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://octopart.com/h5tc8g63cmr-pba-hynix-100083559"
+    notes: >
+      PN ALVO da bancada (2026-08-26). Nenhum datasheet do fabricante hospedado encontrado
+      (AllDataSheet não tem página própria pra esta forma nem pro sufixo -PBA, apesar de
+      buscas diretas e via site:alldatasheet.com). Corroborado por convergência forte e
+      independente: Octopart (agregador de estoque autorizado), Datasheets360, digchip
+      ("DRAM, DDR3, SK hynix DDR3-1600 512Mx16 (8Gb) 1.35V" — 512M×16÷8=8Gb=1GB, bate exato
+      com o decode atual da gramática, que já mostrava "8Gb = 1GB por die [✓]" no debug), AB
+      Sunshine, Kynix, NX Electronics, Alibaba, eBay — todos descrevendo o mesmo DDR3L
+      512Mx16 FBGA96 8Gb 1.35V EOL. confidence=manual (convergência multi-fonte, sem corpo
+      de datasheet oficial lido).
+
+  - part_number: "H5TC8G63AMR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533427/HYNIX/H5TC8G63AMR-PBA.html"
+    notes: >
+      Irmão de revisão (cluster), hintado por fuzzy_suggestions do debug. Datasheet oficial
+      SK Hynix Rev.0.4/Abr.2013, corpo lido NA ÍNTEGRA via fetch direto da página 1/35
+      (capa): "8Gb DDR3L SDRAM (Dual Die Package)... H5TC8G63AMR-xxA" citado explicitamente
+      junto dos pares x4/x8 no mesmo documento. 8Gb÷8=1GB — bate exato com o decode da
+      gramática. confidence=confirmed (corpo técnico do documento-fonte lido).
+
+  - part_number: "H5TC8G43AMR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533418/HYNIX/H5TC8G43AMR.html"
+    notes: >
+      Par x4 da revisão A — MESMO datasheet oficial do H5TC8G63AMR (Rev.0.4/Abr.2013),
+      documento único cobre as três larguras ("H5TC8G43AMR-xxA" citado na capa junto dos
+      pares x8/x16). Mesma densidade total (8Gb÷8=1GB), só a largura de barramento muda.
+      confidence=confirmed (corpo técnico do documento-fonte lido).
+
+  - part_number: "H5TC8G83AMR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533424/HYNIX/H5TC8G83AMR-PBA.html"
+    notes: >
+      Par x8 da revisão A — MESMO datasheet oficial do H5TC8G63AMR (Rev.0.4/Abr.2013),
+      documento único cobre as três larguras ("H5TC8G83AMR-xxA" citado na capa junto dos
+      pares x4/x16). Mesma densidade total (8Gb÷8=1GB), só a largura de barramento muda.
+      confidence=confirmed (corpo técnico do documento-fonte lido).
