@@ -1,0 +1,73 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBM (eMMC), variantes de geração "dígito"
+#
+# PN da bancada: THGBM3G4D1FBAIG — a gramática já decodificava capacidade certo (chave "4D1" já
+# existente = 2GB), mas pn[5]="3" não está no THGBM_GEN, então Subtipo saía "—" e confidence=
+# estimated (pn_not_in_db=true). Grammar já classificando certo NÃO é motivo pra não submeter
+# (regra do dono, 2026-08-20) — capacidade real é fato do banco independente da gramática já
+# acertar.
+#
+# Nesta rodada, ao pesquisar pn[5]="3", achei e li o catálogo oficial Toshiba/TAEC "Card Interface
+# : e MMC" (media.digikey.com, datado 16/ago/2012) na íntegra — mesmo documento já usado antes
+# nesta família só pra capacidade (varredura nº2, 2026-07-10), mas eu não tinha extraído a coluna
+# "e-MMC Version" até agora: ela confirma pn[5]="4" → eMMC 4.41 (classificação "-", não-Premium).
+# Chave "4" adicionada ao THGBM_GEN (grammar). pn[5]="3" (bancada) e pn[5]="1" (prima achada nesta
+# rodada) NÃO têm fonte Tier-1 de geração — ficam de fora do THGBM_GEN por ora, mesma disciplina já
+# aplicada à variante "2" em rodada anterior.
+#
+# ============================================================================================
+# THGBM3G4D1FBAIG (bancada) + THGBM3G5D1FBAIE (irmã de capacidade) — confidence=distributor
+# ============================================================================================
+# Capacidade pela chave já confirmada no THGBM_CAP (4D1=2GB, 5D1=4GB — mesma tabela Tier-1 de
+# 2012 acima, que também lista THGBM4G4D1HBAIR=2GB e THGBM4G5D1HBAIR=4GB com as MESMAS chaves,
+# só trocando pn[5]=4 por 3). Existência real do PN "3G" confirmada via catálogo de distribuidor
+# (Jotrin Electronics, jotrin.com/product/parts/THGBM3G5D1FBAIE — página de produto dedicada,
+# não resumo de busca) + corroboração (Ovaga Technologies, ariat-tech.com — ambos listam o PN
+# como componente Toshiba/Kioxia real em estoque). Distribuidor não é Tier-1 pra CAPACIDADE em
+# geral, mas aqui a capacidade não vem do distribuidor — vem da chave de gramática já
+# Tier-1-confirmada; o distribuidor só confirma que o PN "3G..." existe de verdade.
+#
+# ============================================================================================
+# THGBM1G8D8EBAI2 (prima, pn[5]="1") — confidence=distributor
+# ============================================================================================
+# Capacidade pela chave já confirmada no THGBM_CAP (8D8=32GB, confirmado 2026-07-09 via iFixit
+# Motorola Xoom Teardown para THGBM2G8D8FBAIB — mesma chave, pn[5] diferente). Existência real via
+# veswin.com (página de produto dedicada, Toshiba, pacote BGA, temperatura estendida -40 a 105°C).
+#
+# NÃO incluído: mais variantes de "3G"/"1G" — busca dedicada (WebSearch + dzsc.com/hkinventory.com/
+# veswin.com) não achou outras densidades pra essas duas letras nesta rodada.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_digit-gens_2026-08-24.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_digit-gens_2026-08-24.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBM3G4D1FBAIG"
+    chip_type: "eMMC"
+    capacity: "2GB"
+    confidence: distributor
+    source_url: "https://www.jotrin.com/product/parts/THGBM3G5D1FBAIE"
+    notes: >
+      PN da bancada. Capacidade pela chave "4D1" já confirmada no THGBM_CAP (2GB) — mesma chave
+      de THGBM4G4D1HBAIR=2GB (Tier-1, catálogo oficial Toshiba/TAEC via DigiKey, ago/2012, "Card
+      Interface : e MMC"), só troca pn[5]=4 por 3. Geração (pn[5]="3") sem fonte Tier-1 própria —
+      Subtipo continua não mapeado até aparecer fonte direta (mesma disciplina do "2").
+  - part_number: "THGBM3G5D1FBAIE"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.jotrin.com/product/parts/THGBM3G5D1FBAIE"
+    notes: >
+      Irmã de capacidade do PN da bancada (mesmo pn[5]="3", chave "5D1"=4GB já confirmada no
+      THGBM_CAP). Existência real via Jotrin Electronics (página de produto dedicada) + Ovaga
+      Technologies/Ariat-Tech (corroboração). Geração sem fonte Tier-1 própria, mesma ressalva.
+  - part_number: "THGBM1G8D8EBAI2"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://www.veswin.com/product-THGBM1G8D8EBAI2.html"
+    notes: >
+      Prima achada buscando outras variantes de geração "dígito" (pn[5]="1"). Capacidade pela
+      chave "8D8" já confirmada no THGBM_CAP (32GB, via iFixit Motorola Xoom Teardown pra
+      THGBM2G8D8FBAIB, mesma chave). Existência real via veswin.com (página de produto dedicada,
+      Toshiba, BGA, -40 a 105°C). Geração sem fonte Tier-1 própria, mesma ressalva.

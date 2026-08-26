@@ -1,0 +1,107 @@
+# Submissão de known_parts — Toshiba-Kioxia, família NOVA TY90 (eMCP, ~2012-2013)
+#
+# PN da bancada: TY90HH131647RA — 100% desconhecido (chip_type vazio, zero fuzzy_suggestions,
+# nenhuma família cobria). Pesquisa ampla (WebSearch + fetch direto de fontes primárias, nunca
+# confiando no resumo de busca — regra do projeto) achou uma família real de eMCP Toshiba
+# ~2012-2013, usada em smartphones Huawei/Samsung, com pelo menos 10 PNs catalogados variando em
+# 3 "letras de capacidade" (G/H/I) e lote (últimos dígitos antes de RA/RC).
+#
+# Gramática nova cadastrada em chips/knowledge/toshiba-kioxia.yaml (prefix TY90, família magra —
+# ver tip/reasoning lá para o raciocínio completo): RAM=LPDDR1 fixo → SEMPRE NÃO RENTÁVEL por
+# geração, igual às irmãs TY8A0A/TYC/TYD. Esta submissão é a segunda entrega (known_parts) — a
+# gramática sozinha já reprova por geração, mas o objetivo do chat é o BANCO, não a gramática
+# (regra reforçada pelo dono em 2026-08-20): a capacidade NAND real (8GB/16GB) é fato do banco
+# independente do veredito de rentabilidade já valer sem ela.
+#
+# ============================================================================================
+# TY90GH131451RC — confidence=confirmed (Tier-1)
+# ============================================================================================
+# Fonte: electronics360.globalspec.com, "Huawei Ascend D1 Quad XL U9510E Mobile Handset Teardown"
+# (IHS Benchmarking / iSuppli, 11/mar/2013) — artigo lido diretamente (não resumo de busca; o
+# resumo do WebSearch tinha soado ambíguo, fui conferir a fonte primária, regra permanente deste
+# projeto). Tabela BOM "Main Cost Drivers", linha verbatim:
+#   "Toshiba Semiconductor TY90GH131451RC MCP - 8GB eMMC NAND Flash + 512Mb Mobile DDR- (Qty: 1)"
+# Aritmética RAM: 512Mb (megabit, notação Tier-1) ÷ 8 = 64MB. "Mobile DDR" = LPDDR1 na convenção
+# já estabelecida desta marca (mesma equivalência usada no tip do TY8A0A no yaml).
+#
+# ============================================================================================
+# TY90HH131635RA + cluster de lote (131647RA bancada, 131439RC, 131517RA) — confidence=distributor
+# ============================================================================================
+# Fonte: spares2repair.co.uk, peça de reposição Samsung OEM "1108-000538" (loja de peças
+# genuínas, não fórum/aggregator) — descrição estruturada do produto lida diretamente:
+#   "1108-000538 Ic-mcp,ty90hh131635ra,16gb-512mb,sdram+e"
+# Confirma TIPO (Ic-mcp = eMCP, mesmo tipo do G confirmado Tier-1) e sugere NAND=16GB (dobro do
+# G=8GB, consistente com a progressão G/H/I observada). É fonte de DISTRIBUIDOR — "capacidade eMCP
+# só Tier-1" (regra do projeto) — por isso confidence=distributor, não confirmed/manual, e SEM
+# emcp_ram: o "512" citado bate com o número Tier-1 do G, mas a unidade (sdram vs mobile ddr, MB
+# vs Mb) não foi confirmada independente para esta letra — excluído em vez de adivinhado.
+#
+# Cluster de lote: TY90HH131647RA (bancada) / 131439RC / 131517RA compartilham o mesmo prefixo+
+# código "TY90HH131" do PN confirmado 131635RA, diferindo só no lote (últimos dígitos) + sufixo
+# RA/RC — mesmo padrão já validado nesta marca para TYC0FH12[XXXX]RA e TYD0GH221664RA
+# (2026-08-20). eBay ("16G new") e cross-referência de dispositivo (Galaxy Tab/Note) corroboram
+# 16GB de forma independente, mas fraca (Tier-3 casual) — não elevam a confidence sozinhas.
+#
+# NÃO incluído nesta rodada: TY90IH151518RA/151636RA (letra I, 32GB) — só bundle listings tipo
+# AliExpress sem fonte estruturada, abaixo da barra até de distributor. TYA0HH131570RC — achado
+# incidental (mesma forma, prefixo TYA0 em vez de TY90), não pesquisado ainda. Ambos ficam para a
+# próxima rodada de "buscar mais irmãos e primos".
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_ty90_2026-08-24.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_ty90_2026-08-24.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TY90GH131451RC"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR1 64MB"
+    confidence: confirmed
+    source_url: "https://electronics360.globalspec.com/article/2716/teardown-huawei-ascend-d1-quad-xl-u9510e-mobile-handset"
+    notes: >
+      Teardown/BOM profissional IHS Benchmarking (iSuppli), "Huawei Ascend D1 Quad XL U9510E
+      Mobile Handset Teardown", 11/mar/2013, tabela "Main Cost Drivers" lida diretamente: "Toshiba
+      Semiconductor TY90GH131451RC MCP - 8GB eMMC NAND Flash + 512Mb Mobile DDR- (Qty: 1)".
+      Aritmética: 512Mb ÷ 8 = 64MB. "Mobile DDR" = LPDDR1 (convenção já usada no tip do TY8A0A
+      desta marca). Fonte Tier-1/2 (análise profissional de BOM de teardown, mesmo padrão de
+      confiança já usado antes nesta marca para achados via iFixit/IHS).
+  - part_number: "TY90HH131635RA"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    confidence: distributor
+    source_url: "https://spares2repair.co.uk/samsung-ic-1108-000538-ic-mcp-ty90hh131635ra-16gb-512mb-sdram-e-SKU126430"
+    notes: >
+      Peça de reposição Samsung OEM "1108-000538" (spares2repair.co.uk), descrição estruturada:
+      "Ic-mcp,ty90hh131635ra,16gb-512mb,sdram+e". Confirma tipo eMCP (bate com o irmão G, Tier-1)
+      e sugere NAND=16GB (dobro do G=8GB, progressão G/H/I). Fonte de distribuidor — capacidade
+      eMCP só Tier-1 é regra do projeto — por isso confidence=distributor, sem emcp_ram (unidade
+      Mb/MB não confirmada independente para esta letra).
+  - part_number: "TY90HH131647RA"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    confidence: distributor
+    source_url: "https://spares2repair.co.uk/samsung-ic-1108-000538-ic-mcp-ty90hh131635ra-16gb-512mb-sdram-e-SKU126430"
+    notes: >
+      PN da bancada. Cluster de lote de TY90HH131635RA (mesmo prefixo+código "TY90HH131", só o
+      lote final muda: 647 vs 635) — mesmo padrão já validado nesta marca (TYC0FH12[XXXX]RA,
+      TYD0GH221664RA 2026-08-20). Corroboração adicional fraca (Tier-3): listagem eBay "16G new" +
+      cross-referência de dispositivo (Galaxy Tab/Note série N7xxx), não eleva a confidence.
+  - part_number: "TY90HH131439RC"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    confidence: distributor
+    source_url: "https://spares2repair.co.uk/samsung-ic-1108-000538-ic-mcp-ty90hh131635ra-16gb-512mb-sdram-e-SKU126430"
+    notes: >
+      Cluster de lote de TY90HH131635RA (mesmo prefixo+código "TY90HH131", só lote final muda:
+      439 vs 635, sufixo RC). PN catalogado (hkinventory.com, dzsc.com) — existência confirmada,
+      specs herdadas do irmão de lote mais próximo (mesmo padrão TYC/TYD já validado).
+  - part_number: "TY90HH131517RA"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    confidence: distributor
+    source_url: "https://spares2repair.co.uk/samsung-ic-1108-000538-ic-mcp-ty90hh131635ra-16gb-512mb-sdram-e-SKU126430"
+    notes: >
+      Cluster de lote de TY90HH131635RA (mesmo prefixo+código "TY90HH131", só lote final muda:
+      517 vs 635). PN catalogado (hkinventory.com) — existência confirmada, specs herdadas do
+      irmão de lote mais próximo (mesmo padrão TYC/TYD já validado).

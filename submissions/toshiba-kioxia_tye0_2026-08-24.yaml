@@ -1,0 +1,60 @@
+# Submissão de known_parts — Toshiba-Kioxia, família NOVA TYE0 (eMCP, BGA-221)
+#
+# PN da bancada: TYE0HH231659RA — 100% desconhecido, in_review_queue=true, nenhuma família
+# cobria (nem TY90 nem TYD/TYC). Mesma FORMA do TY90 (prefixo TY + 2 chars + "0" + letra de
+# capacidade + "H" fixo + dígitos + RA/RC, pn_length=14), mas chave "E0" em vez de "90" —
+# família estrutural SEPARADA, produto diferente (pacote BGA-221, igual ao TYD; RAM citada em
+# Gb, não Mb — ou seja, MUITO maior que o TY90/LPDDR1).
+#
+# Gramática nova cadastrada em chips/knowledge/toshiba-kioxia.yaml (prefix TYE0, família magra —
+# ver tip/reasoning lá). subtype fica VAZIO de propósito: a única fonte que cita RAM ("16Gb", via
+# rlitl.com) é Tier-3 única, sem confirmar geração (LPDDR3 vs LPDDR4) nem unidade — por analogia
+# de pacote (BGA-221 = mesmo do TYD/LPDDR3) é plausível ser LPDDR3, mas isso NÃO virou fato
+# gravado (nem na gramática, nem aqui). Por isso esta submissão só traz emcp_nand — sem
+# emcp_ram, regra "capacidade eMCP só Tier-1, nunca adivinhar".
+#
+# ============================================================================================
+# TYE0HH231659RA (bancada) — confidence=distributor
+# ============================================================================================
+# Fonte: rlitl.com ("睿霖国际有限公司", distribuidor chinês) — página de produto dedicada,
+# categorizada na seção própria "EMCP" do site (não "EMMC"): "TYE0HH231659RA TOSHIBA EMCP
+# 16GB+16Gb". Confirma tipo eMCP + NAND=16GB. Existência adicional confirmada via censtry.com
+# (página dedicada, estoque 3102 PCS, "TOSHIBA IC Chips BGA") e hkinventory.com (listagem, sem
+# specs estruturados).
+#
+# ============================================================================================
+# TYE0IH231658RA (irmã de capacidade) — confidence=distributor
+# ============================================================================================
+# Fonte: AliExpress (ja.aliexpress.com/item/33011042634.html — página não carregou no fetch
+# direto, JS-rendered; título indexado pelo buscador, não resumo de IA): "Tye0ih231658ra 221fbga
+# emcp 32 24 32gb". Confirma tipo eMCP, pacote 221FBGA (bate com BGA-221 do TYD) e NAND=32GB.
+# Mesmo prefixo "TYE0HH231"/"TYE0IH231" do PN da bancada, só troca a letra (H→I) e o último
+# dígito de lote (659→658) — mesmo padrão de cluster já usado no TY90.
+#
+# NÃO incluído: RAM (emcp_ram) para nenhum dos 2 — sem fonte Tier-1/2 de geração. Outras letras
+# de capacidade (G? outras densidades?) — busca não achou.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tye0_2026-08-24.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tye0_2026-08-24.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TYE0HH231659RA"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    confidence: distributor
+    source_url: "http://www.rlitl.com/product/showproduct.php?id=1616"
+    notes: >
+      PN da bancada. rlitl.com categoriza como "EMCP 16GB+16Gb" (seção própria EMCP do site).
+      Existência adicional via censtry.com (3102 PCS em estoque) e hkinventory.com. RAM ("16Gb")
+      citada só por essa fonte, sem confirmar geração/unidade — excluída desta submissão.
+  - part_number: "TYE0IH231658RA"
+    chip_type: "eMCP"
+    emcp_nand: "32GB"
+    confidence: distributor
+    source_url: "https://ja.aliexpress.com/item/33011042634.html"
+    notes: >
+      Irmã de capacidade do PN da bancada (mesmo prefixo TYE0..231, letra H→I, lote 659→658).
+      Listagem AliExpress: "221fbga emcp...32gb" — confirma tipo eMCP, pacote 221FBGA (igual
+      TYD) e NAND=32GB. RAM não confirmada, mesma ressalva do irmão.
