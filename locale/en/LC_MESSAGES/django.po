@@ -3788,6 +3788,161 @@ msgstr "¥ · empty = not quoted"
 msgid "¥ · vazio = sem piso"
 msgstr "¥ · empty = no floor"
 
+msgid "Preços em ¥ (RMB) por chip (unitário); US$ derivado da taxa do dia."
+msgstr "Prices in ¥ (RMB) per chip (unit); US$ derived from the day’s rate."
+
+msgid "Válido até"
+msgstr "Valid until"
+
+msgid "contrato"
+msgstr "contract"
+
+msgid "mid-market"
+msgstr "mid-market"
+
+msgid "última conhecida"
+msgstr "last known"
+
+msgid ""
+"A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes."
+" Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado "
+"de agora, nunca de uma cópia guardada."
+msgstr ""
+"Your price table in a single file, ready to send to your clients. Choose "
+"what goes in, in which language and which currency — the PDF is built from "
+"the current state, never from a saved copy."
+
+msgid "Buscar tipo por nome ou descrição"
+msgstr "Search type by name or description"
+
+msgid "Catálogo"
+msgstr "Catalog"
+
+msgid "Cotadas"
+msgstr "Quoted"
+
+msgid "Desmarcar todos"
+msgstr "Clear all"
+
+msgid "Estrutura"
+msgstr "Structure"
+
+msgid "Filtrar por cobertura"
+msgstr "Filter by coverage"
+
+msgid "Gerar PDF"
+msgstr "Generate PDF"
+
+msgid "Idioma"
+msgstr "Language"
+
+msgid "LPDDR avulsa — preço unificado por geração"
+msgstr "standalone LPDDR — unified price per generation"
+
+msgid "Linhas"
+msgstr "Rows"
+
+msgid "Linhas sem cotação"
+msgstr "Rows with no quote"
+
+msgid "Marcar ou desmarcar todos"
+msgstr "Select or clear all"
+
+msgid "Marcar todos"
+msgstr "Select all"
+
+msgid "Moeda"
+msgstr "Currency"
+
+msgid "Montar catálogo"
+msgstr "Build catalog"
+
+msgid "N1 de N2 tipos no catálogo · N3 linhas cotadas · N4 sem cotação"
+msgstr "N1 of N2 types in the catalog · N3 quoted rows · N4 with no quote"
+
+msgid "NAND Samsung avulsa — preço único por unidade"
+msgstr "standalone Samsung NAND — single price per unit"
+
+msgid "Nenhum tipo selecionado — o catálogo sairia em branco."
+msgstr "No type selected — the catalog would come out empty."
+
+msgid "Nenhuma tabela ainda — fale com a equipe WhatTheChip."
+msgstr "No table yet — talk to the WhatTheChip team."
+
+msgid "O documento"
+msgstr "The document"
+
+msgid "Observação de capa"
+msgstr "Cover note"
+
+msgid "armazenamento de celular — preço unificado"
+msgstr "phone storage — unified price"
+
+msgid "buscar tipo…"
+msgstr "search type…"
+
+msgid "celular (unificado) × PCB (por marca)"
+msgstr "phone (unified) × PCB (per brand)"
+
+msgid "celular × PCB — duas tabelas"
+msgstr "phone × PCB — two tables"
+
+msgid "combo NAND + LPDDR — preço por NAND, faixa mín–máx"
+msgstr "NAND + LPDDR combo — priced by NAND, min–max range"
+
+msgid "combo UFS + LPDDR — preço por NAND, faixa mín–máx"
+msgstr "UFS + LPDDR combo — priced by NAND, min–max range"
+
+msgid "completa"
+msgstr "complete"
+
+msgid "faixa mín–máx, uma coluna"
+msgstr "min–max range, one column"
+
+msgid "linear ¥/GB, com piso por peça"
+msgstr "linear ¥/GB, with a floor per piece"
+
+msgid "memória de PCB — matriz por marca"
+msgstr "PCB memory — matrix per brand"
+
+msgid "ocultar do catálogo"
+msgstr "hide from the catalog"
+
+msgid "por marca — matriz"
+msgstr "per brand — matrix"
+
+msgid "preço linear ¥/GB, com piso por peça"
+msgstr "linear ¥/GB price, with a floor per piece"
+
+msgid "publicar em branco"
+msgstr "publish blank"
+
+msgid "sai na primeira página, abaixo do seu nome"
+msgstr "appears on the first page, below your name"
+
+msgid "só com lacuna"
+msgstr "with gaps only"
+
+msgid "só completas"
+msgstr "complete only"
+
+msgid "todas as tabelas"
+msgstr "all tables"
+
+msgid "uma linha, um preço"
+msgstr "one row, one price"
+
+msgid "unificada — uma coluna de preço"
+msgstr "unified — one price column"
+
+msgid "vai no rodapé de todas as páginas"
+msgstr "goes in the footer of every page"
+
+msgid "%(n)s sem cotação"
+msgid_plural "%(n)s sem cotação"
+msgstr[0] "%(n)s with no quote"
+msgstr[1] "%(n)s with no quote"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

@@ -17,6 +17,12 @@ urlpatterns = [
     path('notifications/',        views.partner_notifications,
          name='partner_notifications'),
     path('how/',                  views.partner_how, name='partner_how'),
+    # A TELA do catálogo (spec v2 §5.2). O `.pdf` abaixo continua sendo quem
+    # gera — a tela só monta o pedido.
+    path('catalogo/',             views.partner_catalog,
+         name='partner_catalog_page'),
+    # GET (o card da home, desde julho) e POST (o formulário da tela nova,
+    # spec v2 §10.2) na MESMA rota: link guardado continua valendo.
     path('catalog.pdf',           views.partner_catalog_pdf,
          name='partner_catalog'),
 ]

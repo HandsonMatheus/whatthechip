@@ -3574,6 +3574,157 @@ msgstr "¥ · 留空 = 未报价"
 msgid "¥ · vazio = sem piso"
 msgstr "¥ · 留空 = 无保底"
 
+msgid "Preços em ¥ (RMB) por chip (unitário); US$ derivado da taxa do dia."
+msgstr "每颗芯片价格，单位 ¥（人民币）；US$ 按当日汇率折算。"
+
+msgid "Válido até"
+msgstr "有效期至"
+
+msgid "contrato"
+msgstr "合同汇率"
+
+msgid "mid-market"
+msgstr "mid-market"
+
+msgid "última conhecida"
+msgstr "最近已知"
+
+msgid ""
+"A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes."
+" Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado "
+"de agora, nunca de uma cópia guardada."
+msgstr "把您的价目表汇成一个文件，可直接发给客户。选择内容、语言和币种——PDF 按当前状态生成，绝不是保存好的副本。"
+
+msgid "Buscar tipo por nome ou descrição"
+msgstr "按名称或说明搜索类型"
+
+msgid "Catálogo"
+msgstr "价目表"
+
+msgid "Cotadas"
+msgstr "已报价"
+
+msgid "Desmarcar todos"
+msgstr "全部取消"
+
+msgid "Estrutura"
+msgstr "结构"
+
+msgid "Filtrar por cobertura"
+msgstr "按完整度筛选"
+
+msgid "Gerar PDF"
+msgstr "生成 PDF"
+
+msgid "Idioma"
+msgstr "语言"
+
+msgid "LPDDR avulsa — preço unificado por geração"
+msgstr "独立 LPDDR——按代次统一价"
+
+msgid "Linhas"
+msgstr "行数"
+
+msgid "Linhas sem cotação"
+msgstr "未报价的行"
+
+msgid "Marcar ou desmarcar todos"
+msgstr "全选或全部取消"
+
+msgid "Marcar todos"
+msgstr "全选"
+
+msgid "Moeda"
+msgstr "币种"
+
+msgid "Montar catálogo"
+msgstr "制作价目表"
+
+msgid "N1 de N2 tipos no catálogo · N3 linhas cotadas · N4 sem cotação"
+msgstr "价目表含 N1/N2 个类型 · 已报价 N3 行 · 未报价 N4 行"
+
+msgid "NAND Samsung avulsa — preço único por unidade"
+msgstr "三星散装 NAND——每颗统一价"
+
+msgid "Nenhum tipo selecionado — o catálogo sairia em branco."
+msgstr "未选择任何类型——价目表将是空的。"
+
+msgid "Nenhuma tabela ainda — fale com a equipe WhatTheChip."
+msgstr "还没有任何表格——请联系 WhatTheChip 团队。"
+
+msgid "O documento"
+msgstr "文件设置"
+
+msgid "Observação de capa"
+msgstr "封面备注"
+
+msgid "armazenamento de celular — preço unificado"
+msgstr "手机存储——统一价"
+
+msgid "buscar tipo…"
+msgstr "搜索类型…"
+
+msgid "celular (unificado) × PCB (por marca)"
+msgstr "手机（统一）× PCB（按品牌）"
+
+msgid "celular × PCB — duas tabelas"
+msgstr "手机 × PCB——两张表"
+
+msgid "combo NAND + LPDDR — preço por NAND, faixa mín–máx"
+msgstr "NAND + LPDDR 组合——按 NAND 计价，最低–最高区间"
+
+msgid "combo UFS + LPDDR — preço por NAND, faixa mín–máx"
+msgstr "UFS + LPDDR 组合——按 NAND 计价，最低–最高区间"
+
+msgid "completa"
+msgstr "完整"
+
+msgid "faixa mín–máx, uma coluna"
+msgstr "最低–最高区间，单列"
+
+msgid "linear ¥/GB, com piso por peça"
+msgstr "线性 ¥/GB，含每片保底价"
+
+msgid "memória de PCB — matriz por marca"
+msgstr "PCB 内存——按品牌矩阵"
+
+msgid "ocultar do catálogo"
+msgstr "从价目表中隐藏"
+
+msgid "por marca — matriz"
+msgstr "按品牌——矩阵"
+
+msgid "preço linear ¥/GB, com piso por peça"
+msgstr "线性 ¥/GB 价格，含每片保底价"
+
+msgid "publicar em branco"
+msgstr "留空发布"
+
+msgid "sai na primeira página, abaixo do seu nome"
+msgstr "显示在首页，您的名称下方"
+
+msgid "só com lacuna"
+msgstr "仅有缺口的"
+
+msgid "só completas"
+msgstr "仅完整的"
+
+msgid "todas as tabelas"
+msgstr "全部表格"
+
+msgid "uma linha, um preço"
+msgstr "一行，一个价格"
+
+msgid "unificada — uma coluna de preço"
+msgstr "统一——单价格列"
+
+msgid "vai no rodapé de todas as páginas"
+msgstr "出现在每一页的页脚"
+
+msgid "%(n)s sem cotação"
+msgid_plural "%(n)s sem cotação"
+msgstr[0] "%(n)s 项未报价"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

@@ -3815,6 +3815,163 @@ msgstr "¥ · vacío = sin cotización"
 msgid "¥ · vazio = sem piso"
 msgstr "¥ · vacío = sin piso"
 
+msgid "Preços em ¥ (RMB) por chip (unitário); US$ derivado da taxa do dia."
+msgstr ""
+"Precios en ¥ (RMB) por chip (unitario); US$ derivado de la tasa del día."
+
+msgid "Válido até"
+msgstr "Válido hasta"
+
+msgid "contrato"
+msgstr "contrato"
+
+msgid "mid-market"
+msgstr "mid-market"
+
+msgid "última conhecida"
+msgstr "última conocida"
+
+msgid ""
+"A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes."
+" Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado "
+"de agora, nunca de uma cópia guardada."
+msgstr ""
+"Su tabla de precios en un solo archivo, lista para enviar a sus clientes. "
+"Elija qué entra, en qué idioma y en qué moneda — el PDF nace del estado "
+"actual, nunca de una copia guardada."
+
+msgid "Buscar tipo por nome ou descrição"
+msgstr "Buscar tipo por nombre o descripción"
+
+msgid "Catálogo"
+msgstr "Catálogo"
+
+msgid "Cotadas"
+msgstr "Cotizadas"
+
+msgid "Desmarcar todos"
+msgstr "Desmarcar todos"
+
+msgid "Estrutura"
+msgstr "Estructura"
+
+msgid "Filtrar por cobertura"
+msgstr "Filtrar por cobertura"
+
+msgid "Gerar PDF"
+msgstr "Generar PDF"
+
+msgid "Idioma"
+msgstr "Idioma"
+
+msgid "LPDDR avulsa — preço unificado por geração"
+msgstr "LPDDR suelta — precio unificado por generación"
+
+msgid "Linhas"
+msgstr "Filas"
+
+msgid "Linhas sem cotação"
+msgstr "Filas sin cotización"
+
+msgid "Marcar ou desmarcar todos"
+msgstr "Marcar o desmarcar todos"
+
+msgid "Marcar todos"
+msgstr "Marcar todos"
+
+msgid "Moeda"
+msgstr "Moneda"
+
+msgid "Montar catálogo"
+msgstr "Armar catálogo"
+
+msgid "N1 de N2 tipos no catálogo · N3 linhas cotadas · N4 sem cotação"
+msgstr ""
+"N1 de N2 tipos en el catálogo · N3 filas cotizadas · N4 sin cotización"
+
+msgid "NAND Samsung avulsa — preço único por unidade"
+msgstr "NAND Samsung suelta — precio único por unidad"
+
+msgid "Nenhum tipo selecionado — o catálogo sairia em branco."
+msgstr "Ningún tipo seleccionado — el catálogo saldría en blanco."
+
+msgid "Nenhuma tabela ainda — fale com a equipe WhatTheChip."
+msgstr "Ninguna tabla todavía — hable con el equipo de WhatTheChip."
+
+msgid "O documento"
+msgstr "El documento"
+
+msgid "Observação de capa"
+msgstr "Observación de portada"
+
+msgid "armazenamento de celular — preço unificado"
+msgstr "almacenamiento de celular — precio unificado"
+
+msgid "buscar tipo…"
+msgstr "buscar tipo…"
+
+msgid "celular (unificado) × PCB (por marca)"
+msgstr "celular (unificado) × PCB (por marca)"
+
+msgid "celular × PCB — duas tabelas"
+msgstr "celular × PCB — dos tablas"
+
+msgid "combo NAND + LPDDR — preço por NAND, faixa mín–máx"
+msgstr "combo NAND + LPDDR — precio por NAND, rango mín–máx"
+
+msgid "combo UFS + LPDDR — preço por NAND, faixa mín–máx"
+msgstr "combo UFS + LPDDR — precio por NAND, rango mín–máx"
+
+msgid "completa"
+msgstr "completa"
+
+msgid "faixa mín–máx, uma coluna"
+msgstr "rango mín–máx, una columna"
+
+msgid "linear ¥/GB, com piso por peça"
+msgstr "lineal ¥/GB, con piso por pieza"
+
+msgid "memória de PCB — matriz por marca"
+msgstr "memoria de PCB — matriz por marca"
+
+msgid "ocultar do catálogo"
+msgstr "ocultar del catálogo"
+
+msgid "por marca — matriz"
+msgstr "por marca — matriz"
+
+msgid "preço linear ¥/GB, com piso por peça"
+msgstr "precio lineal ¥/GB, con piso por pieza"
+
+msgid "publicar em branco"
+msgstr "publicar en blanco"
+
+msgid "sai na primeira página, abaixo do seu nome"
+msgstr "sale en la primera página, debajo de su nombre"
+
+msgid "só com lacuna"
+msgstr "solo con laguna"
+
+msgid "só completas"
+msgstr "solo completas"
+
+msgid "todas as tabelas"
+msgstr "todas las tablas"
+
+msgid "uma linha, um preço"
+msgstr "una fila, un precio"
+
+msgid "unificada — uma coluna de preço"
+msgstr "unificada — una columna de precio"
+
+msgid "vai no rodapé de todas as páginas"
+msgstr "va en el pie de todas las páginas"
+
+msgid "%(n)s sem cotação"
+msgid_plural "%(n)s sem cotação"
+msgstr[0] "%(n)s sin cotización"
+msgstr[1] "%(n)s sin cotización"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

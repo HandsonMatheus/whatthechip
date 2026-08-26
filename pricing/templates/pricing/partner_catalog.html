@@ -1,0 +1,211 @@
+{% extends "pricing/partner_base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Catálogo" %}{% endblock %}
+
+{% comment %}
+  A TELA DO CATÁLOGO (spec v2 §5.2) — o gerador do PDF que o comprador manda
+  aos clientes dele. Duas colunas: a seleção de tipos à esquerda, as opções do
+  documento à direita.
+
+  A regra que governa a tela inteira: **todo tipo entra no catálogo até o
+  comprador dizer o contrário**. O estado é um mapa de EXCLUSÕES, não de
+  inclusões — e a consequência que importa é que um tipo novo aparece no
+  catálogo sozinho, sem ninguém lembrar de marcá-lo. O servidor concorda: a
+  ausência de `types` no POST significa TODOS.
+{% endcomment %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="ptn-card" style="margin-bottom:14px;">
+  <h1 style="margin:0 0 4px;font-size:22px;font-weight:600;">{% trans "Catálogo" %}</h1>
+  <p style="margin:0;font-size:13px;color:#6f6f6f;max-width:70ch;line-height:1.6;">
+    {% blocktrans trimmed %}A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes. Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado de agora, nunca de uma cópia guardada.{% endblocktrans %}
+  </p>
+</div>
+
+<form method="post" action="{% url 'pricing:partner_catalog' %}" id="wtc-cat">
+{% csrf_token %}
+<div class="cat">
+
+  {% comment %} ── ESQUERDA: a seleção ─────────────────────────────── {% endcomment %}
+  <div class="ptn-card" style="padding:0;">
+    <div class="cat__f">
+      <input type="search" id="cat-q" class="ptn-input" style="width:200px;"
+             placeholder="{% trans 'buscar tipo…' %}"
+             aria-label="{% trans 'Buscar tipo por nome ou descrição' %}">
+      <select id="cat-cov" class="ptn-input" style="width:auto;font-family:inherit;"
+              aria-label="{% trans 'Filtrar por cobertura' %}">
+        <option value="all">{% trans "todas as tabelas" %}</option>
+        <option value="full">{% trans "só completas" %}</option>
+        <option value="gap">{% trans "só com lacuna" %}</option>
+      </select>
+      <button type="button" id="cat-todos" class="ptn-btn ptn-btn--ghost">{% trans "Desmarcar todos" %}</button>
+    </div>
+    <table class="ptn-table">
+      <thead><tr>
+        <th style="width:34px;"><input type="checkbox" id="cat-mestre" checked
+              aria-label="{% trans 'Marcar ou desmarcar todos' %}"></th>
+        <th>{% trans "Tipo de chip" %}</th>
+        <th>{% trans "Estrutura" %}</th>
+        <th>{% trans "Linhas" %}</th>
+        <th>{% trans "Cotadas" %}</th>
+      </tr></thead>
+      <tbody id="cat-corpo">
+        {% for t in tipos %}
+        <tr data-k="{{ t.key }}" data-cov="{% if t.miss %}gap{% else %}full{% endif %}"
+            data-txt="{{ t.label|lower }} {{ t.desc|lower }}">
+          <td><input type="checkbox" name="types" value="{{ t.key }}" checked
+                     class="cat__c" aria-label="{{ t.label }}"></td>
+          <td style="font-weight:600;">{{ t.label }}
+            <div style="font-weight:400;font-size:12px;color:#6f6f6f;">{{ t.desc }}</div></td>
+          <td style="font-size:12.5px;color:#6f6f6f;">{{ t.form }}</td>
+          <td style="font-family:'IBM Plex Mono',monospace;" data-lines="{{ t.lines }}">{{ t.lines }}</td>
+          <td data-quoted="{{ t.quoted }}" data-miss="{{ t.miss }}">
+            <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;">{{ t.quoted }}</span>
+            {% if t.miss %}<span class="ptn-tag ptn-tag--pending" style="margin-left:6px;">{% blocktrans trimmed count n=t.miss %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
+            {% else %}<span class="ptn-tag ptn-tag--quoted" style="margin-left:6px;">{% trans "completa" %}</span>{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="color:#6f6f6f;padding:18px;">{% trans "Nenhuma tabela ainda — fale com a equipe WhatTheChip." %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% comment %} O rodapé conta O QUE VAI SAIR, não o que existe: é a única
+       leitura que responde "o que estou mandando?" sem abrir o PDF. {% endcomment %}
+    <div class="cat__sum" id="cat-sum" data-total="{{ tipos|length }}"></div>
+  </div>
+
+  {% comment %} ── DIREITA: as opções do documento ─────────────────── {% endcomment %}
+  <div class="catopt">
+    <div class="catopt__l">{% trans "O documento" %}</div>
+
+    <label class="catopt__r">{% trans "Idioma" %}
+      <select name="lang" class="catopt__in">
+        {% for code, nome in idiomas %}
+        <option value="{{ code }}">{{ nome }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    {% comment %} Sob câmbio ausente a opção com US$ NÃO aparece (§5.2): um
+       select que oferece dólar e devolve um PDF sem dólar é pior que um
+       select com uma opção só. {% endcomment %}
+    <label class="catopt__r">{% trans "Moeda" %}
+      <select name="currency" class="catopt__in">
+        <option value="rmb">¥ RMB</option>
+        {% if fx_info %}<option value="both" selected>¥ RMB + US$</option>{% endif %}
+      </select>
+    </label>
+
+    <label class="catopt__r">{% trans "Válido até" %}
+      <input type="date" name="valid_until" class="catopt__in">
+    </label>
+
+    <label class="catopt__r">{% trans "Linhas sem cotação" %}
+      <select name="gaps" class="catopt__in">
+        <option value="show">{% trans "publicar em branco" %}</option>
+        <option value="hide">{% trans "ocultar do catálogo" %}</option>
+      </select>
+    </label>
+
+    <label class="catopt__r">{% trans "Observação de capa" %}
+      <textarea name="cover_note" rows="3" maxlength="400" class="catopt__in"
+                placeholder="{% trans 'sai na primeira página, abaixo do seu nome' %}"></textarea>
+    </label>
+
+    {% comment %} O carimbo de taxa na tela reflete o mesmo estado que vai
+       para o rodapé de CADA página do PDF. {% endcomment %}
+    <div class="catopt__fx">
+      {% if fx_info %}
+        {% if fx_info.state == 'market' %}{% trans "mid-market" %}
+        {% elif fx_info.state == 'fallback' %}{% trans "última conhecida" %}
+        {% else %}{% trans "contrato" %}{% endif %}
+        {% if fx_info.date %}{{ fx_info.date|date:"d/m" }}{% endif %}
+        · 1 ¥ ≈ US$ {{ fx_info.rate_disp }}
+      {% else %}{% trans "sem taxa do dia" %}{% endif %}
+      <div class="catopt__fxs">{% trans "vai no rodapé de todas as páginas" %}</div>
+    </div>
+
+    <button type="submit" class="ptn-btn catopt__go" id="cat-go">{% trans "Gerar PDF" %}</button>
+  </div>
+</div>
+</form>
+
+{% comment %}
+  Sem JS a tela continua correta: tudo nasce MARCADO e o formulário posta a
+  seleção inteira. O script só acrescenta busca, filtro, o mestre e a conta do
+  rodapé — nada aqui é a única via para gerar o catálogo.
+{% endcomment %}
+<script>
+(function () {
+  var corpo = document.getElementById('cat-corpo');
+  if (!corpo) return;
+  var q = document.getElementById('cat-q');
+  var cov = document.getElementById('cat-cov');
+  var mestre = document.getElementById('cat-mestre');
+  var botao = document.getElementById('cat-todos');
+  var sum = document.getElementById('cat-sum');
+  var go = document.getElementById('cat-go');
+  var T = {
+    marcar: '{% trans "Marcar todos"|escapejs %}',
+    desmarcar: '{% trans "Desmarcar todos"|escapejs %}',
+    resumo: '{% trans "N1 de N2 tipos no catálogo · N3 linhas cotadas · N4 sem cotação"|escapejs %}',
+    vazio: '{% trans "Nenhum tipo selecionado — o catálogo sairia em branco."|escapejs %}'
+  };
+  var linhas = [].slice.call(corpo.querySelectorAll('tr[data-k]'));
+  var total = +sum.getAttribute('data-total') || linhas.length;
+
+  function visiveis() {
+    var termo = (q.value || '').trim().toLowerCase();
+    var alvo = cov.value;
+    linhas.forEach(function (tr) {
+      var okTexto = !termo || tr.getAttribute('data-txt').indexOf(termo) >= 0;
+      var okCob = alvo === 'all' || tr.getAttribute('data-cov') === alvo;
+      tr.hidden = !(okTexto && okCob);
+    });
+  }
+
+  function conta() {
+    /* Conta a SELEÇÃO INTEIRA, não só o que está visível: filtrar é um jeito
+       de achar, não de excluir — e um tipo escondido pelo filtro continua
+       indo para o PDF. Contar só o visível faria o rodapé mentir. */
+    var n = 0, cotadas = 0, faltam = 0;
+    linhas.forEach(function (tr) {
+      if (!tr.querySelector('.cat__c').checked) return;
+      n++;
+      cotadas += +tr.querySelector('[data-quoted]').getAttribute('data-quoted');
+      faltam += +tr.querySelector('[data-quoted]').getAttribute('data-miss');
+    });
+    sum.textContent = n ? T.resumo.replace('N1', n).replace('N2', total)
+        .replace('N3', cotadas).replace('N4', faltam) : T.vazio;
+    sum.classList.toggle('is-bad', !n);
+    /* Zero tipos = nada a gerar. Desabilitar é mais honesto que gerar um PDF
+       de uma página em branco e deixar ele descobrir depois de enviar. */
+    go.disabled = !n;
+    var marcados = linhas.filter(function (tr) {
+      return tr.querySelector('.cat__c').checked; }).length;
+    mestre.checked = marcados === linhas.length;
+    mestre.indeterminate = marcados > 0 && marcados < linhas.length;
+    botao.textContent = marcados ? T.desmarcar : T.marcar;
+  }
+
+  q.addEventListener('input', visiveis);
+  cov.addEventListener('change', visiveis);
+  corpo.addEventListener('change', conta);
+  mestre.addEventListener('change', function () {
+    linhas.forEach(function (tr) {
+      tr.querySelector('.cat__c').checked = mestre.checked; });
+    conta();
+  });
+  botao.addEventListener('click', function () {
+    var ligar = !linhas.some(function (tr) {
+      return tr.querySelector('.cat__c').checked; });
+    linhas.forEach(function (tr) {
+      tr.querySelector('.cat__c').checked = ligar; });
+    conta();
+  });
+  conta();
+})();
+</script>
+{% endblock %}

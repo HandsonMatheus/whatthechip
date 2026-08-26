@@ -35,6 +35,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import translation
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _lazy
 from django.views.decorators.http import require_POST
 
 from tenancy.scope import company_scope
@@ -152,6 +153,16 @@ _MATRIX_KINDS = ('ddr',)
 #: de `Price`. SSD é linear (¥/GB + piso por peça, capacidades derivadas); K9
 #: é um número só. Ver `RateChangeRequest`.
 _RATE_KINDS = ('ssd', 'k9')
+
+
+def _data_iso(txt):
+    """`YYYY-MM-DD` → date, ou None. Data ilegível não levanta: o catálogo tem
+    de sair mesmo com um campo mal preenchido — sem validade é melhor que sem
+    catálogo, e a tela mostra o que ele escolheu."""
+    try:
+        return date.fromisoformat((txt or '').strip())
+    except (TypeError, ValueError):
+        return None
 
 
 def _fx_info(buyer):
@@ -567,30 +578,171 @@ def partner_how(request):
     })
 
 
+#: Descrição curta por tipo, para a tela do Catálogo (§5.2: a busca é por
+#: NOME **e descrição** — sem a descrição a busca só acha quem já sabe a sigla).
+#: Canônicas na sigla, humanas no resto.
+_KIND_DESC = {
+    'emcp':  _lazy('combo NAND + LPDDR — preço por NAND, faixa mín–máx'),
+    'umcp':  _lazy('combo UFS + LPDDR — preço por NAND, faixa mín–máx'),
+    'lpddr': _lazy('LPDDR avulsa — preço unificado por geração'),
+    'emmc':  _lazy('celular (unificado) × PCB (por marca)'),
+    'ufs':   _lazy('armazenamento de celular — preço unificado'),
+    'ddr':   _lazy('memória de PCB — matriz por marca'),
+    'k9':    _lazy('NAND Samsung avulsa — preço único por unidade'),
+    'ssd':   _lazy('preço linear ¥/GB, com piso por peça'),
+}
+
+#: Forma da tabela, como a spec §3.2 a nomeia. Vai na coluna "Estrutura" —
+#: é o que explica por que um tipo tem 40 linhas e outro tem 1.
+_KIND_FORM = {
+    'emcp': _lazy('faixa mín–máx, uma coluna'),
+    'umcp': _lazy('faixa mín–máx, uma coluna'),
+    'lpddr': _lazy('unificada — uma coluna de preço'),
+    'emmc': _lazy('celular × PCB — duas tabelas'),
+    'ufs': _lazy('unificada — uma coluna de preço'),
+    'ddr': _lazy('por marca — matriz'),
+    'k9': _lazy('uma linha, um preço'),
+    'ssd': _lazy('linear ¥/GB, com piso por peça'),
+}
+
+
+def _catalogo_tipos(buyer):
+    """[{key, label, desc, form, lines, miss, quoted}] — o que a tela lista.
+
+    ``lines`` NÃO conta ``not_made`` (spec §3.3: ausência de PRODUTO não é
+    linha de preço; contá-la faria a cobertura mentir para baixo em todo tipo
+    que tem célula não fabricada).
+
+    SSD e K9 não têm linha de `Price`: a "tabela" deles é a taxa de contrato,
+    então valem **uma** linha — e só quando ela existe. Sem taxa não há o que
+    publicar (o gerador pula a seção), e oferecer o tipo mesmo assim seria uma
+    caixinha que se marca e não muda o PDF: o rodapé contaria 8 de 8 tipos e
+    sairiam 7 seções. Que a lacuna deles apareça é papel do RESUMO e do selo
+    âmbar da barra; esta tela responde "o que vai no documento".
+    """
+    from django.db.models import Count
+    por_kind = {}
+    for d in (Price.all_companies
+              .filter(price_list__buyer=buyer)
+              .exclude(status=STATUS_NOT_MADE)
+              .values('kind', 'status').annotate(n=Count('id'))):
+        alvo = por_kind.setdefault(d['kind'], {'lines': 0, 'miss': 0})
+        alvo['lines'] += d['n']
+        if d['status'] == STATUS_UNQUOTED:
+            alvo['miss'] += d['n']
+    contratos = {'ssd': buyer.ssd_rmb_per_gb, 'k9': buyer.k9_rmb_each}
+    out = []
+    for k in _NAV_KINDS:
+        if k in contratos:
+            lines, miss = (0, 0) if contratos[k] is None else (1, 0)
+        else:
+            d = por_kind.get(k, {'lines': 0, 'miss': 0})
+            lines, miss = d['lines'], d['miss']
+        if not lines:
+            continue                     # tipo sem tabela nenhuma não é opção
+        out.append({'key': k, 'label': _KIND_LABEL[k],
+                    'desc': _KIND_DESC.get(k, ''),
+                    'form': _KIND_FORM.get(k, ''),
+                    'lines': lines, 'miss': miss, 'quoted': lines - miss})
+    return out
+
+
+@partner_required
+def partner_catalog(request):
+    """A tela do CATÁLOGO (spec v2 §5.2) — o gerador do PDF que o comprador
+    manda aos clientes dele.
+
+    Antes o catálogo era um card na home com dois selects. Virou tela porque
+    ganhou seis decisões (tipos, idioma, moeda, validade, lacunas, recado), e
+    seis decisões num card viram um card que ninguém lê.
+
+    **A seleção é por EXCLUSÃO, e isso é do servidor também**: a tela marca
+    tudo, o POST manda os marcados, e a ausência do parâmetro no gerador
+    significa TODOS. Assim um tipo novo entra no catálogo sozinho — ninguém
+    precisa lembrar de marcá-lo.
+    """
+    buyer = request.buyer
+    return render(request, 'pricing/partner_catalog.html', {
+        'buyer': buyer,
+        'tipos': _catalogo_tipos(buyer),
+        'nav_lists': _lists_with_stats(buyer), 'active_pk': 'catalogo',
+        'kind_nav': _kind_nav(request), 'active_kind': None,
+        'fx_info': _fx_info(buyer),
+        # 中文 PRIMEIRO (§5.2): o comprador é chinês, e a primeira opção de um
+        # select é a que se escolhe sem pensar.
+        'idiomas': sorted(settings.LANGUAGES,
+                          key=lambda par: par[0] != 'zh-hans'),
+    })
+
+
 @partner_required
 def partner_catalog_pdf(request):
     """F9 — CATÁLOGO em PDF (dono, 2026-07-10): todas as tabelas do comprador
     numa matriz compacta (o documento que ele repassa aos clientes dele).
 
-    ``?lang=`` escolhe o idioma DO DOCUMENTO (seletor próprio na home —
-    decisão do dono: independe do idioma da sessão). Valor fora de
-    settings.LANGUAGES cai no idioma ativo da sessão. ``?currency=rmb|usd``
-    (F10.6) escolhe a MOEDA do documento: usd = derivado pela taxa contratual
-    (default — é o que circula pros clientes dele hoje); rmb = o ¥ armazenado.
+    Parametrizado (spec v2 §5.2, 2026-08-26). Tudo tem default, e o default é
+    o comportamento de julho — link guardado continua produzindo o mesmo PDF:
+
+    ==============  ==========================================================
+    ``lang``        idioma DO DOCUMENTO, independente da sessão (dono). Fora
+                    de settings.LANGUAGES cai no idioma ativo.
+    ``currency``    ``usd`` (default, o de julho) · ``rmb`` · ``both`` (¥ com
+                    o dólar derivado embaixo). Sem taxa, cai em ``rmb``.
+    ``types``       múltiplo. **Ausente = TODOS** — a tela trabalha por
+                    exclusão, e tipo novo entra sozinho no catálogo.
+    ``gaps``        ``show`` (default) publica a linha sem cotação em branco;
+                    ``hide`` a omite.
+    ``valid_until`` ``YYYY-MM-DD``. Ilegível = sem validade, nunca erro.
+    ``cover_note``  recado do comprador na primeira página (400 caracteres).
+    ==============  ==========================================================
+
+    Aceita GET e POST na mesma rota (§10.2 pede POST; o card da home é GET).
+
     Sem cache: a tabela é viva, o PDF nasce do estado atual (é o fim da
     planilha desatualizada)."""
-    from .pdf import catalog_data, render_catalog_pdf   # reportlab só aqui
+    from .pdf import CURRENCIES, GAPS, catalog_data, render_catalog_pdf
 
-    lang = (request.GET.get('lang') or '').strip()
+    # GET **e** POST: a spec v2 §10.2 manda a tela nova postar o formulário,
+    # e o card da home é um GET desde julho. Ler os dois mantém o link
+    # guardado funcionando — trocar por POST-só quebraria um favorito em
+    # silêncio, e um catálogo é justamente o tipo de coisa que se guarda.
+    dados = request.POST if request.method == 'POST' else request.GET
+
+    lang = (dados.get('lang') or '').strip()
     if lang not in {code for code, _n in settings.LANGUAGES}:
         lang = translation.get_language() or settings.LANGUAGE_CODE
-    currency = (request.GET.get('currency') or '').strip().lower()
-    if currency not in ('rmb', 'usd'):
+    currency = (dados.get('currency') or '').strip().lower()
+    if currency not in CURRENCIES:
         currency = 'usd'
+    # Sob câmbio ausente, `both` NÃO pode gerar coluna de dólar (§5.2). A tela
+    # nem oferece a opção nesse estado; aqui é a rede de baixo, para o POST
+    # forjado e para o link guardado de um dia em que havia taxa.
+    if currency in ('both', 'usd') and _fx_info(request.buyer) is None:
+        currency = 'rmb'
+    gaps = (dados.get('gaps') or '').strip().lower()
+    if gaps not in GAPS:
+        gaps = 'show'
+
+    # SELEÇÃO POR EXCLUSÃO (§5.2): o padrão é TUDO dentro, e tipo novo entra
+    # sozinho no catálogo. Por isso a ausência do parâmetro significa "todos",
+    # e não "nenhum" — que é o que uma lista de inclusões faria com um POST
+    # antigo, e o comprador receberia um PDF vazio sem entender por quê.
+    tipos = dados.getlist('types') if hasattr(dados, 'getlist') else []
+    tipos = [k for k in tipos if k in KINDS] or None
+
+    valid_until = _data_iso(dados.get('valid_until'))
+    # Texto de capa: limite generoso, mas limite. É um recado, não um anexo —
+    # e o que não couber na primeira página empurra a tabela para a segunda.
+    cover_note = (dados.get('cover_note') or '').strip()[:400]
+
     with translation.override(lang):
-        sections = catalog_data(request.buyer, currency=currency)
+        sections = catalog_data(request.buyer, currency=currency,
+                                kinds=tipos, gaps=gaps)
         pdf = render_catalog_pdf(request.buyer.name, sections,
-                                 currency=currency)
+                                 currency=currency,
+                                 fx=_fx_info(request.buyer),
+                                 valid_until=valid_until,
+                                 cover_note=cover_note)
 
     resp = HttpResponse(pdf, content_type='application/pdf')
     fname = f'{request.buyer.slug}-prices-{currency}-{date.today():%Y-%m-%d}.pdf'

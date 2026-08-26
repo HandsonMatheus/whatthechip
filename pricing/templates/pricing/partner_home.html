@@ -45,35 +45,20 @@
 </div>
 
 {% comment %}
-  F9 — catálogo em PDF com seletor de idioma PRÓPRIO (o comprador escolhe em
-  que língua manda pros clientes dele, independente da sessão).
-  ⚠ {# #} NÃO é multiline no Django — vazou como texto na home (2ª vez; a 1ª
-  foi na valoração do lote, CLAUDE.md §7). Comentário longo = {% comment %}.
+  O CATÁLOGO virou TELA (spec v2 §5.2, 2026-08-26). Aqui ficava um card com
+  dois selects; ele ganhou seis decisões — tipos, idioma, moeda, validade,
+  lacunas e o recado de capa — e seis decisões num card viram um card que
+  ninguém lê. O card fica, como PORTA: some o formulário, fica o caminho.
+  Dois lugares para gerar a mesma coisa é um a mais.
 {% endcomment %}
-<div class="ptn-card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+<a class="ptn-card" href="{% url 'pricing:partner_catalog_page' %}"
+   style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;text-decoration:none;color:inherit;">
   <div style="flex:1;min-width:230px;">
     <div style="font-weight:600;font-size:14px;">📄 {% trans "Catálogo de preços (PDF)" %}</div>
     <div style="font-size:12.5px;color:#6f6f6f;margin-top:2px;">{% trans "Sua tabela de preços completa num único arquivo — pronta para enviar aos seus clientes." %}</div>
   </div>
-  <form method="get" action="{% url 'pricing:partner_catalog' %}" style="display:flex;gap:8px;align-items:center;">
-    {# Nomes NATIVOS (name_local) — mesmo padrão do lang_select da plataforma. #}
-    {% get_current_language as CUR_LANG %}
-    {% get_available_languages as WTC_LANGS %}
-    {% get_language_info_list for WTC_LANGS as wtc_langs %}
-    <select name="lang" style="padding:7px 8px;border:1px solid #8d8d8d;background:#fff;font-size:13px;" aria-label="{% trans "Idioma do catálogo" %}">
-      {% for l in wtc_langs %}
-      <option value="{{ l.code }}" {% if l.code == CUR_LANG %}selected{% endif %}>{{ l.name_local }}</option>
-      {% endfor %}
-    </select>
-    {% comment %} F10.6: MOEDA do documento — USD (derivado, default: é o que circula
-       pros clientes dele) ou ¥ (o armazenado). Símbolos são universais. {% endcomment %}
-    <select name="currency" style="padding:7px 8px;border:1px solid #8d8d8d;background:#fff;font-size:13px;" aria-label="{% trans "Moeda do catálogo" %}">
-      <option value="usd" selected>US$</option>
-      <option value="rmb">¥ RMB</option>
-    </select>
-    <button type="submit" style="padding:8px 14px;background:#0f62fe;color:#fff;border:0;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Baixar PDF" %}</button>
-  </form>
-</div>
+  <span style="color:#0f62fe;font-weight:600;font-size:13px;">{% trans "Montar catálogo" %} →</span>
+</a>
 
 {% comment %}
   Navegação POR TIPO (dono, 2026-07-27): a home resume por tipo de chip —

@@ -1168,7 +1168,17 @@ class PartnerDashboardTests(TestCase):
         self.assertIn('wuquan-p6-prices-rmb-', resp_rmb['Content-Disposition'])
         resp_zh = self.client.get('/partner/catalog.pdf?lang=zh-hans&currency=rmb')
         self.assertTrue(resp_zh.content.startswith(b'%PDF'))     # fonte CJK + ¥
-        self.assertContains(self.client.get('/partner/precos/'), 'catalog.pdf')
+        # ⚠ TESTE ALTERADO em 2026-08-26 (Etapa 8). A REGRA é a mesma — o
+        # comprador chega ao catálogo a partir do painel —, mas o caminho
+        # ganhou um degrau: a home linka a TELA do catálogo, e é ela que tem
+        # o formulário que posta para o `.pdf`. O card virou porta porque o
+        # gerador ganhou seis decisões, e seis decisões num card viram um
+        # card que ninguém lê. As duas pontas ficam cravadas:
+        self.assertContains(self.client.get('/partner/precos/'),
+                            '/partner/catalogo/')
+        tela = self.client.get('/partner/catalogo/')
+        self.assertEqual(tela.status_code, 200)
+        self.assertContains(tela, 'catalog.pdf')        # o form posta no PDF
         self.client.logout()
         self.client.force_login(self.operator)
         self.assertEqual(self.client.get('/partner/catalog.pdf').status_code, 403)
@@ -3442,3 +3452,389 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         self.assertIn('class="blkw"', html)
         self.assertIn('30 un. que a plataforma não consegue precificar', html)
         self.assertIn('name="rate"', html)
+
+
+def _pdf_texto(pdf: bytes) -> str:
+    """O TEXTO desenhado no PDF, para o teste poder ler o que a pessoa lê.
+
+    ⚠ O reportlab escreve os streams em **ASCII85 + Flate**. Procurar a frase
+    nos bytes crus devolve `False` para tudo — foi o que aconteceu na primeira
+    prova da Etapa 8, e por um instante pareceu que nada tinha sido desenhado.
+    Daí a cadeia de tentativas: a85+zlib, zlib puro, cru.
+    """
+    import base64
+    import re
+    import zlib
+    pedacos = []
+    for bruto in re.findall(rb'stream\r?\n(.*?)endstream', pdf, re.S):
+        alvo = bruto.strip()
+        for tenta in (lambda b: zlib.decompress(base64.a85decode(b,
+                                                                adobe=True)),
+                      zlib.decompress, lambda b: b):
+            try:
+                pedacos.append(tenta(alvo))
+                break
+            except Exception:                              # noqa: BLE001
+                continue
+    junto = b'\n'.join(pedacos).decode('latin-1', 'ignore')
+    # Literais do content stream: `(texto) Tj`. É o que o leitor vê.
+    return ' '.join(re.findall(r'\((?:\\.|[^()\\])*\)', junto))
+
+
+class CatalogoParametrizadoTests(TestCase):
+    """O catálogo em PDF parametrizado (spec v2 §5.2, Etapa 8).
+
+    Antes: `?lang=` e `?currency=`, e mais nada. O comprador mandava a tabela
+    INTEIRA, sempre, sem validade e sem recado.
+
+    O que estes testes seguram:
+
+    1. **Todo default é o comportamento de julho.** Link guardado tem de
+       produzir o mesmo documento — catálogo é coisa que se guarda.
+    2. **Seleção por EXCLUSÃO.** Ausência de `types` = TODOS. Uma lista de
+       inclusões faria um POST antigo gerar PDF vazio, e ninguém entenderia.
+    3. **`hide` não engole linha com marca cotada.** Na matriz, some só a
+       linha em que NENHUMA marca tem preço.
+    4. **Sem taxa não há coluna de dólar** — nem por link forjado.
+    5. **Nenhum glifo quebrado.** O `≈` vira `»` em Helvetica, calado.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'Cat Co', 'cat-co')
+        cls.generica = _setup_wuquan.generica
+        # eMCP unificado, cotado — a seção que sempre sai
+        Price.all_companies.create(
+            price_list=cls.generica, kind='emcp', gen='',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('90'), price_max=Decimal('90'))
+        # LPDDR unificado SEM cotação — a lacuna do teste de `gaps`
+        Price.all_companies.create(
+            price_list=cls.generica, kind='lpddr', gen='LPDDR4',
+            tier_value=Decimal('4'), tier_unit='GB', status=STATUS_UNQUOTED)
+        # DDR por marca: DDR4 8GB cotado na Samsung, vazio na genérica →
+        # linha MISTA, que `hide` NÃO pode derrubar
+        Price.all_companies.create(
+            price_list=cls.lista, kind='ddr', gen='DDR4',
+            tier_value=Decimal('8'), tier_unit='Gb', status=STATUS_QUOTED,
+            price_min=Decimal('28'), price_max=Decimal('28'))
+        Price.all_companies.create(
+            price_list=cls.generica, kind='ddr', gen='DDR4',
+            tier_value=Decimal('8'), tier_unit='Gb', status=STATUS_UNQUOTED)
+        # DDR3 2Gb sem cotação em NENHUMA lista → linha que `hide` derruba
+        Price.all_companies.create(
+            price_list=cls.generica, kind='ddr', gen='DDR3',
+            tier_value=Decimal('2'), tier_unit='Gb', status=STATUS_UNQUOTED)
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('cat_parceiro')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        from tenancy.scope import set_current_company
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        self.client.force_login(self.parceiro)
+
+    def _secoes(self, **kw):
+        from pricing.pdf import catalog_data
+        with company_scope(self.company):
+            return catalog_data(self.buyer, **kw)
+
+    def _titulos(self, **kw):
+        return [s['title'] for s in self._secoes(**kw)]
+
+    # ── seleção por exclusão ────────────────────────────────────────────────
+
+    def test_script_sem_types_sai_TUDO(self):
+        """Ausência = todos. É o que faz tipo novo entrar sozinho no catálogo
+        — e o que impede um POST antigo de gerar um PDF vazio."""
+        titulos = self._titulos()
+        self.assertIn('eMCP · NAND', titulos)
+        self.assertIn('LPDDR', titulos)
+        self.assertIn('DDR', titulos)
+
+    def test_script_types_recorta_e_a_ordem_continua_a_do_fluxo(self):
+        titulos = self._titulos(kinds=['ddr', 'emcp'])
+        self.assertEqual(titulos, ['eMCP · NAND', 'DDR'])   # eMCP antes de DDR
+
+    def test_script_tipo_sem_linha_nenhuma_nao_vira_secao_vazia(self):
+        self.assertEqual(self._titulos(kinds=['ufs']), [])
+
+    def test_script_SSD_e_K9_obedecem_ao_recorte(self):
+        self.buyer.ssd_rmb_per_gb = Decimal('0.100')
+        self.buyer.k9_rmb_each = Decimal('7')
+        self.buyer.save(update_fields=['ssd_rmb_per_gb', 'k9_rmb_each'])
+        self.assertIn('SSD', self._titulos())
+        self.assertIn('K9', self._titulos())
+        self.assertEqual(self._titulos(kinds=['k9']), ['K9'])
+        self.assertNotIn('SSD', self._titulos(kinds=['k9']))
+
+    # ── as lacunas ──────────────────────────────────────────────────────────
+
+    def test_script_gaps_show_e_o_default_e_publica_em_branco(self):
+        lpddr = next(s for s in self._secoes() if s['title'] == 'LPDDR')
+        self.assertEqual([r['cell'][0] for r in lpddr['rows']], ['unquoted'])
+
+    def test_script_gaps_hide_some_com_a_linha_sem_cotacao(self):
+        self.assertEqual(self._titulos(gaps='hide').count('LPDDR'), 0)
+
+    def test_script_hide_NAO_derruba_linha_com_uma_marca_cotada(self):
+        """A linha DDR4 8Gb tem Samsung cotada e a genérica vazia. Sumir com
+        ela esconderia a marca cotada junto — e é preço que o cliente dele
+        compra."""
+        ddr = next(s for s in self._secoes(gaps='hide') if s['title'] == 'DDR')
+        rotulos = [r['label'] for r in ddr['rows']]
+        self.assertIn('DDR4 8Gb', rotulos)      # mista: FICA
+        self.assertNotIn('DDR3 2Gb', rotulos)   # vazia em todas: SAI
+
+    # ── a moeda ─────────────────────────────────────────────────────────────
+
+    def test_script_both_traz_o_par_com_o_yuan_EM_CIMA(self):
+        emcp = next(s for s in self._secoes(currency='both')
+                    if s['title'] == 'eMCP · NAND')
+        valor = emcp['rows'][0]['cell'][1]
+        self.assertTrue(valor.startswith('90'), valor)
+        self.assertIn('\n', valor)              # duas linhas na célula
+        self.assertIn('US$', valor.split('\n')[1])
+
+    def test_script_rmb_e_usd_continuam_exatamente_como_eram(self):
+        emcp_rmb = next(s for s in self._secoes(currency='rmb')
+                        if s['title'] == 'eMCP · NAND')
+        self.assertEqual(emcp_rmb['rows'][0]['cell'][1], '90')
+        emcp_usd = next(s for s in self._secoes(currency='usd')
+                        if s['title'] == 'eMCP · NAND')
+        self.assertNotIn('\n', emcp_usd['rows'][0]['cell'][1])
+
+    # ── o PDF ───────────────────────────────────────────────────────────────
+
+    def _pdf(self, **params):
+        resp = self.client.get('/partner/catalog.pdf', params)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'application/pdf')
+        return _pdf_texto(resp.content)
+
+    def test_interface_validade_e_nota_de_capa_saem_no_documento(self):
+        txt = self._pdf(currency='rmb', valid_until='2026-09-30',
+                        cover_note='So lote fechado.')
+        self.assertIn('30/09/2026', txt)
+        self.assertIn('So lote fechado.', txt)
+
+    def test_interface_data_ilegivel_nao_derruba_o_catalogo(self):
+        """Sem validade é melhor que sem catálogo."""
+        txt = self._pdf(currency='rmb', valid_until='30-09-2026')
+        self.assertIn('Tabela de pre', txt)
+
+    def test_interface_o_carimbo_de_taxa_sai_em_TODA_pagina(self):
+        """Documento que circula solto: carimbo só na capa é carimbo que se
+        perde — a página que o cliente leva para a bancada é a do meio."""
+        import re
+        resp = self.client.get('/partner/catalog.pdf', {'currency': 'rmb'})
+        txt = _pdf_texto(resp.content)
+        marcas = re.findall(r'1 .245 = US\$', txt)   # \245 = ¥ em WinAnsi
+        paginas = resp.content.count(b'/Type /Page\n') or 1
+        self.assertGreaterEqual(len(marcas), paginas)
+
+    def test_interface_o_PDF_nao_tem_glifo_quebrado(self):
+        """PORTÃO PERMANENTE. `≈` (U+2248) não existe em WinAnsi/Helvetica e o
+        reportlab o troca por `»` **em silêncio** — o catálogo saía dizendo
+        "1 ¥ » US$ 0.1478". Nenhum texto deste documento tem razão para conter
+        `»`, então a presença dele denuncia a troca."""
+        for moeda in ('rmb', 'usd', 'both'):
+            txt = self._pdf(currency=moeda, cover_note='x')
+            self.assertNotIn('\\273', txt, moeda)     # » em WinAnsi octal
+            self.assertNotIn('»', txt, moeda)
+
+    def test_interface_link_guardado_de_julho_produz_o_mesmo_documento(self):
+        """Todo parâmetro novo tem default, e o default é o de antes."""
+        antigo = self.client.get('/partner/catalog.pdf',
+                                 {'lang': 'pt-br', 'currency': 'rmb'})
+        novo = self.client.get('/partner/catalog.pdf',
+                               {'lang': 'pt-br', 'currency': 'rmb',
+                                'gaps': 'show'})
+        self.assertEqual(_pdf_texto(antigo.content), _pdf_texto(novo.content))
+
+    def test_interface_POST_e_GET_geram_o_mesmo_catalogo(self):
+        """§10.2 pede POST; o card da home é GET desde julho. As duas portas."""
+        g = self.client.get('/partner/catalog.pdf',
+                            {'currency': 'rmb', 'types': ['emcp']})
+        p = self.client.post('/partner/catalog.pdf',
+                             {'currency': 'rmb', 'types': ['emcp']})
+        self.assertEqual(p.status_code, 200)
+        self.assertEqual(_pdf_texto(g.content), _pdf_texto(p.content))
+
+    def test_interface_types_forjado_com_lixo_nao_esvazia_o_catalogo(self):
+        """Chave inválida some do recorte; se sobrar nada, vale o default
+        (todos). Um PDF vazio por causa de um parâmetro torto é pior que um
+        PDF completo."""
+        txt = self._pdf(currency='rmb', types=['xyz'])
+        self.assertIn('eMCP', txt)
+
+
+class TelaDoCatalogoTests(TestCase):
+    """A TELA do catálogo (spec v2 §5.2, Etapa 8).
+
+    O catálogo era um card na home com dois selects. Ganhou seis decisões —
+    tipos, idioma, moeda, validade, lacunas, recado de capa — e seis decisões
+    num card viram um card que ninguém lê.
+
+    A regra que governa a tela inteira, e que estes testes guardam:
+    **todo tipo entra no catálogo até o comprador dizer o contrário.** O
+    estado é um mapa de EXCLUSÕES. Consequência que importa: tipo novo aparece
+    no catálogo sozinho, sem ninguém lembrar de marcá-lo — e o servidor
+    concorda, porque `types` ausente significa TODOS lá também.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'Tela Cat', 'tela-cat')
+        cls.generica = _setup_wuquan.generica
+        Price.all_companies.create(
+            price_list=cls.generica, kind='emcp', gen='',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('90'), price_max=Decimal('90'))
+        # UFS com lacuna — o filtro de cobertura precisa de um de cada
+        Price.all_companies.create(
+            price_list=cls.generica, kind='ufs', gen='',
+            tier_value=Decimal('128'), tier_unit='GB', status=STATUS_UNQUOTED)
+        # não fabricado: NÃO conta como linha (§3.3) — ausência de PRODUTO
+        Price.all_companies.create(
+            price_list=cls.generica, kind='ufs', gen='',
+            tier_value=Decimal('256'), tier_unit='GB',
+            status=STATUS_NOT_MADE)
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('tela_cat_p')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        from tenancy.scope import set_current_company
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        self.client.force_login(self.parceiro)
+
+    def _tipos(self):
+        from pricing.views import _catalogo_tipos
+        with company_scope(self.company):
+            return {t['key']: t for t in _catalogo_tipos(self.buyer)}
+
+    # ── a contagem que a tela mostra ────────────────────────────────────────
+
+    def test_script_nao_fabricado_NAO_conta_como_linha(self):
+        """Ausência de PRODUTO não é linha de preço. Contá-la faria a cobertura
+        mentir para baixo em todo tipo que tem célula não fabricada."""
+        ufs = self._tipos()['ufs']
+        self.assertEqual(ufs['lines'], 1)      # a não fabricada ficou de fora
+        self.assertEqual(ufs['miss'], 1)
+        self.assertEqual(ufs['quoted'], 0)
+
+    def test_script_tipo_sem_tabela_nenhuma_nao_vira_opcao(self):
+        """Oferecer para marcar o que não tem preço nenhum é oferecer uma
+        seção vazia no PDF."""
+        self.assertNotIn('ddr', self._tipos())
+
+    def test_script_SSD_e_K9_so_aparecem_quando_ha_o_que_publicar(self):
+        """Eles não têm `Price`: a tabela deles é a taxa de contrato, e vale
+        UMA linha. Sem taxa não há o que publicar — o gerador pula a seção —,
+        então oferecer o tipo seria uma caixinha que se marca e não muda o
+        PDF: o rodapé contaria 8 de 8 e sairiam 7 seções. Que a lacuna deles
+        apareça é papel do Resumo e do selo âmbar da barra; esta tela responde
+        "o que vai no documento"."""
+        tipos = self._tipos()
+        self.assertNotIn('ssd', tipos)         # sem taxa, sem tabela
+        self.assertNotIn('k9', tipos)
+        self.buyer.ssd_rmb_per_gb = Decimal('0.1')
+        self.buyer.save(update_fields=['ssd_rmb_per_gb'])
+        tipos = self._tipos()
+        self.assertEqual((tipos['ssd']['lines'], tipos['ssd']['miss']), (1, 0))
+        self.assertNotIn('k9', tipos)          # este continua sem taxa
+
+    # ── a tela ──────────────────────────────────────────────────────────────
+
+    def test_interface_a_tela_nasce_com_TUDO_marcado(self):
+        """Exclusão, não inclusão: o padrão é o catálogo inteiro."""
+        html = self.client.get('/partner/catalogo/').content.decode()
+        marcados = html.count('name="types"')
+        self.assertGreater(marcados, 0)
+        # todo checkbox de tipo nasce `checked`
+        self.assertEqual(html.count('name="types"'),
+                         html.count('name="types" value'))
+        for pedaco in html.split('name="types"')[1:]:
+            self.assertIn('checked', pedaco[:pedaco.index('>')])
+
+    def test_interface_o_form_posta_no_gerador_e_leva_csrf(self):
+        html = self.client.get('/partner/catalogo/').content.decode()
+        self.assertIn('action="/partner/catalog.pdf"', html)
+        self.assertIn('method="post"', html)
+        self.assertIn('csrfmiddlewaretoken', html)
+
+    def test_interface_a_busca_tem_o_texto_do_tipo_E_da_descricao(self):
+        """§5.2: a busca é por nome **e** descrição. Sem a descrição no
+        `data-txt`, só acha quem já sabe a sigla — e quem já sabe a sigla não
+        precisa buscar."""
+        html = self.client.get('/partner/catalogo/').content.decode()
+        self.assertIn('data-txt="emcp', html.lower())
+        self.assertIn('combo nand', html.lower())
+
+    def test_interface_a_cobertura_marca_completa_e_com_lacuna(self):
+        html = self.client.get('/partner/catalogo/').content.decode()
+        self.assertIn('data-cov="full"', html)     # eMCP, cotado
+        self.assertIn('data-cov="gap"', html)      # UFS, sem cotação
+        self.assertIn('completa', html)
+        self.assertIn('sem cotação', html)
+
+    def test_interface_o_idioma_abre_em_chines(self):
+        """O comprador é chinês, e a primeira opção de um select é a que se
+        escolhe sem pensar."""
+        html = self.client.get('/partner/catalogo/').content.decode()
+        bloco = html[html.index('name="lang"'):]
+        bloco = bloco[:bloco.index('</select>')]
+        self.assertLess(bloco.index('zh-hans'), bloco.index('pt-br'))
+
+    def test_interface_todas_as_opcoes_do_documento_estao_na_tela(self):
+        html = self.client.get('/partner/catalogo/').content.decode()
+        for campo in ('name="lang"', 'name="currency"', 'name="valid_until"',
+                      'name="gaps"', 'name="cover_note"'):
+            self.assertIn(campo, html, campo)
+
+    def test_interface_o_carimbo_de_taxa_aparece_e_diz_onde_vai_sair(self):
+        html = self.client.get('/partner/catalogo/').content.decode()
+        self.assertIn('catopt__fx', html)
+        self.assertIn('rodapé de todas as páginas', html)
+
+    def test_interface_sem_taxa_a_opcao_com_dolar_NAO_e_oferecida(self):
+        """§5.2: sob câmbio `none` a opção "¥ + US$" não pode gerar coluna de
+        dólar. Um select que oferece dólar e devolve um PDF sem dólar é pior
+        que um select com uma opção só."""
+        from unittest.mock import patch
+        with patch('pricing.views._fx_info', return_value=None):
+            html = self.client.get('/partner/catalogo/').content.decode()
+        bloco = html[html.index('name="currency"'):]
+        bloco = bloco[:bloco.index('</select>')]
+        self.assertIn('value="rmb"', bloco)
+        self.assertNotIn('value="both"', bloco)
+
+    def test_interface_o_catalogo_e_item_de_nav_em_toda_tela_do_parceiro(self):
+        for rota in ('/partner/precos/', '/partner/catalogo/',
+                     '/partner/how/'):
+            html = self.client.get(rota).content.decode()
+            self.assertIn('href="/partner/catalogo/"', html, rota)
+
+    def test_interface_a_home_deixou_de_ter_o_formulario_e_virou_porta(self):
+        """Dois lugares para gerar a mesma coisa é um a mais."""
+        html = self.client.get('/partner/precos/').content.decode()
+        self.assertIn('href="/partner/catalogo/"', html)
+        self.assertNotIn('action="/partner/catalog.pdf"', html)
+
+    def test_interface_a_pagina_servida_nao_mostra_marcacao_de_template(self):
+        """O mesmo portão das telas de compra: `{#` multi-linha não é
+        comentário no Django, é TEXTO."""
+        html = self.client.get('/partner/catalogo/').content.decode()
+        for marca in ('{#', '{%', '{{'):
+            self.assertNotIn(marca, html, marca)
+
+    def test_interface_gate_do_parceiro_vale_para_a_tela_nova(self):
+        self.client.logout()
+        resp = self.client.get('/partner/catalogo/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn('/login/', resp['Location'])

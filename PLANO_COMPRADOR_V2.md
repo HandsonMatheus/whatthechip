@@ -207,7 +207,7 @@ Derivado, não armazenado: agregação dos lotes em `sem_preco` por (tipo, linha
 Spec §3.5 crava a distinção que importa: **lacuna** (`miss`, célula vazia que ninguém está vendendo, pode
 esperar) × **travado** (lote já fechado que a plataforma não consegue precificar, **fila de trabalho**).
 
-### 4.4 Catálogo parametrizado
+### 4.4 Catálogo parametrizado ✅ (Etapa 8)
 
 Hoje: `?lang=` + `?currency=`. A v2 §5.2 pede formulário com:
 - **seleção por exclusão** (mapa de *excluídos*, para tipo novo entrar sozinho no catálogo);
@@ -288,7 +288,7 @@ Cada etapa fecha sozinha, com teste, e não deixa a tela pela metade.
 | **5** | CSV por aba + modal de pagamento completo + carteira + rastreio clicável | 4 |
 | **6** ✅ | `BlockedQuote` no resumo de preços | C2 |
 | **7** ✅ | SSD + K9 nas telas de preço, piso do SSD | C3 |
-| **8** | Catálogo parametrizado | 7 |
+| **8** ✅ | Catálogo parametrizado | 7 |
 | **9** | Aplicar o design v2 em todos os templates do comprador | 1–8 |
 | **10** | Celular (≤600px) + 4 idiomas das strings novas | 9 |
 
@@ -753,6 +753,82 @@ calado, pela segunda vez em dois dias.
 
 ⚠ **Depois do deploy:** conferir `ssd_rmb_per_gb`, `ssd_floor_rmb` e `k9_rmb_each` em
 `/admin/pricing/buyer/`. O piso nasce vazio de propósito.
+
+### ✅ Etapa 8 — o catálogo parametrizado, e a tela que o monta (2026-08-26)
+
+Antes: um card na home com dois selects (`lang`, `currency`). Ele mandava a tabela **inteira**, sempre,
+sem validade e sem recado.
+
+| Onde | O quê |
+|---|---|
+| `pricing/pdf.py` | `CURRENCIES` · `GAPS` · `_rmb_txt`/`_usd_txt` · `catalog_data(kinds, gaps)` · `render_catalog_pdf(fx, valid_until, cover_note)` |
+| `pricing/views.py` | `_catalogo_tipos` · `partner_catalog` (a tela) · `_data_iso` · o gerador lendo GET **e** POST |
+| `pricing/urls.py` | `catalogo/` (a tela); `catalog.pdf` continua sendo quem gera |
+| `partner_catalog.html` + `parceiro.css` | a tela de duas colunas, os filtros, o painel escuro e a conta do rodapé |
+| `partner_base.html` | **Catálogo** virou item de nav |
+| `partner_home.html` | o card perdeu o formulário e virou **porta** |
+
+**Seleção por EXCLUSÃO, nos dois lados.** A tela nasce com tudo marcado; o gerador trata `types` ausente
+como **todos**. Uma lista de inclusões faria um POST antigo produzir um PDF vazio — e o comprador não
+entenderia por quê. Assim tipo novo entra no catálogo sozinho, sem ninguém lembrar de marcá-lo.
+
+**Todo parâmetro novo tem default, e o default é o de julho.** Há teste comparando o texto extraído do PDF
+de um link guardado com o de um link novo: catálogo é coisa que se guarda.
+
+**⚠ DESVIO da spec: `gaps` é `hide|show`, não `hide|dash`.** A spec manda publicar a lacuna como `—`. Mas
+neste documento `—` **já é** "não fabricado" (`_SYM_NOT_MADE`), e a legenda o explica desde julho. Dar o
+mesmo glifo a duas coisas numa tabela que circula para terceiros é o tipo de ambiguidade que custa
+dinheiro: *"não existe"* e *"ainda não decidi"* são respostas diferentes para o vendedor. O modo de
+publicar usa o que a legenda já define — **em branco: ainda sem cotação**.
+
+**`hide` não engole linha com marca cotada.** Na matriz, some só a linha em que **nenhuma** marca tem
+preço — uma cotada ainda é preço que o cliente dele compra. E seção que fica sem linha nenhuma **não
+entra**: um título sozinho no papel faria o vendedor ler "LPDDR" e concluir que o comprador não compra
+LPDDR.
+
+**Moeda: `both` é um TERCEIRO valor, não uma troca.** `rmb` e `usd` continuam idênticos, e o default
+segue `usd`. Nenhum documento existente muda. A tela oferece os dois da spec (`¥ RMB` e `¥ RMB + US$`), e
+**sob câmbio ausente a opção com dólar nem aparece** — select que oferece dólar e devolve PDF sem dólar é
+pior que select com uma opção só. O gerador tem a rede de baixo para o link forjado.
+
+**🔴 Bug achado ao PROVAR o PDF: o `≈` virava `»`.** U+2248 não existe em WinAnsi/Helvetica e o reportlab
+o substitui **em silêncio** — o rodapé saía dizendo `1 ¥ » US$ 0.1478`. A convenção do til vive na TELA,
+onde a fonte é web. No papel a estimativa se declara em **palavras**, uma vez, no subtítulo: repetir um
+símbolo duzentas vezes numa tabela é pior que dizer a frase uma vez, e um símbolo errado é pior ainda.
+**Portão permanente**: nenhum texto do PDF pode conter `»`.
+
+**Ler o PDF exigiu ferramenta.** O reportlab escreve os streams em **ASCII85 + Flate** — procurar a frase
+nos bytes crus devolve `False` para tudo, e por um instante pareceu que nada tinha sido desenhado. Daí o
+`_pdf_texto` em `pricing/tests.py`, que decodifica a cadeia e extrai os literais `(texto) Tj`. É o que
+permite testar o que a PESSOA lê, e não o que o código acha que escreveu.
+
+**Carimbo de taxa em TODA página.** Documento que circula solto: carimbo só na capa é carimbo que se
+perde — a página que o cliente imprime e leva para a bancada costuma ser a do meio. Sem taxa, o rodapé
+**diz** "sem taxa do dia" em vez de sumir: rodapé que às vezes traz a taxa e às vezes não deixa o leitor
+sem saber se o documento é velho ou se o número não existe. O estado vem NOMEADO (`fx_display.state`,
+Etapa 1) — ler `is_market` sozinho faria "mid-market" carimbar um número de anteontem.
+
+**O card virou porta.** Dois lugares para gerar a mesma coisa é um a mais. E o nav ganhou o quarto item:
+a spec desenha três porque o protótipo não tem "Como funciona" — aqui essa página existe, o dono a
+construiu e há teste cravando a rota.
+
+**SSD e K9 só aparecem na tela quando há taxa.** Sem ela o gerador pula a seção, e oferecer o tipo seria
+uma caixinha que se marca e não muda o PDF: o rodapé contaria 8 de 8 tipos e sairiam 7 seções. Que a
+lacuna deles apareça é papel do Resumo e do selo âmbar da barra.
+
+**`not_made` não conta como linha** na cobertura (§3.3): ausência de PRODUTO não é linha de preço, e
+contá-la faria a cobertura mentir para baixo em todo tipo com célula não fabricada.
+
+**Sem JS a tela continua correta**: tudo nasce marcado e o formulário posta a seleção inteira. O script só
+acrescenta busca, filtro de cobertura, o mestre `all`/`indeterminate` e a conta do rodapé — e a conta é da
+**seleção inteira**, não do que está visível: filtrar é um jeito de achar, não de excluir.
+
+31 testes (16 do gerador + 15 da tela) · 49 msgids novos nos 3 catálogos.
+
+⚠ **Teste existente alterado:** `PartnerDashboardTests::test_catalogo_pdf` cravava `catalog.pdf` no HTML da
+home. A REGRA é a mesma — o comprador chega ao catálogo a partir do painel —, mas o caminho ganhou um
+degrau. As duas pontas ficaram cravadas: a home linka `/partner/catalogo/`, e a tela tem o form que posta
+no `.pdf`.
 
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 

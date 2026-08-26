@@ -178,6 +178,15 @@
       <svg viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8a2 2 0 0 1 2-2H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8z"/><circle cx="7.6" cy="7.6" r="1.3"/></svg>
       {% trans "Preços" %}
     </a>
+    {% comment %} Catálogo virou item de nav (spec v2 §5.1): era um card na
+       home, e ganhou seis decisões — seis decisões num card viram um card que
+       ninguém lê. A spec desenha três itens porque o protótipo não tem "Como
+       funciona"; aqui são quatro, e o quarto é uma página que o dono
+       construiu e que tem teste cravando a rota. {% endcomment %}
+    <a href="{% url 'pricing:partner_catalog_page' %}" class="pnav{% if active_pk == 'catalogo' %} on{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5M8 14h8"/></svg>
+      {% trans "Catálogo" %}
+    </a>
     <a href="{% url 'pricing:partner_how' %}" class="pnav{% if active_pk == 'how' %} on{% endif %}">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.7.2-1.2.9-1.2 1.6v.5"/><path d="M12 17.5h.01"/></svg>
       {% trans "Como funciona" %}

@@ -466,3 +466,30 @@
 .blkw{border:1px solid var(--red-60);background:var(--red-10);padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--text)}
 .blkw b{color:var(--red-70)}
 .blkw__i + .blkw__i{margin-top:7px}
+
+/* ---------- a tela do CATÁLOGO (spec v2 §5.2) ----------
+   Duas colunas: a seleção de tipos à esquerda, as opções do documento à
+   direita. Abaixo de 900px vira uma coluna e as opções vão para o FIM — a
+   seleção é a decisão principal, e no telefone o polegar chega primeiro nela. */
+.cat{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.cat__f{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.cat__sum{padding:11px 14px;border-top:2px solid var(--line);font-size:12.5px;color:var(--muted);background:var(--ink-05)}
+.cat__sum.is-bad{color:var(--red-70);font-weight:600}
+/* Caixa ESCURA (o `--ink-100` do desenho): o painel de opções não é mais uma
+   tabela — é o formulário que decide o documento, e a inversão o separa do
+   resto sem precisar de moldura. */
+.catopt{background:var(--ink-100);color:var(--surface);padding:16px;display:flex;flex-direction:column;gap:12px;position:sticky;top:14px}
+.catopt__l{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.72}
+.catopt__r{display:block;font-size:12px;font-weight:600;letter-spacing:.01em}
+.catopt__in{display:block;width:100%;margin-top:5px;padding:7px 8px;border:1px solid var(--ink-70);background:var(--surface);color:var(--text);font:inherit;font-size:13px;box-sizing:border-box}
+.catopt textarea.catopt__in{resize:vertical;min-height:60px;font-family:var(--sans)}
+.catopt__fx{font-family:var(--mono);font-size:11.5px;padding:9px 10px;background:rgba(255,255,255,.08);line-height:1.5}
+.catopt__fxs{font-family:var(--sans);font-size:10.5px;opacity:.6;margin-top:3px}
+.catopt__go{width:100%;padding:10px}
+/* Zero tipos = nada a gerar. Desabilitar é mais honesto que produzir um PDF
+   de uma página em branco e deixá-lo descobrir depois de enviar. */
+.catopt__go:disabled{opacity:.45;pointer-events:none}
+@media (max-width:900px){
+  .cat{grid-template-columns:minmax(0,1fr)}
+  .catopt{position:static;order:2}
+}

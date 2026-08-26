@@ -55,6 +55,14 @@ _KIND_LABEL = dict(KIND_CHOICES)
 # por isso '×' U+00D7 e '—' U+2014 — '✗' U+2717 NÃO existe em Helvetica).
 _SYM_NO_BUY, _SYM_NOT_MADE = '×', '—'
 
+# ⚠ '≈' (U+2248) TAMBÉM NÃO EXISTE em WinAnsi/Helvetica — o reportlab o troca
+# por '»' em silêncio, e o catálogo saía dizendo "1 ¥ » US$ 0.1478" (achado ao
+# extrair o texto do PDF gerado, 2026-08-26). A convenção do til vive na TELA,
+# onde a fonte é web e o glifo existe. No PAPEL a estimativa se declara em
+# PALAVRAS, uma vez, no subtítulo — repetir um símbolo duzentas vezes numa
+# tabela é pior que dizer a frase uma vez, e um símbolo errado é pior ainda.
+# Há portão em pricing/tests.py cravando que '»' nunca aparece no PDF.
+
 _INK = colors.HexColor('#161616')
 _GREY = colors.HexColor('#8d8d8d')
 _RED = colors.HexColor('#a2191f')
@@ -77,16 +85,52 @@ def _fmt_tier(value):
 _SECTION_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
 
 
-def _money(mn, mx, currency, rate):
-    """Valor pronto na moeda: ¥ inteiro/sem zeros ('90'; faixa '90–100' com
-    en-dash, que EXISTE em WinAnsi) ou USD derivado 2 casas ('12.60')."""
-    if currency == 'rmb':
-        lo, hi = f'{mn.normalize():f}', f'{mx.normalize():f}'
-    else:
-        q = Decimal('0.01')
-        lo = f'{(mn * rate).quantize(q, ROUND_HALF_UP):.2f}'
-        hi = f'{(mx * rate).quantize(q, ROUND_HALF_UP):.2f}'
+#: Moedas do documento. `rmb` e `usd` são os dois modos de julho (F10.6) e
+#: continuam intactos — link guardado não muda de documento. `both` é o da
+#: spec v2 (§5.2, "¥ RMB + US$ ≈"): ¥ canônico com o dólar DERIVADO embaixo.
+#: O `≈` do nome vive na TELA; no papel a estimativa se diz em palavras.
+CURRENCIES = ('rmb', 'usd', 'both')
+
+
+def _rmb_txt(mn, mx):
+    """¥ inteiro/sem zeros ('90'); faixa com en-dash, que EXISTE em WinAnsi."""
+    lo, hi = f'{mn.normalize():f}', f'{mx.normalize():f}'
     return lo if lo == hi else f'{lo}\u2013{hi}'
+
+
+def _usd_txt(mn, mx, rate):
+    """USD derivado, 2 casas. Sem taxa não há dólar — e não se chuta."""
+    if rate is None:
+        return ''
+    q = Decimal('0.01')
+    lo = f'{(mn * rate).quantize(q, ROUND_HALF_UP):.2f}'
+    hi = f'{(mx * rate).quantize(q, ROUND_HALF_UP):.2f}'
+    return lo if lo == hi else f'{lo}\u2013{hi}'
+
+
+def _money(mn, mx, currency, rate):
+    """Valor pronto na moeda do documento.
+
+    Em ``both`` a célula tem DUAS linhas — o ¥ em cima, o dólar embaixo.
+    Duas linhas e não duas colunas porque a matriz por marca já tem uma
+    coluna por marca: dobrar as colunas estouraria a página em A4, e é a
+    matriz que o comprador mais manda.
+
+    **Sem ``≈`` no papel** (ver a nota do `_SYM_NO_BUY`): o glifo não existe
+    em Helvetica e o reportlab o troca por `»`. Quem declara a estimativa é o
+    subtítulo, em palavras, uma vez. O ¥ é o número acordado; o dólar é
+    tradução pela taxa de HOJE, que muda amanhã — e o subtítulo diz isso.
+    """
+    rmb = _rmb_txt(mn, mx)
+    if currency == 'rmb':
+        return rmb
+    usd = _usd_txt(mn, mx, rate)
+    if currency != 'both':
+        return usd
+    # Sem taxa, `both` degrada para ¥ sozinho em vez de mentir um traço de
+    # dólar. Quem decide se a opção sequer aparece é a tela (§5.2: sob câmbio
+    # `none` ela não pode gerar coluna de dólar) — aqui é a rede de baixo.
+    return rmb if not usd else f'{rmb}\nUS$ {usd}'
 
 
 #: Capacidades DERIVADAS do SSD (spec v2 §3.2). Não são linhas de grade — o
@@ -113,8 +157,29 @@ def _cell(p, currency, rate):
     return ('unquoted', None)
 
 
-def catalog_data(buyer, currency='usd'):
+#: O que fazer com a linha SEM COTAÇÃO (spec v2 §5.2).
+#:
+#: ⚠ **DESVIO DELIBERADO da spec.** Ela pede `hide|dash` — ocultar ou publicar
+#: como `—`. Mas neste documento `—` JÁ É "não fabricado" (`_SYM_NOT_MADE`), e
+#: a legenda o explica desde julho. Dar o mesmo glifo a duas coisas numa
+#: tabela de preço que circula para terceiros é o tipo de ambiguidade que
+#: custa dinheiro: "não existe" e "ainda não decidi" são respostas
+#: diferentes para o vendedor. Então o modo de publicar chama-se `show` e usa
+#: o que a legenda já define — **em branco: ainda sem cotação**.
+GAPS = ('show', 'hide')
+
+
+def catalog_data(buyer, currency='usd', kinds=None, gaps='show'):
     """Estrutura pura do catálogo, na CONVENÇÃO da repactuação (2026-07-27).
+
+    ``kinds`` — as chaves que entram. ``None`` = TODAS (retrocompatível). A
+    tela trabalha por EXCLUSÃO e resolve para esta lista antes de chamar: o
+    default é tudo dentro, e tipo novo entra sozinho no catálogo (§5.2).
+
+    ``gaps`` — ``show`` publica a linha sem cotação em branco (o que a legenda
+    já explica); ``hide`` a omite. Na matriz por marca, ``hide`` só derruba a
+    linha em que **nenhuma** marca tem cotação: uma marca cotada ainda é preço
+    para o cliente do comprador.
 
     Devolve a LISTA DE SEÇÕES na ordem do painel (`_SECTION_KINDS` + SSD):
     - UNIFICADA (eMCP/uMCP/LPDDR): ``unified=True``, ``columns=[]``, rows
@@ -143,13 +208,24 @@ def catalog_data(buyer, currency='usd'):
               .select_related('price_list__brand')):
         por_kind.setdefault(p.kind, []).append(p)
 
+    # `hide` derruba a linha SEM COTAÇÃO NENHUMA. Na matriz isso é "nenhuma
+    # marca cotada": uma marca com preço ainda é preço para o cliente dele, e
+    # sumir com a linha esconderia a marca cotada junto com as vazias.
+    def _vale(row):
+        if gaps != 'hide':
+            return True
+        if 'cell' in row:
+            return row['cell'][0] != 'unquoted'
+        return any(estado != 'unquoted' for estado, _v in row['cells'])
+
     def _unified_section(title, prices):
         unifs = sorted((p for p in prices if p.price_list.brand_id is None),
                        key=lambda p: (p.gen, p.tier_value))
+        rows = [{'label': (f'{p.gen} ' if p.gen else '')
+                          + f'{_fmt_tier(p.tier_value)}{p.tier_unit}',
+                 'cell': _cell(p, currency, rate)} for p in unifs]
         return {'title': title, 'unified': True, 'columns': [],
-                'rows': [{'label': (f'{p.gen} ' if p.gen else '')
-                                   + f'{_fmt_tier(p.tier_value)}{p.tier_unit}',
-                          'cell': _cell(p, currency, rate)} for p in unifs]}
+                'rows': [r for r in rows if _vale(r)]}
 
     def _matrix_section(title, prices):
         pls = sorted({p.price_list for p in prices},
@@ -168,10 +244,20 @@ def catalog_data(buyer, currency='usd'):
                  'cells': grid[(gen, tv, tu)]}
                 for gen, tv, tu in sorted(grid, key=lambda k: (k[0], k[1]))]
         return {'title': title, 'unified': False, 'columns': columns,
-                'rows': rows}
+                'rows': [r for r in rows if _vale(r)]}
 
+    dentro = None if kinds is None else set(kinds)
     sections = []
+
+    def _entra(sec):
+        """Seção sem linha nenhuma não entra: com `gaps='hide'` o tipo inteiro
+        pode ficar vazio, e um título sozinho no papel é pior que a ausência —
+        o vendedor lê "LPDDR" e conclui que o comprador não compra LPDDR."""
+        if sec['rows']:
+            sections.append(sec)
     for kind in _SECTION_KINDS:
+        if dentro is not None and kind not in dentro:
+            continue
         prices = por_kind.get(kind, [])
         if not prices:
             continue
@@ -182,56 +268,41 @@ def catalog_data(buyer, currency='usd'):
             pcb = [p for p in prices if p.origin == 'pcb']
             if phone:
                 t = 'eMMC · ' + _('celular')
-                sections.append(_unified_section(t, phone))
+                _entra(_unified_section(t, phone))
             if pcb:
-                sections.append(_matrix_section('eMMC · PCB', pcb))
+                _entra(_matrix_section('eMMC · PCB', pcb))
             continue
         title = _KIND_LABEL[kind]
         if kind in ('emcp', 'umcp'):
             title += ' · NAND'
-        if kind in UNIFIED_KINDS:
-            # Unificado: só a genérica (o portão do modelo garante que linha
-            # de marca não existe; o filtro aqui é defensivo).
-            unifs = sorted((p for p in prices
-                            if p.price_list.brand_id is None),
-                           key=lambda p: (p.gen, p.tier_value))
-            rows = [{'label': (f'{p.gen} ' if p.gen else '')
-                              + f'{_fmt_tier(p.tier_value)}{p.tier_unit}',
-                     'cell': _cell(p, currency, rate)} for p in unifs]
-            sections.append({'title': title, 'unified': True,
-                             'columns': [], 'rows': rows})
-            continue
-        pls = sorted({p.price_list for p in prices},
-                     key=lambda pl: (pl.brand_id is None,
-                                     pl.brand.name if pl.brand_id else ''))
-        col_idx = {pl.pk: i for i, pl in enumerate(pls)}
-        columns = [pl.brand.name if pl.brand_id else _('Outras marcas')
-                   for pl in pls]
-        grid = {}
-        for p in prices:
-            key = (p.gen, p.tier_value, p.tier_unit)
-            cells = grid.setdefault(key, [('unquoted', None)] * len(pls))
-            cells[col_idx[p.price_list_id]] = _cell(p, currency, rate)
-        rows = [{'label': (f'{gen} ' if gen else '')
-                          + f'{_fmt_tier(tv)}{tu}',
-                 'cells': grid[(gen, tv, tu)]}
-                for gen, tv, tu in sorted(grid, key=lambda k: (k[0], k[1]))]
-        sections.append({'title': title, 'unified': False,
-                         'columns': columns, 'rows': rows})
+        # Unificado: só a genérica (o portão do modelo garante que linha de
+        # marca não existe; o filtro dentro do helper é defensivo).
+        monta = (_unified_section if kind in UNIFIED_KINDS
+                 else _matrix_section)
+        _entra(monta(title, prices))
 
     # ── SSD (linear, F12.20): não tem grid — a linha nasce da taxa ────────
     # Desde 2026-08-26 (spec v2 §3.2) a seção mostra também o PISO e as
     # CAPACIDADES DERIVADAS. Só a taxa não servia ao cliente do comprador,
     # que compra peça, não GB: ele tinha de fazer a conta — e, com piso, a
     # conta dele daria errado justamente nas capacidades pequenas.
-    if buyer.ssd_rmb_per_gb is not None:
+    if (buyer.ssd_rmb_per_gb is not None
+            and (dentro is None or 'ssd' in dentro)):
         from .engine import ssd_piso_venceu, ssd_rmb
         v, piso = buyer.ssd_rmb_per_gb, buyer.ssd_floor_rmb
 
         def _mostra(valor, casas='0.001'):
+            """A taxa ¥/GB tem 3 casas e o preço por peça tem 2 — daí o
+            `casas`. Em `both` sai o par: ¥ em cima, US$ embaixo."""
+            val = Decimal(valor)
+            rmb = f'{val.normalize():f}'
             if currency == 'rmb':
-                return f'{Decimal(valor).normalize():f}'
-            return f'{(Decimal(valor) * rate).quantize(Decimal(casas), ROUND_HALF_UP).normalize():f}'
+                return rmb
+            usd = ('' if rate is None else
+                   f'{(val * rate).quantize(Decimal(casas), ROUND_HALF_UP).normalize():f}')
+            if currency != 'both':
+                return usd
+            return rmb if not usd else f'{rmb}\nUS$ {usd}'
 
         linhas = [{'label': _('por GB'), 'cell': ('quoted', _mostra(v))}]
         if piso is not None:
@@ -252,12 +323,10 @@ def catalog_data(buyer, currency='usd'):
 
     # ── K9 (fixo por unidade): faltava no catálogo desde que o kind nasceu ──
     # Uma linha, um número — a tabela tem o tamanho da realidade (spec §3.2).
-    if buyer.k9_rmb_each is not None:
+    if (buyer.k9_rmb_each is not None
+            and (dentro is None or 'k9' in dentro)):
         k = buyer.k9_rmb_each
-        if currency == 'rmb':
-            money = f'{k.normalize():f}'
-        else:
-            money = f'{(k * rate).quantize(Decimal("0.01"), ROUND_HALF_UP).normalize():f}'
+        money = _money(k, k, currency, rate)
         sections.append({'title': 'K9', 'unified': True, 'columns': [],
                          'rows': [{'label': _('por unidade'),
                                    'cell': ('quoted', money)}]})
@@ -321,11 +390,23 @@ def _draw_mixed(canvas, x, y, text, size, base, cjk):
         x += pdfmetrics.stringWidth(part, f, size)
 
 
-def render_catalog_pdf(buyer_name, sections, currency='usd'):
+def render_catalog_pdf(buyer_name, sections, currency='usd', fx=None,
+                       valid_until=None, cover_note=''):
     """Monta o PDF (bytes). Sem banco — recebe a estrutura de catalog_data.
     Cada seção traz as PRÓPRIAS colunas (convenção 2026-07-27): unificada =
     tabela simples capacidade → preço; por marca = matriz. ``currency``
     (F10.6) decide título/legenda/prefixo — os VALORES já vêm prontos.
+
+    ``fx`` — o dict de ``engine.fx_display``. Vira o **carimbo de taxa no
+    rodapé de CADA página** (spec v2 §5.2). Em documento que circula solto,
+    carimbo só na capa é carimbo que se perde: a página que o cliente
+    imprime e leva para a bancada costuma ser a do meio.
+
+    ``valid_until`` — data. Tabela de preço sem validade envelhece em
+    silêncio, e o vendedor cobra o preço de três meses atrás de boa-fé.
+
+    ``cover_note`` — texto livre do comprador, abaixo do nome dele na
+    primeira página.
 
     ⚠ i18n: os ``_()`` ficam FORA das f-strings de propósito — no Python 3.11
     o tokenizer vê a f-string como um token só e o extractor/portão
@@ -334,6 +415,13 @@ def render_catalog_pdf(buyer_name, sections, currency='usd'):
     if currency == 'rmb':
         t_unit = _('Preços em ¥ (RMB) por chip (unitário).')
         cur_prefix, cur_tag = '¥ ', '¥ RMB'
+    elif currency == 'both':
+        # O ¥ é o número acordado; o US$ é tradução pela taxa de HOJE. O
+        # dólar já vem rotulado dentro da célula (`_money`), então o prefixo
+        # aqui é só o do ¥.
+        t_unit = _('Preços em ¥ (RMB) por chip (unitário); US$ derivado da '
+                   'taxa do dia.')
+        cur_prefix, cur_tag = '¥ ', '¥ RMB + US$'
     else:
         t_unit = _('Preços em USD por chip (unitário).')
         cur_prefix, cur_tag = 'US$ ', 'US$'
@@ -364,6 +452,9 @@ def render_catalog_pdf(buyer_name, sections, currency='usd'):
     st_th = ParagraphStyle('th', fontName=bold, fontSize=6.6, leading=7.6,
                            textColor=_INK, alignment=1)   # center, quebra
     #                                                       "Toshiba-Kioxia"
+    st_note = ParagraphStyle('note', fontName=font, fontSize=8.5, leading=12,
+                             textColor=_INK, leftIndent=4,
+                             borderPadding=0)
 
     issued = date.today().strftime('%d/%m/%Y')
     legend = (f'{t_unit} '
@@ -371,13 +462,27 @@ def render_catalog_pdf(buyer_name, sections, currency='usd'):
               f'{_SYM_NOT_MADE} {t_not_made} · '
               f'{t_blank}')
 
+    # VALIDADE ao lado da emissão: as duas datas contam a mesma história e
+    # separá-las faria a segunda passar despercebida.
+    cabecalho = f'{t_issued} {issued}'
+    if valid_until is not None:
+        cabecalho += f' · {_("Válido até")} {valid_until.strftime("%d/%m/%Y")}'
+    cabecalho += f' · {legend}'
+
     story = [
         # Título com a MOEDA (F10.6): o mesmo comprador circula os dois PDFs —
         # tem que dar pra distinguir na primeira linha.
         Paragraph(_rich(f'{buyer_name} — {t_title} ({cur_tag})', cjk), st_h1),
-        Paragraph(_rich(f'{t_issued} {issued} · {legend}', cjk), st_sub),
-        Spacer(0, 4),
+        Paragraph(_rich(cabecalho, cjk), st_sub),
     ]
+    # NOTA DE CAPA — logo abaixo do nome, antes de qualquer preço: é o
+    # recado do comprador ("promoção até sexta", "só lote fechado"), e
+    # depois da primeira tabela ninguém mais lê.
+    if (cover_note or '').strip():
+        story.append(Spacer(0, 5))
+        story.append(Paragraph(_rich(escape(cover_note.strip()), cjk),
+                               st_note))
+    story.append(Spacer(0, 4))
 
     base_style = [
         ('FONT', (0, 0), (-1, -1), font, 7, 8.4),
@@ -455,11 +560,30 @@ def render_catalog_pdf(buyer_name, sections, currency='usd'):
         story.append(t)
 
     footer_txt = f'{buyer_name} · {t_by} · {issued}'
+    # ── CARIMBO DE TAXA, em TODA página (spec v2 §5.2) ────────────────────
+    # Sem taxa do dia o carimbo DIZ isso, em vez de sumir: rodapé que às
+    # vezes traz a taxa e às vezes não deixa o leitor sem saber se o
+    # documento é velho ou se o número não existe.
+    if fx and fx.get('rate_disp'):
+        # `state` (Etapa 1) nomeia a situação; ler `is_market` sozinho trataria
+        # `fallback` como taxa viva — e o rodapé diria "mid-market" sobre um
+        # número de anteontem.
+        estado = fx.get('state')
+        marca = {'market': _('mid-market'),
+                 'fallback': _('última conhecida')}.get(estado, _('contrato'))
+        quando = fx.get('date')
+        carimbo = ' '.join(x for x in (
+            marca, quando.strftime('%d/%m') if quando else '') if x)
+        carimbo += f' · 1 ¥ = US$ {fx["rate_disp"]}'
+    else:
+        carimbo = _('sem taxa do dia')
 
     def _footer(canvas, _doc):
         canvas.saveState()
         canvas.setFillColor(_GREY)
         _draw_mixed(canvas, 12 * mm, 8 * mm, footer_txt, 6.5, font, cjk)
+        canvas.setFont(font, 6.5)
+        canvas.drawCentredString(A4[0] / 2, 8 * mm, carimbo.strip())
         canvas.setFont(font, 6.5)
         canvas.drawRightString(A4[0] - 12 * mm, 8 * mm, str(canvas.getPageNumber()))
         canvas.setStrokeColor(_BLUE)
