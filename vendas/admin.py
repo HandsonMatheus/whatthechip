@@ -5,7 +5,7 @@ o NOME do comprador aparece, por decisão de sigilo)."""
 
 from django.contrib import admin
 
-from .models import DocSequence, SalesOrder, SalesOrderLine
+from .models import DocSequence, SalesOrder, SalesOrderLine, Wallet
 
 
 class PlatformScopedAdmin(admin.ModelAdmin):
@@ -51,3 +51,21 @@ class DocSequenceAdmin(PlatformScopedAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+    """A carteira de recebimento (spec v2 §3.12) — só a PLATAFORMA edita.
+
+    ⚠ Não herda o `PlatformScopedAdmin`: aquele escopa por empresa, e esta
+    tabela não tem empresa nenhuma (é UM endereço, da plataforma). O gate é
+    o próprio admin.
+
+    ⚠ Trocar o endereço muda para onde vai dinheiro de verdade. `active`
+    existe para APOSENTAR uma carteira em vez de sobrescrever a linha: o
+    histórico de para onde se mandou tem de sobreviver à troca.
+    """
+
+    list_display = ('owner', 'net', 'addr', 'active', 'updated_at')
+    list_filter = ('active', 'net')
+    search_fields = ('owner', 'addr')

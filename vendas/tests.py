@@ -2323,6 +2323,115 @@ class CompradorComprasTests(TestCase):
         self.assertIsNone(services.tracking_url('Transportadora do Zé', 'X1'))
         self.assertIsNone(services.tracking_url('DHL', ''))   # sem código
 
+    # ── Carteira e modal de pagamento (spec v2 §3.12, §6.7 e §6.8) ─────────
+
+    def _carteira(self):
+        from .models import Wallet
+        return Wallet.objects.create(
+            owner='WhatTheChip Ltd.', net='USDT · TRC-20',
+            addr='TQ9fH4mVx2Kd7YbLpJs3RnAeW6cUz8gXqN',
+            memo='Ponha o código da ordem (SO) no memo.')
+
+    def _faturado(self, sufixo):
+        so = self._compra(self.emp_a, sufixo)
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        return so
+
+    def test_script_corta_identificador_no_MEIO_nunca_no_fim(self):
+        """A cauda é o que se confere contra a carteira, e é o começo que os
+        golpes imitam (§6.2). `truncatechars` entrega o começo."""
+        from vendas.templatetags.wtc_ident import meio
+        endereco = 'TQ9fH4mVx2Kd7YbLpJs3RnAeW6cUz8gXqN'
+        curto = meio(endereco, 20)
+        self.assertIn('…', curto)
+        self.assertTrue(endereco.startswith(curto.split('…')[0]))
+        self.assertTrue(endereco.endswith(curto.split('…')[1]))
+        self.assertLess(len(curto), len(endereco))
+        # o que já cabe volta inteiro; lixo não levanta
+        self.assertEqual(meio('curto', 20), 'curto')
+        self.assertEqual(meio(None), '')
+        self.assertEqual(meio(endereco, 'xx'), meio(endereco, 16))
+
+    def test_script_carteira_vigente_e_a_ativa(self):
+        from .models import Wallet
+        self.assertIsNone(Wallet.current())          # nasce VAZIA
+        antiga = self._carteira()
+        self.assertEqual(Wallet.current(), antiga)
+        antiga.active = False
+        antiga.save(update_fields=['active'])
+        self.assertIsNone(Wallet.current())          # aposentada, não apagada
+        self.assertTrue(Wallet.objects.filter(pk=antiga.pk).exists())
+
+    def test_interface_carteira_aparece_cortada_com_o_inteiro_no_title(self):
+        carteira = self._carteira()
+        so = self._faturado('W1')
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, f'title="{carteira.addr}"')      # inteiro
+        self.assertContains(tela, f'data-copia="{carteira.addr}"')  # copia o inteiro
+        # a forma CORTADA, e não um pedaço qualquer: o endereço inteiro está
+        # no `title`, então casar só a cabeça provaria nada.
+        self.assertContains(tela, 'TQ9fH4mVx2…W6cUz8gXqN')
+        self.assertContains(tela, 'transferência em blockchain não volta')
+
+    def test_interface_sem_carteira_a_tela_DIZ_que_nao_ha(self):
+        """Endereço em branco é convite a colar o errado."""
+        so = self._faturado('W2')
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'Carteira ainda não cadastrada')
+        self.assertNotContains(tela, 'data-copia=')
+
+    def test_interface_modal_leva_a_ORDEM_o_saldo_e_a_taxa_travada(self):
+        """A ordem é a referência do memo (§6.8); sem ela o dinheiro chega e
+        ninguém sabe de qual compra é."""
+        self._carteira()
+        so = self._faturado('W3')
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, so.code)
+        self.assertContains(tela, 'Ordem (memo)')
+        self.assertContains(tela, 'data-max="21.00"')      # o saldo, exato
+        self.assertContains(tela, 'data-fx="0.1400"')      # a taxa TRAVADA
+        self.assertContains(tela, 'data-pct="100"')        # atalho Restante
+        self.assertContains(tela, 'Registrar quitação')
+        self.assertContains(tela, 'Registrar pagamento parcial')
+
+    def test_interface_saldo_mostra_o_par_e_a_barra_conta_em_USD(self):
+        self._carteira()
+        so = self._faturado('W4')
+        with company_scope(self.emp_a):
+            inv = Invoice.all_companies.get(order=so)
+            services.register_payment(inv, Decimal('9.00'),
+                                      timezone.localdate(), self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertEqual(tela.context['pago_usd'], Decimal('9.00'))
+        self.assertEqual(tela.context['saldo_usd'], Decimal('12.00'))
+        # ¥ é leitura DERIVADA pela taxa travada: 9 / 0.14 e 12 / 0.14
+        self.assertEqual(tela.context['pago_rmb'], Decimal('64'))
+        self.assertEqual(tela.context['saldo_rmb'], Decimal('86'))
+        self.assertContains(tela, 'bal__bar')
+        self.assertContains(tela, 'width:43%')             # 9 de 21, arredondado
+
+    def test_interface_historico_traz_o_REGISTRO_de_cada_parcela(self):
+        from datetime import date
+        self._carteira()
+        so = self._faturado('W5')
+        with company_scope(self.emp_a):
+            inv = Invoice.all_companies.get(order=so)
+            services.register_payment(inv, Decimal('9.00'),
+                                      date(2026, 8, 18), self.parceiro)
+            services.register_payment(inv, Decimal('12.00'),
+                                      date(2026, 8, 19), self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        registros = [p['registro'] for p in tela.context['pagamentos']]
+        self.assertEqual(sorted(registros), ['PARCIAL', 'QUITAÇÃO'])
+
+    def test_interface_sem_pagamento_a_aba_explica_o_que_fazer(self):
+        self._carteira()
+        so = self._faturado('W6')
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'Nenhum pagamento registrado')
+        self.assertContains(tela, 'sempre com o comprovante anexado')
+
     def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):
         """Devolvem lista nova. A original é a mesma que alimenta a contagem —
         mutá-la faria o número do filtro depender da ordem das chamadas."""

@@ -555,6 +555,49 @@ tradução.
 **quantidade** — *"dizer 'veio' é menos do que dizer quanto veio, e é a quantidade que se confere
 contra a bancada"*. Mudar exige mexer no `category_glossary`, que não é exclusivo do comprador.
 
+### ✅ Etapa 5b — carteira, saldo e o modal de pagamento (2026-08-26)
+
+| Onde | O quê |
+|---|---|
+| `vendas/models.py` + `0018_wallet` | `Wallet` — a carteira que RECEBE, do WhatTheChip |
+| `vendas/admin.py` | `WalletAdmin` — só a plataforma edita |
+| `vendas/templatetags/wtc_ident.py` | filtro `meio` — corte no MEIO de identificador longo |
+| `views_partner.py` | `carteira`, o par ¥=US$ do saldo, e o REGISTRO já traduzido em cada parcela |
+| `partner_compra.html` + `ficha.css` | aba de Pagamentos com três blocos + o modal completo |
+
+**A carteira é do WhatTheChip, nunca do vendedor.** Mandar o comprador pagar o vendedor direto pularia
+a plataforma e quebraria as duas pernas do dinheiro de uma vez.
+
+**Sem `company` e sem RLS, de propósito** — mesma razão do `FxRate`: não há dado por-empresa aqui. É UM
+endereço, da plataforma, que todo comprador lê. Uma coluna de empresa criaria a pergunta "a carteira de
+quem?", que não existe.
+
+**Nasce vazia.** Inventar um endereço padrão seria pôr dinheiro de verdade a caminho de um lugar
+imaginário. Sem carteira a tela **diz** que não há — endereço em branco é convite a colar o errado. E
+`active` existe para **aposentar** em vez de sobrescrever: o histórico de para onde se mandou tem de
+sobreviver à troca.
+
+**Corte no MEIO, nunca no fim** (§6.2). `truncatechars` e o `text-overflow` do CSS entregam o começo —
+e ninguém confere endereço de blockchain pelo começo, porque é o começo que os golpes imitam. O valor
+inteiro vai no `title`, e **o botão copia o inteiro**, não o desenhado.
+
+**No modal:** a ordem aparece primeiro porque é ela que vai no memo — sem o código, o dinheiro chega e
+ninguém sabe de qual compra é. A conversão sai **exata, sem `≈`** (§2.8): com câmbio travado é
+aritmética, não palpite. O atalho **Restante** traz o valor exato do saldo, não 100% arredondado — é o
+clique que quita, e centavo perdido ali vira lote pago dizendo PARCIAL para sempre. A tolerância do JS
+é a **mesma do servidor** (`0.004`), senão o próprio botão que quita seria o que trava.
+
+**O rótulo do botão diz o que o clique FAZ**, não o que o formulário é: *Registrar quitação* × *…
+parcial*, trocado ao vivo.
+
+**A barra de progresso conta em US$** (§6.7): é em US$ que ele deve, e centavo de dólar é o que a
+carteira move. O ¥ ao lado é leitura conciliável, derivada da taxa travada — nunca base de comparação.
+
+8 testes (2 script + 6 interface) · 18 msgids novos nos 3 catálogos.
+
+⚠ **Depois do deploy:** cadastrar a carteira em `/admin/vendas/wallet/`. Até lá a aba de Pagamentos
+mostra "Carteira ainda não cadastrada" — que é o comportamento certo, não uma pendência de código.
+
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 
 Tudo que se implementa sai com as duas camadas:

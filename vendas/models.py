@@ -715,6 +715,58 @@ class OrderNote(models.Model):
         return super().save(*args, **kwargs)
 
 
+
+class Wallet(models.Model):
+    """A carteira que RECEBE o pagamento do comprador (spec v2 §3.12).
+
+    **É a carteira do WhatTheChip, nunca a do vendedor.** Todo pagamento de
+    toda compra vai para este endereço — é a perna 1 do dinheiro
+    (comprador → WTC), e o cliente recebe a dele pela perna 2, já deduzida a
+    taxa de serviço. Mandar o comprador pagar o vendedor direto pularia a
+    plataforma e quebraria as duas pernas de uma vez.
+
+    ⚠ **Sem `company` e sem RLS, de propósito**, e é a mesma razão do
+    ``FxRate``: não há dado por-empresa aqui. É UM endereço, da plataforma,
+    que todo comprador lê. Uma coluna de empresa criaria a pergunta "a
+    carteira de quem?", que não existe.
+
+    Model e não `settings` porque endereço de carteira muda sem deploy —
+    mesma decisão do `Buyer.ship_to`. Nasce VAZIO: inventar um endereço
+    padrão seria pôr dinheiro de verdade a caminho de um lugar imaginário.
+    """
+
+    owner = models.CharField(max_length=120, default='WhatTheChip Ltd.',
+                             verbose_name='Titular')
+    net = models.CharField(max_length=60, default='USDT · TRC-20',
+                           verbose_name='Rede',
+                           help_text='Ex.: USDT · TRC-20. Aparece ao lado do '
+                                     'endereço, porque rede errada perde a '
+                                     'transferência.')
+    addr = models.CharField(max_length=120, verbose_name='Endereço')
+    memo = models.TextField(
+        blank=True, default='', verbose_name='Instrução de memo',
+        help_text='O que o comprador deve pôr no campo memo/referência da '
+                  'transferência — normalmente o código da ordem (SO).')
+    active = models.BooleanField(default=True, verbose_name='Ativa')
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name='Atualizada em')
+
+    class Meta:
+        verbose_name = 'Carteira de recebimento'
+        verbose_name_plural = 'Carteiras de recebimento'
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f'{self.owner} · {self.net}'
+
+    @classmethod
+    def current(cls):
+        """A carteira vigente, ou ``None``. Sem carteira a tela DIZ que não
+        há — nunca desenha um endereço em branco, que é convite a colar o
+        errado."""
+        return cls.objects.filter(active=True).first()
+
+
 class Payout(models.Model):
     """REPASSE ao cliente — a perna WhatTheChip → CLIENTE (dono, 2026-08-19).
 

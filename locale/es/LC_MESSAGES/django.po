@@ -3584,6 +3584,88 @@ msgstr "LIQUIDACIÓN"
 msgid "Registro"
 msgstr "Registro"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Carteira ainda não cadastrada."
+msgstr "Cartera aún no registrada."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Carteira de destino"
+msgstr "Cartera de destino"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiado"
+msgstr "Copiado"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiar"
+msgstr "Copiar"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiar endereço"
+msgstr "Copiar dirección"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Fale com o WhatTheChip antes de transferir qualquer valor."
+msgstr "Hable con WhatTheChip antes de transferir cualquier importe."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Hash da transferência, banco, observação curta"
+msgstr "Hash de la transferencia, banco, nota corta"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Já pago"
+msgstr "Ya pagado"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Ordem (memo)"
+msgstr "Orden (memo)"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Quitado"
+msgstr "Saldado"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Registrar pagamento parcial"
+msgstr "Registrar pago parcial"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Registrar quitação"
+msgstr "Registrar liquidación"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Restante"
+msgstr "Restante"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Sem comprovante o pagamento não entra."
+msgstr "Sin comprobante el pago no se registra."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Valor pago"
+msgstr "Importe pagado"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Você paga o %(titular)s, nunca o vendedor direto. Confira os seis primeiros "
+"e os seis últimos caracteres antes de enviar: transferência em blockchain "
+"não volta."
+msgstr ""
+"Usted paga a %(titular)s, nunca al vendedor directamente. Verifique los seis"
+" primeros y los seis últimos caracteres antes de enviar: una transferencia "
+"en blockchain no vuelve."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Nenhum pagamento registrado. Envie o valor em US$ para a carteira acima e "
+"lance aqui — parcial ou integral, sempre com o comprovante anexado."
+msgstr ""
+"Ningún pago registrado. Envíe el importe en US$ a la cartera de arriba y "
+"regístrelo aquí — parcial o íntegro, siempre con el comprobante adjunto."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "acima do saldo · máx US$ {n}"
+msgstr "por encima del saldo · máx US$ {n}"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

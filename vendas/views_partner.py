@@ -46,7 +46,7 @@ from django.views.decorators.http import require_POST
 from pricing.views import _fx_info, partner_required
 
 from . import services
-from .models import STATUS_CONFIRMED, Payment
+from .models import STATUS_CONFIRMED, Payment, Wallet
 
 
 def _shell(request, extra=None):
@@ -301,6 +301,33 @@ def compra_observacao_remover(request, pk, nota_pk):
         return _volta_pra_aba(so, 'observacoes')
 
 
+def _rmb_de(usd, taxa):
+    """¥ a partir de US$ pela taxa TRAVADA — leitura derivada (§2.4).
+
+    Inteiro porque RMB não tem centavos na convenção da casa. Sem taxa
+    devolve None, e a tela mostra o par sem o lado ¥: inventar o número seria
+    exatamente o que a §2.7 proíbe.
+    """
+    if usd is None or not taxa:
+        return None
+    return (usd / taxa).quantize(Decimal('1'))
+
+
+def _pagamentos_com_registro(inv):
+    """O histórico com o REGISTRO de cada parcela já traduzido (§3.9).
+
+    Anexado aqui e não no `payment_history` porque o rótulo é PROSA e o
+    serviço devolve chave canônica — e porque a tela do CLIENTE consome o
+    mesmo serviço sem precisar disto.
+    """
+    rotulos = _kind_labels()
+    registros = services.payment_kinds(inv)
+    linhas = services.payment_history(inv, com_autor=True)
+    for linha in linhas:
+        linha['registro'] = rotulos.get(registros.get(linha['pk']), '')
+    return linhas
+
+
 def _detalhe(so):
     """Tudo que a tela da compra desenha. Roda DENTRO do escopo da empresa."""
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
@@ -337,7 +364,7 @@ def _detalhe(so):
         # paga. O histórico fica na mesma tela: pagamento parcial é comum.
         # com_autor: aqui o autor é o usuário DELE mesmo. Na tela do cliente
         # esse campo NÃO existe — o nome do comprador é segredo de mercado.
-        'pagamentos': services.payment_history(inv, com_autor=True),
+        'pagamentos': _pagamentos_com_registro(inv),
         'hoje': timezone.localdate(),
         # Linha de TOTAIS da tabela de cima (dono, 2026-08-18).
         'total_qty': sum(g['qty'] for g in grupos),
@@ -367,6 +394,18 @@ def _detalhe(so):
         'idem_key': uuid.uuid4().hex,
         # Observações da conferência (spec §6.9) — lista, com autor e data.
         'observacoes': services.order_notes(so),
+        # ── Bloco de PAGAMENTO (spec §6.7 e §6.8) ────────────────────────
+        # A carteira é do WhatTheChip, não do vendedor. Sem carteira
+        # cadastrada a tela DIZ que não há — nunca desenha endereço em
+        # branco, que é convite a colar o errado.
+        'carteira': Wallet.current(),
+        # O par ¥ = US$ do saldo. O DEVIDO nasce em ¥ e vira US$ pela taxa
+        # travada; o PAGO nasce em US$. O ¥ do pago e do saldo é leitura
+        # conciliável, DERIVADA — nunca base de comparação (§2.4).
+        'pago_usd': inv.paid_usd if inv else None,
+        'saldo_usd': inv.balance_usd if inv else None,
+        'pago_rmb': _rmb_de(inv.paid_usd if inv else None, so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None)),
+        'saldo_rmb': _rmb_de(inv.balance_usd if inv else None, so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None)),
     }
 
 

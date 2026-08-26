@@ -1,4 +1,4 @@
-{% extends "pricing/partner_base.html" %}{% load i18n l10n %}
+{% extends "pricing/partner_base.html" %}{% load i18n l10n wtc_ident %}
 {% comment %}
   F11.6/F3 — a COMPRA aberta: identidade, etapas, resultado e pagamento.
 
@@ -430,16 +430,71 @@
     </div>
   </div>
 
-  {% comment %} Aba PAGAMENTOS — o histórico com os comprovantes. Parcial é
-     comum, então o que importa é a sequência, não só o total. {% endcomment %}
+  {% comment %} Aba PAGAMENTOS (spec v2 §6.7) — TRÊS blocos, nesta ordem:
+     para onde mandar, quanto falta, e o que já foi mandado. A carteira vem
+     PRIMEIRO porque é a única coisa aqui que, se for lida errado, perde
+     dinheiro de verdade. {% endcomment %}
   <div class="sst__w" id="pane-pagamentos" hidden>
+
+    {% if carteira %}
+    <div class="wal">
+      <div class="wal__h">
+        <span class="nts__l">{% trans "Carteira de destino" %}</span>
+        <span class="wal__net">{{ carteira.net }}</span>
+      </div>
+      <div class="wal__addr">
+        {% comment %} Corta no MEIO, nunca no fim (§6.2): a cauda é justamente
+           o que se confere contra a carteira, e é o começo que os golpes
+           imitam. O valor inteiro vai no title e no botão de copiar. {% endcomment %}
+        <code class="wtc" title="{{ carteira.addr }}">{{ carteira.addr|meio:20 }}</code>
+        <button type="button" class="wal__cp" data-copia="{{ carteira.addr }}"
+                data-feito="{% trans 'Copiado' %}"
+                title="{% trans 'Copiar endereço' %}">{% trans "Copiar" %}</button>
+      </div>
+      <p class="wal__warn">{% blocktrans trimmed with titular=carteira.owner %}
+        Você paga o {{ titular }}, nunca o vendedor direto. Confira os seis
+        primeiros e os seis últimos caracteres antes de enviar: transferência
+        em blockchain não volta.
+      {% endblocktrans %}</p>
+      {% if carteira.memo %}<p class="wal__memo">{{ carteira.memo }}</p>{% endif %}
+    </div>
+    {% else %}
+    <div class="wal wal--none">
+      <b>{% trans "Carteira ainda não cadastrada." %}</b>
+      {% trans "Fale com o WhatTheChip antes de transferir qualquer valor." %}
+    </div>
+    {% endif %}
+
+    {% if invoice %}
+    {% localize off %}
+    <div class="bal">
+      <div class="bal__row">
+        <span>{% trans "Resultado" %}</span>
+        <b>{% if invoice.total_rmb %}¥ {{ invoice.total_rmb }} = {% endif %}US$ {{ invoice.total_usd }}</b>
+      </div>
+      <div class="bal__row">
+        <span>{% trans "Já pago" %}</span>
+        <b>{% if pago_rmb %}¥ {{ pago_rmb }} = {% endif %}US$ {{ pago_usd }}</b>
+      </div>
+      <div class="bal__row bal__row--key">
+        <span>{% if invoice.balance_usd %}{% trans "Restante" %}{% else %}{% trans "Quitado" %}{% endif %}</span>
+        <b class="{% if invoice.balance_usd %}due{% else %}got{% endif %}">{% if saldo_rmb %}¥ {{ saldo_rmb }} = {% endif %}US$ {{ invoice.balance_usd }}</b>
+      </div>
+      {% comment %} A barra é calculada em US$ (§6.7): é em US$ que ele deve, e
+         centavo de dólar é o que a carteira move. {% endcomment %}
+      <div class="bal__bar"><i style="width:{% widthratio invoice.paid_usd invoice.total_usd 100 %}%"></i></div>
+    </div>
+    {% endlocalize %}
+    {% endif %}
+
     {% if pagamentos %}
     <div class="sst__sc">
       <table class="sst">
         <thead>
           <tr>
             <th>{% trans "Data" %}</th>
-            <th class="n">{% trans "US$" %}</th>
+            <th>{% trans "Registro" %}</th>
+            <th class="n">{% trans "Valor pago" %}</th>
             <th>{% trans "Referência" %}</th>
             <th>{% trans "Registrado por" %}</th>
             <th>{% trans "Comprovante" %}</th>
@@ -449,6 +504,7 @@
         {% for p in pagamentos %}
           <tr>
             <td class="pn">{{ p.paid_at|date:"d/m/Y" }}</td>
+            <td><span class="tag tag--info"><i class="dot"></i>{{ p.registro }}</span></td>
             <td class="n">{% localize off %}US$ {{ p.amount_usd }}{% endlocalize %}</td>
             <td>{{ p.reference|default:"—" }}</td>
             <td>{{ p.by|default:"—" }}</td>
@@ -460,7 +516,10 @@
       </table>
     </div>
     {% else %}
-    <div class="nbb__empty">{% trans "Nenhum pagamento registrado ainda." %}</div>
+    <div class="nbb__empty">{% blocktrans trimmed %}
+      Nenhum pagamento registrado. Envie o valor em US$ para a carteira acima e
+      lance aqui — parcial ou integral, sempre com o comprovante anexado.
+    {% endblocktrans %}</div>
     {% endif %}
   </div>
 
@@ -583,20 +642,55 @@
     <div class="mbox__h">
       <div>
         <h2 id="m-pagar-t">{% trans "Registrar pagamento" %}</h2>
-        <p>{% localize off %}{% blocktrans trimmed with t=invoice.total_usd p=invoice.paid_usd %}
-          fatura US$ {{ t }} · pago US$ {{ p }}{% endblocktrans %}{% endlocalize %}</p>
+        <p class="pn">{{ so.code }}</p>
       </div>
       <button type="button" class="mbox__x" data-fecha="m-pagar" aria-label="{% trans 'Fechar' %}">
         <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
     <div class="mbox__b">
+      {% localize off %}
+      {% comment %} O resumo abre com a ORDEM porque é ela que vai no memo da
+         transferência (§6.8) — sem o código, o dinheiro chega e ninguém sabe
+         de qual compra é. O RESTANTE é o número destacado: é o que ele está
+         aqui para resolver. {% endcomment %}
+      <dl class="pres">
+        <div><dt>{% trans "Ordem (memo)" %}</dt><dd class="pn">{{ so.code }}</dd></div>
+        <div><dt>{% trans "Resultado" %}</dt><dd>{% if invoice.total_rmb %}¥ {{ invoice.total_rmb }} = {% endif %}US$ {{ invoice.total_usd }}</dd></div>
+        <div><dt>{% trans "Já pago" %}</dt><dd>US$ {{ pago_usd }}</dd></div>
+        <div class="pres--key"><dt>{% trans "Restante" %}</dt><dd class="due">US$ {{ invoice.balance_usd }}</dd></div>
+      </dl>
+      {% if carteira %}
+      <div class="pres__wal">
+        <span class="nts__l">{{ carteira.net }}</span>
+        <code class="wtc" title="{{ carteira.addr }}">{{ carteira.addr|meio:20 }}</code>
+        <button type="button" class="wal__cp" data-copia="{{ carteira.addr }}"
+                data-feito="{% trans 'Copiado' %}"
+                title="{% trans 'Copiar endereço' %}">{% trans "Copiar" %}</button>
+      </div>
+      {% endif %}
+
       <label class="fpay">
         <span class="nts__l">{% trans "Valor pago (US$)" %}</span>
-        <input type="number" name="amount_usd" step="0.01" min="0.01"
+        <input type="number" name="amount_usd" id="pay-usd" step="0.01" min="0.01"
                max="{{ invoice.balance_usd|unlocalize }}" required
+               data-max="{{ invoice.balance_usd|unlocalize }}"
+               data-fx="{{ fx_rate|default_if_none:''|unlocalize }}"
+               data-msg-max="{% blocktrans %}acima do saldo · máx US$ {n}{% endblocktrans %}"
                value="{{ invoice.balance_usd|unlocalize }}">
+        {% comment %} Com câmbio TRAVADO a conversão é aritmética, não palpite:
+           sai EXATA, sem `≈` (§2.8). Sem taxa, não sai nada — não se inventa
+           número (§2.7). {% endcomment %}
+        <span class="fpay__fx" id="pay-fx" aria-live="polite"></span>
       </label>
+      {% comment %} Atalhos (§6.8). "Restante" traz o valor EXATO do saldo — é
+         o clique que quita, e digitar centavo à mão é onde nasce o resíduo
+         que faz um lote pago dizer PARCIAL. {% endcomment %}
+      <div class="fpay__q">
+        <button type="button" class="btn btn--sec" data-pct="25">25%</button>
+        <button type="button" class="btn btn--sec" data-pct="50">50%</button>
+        <button type="button" class="btn btn--sec" data-pct="100">{% trans "Restante" %}</button>
+      </div>
       <label class="fpay">
         <span class="nts__l">{% trans "Data" %}</span>
         <input type="date" name="paid_at" value="{{ hoje|date:'Y-m-d' }}" required>
@@ -604,17 +698,23 @@
       <label class="fpay">
         <span class="nts__l">{% trans "Referência" %}</span>
         <input type="text" name="reference" maxlength="120"
-               placeholder="{% trans 'Nº do wire, banco, observação curta' %}">
+               placeholder="{% trans 'Hash da transferência, banco, observação curta' %}">
       </label>
       <label class="fpay">
         <span class="nts__l">{% trans "Comprovante (PDF ou imagem)" %}</span>
         <input type="file" name="receipt" required
                accept=".pdf,image/png,image/jpeg,image/webp">
+        <span class="dim">{% trans "Sem comprovante o pagamento não entra." %}</span>
       </label>
+      {% endlocalize %}
     </div>
     <div class="mbox__f">
       <button type="button" class="btn btn--sec" data-fecha="m-pagar">{% trans "Cancelar" %}</button>
-      <button type="submit" class="btn btn--pri">{% trans "Registrar pagamento" %}</button>
+      {% comment %} O rótulo diz o que o clique FAZ, não o que o formulário é:
+         "Registrar quitação" quando o valor fecha o saldo, "…parcial" quando
+         não. Trocado ao vivo pelo JS. {% endcomment %}
+      <button type="submit" class="btn btn--pri" id="pay-ok"
+              data-parcial="{% trans 'Registrar pagamento parcial' %}">{% trans "Registrar quitação" %}</button>
     </div>
   </form>
 </div>
@@ -678,6 +778,75 @@
   // Resumo daria a impressão de que a ação não pegou.
   var inicial = document.querySelector('.nb button[data-aba].on');
   if (inicial) mostrar(inicial.dataset.aba);
+
+  // ── Pagamento: conversão viva, atalhos, teto do saldo e o rótulo ───────
+  // Tudo aqui é CONVENIÊNCIA — quem valida de verdade é o servidor
+  // (`register_payment` barra acima do saldo e o comprovante é obrigatório).
+  // Isto existe para ele não descobrir o erro só depois de anexar o arquivo.
+  var payV = document.getElementById('pay-usd');
+  var payFx = document.getElementById('pay-fx');
+  var payOk = document.getElementById('pay-ok');
+  if (payV && payOk) {
+    var teto = parseFloat(payV.dataset.max || '0');
+    var taxa = parseFloat(payV.dataset.fx || '');
+    var L_QUIT = payOk.textContent.trim();
+    var L_PARC = payOk.dataset.parcial;
+    function payEstado() {
+      var v = parseFloat(payV.value);
+      var valido = !isNaN(v) && v > 0;
+      // Tolerância de 0.004 (§2.5), a MESMA do servidor: sem ela o clique em
+      // "Restante" pode acusar "acima do saldo" por um resíduo de ponto
+      // flutuante — e o botão que quita seria o que trava.
+      var acima = valido && v > teto + 0.004;
+      payV.classList.toggle('is-bad', acima);
+      payOk.disabled = !valido || acima;
+      if (acima) {
+        payFx.textContent = payV.dataset.msgMax.replace('{n}', teto.toFixed(2));
+        payFx.className = 'fpay__fx is-bad';
+      } else if (valido && taxa > 0) {
+        // Câmbio TRAVADO ⇒ conversão exata, SEM `≈` (§2.8).
+        payFx.textContent = '= ¥ ' + Math.round(v / taxa);
+        payFx.className = 'fpay__fx';
+      } else {
+        payFx.textContent = '';
+        payFx.className = 'fpay__fx';
+      }
+      // Quita quando o valor alcança o saldo (dentro da tolerância).
+      payOk.textContent = (valido && v >= teto - 0.004) ? L_QUIT : L_PARC;
+    }
+    payV.addEventListener('input', payEstado);
+    document.querySelectorAll('[data-pct]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var pct = parseInt(b.dataset.pct, 10);
+        // "Restante" traz o valor EXATO do saldo, não 100% arredondado: é o
+        // clique que quita, e centavo perdido aqui vira lote pago dizendo
+        // PARCIAL para sempre.
+        payV.value = (pct === 100 ? teto : (teto * pct / 100)).toFixed(2);
+        payEstado();
+      });
+    });
+    payEstado();
+  }
+
+  // ── Copiar identificador longo (carteira) ──────────────────────────────
+  // Copia o valor INTEIRO, não o que está desenhado: a tela corta no meio de
+  // propósito, e colar o cortado mandaria dinheiro para lugar nenhum.
+  document.querySelectorAll('[data-copia]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var texto = b.dataset.copia;
+      var antes = b.textContent;
+      function feito() { b.textContent = b.dataset.feito || antes; 
+        setTimeout(function () { b.textContent = antes; }, 1600); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(feito, function () {});
+      } else {
+        var t = document.createElement('textarea');
+        t.value = texto; document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); feito(); } catch (e) {}
+        document.body.removeChild(t);
+      }
+    });
+  });
 
   // ── Observações: o botão só acende com texto, e ⌘/Ctrl+Enter registra ──
   var obsT = document.getElementById('obs-txt');

@@ -3557,6 +3557,88 @@ msgstr "SETTLEMENT"
 msgid "Registro"
 msgstr "Record"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Carteira ainda não cadastrada."
+msgstr "Wallet not registered yet."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Carteira de destino"
+msgstr "Destination wallet"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiado"
+msgstr "Copied"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiar"
+msgstr "Copy"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiar endereço"
+msgstr "Copy address"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Fale com o WhatTheChip antes de transferir qualquer valor."
+msgstr "Talk to WhatTheChip before transferring any amount."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Hash da transferência, banco, observação curta"
+msgstr "Transfer hash, bank, short note"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Já pago"
+msgstr "Already paid"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Ordem (memo)"
+msgstr "Order (memo)"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Quitado"
+msgstr "Paid in full"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Registrar pagamento parcial"
+msgstr "Record partial payment"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Registrar quitação"
+msgstr "Record full settlement"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Restante"
+msgstr "Remaining"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Sem comprovante o pagamento não entra."
+msgstr "Without a receipt the payment is not recorded."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Valor pago"
+msgstr "Amount paid"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Você paga o %(titular)s, nunca o vendedor direto. Confira os seis primeiros "
+"e os seis últimos caracteres antes de enviar: transferência em blockchain "
+"não volta."
+msgstr ""
+"You pay %(titular)s, never the seller directly. Check the first six and the "
+"last six characters before sending: a blockchain transfer does not come "
+"back."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Nenhum pagamento registrado. Envie o valor em US$ para a carteira acima e "
+"lance aqui — parcial ou integral, sempre com o comprovante anexado."
+msgstr ""
+"No payments recorded. Send the amount in US$ to the wallet above and record "
+"it here — partial or in full, always with the receipt attached."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "acima do saldo · máx US$ {n}"
+msgstr "above the balance · max US$ {n}"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

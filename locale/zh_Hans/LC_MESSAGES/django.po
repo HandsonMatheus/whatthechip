@@ -3370,6 +3370,83 @@ msgstr "结清"
 msgid "Registro"
 msgstr "记录"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Carteira ainda não cadastrada."
+msgstr "尚未登记收款钱包。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Carteira de destino"
+msgstr "收款钱包"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiado"
+msgstr "已复制"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiar"
+msgstr "复制"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Copiar endereço"
+msgstr "复制地址"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Fale com o WhatTheChip antes de transferir qualquer valor."
+msgstr "在转账前请先联系 WhatTheChip。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Hash da transferência, banco, observação curta"
+msgstr "转账哈希、银行、简短备注"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Já pago"
+msgstr "已付"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Ordem (memo)"
+msgstr "订单（备注栏）"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Quitado"
+msgstr "已付清"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Registrar pagamento parcial"
+msgstr "登记部分付款"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Registrar quitação"
+msgstr "登记结清付款"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Restante"
+msgstr "剩余"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Sem comprovante o pagamento não entra."
+msgstr "没有凭证，付款不予登记。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Valor pago"
+msgstr "已付金额"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Você paga o %(titular)s, nunca o vendedor direto. Confira os seis primeiros "
+"e os seis últimos caracteres antes de enviar: transferência em blockchain "
+"não volta."
+msgstr "您支付给 %(titular)s，绝不直接支付给卖方。发送前请核对前六位和后六位字符：区块链转账无法撤回。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Nenhum pagamento registrado. Envie o valor em US$ para a carteira acima e "
+"lance aqui — parcial ou integral, sempre com o comprovante anexado."
+msgstr "尚无付款记录。请将 US$ 金额转入上方钱包并在此登记——部分或全额均可，务必附上凭证。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "acima do saldo · máx US$ {n}"
+msgstr "超出余额 · 最多 US$ {n}"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."
