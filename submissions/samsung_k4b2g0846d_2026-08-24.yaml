@@ -137,6 +137,63 @@ known_parts:
       SDRAM Memory"). Die-gen F ainda não confirmado nessa célula (1G×x4 só
       tinha D-die, da rodada 2). 1Gbit÷8=128MB/die.
 
-# ⚠ NÃO incluído: K4B1G1646F (1G×x16, F-die) — pesquisado, ZERO evidência
-# encontrada (só achei K4B1G1646G, die-gen diferente). Não incluo por
-# analogia/padrão — sem fonte real, fica de fora (excluir, não adivinhar).
+  - part_number: "K4B1G1646E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347879/SAMSUNG/K4B1G1646E.html"
+    notes: >
+      RODADA 4 (novo debug do dono). PN alvo, base sem sufixo. Datasheet
+      oficial Samsung dedicado (alldatasheet mirror #347879, 23 páginas,
+      "DDR3 SDRAM Memory") — mesmo documento-família/estilo já usado pros
+      irmãos 1G×x8 (#347878=E-die, #347881=F-die) e 1G×x4 (#347880=F-die)
+      desta sessão; um 2º documento também indexado pro mesmo PN base
+      (#347913, "Consumer Memory", 15P). 1Gbit÷8=128MB/die (mesma aritmética
+      da família, independente da largura x4/x8/x16 — densidade total não
+      muda com organização).
+
+  - part_number: "K4B1G1646C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/211291/SAMSUNG/K4B1G1646C-CF8.html"
+    notes: >
+      RODADA 4 — achado ao esgotar a fonte (listagem completa alldatasheet
+      pra "K4B1G1646*", aberta pra confirmar o alvo E-die). C-die ainda não
+      tinha known_part nessa célula (1G×x16 só tinha D/I confirmados no
+      seed). 3 sufixos de tensão indexados (C-CF8/C-ZCF7/C-ZCG9, #211291/
+      #211288/#211294) — página do C-CF8 confirma texto oficial: "The 1Gb
+      DDR3 SDRAM C-die is organized as a 32Mbit x4/16Mbit x8/8Mbit x16 I/Os
+      x8banks device" — x16 é uma das 3 organizações documentadas pra este
+      density/die. 1Gbit÷8=128MB/die.
+
+  - part_number: "K4B1G1646G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425675/SAMSUNG/K4B1G1646G-BC.html"
+    notes: >
+      RODADA 4 — já tinha sido achado na RODADA 3 (mesma listagem) mas
+      deixado de fora por engano (só o G-die tinha aparecido, não o E-die
+      que era o alvo daquela vez; o footer desta submissão dizia "não
+      incluído" — corrigido agora). ⚠ Fonte mais fraca que C/D/E: só indexado
+      via 2 sufixos de tensão num "PRODUCT SELECTION GUIDE Displays, Memory
+      and Storage" (catálogo Samsung 2H2014, #1425675=G-BC, #1425686=G-BY —
+      par BC/BY = tensão 1.5V/1.35V, mesmo padrão da família), não um
+      datasheet dedicado por PN. O catálogo é documento oficial Samsung
+      (Tier-1), mas não abre o detalhe de organização/densidade linha a
+      linha como os datasheets dedicados — o alldatasheet indexa e agrupa
+      como "Similar Part No." junto dos C/D-die confirmados da mesma célula
+      1G×x16, o que corrobora. 1Gbit÷8=128MB/die (mesma aritmética).
+
+# ⚠ NÃO incluído: K4B1G1646F (1G×x16, F-die) — pesquisado nas rodadas 2-4,
+# ZERO evidência encontrada em qualquer fonte (nem na listagem completa
+# alldatasheet pra "K4B1G1646*", que mostrou só C/D/E/G — sem F). Célula
+# 1G×x16 agora tem cobertura completa do que existe de verdade: C, D
+# (seed), E, G confirmados; F confirmadamente ausente.
