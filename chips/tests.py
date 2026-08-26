@@ -1950,6 +1950,7 @@ _SAM_GOLDEN = {
     'KA1000015E': ('MCP', '', '', '', '', 'NÃO RENTÁVEL'),
     'KAT1G1646DBC': ('ePoP', '', 'eMMC ⚠ cap. não mapeada', "tipo 'T' — consultar datasheet ⚠ cap. não mapeada", '', 'NÃO RENTÁVEL'),
     'KF91G1646DBC': ('NAND Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'KFG1G16U2C': ('OneNAND', '', '', '', '', 'NÃO RENTÁVEL'),  # família nova 2026-08-26, prefixo "KFG" (2ª convenção OneNAND, distinta de K5D) — ver samsung.yaml
     'KLM2G1DEHE': ('eMMC', '2GB', '', '', '', 'NÃO RENTÁVEL'),
     'KLMCG2KETM': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),
     'KLMCG2UCTA': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),

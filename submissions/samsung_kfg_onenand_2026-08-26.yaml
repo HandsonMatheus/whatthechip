@@ -1,0 +1,105 @@
+# Submissão de known_parts — Samsung, família KFG (OneNAND, 2ª convenção de
+# nomenclatura — ver [[wtc-k5d-vs-kfg-onenand-duas-convencoes]] / samsung.yaml).
+# PRIMEIRA cobertura da família KFG nesta sessão: prefixo "KFG" não existia
+# na gramática (debug mostrava chip_type/família totalmente vazios, nem
+# fuzzy_suggestions — gap de GRAMÁTICA, não só de known_part). Família nova
+# adicionada em chips/knowledge/samsung.yaml (chip_type=OneNAND, já declarado
+# em chip_types.py desde 2026-07-14 como commercial=False/dead — destino
+# comercial fixo, sem liquidez B2B) + golden anchor obrigatório em
+# chips/tests.py (KFG1G16U2C).
+#
+# PN alvo (debug 2026-08-26): KFG1G16U2C (bancada digitou SEM sufixo).
+# Confirmado 1Gb (64M x 16bit) via múltiplos distribuidores convergentes
+# (Arrow — distribuidor oficial Samsung —, Datasheets.com, Datasheets360,
+# catalog.gaw.ru) — todos concordam na mesma organização/densidade, mesmo
+# sem datasheet primário direto pra este die-rev específico ("C") ter sido
+# fetchado. Registrado tanto a forma BARE (igual a bancada leu) quanto a
+# forma com sufixo "-AIB6" (mesmo padrão dos outros distribuidores) — regra
+# de match por STRING EXATA, ver [[wtc-known-part-match-string-exata-sufixo]].
+#
+# Cluster: achei o datasheet oficial Samsung OneNAND Ver. 1.4 (jun/2005) via
+# alldatasheet — tabela "OneNAND SPECIFICATION" cobre AMBAS as densidades
+# 512Mb e 1Gb da família (die-rev "M", mais antiga que o alvo "C"). Segui a
+# regra de pesquisar o cluster inteiro: além do alvo, registrei 2 siblings
+# de die-rev diferente (M, D) na MESMA densidade 1Gb, e 2 PNs da densidade
+# IRMÃ 512Mb (tier nunca tocado) — cobertura das duas densidades e três
+# die-revisions conhecidas, não só o PN exato do debug.
+brand: "Samsung"
+known_parts:
+  - part_number: "KFG1G16U2C"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.arrow.com/en/products/kfg1g16u2c-aib6000/samsung-electronics"
+    notes: >
+      PN alvo, forma BARE (sem sufixo) — é assim que o operador leu no chip.
+      1Gb (64M x 16bit) = 128MB, confirmado via múltiplos distribuidores
+      convergentes (Arrow, Datasheets.com, Datasheets360, catalog.gaw.ru) —
+      não achei o datasheet primário fetchável pra este die-rev "C"
+      específico (só die-rev "M" no alldatasheet), mas a organização bate
+      em 4 fontes independentes. OneNAND = combo NAND Flash + interface
+      NOR-compatível (chip monolítico), mesma tecnologia da família K5D já
+      existente na gramática — KFG é uma nomenclatura Samsung diferente
+      pro mesmo tipo de produto (ver reasoning da família em samsung.yaml).
+
+  - part_number: "KFG1G16U2C-AIB6"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.arrow.com/en/products/kfg1g16u2c-aib6000/samsung-electronics"
+    notes: >
+      Forma completa com sufixo "-AIB6", mesma base do alvo — sufixo real
+      confirmado em múltiplos distribuidores (Arrow, veswin.com, Jotrin).
+      Mesmas specs do PN bare acima (1Gb, 64Mx16, 128MB).
+
+  - part_number: "KFG1G16U2M-DEB"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/106583/SAMSUNG/KFG1G16U2M-DEB.html"
+    notes: >
+      Sibling do alvo, die-rev "M" (mais antigo), mesma densidade 1Gb/64Mx16.
+      Datasheet oficial Samsung OneNAND Ver. 1.4 (jun/2005), lido direto —
+      tabela "OneNAND SPECIFICATION" na página 1 confirma organização e
+      density. 1.8V core/IO, temperatura Extended, 63FBGA(LF).
+
+  - part_number: "KFG1G16U2D-HIB6"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KFG1G16U2D_HIB6"
+    notes: >
+      Sibling do alvo, die-rev "D", mesma densidade 1Gb/64Mx16. Confirmado
+      via listagem de distribuidor real (Jotrin Electronics).
+
+  - part_number: "KFG1216Q2M-DEB"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "64MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/106583/SAMSUNG/KFG1G16U2M-DEB.html"
+    notes: >
+      Densidade IRMÃ 512Mb (=64MB), tier nunca tocado antes desta rodada.
+      Mesmo datasheet oficial Samsung OneNAND Ver. 1.4 (jun/2005), tabela
+      "OneNAND SPECIFICATION" — organização 512Mb, 1.8V core/IO, temperatura
+      Extended, 63FBGA(LF).
+
+  - part_number: "KFG1216U2M-DIB"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "64MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/106583/SAMSUNG/KFG1G16U2M-DEB.html"
+    notes: >
+      Mesma densidade 512Mb (=64MB) do PN acima, variante 3.3V/temperatura
+      Industrial — mesma tabela oficial Samsung (Ver. 1.4, jun/2005).

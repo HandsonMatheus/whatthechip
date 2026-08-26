@@ -1398,6 +1398,24 @@ families:
   suffix_rules: ''
   tip: 'Samsung NAND Flash standalone — série K9 (legacy). KF9 = Samsung, família NAND Flash pré-eMMC. Densidade: 8G=8Gbit(1GB), 4G=4Gbit(512MB). Barramento: 16=x16. Sem controladora eMMC. Era: feature phone / embedded (~2005-2012). ⚠ NÃO É Kingston Fury (que usa KF+DDR com "/" no PN). Destino: sucata / aplicações industriais específicas.'
   reasoning: ''
+- prefix: KFG
+  chip_type: OneNAND
+  subtype: Samsung OneNAND Flash
+  interface: NOR (async)
+  is_emcp: false
+  active: true
+  priority: 70
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'OneNAND Samsung — mesma tecnologia da familia K5D (NAND Flash com interface NOR-compativel, chip monolitico, NAO separar componentes). KFG e uma 2a convencao de nomenclatura Samsung pra OneNAND (prefixo "KF" + letra + digitos, em vez de "K5D"), vista em datasheets de 2005-2010. Prefixo "KF" (2 chars) ja existe INATIVO na Kingston (DDR, chip_type diferente) — este prefixo e "KFG" (3 chars), mais especifico, sem colisao. Densidade NAO decodificada pela gramatica (identity-only, igual KF9): o codigo de 4 digitos apos o prefixo varia entre convencao numerica ("1216"=512Mb) e literal ("1G16"=1Gb) conforme a geracao — sem regra posicional confiavel o suficiente pra generalizar sem arriscar erro. Destino comercial fixo (chip_types.py, 2026-07-14): sem liquidez B2B, sucata/moagem, independente de capacidade.'
+  reasoning: 'Samsung OneNAND Ver. 1.4 (datasheet oficial, jun/2005) — tabela "OneNAND SPECIFICATION" mostra o prefixo "KFG" usado pro tier 512Mb (KFG1216Q2M-DEB) e "KFH" pro tier 1Gb (KFH1G16Q2M-DEB) NAQUELA geracao — ou seja, a letra apos "KF" nao e um indicador de densidade estavel entre geracoes. PN alvo do debug (KFG1G16U2C, prefixo "KFG" MAS codigo "1G16") confirmado via multiplos distribuidores convergentes (Arrow, Datasheets.com, Datasheets360, catalog.gaw.ru) como 1Gb (64Mx16) — a geracao posterior aparentemente unificou tudo sob "KFG", com a densidade indicada só pelo código numérico/literal, não mais pela letra. Por isso nenhum decode_cap foi declarado (evidência insuficiente pra regra posicional confiável).'
 - prefix: KLM
   chip_type: eMMC
   subtype: ''
