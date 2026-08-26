@@ -142,3 +142,25 @@ known_parts:
       recomendação do irmão: considerar reclassificar chip_type="MCP" numa
       próxima revisão; por ora mantido "eMCP" — revisar manual no admin antes
       de aprovar.
+
+  # ── RODADA 3: linhas de SUFIXO (engine casa por string exata, sem tirar
+  # sufixo — ver explicação completa em samsung_k4b2g0846d_2026-08-24.yaml) ──
+  - part_number: "KMYFE0B0CA-D300"
+    chip_type: "eMCP"
+    subtype: "embedded Multi-Chip Package (LPDDR + eMMC)"
+    interface: ""
+    emcp_nand: "2GB"
+    emcp_ram: "SDRAM 1GB"
+    confidence: confirmed
+    source_url: "https://www.edn.com/rims-blackberry-bold/"
+    notes: "Sufixo exato citado na fonte EDN/teardown (ver notes do PN base KMYFE0B0CA)."
+
+  - part_number: "KMYFG0C0CM-D302"
+    chip_type: "eMCP"
+    subtype: "embedded Multi-Chip Package (LPDDR + eMMC)"
+    interface: ""
+    emcp_nand: "2GB"
+    emcp_ram: "SDRAM 1GB"
+    confidence: confirmed
+    source_url: "https://electronics360.globalspec.com/article/2198/blackberry-rim-storm-9530-mobile-phone-teardown"
+    notes: "Sufixo exato citado na fonte IHS/Electronics360 (ver notes do PN base KMYFG0C0CM)."

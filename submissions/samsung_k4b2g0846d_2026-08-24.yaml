@@ -30,6 +30,17 @@
 #   - Bônus: K4B4G0846B (B-die, construção DDP = dual-die-package) — densidade/
 #     largura já cobertas por D/E-die, mas die-gen B ainda não estava confirmado
 #     nessa célula específica (4G×x8); achado explícito no datasheet oficial.
+# ⚠ RODADA 5 (dono perguntou "mas tem ele cadastrado com esse final HCH9?" sobre
+# K4B4G0846BHCH9): achado importante — o engine casa known_part por STRING EXATA,
+# sem tirar sufixo (verificado em sandbox: known_part "K4B4G0846B" resolve
+# known_exact=true pra "K4B4G0846B", mas NÃO pra "K4B4G0846BHCH9" — cai de volta
+# pra gramática, confidence=estimated). O padrão maduro do seed já faz isso certo
+# (ex.: K4B1G0846I tem 5 linhas — base + 4 sufixos BCK0/BYK0/BYMA/BYNB, cada uma
+# seu próprio known_part). Eu vinha só CITANDO sufixo como corroboração nas notes,
+# sem cadastrar — de hoje em diante, todo sufixo que eu já tenho fonte pra ele vira
+# linha própria. Abaixo, adicionadas as linhas de sufixo de TODOS os PNs desta
+# submissão que já tinham sufixo citado nas notes (mesmo chip_type/capacity/
+# interface do PN base — sufixo só muda tensão/pacote, não densidade/largura).
 brand: "Samsung"
 known_parts:
   - part_number: "K4B2G0846D"
@@ -197,6 +208,143 @@ known_parts:
       linha como os datasheets dedicados — o alldatasheet indexa e agrupa
       como "Similar Part No." junto dos C/D-die confirmados da mesma célula
       1G×x16, o que corrobora. 1Gbit÷8=128MB/die (mesma aritmética).
+
+  # ── RODADA 5: linhas de SUFIXO (mesmo componente do PN base acima, string
+  # exata diferente — ver comentário no topo do arquivo) ──────────────────────
+  - part_number: "K4B2G0846D-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/k4b2g0846d-hch9-samsung"
+    notes: "Sufixo HC=DDR3 1.5V do K4B2G0846D (ver notes do PN base pra fonte completa). Octopart hospeda datasheet PDF direto deste sufixo exato."
+
+  - part_number: "K4B2G0846D-HYH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.datasheets360.com/"
+    notes: "Sufixo HY=DDR3L 1.35V do K4B2G0846D (par de tensão do HCH9 acima, ver notes do PN base). Datasheets360."
+
+  - part_number: "K4B2G0846D-HYK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.datasheets360.com/"
+    notes: "2ª variante de pacote do sufixo HY=DDR3L 1.35V do K4B2G0846D (ver notes do PN base). Datasheets360."
+
+  - part_number: "K4B1G0446D-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.datasheets.com/"
+    notes: "Sufixo HC=DDR3 1.5V do K4B1G0446D (ver notes do PN base). datasheets.com, pacote 82-pin FBGA."
+
+  - part_number: "K4B8G0446D-MYK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.datasheets.com/samsung/k4b2g0446d-hck0"
+    notes: "Sufixo MY=DDR3L 1.35V do K4B8G0446D — é o exato PN citado pela convergência Tier-3 (4 fontes) já usada pra confirmar o PN base (ver notes lá). Mesma ressalva: sem datasheet Tier-1 dedicado."
+
+  - part_number: "K4B8G0446D-MCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.alibaba.com/"
+    notes: "Par de tensão MC=DDR3 1.5V do K4B8G0446D, listagem Alibaba junto com MYK0 (ver notes do PN base). Mesma ressalva Tier-3."
+
+  - part_number: "K4B4G0846B-MCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411810/SAMSUNG/K4B4G0846B/1509/5/K4B4G0846B.html"
+    notes: "Sufixo indexado junto ao datasheet oficial do K4B4G0846B (ver notes do PN base)."
+
+  - part_number: "K4B4G0846B-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://www.absunshine.com/en/parts/K4B4G0846B-HCH9-SAMSUNG-4044457"
+    notes: "RODADA 5 — sufixo do debug colado pelo dono (K4B4G0846BHCH9). Corroborado por 5 distribuidores (AB Sunshine, Kynix, Jotrin, Veswin, Censtry), todos '4Gb, 512Mx8, DDR3 1.5V, 78-FBGA' — mesmo componente do K4B4G0846B base."
+
+  - part_number: "K4B1G0846F-HCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347881/samsung/k4b1g0846f.html"
+    notes: "Sufixo confirmado pelo próprio título do relatório TechInsights ('Samsung K4B1G0846F-HCF8 48 nm 1GB DDR3 SDRAM — Process Analysis Report', ver notes do PN base) — silício real, não só papel."
+
+  - part_number: "K4B1G0846F-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.datasheets360.com/"
+    notes: "Par de tensão do HCF8 acima, indexado (datasheets360/datasheets.com, ver notes do PN base)."
+
+  - part_number: "K4B1G1646C-CF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/211291/SAMSUNG/K4B1G1646C-CF8.html"
+    notes: "Sufixo do K4B1G1646C — datasheet dedicado confirma texto oficial de organização x16 (ver notes do PN base)."
+
+  - part_number: "K4B1G1646C-ZCF7"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/211288/SAMSUNG/K4B1G1646C-ZCF7.html"
+    notes: "2ª variante de sufixo do K4B1G1646C, datasheet dedicado próprio (ver notes do PN base)."
+
+  - part_number: "K4B1G1646C-ZCG9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/211294/SAMSUNG/K4B1G1646C-ZCG9.html"
+    notes: "3ª variante de sufixo do K4B1G1646C, datasheet dedicado próprio (ver notes do PN base)."
+
+  - part_number: "K4B1G1646G-BC"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425675/SAMSUNG/K4B1G1646G-BC.html"
+    notes: "Sufixo BC=1.5V do K4B1G1646G, via Product Selection Guide (fonte mais fraca, ver notes do PN base)."
+
+  - part_number: "K4B1G1646G-BY"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425686/SAMSUNG/K4B1G1646G-BY.html"
+    notes: "Par de tensão BY=1.35V do K4B1G1646G, via Product Selection Guide (fonte mais fraca, ver notes do PN base)."
 
 # ⚠ NÃO incluído: K4B1G1646F (1G×x16, F-die) — pesquisado nas rodadas 2-4,
 # ZERO evidência encontrada em qualquer fonte (nem na listagem completa

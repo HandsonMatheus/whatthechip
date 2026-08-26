@@ -62,6 +62,12 @@
 # Nenhum PN novo pesquisado fora da tabela já lida — é fechamento de cobertura de
 # uma fonte Tier-1 que eu mesmo já tinha aberto por completo, só não tinha usado
 # inteira (ver [[wtc-pesquisar-cluster-inteiro-nao-so-1-pn]]).
+# ⚠ RODADA 3 (achado ao responder pergunta do dono sobre outro arquivo — engine
+# casa known_part por STRING EXATA, sem tirar sufixo; ver
+# samsung_k4b2g0846d_2026-08-24.yaml pra explicação completa). Todos os PNs eMMC
+# abaixo já tinham o sufixo "-B0xx"/"-C031" citado nas notes (é como a própria
+# tabela oficial nomeia cada linha) — virou linha própria em cada um, mesmos
+# campos do PN base.
 brand: "Samsung"
 known_parts:
   - part_number: "K4B1G0846D"
@@ -220,3 +226,105 @@ known_parts:
       Completa a linha "High-Performance eMMC-Pro" (mesma tabela oficial):
       64 GB · KLMCG8WEMC-B031 · Flash 64Gb×8 · MMC Class 5.0 · Seq R/W
       1500MB/s · pacote 11.5x13x1.0mm · status CS.
+
+  # ── RODADA 3: linhas de SUFIXO (mesmo componente do PN base, string exata
+  # diferente) — sufixo é o mesmo pra todas as linhas "Standard eMMC" (B031,
+  # exceto 128GB=B001) e "eMMC-Pro" (C031/B031) ────────────────────────────
+  - part_number: "KLM4G1FEAC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLM4G1FEAC)."
+
+  - part_number: "KLM8G1GEAC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLM8G1GEAC)."
+
+  - part_number: "KLM4G1FETE-B041"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.1"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/estorage/emmc/emmc-5-1/klm4g1fete-b041/"
+    notes: "Sufixo exato da página oficial Samsung + LCSC (ver notes do PN base KLM4G1FETE, inclusive a correção de geração)."
+
+  - part_number: "KLMAG2GEAC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLMAG2GEAC)."
+
+  - part_number: "KLMBG4GEAC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLMBG4GEAC)."
+
+  - part_number: "KLMCG8GEAC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLMCG8GEAC)."
+
+  - part_number: "KLMDGAGEAC-B001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo B001 (diferente do B031 do resto da linha — única exceção, ver notes do PN base KLMDGAGEAC)."
+
+  - part_number: "KLM4G1YEMD-C031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLM4G1YEMD)."
+
+  - part_number: "KLMAG2WEMB-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLMAG2WEMB)."
+
+  - part_number: "KLMBG4WEMC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLMBG4WEMC)."
+
+  - part_number: "KLMCG8WEMC-B031"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.world/85dd38ed/samsung.com/KLM4G1FEAC-B031.html"
+    notes: "Sufixo exato como nomeado na tabela oficial (ver notes do PN base KLMCG8WEMC)."
