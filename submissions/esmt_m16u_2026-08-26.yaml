@@ -1,0 +1,76 @@
+# ESMT M16U -- DDR4 SDRAM (6a rodada, 2026-08-26). Disparado por PN AO VIVO do debug
+# de estoque (M16U4G16256A, 26/08/2026 16:43:54): veio 100% desconhecido
+# (known:false, in_review_queue:true), fuzzy_suggestions apontava M15F4G16256A e
+# M15T4G16256A -- nenhum dos dois e o PN real, so vizinhos por edit-distance (mesmo
+# sufixo "4G16256A", prefixo de familia diferente).
+#
+# Familia nova (M16U) construida MAGRA na gramatica (esmt.yaml) de proposito -- ver
+# reasoning la. Este arquivo entrega os specs REAIS confirmados via Tier-1/2, que
+# vencem a gramatica quando aprovados e resolvem o veredito de INDETERMINADO
+# (gramatica pura, sem density) para RENTAVEL (4Gb >= cfg.ddr4plus_min_gbit=1.0) --
+# verificado por leitura direta de assess_profitability, chips/engine.py.
+#
+# "DDR4" ja existe em chip_types.py (dram_pc/ddr/ddr, carries_generation=True) --
+# mesmo ChipTypeSpec de DDR3/DDR3L desta marca, nao e tipo novo, sem handshake novo.
+#
+# M16U4G8512A (par x8): confianca um degrau abaixo do x16 -- nao aparece na tabela
+# dedicada da Satron (que so lista o x16), mas TEM datasheet dedicado real
+# (endrich.com, distribuidora alema, com tabela de ordering info completa) + 2a
+# fonte independente (datasheet4u.com) -- passa a regra de ouro #12, diferente do
+# caso ja rejeitado do par x8 do M15F4G16256A (so 1 mencao agregada, sem pagina
+# propria -- ver ESMT.md §3.4/§6 e submissions/esmt_m15f_2026-08-20.yaml).
+
+brand: "ESMT"
+known_parts:
+  - part_number: "M16U4G16256A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://satronel.com/products/semiconductors/memoriy_ic/sdram/ddr4-sdram.html"
+    notes: >
+      ESMT DDR4 SDRAM, 32M x16bit x8 bancos = 33.554.432 x 16 x 8 = 4.294.967.296
+      bit = 4Gb = 512MB. PN AO VIVO do debug de estoque (26/08/2026 16:43:54), veio
+      100% desconhecido -- known:false, in_review_queue:true, fuzzy_suggestions
+      apontava M15F4G16256A e M15T4G16256A (nenhum e o PN real). 5 fontes: pagina
+      oficial ESMT (esmt.com.tw/upload/pdf/ESMT/datasheets/M16U4G16256A.pdf) +
+      Alldatasheet ID 1284757/1284758 (citacao direta "32M x 16 Bit x 8 Banks DDR4
+      SDRAM", variantes de sufixo -QLBG/-KJBG/-HHBG/-KJBG2Z) + datasheet4u.com
+      ("256 Mb x16" = 256M palavras x16bit = 4Gb, convencao padrao) + tabela
+      dedicada da Satron Electronics (4Gb, M16U4G16256A e M16U4G16256A(2Z),
+      "256Mbx16", 1.2V, 1200/1333/1600MHz, 96 Ball BGA -- unico prefixo M16x
+      listado) + doc comunitario de PN-decode da ESMT (github.com/iTXTech/fdnext,
+      confirma M16U=DDR4 independentemente). Voltagem 1.2V (JEDEC DDR4 padrao).
+
+  - part_number: "M16U4G8512A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.endrich.com/Datenblaetter/Aktive%20Komponenten/M16U4G8512A(2Z).pdf"
+    notes: >
+      ESMT DDR4 SDRAM, par x8 do M16U4G16256A -- mesma densidade 4Gb (512Mb x8 =
+      512M palavras x8bit = 4.294.967.296 bit = 4Gb, convencao padrao, igual ao par
+      M14D1G8128A/M14D1G1664A ja confirmado nesta marca). Datasheet dedicado via
+      Endrich (distribuidora alema): tabela de ordering info completa com 2 graus
+      de velocidade -- M16U4G8512A-QLBG2Z (1600MHz, DDR4-3200, CL-tRCD-tRP
+      24-24-24) e M16U4G8512A-KJBG2Z (1333MHz, DDR4-2666, 19-19-19) -- ambos
+      VDD=VDDQ=1.2V+/-5%, VPP=2.375-2.75V, 78 Ball BGA Pb-free. 2a fonte:
+      datasheet4u.com (listagem "512 Mb x8 DDR4 SDRAM", sufixo -QLBG2Z). NAO
+      aparece na tabela dedicada da Satron (que so lista o x16) -- confianca 1
+      degrau abaixo do x16, mas com datasheet dedicado real (nao so mencao
+      agregada) -- diferente do caso ja rejeitado do par x8 do M15F4G16256A
+      (excluido por regra de ouro #12, ver ESMT.md §3.4/§6 e
+      submissions/esmt_m15f_2026-08-20.yaml). Package menor (78 Ball vs 96 Ball do
+      x16) -- coerente com pinagem reduzida de barramento x8.
+
+# Familia M16U (DDR4) -- mesma categoria comercial VIVA do M15F/M15T (dram_pc, NAO
+# dram_legacy), geracao atual (ddr_gen=4), acima do minimo comercial. Rentabilidade
+# apos aprovacao: RENTAVEL (4Gb >= cfg.ddr4plus_min_gbit=1.0 do ProfitabilityConfig
+# atual, admin, mutavel) -- diferente do M14D/DDR2 (NAO RENTAVEL fixo por geracao) e
+# do M15F/DDR3 (fica INDETERMINADO ate aqui, sem known_parts equivalente aprovado
+# ainda). Confirma refletir no engine so depois do dono aprovar no admin.

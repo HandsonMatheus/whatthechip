@@ -364,3 +364,64 @@ families:
       confirmado no engine), aqui e so convencao de documentacao, nao regra de portao
       -- vale o dono conferir como o engine renderiza/calcula rentabilidade pra
       profit_family="emcp" antes de aprovar (gap ainda aberto, nao lido nesta rodada).
+
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # M16U -- DDR4 SDRAM (6a rodada, 2026-08-26). Disparado por PN AO VIVO do debug
+  # de estoque (M16U4G16256A, 26/08/2026 16:43): veio 100% desconhecido (known:false,
+  # in_review_queue:true), fuzzy_suggestions apontava M15F4G16256A e M15T4G16256A
+  # (nenhum dos dois e o PN real, so vizinhos por edit-distance -- mesmo sufixo
+  # "4G16256A", so o prefixo de familia difere). Familia MAGRA (sem
+  # decode_cap_map/decode_density_type) por decisao deliberada, nao por falta de
+  # dado -- ver nota de rentabilidade abaixo e submissions/esmt_m16u_2026-08-26.yaml
+  # para os specs completos via known_parts. "DDR4" ja existe em chip_types.py
+  # (dram_pc/ddr/ddr, carries_generation=True) -- mesmo ChipTypeSpec de DDR3/DDR3L,
+  # nao e tipo novo, nao precisa de handshake de rentabilidade novo.
+  # ───────────────────────────────────────────────────────────────────────────
+  - prefix: M16U4G16256A
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x16
+    priority: 100
+    active: true
+    tip: 'DDR4 SDRAM ESMT -- geracao atual (ddr_gen=4 >= ddr_min_gen), NAO e chip legado. Familia magra sem decode de capacidade -- fica INDETERMINADO honesto na gramatica pura (nao NAO RENTAVEL); density_gbit=4Gb real confirmado via known_parts (submissions/esmt_m16u_2026-08-26.yaml), que resolve o veredito para RENTAVEL apos aprovacao (4Gb >= ddr4plus_min_gbit).'
+    reasoning: >
+      ESMT M16U4G16256A -- DDR4 SDRAM 4Gb, 32M x16bit x8 bancos (33.554.432 x 16 x 8
+      = 4.294.967.296 bit = 4Gb = 512MB) -- MESMA aritmetica/organizacao do par DDR3
+      M15F4G16256A ja confirmado nesta marca, so a geracao difere. 5 fontes: pagina
+      oficial ESMT (esmt.com.tw/upload/pdf/ESMT/datasheets/M16U4G16256A.pdf, URL
+      resolve) + Alldatasheet ID 1284757/1284758 (citacao direta "32M x 16 Bit x 8
+      Banks DDR4 SDRAM", multiplas variantes de sufixo -QLBG/-KJBG/-HHBG/-KJBG2Z) +
+      datasheet4u.com (mesma citacao, "256 Mb x16" = 256M palavras x16bit = 4Gb,
+      convencao industria padrao) + tabela dedicada da Satron Electronics
+      (satronel.com/.../ddr4-sdram.html: 4Gb, M16U4G16256A e M16U4G16256A(2Z),
+      "256Mbx16", 1.2V, 1200/1333/1600MHz, 96 Ball BGA -- unico prefixo M16x listado,
+      confirma que hoje so existe esse 1 ponto de densidade no catalogo ESMT DDR4
+      rastreado por esse distribuidor) + doc comunitario de decode de PN da ESMT
+      (github.com/iTXTech/fdnext, confirma M16U=DDR4 de forma independente). Voltagem
+      1.2V (padrao DDR4 JEDEC, != 1.5V do DDR3/1.35V do DDR3L) -- nao afeta
+      rentabilidade (mesmo ChipTypeSpec ddr p/ DDR3/DDR3L/DDR4).
+
+  - prefix: M16U4G8512A
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x8
+    priority: 100
+    active: true
+    tip: 'DDR4 SDRAM ESMT -- par x8 do M16U4G16256A, mesma densidade (4Gb). Mesma nota de rentabilidade: magra na gramatica (INDETERMINADO), resolvida para RENTAVEL via known_parts apos aprovacao.'
+    reasoning: >
+      ESMT M16U4G8512A -- par x8 do M16U4G16256A, MESMA densidade 4Gb (organizacao
+      512Mb x8 -- convencao industria padrao, 512M palavras x8bit = 4.294.967.296
+      bit = 4Gb, igual ao M14D1G8128A/M14D1G1664A desta marca). CONFIANCA MENOR que
+      o x16: nao aparece na tabela da Satron (que lista so o x16) -- mas ao
+      contrario do caso ja rejeitado do par x8 do M15F4G16256A (ESMT.md §3.4/§6,
+      excluido por regra de ouro #12 por ter so 1 mencao agregada), aqui existe
+      DATASHEET DEDICADO real: endrich.com (distribuidora alema,
+      endrich.com/Datenblatter/Aktive Komponenten/M16U4G8512A(2Z).pdf, tabela de
+      ordering info completa: 2 graus de velocidade DDR4-3200/DDR4-2666,
+      VDD=VDDQ=1.2V+/-5%, VPP=2.375-2.75V, 78 Ball BGA Pb-free) + datasheet4u.com
+      (listagem "512 Mb x8 DDR4 SDRAM", sufixo -QLBG2Z). 2 fontes independentes,
+      uma delas datasheet dedicado com ordering table -- passa a barra da regra de
+      ouro #12 (diferente do caso M15F4G8512A, que so tinha 1 mencao agregada sem
+      pagina propria). Package diferente do x16 (78 Ball vs 96 Ball) -- coerente
+      com pinagem menor de um barramento de dados x8.

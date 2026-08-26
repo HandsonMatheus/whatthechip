@@ -2327,6 +2327,19 @@ _ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 6 famílias DDR
     # GB (fix 2026-05-27 no assess_profitability) -- exatamente a classe de bug que este
     # golden existe pra pegar (AUTORIA.md §3.3). Dívida do mesmo incidente 2026-08-24.
     "FM6BD4G2GA": ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR2 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+
+    # M16U -- DDR4 SDRAM (6a rodada, 2026-08-26), disparado por PN ao vivo do debug
+    # de estoque. Familia magra (sem decode_cap_map/decode_density_type): ddr_gen=4
+    # >= cfg.ddr_min_gen(3) passa a trava de geracao (DDR4 NAO e legado, ao
+    # contrario do M14D/DDR2), mas sem density_gbit/capacity extraivel da gramatica
+    # pura -> INDETERMINADO honesto (mesmo padrao do M15F/DDR3 desta marca, NAO o
+    # padrao NAO-RENTAVEL do M14D/DDR2 -- geracao aqui esta OK). density_gbit=4Gb
+    # real confirmado via known_parts (submissions/esmt_m16u_2026-08-26.yaml)
+    # resolve para RENTAVEL apos aprovacao (4Gb >= cfg.ddr4plus_min_gbit=1.0) --
+    # verificado por leitura direta de assess_profitability (chips/engine.py, bloco
+    # "if _fam == \"ddr\":"), nao copiado de classify() ao vivo.
+    "M16U4G16256A": ("DDR4", "", "", "", "", "INDETERMINADO"),   # 4Gb x16
+    "M16U4G8512A":  ("DDR4", "", "", "", "", "INDETERMINADO"),   # 4Gb x8
 }
 
 
