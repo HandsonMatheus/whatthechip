@@ -402,16 +402,46 @@ def current_fx_rate(buyer=None):
 def fx_display(buyer=None):
     """Dict pronto p/ template: taxa + carimbo ('mid-market de DD/MM' ou
     'contrato — bootstrap'). Consumido pelo card da bancada, cabeçalho do
-    parceiro e página da OV (rascunho)."""
+    parceiro e página da OV (rascunho).
+
+    ``state`` (spec v2 do comprador §2.7, 2026-08-26) nomeia a situação em vez
+    de deixar cada template re-derivá-la de dois booleanos:
+
+    ==============  ==========================================================
+    ``market``      taxa do dia, viva
+    ``fallback``    a última conhecida, defasada — a fonte não respondeu hoje
+    ``bootstrap``   taxa de CONTRATO (``buyer.fx_usd_rate``): a tabela FxRate
+                    ainda está vazia, não existe mercado nenhum por trás
+    ``none``        sem taxa (o retorno é ``None``, não este dict)
+    ==============  ==========================================================
+
+    Por que importa: os três primeiros parecem iguais na tela (um número), e
+    dois deles NÃO são a cotação de hoje. Quem lê ``is_market`` sozinho trata
+    ``fallback`` como taxa viva. A regra da spec é que valor com câmbio
+    travado sai exato e valor ainda re-resolvível leva ``≈`` — quem decide
+    isso é o estado, não o número.
+
+    ⚠ O retorno ``None`` (estado ``none``) fica INALCANÇÁVEL enquanto
+    ``Buyer.fx_usd_rate`` tiver default; hoje a ausência de mercado cai em
+    ``bootstrap``, que é honesto (é uma taxa de contrato de verdade, e a tela
+    diz isso). Quem consumir ``state`` deve mesmo assim tratar o ``None`` — é
+    o único jeito de a spec §2.7 valer se o campo virar nulo um dia."""
     rate, fx = current_fx_rate(buyer)
     if rate is None:
         return None
+    if fx is None:
+        estado = 'bootstrap'
+    elif fx.is_fallback:
+        estado = 'fallback'
+    else:
+        estado = 'market'
     return {
         'rate': rate,
         'rate_disp': f'{rate.normalize():f}',
         'date': fx.date if fx else None,
         'is_market': fx is not None,
         'is_fallback': bool(fx and fx.is_fallback),
+        'state': estado,
     }
 
 

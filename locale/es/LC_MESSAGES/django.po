@@ -1566,15 +1566,6 @@ msgstr "Generado por WhatTheChip"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_base.html
-msgid ""
-"Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
-" em US$. Muda só quando o contrato mudar."
-msgstr ""
-"Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a "
-"US$. Cambia solo cuando cambie el contrato."
-
-#. F10 RMB canônico — 2026-07-16
-#: pricing/templates/pricing/partner_base.html
 msgid "taxa do<br>contrato"
 msgstr "tasa del<br>contrato"
 
@@ -3394,3 +3385,50 @@ msgstr "Módulo de memoria"
 #. estoque/ (origem do lote: 3ª categoria 'Módulo de memória', 2026-08-24)
 msgid "Módulo de memória (pente DDR, SODIMM)"
 msgstr "Módulo de memoria (DIMM DDR, SODIMM)"
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"Taxa mid-market do dia — é a taxa usada para converter os seus ¥ em US$. "
+"Cada lote guarda a taxa do dia em que foi fechado."
+msgstr ""
+"Tasa mid-market del día — es la tasa que se usa para convertir sus ¥ en US$."
+" Cada lote guarda la tasa del día en que se cerró."
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"Última taxa conhecida: a cotação de hoje não respondeu, então este número "
+"pode estar defasado."
+msgstr ""
+"Última tasa conocida: la cotización de hoy no respondió, por lo que este "
+"número puede estar desactualizado."
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"Taxa do contrato com o WhatTheChip — ainda não há cotação de mercado. Muda "
+"só quando o contrato mudar."
+msgstr ""
+"Tasa del contrato con WhatTheChip — todavía no hay cotización de mercado. "
+"Cambia solo cuando cambie el contrato."
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"O serviço de câmbio não devolveu taxa. Nenhum valor em US$ é estimado até a "
+"taxa voltar."
+msgstr ""
+"El servicio de cambio no devolvió tasa. No se estima ningún valor en US$ "
+"hasta que la tasa vuelva."
+
+#: pricing/templates/pricing/partner_base.html:187
+msgid "sem taxa do dia"
+msgstr "sin tasa del día"
+
+#: vendas/views_partner.py:271
+msgid "Este pagamento já foi registrado."
+msgstr "Este pago ya fue registrado."
+
+#~ msgid ""
+#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+#~ " em US$. Muda só quando o contrato mudar."
+#~ msgstr ""
+#~ "Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a "
+#~ "US$. Cambia solo cuando cambie el contrato."

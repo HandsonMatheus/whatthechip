@@ -1493,13 +1493,6 @@ msgstr "由 WhatTheChip 生成"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_base.html
-msgid ""
-"Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
-" em US$. Muda só quando o contrato mudar."
-msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"
-
-#. F10 RMB canônico — 2026-07-16
-#: pricing/templates/pricing/partner_base.html
 msgid "taxa do<br>contrato"
 msgstr "合同<br>汇率"
 
@@ -3186,3 +3179,40 @@ msgstr "内存模组"
 #. estoque/ (origem do lote: 3ª categoria 'Módulo de memória', 2026-08-24)
 msgid "Módulo de memória (pente DDR, SODIMM)"
 msgstr "内存模组（DDR 内存条、SODIMM）"
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"Taxa mid-market do dia — é a taxa usada para converter os seus ¥ em US$. "
+"Cada lote guarda a taxa do dia em que foi fechado."
+msgstr "当日中间价汇率 — 用于将您的 ¥ 换算为 US$。每个批次保存其关闭当日的汇率。"
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"Última taxa conhecida: a cotação de hoje não respondeu, então este número "
+"pode estar defasado."
+msgstr "最后已知汇率：今日报价未返回，此数值可能已过时。"
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"Taxa do contrato com o WhatTheChip — ainda não há cotação de mercado. Muda "
+"só quando o contrato mudar."
+msgstr "与 WhatTheChip 的合约汇率 — 尚无市场报价。仅在合约变更时才会改变。"
+
+#: pricing/templates/pricing/partner_base.html:180
+msgid ""
+"O serviço de câmbio não devolveu taxa. Nenhum valor em US$ é estimado até a "
+"taxa voltar."
+msgstr "汇率服务未返回汇率。在汇率恢复前不估算任何 US$ 金额。"
+
+#: pricing/templates/pricing/partner_base.html:187
+msgid "sem taxa do dia"
+msgstr "无当日汇率"
+
+#: vendas/views_partner.py:271
+msgid "Este pagamento já foi registrado."
+msgstr "此付款已登记。"
+
+#~ msgid ""
+#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+#~ " em US$. Muda só quando o contrato mudar."
+#~ msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"

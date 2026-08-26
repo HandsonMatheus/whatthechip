@@ -2497,6 +2497,76 @@ class CompradorPagamentoTests(TestCase):
         self.assertContains(tela, 'name="receipt"')
         self.assertContains(tela, reverse('compras:pagar', args=[self.so.pk]))
 
+    # ── Duplo-clique: idempotência (spec v2 do comprador §5.4, 2026-08-26) ──
+    # "O comprador está em rede instável e vai clicar duas vezes. Um pagamento
+    # duplicado é dinheiro perdido." O PARCIAL é o caso perigoso: depois do
+    # primeiro ainda sobra saldo, então o segundo passa em TODAS as validações
+    # de valor que já existiam. Só a chave o barra.
+
+    def test_duplo_clique_com_a_MESMA_chave_registra_UMA_vez(self):
+        self._pagar('9.00', idem='k-duplo')
+        resp = self._pagar('9.00', idem='k-duplo')          # o 2º clique
+        self.assertContains(resp, 'já foi registrado')
+        inv = self._invoice()
+        self.assertEqual(inv.balance_usd, Decimal('12.00'))  # 21 − 9, uma vez
+        with company_scope(self.emp):
+            self.assertEqual(inv.payments.count(), 1)
+
+    def test_o_comprovante_do_clique_repetido_NAO_fica_orfao(self):
+        """O 2º POST traz outro arquivo. Se ele fosse gravado sem pagamento,
+        alguém acharia um comprovante sem dono na conciliação."""
+        from .models import PaymentReceipt
+        self._pagar('9.00', idem='k-orfao')
+        self._pagar('9.00', idem='k-orfao')
+        with company_scope(self.emp):
+            self.assertEqual(
+                PaymentReceipt.all_companies.filter(
+                    payment__invoice=self._invoice()).count(), 1)
+
+    def test_pagina_RECARREGADA_e_intencao_NOVA(self):
+        """Recarregar não é repetir: a chave nasce por página servida, então
+        dois parciais de verdade continuam passando."""
+        self._pagar('9.00', idem='k-um')
+        self._pagar('9.00', idem='k-dois')
+        inv = self._invoice()
+        self.assertEqual(inv.balance_usd, Decimal('3.00'))   # 21 − 18
+        with company_scope(self.emp):
+            self.assertEqual(inv.payments.count(), 2)
+
+    def test_pagamento_SEM_chave_continua_repetivel(self):
+        """Admin, shell e as linhas que já existem no banco não têm chave — a
+        UniqueConstraint é PARCIAL justamente para não passar a recusá-los."""
+        self._pagar('9.00')
+        self._pagar('9.00')
+        with company_scope(self.emp):
+            self.assertEqual(self._invoice().payments.count(), 2)
+
+    def test_a_trava_de_verdade_e_do_BANCO_nao_da_view(self):
+        """A checagem da view é o caminho rápido (o 2º POST chega depois do 1º
+        commitar). Dois POSTs SIMULTÂNEOS não se enxergam — quem barra a
+        corrida é a UniqueConstraint."""
+        from datetime import date
+        from django.db import IntegrityError, transaction
+        inv = self._invoice()
+        with company_scope(self.emp):
+            services.register_payment(inv, Decimal('5.00'), date(2026, 8, 18),
+                                      self.parceiro, idempotency_key='k-corrida')
+            with self.assertRaises(IntegrityError):
+                with transaction.atomic():
+                    services.register_payment(
+                        inv, Decimal('5.00'), date(2026, 8, 18),
+                        self.parceiro, idempotency_key='k-corrida')
+
+    def test_a_ficha_serve_a_chave_e_ela_MUDA_a_cada_carga(self):
+        import re
+        def chave():
+            tela = self.client.get(reverse('compras:detail', args=[self.so.pk]))
+            achou = re.search(rb'name="idem" value="([0-9a-f]{32})"',
+                              tela.content)
+            self.assertIsNotNone(achou, 'o formulário não serviu a chave')
+            return achou.group(1)
+        self.assertNotEqual(chave(), chave())
+
 
 class ConteudoDeclaradoTests(TestCase):
     """O que o PACKING LIST diz sobre a carga (dono, três rodadas em 20/08).

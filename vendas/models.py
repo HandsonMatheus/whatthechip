@@ -608,6 +608,19 @@ class Payment(models.Model):
                                    blank=True, related_name='+',
                                    verbose_name='Registrado por')
 
+    # IDEMPOTÊNCIA (spec v2 §5.4, 2026-08-26): o comprador está em rede
+    # instável e clica duas vezes. `mark_received` já era idempotente e o
+    # `settle_and_invoice` se protege pela fatura ativa — o PAGAMENTO não
+    # tinha nada, e um parcial duplicado passa nas duas validações de saldo.
+    # A chave nasce no RENDER do formulário (uma por página servida): dois
+    # cliques no mesmo botão mandam a mesma chave; recarregar a página é
+    # intenção nova e gera outra. Vazio = registro sem chave (admin, shell,
+    # linhas antigas) — por isso a UniqueConstraint EXCLUI a string vazia,
+    # senão o 2º pagamento manual de qualquer fatura seria recusado.
+    idempotency_key = models.CharField(
+        max_length=64, blank=True, default='', editable=False,
+        verbose_name='Chave de idempotência')
+
     objects       = CompanyScopedManager()
     all_companies = models.Manager()
 
@@ -620,6 +633,13 @@ class Payment(models.Model):
         constraints = [
             models.CheckConstraint(name='payment_positive',
                                    condition=Q(amount_usd__gt=0)),
+            # A trava REAL do duplo-clique: o check na view é só o caminho
+            # rápido; quem barra a corrida de dois POSTs simultâneos é o
+            # banco. Parcial (~Q vazio) para não travar registro sem chave.
+            models.UniqueConstraint(
+                fields=['invoice', 'idempotency_key'],
+                condition=~Q(idempotency_key=''),
+                name='payment_idempotency_per_invoice'),
         ]
 
     def __str__(self):

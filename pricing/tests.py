@@ -2530,6 +2530,91 @@ class FxRateTests(TestCase):
         self.assertEqual(hoje.rate, Decimal('0.1380'))
 
 
+class FxEstadoNomeadoTests(TestCase):
+    """O carimbo da taxa diz a VERDADE (spec v2 do comprador §2.7, 2026-08-26).
+
+    Três situações que na tela parecem a mesma coisa — um número — e duas
+    delas NÃO são a cotação de hoje. Antes disto o template re-derivava o
+    estado de dois booleanos, e o `title` do cabeçalho do parceiro dizia
+    "taxa do contrato" mesmo com mid-market vivo: texto do tempo em que a
+    API tinha morrido, que sobreviveu à volta dela e passou a mentir.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.co = Company.objects.create(name='FxSt', slug='fx-st')
+        cls.buyer = Buyer.all_companies.create(company=cls.co, name='Wu Estado',
+                                               slug='wu-estado')
+
+    def test_bootstrap_quando_a_tabela_esta_vazia(self):
+        from pricing.engine import fx_display
+        info = fx_display(self.buyer)
+        self.assertEqual(info['state'], 'bootstrap')
+        self.assertIsNone(info['date'])
+        self.assertEqual(info['rate'], Decimal('0.1400'))
+
+    def test_market_quando_ha_cotacao_do_dia(self):
+        from datetime import date
+        from pricing.models import FxRate
+        from pricing.engine import fx_display
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1478'),
+                              source='t')
+        self.assertEqual(fx_display(self.buyer)['state'], 'market')
+
+    def test_fallback_NAO_se_disfarca_de_market(self):
+        """O caso que o booleano sozinho errava: `is_market` é True nos DOIS
+        (a linha existe), e a de fallback é a taxa de ONTEM repetida."""
+        from datetime import date
+        from pricing.models import FxRate
+        from pricing.engine import fx_display
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1380'),
+                              source='t', is_fallback=True)
+        info = fx_display(self.buyer)
+        self.assertTrue(info['is_market'])          # o booleano antigo mente
+        self.assertEqual(info['state'], 'fallback')  # o estado, não
+
+
+class CabecalhoDoParceiroNaoMenteSobreATaxaTests(TestCase):
+    """Regressão do `title` (2026-08-26): com mid-market vivo o cabeçalho
+    dizia, no atributo, que aquilo era taxa de contrato."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.co = Company.objects.create(name='FxTit', slug='fx-tit')
+        cls.buyer = Buyer.all_companies.create(company=cls.co, name='Wu Titulo',
+                                               slug='wu-titulo')
+        # uma lista genérica só para a home ter o que resumir
+        PriceList.all_companies.create(buyer=cls.buyer, brand=None)
+        cls.user = get_user_model().objects.create_user('wu_titulo')
+        cls.buyer.users.add(cls.user)
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def test_com_mercado_vivo_o_titulo_NAO_fala_em_contrato(self):
+        from datetime import date
+        from pricing.models import FxRate
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1478'),
+                              source='t')
+        resp = self.client.get('/partner/precos/')
+        self.assertContains(resp, 'Taxa mid-market do dia')
+        self.assertNotContains(resp, 'Taxa do contrato com o WhatTheChip')
+
+    def test_sem_mercado_o_titulo_fala_em_contrato_e_esta_certo(self):
+        resp = self.client.get('/partner/precos/')
+        self.assertContains(resp, 'Taxa do contrato com o WhatTheChip')
+        self.assertNotContains(resp, 'mid-market')
+
+    def test_taxa_defasada_avisa_que_esta_defasada(self):
+        from datetime import date
+        from pricing.models import FxRate
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1380'),
+                              source='t', is_fallback=True)
+        resp = self.client.get('/partner/precos/')
+        self.assertContains(resp, 'defasado')
+        self.assertNotContains(resp, 'Taxa mid-market do dia')
+
+
 class PriceChangeRequestAdminTests(TestCase):
     """A FILA de revisão (F6.1) tem que se comportar como fila.
 

@@ -174,15 +174,27 @@
     </a>
   </nav>
 
-  {% comment %} Taxa CONTRATUAL ¥→US$ (F10: server-side, Buyer.fx_usd_rate — é a taxa
-     que o sistema usa para derivar o USD; a cotação viva de API morreu). {% endcomment %}
-  <div class="pshell__fx" title="{% trans 'Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar.' %}">
+  {% comment %} Carimbo da taxa ¥→US$ — server-side (PLANO_FX). O ESTADO vem NOMEADO
+     do engine (`fx_display.state`, spec v2 §2.7): market · fallback · bootstrap · none.
+     Não re-derivar de is_market/is_fallback aqui: `fallback` lido como "mercado" faz a
+     taxa de ontem passar por taxa de hoje, calada. O `title` ERRAVA até 2026-08-26 —
+     dizia "taxa do contrato" mesmo com mid-market vivo (texto do tempo em que a API
+     tinha morrido), e o subtexto já dizia o contrário logo abaixo. Sem `fx_info` =
+     sem taxa: escreve isso, e NUNCA imprime número vazio nem cai em zero. {% endcomment %}
+  {% if fx_info %}
+  <div class="pshell__fx" title="{% if fx_info.state == 'market' %}{% trans 'Taxa mid-market do dia — é a taxa usada para converter os seus ¥ em US$. Cada lote guarda a taxa do dia em que foi fechado.' %}{% elif fx_info.state == 'fallback' %}{% trans 'Última taxa conhecida: a cotação de hoje não respondeu, então este número pode estar defasado.' %}{% else %}{% trans 'Taxa do contrato com o WhatTheChip — ainda não há cotação de mercado. Muda só quando o contrato mudar.' %}{% endif %}">
     <b>1 ¥ ≈ US$ {{ fx_info.rate_disp }}</b>
-    <span class="pshell__sub{% if not fx_info.is_market %} off{% endif %}">
-      {% if fx_info.is_market %}<i class="live live--g"></i><em>mid-market {{ fx_info.date|date:"d/m" }}{% if fx_info.is_fallback %} ⚠{% endif %}</em>
+    <span class="pshell__sub{% if fx_info.state != 'market' %} off{% endif %}">
+      {% if fx_info.state == 'market' %}<i class="live live--g"></i><em>mid-market {{ fx_info.date|date:"d/m" }}</em>
+      {% elif fx_info.state == 'fallback' %}<em>mid-market {{ fx_info.date|date:"d/m" }} ⚠</em>
       {% else %}{% trans "taxa do contrato" %}{% endif %}
     </span>
   </div>
+  {% else %}
+  <div class="pshell__fx" title="{% trans 'O serviço de câmbio não devolveu taxa. Nenhum valor em US$ é estimado até a taxa voltar.' %}">
+    <b>{% trans "sem taxa do dia" %}</b>
+  </div>
+  {% endif %}
 
   {# 🔔 Notificações: decisões do WhatTheChip sobre os pedidos do comprador. #}
   <a href="{% url 'pricing:partner_notifications' %}" class="shell__ico"

@@ -30,11 +30,12 @@ próxima pessoa precisa saber antes de editar:
   não 403 — não confirmamos nem que ela existe.
 """
 
+import uuid
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -44,7 +45,7 @@ from django.views.decorators.http import require_POST
 from pricing.views import _fx_info, partner_required
 
 from . import services
-from .models import STATUS_CONFIRMED
+from .models import STATUS_CONFIRMED, Payment
 
 
 def _shell(request, extra=None):
@@ -136,6 +137,9 @@ def _detalhe(so):
         'delta_abs': (abs(inv.total_rmb - so.total_rmb)
                       if inv and so.total_rmb is not None else None),
         'total_estimado': sum((g['rmb'] for g in grupos), Decimal('0.00')),
+        # Uma chave por PÁGINA SERVIDA (spec v2 §5.4): dois cliques no botão
+        # mandam a mesma; recarregar é intenção nova e gera outra.
+        'idem_key': uuid.uuid4().hex,
     }
 
 
@@ -252,14 +256,36 @@ def compra_pagar(request, pk):
             messages.error(request, _(
                 'Anexe o comprovante — sem ele o pagamento não é registrado.'))
             return redirect('compras:detail', pk=so.pk)
+        # ── Duplo-clique (spec v2 §5.4) ─────────────────────────────────
+        # Duas guardas, e as duas são necessárias. Esta é o caminho RÁPIDO:
+        # o 2º POST chega depois do 1º ter commitado, e a gente responde
+        # "já registrado" sem tentar gravar. A corrida de verdade (dois
+        # POSTs simultâneos, nenhum enxerga o outro) só a UniqueConstraint
+        # resolve — por isso o IntegrityError logo abaixo.
+        # ⚠ `all_companies`: dentro do buyer_order o escopo já é o da
+        # empresa dona; usar o manager escopado aqui não muda o resultado,
+        # mas o não-escopado torna explícito que a busca é por chave, não
+        # por tenant.
+        idem = (request.POST.get('idem') or '').strip()[:64]
+        if idem and Payment.all_companies.filter(
+                invoice=inv, idempotency_key=idem).exists():
+            messages.info(request, _('Este pagamento já foi registrado.'))
+            return redirect('compras:detail', pk=so.pk)
         try:
             with transaction.atomic():
                 pagamento = services.register_payment(
                     inv, valor, quando, request.user,
-                    reference=(request.POST.get('reference') or '').strip())
+                    reference=(request.POST.get('reference') or '').strip(),
+                    idempotency_key=idem)
                 services.attach_receipt(pagamento, arquivo)
         except ValidationError as erro:
             messages.error(request, ' '.join(erro.messages))
+            return redirect('compras:detail', pk=so.pk)
+        except IntegrityError:
+            # A constraint pegou a corrida: o outro POST já gravou este
+            # mesmo pagamento. O atomic() desfez tudo — inclusive o
+            # comprovante —, então não sobra meio-registro.
+            messages.info(request, _('Este pagamento já foi registrado.'))
             return redirect('compras:detail', pk=so.pk)
         inv.refresh_from_db()
         if inv.balance_usd <= 0:

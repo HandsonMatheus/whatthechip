@@ -711,9 +711,21 @@ def settle_and_invoice(so, adjustments, user, notes=''):
     return st, inv
 
 
-def register_payment(invoice, amount_usd, paid_at, user, reference=''):
+def register_payment(invoice, amount_usd, paid_at, user, reference='',
+                     idempotency_key=''):
     """Pagamento em US$ contra a fatura; saldo zero (ou negativo? nunca —
-    barra acima do saldo) marca PAGA."""
+    barra acima do saldo) marca PAGA.
+
+    ``idempotency_key`` (spec v2 §5.4, 2026-08-26) é opcional e vem do
+    formulário: com ela, o duplo-clique esbarra na UniqueConstraint
+    ``payment_idempotency_per_invoice`` e levanta ``IntegrityError`` em vez
+    de criar um segundo pagamento. Quem chama decide o que fazer com o
+    conflito — a view do comprador o trata como "já registrado".
+
+    ⚠ Não capture o IntegrityError aqui: ele invalida a transação corrente, e
+    quem abriu o ``atomic()`` (a view, junto com o comprovante) é que sabe
+    até onde desfazer.
+    """
     from .models import INV_OPEN, INV_PAID, Payment
     if invoice.status != INV_OPEN:
         raise ValidationError('Só fatura EM ABERTO recebe pagamento.')
@@ -725,7 +737,8 @@ def register_payment(invoice, amount_usd, paid_at, user, reference=''):
             f'(US$ {invoice.balance_usd}).')
     with transaction.atomic():
         p = Payment(invoice=invoice, amount_usd=amount_usd,
-                    paid_at=paid_at, reference=reference, created_by=user)
+                    paid_at=paid_at, reference=reference, created_by=user,
+                    idempotency_key=idempotency_key)
         p.save()
         if invoice.balance_usd <= 0:
             invoice.status = INV_PAID
