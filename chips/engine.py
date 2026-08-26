@@ -151,6 +151,14 @@ _HAS_SPECS = (
 # submetido/reprovado/obsoleto ficam ocultos do engine. Legado + pipelines de máquina têm
 # review_status='approved' por default → comportamento idêntico ao de antes desta camada.
 _APPROVED = Q(review_status="approved")
+
+#: Teto de sugestões devolvidas ao front (prefixo + fuzzy, já mescladas).
+#: Era 5 e o 5 ERA O BUG (ver _prefix_candidates): com 12 variantes aprovadas de
+#: um mesmo PN base, cortar em 5 escondia revisões inteiras sem avisar ninguém.
+#: 40 é "todos" na prática — `min_prefix_len=7` já limita o alcance — e ainda
+#: protege o JSON/DOM de um prefixo patológico. O popup rola; a nuvem de chips
+#: inline continua curta (o template fatia).
+_MAX_SUGESTOES = 40
 _USABLE = (_HAS_SPECS | Q(confidence__in=_CONFIRMED_CONFIDENCE)) & _APPROVED
 
 
@@ -198,6 +206,21 @@ def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
     min_prefix_len evita retornar ruído para prefixos muito curtos (< 7 chars).
     Restrito a _SUGGESTION_CONFIDENCE (confirmed/manual/distributor): PNs com registro no banco.
     Retorna lista de KnownPart objects (mesmo padrão que _fuzzy_candidates).
+
+    ⚠ ORDENAÇÃO É POR RELEVÂNCIA, NUNCA ALFABÉTICA (bug de bancada 2026-08-24).
+    Até esta data era ``.order_by("part_number")[:5]`` — alfabético e cortado em 5.
+    Isso não é "ranking ruim", é AUSÊNCIA de ranking: para ``K4B4G16`` existem 12
+    variantes aprovadas e as 5 primeiras letras de revisão (B, D…) enchiam a lista
+    inteira, então TODA a linhagem ``46E`` — a revisão que o operador tinha na mão —
+    era invisível, sempre, e **em silêncio**. Consequência real: o operador conclui
+    que o chip não está no catálogo e DESCARTA material bom.
+
+    Agora ordena por ``(comprimento, alfabético)``: a completude mais CURTA vem
+    primeiro porque é a mais próxima do que foi digitado. Na prática isso mostra as
+    revisões distintas (``…46B``, ``…46D``, ``…46E``, ``…46Q``) antes das variantes
+    longas de grade/embalagem de uma revisão só — que é exatamente a decisão que o
+    operador precisa tomar primeiro. O corte sobe de 5 para ``_MAX_SUGESTOES``, alto
+    o bastante para ser "todos" na prática; o template rola.
     """
     if len(pn) < min_prefix_len:
         return []
@@ -210,7 +233,7 @@ def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
         )
         .exclude(part_number=pn)
         .select_related("brand", "family")
-        .order_by("part_number")[:5]
+        .order_by(Length("part_number"), "part_number")[:_MAX_SUGESTOES]
     )
 
 
@@ -219,7 +242,9 @@ def _combined_suggestions(pn: str) -> list:
 
     Prefixo vem primeiro — certeza maior, pois o digitado é literalmente o
     início do PN completo. Fuzzy completa a lista com confusões de caracteres.
-    Retorna lista de strings (part_numbers), sem duplicatas, máx. 5 itens.
+    Retorna lista de strings (part_numbers), sem duplicatas, máx. `_MAX_SUGESTOES`.
+    ⚠ O prefixo vem inteiro ANTES do fuzzy — com o teto antigo de 5, um PN base com
+    5+ variantes deixava o fuzzy com ZERO vagas (dois cortes em série).
 
     Exemplos:
         H5TQ2G83    → [H5TQ2G83CFR, ...]  (prefixo: faltou o sufixo)
@@ -238,7 +263,7 @@ def _combined_suggestions(pn: str) -> list:
         if s.part_number not in seen:
             seen.add(s.part_number)
             merged.append(s.part_number)
-    return merged[:5]
+    return merged[:_MAX_SUGESTOES]
 
 
 def _fuzzy_fbga_candidates(pn: str, threshold: int = 2) -> list:

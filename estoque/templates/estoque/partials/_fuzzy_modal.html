@@ -11,21 +11,37 @@
   SIGILO: mostra só o PN digitado e os PNs sugeridos — nenhuma spec,
   marca ou veredito. É por isso que serve ao card mascarado sem exceção.
 
-  i18n: reusa "VOCÊ QUIS DIZER?" e "Cancelar", que já existem nos dois
-  templates — zero msgid novo, o portão check_translations não muda.
+  ─── 2026-08-24 · lista COMPLETA + filtro ──────────────────────────────
+  O engine cortava as sugestões em 5 por ordem ALFABÉTICA (ver
+  _prefix_candidates). Com 12 variantes aprovadas de K4B4G16, as linhagens
+  ...46B e ...46D enchiam as 5 vagas e TODA a linhagem ...46E — a que o
+  operador tinha na mão — nunca aparecia. Ele conclui que o chip não está
+  no catálogo e DESCARTA material bom.
+
+  O engine agora ordena por relevância e devolve até _MAX_SUGESTOES (40).
+  Aqui a consequência: a lista mostra TUDO, rolando, com contador e campo
+  de filtro. Nada de "top 5" silencioso — se o PN existe no catálogo, ele
+  ESTÁ nesta lista.
+
+  i18n: reusa "VOCÊ QUIS DIZER?", "Cancelar" e "Filtrar por PN…" (as três
+  já existem nos catálogos) — zero msgid novo, check_translations não muda.
+  O contador é numeral puro, não precisa de tradução.
 {% endcomment %}
 {% if gateway.typo.has %}
 {% comment %}
   POPUP evidente — abre SOZINHO quando o chip caiu em FILA/DESCONHECIDO (onde o
-  typo vira envio errado pra fila). Reusa o modal Carbon (.est-modal-*) e NÃO
-  cria string i18n nova. Fecha por X, clique fora, ESC ou o botão.
+  typo vira envio errado pra fila). Reusa o modal Carbon (.est-modal-*).
+  Fecha por X, clique fora, ESC ou o botão.
 {% endcomment %}
 <div class="est-modal-overlay" id="fuzzy-modal-overlay" role="dialog" aria-modal="true"
      aria-labelledby="fuzzy-modal-title" style="z-index:950;">
-  <div class="est-modal" style="max-width:520px;">
+  <div class="est-modal" style="max-width:560px;">
     <div class="est-modal-header">
       <div class="est-modal-header-text">
-        <p class="est-modal-label">{% trans "VOCÊ QUIS DIZER?" %}</p>
+        <p class="est-modal-label">
+          {% trans "VOCÊ QUIS DIZER?" %}
+          <span id="fuzzy-count" class="wtc-fz-count">{{ gateway.typo.suggestions|length }}</span>
+        </p>
         <h2 class="est-modal-title" id="fuzzy-modal-title"
             style="font-family:'IBM Plex Mono',monospace;word-break:break-all;">{{ pn }}</h2>
       </div>
@@ -33,20 +49,30 @@
               onclick="document.getElementById('fuzzy-modal-overlay').style.display='none';"
               style="font-size:18px;">✕</button>
     </div>
-    <div class="est-modal-body" style="max-height:56vh;overflow:auto;">
-      <div style="display:flex;flex-direction:column;gap:10px;">
+
+    {% comment %}
+      Filtro só aparece com lista longa: com 3 PNs ele é ruído, com 12 é o
+      atalho (digitar "E" corta a linhagem inteira). Limiar 6.
+    {% endcomment %}
+    {% if gateway.typo.suggestions|length > 6 %}
+    <div style="padding:12px 16px 0;">
+      <input type="text" id="fuzzy-filter" autocomplete="off" spellcheck="false"
+             placeholder="{% trans 'Filtrar por PN…' %}" class="wtc-fz-filter">
+    </div>
+    {% endif %}
+
+    <div class="est-modal-body" id="fuzzy-list" style="max-height:62vh;overflow:auto;padding-top:12px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
         {% for s in gateway.typo.suggestions %}
-        <button type="button" class="wtc-fz-row"
-                onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;document.getElementById('fuzzy-modal-overlay').style.display='none';i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-                style="display:flex;align-items:center;width:100%;text-align:left;min-height:58px;
-                       padding:12px 16px;background:var(--surface-2,#f4f4f4);
-                       border:1px solid var(--border-subtle,#e0e0e0);border-left:4px solid #0f62fe;cursor:pointer;border-radius:8px;">
-          <span class="wtc-fz-pn" data-typed="{{ pn }}" data-suggestion="{{ s }}"
-                style="font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,5vw,22px);font-weight:700;color:#0f62fe;word-break:break-all;">{{ s }}</span>
+        <button type="button" class="wtc-fz-row" data-pn="{{ s }}"
+                onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;document.getElementById('fuzzy-modal-overlay').style.display='none';i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">
+          <span class="wtc-fz-pn" data-typed="{{ pn }}" data-suggestion="{{ s }}">{{ s }}</span>
         </button>
         {% endfor %}
       </div>
+      <p id="fuzzy-vazio" class="wtc-fz-vazio" hidden>—</p>
     </div>
+
     <div class="est-modal-footer">
       <button class="est-modal-btn-cancel" type="button" style="flex:1;"
               onclick="document.getElementById('fuzzy-modal-overlay').style.display='none';">{% trans "Cancelar" %}</button>
@@ -54,20 +80,66 @@
   </div>
 </div>
 <style>
-  .wtc-fz-row{transition:background .12s,border-color .12s;}
+  /* Linha densa: cabem ~9 sem rolar, contra 5 antes. O alvo de toque
+     continua ≥44px — é bancada, às vezes com luva. */
+  .wtc-fz-row{display:flex;align-items:center;width:100%;text-align:left;min-height:44px;
+    padding:9px 14px;background:var(--surface-2,#f4f4f4);
+    border:1px solid var(--border-subtle,#e0e0e0);border-left:4px solid #0f62fe;
+    cursor:pointer;border-radius:8px;transition:background .12s,border-color .12s;}
   .wtc-fz-row:hover{background:#fff8e1;border-color:#ff832b;}
+  .wtc-fz-pn{font-family:'IBM Plex Mono',monospace;font-size:clamp(16px,4.2vw,19px);
+    font-weight:700;color:#0f62fe;word-break:break-all;line-height:1.25;}
+  .wtc-fz-count{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:10px;
+    background:#0f62fe;color:#fff;font-size:11px;font-weight:700;vertical-align:middle;}
+  .wtc-fz-filter{width:100%;box-sizing:border-box;padding:10px 12px;
+    font-family:'IBM Plex Mono',monospace;font-size:15px;
+    background:var(--surface-1,#fff);color:inherit;
+    border:1px solid var(--border-subtle,#e0e0e0);border-radius:8px;}
+  .wtc-fz-filter:focus{outline:2px solid #0f62fe;outline-offset:-2px;}
+  .wtc-fz-vazio{padding:18px 4px;text-align:center;color:#6f6f6f;font-size:14px;}
   [data-theme="dark"] .wtc-fz-row{background:#1f1a00;}
   [data-theme="dark"] .wtc-fz-row:hover{background:#2d2200;}
+  [data-theme="dark"] .wtc-fz-filter{background:#161616;}
 </style>
 <script>
 (function(){
   var ov=document.getElementById('fuzzy-modal-overlay'); if(!ov) return;
+
+  // Diff visual: o trecho já digitado fica neutro, o resto verde. É o que
+  // deixa "…46B" vs "…46E" legível de relance numa lista de 12 quase-iguais.
   ov.querySelectorAll('.wtc-fz-pn').forEach(function(el){
     var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
     while(i<t.length&&i<s.length&&s[i]===t[i])i++;
     el.innerHTML='<span>'+s.slice(0,i)+'</span>'+
                  '<span style="color:#198038;font-weight:700">'+s.slice(i)+'</span>';
   });
+
+  // Filtro ao vivo. Compara em maiúsculo e ignora o que não é alfanumérico,
+  // igual à normalização do engine — assim digitar "46-e" ou "46 E" acha.
+  var inp=document.getElementById('fuzzy-filter');
+  if(inp){
+    var linhas=[].slice.call(ov.querySelectorAll('.wtc-fz-row'));
+    var contador=document.getElementById('fuzzy-count');
+    var vazio=document.getElementById('fuzzy-vazio');
+    var total=linhas.length;
+    function limpa(v){ return (v||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+    inp.addEventListener('input',function(){
+      var q=limpa(inp.value), n=0;
+      linhas.forEach(function(b){
+        var ok = !q || limpa(b.dataset.pn).indexOf(q) !== -1;
+        b.hidden = !ok; if(ok) n++;
+      });
+      if(contador) contador.textContent = q ? (n+'/'+total) : total;
+      if(vazio) vazio.hidden = n !== 0;
+    });
+    // Enter com um único resultado visível = escolhe ele (fluxo de teclado).
+    inp.addEventListener('keydown',function(e){
+      if(e.key!=='Enter') return;
+      var vis=linhas.filter(function(b){return !b.hidden;});
+      if(vis.length===1){ e.preventDefault(); vis[0].click(); }
+    });
+  }
+
   function close(){ ov.style.display='none';
     if(window.__wtcFuzzyKey){document.removeEventListener('keydown',window.__wtcFuzzyKey);window.__wtcFuzzyKey=null;} }
   ov.addEventListener('click',function(e){ if(e.target===ov) close(); });

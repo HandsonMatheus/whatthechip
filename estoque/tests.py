@@ -697,6 +697,85 @@ class PreviewFuzzyPopupMascaradoTests(TestCase):
                              f'do partial é justamente não haver dois')
         self.assertTrue((base / '_fuzzy_modal.html').exists())
 
+    # ── 2026-08-24 · a lista COMPLETA no popup ────────────────────────────
+    #
+    # Segundo relato do dono, com print: digitou `K4B4G16`, o chip na mão era
+    # `…46E` (aprovado no banco) e o popup mostrou 5 PNs, nenhum deles o 46E.
+    # A causa está no engine (corte alfabético — SugestaoPrefixoRankingTests
+    # cobre lá). Aqui trava o LADO DA TELA: o popup mostra tudo o que o engine
+    # mandar, e a nuvem inline é que fica curta.
+
+    _DOZE = ['K4B4G1646B', 'K4B4G1646D', 'K4B4G1646E', 'K4B4G1646Q',
+             'K4B4G1646DBCK0', 'K4B4G1646DBCNB', 'K4B4G1646DBYK0',
+             'K4B4G1646DBYNB', 'K4B4G1646EBCK0', 'K4B4G1646EBCMA',
+             'K4B4G1646EBYK0', 'K4B4G1646EBYMA']
+
+    @patch('estoque.views.classify')
+    def test_popup_mostra_TODAS_as_sugestoes(self, mock_classify):
+        """Nada de 'top 5' silencioso: se o engine mandou 12, o popup tem 12."""
+        mock_classify.return_value = _result(
+            chip_type='DDR3', classification_source='gramática',
+            confidence='estimated', fuzzy_suggestions=self._DOZE)
+        body = self._preview('K4B4G16')
+        ini = body.index('fuzzy-list')
+        lista = body[ini:body.index('est-modal-footer', ini)]
+        for pn in self._DOZE:
+            self.assertIn(pn, lista, f'{pn} não está na lista do popup')
+        self.assertEqual(lista.count('wtc-fz-row'), len(self._DOZE))
+
+    @patch('estoque.views.classify')
+    def test_o_46E_do_dono_esta_no_popup(self, mock_classify):
+        """O caso literal do print — guarda contra regressão de UI."""
+        mock_classify.return_value = _result(
+            chip_type='DDR3', classification_source='gramática',
+            confidence='estimated', fuzzy_suggestions=self._DOZE)
+        self.assertIn('K4B4G1646E', self._preview('K4B4G16'))
+
+    @patch('estoque.views.classify')
+    def test_lista_longa_ganha_filtro_e_contador(self, mock_classify):
+        mock_classify.return_value = _result(
+            chip_type='DDR3', classification_source='gramática',
+            confidence='estimated', fuzzy_suggestions=self._DOZE)
+        body = self._preview('K4B4G16')
+        # o ELEMENTO, não a string: a classe CSS e o getElementById do script
+        # saem sempre, então procurar 'fuzzy-filter' cru não prova nada.
+        self.assertIn('id="fuzzy-filter"', body, 'lista de 12 sem campo de filtro')
+        self.assertIn('id="fuzzy-count"', body, 'lista de 12 sem contador')
+        self.assertIn('>12<', body, 'contador não mostra o total')
+
+    @patch('estoque.views.classify')
+    def test_lista_curta_NAO_ganha_filtro(self, mock_classify):
+        """Com 3 PNs o filtro é ruído na tela do operador — limiar é 6."""
+        mock_classify.return_value = _result(
+            chip_type='DDR3', classification_source='gramática',
+            confidence='estimated', fuzzy_suggestions=self._DOZE[:3])
+        self.assertNotIn('id="fuzzy-filter"', self._preview('K4B4G16'))
+
+    @patch('estoque.views.classify')
+    def test_nuvem_inline_fica_CURTA(self, mock_classify):
+        """O popup cresceu; a nuvem inline não pode crescer junto, senão 12
+        chips empurram o card inteiro pra fora da tela."""
+        mock_classify.return_value = _result(
+            chip_type='DDR3', classification_source='gramática',
+            confidence='estimated', fuzzy_suggestions=self._DOZE)
+        body = self._preview('K4B4G16')
+        inline = body[:body.index('fuzzy-modal-overlay')]
+        chips = inline.count('dcard-chip"') + inline.count('wtc-chip"')
+        self.assertEqual(chips, 5,
+                         f'a nuvem inline devia ter 5 chips, tem {chips}')
+
+    def test_popup_nao_inventou_msgid(self):
+        """i18n: o popup reusa 3 strings que já existem nos catálogos.
+        String nova sem tradução é bug de produto para 3 dos 4 públicos."""
+        import pathlib, re
+        from django.conf import settings
+        alvo = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates'
+                / 'estoque' / 'partials' / '_fuzzy_modal.html')
+        texto = alvo.read_text(encoding='utf-8')
+        usados = set(re.findall(r"""{%\s*trans\s+['"](.+?)['"]\s*%}""", texto))
+        self.assertTrue(usados <= {'VOCÊ QUIS DIZER?', 'Cancelar', 'Filtrar por PN…'},
+                        f'msgid novo no popup: {usados}')
+
 
 class ResnapshotLoteTests(TestCase):
     """Passo 2: o resnapshot_lote revalua as entradas DEFASADAS (catálogo melhorou)."""

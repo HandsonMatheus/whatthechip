@@ -114,11 +114,23 @@ pelo operador — diferença de comprimento seria > 2 (invisível ao fuzzy).
 têm ≥ 7–8 caracteres; um prefixo de 4–5 letras poderia ser o início de centenas
 de PNs distintos.
 
+⚠ **ORDENAÇÃO É POR RELEVÂNCIA, NUNCA ALFABÉTICA** (corrigido 2026-08-24 — §11).
+`.order_by(Length("part_number"), "part_number")[:_MAX_SUGESTOES]`: a completude
+mais **curta** primeiro, porque é a mais próxima do que o operador digitou. Na
+prática mostra as **revisões distintas** (`…46B`, `…46D`, `…46E`, `…46Q`) antes das
+variantes longas de grade/embalagem de uma revisão só — que é a decisão que ele
+precisa tomar primeiro. **Nunca volte para `.order_by("part_number")`**: alfabético
++ corte é o bug que escondia linhagens inteiras em silêncio.
+
 ### 3.5 `_combined_suggestions(pn) → list[str]`
 
 Junta `_prefix_candidates` (mais certos — o digitado é literalmente o início do
-PN real) + `_fuzzy_candidates` (typo), deduplica, retorna até 5 part_numbers
-como strings.
+PN real) + `_fuzzy_candidates` (typo), deduplica, retorna até `_MAX_SUGESTOES`
+part_numbers como strings.
+
+⚠ **Era um CORTE DUPLO:** `_prefix_candidates` cortava em 5 e este cortava o merge
+em 5 de novo — então um PN base com 5+ variantes deixava o fuzzy com **zero vaga**.
+Os dois tetos subiram juntos; se um dia baixar, baixe os dois com consciência disso.
 
 ### 3.6 `_fuzzy_fbga_candidates(pn, threshold=2) → list[str]`
 
@@ -228,6 +240,9 @@ gateway.typo.suggestions → fuzzy_suggestions
 |---|---|---|---|
 | `threshold` | `_fuzzy_candidates` / `_fuzzy_fbga_candidates` | `2` | Mais sugestões, mais ruído |
 | `min_prefix_len` | `_prefix_candidates` | `7` | Diminuir → prefixos mais curtos retornam sugestões (mais ruído) |
+| **`_MAX_SUGESTOES`** | `chips/engine.py` (módulo) | **`40`** | Teto ÚNICO de prefixo + merge. Era `5` e **o 5 era o bug** (§11). Baixar volta a esconder revisão em silêncio |
+| Teto da nuvem INLINE | `confirm_card*.html` (`\|slice:":5"`) | `5` | É só atalho visual; a lista COMPLETA é o popup. Subir empurra o card pra fora da tela |
+| Limiar do campo de filtro | `_fuzzy_modal.html` (`length > 6`) | `6` | Abaixo disso o filtro é ruído na bancada |
 | Custo no `_CHIP_VISUAL_COST` | `chips/engine.py` | vários | Diminuir = sobe na ordenação |
 
 ---
@@ -276,3 +291,4 @@ digitação não justificam entrada na matriz (aumentam ruído nos resultados).
 | jun/2026 | UI redesenhada: chip cloud horizontal (flex-wrap), label "VOCÊ QUIS DIZER?", diff verde, sem card amarelo |
 | jun/2026 | Gate `confidence__in=("confirmed","manual")` adicionado — bloqueava sugestão de PNs não confirmados (ex: KA8G16 estimated) |
 | jun/2026 | `status="enriched"` removido do modelo `KnownPart`; `confidence` passou a ser o único gate de sugestão |
+| **2026-08-24** | **O corte alfabético em 5 escondia revisões inteiras — o pior bug que este sistema já teve.** O operador digitou `K4B4G16`; o chip na mão era `…46E`, **aprovado no banco**; o popup mostrou 5 PNs e nenhum era `46E`. Causa: `.order_by("part_number")[:5]` — não era ranking ruim, era **ausência de ranking**. Existem 12 variantes aprovadas desse PN base e as linhagens `46B`/`46D` enchiam as 5 vagas; **toda** a linhagem `46E` era invisível, sempre, e **sem nenhum aviso de truncagem**. Efeito no negócio: o operador conclui que o chip não está no catálogo e **descarta material bom** — o oposto exato do que o fuzzy existe para fazer. Correção em três camadas: ordenação por relevância (comprimento, depois alfabético), teto único `_MAX_SUGESTOES=40`, e popup com lista completa rolável + contador + filtro (reusando `"Filtrar por PN…"`, zero msgid novo). A nuvem inline ficou em 5 por `\|slice`, como atalho. Travas: `SugestaoPrefixoRankingTests` (engine) e `PreviewFuzzyPopupMascaradoTests` (tela), validados por mutação. **Lição:** corte silencioso numa lista de sugestões é pior que lista vazia — a lista vazia o operador questiona, a truncada ele acredita. |

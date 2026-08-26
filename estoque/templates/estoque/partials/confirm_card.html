@@ -49,7 +49,10 @@
   <div style="margin-bottom:22px;">
     <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:10px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;">
-      {% for s in gateway.typo.suggestions %}
+      {% comment %}Nuvem inline = ATALHO, teto de 5. A lista COMPLETA vive no popup
+      (_fuzzy_modal.html) — desde 2026-08-24 o engine devolve até 40 e encher a
+      linha com todas empurraria o card inteiro pra fora da tela.{% endcomment %}
+      {% for s in gateway.typo.suggestions|slice:":5" %}
       <a class="wtc-chip" href="#"
          onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
          style="display:inline-flex;align-items:center;padding:8px 14px;background:#e8e8e8;text-decoration:none;cursor:pointer;border-radius:8px;">

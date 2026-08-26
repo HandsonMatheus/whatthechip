@@ -98,7 +98,10 @@
   <div class="dcard-typo">
     <div class="dcard-typo__lbl">{% trans "VOCÊ QUIS DIZER?" %}</div>
     <div class="dcard-chips">
-      {% for s in gateway.typo.suggestions %}
+      {% comment %}Nuvem inline = ATALHO, teto de 5. A lista COMPLETA vive no popup
+      (_fuzzy_modal.html) — desde 2026-08-24 o engine devolve até 40 e encher a
+      linha com todas empurraria o card inteiro pra fora da tela.{% endcomment %}
+      {% for s in gateway.typo.suggestions|slice:":5" %}
       <a class="dcard-chip" href="#"
          onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">
         <span class="wtc-fuzzy-pn" data-typed="{{ pn }}" data-suggestion="{{ s }}">{{ s }}</span>

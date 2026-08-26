@@ -2775,3 +2775,88 @@ class MicronApiBloqueioTests(SimpleTestCase):
         numeros = [int(p.replace('chrome', '')) for p in _PERFIS_TLS]
         self.assertEqual(numeros, sorted(numeros, reverse=True))
         self.assertGreaterEqual(numeros[0], 130)
+
+
+class SugestaoPrefixoRankingTests(TestCase):
+    """A lista de sugestões não pode cortar por ORDEM ALFABÉTICA.
+
+    Bug de bancada (2026-08-24, relatado pelo dono com print). O operador
+    digitou ``K4B4G16``; o chip na mão era da revisão ``…46E``, **aprovado no
+    banco**. O popup mostrou 5 PNs e nenhum era ``46E``.
+
+    Não era ranking ruim — era AUSÊNCIA de ranking. ``_prefix_candidates``
+    fazia ``.order_by("part_number")[:5]``: alfabético, corte em 5. As
+    linhagens ``46B`` e ``46D`` enchiam as 5 vagas e TODO ``46E`` ficava
+    invisível, sempre, e **em silêncio** — o operador conclui que o chip não
+    está no catálogo e descarta material bom.
+
+    Estes testes fixam as três garantias: (1) o PN aprovado APARECE, (2) a
+    ordem é por relevância — completude mais curta primeiro, que é a mais
+    próxima do digitado —, (3) o teto não é mais 5.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        from chips.models import Brand, KnownPart
+        cls.brand = Brand.objects.create(name='Samsung', code='SAM')
+        # O cenário real: 12 variantes aprovadas do mesmo PN base. As 4 revisões
+        # curtas (B/D/E/Q) + 8 variantes longas de grade/embalagem.
+        cls.curtos = ['K4B4G1646B', 'K4B4G1646D', 'K4B4G1646E', 'K4B4G1646Q']
+        cls.longos = ['K4B4G1646DBCK0', 'K4B4G1646DBCNB', 'K4B4G1646DBYK0',
+                      'K4B4G1646DBYNB', 'K4B4G1646EBCK0', 'K4B4G1646EBCMA',
+                      'K4B4G1646EBYK0', 'K4B4G1646EBYMA']
+        for pn in cls.curtos + cls.longos:
+            KnownPart.objects.create(
+                brand=cls.brand, part_number=pn, chip_type='DDR3',
+                subtype='DDR3', density_gbit='4Gb', interface='x16',
+                confidence='confirmed', review_status='approved',
+                notes='fixture de teste',
+            )
+
+    def _sugestoes(self, digitado='K4B4G16'):
+        from chips.engine import _prefix_candidates
+        return [k.part_number for k in _prefix_candidates(digitado)]
+
+    def test_o_pn_aprovado_do_operador_aparece(self):
+        """O BUG, literal: 46E existe e aprovado — tem que estar na lista."""
+        self.assertIn('K4B4G1646E', self._sugestoes(),
+                      "o PN da bancada sumiu da sugestão — operador descarta chip bom")
+
+    def test_nenhuma_linhagem_de_revisao_fica_de_fora(self):
+        """Não basta o 46E: NENHUMA revisão pode ser engolida pelo corte."""
+        sug = self._sugestoes()
+        for pn in self.curtos:
+            self.assertIn(pn, sug, f"revisão {pn} invisível na sugestão")
+
+    def test_ordena_por_relevancia_nao_por_alfabeto(self):
+        """Completude mais CURTA primeiro — é a mais próxima do digitado.
+
+        Com ordem alfabética, K4B4G1646DBCK0 (14 chars) vinha antes de
+        K4B4G1646E (10). Aqui as 4 revisões curtas têm que ocupar as 4
+        primeiras posições, em qualquer ordem entre si.
+        """
+        sug = self._sugestoes()
+        self.assertEqual(set(sug[:4]), set(self.curtos),
+                         f"as 4 revisões curtas deviam vir primeiro; veio {sug[:4]}")
+
+    def test_teto_nao_e_mais_cinco(self):
+        """O 5 ERA o bug. Com 12 aprovados, a lista devolve os 12."""
+        self.assertEqual(len(self._sugestoes()), 12)
+
+    def test_combined_tambem_devolve_mais_que_cinco(self):
+        """O corte duplo: _prefix_candidates cortava em 5 e _combined_suggestions
+        cortava o merge em 5 de novo — então prefixo cheio deixava o fuzzy com
+        ZERO vaga. Os dois tetos subiram juntos."""
+        from chips.engine import _combined_suggestions
+        self.assertGreater(len(_combined_suggestions('K4B4G16')), 5)
+
+    def test_nao_sugere_registro_nao_aprovado(self):
+        """O teto maior NÃO pode vazar a fila de revisão pra bancada."""
+        from chips.models import KnownPart
+        KnownPart.objects.create(
+            brand=self.brand, part_number='K4B4G1646Z', chip_type='DDR3',
+            subtype='DDR3', density_gbit='4Gb', confidence='confirmed',
+            review_status='submitted', notes='ainda na fila',
+        )
+        self.assertNotIn('K4B4G1646Z', self._sugestoes(),
+                         "PN 'submitted' vazou pra sugestão")
