@@ -104,6 +104,12 @@ known_parts:
       diferente do monolítico D/E-die), mas eletricamente/comercialmente é o
       mesmo DDR3 4Gb x8 pro propósito da bancada (tipo/capacidade/destino
       iguais). 4Gbit÷8=512MB/die — mesma aritmética já usada pros irmãos.
+      RODADA 4: dono colou debug do sufixo exato "K4B4G0846B-HCH9" (ainda
+      pn_not_in_db=true em prod — este submit ainda não rodou lá). Corroborado
+      por 5 distribuidores (AB Sunshine, Kynix, Jotrin, Veswin, Censtry),
+      todos "4Gb, 512Mx8, DDR3 1.5V, 78-FBGA" — mesmo PN base, HC=1.5V já
+      documentado no tip da família. Nenhuma submissão nova necessária, o
+      known_part acima já cobre (base sem sufixo).
 
   - part_number: "K4B1G0846F"
     chip_type: "DDR3"
