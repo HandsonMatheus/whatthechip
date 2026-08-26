@@ -3516,6 +3516,38 @@ msgstr "hasta"
 msgid "Caixas a conferir e compras com saldo em aberto"
 msgstr "Cajas por revisar y compras con saldo pendiente"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Disponível quando o resultado fechar."
+msgstr "Disponible cuando el resultado se cierre."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Nenhuma observação ainda."
+msgstr "Ninguna nota todavía."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Nova observação"
+msgstr "Nueva nota"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "O que a conferência precisa registrar sobre esta compra."
+msgstr "Lo que la revisión necesita registrar sobre esta compra."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observação registrada."
+msgstr "Nota registrada."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observação removida."
+msgstr "Nota eliminada."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observações"
+msgstr "Notas"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Sai no PDF do resultado, com a data."
+msgstr "Sale en el PDF del resultado, con su fecha."
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

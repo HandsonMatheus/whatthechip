@@ -653,6 +653,68 @@ class Payment(models.Model):
         return super().save(*args, **kwargs)
 
 
+
+@pghistory.track()
+class OrderNote(models.Model):
+    """Observação da CONFERÊNCIA — o que o comprador escreve sobre a compra.
+
+    Até 2026-08-26 existia UMA nota por compra, escondida num campo do acerto
+    (``Settlement.notes``): sem autor visível, sem data visível, escrita uma
+    vez no diálogo de fechar resultado e nunca mais. Se ele lembrasse de algo
+    depois, não havia onde pôr.
+
+    ⚠ **Sai no PDF do resultado, e é isso que a faz valer como registro.** O
+    documento atravessa o balcão: quem escreve é o comprador, quem lê é o
+    CLIENTE. Por isso a autoria vira **"Conferência"** no papel (spec v2
+    §7.1) — o cliente sabe que alguém conferiu, não pode saber quem comprou.
+    O nome real fica na tela do comprador e no admin.
+
+    A observação opcional do diálogo de fechamento entra NESTA lista, não num
+    campo próprio: dois lugares para procurar o que o comprador escreveu é um
+    a mais. O ``Settlement.notes`` continua gravado como registro interno do
+    acerto (auditoria de quem fechou o quê), mas a TELA lê só daqui.
+    """
+
+    order = models.ForeignKey(SalesOrder, on_delete=models.PROTECT,
+                              related_name='order_notes',
+                              verbose_name='Ordem de venda')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    text = models.TextField(verbose_name='Observação')
+    # Autor e data são do SERVIDOR, sempre: o cliente não manda nem um nem
+    # outro (spec §3.10). `created_by` é SET_NULL porque conta de parceiro
+    # desativada não pode apagar o histórico da compra.
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Registrada em')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Autor')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Observação da conferência'
+        verbose_name_plural = 'Observações da conferência'
+        # CRONOLÓGICA: é um registro que se lê de cima para baixo, como
+        # conversa. A mais nova por último, do jeito que foi escrita.
+        ordering = ['created_at', 'pk']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+
+    def __str__(self):
+        return f'{self.order_id} · {self.created_at:%d/%m/%Y}'
+
+    def save(self, *args, **kwargs):
+        if self.order_id and not self.company_id:
+            self.company_id = SalesOrder.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.order_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+
 class Payout(models.Model):
     """REPASSE ao cliente — a perna WhatTheChip → CLIENTE (dono, 2026-08-19).
 

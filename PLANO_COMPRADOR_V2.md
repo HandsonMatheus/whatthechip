@@ -436,7 +436,54 @@ lado certo do balcão pelo `BlockedQuote` (Etapa 6).
 só precisa não escrever o número. Zero desenhado é ruído que treina o olho a ignorar o badge
 justamente quando ele passa a significar alguma coisa.
 
-6 testes (4 script + 2 interface) · 1 msgid novo nos 3 catálogos.
+5 testes (3 script + 2 interface) · 1 msgid novo nos 3 catálogos.
+
+### ✅ Etapa 4 — a aba Observações (2026-08-26)
+
+Antes: **uma** nota por compra, escondida num campo do acerto (`Settlement.notes`) — sem autor
+visível, sem data visível, escrita uma vez no diálogo de fechar resultado e nunca mais. Se ele
+lembrasse de algo depois — a caixa chegou molhada, faltou fita, o rastreio estava errado — não havia
+onde pôr.
+
+| Onde | O quê |
+|---|---|
+| `vendas/models.py` | `OrderNote` — autor e data do servidor, `created_by` SET_NULL, ordem cronológica |
+| `0015_ordernote` · `0016_ordernote_rls` · `0017_backfill_ordernote` | tabela + RLS/FORCE + as notas que já existem |
+| `vendas/services.py` | `order_notes` · `add_order_note` · `remove_order_note`; `settle_and_invoice` passa a criar a nota |
+| `vendas/pdf.py` | a seção vira LISTA, cada nota com data e a assinatura `Conferência` |
+| `vendas/views_partner.py` · `urls_partner.py` | `observacao` e `observacao_remover`, com `?aba=` de volta |
+| `partner_compra.html` · `ficha.css` | a aba, o campo, a lista, e a aba de Pagamentos obedecendo a §6.3 |
+
+**A nota do fechamento entra na MESMA lista.** Dois lugares para procurar o que o comprador escreveu é
+um a mais. O `Settlement.notes` continua gravado como registro **interno** do acerto — quem fechou o
+quê, com qual observação, naquele instante — mas a tela e o PDF passam a ler da tabela nova.
+
+**A autoria é cortada na ORIGEM.** O `result_document` monta cada nota com **só `at` e `text`**; o nome
+nem chega ao PDF. §7.1 manda a autoria virar *"Conferência"* no papel, e mascarar no desenho deixaria
+o nome no contexto esperando alguém desenhar de novo. Há teste cravando que o dict tem exatamente
+`{at, text}`.
+
+**Só o autor remove**, e a recusa é uma mensagem só: 404 por não existir e 403 por não ser dele, juntas,
+contariam que a nota existe.
+
+**`?aba=` com vocabulário fechado.** Depois de registrar, o comprador volta vendo o que escreveu —
+cair no Resumo daria a impressão de que não pegou. Valor livre viraria `hidden` em todas as abas e a
+ficha ficaria sem miolo; fora da lista, cai em `resumo`.
+
+**A aba de Pagamentos passou a obedecer a §6.3:** antes do resultado ela fica **desabilitada e
+visível**, com contador `—` e o title dizendo quando acende. Não some — senão ele procura o histórico
+numa tela onde nunca esteve.
+
+**A lista de chaves das abas saiu do JS cravado à mão** e passou a sair dos próprios botões. A lista
+antiga já teria deixado a aba nova sem esconder as outras.
+
+9 testes (5 script + 4 interface) · 8 msgids novos nos 3 catálogos. Cobertura conferida: 139 msgids
+nas três telas do comprador, zero sem tradução.
+
+⚠ **Ordem de deploy, e esta é diferente das outras:** o código NOVO precisa da tabela — o
+`result_document` e a ficha consultam `vendas_ordernote`. O `setup.sh` roda `migrate` no build, antes
+do release novo servir, então o fluxo normal já está correto. O inverso também é seguro: migrar antes
+de subir o código não quebra nada, porque o código velho ignora tabela nova.
 
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 

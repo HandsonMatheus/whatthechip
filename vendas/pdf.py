@@ -238,6 +238,11 @@ _L = {
     'accepted':   ('Accepted',             '接收'),
     'brand':      ('Brand',                '品牌'),
     'notes':      ('Notes',                '備註'),
+    # A AUTORIA das observações no papel (spec v2 do comprador §7.1): quem
+    # escreveu foi o comprador, mas quem lê é o cliente — e de quem o
+    # WhatTheChip compra é sigilo. O documento diz que a CONFERÊNCIA falou,
+    # não quem conferiu.
+    'checked_by': ('Conference',           '驗貨'),
 }
 
 
@@ -935,9 +940,19 @@ def render_result_pdf(doc: dict) -> bytes:
     ]))
     story.append(valores)
 
-    if doc.get('notes'):
-        story += [Spacer(0, 11), P(_t('notes'), st_sec),
-                  P(doc['notes'], st_td)]
+    # OBSERVAÇÕES — agora uma LISTA (spec §6.9): tudo que a conferência
+    # escreveu, na ordem em que escreveu. Cada nota leva a data, porque num
+    # documento que se discute depois "quando" é metade da informação. A
+    # assinatura é sempre a mesma palavra: a autoria real não atravessa o
+    # balcão, e ela nem chega aqui — o `result_document` só manda data e
+    # texto (mascarado na origem, não no desenho).
+    notas = doc.get('notes') or []
+    if notas:
+        story += [Spacer(0, 11), P(_t('notes'), st_sec)]
+        for nota in notas:
+            story += [P(f"{_t('checked_by')} · {_fmt_dt(nota['at'])}", st_tdb),
+                      P(nota['text'], st_td),
+                      Spacer(0, 5)]
 
     footer_txt = (f"{doc['lot_code']} · {doc['so_code']} · "
                   f"{_t('generated')} · {_fmt_dt(date.today())}")

@@ -2058,6 +2058,118 @@ class CompradorComprasTests(TestCase):
         self.client.force_login(self.parceiro)
         self.assertEqual(self._badge(reverse('compras:list')), '')
 
+    # ── Observações da conferência (spec v2 §6.9 e §7.1) ───────────────────
+
+    def _outro_parceiro(self):
+        u = get_user_model().objects.create_user('vd_cmp_p2')
+        self.buyer.users.add(u)
+        return u
+
+    def test_script_nota_grava_autor_e_data_no_SERVIDOR(self):
+        so = self._compra(self.emp_a, 'N1')
+        with company_scope(self.emp_a):
+            nota = services.add_order_note(so, '  caixa chegou molhada  ',
+                                           self.parceiro)
+        self.assertEqual(nota.text, 'caixa chegou molhada')     # aparado
+        self.assertEqual(nota.created_by, self.parceiro)
+        self.assertIsNotNone(nota.created_at)
+        self.assertEqual(nota.company_id, self.emp_a.pk)
+
+    def test_script_nota_vazia_ou_gigante_nao_entra(self):
+        so = self._compra(self.emp_a, 'N2')
+        with company_scope(self.emp_a):
+            with self.assertRaises(ValidationError):
+                services.add_order_note(so, '   ', self.parceiro)
+            with self.assertRaises(ValidationError):
+                services.add_order_note(so, 'x' * 4001, self.parceiro)
+            self.assertEqual(services.order_notes(so), [])
+
+    def test_script_so_o_AUTOR_remove(self):
+        so = self._compra(self.emp_a, 'N3')
+        outro = self._outro_parceiro()
+        with company_scope(self.emp_a):
+            nota = services.add_order_note(so, 'minha', self.parceiro)
+            with self.assertRaises(ValidationError):
+                services.remove_order_note(so, nota.pk, outro)
+            self.assertEqual(len(services.order_notes(so)), 1)   # sobreviveu
+            services.remove_order_note(so, nota.pk, self.parceiro)
+            self.assertEqual(services.order_notes(so), [])
+
+    def test_script_a_nota_do_fechamento_entra_na_MESMA_lista(self):
+        """Dois lugares para procurar o que o comprador escreveu é um a mais.
+        O acerto continua guardando a cópia interna dele — o que muda é de
+        onde a TELA e o PDF leem."""
+        so = self._compra(self.emp_a, 'N4')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {'notes': 'quatro queimados'})
+        with company_scope(self.emp_a):
+            self.assertEqual([n['text'] for n in services.order_notes(so)],
+                             ['quatro queimados'])
+            self.assertEqual(Invoice.all_companies.get(order=so)
+                             .settlement.notes, 'quatro queimados')
+
+    def test_script_o_documento_leva_a_nota_SEM_autoria(self):
+        """§7.1: no papel a autoria vira "Conferência". O corte é na ORIGEM —
+        o dict do documento não carrega o nome, então não há como o desenho
+        reintroduzi-lo sem alguém notar."""
+        so = self._compra(self.emp_a, 'N5')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {'notes': 'faltou fita'})
+        with company_scope(self.emp_a):
+            inv = Invoice.all_companies.get(order=so)
+            doc = services.result_document(so, inv)
+        self.assertEqual([n['text'] for n in doc['notes']], ['faltou fita'])
+        for nota in doc['notes']:
+            self.assertEqual(set(nota), {'at', 'text'})    # nem `by`, nem `pk`
+
+    def test_interface_registra_e_volta_para_a_aba_de_observacoes(self):
+        """Cair no Resumo daria a impressão de que o registro não pegou."""
+        so = self._compra(self.emp_a, 'NI1')
+        self.client.force_login(self.parceiro)
+        resp = self.client.post(reverse('compras:observacao', args=[so.pk]),
+                                {'text': 'chegou amassada'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(resp['Location'].endswith('?aba=observacoes'))
+        tela = self.client.get(resp['Location'])
+        self.assertContains(tela, 'chegou amassada')
+        self.assertContains(tela, 'class="on" data-aba="observacoes"')
+
+    def test_interface_remover_so_aparece_e_so_funciona_para_o_autor(self):
+        so = self._compra(self.emp_a, 'NI2')
+        outro = self._outro_parceiro()
+        with company_scope(self.emp_a):
+            nota = services.add_order_note(so, 'do outro', outro)
+        alvo = reverse('compras:observacao_remover', args=[so.pk, nota.pk])
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(
+            reverse('compras:detail', args=[so.pk]) + '?aba=observacoes')
+        self.assertContains(tela, 'do outro')        # ele LÊ a nota do colega
+        self.assertNotContains(tela, alvo)           # mas não tem o botão
+        self.client.post(alvo)                       # e o POST na mão não passa
+        with company_scope(self.emp_a):
+            self.assertEqual(len(services.order_notes(so)), 1)
+
+    def test_interface_aba_pagamentos_fica_VISIVEL_e_desabilitada_antes(self):
+        """§6.3: aba indisponível não some — o comprador precisa saber que ela
+        existe, senão procura o histórico numa tela onde nunca esteve."""
+        so = self._compra(self.emp_a, 'NI3')
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'disabled data-aba="pagamentos"')
+        self.assertContains(tela, 'Disponível quando o resultado fechar')
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertNotContains(tela, 'disabled data-aba="pagamentos"')
+
+    def test_interface_aba_invalida_na_url_cai_no_resumo(self):
+        so = self._compra(self.emp_a, 'NI4')
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(
+            reverse('compras:detail', args=[so.pk]) + '?aba=drop')
+        self.assertEqual(tela.context['aba_inicial'], 'resumo')
+
     def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):
         """Devolvem lista nova. A original é a mesma que alimenta a contagem —
         mutá-la faria o número do filtro depender da ordem das chamadas."""

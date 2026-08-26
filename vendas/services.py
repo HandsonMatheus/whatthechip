@@ -614,7 +614,12 @@ def result_document(so, invoice):
         'closed_at': lot.closed_at,
         'received_at': so.received_at,
         'settled_at': acerto.created_at,
-        'notes': acerto.notes,
+        # ⚠ Só DATA e TEXTO: a autoria vira "Conferência" no papel (spec
+        # §7.1). O cliente sabe que alguém conferiu; não pode saber quem
+        # comprou. Cortado AQUI, na origem — não no template —, porque é
+        # assim que ninguém reintroduz o nome desenhando a página.
+        'notes': [{'at': n['at'], 'text': n['text']}
+                  for n in order_notes(so)],
         # Câmbio do FECHAMENTO (PLANO_FX fase C) — a fatura usa a taxa da OV,
         # que herdou a trava do lote.
         'fx_rate': invoice.fx_usd_rate,
@@ -675,6 +680,13 @@ def settle_and_invoice(so, adjustments, user, notes=''):
             so.save(update_fields=['received_at'])
         st = Settlement(order=so, created_by=user, notes=notes)
         st.save()
+        # A observação do diálogo de fechamento entra na MESMA lista da aba
+        # (spec §6.9) — dois lugares para procurar o que o comprador escreveu
+        # é um a mais. O `Settlement.notes` continua gravado acima como
+        # registro INTERNO do acerto (quem fechou o quê, com qual observação);
+        # a tela e o PDF passam a ler daqui.
+        if (notes or '').strip():
+            add_order_note(so, notes, user)
         total_rmb = Decimal('0.00')
         total_usd = Decimal('0.00')
         rate = so.fx_usd_rate
@@ -839,6 +851,51 @@ def attach_receipt(payment, upload):
     return PaymentReceipt.all_companies.create(
         payment=payment, data=blob, mime=mime, size=len(blob),
         filename=(getattr(upload, 'name', '') or '')[:160])
+
+
+def order_notes(so):
+    """As observações da compra, em ordem cronológica.
+
+    Devolve DICTS e não models de propósito: a tela precisa saber se a nota é
+    de quem está olhando (só o autor remove), e isso é pergunta sobre a
+    request, não sobre o registro.
+    """
+    from .models import OrderNote
+    return [{'pk': n.pk,
+             'at': n.created_at,
+             'text': n.text,
+             'by': _display_name(n.created_by),
+             'by_id': n.created_by_id}
+            for n in (OrderNote.objects.filter(order=so)
+                      .select_related('created_by'))]
+
+
+def add_order_note(so, text, user):
+    """Registra uma observação. Autor e data são do SERVIDOR (spec §3.10)."""
+    from .models import OrderNote
+    texto = (text or '').strip()
+    if not texto:
+        raise ValidationError('Escreva alguma coisa antes de registrar.')
+    if len(texto) > 4000:
+        raise ValidationError(
+            'Observação longa demais (máximo 4.000 caracteres).')
+    nota = OrderNote(order=so, text=texto, created_by=user)
+    nota.save()
+    return nota
+
+
+def remove_order_note(so, note_pk, user):
+    """Remove uma observação — **só o autor** (spec §3.10).
+
+    Não é 404 por não existir e 403 por não ser dele: as duas respostas juntas
+    contariam que a nota existe. Uma mensagem só, e o comprador que errou o
+    link não descobre nada sobre a compra do vizinho.
+    """
+    from .models import OrderNote
+    nota = OrderNote.objects.filter(order=so, pk=note_pk).first()
+    if nota is None or nota.created_by_id != getattr(user, 'pk', None):
+        raise ValidationError('Observação não encontrada.')
+    nota.delete()
 
 
 def payment_history(invoice, com_autor=False):

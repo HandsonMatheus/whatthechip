@@ -3489,6 +3489,38 @@ msgstr "to"
 msgid "Caixas a conferir e compras com saldo em aberto"
 msgstr "Boxes to check and purchases with an open balance"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Disponível quando o resultado fechar."
+msgstr "Available once the result is closed."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Nenhuma observação ainda."
+msgstr "No notes yet."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Nova observação"
+msgstr "New note"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "O que a conferência precisa registrar sobre esta compra."
+msgstr "What the conference needs to record about this purchase."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observação registrada."
+msgstr "Note recorded."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observação removida."
+msgstr "Note removed."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observações"
+msgstr "Notes"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Sai no PDF do resultado, com a data."
+msgstr "Printed on the result PDF, with its date."
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

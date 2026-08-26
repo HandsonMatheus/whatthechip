@@ -243,11 +243,61 @@ def compras_csv(request):
     return resp
 
 
+#: Abas da ficha que a URL pode abrir direto. Vocabulário FECHADO: `?aba=`
+#: vem de redirect nosso, mas também de link colado — e um valor livre viraria
+#: `hidden` em todas as abas, deixando a ficha sem miolo nenhum.
+_ABAS = ('resumo', 'chips', 'categorias', 'pagamentos', 'observacoes')
+
+
 @partner_required
 def compra_detail(request, pk):
     with services.buyer_order(request.buyer, pk) as so:
+        aba = request.GET.get('aba')
+        ctx = _detalhe(so)
+        ctx['aba_inicial'] = aba if aba in _ABAS else 'resumo'
         return render(request, 'vendas/partner_compra.html',
-                      _shell(request, _detalhe(so)))
+                      _shell(request, ctx))
+
+
+def _volta_pra_aba(so, aba):
+    return redirect(f"{reverse('compras:detail', args=[so.pk])}?aba={aba}")
+
+
+@partner_required
+@require_POST
+def compra_observacao(request, pk):
+    """Registra uma observação da conferência (spec v2 §6.9).
+
+    Volta para a ABA de observações, não para o topo da ficha: quem acabou de
+    escrever quer ver o que escreveu. Cair no Resumo daria a impressão de que
+    o registro não pegou.
+    """
+    with services.buyer_order(request.buyer, pk) as so:
+        try:
+            services.add_order_note(so, request.POST.get('text'), request.user)
+        except ValidationError as erro:
+            messages.error(request, ' '.join(erro.messages))
+        else:
+            messages.success(request, _('Observação registrada.'))
+        return _volta_pra_aba(so, 'observacoes')
+
+
+@partner_required
+@require_POST
+def compra_observacao_remover(request, pk, nota_pk):
+    """Remove uma observação — só o autor (spec §3.10).
+
+    POST, não DELETE: é formulário HTML, e formulário HTML não fala DELETE.
+    Inventar um verbo que só o JS alcança tiraria a ação de quem está sem JS.
+    """
+    with services.buyer_order(request.buyer, pk) as so:
+        try:
+            services.remove_order_note(so, nota_pk, request.user)
+        except ValidationError as erro:
+            messages.error(request, ' '.join(erro.messages))
+        else:
+            messages.success(request, _('Observação removida.'))
+        return _volta_pra_aba(so, 'observacoes')
 
 
 def _detalhe(so):
@@ -314,6 +364,8 @@ def _detalhe(so):
         # Uma chave por PÁGINA SERVIDA (spec v2 §5.4): dois cliques no botão
         # mandam a mesma; recarregar é intenção nova e gera outra.
         'idem_key': uuid.uuid4().hex,
+        # Observações da conferência (spec §6.9) — lista, com autor e data.
+        'observacoes': services.order_notes(so),
     }
 
 

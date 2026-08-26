@@ -237,11 +237,21 @@
      conferência PN a PN; CATEGORIAS é o dicionário da convenção WTC;
      PAGAMENTOS é o histórico com os comprovantes. As quatro existem sempre —
      o contador diz quando alguma está vazia. {% endcomment %}
+  {% comment %} Aba INDISPONÍVEL fica DESABILITADA e VISÍVEL, com contador "—"
+     e um title dizendo quando acende (spec v2 §6.3). Não some: o comprador
+     precisa saber que ela existe, senão procura o histórico de pagamento numa
+     tela onde ele nunca esteve. {% endcomment %}
   <div class="nb">
-    <button type="button" class="on" data-aba="resumo">{% trans "Resumo" %}</button>
-    <button type="button" data-aba="chips">{% trans "Chips" %} <em>{{ chips.qty }}</em></button>
-    <button type="button" data-aba="categorias">{% trans "Categorias" %}</button>
-    <button type="button" data-aba="pagamentos">{% trans "Pagamentos" %} <em>{{ pagamentos|length }}</em></button>
+    <button type="button"{% if aba_inicial == 'resumo' %} class="on"{% endif %} data-aba="resumo">{% trans "Resumo" %}</button>
+    <button type="button"{% if aba_inicial == 'chips' %} class="on"{% endif %} data-aba="chips">{% trans "Chips" %} <em>{{ chips.qty }}</em></button>
+    <button type="button"{% if aba_inicial == 'categorias' %} class="on"{% endif %} data-aba="categorias">{% trans "Categorias" %}</button>
+    {% if invoice %}
+    <button type="button"{% if aba_inicial == 'pagamentos' %} class="on"{% endif %} data-aba="pagamentos">{% trans "Pagamentos" %} <em>{{ pagamentos|length }}</em></button>
+    {% else %}
+    <button type="button" disabled data-aba="pagamentos"
+            title="{% trans 'Disponível quando o resultado fechar.' %}">{% trans "Pagamentos" %} <em>—</em></button>
+    {% endif %}
+    <button type="button"{% if aba_inicial == 'observacoes' %} class="on"{% endif %} data-aba="observacoes">{% trans "Observações" %} <em>{{ observacoes|length }}</em></button>
     <span class="nb__sp"></span>
   </div>
 
@@ -444,6 +454,50 @@
     <div class="nbb__empty">{% trans "Nenhum pagamento registrado ainda." %}</div>
     {% endif %}
   </div>
+
+  {% comment %} Aba OBSERVAÇÕES (spec v2 §6.9) — o registro da conferência.
+     TUDO daqui sai no PDF do resultado, e é isso que a faz valer: nota que
+     não vira documento é rascunho. No papel a autoria vira "Conferência" — o
+     cliente sabe que alguém conferiu, não pode saber quem comprou —, e esse
+     corte acontece no `result_document`, não aqui.
+     Remover é só do AUTOR. {% endcomment %}
+  <div class="sst__w" id="pane-observacoes" hidden>
+    <form class="obs__new" method="post" action="{% url 'compras:observacao' so.pk %}">
+      {% csrf_token %}
+      <label class="nts__l" for="obs-txt">{% trans "Nova observação" %}</label>
+      <textarea id="obs-txt" name="text" rows="3" maxlength="4000"
+                placeholder="{% trans 'O que a conferência precisa registrar sobre esta compra.' %}"></textarea>
+      <div class="obs__act">
+        <span class="dim">{% trans "Sai no PDF do resultado, com a data." %}</span>
+        <button type="submit" class="btn btn--pri" id="obs-ok" disabled>{% trans "Registrar" %}</button>
+      </div>
+    </form>
+
+    {% if observacoes %}
+    <ul class="obs">
+      {% for o in observacoes %}
+      <li class="obs__i">
+        <div class="obs__h">
+          <b>{{ o.by|default:"—" }}</b>
+          <span class="pn">{{ o.at|date:"d/m/Y H:i" }}</span>
+          {% if o.by_id == request.user.pk %}
+          <form method="post" action="{% url 'compras:observacao_remover' so.pk o.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="obs__x"
+                    title="{% trans 'Remover' %}" aria-label="{% trans 'Remover' %}">
+              <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </form>
+          {% endif %}
+        </div>
+        <p>{{ o.text|linebreaksbr }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="nbb__empty">{% trans "Nenhuma observação ainda." %}</div>
+    {% endif %}
+  </div>
 </div>
 
 {% comment %} ── FORMULÁRIOS E DIÁLOGOS ────────────────────────────────────
@@ -591,16 +645,40 @@
   }
 
   // ── Abas ────────────────────────────────────────────────────────────────
+  // As chaves saem dos PRÓPRIOS botões: a lista cravada à mão já ficou para
+  // trás uma vez — a aba Observações nasceu e o painel dela nunca escondia os
+  // outros, porque o array não sabia que ela existia.
   var abas = document.querySelectorAll('.nb button[data-aba]');
-  abas.forEach(function (b) {
-    b.addEventListener('click', function () {
-      abas.forEach(function (o) { o.classList.toggle('on', o === b); });
-      ['resumo', 'chips', 'categorias', 'pagamentos'].forEach(function (k) {
-        var p = document.getElementById('pane-' + k);
-        if (p) p.hidden = (k !== b.dataset.aba);
-      });
+  var chaves = Array.prototype.map.call(abas, function (b) { return b.dataset.aba; });
+  function mostrar(k) {
+    abas.forEach(function (o) { o.classList.toggle('on', o.dataset.aba === k); });
+    chaves.forEach(function (c) {
+      var p = document.getElementById('pane-' + c);
+      if (p) p.hidden = (c !== k);
     });
+  }
+  abas.forEach(function (b) {
+    b.addEventListener('click', function () { mostrar(b.dataset.aba); });
   });
+  // A aba inicial vem do SERVIDOR (`?aba=`): depois de registrar ou remover
+  // uma observação, o comprador volta vendo a aba onde ele estava. Cair no
+  // Resumo daria a impressão de que a ação não pegou.
+  var inicial = document.querySelector('.nb button[data-aba].on');
+  if (inicial) mostrar(inicial.dataset.aba);
+
+  // ── Observações: o botão só acende com texto, e ⌘/Ctrl+Enter registra ──
+  var obsT = document.getElementById('obs-txt');
+  var obsB = document.getElementById('obs-ok');
+  if (obsT && obsB) {
+    function obsEstado() { obsB.disabled = obsT.value.trim() === ''; }
+    obsT.addEventListener('input', obsEstado);
+    obsT.addEventListener('keydown', function (ev) {
+      if ((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter' && !obsB.disabled) {
+        obsT.form.submit();
+      }
+    });
+    obsEstado();
+  }
 
   // ── Diálogos ────────────────────────────────────────────────────────────
   function abrir(id) { var m = document.getElementById(id); if (m) m.classList.add('on'); }

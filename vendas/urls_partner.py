@@ -32,6 +32,10 @@ urlpatterns = [
     path('compras/<int:pk>/resultado.pdf', views.compra_resultado_pdf,
          name='resultado_pdf'),
     path('compras/<int:pk>/pagar/', views.compra_pagar, name='pagar'),
+    path('compras/<int:pk>/observacao/', views.compra_observacao,
+         name='observacao'),
+    path('compras/<int:pk>/observacao/<int:nota_pk>/remover/',
+         views.compra_observacao_remover, name='observacao_remover'),
     path('compras/<int:pk>/pagamento/<int:pagamento_pk>/comprovante',
          views.compra_comprovante, name='comprovante'),
 ]

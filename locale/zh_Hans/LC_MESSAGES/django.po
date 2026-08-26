@@ -3302,6 +3302,38 @@ msgstr "至"
 msgid "Caixas a conferir e compras com saldo em aberto"
 msgstr "待检验的箱子与仍有余额的采购"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Disponível quando o resultado fechar."
+msgstr "结果关闭后可用。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Nenhuma observação ainda."
+msgstr "暂无备注。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Nova observação"
+msgstr "新增备注"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "O que a conferência precisa registrar sobre esta compra."
+msgstr "验货需要就本次采购记录的内容。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observação registrada."
+msgstr "备注已登记。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observação removida."
+msgstr "备注已删除。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Observações"
+msgstr "备注"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid "Sai no PDF do resultado, com a data."
+msgstr "将带日期打印在结果 PDF 上。"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."
