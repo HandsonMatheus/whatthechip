@@ -731,15 +731,43 @@ documentado.
 **Conserto:** migração nova que devolve a cláusula à `tenant_read` do `pricing_buyer`. Só AMPLIA
 visibilidade para os usuários do próprio buyer — não esconde nada de ninguém, e é reversível.
 
+### ✅ CORREÇÃO — a suíte RODA no sandbox (2026-08-26, Etapa 6)
+
+Eu escrevi aqui que os testes só rodavam na máquina do dono. **Estava errado**, e a correção vale mais que
+o conserto de um teste: o `core.settings_test` usa **SQLite em memória** justamente para não precisar de
+servidor de banco. O que o sandbox não alcança é o **Postgres** — e o que depende dele (RLS, `pgtrigger`)
+já se marca `skip` sozinho.
+
+Foi montado um venv descartável **fora do diretório montado** (`~/venv-wtc`, porque o `venv/` do repo tem
+symlinks para um Python que não existe deste lado) com Django 5.2.15, `pghistory`, `psycopg2-binary`,
+`polib`, `fontTools` e `openpyxl`. Com ele:
+
+```
+python manage.py test vendas   →  232 testes, OK
+python manage.py test pricing  →  122 testes, OK (3 skipped: Postgres-only)
+```
+
+**A janela é de ~45s por comando** (cada chamada do shell é um processo novo, e processo de fundo morre
+com ele). `vendas` leva ~25s e passa; a suíte inteira não cabe numa chamada — roda-se **por app**.
+
+**O que continua fora:** qualquer coisa que precise de Postgres de verdade — `PricingRLSTests`,
+`PartnerSelfAccessRLSTests`, `RLSHandshakeTests` e as policies das migrações. Essas o dono roda.
+
+**O que isso muda no processo:** teste agora se roda ANTES de comitar, não depois de mandar. A Etapa 6
+achou três defeitos meus assim — um módulo guardado em `setUpTestData` (que o Django tenta `deepcopy` e
+não consegue), e duas asserções que casavam com o **CSS embutido** em vez da tela.
+
 ### ⚠ O que só roda na máquina do dono
 
-O sandbox não alcança o Postgres (o `venv/` do repo aponta para um Python que não existe do lado montado). Foi verificado aqui: `manage.py check` limpo, os três templates compilam, os `.mo` resolvem nos 3 idiomas, e a migração foi **gerada pelo Django**, não escrita à mão.
+O sandbox não alcança o **Postgres**. Verificado aqui, a cada etapa: `manage.py check` limpo, os templates
+compilam, os `.mo` resolvem nos 4 idiomas, `vendas` e `pricing` verdes em SQLite, e as migrações foram
+**geradas pelo Django**, não escritas à mão.
 
-Falta rodar:
+Falta rodar, com Postgres:
 
 ```
 python manage.py makemigrations --check --dry-run
-python manage.py test vendas pricing
+python manage.py test           # a suíte inteira, com RLS e pgtrigger de verdade
 ```
 
 Depois: **deploy ANTES do migrate em prod** — o campo é `default=''` sem backfill, então o código velho convive com a coluna nova, mas a regra da casa é a regra da casa.
