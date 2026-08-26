@@ -23,6 +23,61 @@ A **gramática** viva (famílias) está na **`sandisk.yaml`** (11 famílias, **s
 
 ---
 
+## 0. ⚠️ LEIA PRIMEIRO — Regras de ouro
+
+1. **Claude edita arquivos. O DONO roda os comandos.** Nunca `load_brands --commit`/`migrate`/
+   `submit_known_parts --commit` sem confirmação dele.
+2. **`manual` NÃO é "quase confirmado" — é AUTORIDADE.** `confirmed` **e** `manual` vencem a gramática
+   no engine (`KnownPart`: *"Só registros com confidence em (confirmed, manual) vencem a gramática"*).
+   As prateleiras de baixo são **`distributor`** e **`estimated`** — essas só complementam decode
+   incompleto. Consequência: rebaixar de `confirmed` pra `manual` **não reduz risco nenhum**; o dado
+   entra autoritativo do mesmo jeito. Se a fonte não fecha, o caminho é `distributor`/`estimated`,
+   ou **não submeter** — não `manual`.
+   ⚠ Isto pesa mais na SanDisk que em qualquer outra marca: aqui o `known_part` é a **única** fonte de
+   capacidade (§2). Capacidade errada num `manual` não tem nada rio abaixo pra pegar — vira
+   rentabilidade errada e preço errado.
+3. **A barra do `manual` sem datasheet é ESTREITA e está escrita** (§3, §6): **três** fontes de
+   engenharia convergentes e independentes (fórum oficial de fabricante de SoC + banco de programador
+   de chip + teardown técnico / manual de placa real), **nomeadas na `notes`**, e o **dono avisado da
+   incerteza**. "Citei o número do datasheet mas o PDF não abriu" **não** é isso — é uma fonte, não lida.
+   Nesse caso: `distributor`/`estimated`, ou segurar e sinalizar.
+4. **Não escreva ORM no `manage.py shell`.** Nem pra ler. A trava de escrita (`CLAUDE.md` regra 2b) é
+   sobre o hábito, não só sobre o `save()`. E o que você quer já existe pronto: veja §0.1.
+5. **`submissions/` É VERSIONADO.** O `.gitignore` ignora **só** `submissions/*.conflitos.yaml` (os
+   relatórios de conflito). Os arquivos de submissão entram no git normalmente — não os trate como
+   descartáveis, não salve cópia renomeada "por segurança" (isso já gerou submissão duplicada).
+6. **Nada inventado.** PN ambíguo (conflito tipo×spec, colisão com adaptador/SSD — §3) não se resolve
+   sozinho: pergunte ao dono.
+
+### 0.1 O painel do `submit_known_parts` — leia ANTES de escrever qualquer checagem
+
+Desde **2026-08-17** o **dry-run confronta o banco** (antes não confrontava — era o furo). Ele casa por
+`part_number_norm` (a chave canônica, não o PN cru) e imprime o painel **no topo**:
+
+| balde | o que é | o que resolve |
+|---|---|---|
+| **NOVO** | não existe no banco | entra `submitted`, o dono aprova no admin |
+| **RESUBMETE** | existe em rascunho/submetido | reescrito |
+| **COMPLEMENTO** | **aprovado** com campo VAZIO que o arquivo preenche | `--fill-empty` (backup + `--revert`) |
+| **SEM FONTE** | idem, mas o arquivo não tem `notes`/`source_url` | **não tem flag** — traga a fonte |
+| **CONFLITO** | **aprovado** com valor **DIFERENTE** | decisão humana; gera `<arq>.conflitos.yaml` |
+| **IGUAL** | aprovado e já com o que o arquivo diz | nada |
+
+> **Portanto: não escreva script de "checar colisão" no shell.** O `submit_known_parts <arq>` (dry-run)
+> já faz isso — e melhor: a sua checagem manual só vê *se o PN existe*, o painel vê **qual campo diverge**.
+
+Dois comandos que fecham o ciclo e valem pra SanDisk:
+
+- **`audit_submissions`** (read-only) — replica todos os `submissions/*.yaml` contra o banco e dá a
+  tabela da dívida por marca: AUSENTE / PENDENTE / COMPLETA / CONFLITO / OK.
+- **`resolve_conflicts`** — o par de ESCRITA do anterior, com **política por classe de campo**. Existe
+  porque a 1ª varredura em prod (2026-08-17) achou **147 conflitos**: as pipelines de máquina
+  (import Micron/PSG) criaram o registro, ele virou `approved`, e a submissão Tier-1 do chat que ia
+  corrigir aquilo foi **pulada por "PN já aprovado"** — o valor da máquina venceu o pesquisado, **em
+  silêncio**. Quem vence depende do **campo**, não do PN. Se um PN seu aparecer em CONFLITO, é aqui.
+
+---
+
 ## 1. Convenção (OPÇÃO 1 — regras estáveis)
 
 Fonte única: `chips/chip_types.py`. Para os tipos gerenciados da SanDisk:
@@ -74,7 +129,7 @@ O engine casa o prefixo mais específico primeiro (`SDINB` eMMC vence `SDIN` gen
 - ⚠ **`SDAD` provavelmente não tem datasheet público** (investigado 2026-07-13, 6 frentes de pesquisa independentes — nenhuma achou documento oficial SanDisk/WD): parece linha vendida só sob NDA direto a OEMs de celular. "Esperar Tier-1" pode ser esperar pra sempre nessa família — a via prática é **ball count físico na bancada** ou evidência de engenharia de terceiro testada (ver bullet seguinte). Ver `submissions/INVESTIGACAO_sandisk_sdad_2026-07-13.md`.
 - ⚠ **Prefixo `SDAD` colide com uma linha de ADAPTADORES FÍSICOS** da SanDisk (PCMCIA/CompactFlash/microSD: `SDAD-67-A10`, `SDAD-38-A10`, `SDADP-01`...) — mesma tag nos distribuidores, produto totalmente diferente (não é chip). Filtrar antes de pesquisar/catalogar.
 - ⚠ **`SDIN` (o fallback genérico, priority 80) NÃO é uma única geração "eMMC 4.5/5.0/5.1"** — cobre **3 protocolos/gerações históricas** distintas (investigado 2026-07-14, 3 datasheets oficiais lidos na íntegra): **`SDIN2xx`** (jul/2007) é **SD 1.1/2.0 + SPI, nem é eMMC de verdade** — anterior ao padrão MMC; **`SDIN4xx`** (~2008-2009, inclui o clássico `SDIN4C2`) é eMMC mas **sem datasheet público localizado** (buraco documental real — usar triangulação, ver bullet seguinte); **`SDIN5xx`** (dez/2010) é **e.MMC 4.41** de fato; **`SDIN7DP2`** (fev/2013, "Ultra") é **e.MMC 4.51**. Não assuma a geração pelo 1º dígito sem checar essa tabela — ver `submissions/INVESTIGACAO_sandisk_sdin_2026-07-14.md`.
-- ⚠ **`SDIN4C2` (e clusters "sem geração confirmada" parecidos) — triangulação de engenharia real vale como `manual`, mesmo sem datasheet:** fórum de engenharia (TI E2E, engenheiro citando o datasheet do fabricante em mãos), banco de dispositivos suportados de fabricante de programador de chip (Elnec, exige pinout real), e teardown técnico (iFixit, prosa de desmontagem — não título de anúncio) juntos formam evidência mais forte que qualquer distribuidor isolado. Cross-ref de compatibilidade de reparo (ex. serviceemmc.com) é só apoio (não é Tier-1 nem substitui as três fontes acima).
+- ⚠ **`SDIN4C2` (e clusters "sem geração confirmada" parecidos) — triangulação de engenharia real vale como `manual`, mesmo sem datasheet:** fórum de engenharia (TI E2E, engenheiro citando o datasheet do fabricante em mãos), banco de dispositivos suportados de fabricante de programador de chip (Elnec, exige pinout real), e teardown técnico (iFixit, prosa de desmontagem — não título de anúncio) juntos formam evidência mais forte que qualquer distribuidor isolado. Cross-ref de compatibilidade de reparo (ex. serviceemmc.com) é só apoio (não é Tier-1 nem substitui as três fontes acima). ⚠ **As TRÊS são obrigatórias, e `manual` é AUTORIDADE — §0, regras 2 e 3** — duas fontes, ou uma fonte citada mas não lida, não fecham a barra: aí é `distributor`/`estimated` ou não submeter.
 - ⚠ **Sufixo de GRADE (`-I1`/`-XI1` industrial, `-XA1`/`-ZA1` automotivo) sobrevive à normalização** —
   o normalizador só remove traço/espaço, mantém letras. Um known_part base (`SDINBDA6-16G` →
   `SDINBDA616G`) **não** casa com o mesmo chip em grade industrial/automotiva (`SDINBDA6-16G-I` →
@@ -87,9 +142,35 @@ O engine casa o prefixo mais específico primeiro (`SDINB` eMMC vence `SDIN` gen
   confirmado, mas `26A` (`SD5DH26A-4G`) é **eMCP** (NAND 4GB + LPDDR1 768MB) segundo triangulação
   (substituto Samsung pino-a-pino confirmado + RAM total do aparelho batendo exatamente com a
   aritmética Gb→GB) — sem datasheet pra confirmar 100%, decisão registrada como `manual` com o
-  dono ciente da incerteza. Não mude `is_emcp` da família por causa de 1 exceção — o known_part
-  específico já sobrepõe a gramática pra esse PN exato. Ver
-  `submissions/INVESTIGACAO_sandisk_sd5dh_2026-07-14.md`.
+  dono ciente da incerteza. Ver `submissions/INVESTIGACAO_sandisk_sd5dh_2026-07-14.md`.
+  ⚠ **CORRIGIDO 2026-08-24 — esta linha dizia o oposto e estava ERRADA.** Ela mandava *"não mude
+  `is_emcp` da família por causa de 1 exceção — o known_part específico já sobrepõe a gramática
+  pra esse PN"*. **Não sobrepõe.** O engine tira o `chip_type` do merge da **FAMÍLIA**, não do
+  known_part: com a família `is_emcp=False`, `_result_from_known` **nunca lê** `emcp_nand`/
+  `emcp_ram` e a capacidade **some no `classify()`** — em silêncio, com o known_part no banco e
+  nenhum erro. Está no código, em `chips/knowledge/convention.py::family_type_conflict`, cujo
+  docstring nomeia este PN como a brecha que o motivou; a trava é
+  `test_guard_tipo_x_familia_is_emcp`. **Regra certa:** known_part cujo `chip_type` diverge do
+  `is_emcp` da família precisa de **família própria** (sub-prefixo mais específico, `priority`
+  menor) — foi o que o dono decidiu para o `26A`, criando a família `SD5DH26`.
+- ⚠ **`SD5DH26` (2026-08-24) — o carve-out de die-code, e a dívida que ele deixou.** O `26A` saiu
+  do `SD5DH` para família própria `is_emcp=True`, `priority` 20 (< 30 da mãe) para ser casado
+  primeiro. Nasceu com **1 PN só** (`SD5DH26A4G`) — busca dedicada não achou sibling. ⚠ **Família
+  nova exige PN-âncora no `_SD_GOLDEN`**, e essa não veio: o `GoldenObrigatorioTests` ficou
+  VERMELHO em 2026-08-24 por causa dela (junto com 11 da ESMT e 1 da Toshiba-Kioxia). O teste é
+  global — a suíte quebra para todos os chats, não só para a SanDisk. Gramática e golden são a
+  mesma entrega (`AUTORIA.md §3.3`).
+  **DÍVIDA PAGA em 2026-08-26** (pelo chat de plataforma, não pela SanDisk — o commit é
+  `sandisk: SD5DH26 (carve-out eMCP) + a âncora golden que faltava`). A âncora é
+  `"SD5DH26A4G": ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR1 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL")`
+  e ela **não é burocracia aqui**: é a prova de que o carve-out faz o que existe para fazer — o
+  MESMO tronco `SD5DH` agora dá **dois vereditos diferentes** conforme o die-code, `24A` seguindo
+  eMMC/INDETERMINADO (a linha logo acima dela no golden) e `26A` caindo em NÃO RENTÁVEL **por
+  geração** (LPDDR1 < `cfg.emcp_min_lpddr_gen`), ANTES de checar GB — que é exatamente a classe de
+  bug "INDETERMINADO em vez de NÃO RENTÁVEL" do `CLAUDE.md §7`. Conferido por mutação: apagando a
+  âncora, o golden fica vermelho; apagando a família, a linha volta a `eMMC`/`INDETERMINADO`.
+  ⚠ Da próxima vez a âncora sai **na mesma entrega da família** — quem escreve o `prefix:` no yaml
+  escreve a linha no `_SD_GOLDEN` antes de entregar.
 - ⚠ **`SD5D` (SEM o H) é uma família IRMÃ do `SD5DH`, totalmente separada e ainda fora do yaml** —
   mesmo padrão de confusão do `SD9`/`SDIN9`: prefixo parecido, produto diferente. `SD5D` é eMCP
   confirmado (die-codes 14/28, pelo menos 1 membro com ball-count diferente — FBGA162 vs FBGA153 do
@@ -97,6 +178,31 @@ O engine casa o prefixo mais específico primeiro (`SDINB` eMMC vence `SDIN` gen
   logo depois) na bancada, não presuma que é `SD5DH` mal-digitado; é família de verdade, precisa de
   investigação própria.
 - ⚠ **`SD9...` (SEM "IN") é uma família eMCP TOTALMENTE DIFERENTE de `SDIN9...`** — não é a mesma geração com prefixo truncado, são dois produtos SanDisk não relacionados que só coincidem no sufixo numérico (achado 2026-07-14, PN `SD9DS28K-8G`). `SDIN9xx` = eMMC (dentro da mega-família `SDIN`, eMMC 5.0 HS400, "iNAND 5130"/"iNAND Extreme"). `SD9xx` = eMCP isolado (NAND+LPDDR3), **sem família própria no yaml** — só 1 PN confirmado (`SD9DS28K-8G`) depois de busca exaustiva, sem nenhum sibling; parece peça semicustomizada de baixo volume (usada no Qualcomm/Arrow DragonBoard 410c). ⚠ **Nunca crie gramática posicional pro prefixo curto `SD9` sozinho** — colide com uma linha de SSD SATA de consumo totalmente não relacionada (`SD9SN8W-*`/`SD9SB8W-*`, produto final, não die). Se aparecer outro PN `SD9...` na bancada, tratar como candidato a known_part isolado até achar sibling real — não assumir família. Ver `submissions/INVESTIGACAO_sandisk_sd9_2026-07-14.md`.
+- ⚠ **Nem todo PN do MESMO bucket indocumentado "SDIN4xx" merece o MESMO tier — E "instrução do
+  dono" é uma 3ª via, separada de pesquisa e de datasheet.** Achado 2026-08-24, `SDIN4E2-32G`: 1ª
+  rodada de pesquisa achou só 7+ catálogos de distribuidor/Octopart (mesmo buraco documental do
+  `SDIN4C2`, mas SEM as 3 fontes de engenharia da regra §0.3) → `confidence=distributor`. Mesmo dia,
+  2ª decisão: o dono instruiu aplicar as specs do `SDIN5B232G` (já `confirmed`, e.MMC 4.41/X2) a
+  este PN → subiu pra `confidence=manual` (não `confirmed` — a fonte da equivalência é o dono, não
+  uma leitura minha de datasheet/cross-ref pra ESTE PN; não achei cross-ref independente ligando os
+  dois). **Pontual deste PN — não generaliza pro resto do bucket 4xx** (`SDIN4C2` segue por
+  triangulação própria; `SDIN4D2` segue sem known_part). Ver
+  `submissions/INVESTIGACAO_sandisk_sdin4e2_2026-08-24.md` §8.
+- ⚠ **Geração 7 tem DUAS sub-linhas "Ultra" com eMMC diferente — `SDIN7DP2` (4.51) ≠ `SDIN7DU2`
+  (4.41)** — resolvido 2026-08-24: `SDIN7DU2` (datasheet oficial CITADO 80-36-03666 V1.2, mai/2012)
+  é mais antigo que o já confirmado `SDIN7DP2` (80-36-03494, fev/2013). PDF não renderizou no fetch
+  (2 tentativas) — citar o número do doc sem ler **não** fecha a barra do `manual` (§0, regra 3):
+  `confidence=distributor` nas 4 capacidades (8/16/32/64G), via Mouser/Avnet/Octopart com aritmética
+  Gb→GB batendo nas 4. Ver `submissions/INVESTIGACAO_sandisk_sdin7du2_sdinadf4h_2026-08-24.md`.
+- ⚠ **`SDINADF4-...-H` = "iNAND 7232" (e.MMC 5.1 HS400) — CONFIRMADO 2026-08-24** via product brief
+  oficial Western Digital 2017 ("BR07-iNAND-Embedded-Integrated-Solutions-US-0217-02", PDF lido na
+  íntegra — hospedado em mouser.com; o link direto em sandisk.com não renderizou no fetch, mouser.com
+  funcionou como espelho, ver §6). Tabela oficial mostra par "-L/H" por capacidade (16/32/64/128G),
+  mas só "-H" tem evidência de mercado — "-L" não submetido. O mesmo PDF revelou as linhas irmãs
+  `SDINBDG4`="iNAND 7250" (8-64GB) e `SDINBDD4`="iNAND 7350" (32-256GB), backlog (capacidades já
+  mapeadas, não pesquisadas como known_parts ainda). `SDIN4D2` (sibling gen-4 achado no mesmo dia)
+  buscado a fundo em Mouser/Octopart/TrustedParts — zero achado, permanece não confirmável, sem
+  known_part. Ver `submissions/INVESTIGACAO_sandisk_sdin7du2_sdinadf4h_2026-08-24.md`.
 
 ---
 
@@ -147,7 +253,8 @@ numa placa real, frequentemente citando o datasheet do fabricante que ele tem em
 PDF em si não esteja público); e banco de dispositivos de **fabricante de programador de chip** (ex.:
 **Elnec**) — listar um PN como suportado exige pinout físico real, não é alegação de revenda. Junto
 com teardown técnico (iFixit, ler a prosa da desmontagem, não o título do anúncio), essas 3 fontes
-convergentes valem `confidence=manual` mesmo sem datasheet oficial. Cross-ref de compatibilidade de
+convergentes valem `confidence=manual` mesmo sem datasheet oficial — **as três juntas, nunca uma
+só, e nomeadas na `notes`** (`manual` é autoridade — §0, regras 2 e 3). Cross-ref de compatibilidade de
 reparo (serviceemmc.com e afins) é sempre só apoio.
 
 **Mais uma (2026-07-14, PN `SD9DS28K-8G`, eMCP isolado sem nenhum datasheet SanDisk público):**

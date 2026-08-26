@@ -1707,6 +1707,14 @@ _KST_GOLDEN = {  # eMCP: specs em emcp_nand/emcp_ram; rentab pela RAM (512MB→d
 _SD_GOLDEN = {  # SanDisk: famílias MAGRAS — chip_type por prefixo; capacidade vem das KnownParts,
     # então a gramática sozinha dá INDETERMINADO. O teste congela o TIPO por família.
     "SD5DH24A4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
+    # SD5DH26 (2026-08-24, família NOVA — carve-out do die-code "26" dentro de SD5DH,
+    # que é eMMC puro): a âncora prova justamente o que o sub-prefixo existe pra fazer —
+    # o MESMO tronco "SD5DH" agora dá dois vereditos diferentes conforme o die-code.
+    # 24A continua eMMC/INDETERMINADO (linha acima); 26A vira eMCP e cai em NÃO RENTÁVEL
+    # por geração (LPDDR1 < cfg.emcp_min_lpddr_gen=3), ANTES de checar GB. Se alguém
+    # apagar a família SD5DH26, esta linha volta a "eMMC/INDETERMINADO" e o teste grita.
+    "SD5DH26A4G":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                    "LPDDR1 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
     "SD7DP24C4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SDADA4DR64G": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
                     "RAM não mapeada — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # subtype vazio → fallback INDETERMINADO (fix 2026-07-15: antes "tipo 'A'" via dict Samsung)
