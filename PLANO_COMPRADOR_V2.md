@@ -353,6 +353,61 @@ Duas guardas porque cada uma pega um caso: o 2º POST que chega **depois** do 1�
 
 **i18n:** 6 msgids novos, traduzidos nos 3 catálogos (`en`/`es`/`zh_Hans`), `.mo` recompilados. O `title` antigo virou **obsoleto** (convenção gettext), não foi apagado. Zero strings sem tradução.
 
+### ✅ Etapa 2 — o recorte da lista de compras (2026-08-26)
+
+O `MVP de propósito: sem filtro nem paginação` acabou.
+
+| Onde | O quê |
+|---|---|
+| `vendas/services.py` | `purchase_haystack` · `purchase_counts` · `filter_purchases` · `sort_purchases` + `PURCHASE_SORTS`/`PURCHASE_PERIODS` |
+| `vendas/views_partner.py` | `_recorte()` (uma leitura só para a tela e para o CSV) · `compras_list` com paginação · `compras_csv` |
+| `vendas/urls_partner.py` | `/partner/compras/export.csv` — **antes** do `compras/<pk>/`, senão o resolvedor tenta `export.csv` como pk |
+| `vendas/templates/.../partner_compras.html` | `.tbar` de recorte, cabeçalhos ordenáveis, coluna Resultado dupla, `.pgn` no rodapé, dois vazios diferentes |
+| `static/wtc/patterns/parceiro.css` | `.tfoot__sum` — o `.tfoot` do pacote é `space-between` com UMA ponta; aqui a esquerda tem duas frases |
+
+**Tudo em Python, e não é preguiça:** `orders_for_buyer` percorre uma empresa por vez dentro do
+`company_scope` dela (é assim que o RLS deixa o comprador ler várias). Não existe queryset único onde
+caiba um `.filter()` que valha para todas — a lista já nasce materializada. É também o que faz a
+contagem de status sair correta de graça.
+
+Quatro regras que parecem detalhe e não são:
+
+1. **A contagem da opção vem do conjunto COMPLETO.** Sobre o recorte, toda opção não-selecionada
+   mostraria `(0)` e o comprador concluiria que perdeu dado.
+2. **Período filtra por DESPACHO**, não por criação. Ordem sem `shipped_at` (a confirmada legada) sai
+   de qualquer recorte com período — não foi despachada em janela nenhuma, e fingir uma data seria
+   inventar dado.
+3. **O formulário não carrega `page`.** Trocar busca, filtro ou por-página volta à página 1 por
+   construção, não por código. `sort`/`dir` viajam escondidos para a ordenação sobreviver.
+4. **Vazio nunca é tabela vazia**: "Nenhuma compra ainda" (não há) × "Ajuste a busca" (há, o filtro
+   escondeu). Situações diferentes, frases diferentes.
+
+**Desvio consciente no CSV:** a spec pede a coluna `País` e a `Company` **não tem campo de país** — o
+endereço é texto livre de propósito (cada país tem uma estrutura). A coluna virou
+`Cliente — endereço`, que entrega o país e mais; a busca da tela já casa contra ele. São 14 colunas do
+mesmo jeito. Se o dono quiser `País` de verdade, é campo novo em `tenancy.Company`.
+
+**16 testes novos** em `CompradorComprasTests`. **21 msgids novos**, traduzidos nos 3 catálogos, com
+`context` explícito em `de`/`até` (palavra solta é ambígua em 4 idiomas). Cobertura conferida por
+script: 54 msgids das duas telas, zero sem tradução.
+
+### 🔁 C2 CORRIGIDO — a regra §4.1 já valia
+
+`sem_preco` e `a_congelar` **não são "lotes em aberto"**. `vendas/services.py:1321` (`mark_shipped`):
+
+> ⚠ Padrão F8: NUNCA levanta. Categoria sem preço no grid do comprador não pode impedir de registrar
+> que a caixa saiu — **o fato físico aconteceu**. A ordem fica em **rascunho DESPACHADO**, aparece para
+> o comprador assim mesmo.
+
+Esses lotes **estão a caminho dele**; só não deu para congelar o ¥. E o filtro já é a regra da spec:
+`Q(shipped_at__isnull=False) | Q(status=STATUS_CONFIRMED)`. Tirá-los sumiria com caixa despachada —
+foi o que aconteceu em 18/08 ("todas as compras do comprador sumiram"), e o comentário logo acima do
+filtro é a cicatriz.
+
+**Decisão revista:** a lista não perde ninguém. O `BlockedQuote` continua na Etapa 6, como **segunda
+vista** no lado dos preços. E o selo "Congelar" sem botão vira gap de verdade — a decisão de 18/08 é
+que **quem congela é o comprador**, e não existe rota para ele fazer isso.
+
 ### 🔴 Achado fora do escopo — `PartnerSelfAccessRLS` está vermelho por um bug REAL
 
 O commit `a6b2008` (19/08) já registrava este teste como vermelho conhecido, sem causa. A causa é esta:

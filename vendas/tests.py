@@ -1740,6 +1740,175 @@ class CompradorComprasTests(TestCase):
         self.assertEqual(services.order_stage(
             SalesOrder.all_companies.get(pk=so.pk)), services.STAGE_FATURADO)
 
+    # ── O RECORTE da lista: busca, status, período, ordem, página ──────────
+    # Spec v2 do comprador §5.3 (2026-08-26). Até aqui a lista era "MVP de
+    # propósito: sem filtro nem paginação".
+
+    def _compra(self, empresa, sufixo, *, carrier='DHL', dias=0):
+        """Compra despachada há ``dias`` dias, por ``carrier``."""
+        from datetime import timedelta
+        so = self._lote_fechado(empresa, sufixo=sufixo)
+        with company_scope(empresa):
+            SalesOrder.all_companies.filter(pk=so.pk).update(
+                carrier=carrier,
+                shipped_at=timezone.localdate() - timedelta(days=dias))
+        so.refresh_from_db()
+        return so
+
+    def _lista(self, **params):
+        self.client.force_login(self.parceiro)
+        return self.client.get(reverse('compras:list'), params)
+
+    def _pks(self, resp):
+        return {o.pk for o in resp.context['ordens']}
+
+    def test_busca_casa_cliente_transportadora_e_rastreio(self):
+        a = self._compra(self.emp_a, 'B1', carrier='DHL')
+        b = self._compra(self.emp_b, 'B2', carrier='FedEx')
+        # pelo nome do CLIENTE
+        self.assertEqual(self._pks(self._lista(q=self.emp_b.name)), {b.pk})
+        # pela TRANSPORTADORA, sem ligar para maiúscula
+        self.assertEqual(self._pks(self._lista(q='fedex')), {b.pk})
+        # pelo RASTREIO (só um pedaço dele)
+        self.assertEqual(self._pks(self._lista(q='JDB1')), {a.pk})
+        # termo que não existe não devolve a lista inteira
+        self.assertEqual(self._pks(self._lista(q='zzzz')), set())
+
+    def test_busca_casa_o_ENDERECO_do_cliente(self):
+        """Cidade e país não são campos — a Company guarda endereço como texto
+        livre. Buscar por cidade tem de funcionar mesmo assim."""
+        Company.objects.filter(pk=self.emp_b.pk).update(
+            address='Rua X, 400\nAsunción — Paraguay')
+        self._compra(self.emp_a, 'E1')
+        b = self._compra(self.emp_b, 'E2')
+        self.assertEqual(self._pks(self._lista(q='asunción')), {b.pk})
+
+    def test_a_contagem_do_status_vem_do_conjunto_COMPLETO(self):
+        """Calculada sobre o recorte, toda opção não-selecionada mostraria (0)
+        e o comprador concluiria que perdeu dado."""
+        self._compra(self.emp_a, 'C1')
+        self._compra(self.emp_b, 'C2')
+        resp = self._lista(status=services.STAGE_PAGO)     # nenhum está pago
+        self.assertEqual(self._pks(resp), set())
+        self.assertEqual(resp.context['counts'][services.STAGE_A_CONFERIR], 2)
+        self.assertContains(resp, '(2)')                   # a opção diz 2
+
+    def test_status_valido_com_zero_nao_e_ignorado(self):
+        """Escolher "Pago (0)" mostra a tela vazia com a frase — nunca devolve
+        a lista inteira como se nada tivesse sido pedido."""
+        self._compra(self.emp_a, 'S1')
+        resp = self._lista(status=services.STAGE_PAGO)
+        self.assertEqual(self._pks(resp), set())
+        self.assertContains(resp, 'Ajuste a busca')
+
+    def test_periodo_filtra_pela_data_de_DESPACHO(self):
+        recente = self._compra(self.emp_a, 'P1', dias=2)
+        self._compra(self.emp_b, 'P2', dias=20)
+        self.assertEqual(self._pks(self._lista(period='d7')), {recente.pk})
+        self.assertEqual(len(self._pks(self._lista(period='d30'))), 2)
+        self.assertEqual(len(self._pks(self._lista(period='any'))), 2)
+
+    def test_ordem_SEM_despacho_sai_de_qualquer_periodo(self):
+        """A confirmada legada (anterior ao campo existir) não foi despachada
+        em janela nenhuma — inventar uma data seria inventar dado."""
+        legada = self._lote_fechado(self.emp_a, sufixo='L1')
+        with company_scope(self.emp_a):
+            SalesOrder.all_companies.filter(pk=legada.pk).update(shipped_at=None)
+        self.assertIn(legada.pk, self._pks(self._lista()))          # `any` vê
+        self.assertNotIn(legada.pk, self._pks(self._lista(period='d30')))
+
+    def test_ordenacao_por_cliente_e_a_inversao(self):
+        self._compra(self.emp_a, 'O1')       # 'Vd cmp…'
+        self._compra(self.emp_b, 'O2')       # 'Vd cmp B'
+        asc = [o.company.name for o in
+               self._lista(sort='seller', dir='asc').context['ordens']]
+        self.assertEqual(asc, sorted(asc))
+        desc = [o.company.name for o in
+                self._lista(sort='seller', dir='desc').context['ordens']]
+        self.assertEqual(desc, list(reversed(asc)))
+
+    def test_lote_sem_resultado_AFUNDA_na_coluna_resultado(self):
+        """Sem fatura ordena por -1 (§5.3): tratá-lo como zero o empataria com
+        um lote quitado, e ele não tem número para competir."""
+        com = self._compra(self.emp_a, 'D1')
+        sem = self._compra(self.emp_b, 'D2')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[com.pk]), {})
+        ordem = [o.pk for o in
+                 self._lista(sort='due', dir='desc').context['ordens']]
+        self.assertEqual(ordem, [com.pk, sem.pk])
+
+    def test_pagina_fora_de_faixa_nao_estoura(self):
+        """Link velho de página 9 depois de um filtro que sobrou uma página
+        tem de mostrar a última, não 500."""
+        self._compra(self.emp_a, 'G1')
+        resp = self._lista(page='99')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['pagina'].number, 1)
+
+    def test_por_pagina_so_aceita_o_vocabulario(self):
+        self._compra(self.emp_a, 'V1')
+        self.assertEqual(self._lista(per='25').context['per'], 25)
+        self.assertEqual(self._lista(per='7').context['per'], 10)     # default
+        self.assertEqual(self._lista(per='xx').context['per'], 10)
+
+    def test_lixo_na_query_string_nao_quebra_a_tela(self):
+        """O comprador não digitou isso — um link velho digitou por ele."""
+        self._compra(self.emp_a, 'H1')
+        resp = self._lista(sort='drop', dir='xx', period='lol',
+                           status='nope', **{'from': 'abc', 'to': ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual((resp.context['f']['sort'], resp.context['f']['dir']),
+                         ('n', 'desc'))
+        self.assertEqual(resp.context['f']['period'], 'any')
+        self.assertEqual(resp.context['f']['status'], '')
+
+    def test_vazio_FILTRADO_diz_outra_coisa_que_vazio_absoluto(self):
+        resp = self._lista()                       # nenhuma compra existe
+        self.assertContains(resp, 'Nenhuma compra ainda')
+        self._compra(self.emp_a, 'W1')
+        resp = self._lista(q='zzzz')               # existem, o filtro escondeu
+        self.assertContains(resp, 'Ajuste a busca')
+        self.assertNotContains(resp, 'Nenhuma compra ainda')
+
+    # ── CSV ────────────────────────────────────────────────────────────────
+
+    def _csv(self, **params):
+        self.client.force_login(self.parceiro)
+        resp = self.client.get(reverse('compras:export_csv'), params)
+        return resp, resp.content.decode('utf-8')
+
+    def test_csv_leva_o_MESMO_recorte_com_14_colunas(self):
+        self._compra(self.emp_a, 'K1')
+        b = self._compra(self.emp_b, 'K2')
+        resp, texto = self._csv(q=self.emp_b.name)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(texto.startswith('\ufeff'))            # BOM p/ Excel
+        self.assertIn(f'compras-{self.buyer.slug}.csv',
+                      resp['Content-Disposition'])
+        linhas = [l for l in texto.lstrip('\ufeff').splitlines() if l]
+        self.assertEqual(len(linhas), 2)                       # cabeçalho + 1
+        self.assertEqual(len(linhas[0].split(';')), 14)
+        self.assertIn(b.lot.code, linhas[1])
+        self.assertNotIn(self.emp_a.name, linhas[1])
+
+    def test_csv_deixa_o_resultado_VAZIO_sem_fatura(self):
+        """Zero seria dizer que a conferência deu zero (§5.3)."""
+        self._compra(self.emp_a, 'K3')
+        _resp, texto = self._csv()
+        campos = texto.lstrip('\ufeff').splitlines()[1].split(';')
+        self.assertEqual(campos[11], '')      # CNY resultado
+        self.assertEqual(campos[12], '')      # USD a pagar
+
+    def test_csv_traz_o_resultado_depois_de_fechado(self):
+        so = self._compra(self.emp_a, 'K4')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        _resp, texto = self._csv()
+        campos = texto.lstrip('\ufeff').splitlines()[1].split(';')
+        self.assertEqual(campos[11], '150.00')                 # 10 × ¥15
+        self.assertEqual(campos[12], '21.00')                  # ¥150 × 0.14
+
 
 class CompradorValorFechadoTests(TestCase):
     """O valor fecha SOZINHO quando o preço que faltava é aprovado

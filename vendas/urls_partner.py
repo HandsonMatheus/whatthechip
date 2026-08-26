@@ -20,6 +20,10 @@ app_name = 'compras'
 
 urlpatterns = [
     path('', views.compras_list, name='list'),
+    # O MESMO recorte filtrado da lista, em CSV (spec v2 §5.3). Mora ANTES do
+    # `compras/<pk>/` porque `export.csv` não é um pk — e o resolvedor do
+    # Django para no primeiro padrão que casa.
+    path('compras/export.csv', views.compras_csv, name='export_csv'),
     path('compras/', RedirectView.as_view(pattern_name='compras:list'),
          name='list_legacy'),
     path('compras/<int:pk>/', views.compra_detail, name='detail'),

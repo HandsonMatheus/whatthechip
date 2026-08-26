@@ -969,6 +969,119 @@ def orders_for_buyer(buyer):
     return out
 
 
+# ── A lista de compras: busca, filtro, período e ordenação ───────────────────
+# Spec v2 do comprador §5.3. Até 2026-08-26 a lista era "MVP de propósito: sem
+# filtro nem paginação", com ordem fixa por data.
+#
+# ⚠ TUDO EM PYTHON, e não é preguiça: `orders_for_buyer` percorre UMA EMPRESA
+# POR VEZ dentro do `company_scope` dela (é assim que o RLS deixa o comprador
+# ler várias empresas). Não existe um queryset único onde caiba um `.filter()`
+# que valha para todas — a lista já nasce materializada, e filtrar/ordenar aqui
+# é o único lugar onde o conjunto INTEIRO existe ao mesmo tempo. É também o que
+# faz a contagem de status sair de graça e correta (ver `purchase_counts`).
+
+PURCHASE_SORTS = ('n', 'seller', 'so', 'units', 'val', 'usd', 'due')
+PURCHASE_PERIODS = ('any', 'd30', 'd7', 'custom')
+
+
+def purchase_haystack(so) -> str:
+    """Tudo que a busca casa, num campo só e em minúsculas.
+
+    Um `haystack` em vez de N comparações por coluna: a busca é uma caixa só,
+    e o comprador não sabe — nem deveria — em qual coluna o termo dele mora.
+    Ele digita "DHL", ou metade de um rastreio, ou o nome do cliente.
+
+    ⚠ Cidade e país não são campos: a `Company` guarda endereço como TEXTO
+    LIVRE (cada país tem uma estrutura). O endereço inteiro entra no haystack,
+    então buscar por cidade FUNCIONA — só não vira coluna.
+    """
+    emp = so.company if so.company_id else None
+    partes = (
+        so.lot.code if so.lot_id else '',
+        so.code or '',
+        emp.name if emp else '',
+        emp.code if emp else '',
+        (emp.address or '') if emp else '',
+        so.carrier or '',
+        so.tracking or '',
+    )
+    return ' '.join(p for p in partes if p).lower()
+
+
+def purchase_counts(ordens) -> dict:
+    """``{stage: n}`` do CONJUNTO COMPLETO, nunca do filtrado.
+
+    A contagem embutida na opção ("A conferir (2)") existe para poupar o
+    clique: ela diz quantos EXISTEM. Calculada sobre o recorte já filtrado,
+    toda opção não-selecionada mostraria (0) e o comprador concluiria que
+    perdeu dado — o oposto do que o número serve para dizer.
+    """
+    contagem = {}
+    for so in ordens:
+        contagem[so.stage] = contagem.get(so.stage, 0) + 1
+    return contagem
+
+
+def _result_usd(so):
+    """A coluna Resultado como número ordenável.
+
+    Sem fatura ⇒ ``-1``, e é PROPOSITAL (spec §5.3): lote sem resultado não
+    tem número para competir, e tratá-lo como zero o empataria com um lote
+    quitado. O -1 afunda os dois grupos em ordem legível.
+    """
+    return so.fatura.total_usd if so.fatura else Decimal('-1')
+
+
+# `n` = "o lote mais novo primeiro". NÃO ordena por `lot.number`: a numeração
+# é POR EMPRESA (unique together company+number), então dois clientes têm o
+# lote 41 e o número não forma ordem global. A criação da ordem é o instante
+# em que o lote fechou — é ela que significa "mais novo".
+_PURCHASE_KEY = {
+    'n':      lambda s: (s.created_at, s.pk),
+    'seller': lambda s: ((s.company.name.lower() if s.company_id else ''), s.pk),
+    'so':     lambda s: (s.number, s.pk),
+    'units':  lambda s: (s.units, s.pk),
+    'val':    lambda s: (s.total_rmb or s.est_rmb or Decimal('0'), s.pk),
+    'usd':    lambda s: (s.total_usd or s.est_usd or Decimal('0'), s.pk),
+    'due':    lambda s: (_result_usd(s), s.pk),
+}
+
+
+def filter_purchases(ordens, *, q='', status='', period='any',
+                     dt_from=None, dt_to=None):
+    """Recorte da lista. Devolve lista nova; não toca na original."""
+    fora = list(ordens)
+    termo = (q or '').strip().lower()
+    if termo:
+        fora = [so for so in fora if termo in purchase_haystack(so)]
+    if status:
+        fora = [so for so in fora if so.stage == status]
+    # ⚠ PERÍODO filtra pela data de DESPACHO, não pela de criação — mesma
+    # convenção do Estoque e do Vendas. "Últimos 7 dias" é sobre quando a
+    # caixa SAIU, que é o que o comprador tem na cabeça quando pergunta.
+    # Ordem sem `shipped_at` (a confirmada legada, anterior ao campo existir)
+    # sai de qualquer recorte com período — ela não foi despachada em janela
+    # nenhuma, e fingir uma data seria inventar dado.
+    hoje = timezone.localdate()
+    if period in ('d7', 'd30'):
+        from datetime import timedelta
+        corte = hoje - timedelta(days=7 if period == 'd7' else 30)
+        fora = [so for so in fora
+                if so.shipped_at and corte <= so.shipped_at <= hoje]
+    elif period == 'custom' and (dt_from or dt_to):
+        fora = [so for so in fora
+                if so.shipped_at
+                and (dt_from is None or so.shipped_at >= dt_from)
+                and (dt_to is None or so.shipped_at <= dt_to)]
+    return fora
+
+
+def sort_purchases(ordens, sort='n', desc=True):
+    """Ordena pelo campo da spec §5.3; chave desconhecida cai no default."""
+    chave = _PURCHASE_KEY.get(sort) or _PURCHASE_KEY['n']
+    return sorted(ordens, key=chave, reverse=bool(desc))
+
+
 @contextmanager
 def buyer_order(buyer, pk):
     """A OV ``pk`` do comprador, JÁ dentro do escopo da empresa dona dela.

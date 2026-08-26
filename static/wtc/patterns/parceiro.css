@@ -418,3 +418,15 @@
 /* a caixa preta de categoria é pintada com --ink-100, que inverte no tema escuro: aqui ela volta
    a ser escura de verdade, em vez de branca sobre branca */
 [data-theme="dark"] .cat{background:#000;color:#fff}
+
+/* ============ RODAPÉ DA LISTA DE COMPRAS ============
+   O `.tfoot` do pacote é `space-between` com UMA ponta de texto + a paginação.
+   Aqui a ponta esquerda tem DUAS frases (decisão do dono, 2026-08-19: o
+   comprador quer o tamanho da fila e quanto dela é trabalho dele), e sem um
+   agrupador o `space-between` esparramaria as duas pelas bordas. */
+.tfoot__sum{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;padding:9px 0}
+@media (max-width:760px){
+  /* No celular a paginação vira faixa de largura inteira (regra do pacote);
+     a soma passa a ser a primeira linha e ganha respiro nas duas bordas. */
+  .tfoot__sum{padding:11px 16px;width:100%}
+}

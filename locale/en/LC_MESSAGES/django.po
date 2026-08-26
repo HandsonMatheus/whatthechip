@@ -3399,6 +3399,92 @@ msgstr "no rate today"
 msgid "Este pagamento já foi registrado."
 msgstr "This payment has already been recorded."
 
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Ajuste a busca ou os filtros acima."
+msgstr "Adjust the search or the filters above."
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Aplicar"
+msgstr "Apply"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Buscar"
+msgstr "Search"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Buscar por lote, ordem, cliente, endereço, transportadora ou rastreio…"
+msgstr "Search by lot, order, client, address, carrier or tracking…"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Data final"
+msgstr "End date"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Data inicial"
+msgstr "Start date"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Datas específicas…"
+msgstr "Specific dates…"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Despachados nos últimos 30 dias"
+msgstr "Dispatched in the last 30 days"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Despachados nos últimos 7 dias"
+msgstr "Dispatched in the last 7 days"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Exportar CSV"
+msgstr "Export CSV"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Nenhum lote encontrado."
+msgstr "No lots found."
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Por página"
+msgstr "Per page"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Próxima página"
+msgstr "Next page"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Página %(n)s de %(de)s"
+msgstr "Page %(n)s of %(de)s"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Página anterior"
+msgstr "Previous page"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Qualquer período"
+msgstr "Any period"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Todos os status"
+msgstr "All statuses"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "de %(n)s na fila"
+msgstr "of %(n)s in the queue"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "quitado"
+msgstr "paid in full"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgctxt "intervalo de datas"
+msgid "de"
+msgstr "from"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgctxt "intervalo de datas"
+msgid "até"
+msgstr "to"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

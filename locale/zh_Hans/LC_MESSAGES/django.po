@@ -3212,6 +3212,92 @@ msgstr "无当日汇率"
 msgid "Este pagamento já foi registrado."
 msgstr "此付款已登记。"
 
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Ajuste a busca ou os filtros acima."
+msgstr "请调整上方的搜索或筛选条件。"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Aplicar"
+msgstr "应用"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Buscar"
+msgstr "搜索"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Buscar por lote, ordem, cliente, endereço, transportadora ou rastreio…"
+msgstr "按批次、订单、客户、地址、承运商或运单号搜索…"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Data final"
+msgstr "结束日期"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Data inicial"
+msgstr "开始日期"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Datas específicas…"
+msgstr "指定日期…"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Despachados nos últimos 30 dias"
+msgstr "最近 30 天发出的"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Despachados nos últimos 7 dias"
+msgstr "最近 7 天发出的"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Exportar CSV"
+msgstr "导出 CSV"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Nenhum lote encontrado."
+msgstr "未找到批次。"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Por página"
+msgstr "每页"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Próxima página"
+msgstr "下一页"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Página %(n)s de %(de)s"
+msgstr "第 %(n)s 页，共 %(de)s 页"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Página anterior"
+msgstr "上一页"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Qualquer período"
+msgstr "任意时间"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "Todos os status"
+msgstr "全部状态"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "de %(n)s na fila"
+msgstr "共 %(n)s 个在队列中"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgid "quitado"
+msgstr "已付清"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgctxt "intervalo de datas"
+msgid "de"
+msgstr "从"
+
+#: vendas/templates/vendas/partner_compras.html:1
+msgctxt "intervalo de datas"
+msgid "até"
+msgstr "至"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

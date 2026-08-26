@@ -56,17 +56,191 @@ def _shell(request, extra=None):
     return ctx
 
 
+def _stage_labels():
+    """Rótulo humano de cada estágio. Função, não constante: o `gettext` tem
+    de rodar POR REQUEST, no idioma ativo — resolvido no import, todo mundo
+    leria o primeiro idioma que carregou o módulo.
+
+    ⚠ As CHAVES (`sem_preco`, `a_conferir`…) são canônicas e nunca traduzem.
+    """
+    return {
+        services.STAGE_SEM_PRECO:  _('Falta preço seu'),
+        services.STAGE_A_CONGELAR: _('Congelar'),
+        services.STAGE_A_CONFERIR: _('A conferir'),
+        services.STAGE_FATURADO:   _('Faturado'),
+        services.STAGE_PARCIAL:    _('Pago em parte'),
+        services.STAGE_PAGO:       _('Pago'),
+    }
+
+
+def _iso(valor):
+    """Data da URL, ou None. Lixo na query string NUNCA vira erro de tela —
+    o comprador não digitou isso, um link velho digitou por ele."""
+    from datetime import date
+    try:
+        return date.fromisoformat((valor or '').strip())
+    except ValueError:
+        return None
+
+
+def _recorte(request):
+    """Lê e SANEIA o recorte da URL, e devolve o que as duas telas precisam:
+    ``(params, linhas, counts, total_geral)``.
+
+    Uma função só para a lista e para o CSV de propósito: a spec §5.3 manda o
+    export levar "o MESMO recorte filtrado". Dois caminhos de leitura seriam
+    duas chances de divergir, e a divergência apareceria como planilha que não
+    bate com a tela — o tipo de bug que ninguém reporta e todo mundo
+    desconfia.
+    """
+    from urllib.parse import urlencode
+    todos = services.orders_for_buyer(request.buyer)
+    # A contagem sai do conjunto COMPLETO, antes de qualquer filtro (§5.3).
+    counts = services.purchase_counts(todos)
+    rotulos = _stage_labels()
+    f = {
+        'q':      (request.GET.get('q') or '').strip()[:80],
+        'status': (request.GET.get('status') or '').strip(),
+        'period': (request.GET.get('period') or 'any').strip(),
+        'from':   (request.GET.get('from') or '').strip(),
+        'to':     (request.GET.get('to') or '').strip(),
+        'sort':   (request.GET.get('sort') or 'n').strip(),
+        'dir':    (request.GET.get('dir') or 'desc').strip(),
+    }
+    # Saneamento: valor fora do vocabulário vira o default, nunca 404 nem
+    # erro. Status VÁLIDO com zero ocorrências continua valendo — escolher
+    # "A conferir (0)" tem de mostrar a tela vazia com a frase, não
+    # silenciosamente devolver a lista inteira como se nada tivesse sido
+    # pedido.
+    if f['status'] not in rotulos:
+        f['status'] = ''
+    if f['period'] not in services.PURCHASE_PERIODS:
+        f['period'] = 'any'
+    if f['sort'] not in services.PURCHASE_SORTS:
+        f['sort'] = 'n'
+    if f['dir'] not in ('asc', 'desc'):
+        f['dir'] = 'desc'
+
+    linhas = services.filter_purchases(
+        todos, q=f['q'], status=f['status'], period=f['period'],
+        dt_from=_iso(f['from']), dt_to=_iso(f['to']))
+    linhas = services.sort_purchases(linhas, f['sort'],
+                                     desc=f['dir'] == 'desc')
+
+    # Query string SEM `page`: é o que os links de ordenação carregam, e é o
+    # que faz trocar de coluna voltar para a página 1 (§5.3).
+    f['qs'] = urlencode([(k, v) for k, v in (
+        ('q', f['q']), ('status', f['status']), ('period', f['period']),
+        ('from', f['from']), ('to', f['to'])) if v])
+    f['qs_full'] = urlencode([(k, v) for k, v in (
+        ('q', f['q']), ('status', f['status']), ('period', f['period']),
+        ('from', f['from']), ('to', f['to']),
+        ('sort', f['sort']), ('dir', f['dir'])) if v])
+    f['rotulos'] = rotulos
+    f['filtrando'] = bool(f['q'] or f['status'] or f['period'] != 'any')
+    return f, linhas, counts, len(todos)
+
+
 @partner_required
 def compras_list(request):
-    """As compras do comprador — todas as empresas, mais recente primeiro."""
-    ordens = services.orders_for_buyer(request.buyer)
-    # Quantas esperam ELE (design system v2, 2026-08-19): o rodapé de soma da
-    # lista diz o tamanho da fila e quanto dela é trabalho dele. Conta aqui —
-    # template não calcula.
-    a_conferir = sum(1 for o in ordens if o.stage == services.STAGE_A_CONFERIR)
-    return render(request, 'vendas/partner_compras.html',
-                  _shell(request, {'ordens': ordens,
-                                   'a_conferir': a_conferir}))
+    """As compras do comprador — todas as empresas, com busca, filtro de
+    status, período por DESPACHO, ordenação e paginação (spec v2 §5.3).
+
+    Até 2026-08-26 era "MVP de propósito: sem filtro nem paginação".
+    """
+    from django.core.paginator import Paginator
+    f, linhas, counts, total_geral = _recorte(request)
+    bruto = request.GET.get('per') or ''
+    por_pagina = int(bruto) if bruto.isdigit() and int(bruto) in (10, 25, 50) else 10
+    paginas = Paginator(linhas, por_pagina)
+    # `get_page` engole página inválida e fora de faixa — link velho de
+    # página 9 depois de um filtro que sobrou 1 página tem de mostrar a
+    # última, não estourar.
+    pagina = paginas.get_page(request.GET.get('page'))
+    return render(request, 'vendas/partner_compras.html', _shell(request, {
+        'ordens': pagina.object_list,
+        'pagina': pagina,
+        'per': por_pagina,
+        'per_opcoes': (10, 25, 50),
+        'f': f,
+        'counts': counts,
+        # [(chave, rótulo, quantos)] na ordem do FLUXO, com a contagem do
+        # conjunto completo embutida na opção (§5.3). Montado aqui porque o
+        # template do Django não indexa dicionário por variável.
+        'status_opcoes': [(k, v, counts.get(k, 0))
+                          for k, v in f['rotulos'].items()],
+        # Quantas esperam ELE (design system v2, 2026-08-19): o rodapé diz o
+        # tamanho da fila e quanto dela é trabalho dele. Do conjunto
+        # completo — é a fila real, não a que o filtro deixou à vista.
+        'a_conferir': counts.get(services.STAGE_A_CONFERIR, 0),
+        'total_filtrado': len(linhas),
+        'total_geral': total_geral,
+    }))
+
+
+# Cabeçalho do CSV — 14 colunas (spec v2 §5.3).
+# ⚠ Desvio consciente na 5ª: a spec pede "País" e a `Company` NÃO TEM campo de
+# país — o endereço é texto livre de propósito (cada país tem uma estrutura;
+# Macau não tem estado, a China inverte a ordem). Emitir "País" vazio seria
+# uma coluna que promete e não entrega; o endereço entrega o país e mais. A
+# busca da tela já casa contra ele.
+_CSV_COLS = ('Lote', 'Ordem', 'Categoria', 'Cliente', 'Cliente — endereço',
+             'Transportadora', 'Rastreio', 'Chips', 'CNY total',
+             'Taxa travada', 'USD total', 'CNY resultado', 'USD a pagar',
+             'Status')
+
+
+def _csv_num(valor):
+    """Número canônico: ponto decimal, sem separador de milhar, sempre. O CSV
+    é lido por planilha em quatro idiomas — localizar aqui é o caminho mais
+    curto para ¥ 1.234 virar mil duzentos e trinta e quatro em um lugar e
+    um vírgula dois em outro."""
+    return '' if valor is None else str(valor)
+
+
+@partner_required
+def compras_csv(request):
+    """O MESMO recorte filtrado da lista, em CSV (spec v2 §5.3).
+
+    `;` + BOM UTF-8 porque quem abre é Excel em máquina chinesa: sem o BOM os
+    acentos viram mojibake, e com vírgula o Excel pt/es/zh não separa colunas.
+    """
+    import csv
+    import io
+    from django.http import HttpResponse
+    f, linhas, _counts, _total = _recorte(request)
+    rotulos = f['rotulos']
+    buf = io.StringIO()
+    escritor = csv.writer(buf, delimiter=';')
+    escritor.writerow(_CSV_COLS)
+    for so in linhas:
+        fatura = so.fatura
+        taxa = so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None)
+        emp = so.company if so.company_id else None
+        escritor.writerow([
+            so.lot.code if so.lot_id else '',
+            so.code,
+            # Origem é valor CANÔNICO (phone/pcb/ram): não traduz.
+            so.lot.origin if so.lot_id else '',
+            emp.name if emp else '',
+            ' '.join((emp.address or '').split()) if emp else '',
+            so.carrier or '',
+            so.tracking or '',
+            so.units,
+            _csv_num(so.total_rmb or so.est_rmb),
+            _csv_num(taxa),
+            _csv_num(so.total_usd or so.est_usd),
+            # Resultado sai VAZIO enquanto não houver fatura (§5.3) — zero
+            # seria dizer que a conferência deu zero.
+            _csv_num(fatura.total_rmb if fatura else None),
+            _csv_num(fatura.balance_usd if fatura else None),
+            str(rotulos.get(so.stage, so.stage)),
+        ])
+    resp = HttpResponse('\ufeff' + buf.getvalue(),
+                        content_type='text/csv; charset=utf-8')
+    nome = f'compras-{request.buyer.slug}.csv'
+    resp['Content-Disposition'] = f'attachment; filename="{nome}"'
+    return resp
 
 
 @partner_required

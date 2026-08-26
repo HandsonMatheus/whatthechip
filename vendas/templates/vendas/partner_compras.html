@@ -19,11 +19,23 @@
     · `.mval` par ¥/US$ · `.tag` selo de estado · `.act` ação pendente
     · `.hb/.hg/.hr` grupo de colunas tingido — aqui o RESULTADO, que é o que a
       conferência devolveu, ganha o azul do grupo.
+    · `.tbar` barra de recorte · `.pgn` paginação · `.s`+`.ar` coluna ordenável
 
-  MVP de propósito: sem filtro nem paginação (o volume hoje é de dezenas). O
-  que NÃO pode faltar aqui é o CLIENTE — o comprador recebe lote de várias
-  empresas e precisa saber de qual veio (foi o que motivou o SHIP FROM no
-  documento de embarque).
+  ═══ RECORTE (spec v2 do comprador §5.3, 2026-08-26) ═══
+  O "MVP de propósito: sem filtro nem paginação" acabou. Quatro regras que
+  parecem detalhe e não são:
+
+  1. A CONTAGEM DA OPÇÃO vem do conjunto COMPLETO, nunca do filtrado. Calculada
+     sobre o recorte, toda opção não-selecionada mostraria (0) e o comprador
+     concluiria que perdeu dado.
+  2. PERÍODO filtra pela data de DESPACHO — mesma convenção do Estoque e do
+     Vendas. É sobre quando a caixa SAIU.
+  3. O formulário NÃO carrega `page`. Trocar busca, filtro ou por-página volta
+     à página 1 por construção, não por código. `sort`/`dir` viajam escondidos
+     para a ordenação escolhida sobreviver a uma troca de filtro.
+  4. VAZIO NUNCA É TABELA VAZIA: ou "nenhuma compra ainda" (não há nada), ou
+     "ajuste a busca" (há, e o filtro escondeu). São mensagens diferentes
+     porque são situações diferentes.
 
   ⚠ Rótulo REAL, sem máscara: quem lê é quem compra o chip.
 {% endcomment %}
@@ -43,23 +55,65 @@
 </div>
 
 <div class="panel">
+  {# ── Recorte. GET de propósito: o estado da lista tem de caber num link. ── #}
+  <form class="tbar" method="get" action="{% url 'compras:list' %}" id="f-recorte">
+    <input type="hidden" name="sort" value="{{ f.sort }}">
+    <input type="hidden" name="dir" value="{{ f.dir }}">
+    <div class="tbar__search">
+      <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" name="q" value="{{ f.q }}" autocomplete="off"
+             aria-label="{% trans 'Buscar' %}"
+             placeholder="{% trans 'Buscar por lote, ordem, cliente, endereço, transportadora ou rastreio…' %}">
+    </div>
+    <select class="tbar__sel tbar__sel--st" name="status" aria-label="{% trans 'Status' %}"
+            data-envia>
+      <option value="">{% trans "Todos os status" %}</option>
+      {% for chave, rotulo, quantos in status_opcoes %}
+        <option value="{{ chave }}"{% if f.status == chave %} selected{% endif %}>{{ rotulo }} ({{ quantos }})</option>
+      {% endfor %}
+    </select>
+    <select class="tbar__sel" name="period" id="f-period" aria-label="{% trans 'Período' %}" data-envia>
+      <option value="any"{% if f.period == 'any' %} selected{% endif %}>{% trans "Qualquer período" %}</option>
+      <option value="d30"{% if f.period == 'd30' %} selected{% endif %}>{% trans "Despachados nos últimos 30 dias" %}</option>
+      <option value="d7"{% if f.period == 'd7' %} selected{% endif %}>{% trans "Despachados nos últimos 7 dias" %}</option>
+      <option value="custom"{% if f.period == 'custom' %} selected{% endif %}>{% trans "Datas específicas…" %}</option>
+    </select>
+    <div class="drange{% if f.period != 'custom' %} hide{% endif %}" id="f-drange">
+      <span>{% trans "de" context "intervalo de datas" %}</span>
+      <input type="date" name="from" value="{{ f.from }}" aria-label="{% trans 'Data inicial' %}" data-envia>
+      <span>{% trans "até" context "intervalo de datas" %}</span>
+      <input type="date" name="to" value="{{ f.to }}" aria-label="{% trans 'Data final' %}" data-envia>
+    </div>
+    {# O export leva o MESMO recorte — por isso é um link montado com a query
+       string atual, e não um botão que reenvia o formulário. #}
+    <a class="tbar__ico" href="{% url 'compras:export_csv' %}?{{ f.qs_full }}"
+       title="{% trans 'Exportar CSV' %}" aria-label="{% trans 'Exportar CSV' %}">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>
+    </a>
+    <noscript><button class="btn btn--sec" type="submit">{% trans "Aplicar" %}</button></noscript>
+  </form>
+
   <div class="dtab__wrap">
     <table class="dtab">
       <thead>
         <tr>
-          <th>{% trans "Lote" %}</th>
-          <th>{% trans "Cliente" %}</th>
+          {% comment %} Coluna ordenável: o link carrega o recorte inteiro MENOS
+             `page` — trocar de coluna volta à página 1. Clicar na coluna já
+             ativa inverte o sentido. {% endcomment %}
+          <th class="s"><a href="?{{ f.qs }}&sort=n&dir={% if f.sort == 'n' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Lote" %} {% if f.sort == 'n' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          <th class="s"><a href="?{{ f.qs }}&sort=seller&dir={% if f.sort == 'seller' and f.dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Cliente" %} {% if f.sort == 'seller' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           {% comment %} Data em que a ORDEM foi gerada (dono, 2026-08-18) — não a
              do lote: é ela que marca quando a compra entrou na fila dele. {% endcomment %}
-          <th>{% trans "Ordem" %}</th>
-          <th>{% trans "Chips" %}</th>
-          <th>{% trans "Total ¥" %}</th>
-          <th>{% trans "Total US$" %}</th>
+          <th class="s"><a href="?{{ f.qs }}&sort=so&dir={% if f.sort == 'so' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Ordem" %} {% if f.sort == 'so' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          <th class="s hide-lg"><a href="?{{ f.qs }}&sort=units&dir={% if f.sort == 'units' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Chips" %} {% if f.sort == 'units' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          <th class="s"><a href="?{{ f.qs }}&sort=val&dir={% if f.sort == 'val' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Total ¥" %} {% if f.sort == 'val' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          <th class="s hide-lg"><a href="?{{ f.qs }}&sort=usd&dir={% if f.sort == 'usd' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Total US$" %} {% if f.sort == 'usd' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           {% comment %} RESULTADO (dono, 2026-08-19): o total ao lado é o ESPERADO —
              o que o lote valia quando saiu. O que ele paga de fato é o que sobra
              depois da conferência, e isso só existe com fatura. A mesma coluna
-             está na lista do cliente, do outro lado do balcão. {% endcomment %}
-          <th class="hb">{% trans "Resultado" %}</th>
+             está na lista do cliente, do outro lado do balcão.
+             Lote sem resultado ordena por -1 e AFUNDA (§5.3) — proposital. {% endcomment %}
+          <th class="s hb"><a href="?{{ f.qs }}&sort=due&dir={% if f.sort == 'due' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Resultado" %} {% if f.sort == 'due' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           <th>{% trans "Situação" %}</th>
           <th></th>
         </tr>
@@ -70,15 +124,15 @@
           <td class="c">{{ o.lot.code }}</td>
           <td>{{ o.company.name }}</td>
           <td class="d">{{ o.code }} · {{ o.created_at|date:"d/m/Y" }}</td>
-          <td class="n" data-suffix="{% trans 'Chips' %}">{{ o.units }}</td>
+          <td class="n hide-lg" data-suffix="{% trans 'Chips' %}">{{ o.units }}</td>
           {% localize off %}
           {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
              tabela de hoje, não o congelado. Antes vinha "—" e a lista não dizia
              nada sobre o tamanho da compra. {% endcomment %}
           <td class="v">{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}≈ ¥ {{ o.est_rmb }}{% else %}<span class="none">—</span>{% endif %}</td>
-          <td class="v">{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}≈ US$ {{ o.est_usd }}{% else %}<span class="none">—</span>{% endif %}</td>
+          <td class="v hide-lg">{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}≈ US$ {{ o.est_usd }}{% else %}<span class="none">—</span>{% endif %}</td>
           <td class="v key hb">
-            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="due">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% endif %}
+            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="due">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% else %}<span class="got">{% trans "quitado" %}</span>{% endif %}
             {% else %}<span class="none">—</span>{% endif %}
           </td>
           {% endlocalize %}
@@ -96,20 +150,62 @@
         </tr>
       {% empty %}
         <tr><td colspan="9" class="dtab__empty">
-          <b>{% trans "Nenhuma compra ainda." %}</b>
-          {% trans "Assim que um cliente despachar um lote, ele aparece aqui." %}
+          {% if f.filtrando %}
+            <b>{% trans "Nenhum lote encontrado." %}</b>
+            {% trans "Ajuste a busca ou os filtros acima." %}
+          {% else %}
+            <b>{% trans "Nenhuma compra ainda." %}</b>
+            {% trans "Assim que um cliente despachar um lote, ele aparece aqui." %}
+          {% endif %}
         </td></tr>
       {% endfor %}
       </tbody>
     </table>
   </div>
 
-  {% comment %} Rodapé de SOMA, não de paginação: quantas compras estão na fila
-     e quanto delas ainda espera decisão. {% endcomment %}
-  {% if ordens %}
-  <div class="tfoot tfoot--sum">
-    <span><b>{{ ordens|length }}</b> {% trans "na fila" %}</span>
-    {% if a_conferir %}<span class="due"><b>{{ a_conferir }}</b> {% trans "esperando a sua conferência" %}</span>{% endif %}
+  {% comment %} Rodapé: soma À ESQUERDA (o tamanho da fila e quanto dela espera
+     ELE — do conjunto completo, não do recorte) e paginação à direita. {% endcomment %}
+  {% if total_geral %}
+  <div class="tfoot">
+    <div class="tfoot__sum">
+      {% if f.filtrando %}
+        <span><b>{{ total_filtrado }}</b> {% blocktrans trimmed with n=total_geral %}de {{ n }} na fila{% endblocktrans %}</span>
+      {% else %}
+        <span><b>{{ total_geral }}</b> {% trans "na fila" %}</span>
+      {% endif %}
+      {% if a_conferir %}<span class="due"><b>{{ a_conferir }}</b> {% trans "esperando a sua conferência" %}</span>{% endif %}
+    </div>
+    <div class="pgn">
+      {% comment %} Formulário PRÓPRIO, e sem `page`: trocar o tamanho da página
+         volta à primeira por construção (§5.3). No celular o pacote esconde
+         este bloco — lá a lista é cartão e rola. {% endcomment %}
+      <form class="pgn__per" method="get" action="{% url 'compras:list' %}">
+        <input type="hidden" name="q" value="{{ f.q }}">
+        <input type="hidden" name="status" value="{{ f.status }}">
+        <input type="hidden" name="period" value="{{ f.period }}">
+        <input type="hidden" name="from" value="{{ f.from }}">
+        <input type="hidden" name="to" value="{{ f.to }}">
+        <input type="hidden" name="sort" value="{{ f.sort }}">
+        <input type="hidden" name="dir" value="{{ f.dir }}">
+        <label for="per">{% trans "Por página" %}</label>
+        <select id="per" name="per" onchange="this.form.submit()">
+          {% for opcao in per_opcoes %}
+            <option value="{{ opcao }}"{% if per == opcao %} selected{% endif %}>{{ opcao }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <div class="pgn__i">{% blocktrans trimmed with n=pagina.number de=pagina.paginator.num_pages %}Página {{ n }} de {{ de }}{% endblocktrans %}</div>
+      {% if pagina.has_previous %}
+        <a class="pgn__b" href="?{{ f.qs_full }}&per={{ per }}&page={{ pagina.previous_page_number }}" aria-label="{% trans 'Página anterior' %}"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></a>
+      {% else %}
+        <button class="pgn__b" type="button" disabled aria-label="{% trans 'Página anterior' %}"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      {% endif %}
+      {% if pagina.has_next %}
+        <a class="pgn__b" href="?{{ f.qs_full }}&per={{ per }}&page={{ pagina.next_page_number }}" aria-label="{% trans 'Próxima página' %}"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a>
+      {% else %}
+        <button class="pgn__b" type="button" disabled aria-label="{% trans 'Próxima página' %}"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      {% endif %}
+    </div>
   </div>
   {% endif %}
 </div>
@@ -125,5 +221,27 @@ document.querySelectorAll('.dtab tbody tr[data-href]').forEach(function (tr) {
     location.href = tr.dataset.href;
   });
 });
+
+// O recorte se aplica sozinho ao trocar um select — a busca continua no Enter,
+// porque aplicar a cada tecla recarregaria a página no meio da digitação.
+// Sem JS o <noscript> mostra um botão Aplicar e nada disto é necessário.
+(function () {
+  var form = document.getElementById('f-recorte');
+  if (!form) return;
+  var range = document.getElementById('f-drange');
+  var periodo = document.getElementById('f-period');
+  form.querySelectorAll('[data-envia]').forEach(function (el) {
+    el.addEventListener('change', function () {
+      // "Datas específicas…" abre o intervalo em vez de recarregar: recarregar
+      // com as duas datas vazias devolveria a lista inteira e daria a impressão
+      // de que o filtro não fez nada.
+      if (el === periodo && el.value === 'custom') {
+        range.classList.remove('hide');
+        return;
+      }
+      form.submit();
+    });
+  });
+})();
 </script>
 {% endblock %}
