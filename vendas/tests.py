@@ -1001,7 +1001,7 @@ class PdfConferenciaGerenteTests(TestCase):
         fora = {'unit_rmb', 'total_rmb', 'total_usd', 'fx', 'spec',
                 'capacity', 'type', 'confirmed', 'cancelled',
                 'result', 'received', 'settled', 'sent',
-                'rejected', 'accepted', 'brand', 'notes',
+                'rejected', 'accepted', 'brand', 'notes', 'checked_by',
                 'expected', 'final', 'difference'}
         # ⚠ A conta é só dos caracteres que o `_rich` MANDA para a TTF (o
         # `_CJK_RE`). Rótulo em chinês pode trazer pontuação latina — o travessão
@@ -2170,6 +2170,34 @@ class CompradorComprasTests(TestCase):
             reverse('compras:detail', args=[so.pk]) + '?aba=drop')
         self.assertEqual(tela.context['aba_inicial'], 'resumo')
 
+    def test_script_o_PDF_do_resultado_tem_glifo_para_os_rotulos_DELE(self):
+        """O portão do packing list não alcança este documento.
+
+        Glifo só entra na fonte embutida se o rótulo for DESENHADO, e por isso
+        aquele teste exclui de propósito os rótulos do documento de RESULTADO —
+        eles não aparecem naquele PDF. O buraco é que ninguém os conferia em
+        lugar nenhum: `checked_by` nasceu em 26/08 e passou direto. Sem glifo o
+        reportlab desenha quadradinho e ninguém percebe.
+
+        A nota é obrigatória no roteiro: sem ela o `checked_by` não é desenhado
+        e o teste conferiria uma fonte onde ele nunca entrou.
+        """
+        from pricing.pdf import _CJK_RE
+        from .pdf import _L
+        so = self._compra(self.emp_a, 'GL')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {'notes': 'conferido'})
+        pdf = self.client.get(
+            reverse('compras:resultado_pdf', args=[so.pk])).content
+        self.assertIn(b'/BaseFont', pdf)              # a TTF foi embutida
+        for chave in ('notes', 'checked_by'):
+            for ch in _L[chave][1]:
+                if _CJK_RE.fullmatch(ch):
+                    self.assertIn(
+                        f'<{ord(ch):04X}>'.encode(), pdf,
+                        f'sem glifo para {ch!r} ({chave}) no PDF do resultado')
+
     def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):
         """Devolvem lista nova. A original é a mesma que alimenta a contagem —
         mutá-la faria o número do filtro depender da ordem das chamadas."""
@@ -2408,15 +2436,25 @@ class CompradorValorFechadoTests(TestCase):
         tabela = html.index('id="tab-resumo"')
         self.assertLess(acao, abas)
         self.assertLess(abas, tabela)
-        # Depois da planilha só começam os diálogos: fatie até o primeiro
-        # `mscrim` e prove que naquele pedaço não sobrou controle nenhum.
-        fim = html.index('</form>', tabela)      # a planilha termina aqui
-        depois = html[fim:html.index('class="mscrim"')]
+        # Depois da PLANILHA não sobra controle nenhum. A fatia vai até o
+        # começo da aba seguinte, e não até os diálogos — desde a aba
+        # Observações (26/08) existe um formulário DEPOIS da planilha no
+        # documento, e ele não viola a regra: a regra é sobre "botão no fim de
+        # uma planilha de centenas de linhas", e a planilha está `hidden`
+        # quando aquela aba está aberta. Medir até o `mscrim` media ordem no
+        # DOM; o que o dono pediu é ordem NA TELA.
+        fim = html.index('</form>', tabela)       # a planilha termina aqui
+        depois = html[fim:html.index('id="pane-chips"')]
         # ⚠ Procure MARCAÇÃO, não classe: o CSS no fim da página cita todos os
         # nomes de classe e faria a asserção falhar sozinha.
         self.assertNotIn('name="notes"', depois)
         self.assertNotIn('type="submit"', depois)
         self.assertNotIn('<input', depois)
+        # …e o formulário que existe em OUTRA aba tem de estar no TOPO dela,
+        # que é a metade da regra que a fatia acima não alcança: painel próprio
+        # não basta se o campo estiver no fim de uma lista longa de notas.
+        painel = html.index('id="pane-observacoes"')
+        self.assertLess(html.index('obs__new', painel) - painel, 300)
 
     def test_aba_de_chips_lista_PN_spec_caixa_e_preco(self):
         """"Seria aí onde o comprador olha detalhe por detalhe" (dono)."""

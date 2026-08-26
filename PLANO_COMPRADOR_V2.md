@@ -485,6 +485,33 @@ nas três telas do comprador, zero sem tradução.
 do release novo servir, então o fluxo normal já está correto. O inverso também é seguro: migrar antes
 de subir o código não quebra nada, porque o código velho ignora tabela nova.
 
+#### Dois portões do dono pegaram a Etapa 4 — e um deles tinha razão
+
+**1. Glifo (`vendas/tests.py`, o portão do packing list).** Escolhi `驗貨` para a assinatura
+`Conference` e o teste acusou *"sem glifo para 驗 na fonte embutida"*. A fonte tem o caractere — o que
+não tinha era o PDF: **glifo só entra na fonte embutida se o rótulo for desenhado**, e `checked_by` só
+aparece no documento de RESULTADO, não no packing list. O próprio teste já excluía esse grupo
+(`result`, `notes`, `sent`…) por essa razão exata; faltava `checked_by` na lista.
+
+⚠ Mas isso abria um buraco: nenhum teste conferia os rótulos do documento de resultado. Criei
+`test_script_o_PDF_do_resultado_tem_glifo_para_os_rotulos_DELE`, que renderiza **com nota** (sem ela o
+`checked_by` não é desenhado e o teste conferiria uma fonte onde ele nunca entrou).
+
+**2. "Nada abaixo da tabela".** Este pegou de verdade, e vale registrar por quê. A regra do dono
+(19/08) é: *"lote grande faz a tabela ter centenas de linhas, e botão no fim dela é botão que ninguém
+alcança."* O teste media do fim da planilha até o primeiro diálogo e exigia zero controles ali — e a
+aba Observações põe um formulário exatamente nesse trecho **do documento**.
+
+Só que a planilha está `hidden` quando aquela aba está aberta: o campo nasce colado na barra de abas,
+não no fim de centenas de linhas. O teste media ordem no **DOM**; o que o dono pediu é ordem na
+**TELA**. E o protótipo (`parceiro-lote.js`) confirma o desenho — Observações é aba, com o campo no
+topo do painel.
+
+A fatia passou a ir até o começo da aba seguinte (a cauda da planilha, que é o que a regra protege), e
+ganhou a **outra metade da regra**, que a fatia sozinha não alcançava: o formulário de outra aba tem de
+estar no **topo** do painel dela — painel próprio não basta se o campo estiver no fim de uma lista
+longa de notas.
+
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 
 Tudo que se implementa sai com as duas camadas:
