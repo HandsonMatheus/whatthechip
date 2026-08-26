@@ -3512,6 +3512,10 @@ msgctxt "intervalo de datas"
 msgid "até"
 msgstr "hasta"
 
+#: pricing/templates/pricing/partner_base.html:1
+msgid "Caixas a conferir e compras com saldo em aberto"
+msgstr "Cajas por revisar y compras con saldo pendiente"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

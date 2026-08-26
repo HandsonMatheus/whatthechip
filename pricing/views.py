@@ -63,7 +63,9 @@ def partner_required(view_func):
 
     Roda a view sob `company_scope(buyer.company)` — Camada A (contextvar) e
     Camada B (GUC do RLS) valem para a request inteira do parceiro. Também
-    anexa `request.partner_unseen` (badge 🔔 em toda página do parceiro)."""
+    anexa `request.partner_unseen` (badge 🔔) e `request.buys_badge` (o
+    contador do item Compras) — os dois em TODA página do parceiro, porque os
+    dois vivem no cabeçalho e o cabeçalho é o mesmo em todas."""
     @wraps(view_func)
     def _wrapped(request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -74,12 +76,17 @@ def partner_required(view_func):
             raise PermissionDenied(_(
                 'Esta área é do comprador. Sua conta não está vinculada a '
                 'nenhum comprador ativo.'))
+        # Import local: `vendas.views_partner` importa DESTE módulo, e o
+        # de topo fecharia o ciclo.
+        from vendas.services import buys_badge
         request.buyer = buyer
         if buyer.company_id:
             with company_scope(buyer.company):
                 request.partner_unseen = _unseen_decisions(buyer).count()
+                request.buys_badge = buys_badge(buyer)
                 return view_func(request, *args, **kwargs)
         request.partner_unseen = _unseen_decisions(buyer).count()
+        request.buys_badge = buys_badge(buyer)
         return view_func(request, *args, **kwargs)   # comprador de plataforma (futuro)
     return _wrapped
 

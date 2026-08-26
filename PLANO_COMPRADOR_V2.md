@@ -408,6 +408,36 @@ filtro é a cicatriz.
 vista** no lado dos preços. E o selo "Congelar" sem botão vira gap de verdade — a decisão de 18/08 é
 que **quem congela é o comprador**, e não existe rota para ele fazer isso.
 
+### ✅ Etapa 3 — o badge do nav (2026-08-26)
+
+```
+badge = (caixas a conferir) + (dívidas em aberto)
+```
+
+| Onde | O quê |
+|---|---|
+| `vendas/services.py` | `buys_badge(buyer)` — **duas contagens por empresa**, sem materializar nada |
+| `pricing/views.py` | `partner_required` anexa `request.buys_badge`, como já fazia com o 🔔 |
+| `pricing/templates/.../partner_base.html` | `<span class="pnav__b" data-buys-badge>` no item Compras |
+
+**Consulta própria, não `orders_for_buyer`:** o badge aparece em toda tela do painel (preços,
+catálogo, como funciona), e a lista completa re-resolve cotação viva de cada rascunho contra o grid.
+Caro demais para pagar em toda página só para desenhar um número.
+
+**`open` já significa saldo > 0** — o `register_payment` vira para `paid` no instante em que zera, e é
+invariante do modelo. Contar saldo de novo aqui seria repetir a conta em outro lugar, com uma chance a
+mais de divergir.
+
+**`sem_preco` NÃO entra.** É pendência real e só o comprador resolve — mas se resolve na tela de
+**preços**. Somá-la aqui o mandaria para Compras, onde não há o que fazer a respeito. Ela aparece do
+lado certo do balcão pelo `BlockedQuote` (Etapa 6).
+
+**Zero é string vazia, nunca `0`.** Quem esconde é o `.pnav__b:empty{display:none}` do pacote — a tela
+só precisa não escrever o número. Zero desenhado é ruído que treina o olho a ignorar o badge
+justamente quando ele passa a significar alguma coisa.
+
+6 testes (4 script + 2 interface) · 1 msgid novo nos 3 catálogos.
+
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 
 Tudo que se implementa sai com as duas camadas:

@@ -969,6 +969,51 @@ def orders_for_buyer(buyer):
     return out
 
 
+def buys_badge(buyer) -> int:
+    """Quantas compras esperam UMA AÇÃO DELE (spec v2 do comprador §5.3).
+
+        badge = (caixas a conferir) + (dívidas em aberto)
+
+    Não conta o que está a caminho (nada a fazer ainda) nem o que já foi
+    quitado. **Zero é string vazia na tela, nunca `0`** — o pacote resolve
+    isso com `.pnav__b:empty{display:none}`; a view só precisa mandar vazio.
+
+    ⚠ Consulta PRÓPRIA, e não `orders_for_buyer`: o badge aparece em TODA tela
+    do painel (preços, catálogo, como funciona), e a lista completa
+    re-resolve cotação viva de cada rascunho contra o grid — caro demais para
+    pagar em toda página só para desenhar um número. São duas contagens por
+    empresa, sem materializar nada.
+
+    ⚠ `sem_preco` NÃO entra. É pendência real e só ele resolve, mas se resolve
+    na tela de PREÇOS — somá-la aqui mandaria o comprador para Compras, onde
+    não há o que fazer a respeito. Ela aparece do lado certo do balcão pelo
+    `BlockedQuote` (spec §3.5).
+    """
+    from tenancy.scope import company_scope
+    from .models import INV_OPEN, INV_PAID, Invoice
+    total = 0
+    for comp in _empresas_ativas():
+        with company_scope(comp):
+            base = (SalesOrder.objects
+                    .filter(buyer=buyer)
+                    .exclude(status=STATUS_CANCELLED)
+                    .filter(Q(shipped_at__isnull=False)
+                            | Q(status=STATUS_CONFIRMED)))
+            # A CONFERIR: confirmada e ainda SEM fatura ativa. O `exclude`
+            # sobre a relação reversa tira a ordem que tem QUALQUER fatura
+            # viva — que é exatamente a definição de "já conferida".
+            total += (base.filter(status=STATUS_CONFIRMED)
+                      .exclude(invoices__status__in=(INV_OPEN, INV_PAID))
+                      .count())
+            # COM SALDO: fatura EM ABERTO. `open` já significa saldo > 0 — o
+            # `register_payment` vira para `paid` no instante em que zera, e
+            # é invariante do modelo. Contar saldo aqui seria repetir a conta
+            # em outro lugar, com uma chance a mais de divergir.
+            total += Invoice.objects.filter(order__in=base,
+                                            status=INV_OPEN).count()
+    return total
+
+
 # ── A lista de compras: busca, filtro, período e ordenação ───────────────────
 # Spec v2 do comprador §5.3. Até 2026-08-26 a lista era "MVP de propósito: sem
 # filtro nem paginação", com ordem fixa por data.

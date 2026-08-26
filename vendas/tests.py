@@ -1982,6 +1982,82 @@ class CompradorComprasTests(TestCase):
         self.assertEqual([o.pk for o in services.sort_purchases(todas, 'xyz')],
                          [o.pk for o in services.sort_purchases(todas, 'n')])
 
+    # ── Badge do nav: quantas compras esperam UMA AÇÃO DELE (spec §5.3) ────
+
+    def _compra_sem_preco(self, sufixo):
+        """Caixa DESPACHADA cuja categoria não está no grid dele: fica em
+        rascunho DESPACHADO (`sem_preco`). O `mark_shipped` nunca levanta —
+        o fato físico aconteceu."""
+        with company_scope(self.emp_a):
+            self._grid(self.buyer)
+            lot = Lot.open_for_company(self.emp_a, self.parceiro,
+                                       'sp' + sufixo, origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='SP' + sufixo, quantity=5,
+                brand=self.brand, chip_type='UFS', company=self.emp_a,
+                price_kind='ufs', price_gen='',
+                price_tier_value=Decimal('256'), price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            services.mark_shipped(so, 'DHL', 'SP' + sufixo, None, self.parceiro)
+            so.refresh_from_db()
+            return so
+
+    def _quitar(self, so):
+        with company_scope(so.company):
+            inv = Invoice.all_companies.get(order=so)
+            services.register_payment(inv, inv.total_usd,
+                                      timezone.localdate(), self.parceiro)
+
+    def test_script_badge_soma_a_conferir_e_saldo_em_aberto(self):
+        self._compra(self.emp_a, 'BG1')
+        b = self._compra(self.emp_b, 'BG2')
+        self.assertEqual(services.buys_badge(self.buyer), 2)   # duas a conferir
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[b.pk]), {})
+        # `b` saiu de "a conferir" e entrou em "com saldo": o total não muda,
+        # porque continua sendo trabalho dele — só mudou de natureza.
+        self.assertEqual(services.buys_badge(self.buyer), 2)
+
+    def test_script_badge_para_de_contar_o_que_foi_quitado(self):
+        so = self._compra(self.emp_a, 'BG3')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        self.assertEqual(services.buys_badge(self.buyer), 1)
+        self._quitar(so)
+        self.assertEqual(services.buys_badge(self.buyer), 0)
+
+    def test_script_badge_NAO_conta_sem_preco(self):
+        """É pendência real e só ele resolve — mas se resolve na tela de
+        PREÇOS. Somá-la aqui mandaria o comprador para Compras, onde não há o
+        que fazer a respeito. Ela aparece do lado certo pelo BlockedQuote."""
+        so = self._compra_sem_preco('X')
+        self.assertEqual(services.order_stage(so), services.STAGE_SEM_PRECO)
+        self.assertIn(so.pk, {o.pk for o in self._todas()})   # está NA LISTA
+        self.assertEqual(services.buys_badge(self.buyer), 0)  # mas não no badge
+
+    def _badge(self, rota):
+        import re
+        html = self.client.get(rota).content.decode()
+        achado = re.search(r'data-buys-badge[^>]*>([^<]*)</span>', html)
+        self.assertIsNotNone(achado, f'badge ausente em {rota}')
+        return achado.group(1).strip()
+
+    def test_interface_badge_aparece_em_TODA_tela_do_parceiro(self):
+        """O badge vive no cabeçalho, e o cabeçalho é o mesmo em todas."""
+        self._compra(self.emp_a, 'BI1')
+        self.client.force_login(self.parceiro)
+        for rota in (reverse('compras:list'),
+                     reverse('pricing:partner_home'),
+                     reverse('pricing:partner_how')):
+            self.assertEqual(self._badge(rota), '1', rota)
+
+    def test_interface_badge_zero_sai_VAZIO_e_nunca_escreve_zero(self):
+        """`.pnav__b:empty{display:none}` esconde — mas só se a tela não
+        escrever o número. Zero desenhado é ruído que treina o olho a ignorar
+        o badge justamente quando ele passa a significar alguma coisa."""
+        self.client.force_login(self.parceiro)
+        self.assertEqual(self._badge(reverse('compras:list')), '')
+
     def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):
         """Devolvem lista nova. A original é a mesma que alimenta a contagem —
         mutá-la faria o número do filtro depender da ordem das chamadas."""
