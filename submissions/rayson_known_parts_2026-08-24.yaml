@@ -1,0 +1,32 @@
+brand: Rayson
+known_parts:
+  - part_number: RS128M32LD3D1LMZ-125BT
+    chip_type: LPDDR3
+    subtype: LPDDR3
+    capacity: 0.5GB
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/C2840151.html"
+    notes: >
+      Rayson HI-TECH. PN chegou truncado ("RS128M32LD3") num debug ao vivo do gateway do estoque
+      em 2026-08-24 — 100% não-classificado (known=false, família=—, in_review_queue=true). Forma
+      completa confirmada: RS128M32LD3D1LMZ-125BT, irmão de menor profundidade da mesma linha "LD3"
+      já parcialmente conhecida (RS256M32LD3D1LMZ-125BT=1GB e RS512M32LD3D2LMZ-125BT=2GB, ambos já
+      known_parts submetidos em 2026-08-20). Confirmado em 3 fontes Tier-2 independentes e
+      concordantes: LCSC.com (C2840151), JLCPCB (mesmo C-code) e szlcsc.com/立创 (item 3018300) —
+      prosa de todas as 3 diz "LPDDR3 SDRAM" explicitamente. ATENÇÃO rótulo: como já visto nos
+      irmãos desta família, o campo de CATEGORIA estruturado de alguns distribuidores (ex.: LCSC)
+      rotula peças desta linha como "DDR3 SDRAM" genérico — não confiável; a prosa da descrição + o
+      encapsulamento FBGA-178 + tensão 1.7-1.95V (assinatura mobile/LPDDR, não DDR3 padrão 1.5V)
+      confirmam LPDDR3 real. NÃO achei confirmação em Tier-1 (szrayson.com) apesar de busca extensa
+      (site, sitemap.xml, navegação de categorias, Wayback Machine bloqueado pelo proxy) — o site
+      atual não lista categoria LPDDR3 separada/visível (só DDR3/4, LPDDR4/4X, LPDDR5/5X), possível
+      linha arquivada na vitrine mas ainda vendida por distribuidor. Organização 128M x 32.
+      Densidade: 128M x 32 = 4.096Mb = 4Gb (conta refeita à mão, confere com "4Gbit" declarado nas
+      3 fontes). Capacidade: 4Gb / 8 = 0,5GB (512MB) — exatamente metade da irmã
+      RS256M32LD3D1LMZ-125BT (1GB), como esperado (mesma largura x32, metade da profundidade).
+      Package FBGA-178, 1.7-1.95V, 800MHz, -25~85C. Busquei também a forma "D2" nesta profundidade
+      (RS128M32LD3D2LMZ-125BT) — não encontrada em nenhuma fonte (LCSC/JLCPCB/Octopart/
+      Alldatasheet todos vazios); pelo padrão D1=die único/D2=dies empilhados observado nos outros
+      dois irmãos, não deveria existir mesmo (4Gbit já é densidade de die único). Corroboração:
+      jlcpcb.com/partdetail/Rayson-RS128M32LD3D1LMZ125BT/C2840151,
+      item.szlcsc.com/3018300.html.
