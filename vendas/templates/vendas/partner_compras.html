@@ -84,8 +84,8 @@
       <span>{% trans "até" context "intervalo de datas" %}</span>
       <input type="date" name="to" value="{{ f.to }}" aria-label="{% trans 'Data final' %}" data-envia>
     </div>
-    {# O export leva o MESMO recorte — por isso é um link montado com a query
-       string atual, e não um botão que reenvia o formulário. #}
+    {% comment %} O export leva o MESMO recorte — por isso é um link montado com a
+       query string atual, e não um botão que reenvia o formulário. {% endcomment %}
     <a class="tbar__ico" href="{% url 'compras:export_csv' %}?{{ f.qs_full }}"
        title="{% trans 'Exportar CSV' %}" aria-label="{% trans 'Exportar CSV' %}">
       <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>

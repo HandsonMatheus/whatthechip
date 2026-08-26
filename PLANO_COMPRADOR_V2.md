@@ -408,6 +408,25 @@ filtro é a cicatriz.
 vista** no lado dos preços. E o selo "Congelar" sem botão vira gap de verdade — a decisão de 18/08 é
 que **quem congela é o comprador**, e não existe rota para ele fazer isso.
 
+### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
+
+Tudo que se implementa sai com as duas camadas:
+
+- **script** — chamar a função/serviço direto, sem HTTP. Prova o contrato de quem mais vai usá-la
+  (o CSV, um comando, um relatório) e falha apontando a função.
+- **interface** — exercitar a rota e olhar o que foi servido. Prova o que a pessoa vê.
+
+**Por que as duas, com prova do mesmo dia:** a Etapa 2 saiu com 16 testes de interface e zero de
+script. O que escapou foi um `{# … #}` **multi-linha** — que no Django **não é comentário, é texto** —
+vazando renderizado na tela do comprador, entre a barra de filtro e a tabela, e dentro do modal de
+pagamento. Nenhum teste pegou porque todos perguntavam o que a página **tem** e nenhum perguntava o
+que ela **não pode ter**.
+
+Portão permanente criado em `vendas/tests.py::DesignSystemNaTelaDoCompradorTests`:
+`test_script_nenhum_template_do_repo_tem_comentario_multilinha` (varre o disco — pega template que
+view nenhuma exercita) e `test_interface_a_pagina_servida_nao_mostra_marcacao_de_template`
+(`{#`, `{%` e `{{` não podem aparecer no HTML servido de nenhuma tela do comprador).
+
 ### 🔴 Achado fora do escopo — `PartnerSelfAccessRLS` está vermelho por um bug REAL
 
 O commit `a6b2008` (19/08) já registrava este teste como vermelho conhecido, sem causa. A causa é esta:

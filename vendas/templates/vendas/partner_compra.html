@@ -512,10 +512,10 @@
         enctype="multipart/form-data" role="dialog" aria-modal="true"
         aria-labelledby="m-pagar-t">
     {% csrf_token %}
-    {# Idempotência (spec v2 §5.4): uma chave por página servida. Dois
+    {% comment %} Idempotência (spec v2 §5.4): uma chave por página servida. Dois
        cliques mandam a MESMA e o 2º vira "já registrado"; recarregar a
        página é intenção nova e gera outra. Quem barra a corrida é a
-       UniqueConstraint payment_idempotency_per_invoice, não isto aqui. #}
+       UniqueConstraint payment_idempotency_per_invoice, não isto aqui. {% endcomment %}
     <input type="hidden" name="idem" value="{{ idem_key }}">
     <div class="mbox__h">
       <div>

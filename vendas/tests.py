@@ -1909,6 +1909,90 @@ class CompradorComprasTests(TestCase):
         self.assertEqual(campos[11], '150.00')                 # 10 × ¥15
         self.assertEqual(campos[12], '21.00')                  # ¥150 × 0.14
 
+    # ── O MESMO recorte, agora em SCRIPT (sem HTTP) ────────────────────────
+    # Regra do dono (26/08): tudo ganha teste nas DUAS camadas. Os de cima
+    # provam a TELA; estes provam as FUNÇÕES — é por elas que o CSV passa, e
+    # é nelas que um comando de manutenção ou um relatório vai bater amanhã,
+    # sem view nenhuma no meio.
+
+    def _todas(self):
+        return services.orders_for_buyer(self.buyer)
+
+    def test_script_haystack_junta_tudo_que_a_busca_precisa(self):
+        self._compra(self.emp_a, 'HS', carrier='SF Express')
+        so = self._todas()[0]
+        palheiro = services.purchase_haystack(so)
+        self.assertEqual(palheiro, palheiro.lower())     # sempre minúsculo
+        for pedaco in (so.lot.code.lower(), so.code.lower(),
+                       self.emp_a.name.lower(), 'sf express', 'jdhs'):
+            self.assertIn(pedaco, palheiro, pedaco)
+
+    def test_script_contagem_e_do_conjunto_inteiro(self):
+        self._compra(self.emp_a, 'SC1')
+        self._compra(self.emp_b, 'SC2')
+        todas = self._todas()
+        self.assertEqual(services.purchase_counts(todas),
+                         {services.STAGE_A_CONFERIR: 2})
+        # e continua 2 mesmo depois de filtrar até sobrar zero
+        vazio = services.filter_purchases(todas, status=services.STAGE_PAGO)
+        self.assertEqual(vazio, [])
+        self.assertEqual(services.purchase_counts(todas)
+                         [services.STAGE_A_CONFERIR], 2)
+
+    def test_script_periodo_usa_shipped_at_e_nao_created_at(self):
+        recente = self._compra(self.emp_a, 'SP1', dias=1)
+        antiga = self._compra(self.emp_b, 'SP2', dias=40)
+        todas = self._todas()
+        # as DUAS foram criadas agora; só a data de DESPACHO as separa
+        d7 = services.filter_purchases(todas, period='d7')
+        self.assertEqual([o.pk for o in d7], [recente.pk])
+        d30 = services.filter_purchases(todas, period='d30')
+        self.assertNotIn(antiga.pk, [o.pk for o in d30])
+
+    def test_script_intervalo_de_datas_inclui_as_pontas(self):
+        from datetime import timedelta
+        so = self._compra(self.emp_a, 'SI1', dias=5)
+        dia = timezone.localdate() - timedelta(days=5)
+        todas = self._todas()
+        dentro = services.filter_purchases(todas, period='custom',
+                                           dt_from=dia, dt_to=dia)
+        self.assertEqual([o.pk for o in dentro], [so.pk])
+        fora = services.filter_purchases(
+            todas, period='custom', dt_from=dia + timedelta(days=1))
+        self.assertEqual(fora, [])
+
+    def test_script_ordenacao_afunda_quem_nao_tem_resultado(self):
+        com = self._compra(self.emp_a, 'SO1')
+        sem = self._compra(self.emp_b, 'SO2')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[com.pk]), {})
+        todas = self._todas()
+        por_due = services.sort_purchases(todas, 'due', desc=True)
+        self.assertEqual([o.pk for o in por_due], [com.pk, sem.pk])
+        # invertido, o -1 sobe: o que não tem número vem primeiro
+        subindo = services.sort_purchases(todas, 'due', desc=False)
+        self.assertEqual([o.pk for o in subindo], [sem.pk, com.pk])
+
+    def test_script_chave_de_ordenacao_desconhecida_cai_no_default(self):
+        """Chave que não existe não pode levantar: a URL pode vir de um link
+        velho, e a lista tem de aparecer."""
+        self._compra(self.emp_a, 'SD1')
+        self._compra(self.emp_b, 'SD2')
+        todas = self._todas()
+        self.assertEqual([o.pk for o in services.sort_purchases(todas, 'xyz')],
+                         [o.pk for o in services.sort_purchases(todas, 'n')])
+
+    def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):
+        """Devolvem lista nova. A original é a mesma que alimenta a contagem —
+        mutá-la faria o número do filtro depender da ordem das chamadas."""
+        self._compra(self.emp_a, 'SM1')
+        self._compra(self.emp_b, 'SM2')
+        todas = self._todas()
+        antes = [o.pk for o in todas]
+        services.filter_purchases(todas, q='zzz')
+        services.sort_purchases(todas, 'seller', desc=False)
+        self.assertEqual([o.pk for o in todas], antes)
+
 
 class CompradorValorFechadoTests(TestCase):
     """O valor fecha SOZINHO quando o preço que faltava é aprovado
@@ -3607,12 +3691,60 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
 
     def test_o_rodape_conta_a_fila_e_o_que_espera_o_comprador(self):
         tela = self._tela()
-        self.assertContains(tela, 'tfoot--sum')
+        # A soma ganhou um agrupador próprio em 2026-08-26 (`.tfoot__sum`): o
+        # `.tfoot` do pacote é `space-between` com UMA ponta de texto, e desde
+        # a paginação a esquerda tem duas frases convivendo com o `.pgn`.
+        self.assertContains(tela, 'class="tfoot"')
+        self.assertContains(tela, 'tfoot__sum')
+        self.assertContains(tela, 'class="pgn"')
         self.assertEqual(tela.context['a_conferir'], 1)   # a nossa, a conferir
         with company_scope(self.company):
             services.settle_and_invoice(self.so, {self.so.lines.get().pk: (0, None)},
                                         self.dono)
         self.assertEqual(self._tela().context['a_conferir'], 0)
+
+    # ── Portão: comentário de template não vaza ────────────────────────────
+    # `{# … #}` no Django é de UMA LINHA. O multi-linha NÃO é comentário: é
+    # TEXTO, e sai renderizado na cara do comprador. Aconteceu nas DUAS telas
+    # dele na mesma entrega (26/08) — o comentário do botão de export apareceu
+    # entre a barra de filtro e a tabela, e o da chave de idempotência dentro
+    # do modal de pagamento. Nenhum teste pegava, porque todos perguntavam o
+    # que TEM na página e nenhum perguntava o que NÃO PODE ter.
+    #
+    # Dois testes porque são duas garantias diferentes: o de SCRIPT varre o
+    # disco e pega template que view nenhuma exercita; o de INTERFACE prova
+    # que a página SERVIDA está limpa.
+
+    def test_script_nenhum_template_do_repo_tem_comentario_multilinha(self):
+        import re
+        from pathlib import Path
+        from django.conf import settings
+        ruins = []
+        for arq in Path(settings.BASE_DIR).rglob('*.html'):
+            caminho = str(arq)
+            if any(x in caminho for x in ('venv/', '.git/', 'design_v2/',
+                                          'staticfiles/', '_to_delete/',
+                                          'node_modules/')):
+                continue
+            texto = arq.read_text(encoding='utf-8', errors='ignore')
+            for achado in re.finditer(r'\{#.*?#\}', texto, re.S):
+                if '\n' in achado.group(0):
+                    linha = texto[:achado.start()].count('\n') + 1
+                    ruins.append(f'{arq.name}:{linha}')
+        self.assertEqual(ruins, [], f'use {{% comment %}} nestes: {ruins}')
+
+    def test_interface_a_pagina_servida_nao_mostra_marcacao_de_template(self):
+        rotas = (reverse('compras:list'),
+                 reverse('compras:detail', args=[self.so.pk]),
+                 reverse('pricing:partner_home'),
+                 reverse('pricing:partner_how'))
+        for rota in rotas:
+            resp = self.client.get(rota)
+            self.assertEqual(resp.status_code, 200, rota)
+            html = resp.content.decode()
+            self.assertNotIn('{#', html, rota)      # comentário vazado
+            self.assertNotIn('{%', html, rota)      # tag não renderizada
+            self.assertNotIn('{{', html, rota)      # variável não resolvida
 
 
 class TaxaDeServicoERepasseTests(TestCase):
