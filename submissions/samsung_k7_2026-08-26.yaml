@@ -1,0 +1,118 @@
+# Submissão de known_parts — Samsung, família K7 (SRAM legado, standalone —
+# is_emcp=false). PRIMEIRA cobertura da família K7 nesta sessão: zero
+# known_parts no seed OU em submissões anteriores para prefixo K7 (conferido
+# antes de pesquisar).
+#
+# PN alvo (debug 2026-08-26): K7R163684B. Grammar da família (samsung.yaml,
+# linhas 1131-1148) não decodifica NADA — decode_cap_pos/decode_cap_map
+# vazios, pn_length null — é família "identidade pura": o tip já declara o
+# destino comercial fixo, independente de capacidade ("SRAM Samsung (K7).
+# Memória estática legado... Sem liquidez B2B para recondicionamento mobile.
+# Destino: fluxo de resíduo"). Ainda assim, pesquisei o cluster inteiro em vez
+# de parar no alvo (regra "pesquisar cluster inteiro, não só 1 PN",
+# [[wtc-pesquisar-cluster-inteiro-nao-so-1-pn]]) — a identificação correta
+# ainda importa pro catálogo, mesmo sem impacto de preço/rentabilidade.
+#
+# Cluster confirmado — série QDRII "b4" da linha K7R, DUAS densidades lidas
+# em datasheet oficial Samsung:
+#  - 18Mb (K7R163684B/K7R161884B): datasheet Rev 0.6, Jun/2003 (título
+#    indexado via Octopart: "512Kx36 & 1Mx18 & 2Mx8 QDRII b4 SRAM
+#    K7R163684B"). Só x36 e x18 têm PN exato confirmado nesta pesquisa — a
+#    3ª organização citada no título ("2Mx8") existe mas o PN exato não foi
+#    achado; NÃO incluída (não invento PN).
+#  - 72Mb (K7R643684M/K7R641884M): datasheet oficial COMPLETO Rev 1.3,
+#    Mar/2007, lido na íntegra (futureelectronics.com, mirror direto) —
+#    confirma organização, pinout, 165 FBGA, 6T CMOS, mesma família QDRII b4,
+#    densidade maior/mais nova.
+# Mais uma densidade de geração DIFERENTE (bônus, achada pesquisando os
+# outros leads do debug anterior):
+#  - 36Mb (K7R320982C/K7R321882C, geração "QDR II-2B", diferente do "b4"):
+#    via Samsung Product Selection Guide (citado em múltiplas páginas
+#    indexadas — PDF individual não fetchado desta vez, só a brochura de
+#    2 páginas do QDRII que confirma a família geral) + corroboração DIRETA
+#    de distribuidor pro irmão x18 (eBay: "K7R321882C-FC20 QDR SRAM, 2MX18,
+#    0.45ns, CMOS, PBGA165" — bate exato com a spec do Selection Guide).
+#    Confiança um degrau abaixo dos 4 primeiros (não li o PDF primário eu
+#    mesmo pra esses 2) — sinalizado nas notes de cada um.
+brand: "Samsung"
+known_parts:
+  - part_number: "K7R163684B"
+    chip_type: "SRAM"
+    subtype: "Samsung SRAM"
+    interface: ""
+    capacity: "18Mb"
+    confidence: confirmed
+    source_url: "https://datasheet.octopart.com/K7R161884B-FC25-Samsung-datasheet-17925175.pdf"
+    notes: >
+      PN alvo. Organização 512K x 36 bits = 18Mb. QDRII b4 SRAM, 165-pin
+      FBGA, 6T CMOS Samsung. Datasheet oficial Samsung Rev 0.6, Jun/2003
+      (título confirmado via Octopart, mesmo documento do irmão x18
+      K7R161884B). Família K7 sem decode de capacidade na gramática —
+      destino comercial já fixo no tip (scrap, sem liquidez B2B).
+
+  - part_number: "K7R161884B"
+    chip_type: "SRAM"
+    subtype: "Samsung SRAM"
+    interface: ""
+    capacity: "18Mb"
+    confidence: confirmed
+    source_url: "https://datasheet.octopart.com/K7R161884B-FC25-Samsung-datasheet-17925175.pdf"
+    notes: >
+      Irmão do alvo, mesmo datasheet (Rev 0.6, Jun/2003). Organização
+      1M x 18 bits = 18Mb. QDRII b4 SRAM, 165-pin FBGA, 6T CMOS Samsung.
+
+  - part_number: "K7R643684M"
+    chip_type: "SRAM"
+    subtype: "Samsung SRAM"
+    interface: ""
+    capacity: "72Mb"
+    confidence: confirmed
+    source_url: "https://www1.futureelectronics.com/doc/SAMSUNG/K7R643684M-FI25000.pdf"
+    notes: >
+      Bônus — mesma série QDRII b4 do alvo, densidade maior (72Mb).
+      Datasheet oficial Samsung Rev 1.3, Mar/2007, lido na íntegra.
+      Organização 2M x 36 bits. 165-pin FBGA (15x17mm), 6T CMOS, DLL,
+      JTAG 1149.1. Confirma pinout e specs elétricas completas.
+
+  - part_number: "K7R641884M"
+    chip_type: "SRAM"
+    subtype: "Samsung SRAM"
+    interface: ""
+    capacity: "72Mb"
+    confidence: confirmed
+    source_url: "https://www1.futureelectronics.com/doc/SAMSUNG/K7R643684M-FI25000.pdf"
+    notes: >
+      Irmão do K7R643684M, mesmo datasheet oficial (Rev 1.3, Mar/2007).
+      Organização 4M x 18 bits = 72Mb. QDRII b4 SRAM, 165-pin FBGA.
+
+  - part_number: "K7R320982C"
+    chip_type: "SRAM"
+    subtype: "Samsung SRAM"
+    interface: ""
+    capacity: "36Mb"
+    confidence: confirmed
+    source_url: "https://www.ebay.com/itm/193086317746"
+    notes: >
+      Geração "QDR II-2B" (diferente do "b4" dos 4 acima) — 3ª densidade da
+      linha K7R (36Mb). Organização 4M x 9 bits. Fonte: Samsung Product
+      Selection Guide (citado em múltiplas páginas indexadas — PDF individual
+      não fetchado nesta rodada), specs elétricas idênticas ao irmão x18
+      abaixo (1.8V, 0.45ns, 300/250/200MHz, 165 FBGA, mass production Q3
+      2006). NÃO li o datasheet primário diretamente para este PN
+      específico — confiança um degrau abaixo dos 4 primeiros; sinalizo pro
+      dono revisar se quiser confirmação extra.
+
+  - part_number: "K7R321882C"
+    chip_type: "SRAM"
+    subtype: "Samsung SRAM"
+    interface: ""
+    capacity: "36Mb"
+    confidence: confirmed
+    source_url: "https://www.ebay.com/itm/193086317746"
+    notes: >
+      Irmão x18 do K7R320982C, mesma geração "QDR II-2B" (36Mb). Organização
+      2M x 18 bits. Corroborado DIRETO por listagem de distribuidor real:
+      eBay "SAMSUNG K7R321882C-FC20 QDR SRAM, 2MX18, 0.45ns, CMOS, PBGA165"
+      — bate exato com o Product Selection Guide da Samsung. Mesmo aviso de
+      confiança do irmão acima (Selection Guide via busca, não PDF primário
+      lido diretamente).
