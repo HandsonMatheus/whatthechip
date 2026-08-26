@@ -49,27 +49,37 @@ known_parts:
     chip_type: "eMCP"
     subtype: "embedded Multi-Chip Package (LPDDR + eMMC)"
     interface: ""
-    emcp_nand: "moviNAND ~1GB (NAND MLC 8Gb + controlador, 2 dies) + OneNAND 1GB"
-    emcp_ram: "SDRAM 1GB (pré-LPDDR, não é LPDDR — ver notes)"
+    emcp_nand: "2GB"
+    emcp_ram: "SDRAM 1GB"
     confidence: confirmed
     source_url: "https://www.edn.com/rims-blackberry-bold/"
     notes: >
-      PN alvo, 100% desconhecido no debug. Fonte: artigo EDN "RIM's Blackberry
-      Bold" (2008-09-19), citando análise de decapsulamento da Semiconductor
-      Insights (hoje TechInsights) — a mesma categoria de fonte usada hoje pra
-      K4B1G0846F. ⚠⚠ Pacote de ATÉ 4 dies físicos (SDRAM + OneNAND + NAND MLC
-      8Gb + controlador NAND) — NÃO é o par simples LPDDR+eMMC que o schema
-      eMCP assume. Os próprios analistas da SI tiveram "disagreements" sobre se
-      a designação "moviNAND" é válida (esperavam 1 die, acharam 2 — NAND flash
-      + controlador separados). "SDRAM" é RAM móvel PRÉ-LPDDR (dispositivo de
-      2008; LPDDR2 só virou padrão móvel ~2009-2010) — por isso NÃO escrevi
+      CORRIGIDO 2026-08-24 (auditoria do dono, "prosa em campo de medida"):
+      emcp_ram/emcp_nand originalmente traziam texto livre — corrigido pra
+      campo de medida único (regra CLAUDE.md §6), toda a explicação movida
+      pra cá. emcp_nand="2GB" = soma de moviNAND ~1GB (NAND MLC 8Gb) +
+      OneNAND 1GB — capacidade TOTAL de flash do pacote, não só a parcela
+      moviNAND (decisão minha; se o dono preferir separar/tratar diferente,
+      é o ajuste a fazer). PN alvo, 100% desconhecido no debug. Fonte: artigo
+      EDN "RIM's Blackberry Bold" (2008-09-19), citando análise de
+      decapsulamento da Semiconductor Insights (hoje TechInsights) — mesma
+      categoria de fonte usada pra K4B1G0846F. ⚠⚠ Pacote de ATÉ 4 dies
+      físicos (SDRAM + OneNAND + NAND MLC 8Gb + controlador NAND) — NÃO é o
+      par simples LPDDR+eMMC que o schema eMCP assume. Os próprios analistas
+      da SI tiveram "disagreements" sobre se a designação "moviNAND" é válida
+      (esperavam 1 die, acharam 2 — NAND flash + controlador separados).
+      "SDRAM" é RAM móvel PRÉ-LPDDR (dispositivo de 2008; LPDDR2 só virou
+      padrão móvel ~2009-2010) — por isso o campo NÃO segue o molde
       "LPDDR{n} {cap}GB" (seria inventar geração LPDDR que não existe aqui).
-      Capacidade total ~3GB combinados entre os 3 tipos de memória — RENTÁVEL
-      claro, independente da composição interna exata (que segue em aberto até
-      hoje pra própria SI). Dispositivo histórico/raro (BlackBerry Bold 2008) —
-      primeira vez que os próprios analistas viam esse tipo de pacote Samsung.
-      ⚠ Não se encaixa limpo no schema padrão de eMCP (emcp_ram/emcp_nand
-      assumem 1 componente cada) — revisar manual no admin antes de aprovar.
+      Capacidade total ~3GB combinados entre os 3 tipos de memória —
+      RENTÁVEL claro por capacidade, independente da composição interna
+      exata (que segue em aberto até hoje pra própria SI). Dispositivo
+      histórico/raro (BlackBerry Bold 2008) — primeira vez que os próprios
+      analistas viam esse tipo de pacote Samsung. ⚠ Não se encaixa limpo no
+      schema padrão de eMCP (emcp_ram/emcp_nand assumem 1 componente cada) —
+      considerar reclassificar chip_type="MCP" (Raw MCP, ver MICRON.md §4)
+      numa próxima revisão; por ora mantido "eMCP" — revisar manual no admin
+      antes de aprovar.
 
   # ── Pesquisei mais, a pedido do dono ("e só achou esse?") ──────────────────
   # Achei 1 irmão REAL: KMYFG0C0CM (mesma 3ª letra 'Y', mesma composição de 3
@@ -110,23 +120,25 @@ known_parts:
     chip_type: "eMCP"
     subtype: "embedded Multi-Chip Package (LPDDR + eMMC)"
     interface: ""
-    emcp_nand: "moviNAND ~1GB (NAND MLC 8Gb + controlador) + OneNAND 1GB"
-    emcp_ram: "SDRAM 1GB (pré-LPDDR, não é LPDDR — ver notes)"
+    emcp_nand: "2GB"
+    emcp_ram: "SDRAM 1GB"
     confidence: confirmed
     source_url: "https://electronics360.globalspec.com/article/2198/blackberry-rim-storm-9530-mobile-phone-teardown"
     notes: >
-      Irmão real de KMYFE0B0CA, achado ao pesquisar mais (a pedido do dono)
-      além do PN alvo original. Fonte: teardown IHS/iSuppli (via
-      Electronics360/GlobalSpec, "IHS Electronics & Media") do BlackBerry (RIM)
-      Storm 9530 — mesma metodologia/série editorial que documentou o
-      KMYFE0B0CA no Bold 9000 (fetch direto da página primária, não resumo de
-      busca): "MCP - Samsung Semiconductor - KMYFG0C0CM-D302 - 8Gb MLC moviNAND
-      Flash + 1Gb OneNAND Flash + 1Gb Mobile SDRAM" ($7.50 no BOM). Mesma
-      composição de 3 dies do KMYFE0B0CA (moviNAND+OneNAND+SDRAM pré-LPDDR),
-      mesmo mismatch de schema eMCP padrão (RAM não é LPDDR, NAND tem 2
-      tecnologias distintas) — mesma ressalva se aplica: capacidade total
-      ~3GB, RENTÁVEL claro por capacidade, mas `emcp_ram` em texto livre pode
-      não bater no regex do `assess_profitability` (ver caso irmão). PN
-      completo "KMYFG0C0CM-D302" (sufixo confirmado na mesma fonte). ⚠ Mesma
-      recomendação: revisar manual no admin antes de aprovar — não se encaixa
-      limpo no schema padrão de eMCP.
+      CORRIGIDO 2026-08-24 (mesma auditoria "prosa em campo de medida" do
+      irmão KMYFE0B0CA): emcp_ram/emcp_nand aqui já nasceram com o mesmo
+      problema, corrigidos junto. emcp_nand="2GB" = moviNAND ~1GB + OneNAND
+      1GB somados (mesmo critério do irmão). Irmão real de KMYFE0B0CA, achado
+      ao pesquisar mais (a pedido do dono) além do PN alvo original. Fonte:
+      teardown IHS/iSuppli (via Electronics360/GlobalSpec, "IHS Electronics &
+      Media") do BlackBerry (RIM) Storm 9530 — mesma metodologia/série
+      editorial que documentou o KMYFE0B0CA no Bold 9000 (fetch direto da
+      página primária, não resumo de busca): "MCP - Samsung Semiconductor -
+      KMYFG0C0CM-D302 - 8Gb MLC moviNAND Flash + 1Gb OneNAND Flash + 1Gb
+      Mobile SDRAM" ($7.50 no BOM). Mesma composição de 3 dies do KMYFE0B0CA
+      (moviNAND+OneNAND+SDRAM pré-LPDDR), mesmo mismatch de schema eMCP
+      padrão (RAM não é LPDDR, NAND tem 2 tecnologias distintas). PN completo
+      "KMYFG0C0CM-D302" (sufixo confirmado na mesma fonte). ⚠ Mesma
+      recomendação do irmão: considerar reclassificar chip_type="MCP" numa
+      próxima revisão; por ora mantido "eMCP" — revisar manual no admin antes
+      de aprovar.
