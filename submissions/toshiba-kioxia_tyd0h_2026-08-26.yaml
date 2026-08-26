@@ -1,0 +1,92 @@
+# Submissão de known_parts — Toshiba-Kioxia, família TYD (subprefixo NAND novo "0H"=16GB)
+#
+# PN da bancada: TYD0HH231632RC. Família TYD já existe na gramática (prefix=TYD,
+# pn_length=14, família magra, decode_cap_map/decode_gen_map vazios — capacity/RAM
+# SEMPRE via known_part, nunca decodificada). Só faltava o known_part; não precisa
+# de família nova nem golden anchor novo (TYD já tem âncoras: TYD0FH221627RA,
+# TYD0GH221664RA).
+#
+# Descoberta: pn[3:5]="0H" nunca tinha sido pesquisado nesta família — só "0F"=4GB
+# e "0G"=8GB estavam documentados (ver tip/reasoning do prefix TYD no yaml). E
+# pn[6:8]="23" também era novo — só "22"=1GB LPDDR3 estava confirmado.
+#
+# ============================================================================================
+# TYD0HH231632RC (bancada) — confidence=distributor
+# ============================================================================================
+# NAND=16GB: dois Tier-3 independentes apontam pro mesmo padrão de código interno
+# Toshiba (que já bate com o padrão confirmado de "0G"=8GB nesta família):
+#   (a) aliexpress.com/item/33008477026.html — irmã de mesmo prefixo "0H"
+#       (TYD0HH251623RC): "162FBGA EMCP 16+8 16GB RPMB" — afirma 16GB direto.
+#   (b) mcrf.ru/forum (fórum russo de reparo, uso real — troca de eMMC num Lenovo
+#       S6000-F): a MESMA TYD0HH251623RC é citada com código interno Toshiba
+#       "016G94" — o "016"=16 bate com o "008"=8 já confirmado no código interno
+#       "008G92" da TYD0GH231624RC (ver known_part irmã abaixo, mesma família,
+#       fonte gsmbdshop). Padrão de nomenclatura interna consistente, não é lote.
+# RAM=1GB LPDDR3: pn[6:8]="23" — mesmo código presente na irmã TYD0GH231624RC
+#   (NAND diferente, "0G", mas RAM decodifica pela MESMA posição/código, já
+#   estabelecido nesta família como independente do NAND — ver reasoning do
+#   prefix TYD). Na irmã, gsmbdshop.com confirma "RAM -1GB" direto (ver abaixo).
+#   Por analogia de código (não de família — mesma posição, mesmo valor "23"),
+#   aplico aqui. Se o dono preferir NÃO estender por analogia, excluir emcp_ram
+#   desta entrada e manter só emcp_nand.
+# ⚠ Checado Octopart/Nexar para os dois PNs desta submissão — sem resultado
+# (parte não indexada). Não há datasheet público. Fonte final é distribuidor
+# Tier-3 (2 independentes pro NAND, 1 estruturado tipo "Room" pro RAM) — mais
+# forte que uma listagem de venda solta, mas ainda distributor, não confirmed.
+#
+# ============================================================================================
+# TYD0GH231624RC (irmã, NAND já estabelecido 0G=8GB — RAM confirmado nesta rodada)
+# ============================================================================================
+# Fonte: gsmbdshop.com (loja/curso de reparo de celular, Bangladesh) — página
+# dedicada com bloco de specs estilo banco de dados "Room" (usado na indústria
+# de reparo pra identificação de eMMC): "PRODUCT -TOSHIBA-008G92-162 · BGA -162
+# · ROOM -7.28 · RAM -1GB · BOOT -4096 KIB · RPMB -512KIB · VCC -3.3 · VCCQ -3.0
+# · EXT_CSD -1.6 (MMC v4.5, v4.51)". Confirma RAM=1GB direto (reforça o "22"=1GB
+# já estabelecido — mostra que "23" é a MESMA capacidade, variação de lote/rev,
+# não uma capacidade maior). NAND=8GB já vinha do padrão "0G" existente; o
+# "008G92" bate com isso.
+# ⚠ A página cita "BGA -162" — CONTRADIZ o "BGA-221" da família (tip do prefix
+# TYD). Provavelmente erro de template do distribuidor (mesmo texto genérico
+# aparece em várias listagens desta família e da TYC/BGA-162 — ver também
+# aliexpress citando "162FBGA" pra TYD0HH251623RC). NÃO alterei o pacote da
+# família por causa disso — é o tipo de erro que distribuidor comete com
+# frequência (CLAUDE.md §6, "não confiar em dado de distribuidor... confundem").
+# Sinalizando aqui para o dono decidir se vale investigar mais.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd0h_2026-08-26.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyd0h_2026-08-26.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TYD0HH231632RC"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://www.aliexpress.com/item/33008477026.html"
+    notes: >
+      PN da bancada. NAND=16GB via 2 Tier-3 independentes: AliExpress (irmã
+      TYD0HH251623RC, "162FBGA EMCP 16+8 16GB RPMB") + mcrf.ru forum (mesma
+      irmã, código interno Toshiba "016G94" — padrão consistente com
+      "008G92"=8GB já confirmado na família, ver TYD0GH231624RC abaixo).
+      RAM=1GB LPDDR3 por analogia de código pn[6:8]="23", mesma posição
+      confirmada 1GB na irmã TYD0GH231624RC (NAND diferente, RAM na mesma
+      posição/código — já tratado como independente nesta família). Nem
+      Octopart nem datasheet público encontrados para esta família/tier.
+  - part_number: "TYD0GH231624RC"
+    chip_type: "eMCP"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: distributor
+    source_url: "https://www.gsmbdshop.com/product/toshiba-tyd0gh231624rc-8gb1-emmc-good-tast-ufi-box-selle-in-bd-price-gsma2zhelp-com/"
+    notes: >
+      Irmã encontrada na mesma pesquisa (mesmo cluster de lote "TYD0..231...").
+      gsmbdshop.com (banco de dados estilo "Room" da indústria de reparo)
+      confirma direto: "PRODUCT-TOSHIBA-008G92-162, RAM-1GB, BOOT-4096KIB,
+      RPMB-512KIB, EXT_CSD-1.6 (MMC v4.5/v4.51)". NAND=8GB já era o padrão
+      "0G" estabelecido nesta família; código interno "008G92" reconfirma.
+      RAM=1GB reforça (não contradiz) o código "22" já confirmado — mostra
+      que "23" é a MESMA capacidade. ⚠ Página cita "BGA-162", que contradiz
+      o BGA-221 já estabelecido da família — não alterei nada por isso,
+      provável erro de template do distribuidor (ver nota acima no cabeçalho).
