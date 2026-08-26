@@ -1,0 +1,168 @@
+# Submissão de known_parts — SK Hynix, família H5TC (DDR3L standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H5TC2G43CFR (busca na bancada, 2026-08-26) — MESMO
+# padrão "die-revision-letter" já visto várias vezes nesta família (H5TC4G63A/CFR, H5TC2G63FFR,
+# H5TQ1G63D/EFR): dentro da MESMA densidade, uma letra final diferente é uma REVISÃO/DOCUMENTO
+# de datasheet distinto, não muda capacidade; pn[6:8] ("43"/"83") é a LARGURA de barramento
+# (x4/x8), também não muda a densidade total. A gramática já decodifica certo (pn[4:6]="2G"→
+# dram_density="2Gb = 256MB por die [✓]", grammar_complete=true no debug) — é known_parts-only
+# (Trilha B), sem fix de gramática. Objetivo é o BANCO, não a gramática já decodificar certo
+# (correção do dono, 2026-08-24 — ver [[wtc-objetivo-banco-nao-gramatica]]).
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a AllDataSheet lista cada
+# combinação revisão×largura desta densidade como datasheet HYNIX PRÓPRIO e dedicado (não
+# inferência de "similar/related" — cada PN tem sua própria página de arquivo/tamanho/URL
+# skhynix.com). Montei a matriz revisão×largura completa disponível na fonte: x4 (43) com
+# revisões A/B/C/E, x8 (83) com revisões A/B/C/D/F. A revisão F/x16(63) já estava confirmada
+# em rodada anterior desta sessão (H5TC2G63FFR, hynix_h5tc_h5tq_2026-07-*.yaml) — não repetida
+# aqui.
+#
+# ARITMÉTICA (2Gb÷8=256MB, confirmada em todo datasheet da leva): "2Gb" é a densidade bruta em
+# gigabit, sempre a mesma independente da largura de barramento (x4/x8/x16 só mudam pinagem/
+# organização interna, não o total de bits do die).
+#
+# FONTES — todas AllDataSheet (agregador com PDF Hynix oficial hospedado, Direct Link
+# skhynix.com/kor/main.do, Manufacturer=HYNIX):
+#   H5TC2G43CFR (ALVO) + H5TC2G83CFR: MESMO datasheet oficial (id 533343/533346-PBA, Rev.
+#     1.0/Abr.2013), corpo lido NA ÍNTEGRA via fetch direto — a Description do próprio
+#     documento diz explicitamente: "The H5TC2G43CFR-xxA and H5TC2G83CFR-xxA are a 2Gb low
+#     power DDR3L SDRAM... 1.35V... JEDEC standard 78ball FBGA(x4/x8)" — as DUAS larguras
+#     cobertas no mesmo documento oficial. confidence=confirmed nos dois (corpo técnico lido,
+#     não só metadado).
+#   H5TC2G43AFR / H5TC2G43BFR / H5TC2G43EFR / H5TC2G83AFR / H5TC2G83BFR / H5TC2G83DFR /
+#     H5TC2G83FFR: cada um com página AllDataSheet PRÓPRIA e dedicada (Part# exato, tamanho de
+#     arquivo/página distintos, Manufacturer=HYNIX, Direct Link=skhynix.com) — só a página de
+#     metadado/preview foi aberta, não o corpo do PDF (mesma limitação de viewer JS já
+#     documentada nesta família). confidence=manual (mesmo rigor já usado nas outras entregas
+#     manual desta família — datasheet dedicado do fabricante, mas corpo não lido).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc2g_matriz_2026-08-26.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc2g_matriz_2026-08-26.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC2G43CFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533343/HYNIX/H5TC2G43CFR.html"
+    notes: >
+      PN ALVO da bancada (2026-08-26). Datasheet oficial SK Hynix (Rev. 1.0/Abr.2013) lido
+      NA ÍNTEGRA via fetch direto (página 3/32, corpo técnico "Description" completo):
+      "The H5TC2G43CFR-xxA and H5TC2G83CFR-xxA are a 2Gb low power Double Data Rate III
+      (DDR3L) Synchronous DRAM... 1.35V... JEDEC standard 78ball FBGA(x4/x8)". 2Gb÷8=256MB
+      — bate exato com o decode atual da gramática (dram_density já mostrava "2Gb = 256MB
+      por die [✓]" no debug). confidence=confirmed (corpo técnico lido, não só metadado).
+
+  - part_number: "H5TC2G83CFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533343/HYNIX/H5TC2G43CFR.html"
+    notes: >
+      Par x8 do alvo — MESMO datasheet oficial do H5TC2G43CFR (Rev. 1.0/Abr.2013), documento
+      único cobre as duas variantes de largura ("H5TC2G43CFR-xxA and H5TC2G83CFR-xxA" citados
+      juntos na Description). Corroborado por 3 variantes de sufixo com página própria na
+      AllDataSheet (-G7A id 533347, -H9A id 533348, -PBA id 533349, mesmo 428KB/32P). Mesma
+      densidade total (2Gb÷8=256MB), só a largura de barramento muda. confidence=confirmed
+      (corpo técnico do documento-fonte lido).
+
+  - part_number: "H5TC2G43AFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332932/HYNIX/H5TC2G43AFR.html"
+    notes: >
+      Irmão de revisão (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 332932,
+      511KB/31P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial, categoria "2Gb/DDR3L/
+      SDRAM"). NÃO consegui abrir o corpo do PDF (viewer JS) — confidence=manual.
+
+  - part_number: "H5TC2G43BFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332931/HYNIX/H5TC2G43BFR.html"
+    notes: >
+      Irmão de revisão (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 332931,
+      524KB/32P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial, categoria "2Gb/DDR3L/
+      SDRAM"). Corpo do PDF não aberto — confidence=manual.
+
+  - part_number: "H5TC2G43EFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533403/HYNIX/H5TC2G43EFR.html"
+    notes: >
+      Irmão de revisão (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 533403,
+      442KB/33P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial, categoria "2Gb/DDR3L/
+      SDRAM"). Corpo do PDF não aberto — confidence=manual.
+
+  - part_number: "H5TC2G83AFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332933/HYNIX/H5TC2G83AFR.html"
+    notes: >
+      Par x8 da revisão A (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 332933,
+      511KB/31P — mesmo tamanho/contagem do par x4, consistente com par do mesmo
+      documento-fonte), Manufacturer=HYNIX, Direct Link=skhynix.com oficial. Corpo do PDF
+      não aberto — confidence=manual.
+
+  - part_number: "H5TC2G83BFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332932/HYNIX/H5TC2G83BFR.html"
+    notes: >
+      Par x8 da revisão B (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 332932,
+      524KB/32P — mesmo tamanho/contagem do par x4), Manufacturer=HYNIX, Direct
+      Link=skhynix.com oficial. Corpo do PDF não aberto — confidence=manual.
+
+  - part_number: "H5TC2G83DFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/534196/HYNIX/H5TC2G83DFR.html"
+    notes: >
+      Irmão de revisão, código de revisão D nunca antes confirmado nesta família/densidade
+      (cluster). AllDataSheet: página PRÓPRIA e dedicada (id 534196, 419KB/33P,
+      Manufacturer=HYNIX, Direct Link=skhynix.com oficial). Corpo do PDF não aberto —
+      confidence=manual.
+
+  - part_number: "H5TC2G83FFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/534204/HYNIX/H5TC2G83FFR.html"
+    notes: >
+      Par x8 da revisão F (cluster) — o par x16 desta revisão (H5TC2G63FFR) já estava
+      confirmado em rodada anterior desta sessão. AllDataSheet: página PRÓPRIA e dedicada
+      (id 534204, 426KB/33P, Manufacturer=HYNIX, Direct Link=skhynix.com oficial). Corpo do
+      PDF não aberto — confidence=manual.
