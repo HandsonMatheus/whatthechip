@@ -1,0 +1,192 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x1000" name="Parceiro · Catálogo" subtitle="Gerador do catálogo de preços em PDF — escolha de tipos, idioma, moeda, validade e observação de capa" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Parceiro · Catálogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<link rel="stylesheet" href="wtc-parceiro.css?v=33" />
+<link rel="stylesheet" href="wtc-ficha.css?v=27" />
+<style>
+.two{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:20px;align-items:start}
+/* caixa preta do catálogo: veio da home de preços junto com a seção */
+.cat{background:var(--ink-100);color:#fff;padding:20px}
+.cat__l{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40)}
+.cat__t{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:9px;line-height:1.2}
+.cat__d{font-size:12px;color:var(--ink-30);margin-top:8px;line-height:1.5;text-wrap:pretty}
+.cat__f{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.cat__f label{display:block;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-40);margin-bottom:6px}
+.cat__f select,.cat__f input{width:100%;height:40px;padding:0 11px;border:0;background:#21272a;color:#fff;font-family:inherit;font-size:13px;font-weight:600}
+.cat__f select{padding-right:30px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a2a9b0' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+.cat__f input{font-family:var(--mono);color-scheme:dark}
+.cat__f select:focus,.cat__f input:focus{outline:2px solid var(--blue-40);outline-offset:-2px}
+.cat__w{grid-column:1/-1}
+.cat .btn{margin-top:14px;width:100%;justify-content:space-between}
+.stamp{padding:14px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.55}
+.stamp b{color:var(--text)}
+/* seleção de tipos: tabela padrão .dtab, com a caixa de seleção fazendo o papel dela */
+.dtab .v span.miss{color:var(--amber-70);font-weight:600;font-family:var(--sans);letter-spacing:0}
+@media(max-width:1240px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="pshell">
+  <a class="pshell__brand" href="parceiro-compras.html"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /><span class="pshell__tag">Parceiro</span></a>
+  <nav class="pshell__nav">
+    <a class="pnav" href="parceiro-compras.html"><svg viewBox="0 0 24 24"><path d="M3.5 7.5h17v12h-17z"/><path d="M3.5 11.5h17M9 7.5V5a3 3 0 0 1 6 0v2.5"/></svg>Compras<span class="pnav__b" data-buys-badge></span></a>
+    <a class="pnav" href="parceiro.html"><svg viewBox="0 0 24 24"><path d="M4 4h16v5H4z"/><path d="M7 13h4M7 17h7"/></svg>Preços</a>
+    <a class="pnav on" href="parceiro-catalogo.html"><svg viewBox="0 0 24 24"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5M8 14h8"/></svg>Catálogo</a>
+  </nav>
+  <div class="pshell__spacer"></div>
+  <div class="pshell__fx"><b id="fxr">1 ¥ ≈ US$ 0.1478</b><span class="pshell__sub"><i class="live live--g"></i><em>ao vivo</em><span id="fxd">· mid-market 01/08</span></span></div>
+  <div class="pshell__who">
+    <div class="pshell__av">SZ</div>
+    <div class="pshell__u"><b>Shenzhen Yuan</b><span>Comprador</span></div>
+  </div>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">ZH</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<main class="pmain">
+  <div class="phd">
+    <div>
+      <h1>Seu <b>catálogo de preços</b></h1>
+      <p>A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa do dia carimbada em cada página.</p>
+    </div>
+    <div class="seals"><span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Todos os preços em ¥ (RMB)</span></div>
+  </div>
+
+  <div class="two">
+    <section class="panel">
+      <div class="tbar">
+        <div class="tbar__search">
+          <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+          <input id="q" type="text" placeholder="Buscar tipo de chip…" autocomplete="off" />
+        </div>
+        <select class="tbar__sel" id="f-cov" aria-label="Cobertura">
+          <option value="all">Todos os tipos</option>
+          <option value="full">Só os completos</option>
+          <option value="gap">Só os com lacuna</option>
+        </select>
+        <button class="btn btn--ghost btn--sm" id="pick-all" type="button" style="background:var(--surface);height:47px;padding:0 16px">Marcar todos<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      </div>
+      <div class="dtab__wrap"><table class="dtab dtab--static">
+        <thead><tr>
+          <th class="cbx"><input type="checkbox" id="all-cbx" aria-label="Selecionar todos os tipos" /></th>
+          <th>Tipo de chip</th>
+          <th class="d">Estrutura da tabela</th>
+          <th class="num">Linhas</th>
+          <th class="num">Cotadas</th>
+        </tr></thead>
+        <tbody id="types"></tbody>
+      </table></div>
+      <div class="tfoot"><div class="pgn"><div class="pgn__i" id="tf-n"></div></div></div>
+    </section>
+
+    <section class="tile">
+      <div class="cat">
+        <div class="cat__l">Catálogo</div>
+        <div class="cat__t">Catálogo de preços em PDF</div>
+        <div class="cat__d">Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor — o dado publicado é sempre o seu ¥.</div>
+        <div class="cat__f">
+          <div><label for="lg">Idioma</label><select id="lg"><option>中文 (简体)</option><option>English</option><option>Português</option><option>Español</option></select></div>
+          <div><label for="cu">Moeda</label><select id="cu"><option>¥ RMB</option><option>¥ RMB + US$ ≈</option></select></div>
+          <div><label for="vd">Válido até</label><input type="date" id="vd" value="2026-08-31" /></div>
+          <div><label for="gap">Linhas sem cotação</label><select id="gap"><option value="hide">Ocultar do PDF</option><option value="dash">Publicar como “—”</option></select></div>
+        </div>
+        <a class="btn btn--pri" href="#" id="pdf">Gerar PDF<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></a>
+      </div>
+      <div class="nts__new">
+        <div class="nts__l">Observação na capa</div>
+        <textarea class="nts__ta" id="cover" rows="3" placeholder="Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro por conta do vendedor."></textarea>
+        <div class="nts__f"><span class="nts__h"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5"/></svg>Sai na primeira página, abaixo do seu nome.</span></div>
+      </div>
+      <div class="stamp">A taxa vai carimbada no rodapé de cada página: <b class="mono" id="fxstamp">mid-market 01/08 · 1 ¥ ≈ US$ 0.1478</b>.</div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="fx.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="viewport.js?v=7"></script>
+<script src="parceiro-compras.js?v=29"></script>
+<script src="parceiro-data.js?v=7"></script>
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i);},T=window.WTCPartner.TYPES,FX=window.WTCFX;
+var tT;function say(m){$("toast-txt").textContent=m;$("toast").classList.add("is-on");clearTimeout(tT);tT=setTimeout(function(){$("toast").classList.remove("is-on");},2800);}
+var FORM={uni:"unificada — uma coluna de preço",dual:"celular × PCB — duas tabelas",brand:"por marca — matriz",linear:"linear ¥/GB, com piso por peça"};
+/* todo tipo entra no catálogo até o comprador dizer o contrário */
+var out={};
+
+function view(){
+  var q=$("q").value.trim().toLowerCase(),cv=$("f-cov").value;
+  return T.filter(function(t){
+    if(cv==="full"&&t.miss)return false;
+    if(cv==="gap"&&!t.miss)return false;
+    if(q&&(t.n+" "+t.d).toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+}
+function inCat(){return T.filter(function(t){return !out[t.k];});}
+function rows(){
+  var v=view();
+  $("types").innerHTML=v.length?v.map(function(t){
+    var ok=t.lines-t.miss,on=!out[t.k];
+    return '<tr'+(on?' class="sel"':'')+' data-k="'+t.k+'">'
+      +'<td class="cbx"><input type="checkbox" data-cb="'+t.k+'"'+(on?" checked":"")+' aria-label="Incluir '+t.n+' no catálogo" /></td>'
+      +'<td class="c">'+t.n+'</td>'
+      +'<td class="d" data-label="Estrutura">'+(FORM[t.form]||t.form)+'</td>'
+      +'<td class="n" data-label="Linhas" data-suffix="linhas">'+t.lines+'</td>'
+      +'<td class="v key" data-label="Cotadas">'+ok
+        +(t.miss?'<span class="miss">'+t.miss+' sem cotação</span>':'<span class="got">completa</span>')+'</td></tr>';
+  }).join(""):'<tr><td colspan="5" class="dtab__empty"><b>Nenhum tipo encontrado</b>Ajuste a busca ou o filtro acima.</td></tr>';
+  Array.prototype.forEach.call($("types").querySelectorAll("[data-cb]"),function(cb){
+    cb.onchange=function(){
+      if(cb.checked)delete out[cb.getAttribute("data-cb")];else out[cb.getAttribute("data-cb")]=1;
+      rows();
+    };
+  });
+  var C=inCat(),lines=C.reduce(function(a,t){return a+t.lines;},0),miss=C.reduce(function(a,t){return a+t.miss;},0);
+  $("all-cbx").checked=C.length===T.length;
+  $("all-cbx").indeterminate=C.length>0&&C.length<T.length;
+  $("pick-all").firstChild.textContent=C.length===T.length?"Desmarcar todos":"Marcar todos";
+  $("tf-n").innerHTML='<span><b>'+C.length+'</b> de <b>'+T.length+'</b> tipos no catálogo · <b>'+(lines-miss)+'</b> linhas cotadas'
+    +(miss?' · <b>'+miss+'</b> sem cotação':'')+'</span>';
+  $("pdf").classList.toggle("is-off",!C.length);
+  $("pdf").style.opacity=C.length?"":".45";
+  $("pdf").style.pointerEvents=C.length?"":"none";
+}
+$("all-cbx").onchange=function(){out={};if(!$("all-cbx").checked)T.forEach(function(t){out[t.k]=1;});rows();};
+$("pick-all").onclick=function(){var full=inCat().length===T.length;out={};if(full)T.forEach(function(t){out[t.k]=1;});rows();};
+$("q").oninput=rows;
+$("f-cov").onchange=rows;
+$("pdf").onclick=function(e){
+  e.preventDefault();
+  var C=inCat();if(!C.length)return;
+  var d=$("vd").value?$("vd").value.split("-").reverse().join("/"):"sem validade";
+  say("Gerando catálogo · "+C.length+" tipos · "+$("lg").value+" · "+$("cu").value+" · válido até "+d);
+};
+function fx(){
+  var s=FX.state();
+  $("fxr").textContent=s.has?("1 ¥ ≈ US$ "+s.rate.toFixed(4)):"sem taxa do dia";
+  $("fxd").textContent=s.has?("\u00b7 "+(s.is_market?"mid-market ":"contrato ")+s.date):"\u00b7 rode fetch_fx_rate";
+  var lv=document.querySelector(".pshell__sub");if(lv)lv.classList.toggle("off",!s.has);
+  $("fxstamp").textContent=s.has?((s.is_market?"mid-market ":"contrato ")+s.date+" · 1 ¥ ≈ US$ "+s.rate.toFixed(4)):"sem taxa do dia";
+}
+FX.onChange(fx);fx();rows();
+})();
+</script>
+<script>(function(){var B=window.WTCBuys;if(!B)return;var A=B.all();var pend=A.filter(function(b){return b.st==="received";}).length;var owe=A.filter(function(b){return (b.st==="settled"||b.st==="paid")&&B.restCny(b)>0;}).length;document.querySelectorAll("[data-buys-badge]").forEach(function(e){e.textContent=(pend+owe)||"";});})();</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x900" name="Notificações" subtitle="Lista completa, agrupada por dia, com máscara por papel" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notificações · WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+.page{padding:32px 0 64px}
+.page__h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;padding-bottom:20px;border-bottom:1px solid var(--line-2)}
+.page__t{font-size:31px;font-weight:300;letter-spacing:-.03em;line-height:1.1}
+.page__t b{font-weight:700}
+.page__s{font-size:13px;color:var(--muted);margin-top:6px}
+.page__s b{font-family:var(--mono);font-weight:600;color:var(--text)}
+.nbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 24px}
+.tabs{display:flex;gap:1px;background:var(--line);border:1px solid var(--line)}
+.tabs button{height:36px;padding:0 16px;border:0;background:var(--surface);font-size:13px;font-weight:600;color:var(--ink-70);cursor:pointer;white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.tabs button:hover{background:var(--ink-05);color:var(--text)}
+.tabs button.on{background:var(--blue-60);color:#fff}
+.tabs .n{font-family:var(--mono);font-size:11px;font-weight:600;margin-left:7px}
+</style>
+</head>
+<body>
+
+<header class="shell">
+  <a class="shell__brand" href="painel.html" aria-label="WhatTheChip 什么芯片"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <nav class="shell__nav">
+    <a class="nlink" href="painel.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+    <a class="nlink" href="estoque.html" data-wtc-needs="lots"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+    <a class="nlink" href="vendas-lista.html" data-wtc-needs="sales"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+  </nav>
+  <div class="shell__spacer"></div>
+  <div class="shell__org">
+    <div class="shell__org-logo" data-wtc-avatar>eM</div>
+    <div class="shell__org-txt"><span class="shell__org-name" data-wtc-company>eMiner</span></div>
+  </div>
+  <div class="shell__who">
+    <div class="shell__avatar" data-wtc-initials>MG</div>
+    <div class="shell__user"><b data-wtc-user>Matheus G.</b><span class="shell__role" data-wtc-role>Gerente</span></div>
+  </div>
+  <button class="shell__ico" aria-label="Notificações" id="bell"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">PT</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<main class="page"><div class="wrap">
+  <div class="page__h">
+    <div>
+      <h1 class="page__t">Notificações</h1>
+      <p class="page__s"><b id="count">0</b> não lidas · o que a plataforma percebeu na sua operação</p>
+    </div>
+  </div>
+  <div class="nbar">
+    <div class="tabs" id="tabs">
+      <button type="button" class="on" data-f="all">Todas<span class="n" id="n-all">0</span></button>
+      <button type="button" data-f="unread">Não lidas<span class="n" id="n-un">0</span></button>
+    </div>
+    <button class="btn btn--sec btn--sm" id="mark" type="button">Marcar todas como lidas</button>
+  </div>
+  <div id="list"></div>
+</div></main>
+
+<div class="toast" id="toast"></div>
+
+<script src="access.js?v=3"></script>
+<script src="fx.js"></script>
+<script src="notifications.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script>
+(function(){
+"use strict";
+var N=window.WTCNotif,f="all";
+function $(i){return document.getElementById(i);}
+function paint(){
+  N.renderPage($("list"),f);
+  var u=N.unread(),t=N.visible().length;
+  $("count").textContent=u;$("n-all").textContent=t;$("n-un").textContent=u;
+  $("mark").disabled=!u;
+  var d=$("bell").querySelector(".dot");if(d)d.style.display=u?"":"none";
+}
+$("tabs").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-f]");if(!b)return;
+  Array.prototype.forEach.call($("tabs").children,function(x){x.classList.remove("on");});
+  b.classList.add("on");f=b.getAttribute("data-f");paint();
+});
+$("mark").onclick=function(){N.markAll();paint();
+  var t=$("toast");t.textContent="Todas as notificações marcadas como lidas.";t.classList.add("is-on");
+  setTimeout(function(){t.classList.remove("is-on");},2600);};
+paint();
+})();
+</script>
+</body>
+</html>

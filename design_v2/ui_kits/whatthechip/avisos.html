@@ -1,0 +1,157 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x1000" name="Avisos da plataforma" subtitle="Leitura completa do aviso e histórico — mesmo componente de quadro do painel" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Avisos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+.awrap{max-width:1680px;margin:0 auto;padding:0 32px 40px;min-width:0}
+.aback{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 6px;margin:14px 0 0 -6px;font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.aback:hover{background:var(--ink-05);color:var(--blue-60);text-decoration:none}
+.aback svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2}
+.acols{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:18px;align-items:start;margin-top:14px}
+
+/* a leitura: o texto manda, então a coluna respira e a medida é curta */
+.art{background:var(--surface);border:1px solid var(--line);min-width:0}
+.art__h{padding:26px 34px 22px;border-bottom:1px solid var(--line)}
+.art__top{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.art__w{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.art__by{font-size:12px;color:var(--faint)}
+.art__by b{font-weight:700;color:var(--ink-70)}
+.art h1{font-size:29px;font-weight:400;letter-spacing:-.025em;line-height:1.2;margin-top:14px;max-width:26ch;text-wrap:pretty}
+.art__lead{font-size:15px;color:var(--ink-80);line-height:1.6;margin-top:14px;max-width:62ch;text-wrap:pretty}
+.art__b{padding:24px 34px 30px;max-width:70ch}
+.art__b p{font-size:14px;line-height:1.72;color:var(--ink-80);margin-bottom:15px;text-wrap:pretty}
+.art__b p:last-child{margin-bottom:0}
+.art__b b{font-weight:700;color:var(--text)}
+.art__b ul{margin:0 0 15px;padding-left:0;list-style:none}
+.art__b li{font-size:14px;line-height:1.6;color:var(--ink-80);padding:7px 0 7px 18px;border-bottom:1px solid var(--line);position:relative}
+.art__b li::before{content:"";position:absolute;left:0;top:16px;width:6px;height:6px;background:var(--blue-60)}
+.art__b li:last-child{border-bottom:0}
+.art__f{display:flex;align-items:center;gap:10px;padding:14px 34px;border-top:1px solid var(--line);background:var(--ink-05);font-size:12px;color:var(--faint)}
+.art__f svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--ink-40);stroke-width:2}
+
+/* histórico: o MESMO quadro do painel, só que inteiro */
+.brd{background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.brd__h{display:flex;align-items:center;gap:9px;padding:0 16px;height:44px;border-bottom:1px solid var(--line);background:var(--ink-05);flex:none}
+.brd__l{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-70);white-space:nowrap}
+.brd__l svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--blue-60);stroke-width:1.9}
+.brd__n{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--blue-60);padding:1px 6px;flex:none}
+.brd__sp{flex:1;min-width:0}
+.brd__list{flex:1;display:flex;flex-direction:column}
+/* sem régua lateral: o aviso aberto se marca pelo chão azul, e o contador diz quantos faltam ler */
+.brd__i{display:grid;grid-template-columns:minmax(0,1fr) 14px;align-items:center;gap:13px;padding:12px 14px 12px 16px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:background var(--d1)}
+.brd__i:last-child{border-bottom:0}
+.brd__i:hover{background:var(--blue-10);text-decoration:none}
+/* o aviso aberto: chão azul — o mesmo sinal de "você está aqui" das listas */
+.brd__i.is-on{background:var(--blue-10)}
+.brd__m{min-width:0}
+.brd__top{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.brd__w{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.brd__t{font-size:13px;font-weight:600;line-height:1.35;text-wrap:pretty}
+.brd__i--new .brd__t,.brd__i.is-on .brd__t{font-weight:700}
+.brd__go{color:var(--ink-30);display:grid;place-items:center}
+.brd__go svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;display:block}
+.brd__i:hover .brd__go,.brd__i.is-on .brd__go{color:var(--blue-60)}
+
+@media(max-width:1080px){.acols{grid-template-columns:1fr}}
+@media(max-width:880px){
+  .awrap{padding:0 16px 32px}
+  .art__h{padding:22px 20px 18px}
+  .art h1{font-size:24px}
+  .art__b{padding:20px 20px 26px}
+  .art__f{padding:13px 20px}
+}
+</style>
+</head>
+<body>
+
+<header class="shell">
+  <a class="shell__brand" href="painel.html" aria-label="WhatTheChip 什么芯片"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <nav class="shell__nav">
+    <a class="nlink" href="painel.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+    <a class="nlink" href="estoque.html" data-wtc-needs="lots"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+    <a class="nlink" href="vendas-lista.html" data-wtc-needs="sales"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+  </nav>
+  <div class="shell__spacer"></div>
+  <div class="shell__org">
+    <div class="shell__org-logo" data-wtc-avatar>eM</div>
+    <div class="shell__org-txt"><span class="shell__org-name" data-wtc-company>eMiner</span></div>
+  </div>
+  <div class="shell__who">
+    <div class="shell__avatar" data-wtc-initials>MG</div>
+    <div class="shell__user"><b data-wtc-user>Matheus G.</b><span class="shell__role" data-wtc-role>Gerente</span></div>
+  </div>
+  <button class="shell__ico" aria-label="Notificações" id="bell"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button>
+</header>
+
+<main class="awrap">
+  <a class="aback" href="painel.html"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>Painel</a>
+
+  <div class="acols">
+    <article class="art" id="art"></article>
+
+    <aside class="brd">
+      <div class="brd__h">
+        <span class="brd__l"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h2.5l10.5-5v15l-10.5-5H4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1z"/><path d="M7 14.5v4a1.6 1.6 0 0 0 3.2 0v-2.5"/></svg>Histórico</span>
+        <span class="brd__sp"></span>
+        <span class="brd__n" id="brd-n" hidden></span>
+      </div>
+      <div class="brd__list" id="brd-list"></div>
+    </aside>
+  </div>
+</main>
+
+<script src="access.js?v=3"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="avisos.js"></script>
+<script src="notifications.js"></script>
+<script>
+(function(){
+"use strict";
+var AV=window.WTCAvisos,$=function(i){return document.getElementById(i);};
+var id=(location.search.match(/[?&]a=(\d+)/)||[])[1];
+var cur=AV.get(id)||AV.all()[0];
+
+function art(){
+  var k=AV.kind(cur.kind);
+  $("art").innerHTML='<div class="art__h">'
+      +'<div class="art__top"><span class="tag '+k.tag+'">'+k.label+'</span>'
+        +'<span class="art__w">'+cur.d+'/2026</span>'
+        +'<span class="art__by">publicado por <b>WhatTheChip</b></span></div>'
+      +'<h1>'+cur.t+'</h1>'
+      +'<p class="art__lead">'+cur.lead+'</p>'
+    +'</div>'
+    +'<div class="art__b">'+cur.body.map(function(p){
+      return p.indexOf("<ul")===0?p:'<p>'+p+'</p>';
+    }).join("")+'</div>'
+    +'<div class="art__f"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'
+      +'Avisos valem para todas as contas. Dúvidas sobre como isto afeta um lote específico: fale com o suporte.</div>';
+}
+function hist(){
+  $("brd-list").innerHTML=AV.all().map(function(a){
+    var k=AV.kind(a.kind),novo=!AV.isRead(a.id),on=a.id===cur.id;
+    return '<a class="brd__i'+(novo?" brd__i--new":"")+(on?" is-on":"")+'" href="avisos.html?a='+a.id+'">'
+      +'<span class="brd__m">'
+        +'<span class="brd__top"><span class="tag '+k.tag+'">'+k.label+'</span><span class="brd__w">'+a.d+'</span></span>'
+        +'<span class="brd__t">'+a.t+'</span>'
+      +'</span>'
+      +'<span class="brd__go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></span></a>';
+  }).join("");
+  var n=AV.unread(),b=$("brd-n");
+  b.hidden=!n;b.textContent=n+(n===1?" novo":" novos");
+}
+art();
+AV.markRead(cur.id);
+hist();
+document.title="WhatTheChip · "+cur.t;
+})();
+</script>
+</body>
+</html>

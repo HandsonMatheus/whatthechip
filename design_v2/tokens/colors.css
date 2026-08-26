@@ -1,0 +1,35 @@
+/* WhatTheChip — color tokens.
+   Neutral "ink" scale (Carbon-derived cool grays) + Signal Blue (brand + interactive)
+   + the three profitability semantics: RENTÁVEL (green) / INDETERMINADO (amber) / NÃO RENTÁVEL (red).
+   Base values are unprefixed and shared by every component and screen. */
+:root{
+  /* Neutral ink scale */
+  --ink-100:#161616;--ink-90:#21272a;--ink-80:#343a3f;--ink-70:#4d5358;--ink-60:#697077;
+  --ink-50:#878d96;--ink-40:#a2a9b0;--ink-30:#c1c7cd;--ink-20:#dde1e6;--ink-10:#f2f4f8;--ink-05:#f7f8fb;--white:#ffffff;
+
+  /* Signal Blue — brand mark + primary/interactive accent */
+  --blue-10:#edf5ff;--blue-20:#d0e2ff;--blue-40:#78a9ff;
+  --blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;--blue-80:#002d9c;
+
+  /* Verdict semantics */
+  --green-10:#e6f7ec;--green-40:#42be65;--green-50:#24a148;--green-60:#198038;--green-70:#0e6027;
+  --amber-10:#fdf3d6;--amber-40:#f1c21b;--amber-60:#b28600;--amber-70:#8a6a00;
+  --red-10:#fff1f1;--red-50:#fa4d56;--red-60:#da1e28;--red-70:#a2191f;
+
+  /* Semantic aliases — light (Carbon White content) */
+  --bg:var(--ink-05);--surface:var(--white);--surface-2:var(--ink-10);
+  --line:var(--ink-20);--line-2:var(--ink-30);
+  --text:var(--ink-100);--muted:var(--ink-60);--faint:var(--ink-50);
+  --accent:var(--blue-60);--focus:var(--blue-60);
+  --verdict-yes:var(--green-50);--verdict-maybe:var(--amber-40);--verdict-no:var(--red-60);
+
+  /* Dark shell — the logged-in bench workspace navbar (always dark, frames the app) */
+  --shell:#101317;--shell-2:#1a1f25;--shell-line:#272d33;--shell-line-2:#3a4249;
+  --shell-text:#f2f4f8;--shell-muted:#a2a9b0;--shell-faint:#697077;
+}
+/* Optional dark content theme (public site toggle; the bench shell is dark regardless) */
+[data-theme="dark"]{
+  --bg:#0b0e11;--surface:#14181c;--surface-2:#1b2026;--line:#272d33;--line-2:#3a4249;
+  --text:#f2f4f8;--muted:#a2a9b0;--faint:#878d96;--accent:var(--blue-40);--focus:var(--blue-40);
+  --blue-10:#0a2150;--blue-20:#0b2f74;--green-10:#0c2b18;--amber-10:#2c2306;--red-10:#2c0f11;
+}

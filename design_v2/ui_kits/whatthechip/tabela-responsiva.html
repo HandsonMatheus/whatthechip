@@ -1,0 +1,186 @@
+<!-- @dsCard group="WhatTheChip" viewport="1280x1180" name="Tabela responsiva" subtitle="Padrão .dtab em desktop, tablet e celular — a linha colapsa em cartão, com data-label anunciando cada coluna" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Tabela responsiva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+body{background:var(--bg);padding:36px 32px 64px}
+.doc{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.doc__hd h1{font-size:31px;font-weight:300;letter-spacing:-.03em;line-height:1.1}
+.doc__hd h1 b{font-weight:700}
+.doc__hd p{font-size:14px;color:var(--muted);line-height:1.55;margin-top:10px;max-width:76ch;text-wrap:pretty}
+.doc__hd p b{font-weight:700;color:var(--text)}
+.lab{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.lab i{height:1px;flex:1;background:var(--line-2)}
+.specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.spec{background:var(--surface);padding:16px 18px}
+.spec__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.spec__v{font-family:var(--mono);font-size:15px;font-weight:600;margin-top:7px}
+.spec__d{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:6px}
+/* cada palco é um container próprio: as regras @container do padrão reagem à largura do palco */
+.stage{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.frame{display:flex;flex-direction:column;gap:9px;min-width:0}
+.frame__l{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.frame__b{border:1px solid var(--line-2);background:var(--surface);container-type:inline-size;container-name:vp;overflow:hidden}
+.frame--wide{flex:1 1 100%}
+.frame--tablet .frame__b{width:620px}
+.frame--phone .frame__b{width:390px}
+/* no card do sistema não existe barra do app: o cabeçalho grudado não tem em que se grudar */
+.frame__b .dtab th{position:static}
+.rules{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line)}
+.rule{display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;padding:13px 18px;border-bottom:1px solid var(--line)}
+.rule:last-child{border-bottom:0}
+.rule__k{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-70)}
+.rule__t{font-size:13px;color:var(--ink-80);line-height:1.55}
+.rule__t b{font-weight:700;color:var(--text)}
+.code{background:var(--ink-100);color:#f4f4f4;font-family:var(--mono);font-size:12.5px;line-height:1.7;padding:16px 18px;overflow-x:auto;white-space:pre}
+@container vp (max-width:880px){.doc__hd h1{font-size:26px}.specs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc__hd">
+    <h1>Tabela <b>responsiva</b></h1>
+    <p>O padrão <b>.dtab</b> não vira outro componente no telefone: a linha <b>colapsa em item de lista</b>. Rolagem horizontal foi descartada de propósito — ela esconde justamente a última coluna, que em toda tabela deste sistema é a que decide (valor, resultado, a receber). O CSS mora em <b>wtc-carbon.css</b>; a tela só precisa marcar as células com <b>data-label</b>.</p>
+  </div>
+
+  <div class="lab">A régua<i></i></div>
+  <div class="specs">
+    <div class="spec"><div class="spec__l">Desktop</div><div class="spec__v">&gt; 880px</div><div class="spec__d">Tabela cheia, cabeçalho grudado abaixo da barra do app, célula de 56px.</div></div>
+    <div class="spec"><div class="spec__l">Tablet</div><div class="spec__v">≤ 880px</div><div class="spec__d">Segue tabela: célula de 52px, respiro lateral de 12px. A descrição já sai em 1100px.</div></div>
+    <div class="spec"><div class="spec__l">Celular</div><div class="spec__v">≤ 600px</div><div class="spec__d">Colapsa em lista: identificador e dinheiro na 1ª linha, o resto num tom abaixo na 2ª. Tablet segue tabela, com uma coluna a menos.</div></div>
+  </div>
+
+  <div class="lab">Estados<i></i></div>
+  <div class="stage">
+    <div class="frame frame--wide">
+      <span class="frame__l">Desktop · tabela</span>
+      <div class="frame__b">
+        <div class="dtab__wrap"><table class="dtab">
+          <thead><tr><th class="cbx"><input type="checkbox" aria-label="Selecionar todos" /></th><th class="s">Lote</th><th class="d">Descrição</th><th>Status</th><th class="s num">Unidades</th><th class="s">Operadores</th><th class="s num">Valor triado</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="cbx"><input type="checkbox" aria-label="Selecionar LOT/043/07/26" /></td>
+              <td class="c">LOT/043/07/26</td>
+              <td class="d">Recuperação placas — turno noite</td>
+              <td data-label="Status"><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></td>
+              <td class="n" data-label="Unidades" data-suffix="un.">300</td>
+              <td data-label="Operadores"><span class="avs"><span class="av">RS</span></span></td>
+              <td class="n key" data-label="Valor triado"><span class="mval mval--xs"><b class="mval__c">¥ 7.036</b><span class="mval__u">≈ US$ 1.039,92</span></span></td>
+              <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
+            </tr>
+            <tr>
+              <td class="cbx"><input type="checkbox" aria-label="Selecionar LOT/042/07/26" /></td>
+              <td class="c">LOT/042/07/26</td>
+              <td class="d">Compra Jul/2026 — hashboards S19</td>
+              <td data-label="Status"><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></td>
+              <td class="n" data-label="Unidades" data-suffix="un.">1.840</td>
+              <td data-label="Operadores"><span class="avs"><span class="av">RS</span><span class="av">JL</span><span class="av">AP</span></span></td>
+              <td class="n key" data-label="Valor triado"><span class="mval mval--xs"><b class="mval__c">¥ 61.597</b><span class="mval__u">≈ US$ 9.104,04</span></span></td>
+              <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
+            </tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="frame frame--tablet">
+      <span class="frame__l">Tablet · tabela apertada</span>
+      <div class="frame__b">
+        <div class="dtab__wrap"><table class="dtab">
+          <thead><tr><th class="cbx"><input type="checkbox" aria-label="Selecionar todos" /></th><th class="s">Lote</th><th>Status</th><th class="s num">Unidades</th><th class="s">Operadores</th><th class="s num">Valor triado</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="cbx"><input type="checkbox" aria-label="Selecionar LOT/043/07/26" /></td>
+              <td class="c">LOT/043/07/26</td>
+              <td data-label="Status"><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></td>
+              <td class="n" data-label="Unidades" data-suffix="un.">300</td>
+              <td data-label="Operadores"><span class="avs"><span class="av">RS</span></span></td>
+              <td class="n key" data-label="Valor triado"><span class="mval mval--xs"><b class="mval__c">¥ 7.036</b><span class="mval__u">≈ US$ 1.039,92</span></span></td>
+              <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
+            </tr>
+            <tr>
+              <td class="cbx"><input type="checkbox" aria-label="Selecionar LOT/040/07/26" /></td>
+              <td class="c">LOT/040/07/26</td>
+              <td data-label="Status"><span class="tag tag--mute"><span class="dot"></span>FECHADO</span></td>
+              <td class="n" data-label="Unidades" data-suffix="un.">3.120</td>
+              <td data-label="Operadores"><span class="avs"><span class="av">RS</span><span class="av">AP</span></span></td>
+              <td class="n key" data-label="Valor triado"><span class="mval mval--xs"><b class="mval__c">¥ 111.502</b><span class="mval__u">≈ US$ 16.480,00</span></span></td>
+              <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
+            </tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="frame frame--phone">
+      <span class="frame__l">Celular · lista</span>
+      <div class="frame__b">
+        <div class="dtab__wrap"><table class="dtab">
+          <thead><tr><th class="cbx"></th><th>Lote</th><th>Status</th><th class="num">Unidades</th><th>Operadores</th><th class="num">Valor triado</th><th></th></tr></thead>
+          <tbody>
+            <tr data-meta="PCB">
+              <td class="cbx"><input type="checkbox" aria-label="Selecionar LOT/043/07/26" /></td>
+              <td class="c">LOT/043/07/26</td>
+              <td data-label="Status"><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></td>
+              <td class="n" data-label="Unidades" data-suffix="un.">300</td>
+              <td class="hide-md" data-label="Operadores"><span class="avs"><span class="av">RS</span></span></td>
+              <td class="n key" data-label="Valor triado"><span class="mval mval--xs"><b class="mval__c">¥ 7.036</b><span class="mval__u">≈ US$ 1.039,92</span></span></td>
+              <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
+            </tr>
+            <tr data-meta="Celular">
+              <td class="cbx"><input type="checkbox" aria-label="Selecionar LOT/042/07/26" /></td>
+              <td class="c">LOT/042/07/26</td>
+              <td data-label="Status"><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></td>
+              <td class="n" data-label="Unidades" data-suffix="un.">1.840</td>
+              <td class="hide-md" data-label="Operadores"><span class="avs"><span class="av">RS</span><span class="av">JL</span><span class="av">AP</span></span></td>
+              <td class="n key" data-label="Valor triado"><span class="mval mval--xs"><b class="mval__c">¥ 61.597</b><span class="mval__u">≈ US$ 9.104,04</span></span></td>
+              <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
+            </tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab">Regras do padrão<i></i></div>
+  <div class="rules">
+    <div class="rule"><span class="rule__k">colapsa, não rola</span><span class="rule__t">A linha vira cartão em vez de a tabela rolar de lado. <b>Rolagem horizontal esconde a última coluna</b> — e nas tabelas deste sistema a última coluna é sempre dinheiro.</span></div>
+    <div class="rule"><span class="rule__k">hierarquia, não legenda</span><span class="rule__t">Repetir o cabeçalho como rótulo de cada campo vira <b>formulário</b>: rótulo com o mesmo peso do valor, quatro blocos disputando atenção, cartão de 200px para quatro dados. Aqui não se imprime rótulo — a forma diz o que é: pastilha é estado, avatar é gente, ¥ é dinheiro.</span></div>
+    <div class="rule"><span class="rule__k">.key · data-suffix</span><span class="rule__t">Duas marcas por conta da tela: <b>.key</b> na célula do número que decide (vai para a direita da 1ª linha) e <b>data-suffix="un."</b> onde o número não se explica sozinho. O sufixo entra colado ao valor, em 11px apagado.</span></div>
+    <div class="rule"><span class="rule__k">independe da ordem</span><span class="rule__t">A lista não conhece as colunas da tela: a linha é um flex que quebra. 1ª linha <b>[seleção] identificador … número que decide</b> — o identificador tem base de 140px e cede espaço, para o dinheiro nunca ser empurrado para baixo. 2ª linha recebe todo o resto num tom abaixo, com a seta fechando à direita. Serve Estoque, Vendas e qualquer lista futura sem regra nova.</span></div>
+    <div class="rule"><span class="rule__k">.hide-lg</span><span class="rule__t">Subtração pura, na mesma largura de <b>.d</b> (1100px) e sem a tipografia de descrição. É o que a coluna de <b>dinheiro derivável</b> usa — o US$ que sai de um ¥ com taxa travada, o valor estimado antes da conferência: sai da tabela apertada sem virar 12px cinza ao lado dos outros números. <b>.d</b> continua sendo só para descrição.</span></div>
+    <div class="rule"><span class="rule__k">.c · .go · .cbx</span><span class="rule__t">Três classes carregam a estrutura: <b>.c</b> é o identificador (vira o título do cartão), <b>.cbx</b> a seleção (fica à esquerda) e <b>.go</b> a seta de abrir (fica à direita). <b>.d</b> é a descrição, primeira a sair — já em 1100px.</span></div>
+    <div class="rule"><span class="rule__k">tablet não rola de lado</span><span class="rule__t">Tablet tem grade: virar cartão ali jogaria fora a vantagem da tela, então <b>segue tabela</b> — e o ajuste é por subtração, nunca por rolagem lateral (que esconde justamente a coluna de dinheiro). <b>.desc</b> sai em 1100px, <b>.hide-md</b> em 880px. É o que faz caber em 768px de iPad retrato. O papel vale do tablet para baixo, então o telefone herda a mesma subtração.</span></div>
+    <div class="rule"><span class="rule__k">data-meta · hide-sm</span><span class="rule__t">A linha pode levar <b>data-meta</b> com uma palavra de contexto (origem, tipo, canal) — ela abre a 2ª linha sem virar coluna nem inflar o identificador. E a célula que não se justifica no telefone leva <b>hide-sm</b>: no Estoque, os operadores do lote saem (ação de bancada não se resolve no celular).</span></div>
+    <div class="rule"><span class="rule__k">quebra dura</span><span class="rule__t">A 1ª linha fecha com um item de largura total e altura zero. Depender do espaço que sobra não funciona — o flex decide a quebra pela <b>base</b> do item, então um selo curto ainda entrava na 1ª linha e um largo ia para a 2ª: dois desenhos na mesma lista.</span></div>
+    <div class="rule"><span class="rule__k">rodapé em uma linha</span><span class="rule__t">Contagem à esquerda, os dois passos à direita, 48px. <b>"Por página" sai</b> — é conforto de desktop; quem rola no telefone não escolhe tamanho de página, e era esse seletor que partia o rodapé em três faixas.</span></div>
+    <div class="rule"><span class="rule__k">@media + @container</span><span class="rule__t">Cada bloco existe em dose dupla: <b>@media</b> para a página que roda solta no aparelho e <b>@container</b> para a página enquadrada pelo viewport.js do protótipo — media query lê a janela, não o frame.</span></div>
+  </div>
+
+  <div class="lab">Como marcar uma tabela nova<i></i></div>
+  <div class="code">&lt;div class="dtab__wrap"&gt;&lt;table class="dtab"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th class="cbx"&gt;…&lt;/th&gt;&lt;th&gt;Lote&lt;/th&gt;&lt;th class="d"&gt;Descrição&lt;/th&gt;
+    &lt;th&gt;Status&lt;/th&gt;&lt;th class="num"&gt;Unidades&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;&lt;tr data-meta="PCB"&gt;              &lt;!-- palavra de contexto na 2ª linha --&gt;
+    &lt;td class="cbx"&gt;…&lt;/td&gt;                        &lt;!-- seleção: sem rótulo --&gt;
+    &lt;td class="c"&gt;LOT/043/07/26&lt;/td&gt;              &lt;!-- identificador: vira o título --&gt;
+    &lt;td class="d"&gt;…&lt;/td&gt;                          &lt;!-- descrição: sai em 1100px --&gt;
+    &lt;td data-label="Status"&gt;…&lt;/td&gt;                  &lt;!-- pastilha: forma já diz o que é --&gt;
+    &lt;td class="n" data-suffix="un."&gt;300&lt;/td&gt;       &lt;!-- sufixo cola no número --&gt;
+    &lt;td class="n key"&gt;¥ 7.036&lt;/td&gt;                &lt;!-- .key = o número que decide --&gt;
+    &lt;td class="hide-md"&gt;…&lt;/td&gt;                    &lt;!-- sai do tablet para baixo --&gt;
+    &lt;td class="go"&gt;&lt;svg …/&gt;&lt;/td&gt;                  &lt;!-- abrir: sempre à direita --&gt;
+  &lt;/tr&gt;&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;</div>
+
+</div>
+</body>
+</html>

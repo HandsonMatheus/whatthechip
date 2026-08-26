@@ -1,0 +1,876 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x5440" name="Landing" subtitle="Site público — mercado exclusivo, plataforma, especialista presencial e implantação em 1 semana" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · 什么芯片 — a primeira plataforma de recondicionamento de chips do mundo</title>
+<script>(function(){try{if(localStorage.getItem('wtc_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink-100:#161616;--ink-90:#21272a;--ink-80:#343a3f;--ink-70:#4d5358;--ink-60:#697077;
+  --ink-50:#878d96;--ink-40:#a2a9b0;--ink-30:#c1c7cd;--ink-20:#dde1e6;--ink-10:#f2f4f8;--ink-05:#f7f8fb;--white:#fff;
+  --blue-10:#edf5ff;--blue-20:#d0e2ff;--blue-40:#78a9ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;
+  --green-10:#e6f7ec;--green-40:#42be65;--green-50:#24a148;--green-60:#198038;--green-70:#0e6027;
+  --amber-10:#fdf3d6;--amber-40:#f1c21b;--amber-60:#b28600;--amber-70:#8a6a00;
+  --red-10:#fff1f1;--red-50:#fa4d56;--red-60:#da1e28;--red-70:#a2191f;
+  --sans:'Manrope',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;--cjk:'Noto Sans SC',var(--sans);
+  --bg:var(--ink-10);--surface:var(--white);--line:var(--ink-20);--line-2:var(--ink-30);
+  --text:var(--ink-100);--muted:var(--ink-60);--faint:var(--ink-50);
+  --d1:70ms;--d2:150ms;--d3:240ms;--ez:cubic-bezier(.2,0,.38,.9);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--surface);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;overflow-x:hidden}
+button,input,select{font-family:inherit;font-size:inherit}
+a{color:var(--blue-60);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue-60);outline-offset:-2px}
+h1,h2,h3,h4,p{margin:0}
+img{max-width:100%}
+.mono{font-family:var(--mono);letter-spacing:-.01em}
+.wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+
+/* ============ NAV ============ */
+.nav{position:sticky;top:0;z-index:40;height:52px;background:var(--surface);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.nav__brand{display:flex;align-items:center;padding:0 24px 0 20px;flex:none}
+.nav__brand img{height:24px;width:auto;display:block}
+.nav__brand .lg-d{display:none}
+[data-theme="dark"] .nav__brand .lg-d{display:block}
+[data-theme="dark"] .nav__brand .lg-l{display:none}
+/* botão de menu: só existe na gaveta (abaixo de 880px) */
+.nav__burger{display:none;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nav__burger span{display:block;width:20px;height:2px;background:var(--ink-80);transition:transform var(--d2) var(--ez),opacity var(--d1)}
+.nav__burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav__burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav__burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav__links{display:flex;align-items:stretch;flex:0 0 auto}
+.nav__links a{display:flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;color:var(--ink-70);white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.nav__links a:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.nav__sp{flex:1}
+.nav__cjk{display:flex;align-items:center;padding:0 16px;font-family:var(--cjk);font-size:13px;font-weight:500;color:var(--ink-50);border-left:1px solid var(--line);flex:none}
+.nav__lang{position:relative;display:flex;align-items:stretch;border-left:1px solid var(--line);flex:none}
+.nav__lang>button{display:flex;align-items:center;gap:9px;padding:0 14px;border:0;background:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-70);cursor:pointer;transition:background var(--d1),color var(--d1)}
+.nav__lang>button:hover{background:var(--ink-05);color:var(--text)}
+.nav__lang>button svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;transition:transform var(--d2)}
+.nav__lang.on>button{background:var(--ink-05);color:var(--text)}
+.nav__lang.on>button svg{transform:rotate(180deg)}
+.nav__menu{position:absolute;top:100%;right:0;min-width:184px;background:var(--surface);border:1px solid var(--line-2);display:none;flex-direction:column;box-shadow:0 12px 32px -12px rgba(0,0,0,.4);z-index:50}
+.nav__lang.on .nav__menu{display:flex}
+.nav__menu button{display:flex;align-items:center;justify-content:space-between;gap:16px;height:40px;padding:0 14px;border:0;border-bottom:1px solid var(--line);background:none;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink-80);cursor:pointer;text-align:left;transition:background var(--d1),color var(--d1)}
+.nav__menu button:last-child{border-bottom:0}
+.nav__menu button:hover{background:var(--ink-05);color:var(--text)}
+.nav__menu button.on{background:var(--blue-10);color:var(--blue-70);font-weight:700}
+.nav__menu .k{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.nav__menu button.on .k{color:var(--blue-70)}
+.nav__theme{width:52px;flex:none;display:grid;place-items:center;border:0;border-left:1px solid var(--line);background:none;color:var(--ink-60);cursor:pointer;transition:background var(--d1),color var(--d1)}
+.nav__theme:hover{background:var(--ink-05);color:var(--text)}
+.nav__theme svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.nav__theme .moon{display:none}
+[data-theme="dark"] .nav__theme .moon{display:block}
+[data-theme="dark"] .nav__theme .sun{display:none}
+.nav__in{display:flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;color:var(--ink-70);border-left:1px solid var(--line);flex:none}
+.nav__in:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.nav__go{display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--blue-60);color:#fff;font-size:13px;font-weight:700;flex:none;white-space:nowrap;transition:background var(--d1)}
+.nav__go:hover{background:var(--blue-60h);text-decoration:none}
+.nav__go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+.nav__go-s{display:none}
+.nav__user{position:relative;display:none;align-items:stretch;border-left:1px solid var(--line);flex:none}
+body.is-auth .nav__user{display:flex}
+body.is-auth .nav__in,body.is-auth .nav__go{display:none}
+.nav__user>button{display:flex;align-items:center;gap:10px;padding:0 14px;border:0;background:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;transition:background var(--d1)}
+.nav__user>button:hover{background:var(--ink-05)}
+.nav__user.on>button{background:var(--ink-05)}
+.nav__user>button svg{width:14px;height:14px;fill:none;stroke:var(--ink-60);stroke-width:2;transition:transform var(--d2)}
+.nav__user.on>button svg{transform:rotate(180deg)}
+.av{width:26px;height:26px;flex:none;display:grid;place-items:center;background:var(--blue-60);color:#fff;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:-.02em}
+.av--lg{width:36px;height:36px;font-size:13px}
+.umenu{position:absolute;top:100%;right:0;width:272px;background:var(--surface);border:1px solid var(--line-2);display:none;flex-direction:column;box-shadow:0 12px 32px -12px rgba(0,0,0,.4);z-index:50}
+.nav__user.on .umenu{display:flex}
+.umenu__h{display:flex;gap:12px;padding:16px;border-bottom:1px solid var(--line);background:var(--ink-05)}
+.umenu__n{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.umenu__e{font-size:12px;color:var(--muted);margin-top:2px;word-break:break-all}
+.umenu__r{margin-top:8px}
+.umenu__go{display:flex;align-items:center;justify-content:space-between;gap:16px;height:48px;padding:0 16px;background:var(--blue-60);color:#fff;font-size:13px;font-weight:700}
+.umenu__go:hover{background:var(--blue-60h);text-decoration:none;color:#fff}
+/* o menu de conta usa os MESMOS ícones da barra do app (painel, estoque, vendas): mesma coisa,
+   mesmo sinal, em qualquer lugar do sistema. Ícone à esquerda do rótulo, seta e código à direita. */
+.umenu__go svg,.umenu__i svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;flex:none}
+.umenu__go>span,.umenu__i>span{margin-right:auto}
+.umenu__go svg:last-child{width:15px;height:15px;stroke-width:2;margin-right:0}
+.umenu__go>span{margin-right:0}
+.umenu__go{justify-content:flex-start;gap:12px}
+.umenu__go>span{flex:1}
+.umenu__i{justify-content:flex-start}
+.umenu__i svg{opacity:.7}
+.umenu__i:hover svg{opacity:1}
+.umenu__i{display:flex;align-items:center;justify-content:space-between;gap:12px;height:40px;padding:0 16px;border:0;border-top:1px solid var(--line);background:none;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink-80);cursor:pointer;text-align:left;transition:background var(--d1),color var(--d1)}
+.umenu__i:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.umenu__i .k{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:auto}
+/* sair é a única saída destrutiva daqui: tinta vermelha, ícone de porta. Sem casca — peso de link,
+   como o destrutivo do cabeçalho do registro. Depois de .umenu__i, senão a cor base o apaga. */
+.umenu__i--out{color:var(--red-60)}
+.umenu__i--out svg{opacity:.85}
+.umenu__i--out:hover{background:var(--red-10);color:var(--red-70)}
+
+/* alternador de estado do protótipo */
+.proto{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:4px;padding:5px;background:#161616;border:1px solid #393939;box-shadow:0 12px 32px -12px rgba(0,0,0,.5)}
+.proto__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#8d8d8d;padding:0 10px 0 8px}
+.proto button{height:32px;padding:0 14px;border:0;background:none;font-family:inherit;font-size:12px;font-weight:600;color:#c6c6c6;cursor:pointer;transition:background var(--d1),color var(--d1)}
+.proto button:hover{background:#393939;color:#fff}
+.proto button.on{background:var(--blue-60);color:#fff}
+
+/* ============ TIPOS / BOTÕES ============ */
+.eyebrow{display:inline-flex;align-self:flex-start;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-70);background:var(--blue-10);padding:6px 12px}
+.eyebrow .dot{width:7px;height:7px;background:var(--blue-60);flex:none}
+.h1{font-size:76px;font-weight:300;letter-spacing:-.04em;line-height:1.02}
+.h2{font-size:52px;font-weight:300;letter-spacing:-.035em;line-height:1.06}
+.h3{font-size:40px;font-weight:300;letter-spacing:-.03em;line-height:1.1}
+.h1 b,.h2 b,.h3 b{font-weight:700}
+.lead{font-size:17px;font-weight:400;line-height:1.5;color:var(--ink-80)}
+.lead b{font-weight:700;color:var(--text)}
+.slabel{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.slabel i{height:1px;flex:1;background:var(--line-2)}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;height:56px;padding:0 20px;border:1px solid transparent;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background var(--d1),color var(--d1),border-color var(--d1)}
+.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.btn--pri{background:var(--blue-60);color:#fff}.btn--pri:hover{background:var(--blue-60h);text-decoration:none}
+.btn--ter{background:transparent;color:var(--blue-60);border-color:var(--blue-60)}.btn--ter:hover{background:var(--blue-60);color:#fff;text-decoration:none}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.03em;padding:2px 8px;white-space:nowrap}
+.tag .dot{width:6px;height:6px;flex:none}
+.tag--yes{background:var(--green-10);color:var(--green-70)}.tag--yes .dot{background:var(--green-50)}
+.tag--mask{background:var(--ink-10);color:var(--ink-70)}.tag--mask .dot{background:var(--ink-50)}
+
+/* ============ HERO ============ */
+.hero{border-bottom:1px solid var(--line)}
+.hero__in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;padding:64px 0 64px;align-items:center}
+.hero__copy{display:flex;flex-direction:column;gap:22px;min-width:0}
+.hero__cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero__side{min-width:0}
+
+/* faixa de fatos sob o hero */
+.facts{border-bottom:1px solid var(--line);background:var(--ink-05)}
+.facts__in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);margin:0 -1px}
+.fact{background:var(--ink-05);padding:24px;display:flex;gap:14px;align-items:flex-start}
+.fact__i{width:22px;height:22px;flex:none;color:var(--blue-60);margin-top:1px}
+.fact__i svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7}
+.fact__v{font-size:17px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.fact__d{font-size:14px;color:var(--ink-80);line-height:1.5;margin-top:6px}
+
+/* linhas de lote no hero */
+.lotr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.lotr__c{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:-.02em}
+.lotr__m{grid-column:1;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
+.lotr__v{grid-column:2;grid-row:1/span 2;align-self:center;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-size:24px;font-weight:700;letter-spacing:-.03em;white-space:nowrap}
+/* o valor sobe sozinho enquanto a bancada lança; o centavo fica de apoio para o dólar seguir sendo a manchete */
+.lotr__n{font-weight:700}
+.lotr__ct{font-size:.62em;font-weight:600;color:var(--muted);margin-left:1px}
+.demo__f .lotr__ct{font-size:.82em}
+
+/* demo do produto */
+.demo{border:1px solid var(--line-2);background:var(--surface)}
+.demo__h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--ink-05)}
+.demo__t{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.demo__dots{display:flex;gap:5px}
+.demo__dots i{width:7px;height:7px;background:var(--ink-30)}
+.demo__f{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:2px 16px;padding:11px 16px;border-top:1px solid var(--line);background:var(--ink-05);font-size:12px;color:var(--muted)}
+.demo__f span{white-space:nowrap}
+.demo__f b{font-family:var(--mono);font-weight:700;color:var(--text)}
+
+/* ============ SEÇÃO ESCURA ============ */
+.dark{background:var(--ink-100);color:#fff}
+.dark__in{padding:88px 0}
+.dark .slabel{color:var(--ink-50)}
+.dark .slabel i{background:var(--ink-80)}
+.dark .lead{color:var(--ink-30)}
+.dark .lead b{color:#fff}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:end;margin-top:24px}
+.mkt__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--ink-80);margin-top:48px;border:1px solid var(--ink-80)}
+.mkt__c{background:var(--ink-100);padding:24px}
+.mkt__n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-40)}
+.mkt__t{font-size:17px;font-weight:700;letter-spacing:-.015em;margin-top:16px;line-height:1.25}
+.mkt__d{font-size:13px;color:var(--ink-30);margin-top:10px;line-height:1.55}
+.mkt__d b{color:#fff;font-weight:700}
+
+/* frase-manifesto */
+.claim{background:var(--blue-60);color:#fff;border-bottom:1px solid var(--line)}
+.claim .wrap{padding:64px 40px}
+.claim__t{font-size:40px;font-weight:300;letter-spacing:-.03em;line-height:1.15;max-width:32ch}
+.claim__t b{font-weight:700}
+
+/* ============ CADEIA ============ */
+.chain{padding:88px 0;border-bottom:1px solid var(--line)}
+.chain__grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);margin-top:48px;border:1px solid var(--line)}
+.lk{background:var(--surface);padding:24px 16px;display:flex;flex-direction:column;gap:11px;transition:background var(--d2)}
+.lk:hover{background:var(--blue-10)}
+.lk__n{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink-50)}
+.lk__ico{width:24px;height:24px;color:var(--blue-60)}
+.lk__ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6}
+.lk__t{font-size:14px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.lk__d{font-size:12px;color:var(--muted);line-height:1.5}
+.lk__o{margin-top:auto;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--blue-70);background:var(--blue-10);padding:3px 7px;align-self:flex-start}
+.lk:hover .lk__o{background:var(--blue-20)}
+.chain__foot{margin-top:24px;font-size:12px;color:var(--faint);display:flex;align-items:center;gap:8px}
+.chain__foot i{width:10px;height:10px;background:var(--blue-60);flex:none}
+
+/* ============ SISTEMA ============ */
+.sys{padding:88px 0;background:var(--ink-10);border-bottom:1px solid var(--line)}
+.sys__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);margin-top:48px;border:1px solid var(--line)}
+.card{background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:12px}
+.card__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--blue-70)}
+.card__t{font-size:17px;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+.card__d{font-size:13px;color:var(--ink-80);line-height:1.55}
+.card__d b{font-weight:700}
+.card__proof{margin-top:auto;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-wrap:wrap;gap:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink-60)}
+.card__proof span{background:var(--ink-05);padding:3px 8px}
+
+/* ============ ESPECIALISTA ============ */
+.exp{padding:88px 0;border-bottom:1px solid var(--line)}
+.exp__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:48px}
+.exp__c{background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:12px}
+.exp__ico{width:28px;height:28px;color:var(--blue-60)}
+.exp__ico svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.6}
+.exp__t{font-size:17px;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+.exp__d{font-size:13px;color:var(--ink-80);line-height:1.55}
+.exp__bar{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);margin-top:48px;border:1px solid var(--line)}
+.exp__b{background:var(--ink-05);flex:1 1 200px;padding:16px 20px}
+.exp__bl{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.exp__bv{font-size:14px;font-weight:700;margin-top:5px}
+.exp__bv .m{font-family:var(--mono);font-weight:600}
+
+/* ============ IMPLANTAÇÃO (linha do tempo) ============ */
+.week{padding:88px 0;background:var(--ink-10);border-bottom:1px solid var(--line)}
+.tl{margin-top:48px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.tl__i{position:relative;background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:10px;transition:background var(--d2)}
+.tl__i:hover{background:var(--blue-10)}
+.tl__i::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--blue-20)}
+.tl__i--end::before{background:var(--blue-60)}
+.tl__k{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.tl__k i{width:9px;height:9px;background:var(--blue-60);flex:none}
+.tl__i--end .tl__k{color:var(--blue-70)}
+.tl__i--end .tl__k i{background:var(--ink-100)}
+.tl__t{font-size:17px;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+.tl__d{font-size:13px;color:var(--muted);line-height:1.55}
+.week__note{margin-top:24px;font-size:13px;color:var(--muted)}
+.week__note b{color:var(--text);font-weight:700}
+
+/* ============ REUNIÃO ============ */
+.meet{padding:88px 0;border-bottom:1px solid var(--line)}
+.meet__in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);gap:64px;align-items:start;margin-top:24px}
+.meet__pts{display:flex;flex-direction:column;margin-top:20px}
+.pt{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.pt:first-child{border-top:1px solid var(--line)}
+.pt__i{width:18px;height:18px;flex:none;color:var(--blue-60);margin-top:2px}
+.pt__i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.pt__t{font-size:13px;color:var(--ink-80);line-height:1.5}
+.pt__t b{font-weight:700;color:var(--text)}
+.form{border:1px solid var(--line-2);background:var(--surface)}
+.form__h{padding:20px 24px 16px;border-bottom:1px solid var(--line)}
+.form__t{font-size:24px;font-weight:400;letter-spacing:-.02em}
+.form__s{font-size:13px;color:var(--muted);margin-top:6px}
+.form__b{padding:20px 24px 24px;display:flex;flex-direction:column;gap:16px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fld label{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-70);margin-bottom:7px}
+.fld input,.fld select{width:100%;height:48px;padding:0 14px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);color:var(--text);font-size:14px}
+.fld select{-webkit-appearance:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23697077' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.fld input:focus,.fld select:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.lang{display:flex;gap:1px;background:var(--line);border:1px solid var(--line)}
+.lang button{flex:1;height:48px;border:0;background:var(--surface);font-size:13px;font-weight:600;color:var(--ink-70);cursor:pointer;transition:all var(--d1)}
+.lang button:hover{background:var(--ink-05);color:var(--text)}
+.lang button.on{background:var(--blue-60);color:#fff}
+.form__go{width:100%;height:56px;padding:0 20px;border:0;background:var(--blue-60);color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px;transition:background var(--d1)}
+.form__go:hover{background:var(--blue-60h)}
+.form__go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.form__ok{display:none;align-items:flex-start;gap:11px;padding:12px 14px;background:var(--green-10);border:1px solid var(--green-50);font-size:13px;color:var(--green-70)}
+.form__ok.on{display:flex}
+.form__ok svg{width:16px;height:16px;fill:none;stroke:var(--green-60);stroke-width:2.4;flex:none;margin-top:2px}
+.form__fine{font-size:12px;color:var(--faint);line-height:1.5}
+
+/* ============ PARA QUEM ============ */
+
+/* ============ CTA + FOOTER ============ */
+.foot{background:var(--ink-100);color:var(--ink-40);padding:56px 0 40px}
+.foot__in{display:flex;flex-wrap:wrap;gap:32px;justify-content:space-between;align-items:flex-start}
+.foot__brand{display:flex;flex-direction:column;gap:14px;max-width:320px}
+.foot__brand img{height:24px;width:auto;display:block}
+.foot__brand p{font-size:12px;line-height:1.6}
+.foot__cols{display:flex;gap:48px;flex-wrap:wrap}
+.foot__c h4{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-60);margin-bottom:12px}
+.foot__c a,.foot__c span{display:block;font-size:13px;color:var(--ink-30);padding:4px 0}
+.foot__c a:hover{color:#fff;text-decoration:none}
+.foot__law{margin-top:40px;padding-top:20px;border-top:1px solid var(--ink-80);display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;font-size:11px;color:var(--ink-60)}
+.cjk{font-family:var(--cjk)}
+.nav__menu .cjk{font-weight:500}
+
+/* ============ MODO ESCURO (Carbon Gray 100) ============ */
+[data-theme="dark"]{
+  --ink-100:#ffffff;--ink-90:#f4f4f4;--ink-80:#e0e0e0;--ink-70:#c6c6c6;--ink-60:#a8a8a8;
+  --ink-50:#8d8d8d;--ink-40:#6f6f6f;--ink-30:#525252;--ink-20:#393939;--ink-10:#333333;--ink-05:#2f2f2f;--white:#161616;
+  --blue-10:#001d6c;--blue-20:#0043ce;--blue-40:#4589ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#a6c8ff;
+  --green-10:#022d0d;--green-50:#24a148;--green-60:#42be65;--green-70:#6fdc8c;
+  --amber-10:#302400;--amber-40:#f1c21b;--amber-60:#d2a106;--amber-70:#fdd13a;
+  --red-10:#2d0709;--red-50:#fa4d56;--red-60:#fa4d56;--red-70:#ff8389;
+  --bg:#161616;--surface:#262626;--line:#393939;--line-2:#525252;
+  --text:#f4f4f4;--muted:#c6c6c6;--faint:#8d8d8d;
+}
+[data-theme="dark"] .nav,[data-theme="dark"] .hero,[data-theme="dark"] .chain,[data-theme="dark"] .exp,[data-theme="dark"] .meet{background:var(--bg)}
+[data-theme="dark"] body{background:var(--bg)}
+[data-theme="dark"] .facts{background:#1f1f1f}
+[data-theme="dark"] .fact{background:#1f1f1f}
+[data-theme="dark"] .sys,[data-theme="dark"] .week{background:#1f1f1f}
+[data-theme="dark"] .dark{background:#000}
+[data-theme="dark"] .mkt__c{background:#000}
+[data-theme="dark"] .mkt__grid{background:#393939;border-color:#393939}
+[data-theme="dark"] .dark .lead,[data-theme="dark"] .mkt__d{color:#c6c6c6}
+[data-theme="dark"] .foot{background:#000;color:#8d8d8d}
+[data-theme="dark"] .foot__c a,[data-theme="dark"] .foot__c span{color:#c6c6c6}
+[data-theme="dark"] .foot__law{border-top-color:#393939}
+[data-theme="dark"] .demo__h,[data-theme="dark"] .demo__f{background:#1f1f1f}
+[data-theme="dark"] .card__proof span{background:#1f1f1f}
+[data-theme="dark"] .eyebrow{background:#001d6c;color:#a6c8ff}
+[data-theme="dark"] .lk:hover,[data-theme="dark"] .tl__i:hover{background:#1c2b4d}
+[data-theme="dark"] .lk__o{background:#001d6c;color:#a6c8ff}
+[data-theme="dark"] .lk:hover .lk__o{background:#0043ce;color:#fff}
+[data-theme="dark"] .tl__i::before{background:#0043ce}
+[data-theme="dark"] .tl__i--end::before{background:var(--blue-60)}
+[data-theme="dark"] .tl__i--end .tl__k i{background:#fff}
+[data-theme="dark"] .nav__menu button.on{background:#001d6c;color:#a6c8ff}
+[data-theme="dark"] .nav__lang button.on{background:#f4f4f4;color:#161616}
+[data-theme="dark"] .umenu__h{background:#1f1f1f}
+[data-theme="dark"] .proto{border-color:#525252}
+/* ============ RESPONSIVO ============ */
+@container vp (max-width:1240px){
+  .nav__links a{padding:0 11px}
+  .nav__in{display:none}
+  .nav__go{gap:16px;padding:0 16px}
+  .nav__go-l{display:none}
+  .nav__go-s{display:inline}
+  .chain__grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .lk:last-child{grid-column:span 2}
+  .tl{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:1px}
+  .h1{font-size:52px}
+}
+@container vp (max-width:1080px){
+  .nav__links a{padding:0 12px;font-size:12px}
+  .hero__in,.two,.meet__in{grid-template-columns:1fr;gap:36px}
+  .hero__in{padding:44px 0 40px}
+  .h1{font-size:52px}.h2{font-size:40px}.h3{font-size:31px}
+  .claim__t{font-size:31px}
+  .sys__grid,.exp__grid,.mkt__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts__in{grid-template-columns:1fr}
+  .meet__in{grid-template-columns:1fr}
+}
+@container vp (max-width:880px){
+  .wrap{padding:0 20px}
+  /* a barra guarda apenas marca, tema e o botão de menu; o resto mora na gaveta */
+  /* max-height + align-content: a primeira linha mantém os 52px e o resto fica recortado.
+     Com height fixo o flex-wrap dividiria a altura entre as linhas e tudo achataria. */
+  .nav{flex-wrap:wrap;align-content:flex-start;height:auto;max-height:52px;overflow:hidden;transition:max-height var(--d3) var(--ez)}
+  .nav.is-open{max-height:100vh;overflow-y:auto;overscroll-behavior:contain}
+  .nav__brand{order:1;flex:1;padding:0 16px;height:52px}
+  .nav__theme{order:2;border-left:0;width:52px;height:52px}
+  .nav__burger{order:3;display:flex;width:52px;height:52px;border-right:0;border-left:1px solid var(--line)}
+  .nav__sp,.nav__cjk{display:none}
+
+  /* gaveta: uma seção por assunto, cada linha com altura de toque */
+  .nav__links{order:4;flex:0 0 100%;flex-direction:column;align-items:stretch;border-top:1px solid var(--line-2)}
+  .nav__links a{height:56px;padding:0 16px;font-size:16px;font-weight:600;color:var(--text);border-bottom:1px solid var(--line)}
+  .nav__links a:active{background:var(--ink-05)}
+
+  /* idioma vira uma fileira de chips — dropdown dentro de gaveta é armadilha */
+  .nav__lang{order:5;flex:0 0 100%;flex-direction:column;border-left:0;border-bottom:1px solid var(--line)}
+  .nav__lang>button{display:none}
+  .nav__menu{position:static;display:flex;flex-direction:row;min-width:0;border:0;box-shadow:none;background:none;padding:12px 16px;gap:6px}
+  /* o nome do idioma é texto solto no botão, então mostramos o nome e escondemos o código */
+  .nav__menu button{flex:1;height:44px;padding:0;border:1px solid var(--line-2);justify-content:center;gap:0;font-size:13px;font-weight:600}
+  .nav__menu button .k{display:none}
+  /* na gaveta os idiomas viram fileira de pastilhas, e aí a regra do popover — "o último não tem
+     filete de baixo" — não vale mais: ela tem especificidade maior que a da gaveta e apagava a
+     borda inferior do 中文. Devolvida aqui, antes de .on, para o ativo continuar mandando na cor. */
+  .nav__menu button:last-child{border-bottom:1px solid var(--line-2)}
+  .nav__menu button.on{border-color:var(--blue-60);background:var(--blue-60);color:#fff}
+  .nav__menu button.on .k{color:#fff}
+
+  /* as duas ações principais ganham largura cheia no pé da gaveta */
+  .nav__in{order:6;flex:0 0 100%;display:flex;height:52px;justify-content:center;border-left:0;border-bottom:1px solid var(--line);font-size:15px}
+  .nav__go{order:7;flex:0 0 100%;height:56px;justify-content:center;gap:10px;font-size:15px}
+  .nav__user{order:8;flex:0 0 100%;flex-direction:column;border-left:0;border-top:1px solid var(--line-2)}
+  .nav__user>button{height:60px;gap:12px;padding:0 16px}
+  .nav__un{display:block;font-size:15px}
+  .nav__user>button svg{margin-left:auto}
+  /* na gaveta o menu de conta é conteúdo, não janela: largura cheia, sem width de popover.
+     A identidade sai daqui — ela já está na linha do perfil, logo acima. */
+  .umenu{position:static;width:auto;min-width:0;border:0;box-shadow:none;border-top:1px solid var(--line)}
+  .umenu__h{display:none}
+  .umenu__go{height:56px;font-size:15px}
+  .umenu__i{height:52px;font-size:15px}
+  body.is-auth .nav__in,body.is-auth .nav__go{display:none}
+  .nav__lang>button{padding:0 10px}
+  .nav__lang>button span{display:none}
+  .h1{font-size:40px}.h2{font-size:31px}.h3{font-size:24px}
+  .claim__t{font-size:24px}
+  .claim .wrap{padding:44px 20px}
+  .lead{font-size:15px}
+  .dark__in,.chain,.sys,.exp,.week,.meet{padding:56px 0}
+  .chain__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lk:last-child{grid-column:span 2}
+  .tl{grid-template-columns:1fr;row-gap:1px}
+  .btn{width:100%;height:48px}
+  .hero__cta{flex-direction:column;align-items:stretch}
+}
+@container vp (max-width:600px){
+  .sys__grid,.exp__grid,.mkt__grid,.chain__grid,.f2{grid-template-columns:1fr}
+  .lk:last-child{grid-column:auto}
+  .exp__bv{font-size:13px}
+  .nav__brand{padding:0 12px}
+  .h1{font-size:34px}
+  .foot__cols{gap:28px}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a class="nav__brand" href="index.html" aria-label="WhatTheChip 什么芯片"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <button class="nav__burger" id="burger" type="button" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="nav__links">
+    <a href="#mercado">O mercado</a>
+    <a href="#cadeia">Como funciona</a>
+    <a href="#especialista">Especialista</a>
+    <a href="#semana">Implantação</a>
+  </nav>
+  <div class="nav__sp"></div>
+  <div class="nav__lang" id="nav-lang">
+    <button type="button" id="lang-btn" aria-haspopup="true" aria-expanded="false"><span id="lang-cur">Português</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="nav__menu" id="lang-menu" role="menu">
+      <button type="button" class="on" data-l="Português" role="menuitem">Português<span class="k">PT</span></button>
+      <button type="button" data-l="English" role="menuitem">English<span class="k">EN</span></button>
+      <button type="button" data-l="Español" role="menuitem">Español<span class="k">ES</span></button>
+      <button type="button" data-l="中文" role="menuitem"><span class="cjk">中文</span><span class="k">ZH</span></button>
+    </div>
+  </div>
+  <button class="nav__theme" id="theme-btn" aria-label="Alternar modo escuro">
+    <svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+  </button>
+  <a class="nav__in" href="#reuniao">Solicitar avaliação</a>
+  <a class="nav__go" href="login.html"><span class="nav__go-l">Entrar</span><span class="nav__go-s">Entrar</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <div class="nav__user" id="nav-user">
+    <button type="button" id="user-btn" aria-haspopup="true" aria-expanded="false"><span class="av">RM</span><span class="nav__un">Rafael Moura</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="umenu" id="user-menu" role="menu">
+      <div class="umenu__h">
+        <span class="av av--lg">RM</span>
+        <div>
+          <div class="umenu__n">Rafael Moura</div>
+          <div class="umenu__e">rafael@reciclaminas.com.br</div>
+          <div class="umenu__r"><span class="tag tag--mask"><span class="dot"></span>ADMIN · RECICLAMINAS</span></div>
+        </div>
+      </div>
+      <a class="umenu__go" href="painel.html" role="menuitem"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="umenu__i" href="estoque.html" role="menuitem"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+      <a class="umenu__i" href="vendas-lista.html" role="menuitem"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+      <button type="button" class="umenu__i umenu__i--out" id="logout" role="menuitem"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5h4a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-4"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg><span>Sair</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero"><div class="wrap"><div class="hero__in">
+  <div class="hero__copy">
+    <span class="eyebrow"><span class="dot"></span>Primeira do mundo em recondicionamento de chips</span>
+    <h1 class="h1">O mercado de chips recuperados <b>tem uma porta. Ela abre aqui.</b></h1>
+    <p class="lead">Saber o que é cada peça é o que separa quem está nesse mercado de quem olha de fora — e quem sabe não passa a informação. <b>Nós passamos.</b> A plataforma identifica, precifica e entrega o controle inteiro da operação: produção, estoque, venda garantida e resultado. Com <b>especialista presencial</b> para montar tudo com a sua equipe.</p>
+    <div class="hero__cta">
+      <a class="btn btn--pri" href="#reuniao">Solicitar avaliação<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+
+  <div class="hero__side">
+    <div class="demo" aria-label="Resumo de lotes na plataforma">
+      <div class="demo__h"><span class="demo__t">Seus lotes · ao vivo</span><span class="demo__dots"><i></i><i></i><i></i></span></div>
+      <div class="lotr" data-lot data-v="1040" data-u="300">
+        <div class="lotr__c">LOT/043/07/26</div>
+        <div class="lotr__m"><span data-un>300 un.</span><span>9 categorias</span></div>
+        <div class="lotr__v"><b class="lotr__n" data-val>US$ 1.040<span class="lotr__ct">,00</span></b><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></div>
+      </div>
+      <div class="lotr" data-lot data-v="9104" data-u="1840">
+        <div class="lotr__c">LOT/042/07/26</div>
+        <div class="lotr__m"><span data-un>1.840 un.</span><span>37 categorias</span></div>
+        <div class="lotr__v"><b class="lotr__n" data-val>US$ 9.104<span class="lotr__ct">,00</span></b><span class="tag tag--yes"><span class="dot"></span>ABERTO</span></div>
+      </div>
+      <div class="lotr" data-v="16480">
+        <div class="lotr__c">LOT/040/07/26</div>
+        <div class="lotr__m"><span>3.120 un.</span><span>58 categorias</span></div>
+        <div class="lotr__v"><b class="lotr__n">US$ 16.480<span class="lotr__ct">,00</span></b><span class="tag tag--mask"><span class="dot"></span>ENVIADO</span></div>
+      </div>
+      <div class="demo__f"><span>3 lotes no período</span><span>valor triado <b data-tot>US$ 26.624<span class="lotr__ct">,00</span></b></span></div>
+    </div>
+  </div>
+</div></div></section>
+
+<div class="facts"><div class="wrap"><div class="facts__in">
+  <div class="fact">
+    <span class="fact__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v6c0 4-3.4 6.9-8 8-4.6-1.1-8-4-8-8V7z"/><path d="M9.5 12l1.8 1.8L15 9.8"/></svg></span>
+    <div><div class="fact__v">Conhecimento</div><div class="fact__d">Identificar o que é cada peça é a barreira do setor. A plataforma resolve isso — e o especialista ensina o método na sua operação.</div></div>
+  </div>
+  <div class="fact">
+    <span class="fact__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8M10 18V4M16 18v-7M22 18v-4"/><path d="M3 21h18"/></svg></span>
+    <div><div class="fact__v">Controle</div><div class="fact__d">Custo, valor, estoque e resultado de cada envio no mesmo lugar, com informes prontos. Nada depende de planilha ou de confiança.</div></div>
+  </div>
+  <div class="fact">
+    <span class="fact__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg></span>
+    <div><div class="fact__v">Operação</div><div class="fact__d">Produção medida por pessoa e por hora, lotes organizados e venda garantida no fim da linha. Sua equipe roda sem depender de especialista.</div></div>
+  </div>
+</div></div></div>
+
+<!-- ===================== MERCADO ===================== -->
+<section class="dark" id="mercado"><div class="wrap"><div class="dark__in">
+  <div class="slabel">O mercado<i></i></div>
+  <div class="two">
+    <h2 class="h2">Não é sucata. É <b>peça com valor.</b></h2>
+    <p class="lead">Saber o que é cada chip é a <b>porta de entrada do setor</b> — e quem tem a chave não a divide. É por isso que o reuso de chips continua sendo um mercado de pouca gente.</p>
+  </div>
+  <div class="mkt__grid">
+    <article class="mkt__c">
+      <div class="mkt__n">01</div>
+      <h3 class="mkt__t">Sem identificação, vira peso</h3>
+      <p class="mkt__d">Material não identificado é vendido <b>como sucata</b>. Identificado, entra em outro patamar de preço.</p>
+    </article>
+    <article class="mkt__c">
+      <div class="mkt__n">02</div>
+      <h3 class="mkt__t">Quem sabe, não ensina</h3>
+      <p class="mkt__d">São poucas pessoas no mundo, e o conhecimento é guardado. <b>Sem plataforma, você tem que descobrir tudo sozinho.</b></p>
+    </article>
+  </div>
+</div></div></section>
+
+<section class="claim"><div class="wrap"><p class="claim__t">Somos a <b>única plataforma do mundo</b> que faz a cadeia inteira do recondicionamento de chips — e ensina o processo na sua operação, com especialista presente.</p></div></section>
+
+<!-- ===================== CADEIA ===================== -->
+<section class="chain" id="cadeia"><div class="wrap">
+  <div class="slabel">Como funciona<i></i></div>
+  <div class="two">
+    <h2 class="h2">Do código gravado <b>ao dinheiro na conta.</b></h2>
+    <p class="lead">Sete etapas, um só sistema. Hoje cada uma delas vive numa planilha, num caderno ou na memória de alguém. <b>Aqui elas são o mesmo registro.</b></p>
+  </div>
+  <div class="chain__grid">
+    <article class="lk">
+      <div class="lk__n">01</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16"/><path d="M9 4v16M15 4v16M4 9h5M4 15h5M15 9h5M15 15h5"/></svg></div>
+      <h3 class="lk__t">Identificar</h3>
+      <p class="lk__d">O operador digita o código do chip. A plataforma diz o que é.</p>
+      <span class="lk__o">→ modelo</span>
+    </article>
+    <article class="lk">
+      <div class="lk__n">02</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 3v18"/><path d="M17 7H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H7"/></svg></div>
+      <h3 class="lk__t">Precificar</h3>
+      <p class="lk__d">Valor por unidade em dólar e yuan, atualizado pela plataforma.</p>
+      <span class="lk__o">→ US$ /un.</span>
+    </article>
+    <article class="lk">
+      <div class="lk__n">03</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M3 6h18M7 12h10M10 18h4"/></svg></div>
+      <h3 class="lk__t">Triar</h3>
+      <p class="lk__d">A bancada recebe o destino de cada peça. O que não é reconhecido fica separado para conferência.</p>
+      <span class="lk__o">→ destino</span>
+    </article>
+    <article class="lk">
+      <div class="lk__n">04</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg></div>
+      <h3 class="lk__t">Fechar lote</h3>
+      <p class="lk__d">Cada compra é um lote com custo, operadores e produção por hora.</p>
+      <span class="lk__o">→ LOT/###</span>
+    </article>
+    <article class="lk">
+      <div class="lk__n">05</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7"/><rect x="3" y="13" width="18" height="7"/></svg></div>
+      <h3 class="lk__t">Controlar estoque</h3>
+      <p class="lk__d">Quanto tem de cada tipo, quanto vale e o que está parado.</p>
+      <span class="lk__o">→ un. · US$</span>
+    </article>
+    <article class="lk">
+      <div class="lk__n">06</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2.4 12.3a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg></div>
+      <h3 class="lk__t">Vender</h3>
+      <p class="lk__d">Venda garantida: o lote pronto tem saída. Taxa e retenções ficam registradas na hora.</p>
+      <span class="lk__o">→ envio</span>
+    </article>
+    <article class="lk">
+      <div class="lk__n">07</div>
+      <div class="lk__ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V7M10 18V4M16 18v-8M22 18v-5"/><path d="M3 21h18"/></svg></div>
+      <h3 class="lk__t">Ver o resultado</h3>
+      <p class="lk__d">Quanto entrou, quanto saiu, quanto sobrou — e o pagamento acompanhado.</p>
+      <span class="lk__o">→ líquido</span>
+    </article>
+  </div>
+</div></section>
+
+<!-- ===================== SISTEMA ===================== -->
+<section class="sys" id="sistema"><div class="wrap">
+  <div class="slabel">O sistema<i></i></div>
+  <h2 class="h2" style="margin-top:24px;max-width:22ch">Como o <b>controle funciona.</b></h2>
+  <div class="sys__grid">
+    <article class="card">
+      <span class="card__l">Segredo</span>
+      <h3 class="card__t">Cada pessoa vê só o que precisa</h3>
+      <p class="card__d">Operação, produção e números do negócio ficam separados por perfil. <b>Ninguém na bancada vê o seu preço.</b></p>
+      <div class="card__proof"><span>operador</span><span>gerente</span><span>admin</span></div>
+    </article>
+    <article class="card">
+      <span class="card__l">Produção</span>
+      <h3 class="card__t">Produção medida em dinheiro</h3>
+      <p class="card__d">Peças por hora e <b>dólares por hora</b>, por pessoa e por bancada. Você sabe se o turno pagou o dia antes de o dia acabar.</p>
+      <div class="card__proof"><span>un./h</span><span>US$/h</span></div>
+    </article>
+    <article class="card">
+      <span class="card__l">Controle</span>
+      <h3 class="card__t">Estoque, venda e resultado no mesmo lugar</h3>
+      <p class="card__d">Quanto você tem, quanto vale, o que saiu e quanto sobrou. <b>Com informes prontos para a contabilidade</b> e pagamentos registrados.</p>
+      <div class="card__proof"><span>estoque</span><span>vendas</span><span>resultado</span></div>
+    </article>
+  </div>
+</div></section>
+
+<!-- ===================== ESPECIALISTA ===================== -->
+<section class="exp" id="especialista"><div class="wrap">
+  <div class="slabel">Especialista presencial<i></i></div>
+  <div class="two">
+    <h2 class="h2">Mandamos alguém <b>montar tudo com você.</b></h2>
+    <p class="lead">Software sozinho não abre uma operação. Um especialista nosso vai até a sua empresa e ensina o processo inteiro, com o seu material. <b>Em qualquer país, em português, inglês ou espanhol.</b></p>
+  </div>
+  <div class="exp__grid">
+    <article class="exp__c">
+      <div class="exp__ico"><svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg></div>
+      <h3 class="exp__t">Como identificar</h3>
+      <p class="exp__d">Seu time aprende, na prática, a reconhecer o que tem em mãos e a resolver os casos duvidosos com a plataforma.</p>
+    </article>
+    <article class="exp__c">
+      <div class="exp__ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3l7 7-4 4-7-7z"/><path d="M10 7L3 14v7h7l7-7"/></svg></div>
+      <h3 class="exp__t">Como extrair</h3>
+      <p class="exp__d">O método de desmonte e retirada das peças sem perder valor, ensinado na sua bancada com o seu material.</p>
+    </article>
+    <article class="exp__c">
+      <div class="exp__ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14"/><path d="M8 21h8M12 18v3"/></svg></div>
+      <h3 class="exp__t">Como usar a plataforma</h3>
+      <p class="exp__d">Cada pessoa treinada no seu papel: quem opera, quem acompanha a produção e quem cuida de venda e resultado.</p>
+    </article>
+  </div>
+  <div class="exp__bar">
+    <div class="exp__b"><div class="exp__bl">Onde</div><div class="exp__bv">Atendimento em todo o mundo</div></div>
+    <div class="exp__b"><div class="exp__bl">Idiomas</div><div class="exp__bv">Português · Inglês · Espanhol</div></div>
+    <div class="exp__b"><div class="exp__bl">Formato</div><div class="exp__bv">100% presencial</div></div>
+    <div class="exp__b"><div class="exp__bl">Duração</div><div class="exp__bv">De 5 a 10 dias de trabalho</div></div>
+  </div>
+</div></section>
+
+<!-- ===================== CRONOGRAMA ===================== -->
+<section class="week" id="semana"><div class="wrap">
+  <div class="slabel">Implantação<i></i></div>
+  <div class="two">
+    <h2 class="h2">Em até duas semanas, <b>o primeiro envio sai.</b></h2>
+    <p class="lead">O especialista fica de 5 a 10 dias na sua operação e só vai embora <b>com a sua equipe operando sozinha</b>. Sem projeto de meses, sem consultoria a distância.</p>
+  </div>
+  <div class="tl">
+    <div class="tl__i">
+      <div class="tl__k"><i></i>Início</div>
+      <h3 class="tl__t">Especialista na sua operação</h3>
+      <p class="tl__d">Ele conhece o seu material e organiza o fluxo de trabalho com a sua equipe.</p>
+    </div>
+    <div class="tl__i">
+      <div class="tl__k"><i></i>Treinamento</div>
+      <h3 class="tl__t">Time treinado no processo</h3>
+      <p class="tl__d">Todo o método passado na prática, cada pessoa no seu papel.</p>
+    </div>
+    <div class="tl__i">
+      <div class="tl__k"><i></i>Operação</div>
+      <h3 class="tl__t">Primeiro lote rodando</h3>
+      <p class="tl__d">Produção acontecendo dentro da plataforma, com acompanhamento ao vivo.</p>
+    </div>
+    <div class="tl__i tl__i--end">
+      <div class="tl__k"><i></i>Até duas semanas</div>
+      <h3 class="tl__t">Primeiro envio e resultado</h3>
+      <p class="tl__d">Lote fechado, envio feito e o resultado na tela. A equipe segue sozinha.</p>
+    </div>
+  </div>
+  <p class="week__note"><b>Depois da implantação:</b> a plataforma continua com você, com suporte no seu idioma e visita de acompanhamento quando o volume crescer.</p>
+</div></section>
+
+<!-- ===================== REUNIÃO ===================== -->
+<section class="meet" id="reuniao"><div class="wrap">
+  <div class="slabel">Reunião com especialista<i></i></div>
+  <div class="meet__in">
+    <div>
+      <h2 class="h3">Visita de avaliação, <b>antes de qualquer contrato.</b></h2>
+      <p class="lead" style="margin-top:18px">A plataforma não é aberta para todo mundo. Um especialista nosso visita a sua operação para confirmar a capacidade de processamento — e só depois disso a implantação é agendada.</p>
+      <div class="meet__pts">
+        <div class="pt"><span class="pt__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span class="pt__t"><b>Quem avalia é especialista</b>, não vendedor.</span></div>
+        <div class="pt"><span class="pt__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span class="pt__t">A conversa começa online e <b>termina na sua planta</b>.</span></div>
+        <div class="pt"><span class="pt__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span class="pt__t">Português, inglês ou espanhol, <b>no seu fuso</b>.</span></div>
+      </div>
+    </div>
+
+    <form class="form" id="meet-form">
+      <div class="form__h">
+        <div class="form__t">Solicitar avaliação</div>
+        <p class="form__s">Respondemos em até um dia útil para agendar a visita.</p>
+      </div>
+      <div class="form__b">
+        <div class="f2">
+          <div class="fld"><label for="m-name">Nome</label><input id="m-name" type="text" placeholder="Seu nome" autocomplete="name" /></div>
+          <div class="fld"><label for="m-co">Empresa</label><input id="m-co" type="text" placeholder="Nome da empresa" autocomplete="organization" /></div>
+        </div>
+        <div class="f2">
+          <div class="fld"><label for="m-mail">E-mail</label><input id="m-mail" type="email" placeholder="nome@empresa.com" autocomplete="email" /></div>
+          <div class="fld"><label for="m-cel">Celular</label><input id="m-cel" type="tel" placeholder="+55 11 90000-0000" autocomplete="tel" /></div>
+        </div>
+        <div class="f2">
+          <div class="fld"><label for="m-country">País</label><input id="m-country" type="text" placeholder="onde fica a operação" /></div>
+          <div class="fld"><label>Idioma</label><div class="lang" id="lang"><button type="button" class="on" data-g="Português">PT</button><button type="button" data-g="English">EN</button><button type="button" data-g="Español">ES</button><button type="button" data-g="中文">ZH</button></div></div>
+        </div>
+        <div class="f2">
+          <div class="fld"><label for="m-emp">Funcionários</label><input id="m-emp" type="text" inputmode="numeric" placeholder="quantas pessoas" /></div>
+          <div class="fld"><label for="m-exp">Placas exportadas (12 meses)</label><input id="m-exp" type="text" placeholder="qtd, peso ou contêineres" /></div>
+        </div>
+        <div class="form__ok" id="m-ok"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="m-ok-t"></span></div>
+        <button class="form__go" type="submit">Solicitar avaliação<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <p class="form__fine">Seus dados ficam com a equipe da WhatTheChip.</p>
+      </div>
+    </form>
+  </div>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  <div class="foot__in">
+    <div class="foot__brand">
+      <img src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" />
+      <p>A primeira plataforma de recondicionamento de chips: identificação, preço e todo o controle da operação em um só lugar — com especialista presencial.</p>
+    </div>
+    <div class="foot__cols">
+      <div class="foot__c">
+        <h4>Produto</h4>
+        <a href="#cadeia">Como funciona</a>
+        <a href="#sistema">O sistema</a>
+        <a href="#semana">Implantação</a>
+        <a href="login.html">Entrar</a>
+      </div>
+      <div class="foot__c">
+        <h4>Operação</h4>
+        <a href="painel.html">Painel</a>
+        <a href="triagem.html">Triagem</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="vendas-lista.html">Vendas</a>
+      </div>
+      <div class="foot__c">
+        <h4>Contato</h4>
+        <a href="#reuniao">Solicitar avaliação</a>
+        <span>Assunção · Paraguai</span>
+        <span>São Paulo · Brasil</span>
+      </div>
+    </div>
+  </div>
+  <div class="foot__law">
+    <span>© 2026 WhatTheChip · <span class="cjk">什么芯片</span></span>
+    <span>Identificação de chips recuperados · PT · EN · ES</span>
+  </div>
+</div></footer>
+
+<div class="proto"><span class="proto__l">Protótipo</span><button type="button" data-a="0" class="on">Visitante</button><button type="button" data-a="1">Logado</button></div>
+
+<script>
+(function(){
+"use strict";
+var root=document.documentElement;
+document.getElementById("theme-btn").onclick=function(){
+  var dark=root.getAttribute("data-theme")!=="dark";
+  if(dark)root.setAttribute("data-theme","dark");else root.removeAttribute("data-theme");
+  try{localStorage.setItem("wtc_theme",dark?"dark":"light");}catch(e){}
+};
+var nav=document.getElementById("nav-lang"),navBtns=document.getElementById("lang-menu").querySelectorAll("[data-l]");
+var user=document.getElementById("nav-user"),ubtn=document.getElementById("user-btn");
+ubtn.onclick=function(e){e.stopPropagation();nav.classList.remove("on");var on=user.classList.toggle("on");this.setAttribute("aria-expanded",on?"true":"false");};
+document.getElementById("user-menu").onclick=function(e){e.stopPropagation();};
+function setAuth(a){document.body.classList.toggle("is-auth",a);user.classList.remove("on");Array.prototype.forEach.call(document.querySelectorAll(".proto button"),function(x){x.classList.toggle("on",(x.getAttribute("data-a")==="1")===a);});try{localStorage.setItem("wtc_auth",a?"1":"0");}catch(e){}}
+Array.prototype.forEach.call(document.querySelectorAll(".proto button"),function(b){b.onclick=function(){setAuth(b.getAttribute("data-a")==="1");};});
+document.getElementById("logout").onclick=function(){setAuth(false);};
+try{setAuth(localStorage.getItem("wtc_auth")==="1");}catch(e){setAuth(false);}
+var lang="Português";
+var SHORT={"Português":"Português","English":"English","Español":"Español","中文":"中文"};
+document.getElementById("lang-btn").onclick=function(e){e.stopPropagation();user.classList.remove("on");var on=nav.classList.toggle("on");this.setAttribute("aria-expanded",on?"true":"false");};
+document.addEventListener("click",function(){nav.classList.remove("on");document.getElementById("lang-btn").setAttribute("aria-expanded","false");user.classList.remove("on");ubtn.setAttribute("aria-expanded","false");});
+var g=document.getElementById("lang");
+Array.prototype.forEach.call(navBtns,function(b){
+  b.onclick=function(){
+    lang=b.getAttribute("data-l");
+    Array.prototype.forEach.call(navBtns,function(x){x.classList.toggle("on",x===b);});
+    var cur=document.getElementById("lang-cur");cur.textContent=SHORT[lang];
+    cur.className=lang==="中文"?"cjk":"";
+    nav.classList.remove("on");
+    Array.prototype.forEach.call(g.querySelectorAll("button"),function(x){x.classList.toggle("on",x.getAttribute("data-g")===lang);});
+  };
+});
+Array.prototype.forEach.call(g.querySelectorAll("button"),function(b){
+  b.onclick=function(){Array.prototype.forEach.call(g.querySelectorAll("button"),function(x){x.classList.remove("on");});b.classList.add("on");lang=b.getAttribute("data-g")||b.textContent;Array.prototype.forEach.call(navBtns,function(x){x.classList.toggle("on",x.getAttribute("data-l")===lang);});var cur=document.getElementById("lang-cur");cur.textContent=SHORT[lang]||lang;cur.className=lang==="中文"?"cjk":"";};
+});
+document.getElementById("meet-form").addEventListener("submit",function(e){
+  e.preventDefault();
+  var n=document.getElementById("m-name").value.trim();
+  var ok=document.getElementById("m-ok");
+  document.getElementById("m-ok-t").textContent=(n?n.split(" ")[0]+", p":"P")+"edido recebido. Um especialista responde em até um dia útil para agendar a visita de avaliação — atendimento em "+lang+".";
+  ok.classList.add("on");
+});
+})();
+</script>
+<script src="live.js"></script>
+<script>
+/* Lotes ao vivo: cada lote em triagem sobe sozinho, como se houvesse alguém na bancada lançando
+   chip agora. Lote enviado está fechado — não se move. */
+(function(){
+"use strict";
+var all=[].slice.call(document.querySelectorAll(".lotr[data-v]"));
+var tot=document.querySelector("[data-tot]");
+var money=function(n){
+  var s=n.toFixed(2).split(".");
+  return "US$ "+(+s[0]).toLocaleString("pt-BR")+'<span class="lotr__ct">,'+s[1]+'</span>';
+};
+var state=all.map(function(el){return {el:el,v:+el.getAttribute("data-v"),u:+(el.getAttribute("data-u")||0)};});
+function paint(){
+  state.forEach(function(s){
+    var v=s.el.querySelector("[data-val]"),u=s.el.querySelector("[data-un]");
+    if(v)v.innerHTML=money(s.v);
+    if(u)u.textContent=s.u.toLocaleString("pt-BR")+" un.";
+  });
+  if(tot)tot.innerHTML=money(state.reduce(function(a,s){return a+s.v;},0));
+}
+window.WTCLive.drive(state.filter(function(s){return s.el.hasAttribute("data-lot");}).map(function(s){
+  return {
+    bump:function(n){s.v+=0.6+Math.random()*2.4;s.u+=n;},   /* 60 centavos a 3 dólares por chip */
+    el:function(){return s.el.querySelector("[data-val]");}
+  };
+}),paint);
+})();
+</script>
+<script src="viewport.js?v=7"></script>
+<script>
+/* menu de gaveta: fecha ao escolher um destino, ao clicar fora e no Esc */
+(function(){
+var nav=document.querySelector(".nav"),b=document.getElementById("burger");
+if(!nav||!b)return;
+function close(){nav.classList.remove("is-open");b.setAttribute("aria-expanded","false");}
+b.onclick=function(e){
+  e.stopPropagation();
+  var open=!nav.classList.contains("is-open");
+  nav.classList.toggle("is-open",open);
+  b.setAttribute("aria-expanded",open?"true":"false");
+};
+nav.querySelectorAll(".nav__links a").forEach(function(a){a.addEventListener("click",close);});
+nav.querySelectorAll(".nav__menu button").forEach(function(a){a.addEventListener("click",close);});
+document.addEventListener("click",function(e){if(!nav.contains(e.target))close();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")close();});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x900" name="Login" subtitle="Entrada única — cartão centrado, responsivo por container query, sem marketing" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h1,p{margin:0}
+
+/* uma barra fina só para sair; o assunto da página é o formulário */
+.lbar{height:52px;background:var(--surface);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.lbar__brand{display:flex;align-items:center;padding:0 16px;flex:none}
+.lbar__brand img{height:22px;width:auto;display:block}
+.lbar__sp{flex:1;min-width:0}
+.lbar__back{display:flex;align-items:center;gap:8px;padding:0 16px;font-size:13px;font-weight:600;color:var(--ink-70);border-left:1px solid var(--line);white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.lbar__back:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.lbar__back svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2}
+.lbar__ico{width:52px;flex:none;display:grid;place-items:center;border:0;border-left:1px solid var(--line);background:none;color:var(--ink-60);cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:600;transition:background var(--d1),color var(--d1)}
+.lbar__ico:hover{background:var(--ink-05);color:var(--text)}
+
+.lwrap{min-height:calc(100vh - 52px);display:grid;place-items:center;padding:40px 20px}
+.card{width:100%;max-width:392px;background:var(--surface);border:1px solid var(--line)}
+.card__b{padding:32px 32px 28px}
+.card__h{font-size:23px;font-weight:400;letter-spacing:-.02em}
+.card__s{font-size:13px;color:var(--muted);margin-top:7px}
+
+.fld{margin-top:22px}
+.fld label{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-70);margin-bottom:7px}
+.fld__in{display:flex;align-items:stretch;background:var(--ink-05);border-bottom:1px solid var(--ink-50);transition:border-color var(--d1)}
+.fld__in:focus-within{border-bottom-color:var(--blue-60);outline:2px solid var(--blue-60);outline-offset:-2px}
+.fld__in.is-err{border-bottom-color:var(--red-60);background:var(--red-10)}
+.fld__in input{flex:1;min-width:0;height:48px;padding:0 14px;border:0;background:transparent;color:var(--text);font-family:inherit;font-size:15px}
+.fld__in input:focus{outline:none}
+.fld__in input::placeholder{color:var(--ink-50);font-size:14px}
+.fld__in input.mono{font-family:var(--mono);letter-spacing:.02em}
+.reveal{width:48px;flex:none;display:grid;place-items:center;border:0;background:none;color:var(--ink-60);cursor:pointer}
+.reveal:hover{color:var(--text)}
+.reveal svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9}
+
+.note{display:none;align-items:flex-start;gap:10px;padding:11px 13px;background:var(--red-10);border:1px solid var(--red-60);margin-top:18px}
+.note.is-on{display:flex}
+.note svg{width:16px;height:16px;flex:none;margin-top:2px;fill:none;stroke:var(--red-60);stroke-width:2}
+.note p{font-size:12.5px;color:var(--red-70);text-wrap:pretty}
+
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:18px}
+.chk{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--ink-80);min-height:44px}
+.chk input{position:absolute;opacity:0;width:0;height:0}
+.chk__b{width:18px;height:18px;border:1px solid var(--ink-50);background:var(--surface);display:grid;place-items:center;flex:none}
+.chk__b svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3;opacity:0}
+.chk input:checked+.chk__b{background:var(--blue-60);border-color:var(--blue-60)}
+.chk input:checked+.chk__b svg{opacity:1}
+.chk input:focus-visible+.chk__b{outline:2px solid var(--blue-60);outline-offset:2px}
+.link{display:flex;align-items:center;min-height:44px;font-size:13px;font-weight:600}
+
+.go{margin-top:6px;width:100%;height:52px;padding:0 18px;border:0;background:var(--blue-60);color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px;transition:background var(--d1)}
+.go:hover:not(:disabled){background:var(--blue-60h)}
+.go:disabled{background:var(--ink-20);color:var(--ink-50);cursor:not-allowed}
+.go svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2}
+.go__l{display:flex;align-items:center;gap:10px}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;display:none;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* atalhos do protótipo: separados do formulário real por um rodapé cinza */
+.demo{padding:16px 32px 20px;background:var(--ink-05);border-top:1px solid var(--line)}
+.demo__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.demo__g{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.demo__b{height:44px;padding:0 12px;border:1px solid var(--line-2);background:var(--surface);font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink-70);cursor:pointer;transition:border-color var(--d1),color var(--d1),background var(--d1)}
+.demo__b:hover{border-color:var(--blue-60);color:var(--blue-60);background:var(--blue-10)}
+
+@container vp (max-width:520px){
+  .lbar__back span{display:none}
+  .lwrap{padding:0}
+  .card{max-width:none;border:0;min-height:calc(100vh - 52px);display:flex;flex-direction:column}
+  .card__b{flex:1;padding:28px 20px 24px}
+  .demo{padding:14px 20px 18px}
+  .demo__g{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="lbar">
+  <a class="lbar__brand" href="index.html" aria-label="WhatTheChip"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <div class="lbar__sp"></div>
+  <a class="lbar__back" href="index.html" aria-label="Voltar ao site"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span>Voltar ao site</span></a>
+  <button class="lbar__ico" type="button" aria-label="Idioma">PT</button>
+</header>
+
+<div class="lwrap">
+  <form class="card" id="login" novalidate>
+    <div class="card__b">
+      <h1 class="card__h">Entrar</h1>
+      <p class="card__s">Acesso da sua empresa à plataforma.</p>
+
+      <div class="note" id="err" role="alert"><svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg><p id="err-t"></p></div>
+
+      <div class="fld">
+        <label for="user">Usuário</label>
+        <div class="fld__in" id="user-w"><input id="user" type="text" placeholder="operador" autocomplete="username" spellcheck="false" autocapitalize="none" /></div>
+      </div>
+
+      <div class="fld">
+        <label for="pass">Senha</label>
+        <div class="fld__in" id="pass-w">
+          <input id="pass" type="password" class="mono" placeholder="••••••••" autocomplete="current-password" />
+          <button class="reveal" type="button" id="eye" aria-label="Mostrar senha"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="keep" checked /><span class="chk__b"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Manter conectado</label>
+        <a class="link" href="#" id="forgot">Esqueceu a senha?</a>
+      </div>
+
+      <button class="go" type="submit" id="go"><span class="go__l"><span class="spin" id="spin"></span><span>Entrar</span></span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+
+    <div class="demo">
+      <div class="demo__l">Protótipo · entrar como</div>
+      <div class="demo__g">
+        <button class="demo__b" type="button" data-r="operador">operador</button>
+        <button class="demo__b" type="button" data-r="gerente">gerente</button>
+        <button class="demo__b" type="button" data-r="admin">admin</button>
+        <button class="demo__b" type="button" data-r="plataforma">plataforma</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i);};
+var user=$("user"),pass=$("pass"),go=$("go"),err=$("err"),errT=$("err-t");
+var ROLES={operador:1,gerente:1,admin:1,plataforma:1};
+function showErr(m){errT.textContent=m;err.classList.add("is-on");}
+function clear(){err.classList.remove("is-on");$("user-w").classList.remove("is-err");$("pass-w").classList.remove("is-err");}
+[user,pass].forEach(function(el){el.addEventListener("input",clear);});
+$("eye").onclick=function(){var on=pass.type==="password";pass.type=on?"text":"password";$("eye").setAttribute("aria-label",on?"Ocultar senha":"Mostrar senha");pass.focus();};
+$("forgot").onclick=function(e){e.preventDefault();clear();showErr("Recuperação de senha: fale com o administrador da sua conta.");};
+function enter(role){
+  try{if(role)localStorage.setItem("wtc_role",role);}catch(e){}
+  go.disabled=true;$("spin").style.display="block";
+  setTimeout(function(){window.location.href="painel.html";},520);
+}
+Array.prototype.forEach.call(document.querySelectorAll("[data-r]"),function(b){
+  b.onclick=function(){var r=b.getAttribute("data-r");user.value=r;pass.value="demo1234";clear();enter(r);};
+});
+$("login").addEventListener("submit",function(e){
+  e.preventDefault();clear();
+  var u=user.value.trim().toLowerCase(),p=pass.value;
+  if(!u){$("user-w").classList.add("is-err");showErr("Informe o usuário.");user.focus();return;}
+  if(!p){$("pass-w").classList.add("is-err");showErr("Informe a senha.");pass.focus();return;}
+  enter(ROLES[u]?u:null);
+});
+setTimeout(function(){user.focus();},120);
+})();
+</script>
+<script src="viewport.js?v=7"></script>
+</body>
+</html>

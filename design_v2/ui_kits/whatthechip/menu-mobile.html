@@ -1,0 +1,134 @@
+<!-- @dsCard group="WhatTheChip" viewport="1280x900" name="Menu mobile e tablet" subtitle="Gaveta do cabeçalho do app — modelo replicável: shell.js mede a própria barra e o CSS vive em wtc-carbon.css" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Menu mobile e tablet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+body{background:var(--bg);padding:36px 32px 64px}
+.doc{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.doc__hd h1{font-size:31px;font-weight:300;letter-spacing:-.03em;line-height:1.1}
+.doc__hd h1 b{font-weight:700}
+.doc__hd p{font-size:14px;color:var(--muted);line-height:1.55;margin-top:10px;max-width:74ch;text-wrap:pretty}
+.doc__hd p b{font-weight:700;color:var(--text)}
+.lab{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.lab i{height:1px;flex:1;background:var(--line-2)}
+.specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.spec{background:var(--surface);padding:16px 18px}
+.spec__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.spec__v{font-family:var(--mono);font-size:15px;font-weight:600;margin-top:7px}
+.spec__d{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:6px}
+/* palcos: cada um é um container próprio, então a gaveta reage à largura do palco */
+.stage{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.frame{display:flex;flex-direction:column;gap:9px}
+.frame__l{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.frame__b{border:1px solid var(--line-2);background:var(--surface);overflow:hidden;container-type:inline-size;container-name:vp}
+.frame--phone .frame__b{width:390px}
+.frame--tablet .frame__b{width:560px}
+.frame__body{padding:18px;font-size:13px;color:var(--muted);min-height:130px}
+.frame__body b{color:var(--text)}
+.rules{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line)}
+.rule{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:13px 18px;border-bottom:1px solid var(--line)}
+.rule:last-child{border-bottom:0}
+.rule__k{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-70)}
+.rule__t{font-size:13px;color:var(--ink-80);line-height:1.55}
+.rule__t b{font-weight:700;color:var(--text)}
+.code{background:var(--ink-100);color:#f4f4f4;font-family:var(--mono);font-size:12.5px;line-height:1.7;padding:16px 18px;overflow-x:auto;white-space:pre}
+@container vp (max-width:880px){.doc__hd h1{font-size:26px}.specs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc__hd">
+    <h1>Menu <b>mobile e tablet</b></h1>
+    <p>A barra do app não vira outro componente no celular: ela <b>vira uma pilha</b>. Só a primeira linha fica visível e o resto é recortado por <code class="mono">max-height</code>, revelado no toque do botão de menu — a mesma mecânica do menu do site público. O CSS mora em <b>wtc-carbon.css</b> e o comportamento em <b>shell.js</b>; qualquer tela que já carregue os dois herda a gaveta sem uma linha nova.</p>
+  </div>
+
+  <div class="lab">Como a largura é decidida<i></i></div>
+  <div class="specs">
+    <div class="spec"><div class="spec__l">Desktop</div><div class="spec__v">&gt; 880px</div><div class="spec__d">Barra em fileira única: marca · nav · câmbio · sino · perfil.</div></div>
+    <div class="spec"><div class="spec__l">Tablet</div><div class="spec__v">≤ 880px</div><div class="spec__d">Gaveta. A nav vira lista de linhas de 56px; câmbio e perfil descem para faixas de largura cheia.</div></div>
+    <div class="spec"><div class="spec__l">Celular</div><div class="spec__v">≤ 600px</div><div class="spec__d">Igual ao tablet, com a marca menor e menos respiro lateral.</div></div>
+  </div>
+
+  <div class="lab">Estados<i></i></div>
+  <div class="stage">
+    <div class="frame frame--phone">
+      <span class="frame__l">Celular · fechado</span>
+      <div class="frame__b">
+        <header class="shell" data-shell="phone">
+          <a class="shell__brand" href="#" aria-label="WhatTheChip"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+          <div class="nbell"><button class="shell__ico" aria-label="Notificações"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button></div>
+          <button class="shell__burger" type="button" aria-label="Abrir menu" aria-expanded="false"><i></i><i></i><i></i></button>
+          <nav class="shell__nav">
+            <a class="nlink is-active" href="#"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+            <a class="nlink" href="#"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+          </nav>
+          <div class="me"><button class="me__btn" type="button" aria-expanded="false"><span class="shell__avatar">RS</span><span class="me__chev"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button><div class="me__pop"></div></div>
+        </header>
+        <div class="frame__body">A barra guarda <b>marca, sino e menu</b>. Nada de nav comprimida nem de nome de usuário disputando largura.</div>
+      </div>
+    </div>
+
+    <div class="frame frame--phone">
+      <span class="frame__l">Celular · aberto</span>
+      <div class="frame__b">
+        <header class="shell is-open" data-shell="phone">
+          <a class="shell__brand" href="#" aria-label="WhatTheChip"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+          <div class="nbell"><button class="shell__ico" aria-label="Notificações"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button></div>
+          <button class="shell__burger" type="button" aria-label="Fechar menu" aria-expanded="true"><i></i><i></i><i></i></button>
+          <nav class="shell__nav">
+            <a class="nlink is-active" href="#"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+            <a class="nlink" href="#"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+          </nav>
+          <div class="me"><button class="me__btn" type="button" aria-expanded="false"><span class="shell__avatar">RS</span><span class="me__chev"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button><div class="me__pop"></div></div>
+        </header>
+        <div class="frame__body">Destino por linha, alvo de <b>56px</b>. O perfil é a última faixa e abre no lugar, sem virar janela.</div>
+      </div>
+    </div>
+
+    <div class="frame frame--tablet">
+      <span class="frame__l">Tablet · aberto</span>
+      <div class="frame__b">
+        <header class="shell is-open" data-shell="tablet">
+          <a class="shell__brand" href="#" aria-label="WhatTheChip"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+          <div class="nbell"><button class="shell__ico" aria-label="Notificações"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button></div>
+          <button class="shell__burger" type="button" aria-label="Fechar menu" aria-expanded="true"><i></i><i></i><i></i></button>
+          <nav class="shell__nav">
+            <a class="nlink is-active" href="#"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+            <a class="nlink" href="#"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+            <a class="nlink" href="#"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+          </nav>
+          <div class="me"><button class="me__btn" type="button" aria-expanded="false"><span class="shell__avatar">MG</span><span class="me__chev"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button><div class="me__pop"></div></div>
+        </header>
+        <div class="frame__body">No tablet a gaveta é a mesma do celular: <b>um só comportamento para manter</b>, e o dedo continua sendo a régua.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab">Regras do modelo<i></i></div>
+  <div class="rules">
+    <div class="rule"><span class="rule__k">max-height</span><span class="rule__t">A gaveta é recorte, não painel flutuante. Com <b>height</b> fixo o <code class="mono">flex-wrap</code> dividiria a altura entre as linhas e tudo achataria; com <b>max-height</b> a primeira linha mantém os 52px e o resto fica fora da vista.</span></div>
+    <div class="rule"><span class="rule__k">data-shell</span><span class="rule__t">shell.js mede a <b>própria barra</b> (não a janela) com ResizeObserver e escreve <code class="mono">desktop</code>, <code class="mono">tablet</code> ou <code class="mono">phone</code>. É o que faz o mesmo código servir ao aparelho real e ao enquadramento do protótipo.</span></div>
+    <div class="rule"><span class="rule__k">order</span><span class="rule__t">A ordem visual é do CSS, não do HTML: marca · sino · menu na primeira linha; nav, câmbio e perfil nas faixas de baixo. O HTML de cada tela segue idêntico ao do desktop.</span></div>
+    <div class="rule"><span class="rule__k">display</span><span class="rule__t">Dentro da gaveta o menu de perfil vira conteúdo: sem sombra, sem posição, recolhido por <b>display</b> — <code class="mono">visibility:hidden</code> ainda ocuparia altura e abriria um vazio na pilha.</span></div>
+    <div class="rule"><span class="rule__k">fechar</span><span class="rule__t">Escolher um destino fecha a gaveta. Clique fora e <b>Esc</b> também. Voltar para desktop fecha sozinho — gaveta aberta em barra horizontal não existe.</span></div>
+  </div>
+
+  <div class="lab">Como aplicar em uma tela<i></i></div>
+  <div class="code">&lt;link rel="stylesheet" href="wtc-carbon.css?v=27" /&gt;   &lt;!-- o CSS da gaveta mora aqui --&gt;
+&lt;script src="shell.js?v=3"&gt;&lt;/script&gt;               &lt;!-- injeta o botão e mede a barra --&gt;
+&lt;script src="viewport.js?v=7"&gt;&lt;/script&gt;        &lt;!-- só no protótipo: enquadra celular/tablet --&gt;
+
+/* as regras responsivas da tela viram @container, para lerem o enquadramento: */
+@container vp (max-width:880px){ ... }</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x980" name="Parceiro · Ficha do lote" subtitle="Convenção de página de registro: uma só UI para todas as etapas — campos e abas acendem conforme a compra avança" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Parceiro · Lote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<link rel="stylesheet" href="wtc-parceiro.css?v=33" />
+<link rel="stylesheet" href="wtc-ficha.css?v=33" />
+<style>
+/* o corpo passa a dividir a régua do cabeçalho: .rhead usa .wrap (1680 / 32px), então a folha
+   do registro nasce no mesmo eixo — com os 28px de .pmain a coluna saía 4px fora do prumo.
+   display:block e não flex: a ficha da venda usa fluxo normal, e o gap de 20px de .pmain somava
+   à margem da barra de demo, afastando-a 36px em vez dos 16px do outro lado do balcão. */
+.pmain{display:block;max-width:1680px;margin:0 auto;padding:20px 32px 44px}
+@media(max-width:880px){.pmain{padding:16px 16px 36px}}
+@container vp (max-width:880px){.pmain{padding:16px 16px 36px}}
+</style>
+</head>
+<body>
+
+<header class="pshell">
+  <a class="pshell__brand" href="parceiro-compras.html"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /><span class="pshell__tag">Parceiro</span></a>
+  <nav class="pshell__nav">
+    <a class="pnav on" href="parceiro-compras.html"><svg viewBox="0 0 24 24"><path d="M3.5 7.5h17v12h-17z"/><path d="M3.5 11.5h17M9 7.5V5a3 3 0 0 1 6 0v2.5"/></svg>Compras<span class="pnav__b" data-buys-badge></span></a>
+    <a class="pnav" href="parceiro.html"><svg viewBox="0 0 24 24"><path d="M4 4h16v5H4z"/><path d="M7 13h4M7 17h7"/></svg>Preços</a>
+    <a class="pnav" href="parceiro-catalogo.html"><svg viewBox="0 0 24 24"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5M8 14h8"/></svg>Catálogo</a>
+  </nav>
+  <div class="pshell__spacer"></div>
+  <div class="pshell__fx"><b id="fxr">1 ¥ ≈ US$ 0.1478</b><span class="pshell__sub"><i class="live live--g"></i><em>ao vivo</em><span id="fxd">· mid-market 01/08</span></span></div>
+  <div class="pshell__who">
+    <div class="pshell__av">SZ</div>
+    <div class="pshell__u"><b>Shenzhen Yuan</b><span>Comprador</span></div>
+  </div>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">ZH</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<div class="rhead"><div class="wrap">
+  <div class="rhead__u">
+    <a class="rhead__back" href="parceiro-compras.html"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span>Compras</span></a>
+  </div>
+  <div class="rhead__bar">
+    <div class="rhead__idl" id="pbar"></div>
+    <div class="rhead__stat" id="stat"></div>
+    <div class="rhead__act" id="act"></div>
+  </div>
+  <div class="rhead__desc"><p id="pdesc"></p></div>
+  <div class="rhead__mx" id="rmx"></div>
+  <div class="rhead__mx rhead__mx--g" id="rgrp"></div>
+</div></div>
+
+<main class="pmain">
+  <div class="sheet">
+    <div class="nb" id="nb"></div>
+    <div class="nbb" id="nbb"></div>
+  </div>
+
+  <div class="demobar" id="demobar" style="margin:16px 0 0"></div>
+</main>
+
+<div class="prt" id="prt"></div>
+
+<div class="scrim" id="got-scrim" role="dialog" aria-modal="true" aria-labelledby="got-t">
+  <div class="modal modal--sm">
+    <div class="modal__h">
+      <h2 id="got-t">Confirmar recebimento</h2>
+      <p>Registre a chegada da caixa quando ela estiver em mãos e conferida na balança. É o que libera a etapa de resultado.</p>
+    </div>
+    <div class="modal__b" id="got-b"></div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="got-x" type="button">Ainda não chegou</button>
+      <button class="btn btn--pri" id="got-ok" type="button">Confirmar recebimento<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="done-scrim" role="dialog" aria-modal="true" aria-labelledby="done-t">
+  <div class="modal modal--sm">
+    <div class="modal__h">
+      <h2 id="done-t">Fechar resultado</h2>
+      <p>Confira o que foi lançado antes de gravar. Este é o número final da compra — o pagamento passa a correr sobre ele.</p>
+    </div>
+    <div class="modal__b" id="done-b"></div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="done-x" type="button">Revisar lançamentos</button>
+      <button class="btn btn--pri" id="done-ok" type="button">Fechar resultado<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="pay-scrim" role="dialog" aria-modal="true" aria-labelledby="pay-t">
+  <div class="modal">
+    <div class="modal__h">
+      <h2 id="pay-t">Registrar pagamento</h2>
+    </div>
+    <div class="modal__b" id="pay-b"></div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="pay-x" type="button">Cancelar</button>
+      <button class="btn btn--pri" id="pay-ok" type="button" disabled>Registrar pagamento<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="fx.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="viewport.js?v=7"></script>
+<script src="parceiro-compras.js?v=29"></script>
+<script src="wtc-categorias.js?v=2"></script>
+<script src="parceiro-lote.js?v=41"></script>
+</body>
+</html>

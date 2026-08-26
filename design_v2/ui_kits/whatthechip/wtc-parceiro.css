@@ -1,0 +1,573 @@
+/* WhatTheChip — painel do PARCEIRO (comprador). Carbon/Manrope, mesma base de wtc-carbon.css.
+   Convenção da planilha: um input por célula · número = preço ¥ · x = não compro · vazio = sem cotação. */
+.pshell{position:sticky;top:0;z-index:40;height:var(--shell-h);background:var(--surface);display:flex;align-items:stretch;border-bottom:1px solid var(--line-2)}
+.pshell__brand{display:flex;align-items:center;gap:11px;padding:0 18px;flex:none;text-decoration:none;color:inherit}
+.pshell__brand img{height:24px;width:auto;display:block}
+.pshell__tag{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--white);background:var(--ink-100);padding:3px 8px}
+.pshell__spacer{flex:1}
+.pshell__nav{display:flex;align-items:stretch;flex:none}
+.pnav{display:flex;align-items:center;gap:8px;padding:0 18px;color:var(--ink-70);font-size:13px;font-weight:600;text-decoration:none;position:relative;white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.pnav svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;opacity:.75;flex:none}
+.pnav.on svg{opacity:1;stroke:var(--blue-60)}
+.pnav:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.pnav.on{color:var(--text)}
+.pnav.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--blue-60)}
+.pnav__b{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--blue-60);color:#fff;padding:1px 6px}
+.pnav__b:empty{display:none}
+.pshell__fx{display:flex;flex-direction:column;justify-content:center;padding:0 16px;border-left:1px solid var(--line);flex:none;line-height:1.25}
+.pshell__fx b{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.pshell__fx span{font-size:10px;color:var(--faint);white-space:nowrap}
+.pshell__sub{display:flex;align-items:center;gap:6px}
+.pshell__sub .live{width:6px;height:6px;border-radius:0}
+.pshell__sub em{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--green-60)}
+.pshell__sub.off .live,.pshell__sub.off em{display:none}
+.pshell__who{display:flex;align-items:center;gap:10px;padding:0 16px;border-left:1px solid var(--line);flex:none}
+.pshell__av{width:28px;height:28px;background:var(--blue-70);display:grid;place-items:center;color:var(--white);font-size:10px;font-weight:700;flex:none}
+.pshell__u{display:flex;flex-direction:column;line-height:1.2;white-space:nowrap}
+.pshell__u b{font-size:12px;font-weight:700}
+.pshell__u span{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-60)}
+
+/* ---------- selos de topo ---------- */
+.seals{display:flex;flex-wrap:wrap;gap:8px}
+.seal{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;font-size:11px;font-weight:800;letter-spacing:.03em;white-space:nowrap}
+.seal svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.seal--rmb{background:var(--green-10);color:var(--green-70)}
+.seal--uni{background:var(--blue-10);color:var(--blue-70)}
+.seal--dual{background:var(--amber-10);color:var(--amber-70)}
+.seal--brand{background:var(--ink-10);color:var(--ink-80)}
+
+/* ---------- layout com barra de tipos ---------- */
+.papp{display:grid;grid-template-columns:236px minmax(0,1fr);align-items:stretch;min-height:calc(100vh - var(--shell-h))}
+.pside{background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column}
+.pside__l{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:20px 18px 11px}
+.ptype{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:13px 18px;border-top:1px solid var(--line);color:inherit;text-decoration:none;transition:background var(--d1)}
+.ptype:last-of-type{border-bottom:1px solid var(--line)}
+.ptype:hover{background:var(--ink-05);text-decoration:none}
+.ptype.on{background:var(--blue-10)}
+.ptype.on .ptype__t{color:var(--blue-70)}
+.ptype__t{font-size:14px;font-weight:700;letter-spacing:-.005em;display:block}
+.ptype__d{font-size:11px;color:var(--faint);margin-top:3px;display:block}
+.ptype__b{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--amber-40);color:var(--ink-100);padding:1px 7px;flex:none}
+/* CONTRASTE DOS DOIS SELOS, e o texto é LITERAL nos dois.
+   O selo tem chapa de cor fixa — âmbar claro, vermelho escuro —, então a cor do texto se decide
+   contra ESSA chapa, não contra o tema. Com `var(--ink-100)` o texto virava quase branco no modo
+   escuro e o contraste caía para 2,37:1, pior do que antes: o token inverte com o tema e a chapa
+   não. Mesmo princípio da folha impressa — fundo fixo pede cor de texto fixa. */
+.ptype__b{color:#161616}
+/* pedido travado é fila de trabalho, não pendência de cadastro: vermelho, e vem ANTES da marca
+   âmbar de lacuna, porque é o que decide a ordem em que o comprador abre as tabelas. */
+.ptype__b--block{background:#a2191f;color:#fff}
+.pside__foot{margin-top:auto;padding:16px 18px;border-top:1px solid var(--line);background:var(--ink-05)}
+.pside__foot p{font-size:12px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.pmain{padding:22px 28px 132px;min-width:0;display:flex;flex-direction:column;gap:20px}
+.phd{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.phd h1{font-size:31px;font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.phd h1 b{font-weight:700}
+.phd p{font-size:13px;color:var(--muted);margin-top:8px;text-wrap:pretty;max-width:62ch}
+
+/* ---------- grade de preços ---------- */
+.grid2{background:var(--surface);border:1px solid var(--line)}
+.grid2__h{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.grid2__h h3{font-size:14px;font-weight:800;letter-spacing:-.005em;display:flex;align-items:center;gap:9px}
+.grid2__h h3 svg{width:16px;height:16px;fill:none;stroke:var(--ink-70);stroke-width:1.8}
+.grid2__h p{font-size:12px;color:var(--faint);margin-top:3px}
+.gwrap{overflow-x:auto}
+.gt{width:100%;border-collapse:collapse}
+.gt th{background:var(--ink-05);text-align:left;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-70);padding:0 12px;height:42px;border-bottom:1px solid var(--line);white-space:nowrap}
+.gt th.c{text-align:center;padding:0 6px}
+.gt td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0;height:var(--row-h)}
+.gt td:last-child{border-right:0}
+.gt th:first-child,.gt td:first-child{position:sticky;left:0;z-index:2;background:var(--surface);border-right:1px solid var(--line-2);min-width:190px}
+.gt th:first-child{background:var(--ink-05);z-index:3}
+.gt tr.sec td{background:var(--ink-05);height:34px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-70);padding:0 12px;border-right:0}
+.gt tr.sec td:first-child{background:var(--ink-05)}
+.gl{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 12px;height:100%}
+.gl__n{font-size:13px;font-weight:700;letter-spacing:-.005em;white-space:nowrap}
+.gl__n span{display:block;font-size:11px;font-weight:500;color:var(--faint);margin-top:2px}
+/* o selo de estado da linha usa .tag de wtc-carbon.css — a paleta paralela que morava aqui
+   (.s-ok/.s-no/.s-x/.s-nm/.s-rev) dizia o mesmo com outra roupa e foi removida. */
+
+/* célula-planilha: UM input, sem dropdown, sem botão.
+   A ANATOMIA é a mesma do campo de lançamento da tabela padrão (.rjin) e mora lá, em
+   wtc-carbon.css: caixa contida, régua de baixo colorida, alinhada à esquerda. Aqui ficam só os
+   estados que esta grade tem e a de recusas não: sem cotação, não compro, alterado. */
+.cell.has{border-bottom-color:var(--blue-60)}
+.cell.nox{border-bottom-color:var(--red-50);color:var(--red-70)}
+.cell.dirty{box-shadow:inset 3px 0 0 var(--blue-60)}
+.cell:disabled{background:var(--ink-05);color:var(--ink-30);cursor:not-allowed;border-bottom-color:var(--line-2)}
+.calc{display:flex;align-items:center;height:var(--ctl-sm);font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink-70)}
+.calc--floor{color:var(--amber-70);box-shadow:inset 0 -2px 0 var(--amber-40)}
+.pairc{display:flex;align-items:center;gap:10px}
+.pairc .cell{flex:1;min-width:0}
+.pairc i{display:none}
+.usdhint{font-family:var(--mono);font-size:10px;color:var(--faint);text-align:center;display:block;margin-top:-8px;padding-bottom:6px}
+
+/* ---------- rodapé fixo do formulário ---------- */
+.pfoot{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink-100);color:var(--white);display:flex;align-items:center;gap:20px;padding:12px 28px;border-top:1px solid #343a3f}
+.pfoot__lg{font-size:11px;color:var(--ink-40);line-height:1.6;flex:1;min-width:0;text-wrap:pretty}
+.pfoot__lg b{color:var(--white);font-weight:700}
+.pfoot__n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-40);white-space:nowrap}
+.pfoot .btn{flex:none}
+
+/* ---------- COMPRAS: fila de lotes despachados ---------- */
+.brow{display:grid;grid-template-columns:minmax(0,1fr) 196px 206px 172px;align-items:center;gap:18px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-bottom:0;transition:background var(--d1)}
+.brow:last-of-type{border-bottom:1px solid var(--line)}
+.brow:hover{background:var(--ink-05)}
+.brow__id{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brow__c{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:-.02em}
+.brow__c a{color:inherit}
+.brow__c a:hover{color:var(--blue-60);text-decoration:none}
+.brow__who{font-size:12px;color:var(--muted);margin-top:7px}
+.brow__who b{font-weight:700;color:var(--text)}
+.brow__mix{display:flex;gap:2px;margin-top:10px;height:6px}
+.brow__mix i{height:100%}
+.brow__mixl{font-size:11px;color:var(--faint);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bfact .l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.bfact .v{font-size:15px;font-weight:700;margin-top:5px;letter-spacing:-.01em}
+.bfact .v small{font-size:12px;font-weight:600;color:var(--muted)}
+.bfact .m{font-family:var(--mono);font-size:12px;font-weight:600;margin-top:5px;display:block}
+.bfact .s{font-size:11px;color:var(--faint);margin-top:4px;display:block}
+.brow__act{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.brow__act .btn{width:100%;justify-content:space-between;height:40px;font-size:13px}
+.tabs{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-bottom:0}
+.tab{flex:1;background:var(--surface);border:0;padding:12px 15px;text-align:left;cursor:pointer;position:relative;transition:background var(--d1);min-width:0}
+.tab:hover{background:var(--ink-05)}
+.tab.on::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--blue-60)}
+.tab__n{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-70);display:block}
+.tab__v{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-top:6px;display:block}
+.tab__v small{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0}
+.trk{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-70);background:var(--blue-10);padding:3px 9px;border:0;cursor:pointer;white-space:nowrap}
+.trk:hover{background:var(--blue-20)}
+.trk svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* ---------- LOTE: detalhe + resultado ---------- */
+.ltop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;margin-bottom:20px}
+@media(max-width:1060px){.ltop{grid-template-columns:1fr}}
+.lhd{background:var(--surface);border:1px solid var(--line)}
+.lhd__t{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:20px 20px 18px;flex-wrap:wrap}
+.lhero{text-align:right;display:flex;flex-direction:column;align-items:flex-end;flex:none}
+.lhero__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.lhero__v{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:-.04em;line-height:1;margin-top:9px}
+.lhero__u{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--muted);margin-top:7px}
+.meta{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.meta>div{background:var(--surface);padding:10px 16px;flex:1 1 auto;min-width:0}
+.meta .l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.meta .v{font-family:var(--mono);font-size:14px;font-weight:600;margin-top:4px;letter-spacing:-.01em;white-space:nowrap}
+.meta .v small{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0}
+.meta .v.hi{color:var(--blue-60)}
+/* cabeçalho compacto do lote: identidade, três números e o rodapé de rastreio */
+.lhd--c .lhd__t{padding:15px 18px 14px;gap:12px}
+.lhd--c .lhd__c{font-size:21px}
+.lhd--c .lhd__s{font-size:12.5px;margin-top:6px}
+.lmet{display:flex;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.lmet>div{background:var(--surface);padding:11px 18px;flex:1 1 0;min-width:0}
+.lmet>div:first-child{flex:1.3 1 0}
+.lmet .l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.lmet .v{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.03em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmet .v small{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0}
+.lmet .s{display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--faint);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:9px 18px;border-top:1px solid var(--line);background:var(--ink-05)}
+.cats{display:flex;flex-direction:column}
+.cat3{display:grid;grid-template-columns:minmax(0,1fr) 150px 84px 104px;align-items:center;gap:14px;padding:0 16px;height:48px;border-bottom:1px solid var(--line)}
+.cat3:last-child{border-bottom:0}
+.cat3:hover{background:var(--ink-05)}
+.cat3--res{grid-template-columns:minmax(0,1fr) 118px 76px 96px 66px;gap:12px}
+.cat3__n{display:flex;align-items:center;gap:10px;min-width:0;overflow:hidden}
+.cat3__n i{width:10px;height:10px;flex:none;display:block}
+.cat3__n b{font-size:14px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.cat3__n span{font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cat3__bar{display:flex;align-items:center;gap:10px}
+.cat3__t{flex:1;height:8px;background:var(--ink-10);display:block;min-width:0}
+.cat3__t i{display:block;height:100%}
+.cat3__bar em{font-family:var(--mono);font-size:12px;font-weight:600;font-style:normal;color:var(--ink-70);width:30px;text-align:right;flex:none}
+.cat3__v{text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.cat3__v small{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0}
+.cat3__v.good{color:var(--green-60)}.cat3__v.bad{color:var(--red-60)}
+.ltop #sum{container-type:inline-size}
+@container (max-width:560px){.cat3,.cat3--res{grid-template-columns:minmax(0,1fr) 110px;height:auto;padding:12px 16px;gap:8px 14px}.cat3__bar{grid-column:1/-1}}
+@media(max-width:640px){.cat3,.cat3--res{grid-template-columns:minmax(0,1fr) 110px;height:auto;padding:12px 16px;gap:8px 14px}.cat3__bar{grid-column:1/-1}}
+.lhd__c{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.03em}
+.lhd__s{font-size:13px;color:var(--muted);margin-top:7px}
+.lhd__s b{font-weight:700;color:var(--text)}
+.lhd__f{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.lhd__f>div{background:var(--surface);flex:1 1 168px;padding:13px 20px;min-width:0}
+.step4{display:flex;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.step4>div{flex:1;background:var(--ink-05);padding:11px 16px;position:relative}
+.step4>div.on{background:var(--surface)}
+.step4>div.on::before,.step4>div.cur::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--green-50)}
+.step4>div.cur::before{background:var(--blue-60)}
+.step4 .n{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.step4 .d{font-family:var(--mono);font-size:12px;font-weight:600;margin-top:4px;color:var(--ink-60)}
+.step4>div.on .d,.step4>div.cur .d{color:var(--text)}
+.rt td{border-bottom:1px solid var(--line);height:54px;padding:0 12px;font-size:13px;vertical-align:middle}
+/* denso: 200+ linhas cabem na tela — cabeçalho fixo, altura curta, filtro por texto */
+.gwrap--tall{max-height:min(58vh,560px);overflow:auto}
+.gwrap--tall thead th{position:sticky;top:0;z-index:3}
+.rt--dense td{height:36px;padding:0 10px;font-size:12px}
+.rt--dense th{height:34px;padding:0 10px;font-size:10px}
+.rt--dense th.n,.rt--dense td.n{text-align:right}
+.rt--dense th.hl,.rt--dense td.hl{background:var(--blue-10)}
+.rt--dense td.dim{color:var(--muted)}
+.rt--dense tr.tsec td{height:30px;padding:0 10px;position:sticky;top:34px;z-index:2}
+.rt--dense .cap{font-size:13px}
+.rt--dense .wtc{font-size:11px;padding:1px 6px}
+.rt--dense .okin{height:28px;width:78px;font-size:13px;padding:0 8px;background:var(--white);border-bottom:1px solid var(--ink-40)}
+.rt--dense tbody tr:hover td{background:var(--ink-05)}
+.rt--dense tbody tr:hover td.hl{background:var(--blue-20)}
+.flt{height:34px;width:230px;padding:0 12px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);font-size:12px;color:var(--text)}
+.flt:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.rtot{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:11px 16px;background:var(--ink-05);border-top:1px solid var(--line-2);font-size:12px;color:var(--muted)}
+.rtot__l b{font-family:var(--mono);font-weight:700;color:var(--text)}
+.rtot__g{display:flex;flex-wrap:wrap;gap:0 22px}
+.rtot__g>span{display:flex;align-items:baseline;gap:8px}
+.rtot__g i{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+.rtot__g b{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text)}
+.rt tr.tsec td{background:var(--ink-05);height:38px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-70)}
+.rt tr.tsec .rr{float:right;font-family:var(--mono);letter-spacing:0;color:var(--ink-60);font-weight:600;text-transform:none;font-size:12px;white-space:nowrap}
+.rt--dense tr.tsec td{white-space:nowrap}
+.rt .cap{font-family:var(--mono);font-size:14px;font-weight:600}
+.rt .wtc{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-70);background:var(--blue-10);padding:2px 8px}
+.rt .n{text-align:right;font-family:var(--mono);font-weight:600;white-space:nowrap}
+.rt tfoot td{background:var(--ink-05);height:var(--row-h);padding:0 12px;font-weight:800;font-size:14px;border-top:1px solid var(--line-2);border-bottom:0}
+.okin{width:104px;height:40px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);text-align:right;font-family:var(--mono);font-size:15px;font-weight:600;padding:0 10px;color:var(--text)}
+.okin:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.okin.bad{background:var(--red-10);border-bottom-color:var(--red-60);color:var(--red-70)}
+.rej{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right;white-space:nowrap}
+.rej.zero{color:var(--ink-40)}
+.rej.some{color:var(--red-60)}
+.dl2{font-family:var(--mono);font-size:12px;font-weight:600;white-space:nowrap;text-align:right;display:block}
+.dl2.neg{color:var(--red-60)}.dl2.pos{color:var(--green-60)}
+
+/* ---------- pagamento: carteira, saldo e parcelas ---------- */
+.tag--due{background:var(--amber-60);color:#fff}.tag--due .dot{background:#fff}
+/* ---------- barra de demonstração (protótipo): alterna o lote por todos os estados ---------- */
+.demobar{display:flex;align-items:stretch;gap:1px;background:var(--line);border:1px dashed var(--line-2);margin-bottom:16px;flex-wrap:wrap}
+.demobar__l{display:flex;align-items:center;gap:9px;background:var(--surface);padding:0 13px;height:34px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--amber-70);white-space:nowrap}
+.demobar__l i{width:6px;height:6px;background:var(--amber-40);flex:none}
+.demobar button{height:34px;border:0;background:var(--surface);padding:0 14px;font-family:inherit;font-size:12px;font-weight:600;color:var(--ink-70);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.demobar button:hover{background:var(--ink-05);color:var(--text)}
+.demobar button.on{background:var(--ink-100);color:var(--white)}
+.demobar .dq{width:7px;height:7px;flex:none}
+.dq--transit{background:var(--blue-60)}
+.dq--received{background:var(--amber-40)}
+.dq--due,.dq--partial{background:var(--amber-60)}
+.dq--paid{background:var(--green-50)}
+.demobar__sp{flex:1;background:var(--surface);min-width:0}
+.demobar__r{color:var(--blue-60)!important;font-weight:700}
+.demobar__r:hover{background:var(--blue-10)!important}
+@media(max-width:880px){.demobar__sp{display:none}.demobar button{flex:1 1 auto;justify-content:center}}
+
+.pay{display:flex;flex-wrap:wrap;gap:1px;background:var(--line)}
+.pay__c{background:var(--surface);padding:18px 20px;min-width:0}
+.pay__c--w{flex:1 1 440px}
+.pay__c--m{flex:1 1 300px}
+.pay__k{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.wal{display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
+.wal__n{font-size:15px;font-weight:700}
+.wal__net{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--ink-10);color:var(--ink-70);padding:3px 8px}
+.wadr{display:flex;align-items:stretch;margin-top:11px;border:1px solid var(--line)}
+.wadr code{flex:1;min-width:0;display:flex;align-items:center;padding:11px 12px;background:var(--ink-05);font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:-.01em;overflow-x:auto;white-space:nowrap}
+.wadr button{flex:none;width:46px;border:0;border-left:1px solid var(--line);background:var(--surface);color:var(--ink-60);cursor:pointer;display:grid;place-items:center;transition:background var(--d1),color var(--d1)}
+.wadr button:hover{background:var(--blue-60);color:#fff}
+.wadr button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9}
+.paynote{display:flex;gap:9px;margin-top:11px;font-size:12px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+/* linha da ação do cartão de repasse (salvar a conta, alterar a conta): entra na mesma régua de
+   14px do resto do cartão — sem regra o botão nascia colado no campo acima */
+.pay__ed{display:flex;margin-top:14px}
+.pay__ed .btn{flex:none}
+.paynote svg{width:14px;height:14px;flex:none;margin-top:3px;fill:none;stroke:var(--amber-60);stroke-width:2}
+.pmet{display:flex;flex-direction:column;gap:8px;margin-top:11px}
+.pmet__r{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted)}
+/* filho DIRETO. O par de moeda (.mvd) também traz <b> dentro, e alcançá-lo por descendência
+   achatava as duas moedas no corpo do painel: a dedução, único <b> solto da caixa, virava o número
+   mais alto, e o líquido e o saldo — os dois que o cliente precisa ler — os mais baixos. */
+.pmet__r>b{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+.pmet__r.big>b{font-size:19px}
+.pmet__r.rest>b{color:var(--amber-70);font-size:19px}
+.pmet__r.done>b{color:var(--green-70)}
+/* tamanho e cor de estado vão no PRÓPRIO par, nunca em cada moeda: .mvd__a e .mvd__b são
+   color:inherit, então a cor desce sozinha e as duas continuam idênticas entre si. */
+.pmet__r .mvd{margin-left:auto;color:var(--text)}
+.pmet__r.big .mvd__a,.pmet__r.big .mvd__b{font-size:19px}
+.pmet__r.rest .mvd__a,.pmet__r.rest .mvd__b{font-size:19px}
+.pmet__r.rest .mvd{color:var(--amber-70)}
+.pmet__r.done .mvd{color:var(--green-70)}
+.pbar{height:8px;background:var(--ink-10);margin-top:14px;display:flex}
+.pbar i{background:var(--green-50);transition:width var(--d3) var(--ez)}
+.pbar__l{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--faint);margin-top:7px}
+.ptab{width:100%;border-collapse:collapse}
+.ptab th{background:var(--ink-05);text-align:left;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-70);padding:0 14px;height:36px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+.ptab td{padding:0 14px;height:var(--row-h);border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}
+.ptab .n{text-align:right;font-family:var(--mono);font-size:14px;font-weight:600}
+.ptab th.n{text-align:right}
+.ptab .m{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ptab .dim{color:var(--muted);font-weight:500}
+.ptab tfoot td{background:var(--ink-05);border-bottom:0;font-weight:700}
+.pempty{padding:24px 20px;border-top:1px solid var(--line);font-size:13px;color:var(--faint);text-align:center;text-wrap:pretty}
+.rcpt{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:12px;font-weight:600;color:var(--blue-60);background:none;border:0;padding:0;cursor:pointer}
+.rcpt:hover{text-decoration:underline}
+.rcpt svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9}
+
+/* ---------- modal de pagamento ---------- */
+.scrim{position:fixed;inset:0;background:rgba(22,22,22,.72);z-index:90;display:none;align-items:center;justify-content:center;padding:24px}
+.scrim.is-on{display:flex}
+.modal{background:var(--surface);width:100%;max-width:540px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;animation:pop2 var(--d3) var(--ez)}
+@keyframes pop2{from{opacity:0;transform:translateY(10px)}}
+.modal__h{padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.modal__h h2{font-size:20px;font-weight:400;letter-spacing:-.02em}
+.modal__h p{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5;text-wrap:pretty}
+.modal__b{padding:18px 22px 22px;overflow-y:auto}
+.modal__f{display:flex;gap:1px;background:var(--line);flex:none}
+.modal__f .btn{flex:1;justify-content:center;height:58px;gap:12px}
+.msum{border:1px solid var(--line)}
+.msum__r{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.msum__r:last-child{border-bottom:0;background:var(--ink-05)}
+.msum__r b{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text)}
+.msum__r.rest b{color:var(--amber-70);font-size:16px}
+.fld{margin-top:17px}
+.fld__l{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-70);margin-bottom:8px}
+.fld__l em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--faint)}
+.fld__l em.req{color:var(--red-60)}
+.minput{width:100%;height:48px;padding:0 14px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text)}
+.minput:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.minput.bad{background:var(--red-10);border-bottom-color:var(--red-60);color:var(--red-70)}
+.amt{display:flex;gap:1px;background:var(--line)}
+.amt__cur{width:48px;flex:none;display:grid;place-items:center;background:var(--ink-10);font-family:var(--mono);font-size:16px;font-weight:600;color:var(--ink-70)}
+.amt .minput{flex:1;min-width:0}
+.quick{display:flex;gap:1px;background:var(--line);margin-top:1px}
+.quick button{flex:1;height:34px;border:0;background:var(--ink-05);font-family:inherit;font-size:11px;font-weight:700;color:var(--blue-60);cursor:pointer;white-space:nowrap;transition:background var(--d1)}
+.quick button:hover{background:var(--blue-10)}
+.conv{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);margin-top:9px}
+.conv b{font-family:var(--mono);font-weight:600;color:var(--text)}
+.conv .over{color:var(--red-60);font-weight:700}
+.drop{display:flex;align-items:center;gap:12px;padding:15px;border:1px dashed var(--line-2);background:var(--ink-05);cursor:pointer;transition:background var(--d1),border-color var(--d1)}
+.drop:hover,.drop.over{background:var(--blue-10);border-color:var(--blue-60)}
+.drop>svg{width:20px;height:20px;flex:none;fill:none;stroke:var(--ink-50);stroke-width:1.8}
+.drop__t{min-width:0}
+.drop__t b{display:block;font-size:13px;font-weight:700}
+.drop__t i{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4;text-wrap:pretty}
+.drop.has{border-style:solid;border-color:var(--green-50);background:var(--green-10)}
+.drop.has>svg{stroke:var(--green-60)}
+.drop input{display:none}
+.drop__x{margin-left:auto;flex:none;width:30px;height:30px;border:0;background:none;color:var(--ink-60);cursor:pointer;display:grid;place-items:center}
+.drop__x:hover{color:var(--red-60)}
+.drop__x svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+@media(max-width:600px){.modal__f .btn{flex:1 1 0;min-width:0;padding:0 10px;font-size:13px;white-space:normal;line-height:1.25;text-align:center}}
+
+@media(max-width:1240px){.brow{grid-template-columns:minmax(0,1fr) 190px;row-gap:14px}.brow__act{grid-column:1/-1;flex-direction:row}}
+@media(max-width:1080px){.papp{grid-template-columns:1fr}
+  /* no instante em que .papp vira UMA coluna, o rail deixa de ser coluna e passa a ser faixa
+     horizontal rolável. As duas coisas são a MESMA decisão de layout, então moram no MESMO bloco:
+     separadas (a faixa em 600px, o colapso em 1080px) sobrava uma janela de 480px em que o rail
+     empilhava vertical com altura cheia e empurrava a tabela — a única razão da página — para fora
+     da tela. */
+  .pside{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line-2)}
+  .pside__l,.pside__foot{display:none}
+  .pside #types{display:flex}
+  .ptype{flex:none;border-bottom:0;border-right:1px solid var(--line)}
+  .ptype__d{display:none}
+}
+@media(max-width:880px){.brow{grid-template-columns:1fr}.tabs{flex-wrap:wrap}.lhd__c{font-size:20px}}
+@media(max-width:880px){
+  .pmain{padding:18px 16px 150px}
+  .phd h1{font-size:24px}
+  .gt th:first-child,.gt td:first-child{min-width:150px}
+  .cell{font-size:16px}
+  .pfoot{flex-wrap:wrap;padding:10px 16px;gap:10px}
+  .pfoot .btn{width:100%;justify-content:center}
+}
+
+/* ---------- cabeçalho do parceiro em tablet e telefone ----------
+   MESMO padrão do cabeçalho do app (.shell em wtc-carbon.css, documentado em menu-mobile.html):
+   shell.js já media este cabeçalho, injetava o burger e marcava [data-shell] — só faltavam as
+   regras da gaveta para .pshell. Nada aqui é novo: a barra vira brand + ícones + burger, e os
+   destinos, o câmbio e o perfil descem como LINHAS de uma lista de 56px, não como uma segunda
+   faixa sempre aberta. */
+.pshell:is([data-shell="tablet"],[data-shell="phone"]){flex-wrap:wrap;align-content:flex-start;height:auto}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__nav,.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__fx,.pshell:is([data-shell="tablet"],[data-shell="phone"]) .me{display:none}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]).is-open .pshell__nav{display:flex}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]).is-open .pshell__fx{display:flex}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]).is-open .me{display:flex}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__brand{order:1;flex:1;height:var(--shell-h);padding:0 16px}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .shell__ico{order:2}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .shell__burger{order:3;display:flex}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__spacer{display:none}
+
+/* destinos: a lista */
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__nav{order:4;flex:0 0 100%;flex-direction:column;align-items:stretch;border-top:1px solid var(--line-2)}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pnav{height:var(--ctl-lg);padding:0 16px;gap:12px;font-size:15px;font-weight:600;color:var(--text);border-bottom:1px solid var(--line)}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pnav svg{width:20px;height:20px;margin:0 2px;opacity:.85}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pnav.on{background:var(--blue-10);color:var(--blue-70)}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pnav.on svg{opacity:1;stroke:currentColor}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pnav.on::after{left:0;right:auto;top:0;bottom:0;width:3px;height:auto}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pnav__b{margin-left:auto}
+
+/* câmbio e perfil: linhas da mesma lista, sem a borda vertical da barra */
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__fx{order:5;flex:0 0 100%;height:var(--ctl-lg);flex-direction:row;align-items:center;gap:10px;padding:0 16px;border-left:0;border-bottom:1px solid var(--line)}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__fx b{font-size:15px}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .pshell__sub{margin-left:auto}
+/* o perfil já é o widget .me que o shell.js monta (ele consome .pshell__who): como linha da
+   gaveta, ocupa a largura inteira e perde a borda vertical da barra */
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .me{order:6;flex:0 0 100%;flex-direction:column;border-left:0}
+.pshell:is([data-shell="tablet"],[data-shell="phone"]) .me__btn{height:var(--ctl-lg);padding:0 16px;gap:12px}
+
+/* o layout de duas colunas também precisa do gêmeo em @container: o @media de 1080px não dispara
+   dentro do enquadramento do protótipo */
+@container vp (max-width:1080px){
+  .papp{grid-template-columns:1fr}
+  /* no instante em que .papp vira UMA coluna, o rail deixa de ser coluna e passa a ser faixa
+     horizontal rolável. As duas coisas são a MESMA decisão de layout, então moram no MESMO bloco:
+     separadas (a faixa em 600px, o colapso em 1080px) sobrava uma janela de 480px em que o rail
+     empilhava vertical com altura cheia e empurrava a tabela — a única razão da página — para fora
+     da tela. */
+  .pside{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line-2)}
+  .pside__l,.pside__foot{display:none}
+  .pside #types{display:flex}
+  .ptype{flex:none;border-bottom:0;border-right:1px solid var(--line)}
+  .ptype__d{display:none}
+}
+@container vp (max-width:880px){
+  .pmain{padding:18px 16px 150px}
+  .phd h1{font-size:24px}
+  .cell{font-size:16px}
+  .pfoot{flex-wrap:wrap;padding:10px 16px;gap:10px}
+  .pfoot .btn{width:100%;justify-content:center}
+}
+
+/* a caixa preta de categoria é pintada com --ink-100, que inverte no tema escuro: aqui ela volta
+   a ser escura de verdade, em vez de branca sobre branca */
+[data-theme="dark"] .cat{background:#000;color:#fff}
+
+/* AVISO DE PEDIDO TRAVADO no topo da grade. Autodefinido, NÃO modificador: a base .gnote mora em
+   wtc-ficha.css e as quatro telas de grade não carregam essa folha — só carbon + parceiro. Escrito
+   como modificador, o aviso vinha sem flex, sem padding e sem dimensão de ícone, e o SVG esticava
+   para 853px: um triângulo vermelho do tamanho do viewport empurrando a tabela de preços para fora
+   da tela. Carregar a folha da ficha aqui resolveria a cor, mas puxaria impressão e modais para
+   páginas que não têm nem um nem outro. */
+.gnote--blk{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin-bottom:20px;
+  border:1px solid var(--red-60);background:var(--red-10);font-size:12.5px;line-height:1.5;
+  color:var(--text);text-wrap:pretty}
+.gnote--blk svg{width:16px;height:16px;flex:none;margin-top:2px;fill:none;stroke:var(--red-60);stroke-width:2}
+.gnote--blk b{color:var(--red-70);font-weight:700}
+
+/* ============ PLANILHA DE CONFERÊNCIA NO TELEFONE (390px) ============
+   O caso mais difícil da tela, e é o único lugar do sistema onde se DIGITA dentro de uma tabela.
+   A .dtab já vira cartão aqui; o que faltava era o cartão saber o papel de cada célula — sem isso
+   as nove células caíam numa pilha indistinguível, com o campo de recusa perdido no meio.
+
+   A ordem do cartão é a ordem do trabalho de bancada: primeiro o que ele tem na mão (tipo,
+   capacidade, caixa), depois quanto veio, depois o campo, e só então a consequência.
+   Preço unitário e ¥ esperado saem: são referência, e referência não se lê com o dedo ocupado. */
+@media(max-width:600px){
+  /* O cartão do sistema é FLEX COM QUEBRA — as células fluem e quebram sozinhas. Eu tinha imposto
+     um grid de duas colunas por cima, e cada linha virou uma torre de 460px: nove linhas não
+     cabiam em dez telas. Aqui só digo QUAIS células abrem fileira nova (`flex:1 0 100%`) e quais
+     encostam à direita (`margin-left:auto`); o resto é o fluxo que a .dtab já sabe fazer.
+     Quatro fileiras, na ordem do trabalho de bancada: o que ele tem na mão · quanto veio · o
+     campo · a consequência. */
+  .dtab--conf tbody tr{gap:5px 10px;padding:13px 16px}
+  .dtab--conf .c-t{font-size:14.5px;font-weight:700;color:var(--text)}
+  .dtab--conf .c-cap{font-family:var(--mono);font-size:14.5px;font-weight:600;color:var(--text)}
+  .dtab--conf .c-box{margin-left:auto}
+  .dtab--conf .c-qty{flex:1 0 100%;font-family:var(--sans);font-size:12px;color:var(--muted);text-align:left}
+  /* referência não se lê com o dedo ocupado */
+  .dtab--conf .c-unit,.dtab--conf .c-exp{display:none}
+  /* o campo abre fileira e tem altura de toque: 48px, acima do mínimo de 44 */
+  .dtab--conf .c-rej{flex:1 0 100%;text-align:left;margin-top:2px}
+  .dtab--conf .c-rej .rjin{width:100%;max-width:none;height:48px;font-size:18px;text-align:left;padding:0 12px}
+  .dtab--conf .c-rej .rej{font-size:16px}
+  /* a consequência divide a última fileira: aprovados à esquerda, dinheiro à direita */
+  .dtab--conf .c-ok{flex:0 0 auto;font-size:12px;color:var(--muted)}
+  .dtab--conf .c-ok b{font-family:var(--mono);font-size:12.5px;color:var(--green-70)}
+  .dtab--conf .c-val{margin-left:auto;text-align:right;font-size:12.5px}
+  /* RÓTULO DO CARTÃO — é um <i>, não um <span>, e a diferença é de vocabulário: neste sistema
+     `.dtab .n span` É A SUB-LINHA (block, mono, 11px, cinza), com especificidade (0,3,1) que ganha
+     de qualquer regra minha de duas classes. Meu rótulo não é sub-linha, então não é span.
+     Fora do cartão ele não existe: lá o cabeçalho da coluna já nomeia o dado. */
+  .dtab--conf .c-lbl{display:inline;font-style:normal;font-family:var(--sans);color:var(--faint);margin-right:5px}
+  .dtab--conf .c-rej .c-lbl--rej{display:block;margin:0 0 5px;font-size:9.5px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--amber-70);font-family:var(--sans)}
+  /* a faixa de marca continua faixa: é ela que diz em que pilha o dedo está */
+  .dtab--conf tbody tr.g{gap:0;padding:7px 16px;min-height:0;background:var(--ink-10)}
+  .dtab--conf tbody tr.g td:first-child{line-height:1.35;height:auto;padding:0;border:0}
+  .dtab--conf tbody tr.g .g__n{padding:0;height:auto}
+  .dtab--conf tbody tr.g td{display:none}
+  .dtab--conf tbody tr.g td:first-child{display:block;flex:1 1 auto}
+  /* o rodapé de soma sai: quem soma no telefone é a barra viva, que não deixa a tela */
+  .dtab--conf tfoot{display:none}
+  .dtab__sc--conf{max-height:none;overflow:visible}
+}
+/* BARRA VIVA: só no telefone. Acima de 600px o resultado já está nos heróis e no rodapé de soma,
+   e um terceiro lugar dizendo o mesmo número seria eco. */
+.conflive{display:none}
+@media(max-width:600px){
+  /* CHAPA FIXA, CORES LITERAIS. `var(--ink-100)` inverte com o tema: no escuro a barra virava
+     branca e o valor — `color:#fff` — sumia dentro dela. A barra é uma chapa escura em qualquer
+     tema, como uma barra de ferramentas, então a cor do texto se decide contra a chapa e não
+     contra o tema. Mesmo princípio dos selos da barra de tipos e da folha impressa. */
+  .conflive{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;position:sticky;bottom:0;z-index:5;
+    padding:12px 16px;background:#161616;color:#fff;box-shadow:0 -8px 20px -10px rgba(0,0,0,.45)}
+  .conflive__l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a2a9b0}
+  .conflive__v{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.02em;margin-left:auto;color:#fff}
+  .conflive__d{flex:1 1 100%;font-size:12px;color:#a2a9b0}
+  .conflive__d.is-dif{color:#fdd13a}
+}
+@container vp (max-width:600px){
+  /* O cartão do sistema é FLEX COM QUEBRA — as células fluem e quebram sozinhas. Eu tinha imposto
+     um grid de duas colunas por cima, e cada linha virou uma torre de 460px: nove linhas não
+     cabiam em dez telas. Aqui só digo QUAIS células abrem fileira nova (`flex:1 0 100%`) e quais
+     encostam à direita (`margin-left:auto`); o resto é o fluxo que a .dtab já sabe fazer.
+     Quatro fileiras, na ordem do trabalho de bancada: o que ele tem na mão · quanto veio · o
+     campo · a consequência. */
+  .dtab--conf tbody tr{gap:5px 10px;padding:13px 16px}
+  .dtab--conf .c-t{font-size:14.5px;font-weight:700;color:var(--text)}
+  .dtab--conf .c-cap{font-family:var(--mono);font-size:14.5px;font-weight:600;color:var(--text)}
+  .dtab--conf .c-box{margin-left:auto}
+  .dtab--conf .c-qty{flex:1 0 100%;font-family:var(--sans);font-size:12px;color:var(--muted);text-align:left}
+  /* referência não se lê com o dedo ocupado */
+  .dtab--conf .c-unit,.dtab--conf .c-exp{display:none}
+  /* o campo abre fileira e tem altura de toque: 48px, acima do mínimo de 44 */
+  .dtab--conf .c-rej{flex:1 0 100%;text-align:left;margin-top:2px}
+  .dtab--conf .c-rej .rjin{width:100%;max-width:none;height:48px;font-size:18px;text-align:left;padding:0 12px}
+  .dtab--conf .c-rej .rej{font-size:16px}
+  /* a consequência divide a última fileira: aprovados à esquerda, dinheiro à direita */
+  .dtab--conf .c-ok{flex:0 0 auto;font-size:12px;color:var(--muted)}
+  .dtab--conf .c-ok b{font-family:var(--mono);font-size:12.5px;color:var(--green-70)}
+  .dtab--conf .c-val{margin-left:auto;text-align:right;font-size:12.5px}
+  /* RÓTULO DO CARTÃO — é um <i>, não um <span>, e a diferença é de vocabulário: neste sistema
+     `.dtab .n span` É A SUB-LINHA (block, mono, 11px, cinza), com especificidade (0,3,1) que ganha
+     de qualquer regra minha de duas classes. Meu rótulo não é sub-linha, então não é span.
+     Fora do cartão ele não existe: lá o cabeçalho da coluna já nomeia o dado. */
+  .dtab--conf .c-lbl{display:inline;font-style:normal;font-family:var(--sans);color:var(--faint);margin-right:5px}
+  .dtab--conf .c-rej .c-lbl--rej{display:block;margin:0 0 5px;font-size:9.5px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--amber-70);font-family:var(--sans)}
+  /* a faixa de marca continua faixa: é ela que diz em que pilha o dedo está */
+  .dtab--conf tbody tr.g{gap:0;padding:7px 16px;min-height:0;background:var(--ink-10)}
+  .dtab--conf tbody tr.g td:first-child{line-height:1.35;height:auto;padding:0;border:0}
+  .dtab--conf tbody tr.g .g__n{padding:0;height:auto}
+  .dtab--conf tbody tr.g td{display:none}
+  .dtab--conf tbody tr.g td:first-child{display:block;flex:1 1 auto}
+  /* o rodapé de soma sai: quem soma no telefone é a barra viva, que não deixa a tela */
+  .dtab--conf tfoot{display:none}
+  .dtab__sc--conf{max-height:none;overflow:visible}
+  /* CHAPA FIXA, CORES LITERAIS. `var(--ink-100)` inverte com o tema: no escuro a barra virava
+     branca e o valor — `color:#fff` — sumia dentro dela. A barra é uma chapa escura em qualquer
+     tema, como uma barra de ferramentas, então a cor do texto se decide contra a chapa e não
+     contra o tema. Mesmo princípio dos selos da barra de tipos e da folha impressa. */
+  .conflive{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;position:sticky;bottom:0;z-index:5;
+    padding:12px 16px;background:#161616;color:#fff;box-shadow:0 -8px 20px -10px rgba(0,0,0,.45)}
+  .conflive__l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a2a9b0}
+  .conflive__v{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.02em;margin-left:auto;color:#fff}
+  .conflive__d{flex:1 1 100%;font-size:12px;color:#a2a9b0}
+  .conflive__d.is-dif{color:#fdd13a}
+}
+
+/* RÓTULO DO CARTÃO DE ENTRADA. O sistema decidiu, e está escrito no bloco de cartão do
+   wtc-carbon.css, que cartão NÃO imprime rótulo: "pastilha é estado, avatar é gente, ¥ é dinheiro".
+   A regra genérica `.dtab tbody td[data-label]::before{content:none}` faz valer isso.
+   Aqui o sistema abre exceção, e ela é explícita em vez de acidental: um cartão de ENTRADA DE DADO
+   sem rótulo não é minimalismo, é adivinhação — um campo de 48px com placeholder "0" não diz o que
+   se digita nele. E o rótulo é elemento real, não pseudo: assim existe para leitor de tela e não
+   disputa cascata com a regra genérica.
+   Na tabela (acima de 600px) ele não aparece: lá o cabeçalho da coluna já nomeia o dado. */
+.c-lbl{display:none}

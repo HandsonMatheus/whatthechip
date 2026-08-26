@@ -1,0 +1,250 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x1000" name="Parceiro · Home (Compras)" subtitle="Tela de entrada do comprador — fila de lotes despachados: a caminho, a conferir, a pagar e quitados" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Parceiro · Compras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<link rel="stylesheet" href="wtc-parceiro.css?v=33" />
+<style>
+/* a lista é o padrão do sistema inteiro — .panel + .tbar + .dtab + .tfoot/.pgn do wtc-carbon.css.
+   Esta tela não desenha nada próprio: o único ajuste é a barra de ações do lote em aberto. */
+.tbar__sel--st{font-variant-numeric:tabular-nums}
+/* Mobile na convenção da lista de vendas, do outro lado do balcão: a barra de filtros reflui e as
+   colunas caem por degrau (as classes .hide-* já estão na tabela; o colapso em cartão vem dos
+   data-label). Cada bloco em dose dupla: @media para a página solta no aparelho, @container para o
+   enquadramento de celular do protótipo — media query lê a janela, não o frame. */
+@media(max-width:880px){
+  .phd{flex-direction:column;align-items:flex-start;gap:14px}
+}
+@container vp (max-width:880px){
+  .phd{flex-direction:column;align-items:flex-start;gap:14px}
+}
+@media(max-width:600px){
+  .tbar__search{flex:1 1 100%}
+  .tbar__sel{flex:1 1 calc(50% - 1px);min-width:0}
+  /* esta tela não cria registro, então não há botão para dividir a terceira linha com o exportar */
+  .tbar__ico{flex:1 1 auto}
+  .drange{flex:1 1 100%}
+}
+@container vp (max-width:600px){
+  .tbar__search{flex:1 1 100%}
+  .tbar__sel{flex:1 1 calc(50% - 1px);min-width:0}
+  .tbar__ico{flex:1 1 auto}
+  .drange{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+
+<header class="pshell">
+  <a class="pshell__brand" href="parceiro-compras.html"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /><span class="pshell__tag">Parceiro</span></a>
+  <nav class="pshell__nav">
+    <a class="pnav on" href="parceiro-compras.html"><svg viewBox="0 0 24 24"><path d="M3.5 7.5h17v12h-17z"/><path d="M3.5 11.5h17M9 7.5V5a3 3 0 0 1 6 0v2.5"/></svg>Compras<span class="pnav__b" data-buys-badge></span></a>
+    <a class="pnav" href="parceiro.html"><svg viewBox="0 0 24 24"><path d="M4 4h16v5H4z"/><path d="M7 13h4M7 17h7"/></svg>Preços</a>
+    <a class="pnav" href="parceiro-catalogo.html"><svg viewBox="0 0 24 24"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5M8 14h8"/></svg>Catálogo</a>
+  </nav>
+  <div class="pshell__spacer"></div>
+  <div class="pshell__fx"><b id="fxr">1 ¥ ≈ US$ 0.1478</b><span class="pshell__sub"><i class="live live--g"></i><em>ao vivo</em><span id="fxd">· mid-market 01/08</span></span></div>
+  <div class="pshell__who">
+    <div class="pshell__av">SZ</div>
+    <div class="pshell__u"><b>Shenzhen Yuan</b><span>Comprador</span></div>
+  </div>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">ZH</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<main class="pmain" style="padding-bottom:56px">
+  <div class="phd">
+    <div>
+      <h1>Suas <b>compras</b></h1>
+      <p>Só entra aqui o lote que o vendedor fechou <b>e despachou</b>, com o código de rastreio colado.</p>
+    </div>
+    <div class="seals"><span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Todos os preços em ¥ (RMB)</span></div>
+  </div>
+
+  <section class="panel">
+    <div class="tbar">
+      <div class="tbar__search">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+        <input id="q" type="text" placeholder="Buscar por lote, ordem, cliente, país ou rastreio…" autocomplete="off" />
+      </div>
+      <select class="tbar__sel tbar__sel--st" id="f-status" aria-label="Status"></select>
+      <select class="tbar__sel" id="f-period" aria-label="Período">
+        <option value="any">Qualquer período</option>
+        <option value="d30">Despachados nos últimos 30 dias</option>
+        <option value="d7">Despachados nos últimos 7 dias</option>
+        <option value="custom">Datas específicas…</option>
+      </select>
+      <div class="drange hide" id="drange"><span>de</span><input type="date" id="d-from" value="2026-06-01" aria-label="Data inicial" /><span>até</span><input type="date" id="d-to" value="2026-08-02" aria-label="Data final" /></div>
+      <button class="tbar__ico" id="exp-tbl" type="button" title="Exportar CSV"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></button>
+    </div>
+    <div class="dtab__wrap"><table class="dtab">
+      <thead><tr>
+        <th class="s" data-k="n">Lote <span class="ar">▼</span></th>
+        <th class="s" data-k="seller">Cliente <span class="ar">▼</span></th>
+        <th class="s" data-k="so">Ordem <span class="ar">▼</span></th>
+        <th class="s num hide-lg" data-k="units">Chips <span class="ar">▼</span></th>
+        <th class="s num" data-k="val">Total ¥ <span class="ar">▼</span></th>
+        <th class="s num hide-lg" data-k="usd">Total US$ <span class="ar">▼</span></th>
+        <th class="s num hide-sm" data-k="due">Resultado <span class="ar">▼</span></th>
+        <th>Status</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="list"></tbody>
+    </table></div>
+    <div class="tfoot">
+      <div class="pgn">
+        <div class="pgn__per"><label for="per">Por página</label><select id="per"><option selected>10</option><option>25</option><option>50</option></select></div>
+        <div class="pgn__i" id="tf-n"></div>
+        <button class="pgn__b" id="pg-prev" type="button" aria-label="Página anterior"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="pgn__b" id="pg-next" type="button" aria-label="Próxima página"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="fx.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="viewport.js?v=7"></script>
+<script src="parceiro-compras.js?v=29"></script>
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i);},B=window.WTCBuys,FX=window.WTCFX;
+var tT;function say(m){$("toast-txt").textContent=m;$("toast").classList.add("is-on");clearTimeout(tT);tT=setTimeout(function(){$("toast").classList.remove("is-on");},2800);}
+var TABS=[["all","Todos os status"],["transit","A caminho"],["received","A conferir"],["settled","Faturado"],["paid","Pago"]];
+var page=1,sortK="n",sortD=-1;
+var TODAY=new Date(2026,7,2);   /* "hoje" do protótipo: 02/08/2026 */
+function per(){return +$("per").value||10;}
+/* US$ do lote não é aproximação: a taxa foi travada pelo próprio cliente no fechamento */
+function lockRate(b){return b.lock||FX.rate()||0;}
+/* a data da compra é o despacho ("29/07") — mesmo filtro de período do Estoque e de Vendas */
+function dateOf(b){var m=/(\d{2})\/(\d{2})/.exec(b.ship||"");return m?new Date(2026,+m[2]-1,+m[1]):null;}
+function inPeriod(b){
+  var pe=$("f-period").value,d=dateOf(b);
+  if(pe==="any"||!d)return true;
+  if(pe==="custom"){
+    var a=$("d-from").value?new Date($("d-from").value+"T00:00:00"):null;
+    var z=$("d-to").value?new Date($("d-to").value+"T23:59:59"):null;
+    if(a&&d<a)return false;
+    if(z&&d>z)return false;
+    return true;
+  }
+  return (TODAY-d)/864e5<=(pe==="d7"?7:30);
+}
+function view(){
+  var q=$("q").value.trim().toLowerCase(),st=$("f-status").value;
+  var v=B.all().filter(function(b){
+    if(st!=="all"&&b.st!==st)return false;
+    if(!inPeriod(b))return false;
+    if(q){
+      var hay=(B.code(b)+" "+B.soCode(b)+" "+b.seller+" "+b.country+" "+b.city+" "+(b.carrier||"")+" "+(b.track||"")).toLowerCase();
+      if(hay.indexOf(q)<0)return false;
+    }
+    return true;
+  });
+  var f={n:function(b){return b.n;},so:function(b){return b.so;},units:B.units,val:B.cny,
+    usd:function(b){return B.cny(b)*lockRate(b);},
+    due:function(b){return (b.st==="settled"||b.st==="paid")?B.dueCny(b):-1;}}[sortK];
+  if(f)return v.sort(function(a,b){return (f(a)-f(b))*sortD;});
+  return v.sort(function(a,b){return a.seller.localeCompare(b.seller,"pt-BR")*sortD;});
+}
+
+/* o status carrega a contagem do próprio estado — era isso que as abas mostravam */
+function filters(){
+  var A=B.all(),cur=$("f-status").value||"all";
+  $("f-status").innerHTML=TABS.map(function(t){
+    var n=t[0]==="all"?A.length:A.filter(function(b){return b.st===t[0];}).length;
+    return '<option value="'+t[0]+'"'+(t[0]===cur?" selected":"")+'>'+t[1]+' ('+n+')</option>';
+  }).join("");
+  var pend=A.filter(function(b){return b.st==="received";}).length;
+  var owe=A.filter(function(b){return (b.st==="settled"||b.st==="paid")&&B.restCny(b)>0;});
+  Array.prototype.forEach.call(document.querySelectorAll("[data-buys-badge]"),function(e){e.textContent=(pend+owe.length)||"";});
+}
+function exportCsv(){
+  var v=view(),q=function(x){x=String(x==null?"":x);return /[";,\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;};
+  var rows=[["Lote","Ordem","Categoria","Cliente","País","Transportadora","Rastreio","Chips","CNY total","Taxa travada","USD total","CNY resultado","USD a pagar","Status"]];
+  v.forEach(function(b){
+    var show=b.st==="settled"||b.st==="paid";
+    rows.push([B.code(b),B.soCode(b),FX.originName(b.origin),b.seller,b.country,b.carrier||"",b.track||"",B.units(b),
+      Math.round(B.cny(b)),lockRate(b).toFixed(4),(B.cny(b)*lockRate(b)).toFixed(2),
+      show?Math.round(B.dueCny(b)):"",show?B.restUsd(b).toFixed(2):"",B.stTag(b)[1]]);
+  });
+  var csv="\ufeff"+rows.map(function(r){return r.map(q).join(";");}).join("\r\n");
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download="compras-shenzhen-yuan.csv";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},400);
+  say("Exportado · "+v.length+" lotes");
+}
+function list(){
+  var A=view();
+  var P=per(),pages=Math.max(1,Math.ceil(A.length/P));
+  if(page>pages)page=pages;
+  var from=(page-1)*P,V=A.slice(from,from+P);
+  if(!A.length){$("list").innerHTML='<tr><td colspan="9" class="dtab__empty"><b>Nenhum lote encontrado</b>Ajuste a busca ou os filtros acima.</td></tr>';}
+  else $("list").innerHTML=V.map(function(b){
+    var c=B.cny(b),st=B.stTag(b),rest=B.restUsd(b),show=b.st==="settled"||b.st==="paid";
+    /* A CONFERIR e o saldo em aberto são atos DESTE lado do balcão, então viram chamada. A caminho
+       e quitado são estado: não há nada a fazer, e cor de chamada ali seria ruído diário.
+       Azul = ato sobre a caixa; âmbar = ato sobre dinheiro. A cor diz a natureza, não quem age. */
+    var act=b.st==="received"?["check","CONFERIR"]:(rest>0?["pay","PAGAR"]:null);
+    var wait=b.st==="transit"?"a caminho — nada a fazer ainda":"encerrado";
+    return '<tr data-n="'+b.n+'" data-meta="'+FX.originName(b.origin)+'">'
+      +'<td class="c"><div style="display:flex;align-items:center;gap:9px">'+B.code(b)+'<span class="hide-lg">'+FX.origin(b.origin,"sm")+'</span></div></td>'
+      +'<td data-label="Cliente">'+b.seller+'</td>'
+      +'<td data-label="Ordem"><div style="display:flex;align-items:center;gap:9px">'+B.soCode(b)+'<span class="when">'+B.soDate(b)+'</span></div></td>'
+      +'<td class="n hide-lg" data-label="Chips" data-suffix="un.">'+B.units(b).toLocaleString("pt-BR")+'</td>'
+      +'<td class="n key" data-label="Total ¥">'+FX.cny(c)+'</td>'
+      +'<td class="n hide-lg" data-label="Total US$">'+FX.usd(c*lockRate(b))+'</td>'
+      +'<td class="v hide-sm" data-label="Resultado">'+(show?FX.cny(B.dueCny(b))+'<span'+(rest?' class="due"':' class="got"')+'>'+(rest?'falta '+FX.usd(rest):'quitado')+'</span>'
+                               :'<span class="none">—</span>')+'</td>'
+      +'<td data-label="Status">'+(act?'<span class="act act--'+act[0]+'"><i></i>'+act[1]+'</span>'
+        :'<span class="tag '+st[0]+'" title="'+wait+'"><span class="dot"></span>'+st[1]+'</span>')+'</td>'
+      +'<td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td></tr>';
+  }).join("");
+  Array.prototype.forEach.call($("list").querySelectorAll("[data-n]"),function(tr){
+    tr.onclick=function(){location.href="parceiro-lote.html?l="+tr.getAttribute("data-n");};
+  });
+  $("tf-n").innerHTML=A.length?'<span><b>'+(from+1)+'–'+(from+V.length)+'</b> de <b>'+A.length+'</b> lotes</span>':'<span>nenhum lote</span>';
+  $("pg-prev").disabled=page<=1;$("pg-next").disabled=page>=pages;
+  Array.prototype.forEach.call(document.querySelectorAll("th.s"),function(th){
+    th.classList.toggle("is-sort",th.getAttribute("data-k")===sortK);
+    th.querySelector(".ar").textContent=sortD<0?"▼":"▲";
+  });
+}
+Array.prototype.forEach.call(document.querySelectorAll("th.s"),function(th){
+  th.onclick=function(){var k=th.getAttribute("data-k");if(sortK===k)sortD=-sortD;else{sortK=k;sortD=-1;}page=1;list();};
+});
+$("q").oninput=function(){page=1;list();};
+$("f-status").onchange=function(){page=1;list();};
+$("f-period").onchange=function(){
+  $("drange").classList.toggle("hide",$("f-period").value!=="custom");
+  page=1;list();
+};
+$("d-from").onchange=function(){page=1;list();};
+$("d-to").onchange=function(){page=1;list();};
+$("exp-tbl").onclick=exportCsv;
+$("per").onchange=function(){page=1;list();};
+$("pg-prev").onclick=function(){if(page>1){page--;list();}};
+$("pg-next").onclick=function(){page++;list();};
+function fx(){
+  var s=FX.state();
+  $("fxr").textContent=s.has?("1 ¥ ≈ US$ "+s.rate.toFixed(4)):"sem taxa do dia";
+  $("fxd").textContent=s.has?("\u00b7 "+(s.is_market?"mid-market ":"contrato ")+s.date):"\u00b7 rode fetch_fx_rate";
+  var lv=document.querySelector(".pshell__sub");if(lv)lv.classList.toggle("off",!s.has);
+}
+FX.onChange(function(){fx();list();});fx();filters();list();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!-- @dsCard group="Controls" viewport="760x330" name="Alturas de controle" subtitle="Quatro alturas: 36 / 48 / 56 / 80 — o rótulo nunca cresce com a altura. Ver o card de alinhamento com o Carbon" -->
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--sans);background:var(--ink-10);color:var(--text);padding:24px;-webkit-font-smoothing:antialiased}
+.r{display:flex;align-items:center;gap:18px;margin-bottom:14px}
+.t{font-family:var(--mono);font-size:var(--fs-micro);font-weight:600;color:var(--ink-50);width:120px;flex:none;letter-spacing:var(--ls-mono)}
+.n{font-size:var(--fs-xs);color:var(--ink-60);min-width:0}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;padding:0 16px;border:1px solid transparent;background:var(--blue-60);color:#fff;font-family:inherit;font-size:var(--fs-body);font-weight:var(--fw-semibold);cursor:pointer;height:var(--ctl-md)}
+.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.btn--sm{height:var(--ctl-sm);font-size:var(--fs-sm);gap:12px;padding:0 12px}
+.btn--lg{height:var(--ctl-lg)}
+.fld{height:var(--ctl-xl);display:flex;align-items:center;padding:0 16px;background:var(--ink-05);border-bottom:1px solid var(--ink-50);font-family:var(--mono);font-size:var(--fs-h2);font-weight:var(--fw-medium);color:var(--ink-50);min-width:280px}
+</style>
+</head><body>
+<div class="r"><span class="t">--ctl-sm 36</span><button class="btn btn--sm">Exportar CSV<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 3v12M8 11l4 4 4-4"/></svg></button><span class="n">ação compacta dentro de cartão ou rodapé · rótulo 13</span></div>
+<div class="r"><span class="t">--ctl-md 48</span><button class="btn">Criar e abrir<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><span class="n">padrão de botão, campo e seletor · rótulo 14</span></div>
+<div class="r"><span class="t">--ctl-lg 56</span><button class="btn btn--lg">Continuar triagem<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><span class="n">ação principal da tela · rótulo continua 14</span></div>
+<div class="r"><span class="t">--ctl-xl 80</span><span class="fld">Digite o código do chip…</span><span class="n">campo herói da bancada</span></div>
+</body></html>

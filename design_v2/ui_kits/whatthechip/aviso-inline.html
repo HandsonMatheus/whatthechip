@@ -1,0 +1,117 @@
+<!-- @dsCard group="WhatTheChip" viewport="1280x1080" name="Aviso em linha" subtitle="Padrão .note — o bloco que declara uma consequência dentro de um diálogo ou formulário, com filete de estado no topo" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Aviso em linha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+body{background:var(--bg);padding:36px 32px 64px}
+.doc{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.doc__hd h1{font-size:31px;font-weight:300;letter-spacing:-.03em;line-height:1.1}
+.doc__hd h1 b{font-weight:700}
+.doc__hd p{font-size:14px;color:var(--muted);line-height:1.55;margin-top:10px;max-width:76ch;text-wrap:pretty}
+.doc__hd p b{font-weight:700;color:var(--text)}
+.lab{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.lab i{height:1px;flex:1;background:var(--line-2)}
+.specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.spec{background:var(--surface);padding:16px 18px}
+.spec__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.spec__v{font-family:var(--mono);font-size:15px;font-weight:600;margin-top:7px}
+.spec__d{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:6px}
+.stage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.frame{display:flex;flex-direction:column;gap:9px;min-width:0}
+.frame__l{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.frame__b{border:1px solid var(--line-2);background:var(--surface);padding:20px}
+/* só o palco do celular é container: nos outros, declarar container-name:vp faria as regras de
+   telefone do próprio padrão dispararem dentro de uma vitrine de 411px — o card documentaria o
+   estado errado. */
+.frame--phone{grid-column:1/-1;max-width:390px}
+.frame--phone .frame__b{container-type:inline-size;container-name:vp;padding:16px}
+.rules{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line)}
+.rule{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;padding:13px 18px;border-bottom:1px solid var(--line)}
+.rule:last-child{border-bottom:0}
+.rule__k{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-70)}
+.rule__t{font-size:13px;color:var(--ink-80);line-height:1.55}
+.rule__t b{font-weight:700;color:var(--text)}
+.code{background:var(--ink-100);color:var(--ink-20);padding:18px 20px;font-family:var(--mono);font-size:12px;line-height:1.75;overflow-x:auto;white-space:pre}
+.code b{color:var(--blue-40);font-weight:400}
+.code i{color:var(--ink-50);font-style:normal}
+a{color:var(--blue-60)}a:hover{color:var(--blue-70)}
+@media(max-width:900px){.specs{grid-template-columns:1fr}.stage{grid-template-columns:1fr}.rule{grid-template-columns:1fr;gap:5px}}
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__hd">
+    <h1>Aviso <b>em linha</b></h1>
+    <p>O bloco que declara uma <b>consequência</b> dentro de um diálogo ou formulário: a taxa que vai ser travada ao fechar, o que o export vai conter, o que falta para uma ação valer. Não se confunde com o aviso da plataforma (<b>.brd</b>, que mora na tela) nem com o toast — que diz o que <b>acabou</b> de acontecer. Este diz o que <b>vai</b> acontecer se você seguir.</p>
+  </div>
+
+  <div class="specs">
+    <div class="spec"><div class="spec__l">Estado</div><div class="spec__v">filete de 2px no topo</div><div class="spec__d">Sem faixa vertical: a tarja à esquerda abria uma segunda margem dentro de um bloco pequeno, e é o clichê visual que o sistema evita.</div></div>
+    <div class="spec"><div class="spec__l">Eixo</div><div class="spec__v">uma margem só</div><div class="spec__d">Ícone e rótulo dividem a mesma linha. Rótulo, dado e explicação começam todos no mesmo eixo.</div></div>
+    <div class="spec"><div class="spec__l">Leitura</div><div class="spec__v">rótulo · dado · consequência</div><div class="spec__d">Mono 10,5 em caixa alta; mono 17 no dado; sans 12,5 na frase. Sempre nesta ordem.</div></div>
+  </div>
+
+  <div class="lab">Variações<i></i></div>
+  <div class="stage">
+    <div class="frame"><div class="frame__l">.note--ok — o caminho segue</div><div class="frame__b">
+      <div class="note note--ok">
+        <div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"></rect><path d="M8 11V7.5a4 4 0 0 1 8 0V11"></path></svg>Câmbio que será travado agora</div>
+        <div class="note__v">1 ¥ = US$ 0.1478<span>mid-market · 01/08</span></div>
+        <div class="note__d">Essa taxa rege a venda e os pagamentos deste lote.</div>
+      </div>
+    </div></div>
+    <div class="frame"><div class="frame__l">.note--warn — segue, mas com perda</div><div class="frame__b">
+      <div class="note note--warn">
+        <div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"></rect><path d="M8 11V7.5a4 4 0 0 1 8 0V11"></path></svg>Sem taxa do dia</div>
+        <div class="note__d">O lote fecha sem taxa travada. Rode fetch_fx_rate antes de fechar — sem taxa, ele fica com selo amarelo até a próxima captura.</div>
+      </div>
+    </div></div>
+    <div class="frame"><div class="frame__l">.note--info — o que vai ser gerado</div><div class="frame__b">
+      <div class="note note--info">
+        <div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"></path></svg>O arquivo sai assim</div>
+        <div class="note__v">74 linhas<span>uma aba por lote</span></div>
+        <div class="note__d">As colunas em US$ são tradução da taxa. A coluna ¥ é o dado.</div>
+      </div>
+    </div></div>
+    <div class="frame"><div class="frame__l">.note--dan — não tem volta</div><div class="frame__b">
+      <div class="note note--dan">
+        <div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 17h.01M10.3 4.2 2.8 17.4A2 2 0 0 0 4.5 20.4h15a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"></path></svg>Eliminar apaga o lançamento</div>
+        <div class="note__v">10.022 un.<span>e 74 categorias</span></div>
+        <div class="note__d">O lote sai do estoque e não entra em vendas. Nada aqui é recuperável depois.</div>
+      </div>
+    </div></div>
+    <div class="frame frame--phone"><div class="frame__l">celular — 390px</div><div class="frame__b">
+      <div class="note note--ok">
+        <div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"></rect><path d="M8 11V7.5a4 4 0 0 1 8 0V11"></path></svg>Câmbio que será travado agora</div>
+        <div class="note__v">1 ¥ = US$ 0.1478<span>mid-market · 01/08</span></div>
+        <div class="note__d">Essa taxa rege a venda e os pagamentos deste lote.</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="lab">Regras<i></i></div>
+  <div class="rules">
+    <div class="rule"><span class="rule__k">quando usar</span><span class="rule__t">Dentro de diálogo ou formulário, para o que <b>vai acontecer</b> se a pessoa seguir. Aviso da plataforma na tela é <b>.brd</b>; o que já aconteceu é <b>toast</b>.</span></div>
+    <div class="rule"><span class="rule__k">um por diálogo</span><span class="rule__t">Dois blocos coloridos disputando atenção anulam os dois. Se há mais de uma consequência, elas cabem na mesma frase.</span></div>
+    <div class="rule"><span class="rule__k">.note__v é opcional</span><span class="rule__t">Só existe quando há um <b>dado</b> — taxa, contagem, valor. Sem dado, o aviso é rótulo + frase, e a frase encosta no rótulo.</span></div>
+    <div class="rule"><span class="rule__k">.note__v span</span><span class="rule__t">A procedência do dado (mid-market, contrato, data) é <b>palavra, não cifra</b>: sai da mono e vira sufixo cinza. No celular ela desce para a linha de baixo.</span></div>
+    <div class="rule"><span class="rule__k">--nt · --ne · --nc</span><span class="rule__t">Fundo, filete e tinta do rótulo. Trocar de estado é <b>trocar de classe</b> — nunca reescrever regra por regra.</span></div>
+    <div class="rule"><span class="rule__k">escuro</span><span class="rule__t">Nenhuma cor literal: os quatro tons saem dos tokens, então o modo escuro vem de graça.</span></div>
+  </div>
+
+  <div class="lab">Marcação<i></i></div>
+  <div class="code">&lt;div class="<b>note note--ok</b>"&gt;
+  &lt;div class="<b>note__h</b>"&gt;&lt;svg …&gt;&lt;/svg&gt;Câmbio que será travado agora&lt;/div&gt;
+  &lt;div class="<b>note__v</b>"&gt;1 ¥ = US$ 0.1478&lt;span&gt;mid-market · 01/08&lt;/span&gt;&lt;/div&gt;   <i>&lt;!-- só quando há dado --&gt;</i>
+  &lt;div class="<b>note__d</b>"&gt;Essa taxa rege a venda e os pagamentos deste lote.&lt;/div&gt;
+&lt;/div&gt;</div>
+</div>
+</body>
+</html>

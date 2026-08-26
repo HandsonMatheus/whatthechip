@@ -1,0 +1,20 @@
+/* WhatTheChip Design System — ponto de entrada único. Linke SÓ este arquivo.
+
+   Ordem obrigatória: tokens primeiro (declaram as variáveis), componentes depois (consomem).
+   Inverter faz toda regra cair em var() vazio.
+
+   As duas famílias vêm do Google Fonts e NÃO estão neste pacote — ponha no <head> antes desta
+   folha (ver README):
+     Manrope 300;400;500;600;700;800   ·   IBM Plex Mono 400;500;600 */
+@import "tokens/fonts.css";
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "tokens/controls.css";
+@import "tokens/motion.css";
+@import "components.css";
+
+/* Opcionais — só se o seu MVP tiver essas telas. Descomente o que usar:
+@import "patterns/ficha.css";     página interna de um registro (lote, venda, compra)
+@import "patterns/parceiro.css";  grade de preços e tabelas do parceiro
+*/

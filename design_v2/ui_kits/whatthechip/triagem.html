@@ -1,0 +1,1359 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x1080" name="Triagem · Bancada" subtitle="Bancada do operador — código gravado → caixa de destino, sessão ao vivo, máscara por papel" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Triagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+/* tokens: vêm de wtc-carbon.css (com o bloco de modo escuro). Repetir o :root aqui anulava o
+   escuro — mesma especificidade, e o que vem depois vence. */
+
+/* ============ SHELL ============ */
+
+/* ============ BUTTONS / TAGS ============ */
+
+/* quem está na bancada, dentro do indicador do cabeçalho */
+.avs{display:flex;gap:4px;flex-wrap:nowrap}
+.av{width:24px;height:24px;background:var(--ink-80);color:var(--white);font-size:10px;font-weight:700;display:grid;place-items:center;flex:none;letter-spacing:-.01em}
+
+/* ============ BENCH GRID ============ */
+/* identificar à esquerda, histórico à direita: o operador precisa desfazer sem sair do lugar.
+   As colunas só empilham em tela de celular — lado a lado é o ponto da tela. */
+.bench{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,352px);gap:18px;padding:18px 0 108px;align-items:start;position:relative}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}
+/* a coluna da direita é uma PILHA: histórico em cima, informação de apoio embaixo. Quem gruda é a
+   pilha, não o histórico — assim o cartão de marcas acompanha a rolagem junto, e não sozinho. */
+.side{display:flex;flex-direction:column;gap:18px;min-width:0;position:sticky;top:70px}
+/* lote de outra pessoa: quem administra lê tudo, mas a bancada fica velada e inerte até assumir
+   o lançamento de próprio punho — um clique acidental não entra no lote de ninguém.
+   A bancada esmaece (opacidade), o véu desfoca e o cartão sobe: três sinais na mesma direção.
+   Só cinza não bastava — no tema escuro, cinza sobre cinza escuro não diz nada. */
+.bench.is-locked>.col,.bench.is-locked>.side{pointer-events:none;user-select:none;filter:grayscale(.5);opacity:.5}
+/* o velamento sangra os 32px de respiro do .wrap: meia-medida de scrim insinua que a borda
+   ainda responde, e ela não responde */
+.blk{position:absolute;top:0;bottom:0;left:-32px;right:-32px;z-index:6;display:grid;place-items:start center;padding:64px 24px 0;background:rgba(22,22,22,.42);backdrop-filter:blur(2px) saturate(.55);-webkit-backdrop-filter:blur(2px) saturate(.55)}
+[data-theme="dark"] .blk{background:rgba(0,0,0,.62)}
+.blk[hidden]{display:none}
+/* gestão de operadores: botão discreto dentro do indicador, lista buscável no modal */
+.av--more{background:var(--ink-30);color:var(--ink-80)}
+/* lote fechado: o conteúdo está travado, então a bancada some e a página vira consulta.
+   Uma classe no <body> em vez de dezenas de checagens espalhadas pelo render. */
+body.is-closed .bench{grid-template-columns:minmax(0,1fr)}
+body.is-closed .bench>.col{display:none}
+body.is-closed .side{display:none}
+body.is-closed #undo,body.is-closed .erow__rm{display:none}
+.rdonly{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--ink-05);border:1px solid var(--line);margin-bottom:18px}
+.rdonly svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--ink-60);stroke-width:1.9}
+.rdonly p{font-size:13px;color:var(--ink-80);text-wrap:pretty}
+.rdonly b{font-weight:700}
+.osrch{display:flex;align-items:center;gap:10px;height:44px;padding:0 13px;background:var(--ink-05);border-bottom:1px solid var(--ink-50)}
+.osrch:focus-within{border-bottom-color:var(--blue-60);outline:2px solid var(--blue-60);outline-offset:-2px}
+.osrch svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--ink-60);stroke-width:2}
+.osrch input{flex:1;min-width:0;border:0;background:none;font-family:inherit;font-size:14px;color:var(--text)}
+.osrch input:focus{outline:none}
+.olist{max-height:min(46vh,340px);overflow:auto;border:1px solid var(--line);border-top:0;margin-top:14px}
+.orow{display:flex;align-items:center;gap:12px;padding:0 13px;height:52px;border-bottom:1px solid var(--line);cursor:pointer;transition:background var(--d1)}
+.orow:last-child{border-bottom:0}
+.orow:hover{background:var(--ink-05)}
+.orow__b{width:18px;height:18px;flex:none;border:1px solid var(--ink-50);background:var(--surface);display:grid;place-items:center}
+.orow__b svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3;opacity:0}
+.orow.on .orow__b{background:var(--blue-60);border-color:var(--blue-60)}
+.orow.on .orow__b svg{opacity:1}
+.orow__n{flex:1;min-width:0;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.orow__n small{display:block;font-size:11.5px;font-weight:500;color:var(--muted);margin-top:2px}
+.orow__t{flex:none;font-family:var(--mono);font-size:10.5px;font-weight:600;padding:2px 7px;background:var(--amber-10);color:var(--amber-70);white-space:nowrap}
+.oempty{padding:26px 14px;text-align:center;font-size:13px;color:var(--faint)}
+/* o cartão é o único elemento nítido da cena: borda de aviso no topo, superfície levantada e
+   sombra funda. No escuro ele fica MAIS CLARO que a página (ink-05 > surface), senão afunda. */
+.blk__c{position:relative;background:var(--surface);border:1px solid var(--line-2);border-top:3px solid var(--amber-40);max-width:432px;padding:22px 24px 20px;box-shadow:0 26px 60px -26px rgba(0,0,0,.55)}
+[data-theme="dark"] .blk__c{background:var(--ink-05);border-inline-color:var(--ink-30);border-bottom-color:var(--ink-30);box-shadow:0 26px 60px -20px rgba(0,0,0,.8)}
+[data-theme="dark"] .blk__ic{background:var(--ink-10);border-color:var(--ink-30)}
+.blk__ic{width:34px;height:34px;display:grid;place-items:center;background:var(--ink-05);border:1px solid var(--line);margin-bottom:14px}
+.blk__ic svg{width:17px;height:17px;fill:none;stroke:var(--ink-70);stroke-width:1.9}
+.blk__c h4{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.blk__c p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:8px;text-wrap:pretty}
+.blk__c p b{font-weight:700;color:var(--text)}
+.blk__c .xbtn{margin-top:17px;height:36px;padding:0 15px}
+@container vp (max-width:820px){.blk{padding:40px 16px 0;left:-16px;right:-16px}}
+/* tarja de lançamento assumido — ocupa a largura da bancada, acima das duas colunas */
+.benchnote{grid-column:1/-1;display:flex;align-items:center;gap:11px;padding:10px 14px;background:var(--amber-10);border:1px solid var(--amber-40);margin-bottom:-4px}
+.benchnote svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--amber-70);stroke-width:1.9}
+.benchnote span{flex:1;min-width:0;font-size:12.5px;color:var(--ink-80);text-wrap:pretty}
+.benchnote b{font-family:var(--mono);font-weight:600}
+.benchnote button{flex:none;height:28px;padding:0 11px;border:1px solid var(--amber-40);background:transparent;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--amber-70);cursor:pointer;transition:background var(--d1),color var(--d1)}
+.benchnote button:hover{background:var(--amber-40);color:var(--ink-100)}
+.xbtn{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 13px;border:1px solid var(--line-2);background:var(--surface);font-family:inherit;font-size:12px;font-weight:700;color:var(--ink-80);cursor:pointer;white-space:nowrap;flex:none;transition:background var(--d1),color var(--d1),border-color var(--d1)}
+.xbtn:hover{background:var(--blue-60);border-color:var(--blue-60);color:#fff}
+.xbtn svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2}
+.xbtn--dan{border-color:var(--red-50);color:var(--red-70)}
+.xbtn--dan:hover{background:var(--red-60);border-color:var(--red-60);color:#fff}
+.step{width:20px;height:20px;background:var(--ink-100);color:var(--white);display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:600;flex:none;letter-spacing:0}
+.tile__h{padding:14px 20px}
+.tile__h h3{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.tile__hint{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tile__n{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--faint)}
+
+/* ============ SCAN FIELD ============ */
+.bigfield{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.bigfield__ico{width:76px;flex:none;display:grid;place-items:center;background:var(--ink-80);color:var(--white);border:0;cursor:pointer;transition:background var(--d1)}
+.bigfield__ico:hover{background:var(--ink-90)}
+.bigfield__ico svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6}
+[data-theme="dark"] .bigfield__ico{background:var(--ink-30);color:#fff}
+[data-theme="dark"] .bigfield__ico:hover{background:var(--ink-40)}
+.bigfield__in{flex:1;position:relative;background:var(--ink-05);border-bottom:1px solid var(--ink-50);min-width:0;transition:border-color var(--d1)}
+.bigfield__in:focus-within{border-bottom-color:var(--blue-60);outline:2px solid var(--blue-60);outline-offset:-2px}
+.bigfield__in input{width:100%;height:76px;padding:0 20px;border:0;background:transparent;font-family:var(--mono);font-size:24px;font-weight:500;letter-spacing:.01em;color:var(--text)}
+.bigfield__in input::placeholder{font-family:var(--sans);font-size:16px;font-weight:500;letter-spacing:0;color:var(--ink-50)}
+.bigfield__in input:focus{outline:none}
+.bigfield__go{width:186px;flex:none;border:0;background:var(--blue-60);color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background var(--d1)}
+.bigfield__go:hover:not(:disabled){background:var(--blue-60h)}
+.bigfield__go:disabled{background:var(--ink-20);color:var(--ink-50);cursor:not-allowed}
+.bigfield__go svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;display:none;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ============ ANSWER ============ */
+.ans{border:1px solid var(--line);background:var(--surface);animation:pop var(--d3) var(--ez)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.ans__top{display:flex;align-items:stretch;flex-wrap:wrap}
+.ans__code{flex:1 1 380px;min-height:216px;display:flex;flex-direction:column;justify-content:center;padding:26px 30px;color:#fff}
+.ans--box .ans__code{background:var(--blue-60)}
+.ans--geral .ans__code{background:var(--ink-80)}
+.ans--conf .ans__code{background:var(--amber-40);color:var(--ink-100)}
+.ans--desc .ans__code{background:var(--red-60)}
+.ans__eye{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.82}
+.ans__c{font-family:var(--mono);font-weight:600;letter-spacing:-.055em;line-height:.94;margin-top:12px;font-size:112px}
+.ans__c--word{font-size:46px;letter-spacing:-.02em;line-height:1;margin-top:14px}
+.ans__side{flex:1 1 300px;background:var(--surface);border-left:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:16px;min-width:280px}
+.ans__pn{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ans__pn b{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:-.02em}
+.ans__note{font-size:12px;color:var(--muted)}
+.ans__note b{color:var(--text);font-weight:700}
+.addrow{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+.qty{display:flex;align-items:stretch;border:1px solid var(--line-2);width:100%;max-width:230px}
+.qty button{width:48px;height:48px;border:0;background:var(--surface);color:var(--ink-70);font-size:20px;font-weight:600;cursor:pointer;transition:background var(--d1)}
+.qty button:hover{background:var(--ink-10);color:var(--text)}
+.qty input{flex:1;min-width:0;height:48px;border:0;border-left:1px solid var(--line-2);border-right:1px solid var(--line-2);background:var(--ink-05);text-align:center;font-family:var(--mono);font-size:20px;font-weight:600}
+.qty input:focus{outline:2px solid var(--blue-60);outline-offset:-2px}
+.qty__u{display:grid;place-items:center;padding:0 12px;font-size:12px;font-weight:700;color:var(--faint);border-left:1px solid var(--line-2)}
+.commit{height:56px;width:100%;border:0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 18px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;background:var(--blue-60);transition:background var(--d1)}
+.commit:hover{background:var(--blue-60h)}
+.commit svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2}
+.ans--conf .commit{background:var(--amber-40);color:var(--ink-100)}.ans--conf .commit:hover{background:var(--amber-30)}
+.ans--desc .commit{background:var(--red-60)}.ans--desc .commit:hover{background:var(--red-70)}
+.ans--geral .commit{background:var(--ink-80)}.ans--geral .commit:hover{background:var(--ink-90)}
+[data-theme="dark"] .ans--geral .commit{background:var(--ink-30);color:#fff}
+[data-theme="dark"] .ans--geral .commit:hover{background:var(--ink-40)}
+.commit__k{font-family:var(--mono);font-size:11px;font-weight:500;opacity:.75;border:1px solid rgba(255,255,255,.4);padding:1px 6px}
+.ans--conf .commit__k{border-color:rgba(22,22,22,.32)}
+.ans__more{border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:1px;background:var(--line)}
+.spec{background:var(--surface);flex:1 1 150px;padding:12px 18px;min-width:0}
+.spec__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.spec__v{font-size:14px;font-weight:600;margin-top:3px;letter-spacing:-.01em}
+.spec--hi .spec__v{color:var(--blue-70)}
+.ans__price{background:var(--surface);flex:1 1 100%;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:15px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.ans__price .l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.ans__price .cny{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:-.04em;color:var(--green-60);line-height:1;margin-top:9px;display:block}
+.ans__price .usd{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--muted);margin-top:8px;display:block}
+.ans__price .band{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ink-70);margin-top:7px;display:block}
+.ans__price .stamp{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;line-height:1.6;max-width:300px;margin-left:auto}
+.ans__price .none{font-size:15px;font-weight:700;color:var(--amber-70);margin-top:9px;display:block}
+.ans__price .why2{font-size:12px;color:var(--muted);margin-top:5px;display:block}
+.blocked{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;background:var(--amber-10);border-left:3px solid var(--amber-40);font-size:12px;color:var(--ink-80);line-height:1.45;text-wrap:pretty}
+.blocked svg{width:16px;height:16px;fill:none;stroke:var(--amber-60);stroke-width:2;flex:none;margin-top:1px}
+.commit:disabled{background:var(--ink-20);color:var(--ink-50);cursor:not-allowed}
+.commit:disabled:hover{background:var(--ink-20)}
+.commit--alt{background:var(--amber-40);color:var(--ink-100)}.commit--alt:hover{background:var(--amber-30)}
+.dbg{margin-left:auto;height:32px;padding:0 12px;border:1px solid var(--line-2);background:var(--surface);font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink-70);cursor:pointer}
+.dbg:hover{background:var(--ink-10)}
+
+/* idle + suggestions */
+.idle{border:1px solid var(--line);background:var(--surface)}
+.idle__ph{min-height:176px;background:var(--ink-05);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:26px;text-align:center}
+.idle__ph .ghost{font-family:var(--mono);font-size:46px;font-weight:600;color:var(--ink-30);letter-spacing:-.04em;line-height:1}
+.idle__ph p{font-size:13px;color:var(--muted);max-width:34ch}
+.sugs{border:1px solid var(--line);background:var(--surface)}
+.sugs__h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;background:var(--amber-10);border-bottom:1px solid var(--line)}
+.sugs__h p{font-size:13px;font-weight:600;color:var(--ink-90)}
+.sugs__h b{font-family:var(--mono)}
+.sug{display:flex;align-items:center;gap:16px;width:100%;padding:13px 18px;border:0;border-bottom:1px solid var(--line);background:var(--surface);cursor:pointer;text-align:left;transition:background var(--d1)}
+.sug:last-child{border-bottom:0}
+.sug:hover{background:var(--blue-10)}
+.sug__pn{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.01em;flex:1;min-width:0}
+.sug__pn .add{color:var(--blue-70);background:var(--blue-20)}
+.sug__d{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue-70);background:var(--blue-10);padding:2px 8px;flex:none}
+.sug svg{width:15px;height:15px;fill:none;stroke:var(--blue-60);stroke-width:2;flex:none}
+.sugs__foot{padding:11px 18px;background:var(--ink-05);border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+/* ============ SESSION ============ */
+#undo{height:28px;padding:0 8px}
+/* linha de apoio do campo de quantidade: diz o efeito do número digitado (quanto fica, se remove a
+   linha inteira) e vira vermelha quando o número passa do que existe */
+.rmh{font-size:12px;color:var(--muted);margin-top:9px;text-wrap:pretty;min-height:18px}
+.rmh.is-bad{color:var(--red-70);font-weight:600}
+.rows{max-height:min(58vh,540px);overflow:auto}
+.erow{display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--line);transition:background var(--d3)}
+.erow:last-child{border-bottom:0}
+.erow.is-new{background:var(--blue-10)}
+.erow__q{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.02em;width:38px;flex:none}
+.erow__q small{font-size:11px;color:var(--faint);font-weight:400}
+.erow__m{flex:1;min-width:0}
+.erow__pn{font-family:var(--mono);font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.erow__meta{font-size:11px;color:var(--faint)}
+.cat{font-family:var(--mono);font-size:12px;font-weight:700;padding:2px 8px;flex:none}
+.cat--box{background:var(--blue-10);color:var(--blue-70)}
+.cat--geral{background:var(--ink-10);color:var(--ink-80)}
+.cat--conf{background:var(--amber-10);color:var(--amber-70)}
+.cat--desc{background:var(--red-10);color:var(--red-70)}
+/* a data não é dado ausente: --ink-40 é a tinta de vazio/zero nesta folha (e 2,5:1 em 10px é
+   ilegível). As duas linhas já se separam por tamanho — então a hora sobe um tom, a data fica no
+   cinza de apoio de sempre. */
+.erow__t{font-family:var(--mono);font-size:11px;color:var(--muted);flex:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.3}
+.erow__t i{font-style:normal;font-size:10px;color:var(--faint)}
+.erow__rm{width:28px;height:28px;border:0;background:none;color:var(--red-60);cursor:pointer;display:grid;place-items:center;flex:none;transition:background var(--d1),color var(--d1)}
+.erow__rm svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9}
+.erow__rm:hover{background:var(--red-60);color:#fff}
+.rows__empty{padding:30px 20px;text-align:center;color:var(--faint);font-size:13px}
+/* MARCAS: pastilha de leitura, não de estado — casca neutra e só o nome */
+.mks{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px}
+.mk{display:inline-flex;align-items:center;padding:5px 10px;background:var(--ink-05);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink-80)}
+.tfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:var(--ink-05);border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.tfoot b{font-family:var(--mono);font-weight:700;color:var(--text)}
+
+/* ============ MODAL / TOAST ============ */
+.scrim{position:fixed;inset:0;background:rgba(22,22,22,.72);z-index:90;display:none;align-items:center;justify-content:center;padding:24px}
+.scrim.is-on{display:flex}
+.modal{background:var(--surface);width:100%;max-width:520px;animation:pop var(--d3) var(--ez)}
+/* o X vive no cabeçalho porque em tela cheia o rodapé fica abaixo da dobra: sem ele, sair do
+   diálogo exige rolar o corpo inteiro até o "Cancelar". No desktop ele é redundante com Esc e com
+   o clique fora — e é justamente por isso que fica em tinta apagada, sem casca. */
+.modal__h{display:flex;align-items:flex-start;gap:12px;padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.modal__h h2{flex:1;min-width:0;font-size:20px;font-weight:400;letter-spacing:-.02em}
+/* cabeçalho com subtítulo: título e frase viram UM bloco, senão a frase entra como segundo item
+   do flex e senta ao lado do título, espremendo os dois. */
+.modal__ht{flex:1;min-width:0}
+.modal__ht h2{flex:none}
+.modal__ht p{font-size:13px;color:var(--muted);margin-top:6px;text-wrap:pretty}
+.modal__x{flex:none;width:36px;height:36px;margin:-6px -8px 0 0;display:grid;place-items:center;border:0;background:none;color:var(--ink-60);cursor:pointer;transition:background var(--d1),color var(--d1)}
+.modal__x:hover{background:var(--ink-10);color:var(--text)}
+.modal__x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.modal__b{padding:18px 22px 22px}
+.msum{display:flex;flex-direction:column;gap:0;margin-bottom:18px;border:1px solid var(--line)}
+.msum__r{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.msum__r:last-child{border-bottom:0}
+.msum__r b{font-family:var(--mono);font-weight:600;color:var(--text);font-size:13px}
+.mlbl{font-size:13px;color:var(--ink-80);margin-bottom:8px}
+.mlbl b{font-family:var(--mono);font-weight:600}
+.minput{width:100%;height:48px;padding:0 14px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);font-family:var(--mono);font-size:15px;font-weight:500}
+.minput:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.modal__f{display:flex;gap:1px;background:var(--line)}
+.modal__f .btn{flex:1;justify-content:center;height:60px;gap:12px}
+
+/* ============ RESPONSIVO ============
+   Dois espelhos de cada bloco: @media para a página solta no aparelho, @container para a página
+   dentro do enquadramento do protótipo (media query lê a janela, não o frame). */
+@media(max-width:880px){
+/* ---------- TABLET: a bancada vira PILHA, e nada mais ----------
+   Lado a lado é o ponto da tela no desktop: identificar à esquerda, desfazer à direita sem sair do
+   lugar. Em 834px a coluna da esquerda cairia para ~450px — a caixa de resposta (código + destino)
+   precisa de 680px para ficar em duas colunas. Então empilha: primeiro identificar, depois o
+   histórico. O que NÃO muda no tablet é o campo de leitura: ele continua uma linha só
+   ([apagar][código][identificar]), porque em 800px sobram 540px para o campo. Colapsar aqui era
+   tratamento de telefone aplicado onde há largura. */
+  .wrap{padding:0 16px}
+  .bench{grid-template-columns:minmax(0,1fr);padding-bottom:72px}
+  .side{position:static}
+  .ans__c{font-size:72px}
+  .blk{padding:40px 16px 0;left:-16px;right:-16px}
+  .toast{left:16px;right:16px;max-width:none}
+  .scrim{padding:20px}
+  .modal__f .btn{height:56px}
+}
+@container vp (max-width:880px){
+/* ---------- TABLET: a bancada vira PILHA, e nada mais ----------
+   Lado a lado é o ponto da tela no desktop: identificar à esquerda, desfazer à direita sem sair do
+   lugar. Em 834px a coluna da esquerda cairia para ~450px — a caixa de resposta (código + destino)
+   precisa de 680px para ficar em duas colunas. Então empilha: primeiro identificar, depois o
+   histórico. O que NÃO muda no tablet é o campo de leitura: ele continua uma linha só
+   ([apagar][código][identificar]), porque em 800px sobram 540px para o campo. Colapsar aqui era
+   tratamento de telefone aplicado onde há largura. */
+  .wrap{padding:0 16px}
+  .bench{grid-template-columns:minmax(0,1fr);padding-bottom:72px}
+  .side{position:static}
+  .ans__c{font-size:72px}
+  .blk{padding:40px 16px 0;left:-16px;right:-16px}
+  .toast{left:16px;right:16px;max-width:none}
+  .scrim{padding:20px}
+  .modal__f .btn{height:56px}
+}
+@media(max-width:600px){
+/* ---------- CELULAR: uma coluna, e o campo de leitura em três andares ----------
+   A bancada no telefone é para LANÇAR, não para conferir: o campo de código ganha a largura toda,
+   o botão desce inteiro (alvo de 56px para o polegar) e o ícone de apagar sai — a mão já tem o
+   teclado para isso. O histórico deixa de ser um rolador aninhado: rolagem dentro de rolagem no
+   toque rouba o gesto da página. E a caixa de resposta empilha código sobre destino. */
+  .bigfield{flex-wrap:wrap}
+  .bigfield__ico{display:none}
+  /* a quebra tem de ser DURA: com flex:1 e min-width:0 o campo encolhia até 32px para caber o botão
+     na mesma linha, e o wrap nunca disparava. 100% de base garante a linha própria. */
+  .bigfield__in{flex:1 1 100%}
+  .bigfield__in input{height:64px;padding:0 16px;font-size:21px}
+  .bigfield__go{width:100%;height:56px}
+  .ans__c{font-size:46px}
+  .ans__c--word{font-size:32px}
+  .ans__code{flex:1 1 100%;min-height:0;padding:20px 16px 22px}
+  .ans__side{flex:1 1 100%;min-width:0;border-left:0;border-top:1px solid var(--line);padding:16px}
+  .spec{flex:1 1 44%;padding:11px 16px}
+  .ans__price{padding:14px 16px;gap:12px}
+  .ans__price .cny{font-size:28px}
+  .ans__price .stamp{margin-left:0;text-align:left;max-width:none}
+  .qty{max-width:none}
+  .commit{height:60px;font-size:15.5px}
+  .commit__k{display:none}
+  .tile__h{padding:12px 16px}
+  .bench{padding-bottom:56px}
+  .rows{max-height:none}
+  .erow{padding:10px 16px;gap:10px}
+  .tfoot{flex-wrap:wrap}
+  /* alvos de toque de 44px onde o dedo age: desfazer a sessão, remover UM lançamento e a única
+     ação do cartão de bancada travada. A lixeira sangra o padding da linha (margin negativa), então
+     ela cresce sem alargar a linha — e a linha sobe para 60px, que é altura de lista no toque. */
+  #undo{height:44px;padding:0 14px}
+  .erow{padding:8px 16px}
+  .erow__rm{width:44px;height:44px;margin-right:-8px}
+  .blk__c .xbtn{height:44px;padding:0 16px}
+  .benchnote{flex-wrap:wrap}
+  .benchnote span{flex:1 1 100%}
+  .blk{padding:26px 12px 0;left:-16px;right:-16px}
+  .blk__c{padding:18px 18px 17px}
+  /* diálogo = página inteira, e a ação que resolve sobe para cima da pilha (mesma convenção de
+     .mscrim/.mbox no carbon) — empilhado, "Cancelar" primeiro deixaria o botão que resolve longe
+     do polegar. O corpo é quem rola; cabeçalho e rodapé ficam presos nas pontas. */
+  .scrim{padding:0;align-items:stretch;justify-content:stretch}
+  .modal{max-width:none;height:100%;display:flex;flex-direction:column}
+  .modal__h{flex:none;padding:16px}
+  .modal__x{width:44px;height:44px;margin:-4px -12px 0 0}
+  .modal__x svg{width:20px;height:20px}
+  /* a folha inteira já rola: manter a lista com altura máxima criaria rolagem dentro de rolagem,
+     e o dedo nunca sabe qual das duas vai responder. A busca gruda no topo do corpo para não
+     sumir enquanto se rola a lista. */
+  .olist{max-height:none;overflow:visible;margin-top:0}
+  /* a busca gruda no TOPO do corpo, sem folga acima: com o padding do corpo sobrando ali, as
+     linhas da lista passavam por trás e a faixa parecia um vão transparente. */
+  #oscrim .modal__b{padding-top:0}
+  .osrch{position:sticky;top:0;z-index:2;margin:0 -16px;padding:0 16px;height:52px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .osrch:focus-within{outline-offset:-3px}
+  .orow{height:56px}
+  .modal__b{flex:1;overflow:auto;padding:16px 16px 20px}
+  .modal__f{flex:none}
+  /* rodapé no telefone: as duas ações LADO A LADO, na mesma ordem do desktop (a que resolve à
+     direita, onde o polegar já está). Empilhado, cada botão virava uma faixa de 356px e o par
+     comia 110px do pouco que a folha tem; e a que resolve, no topo, ficava longe do polegar.
+     Rótulo pode quebrar em duas linhas — cabe nos 52px e é melhor que cortar a palavra. */
+  .modal__f .btn{flex:1 1 0;min-width:0;height:52px;padding:0 10px;gap:7px;font-size:13px;white-space:normal;line-height:1.25;text-align:center}
+  .modal__f .btn svg{flex:none}
+  .olist{max-height:none}
+}
+@container vp (max-width:600px){
+/* ---------- CELULAR: uma coluna, e o campo de leitura em três andares ----------
+   A bancada no telefone é para LANÇAR, não para conferir: o campo de código ganha a largura toda,
+   o botão desce inteiro (alvo de 56px para o polegar) e o ícone de apagar sai — a mão já tem o
+   teclado para isso. O histórico deixa de ser um rolador aninhado: rolagem dentro de rolagem no
+   toque rouba o gesto da página. E a caixa de resposta empilha código sobre destino. */
+  .bigfield{flex-wrap:wrap}
+  .bigfield__ico{display:none}
+  /* a quebra tem de ser DURA: com flex:1 e min-width:0 o campo encolhia até 32px para caber o botão
+     na mesma linha, e o wrap nunca disparava. 100% de base garante a linha própria. */
+  .bigfield__in{flex:1 1 100%}
+  .bigfield__in input{height:64px;padding:0 16px;font-size:21px}
+  .bigfield__go{width:100%;height:56px}
+  .ans__c{font-size:46px}
+  .ans__c--word{font-size:32px}
+  .ans__code{flex:1 1 100%;min-height:0;padding:20px 16px 22px}
+  .ans__side{flex:1 1 100%;min-width:0;border-left:0;border-top:1px solid var(--line);padding:16px}
+  .spec{flex:1 1 44%;padding:11px 16px}
+  .ans__price{padding:14px 16px;gap:12px}
+  .ans__price .cny{font-size:28px}
+  .ans__price .stamp{margin-left:0;text-align:left;max-width:none}
+  .qty{max-width:none}
+  .commit{height:60px;font-size:15.5px}
+  .commit__k{display:none}
+  .tile__h{padding:12px 16px}
+  .bench{padding-bottom:56px}
+  .rows{max-height:none}
+  .erow{padding:10px 16px;gap:10px}
+  .tfoot{flex-wrap:wrap}
+  /* alvos de toque de 44px onde o dedo age: desfazer a sessão, remover UM lançamento e a única
+     ação do cartão de bancada travada. A lixeira sangra o padding da linha (margin negativa), então
+     ela cresce sem alargar a linha — e a linha sobe para 60px, que é altura de lista no toque. */
+  #undo{height:44px;padding:0 14px}
+  .erow{padding:8px 16px}
+  .erow__rm{width:44px;height:44px;margin-right:-8px}
+  .blk__c .xbtn{height:44px;padding:0 16px}
+  .benchnote{flex-wrap:wrap}
+  .benchnote span{flex:1 1 100%}
+  .blk{padding:26px 12px 0;left:-16px;right:-16px}
+  .blk__c{padding:18px 18px 17px}
+  /* diálogo = página inteira, e a ação que resolve sobe para cima da pilha (mesma convenção de
+     .mscrim/.mbox no carbon) — empilhado, "Cancelar" primeiro deixaria o botão que resolve longe
+     do polegar. O corpo é quem rola; cabeçalho e rodapé ficam presos nas pontas. */
+  .scrim{padding:0;align-items:stretch;justify-content:stretch}
+  .modal{max-width:none;height:100%;display:flex;flex-direction:column}
+  .modal__h{flex:none;padding:16px}
+  .modal__x{width:44px;height:44px;margin:-4px -12px 0 0}
+  .modal__x svg{width:20px;height:20px}
+  /* a folha inteira já rola: manter a lista com altura máxima criaria rolagem dentro de rolagem,
+     e o dedo nunca sabe qual das duas vai responder. A busca gruda no topo do corpo para não
+     sumir enquanto se rola a lista. */
+  .olist{max-height:none;overflow:visible;margin-top:0}
+  /* a busca gruda no TOPO do corpo, sem folga acima: com o padding do corpo sobrando ali, as
+     linhas da lista passavam por trás e a faixa parecia um vão transparente. */
+  #oscrim .modal__b{padding-top:0}
+  .osrch{position:sticky;top:0;z-index:2;margin:0 -16px;padding:0 16px;height:52px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .osrch:focus-within{outline-offset:-3px}
+  .orow{height:56px}
+  .modal__b{flex:1;overflow:auto;padding:16px 16px 20px}
+  .modal__f{flex:none}
+  /* rodapé no telefone: as duas ações LADO A LADO, na mesma ordem do desktop (a que resolve à
+     direita, onde o polegar já está). Empilhado, cada botão virava uma faixa de 356px e o par
+     comia 110px do pouco que a folha tem; e a que resolve, no topo, ficava longe do polegar.
+     Rótulo pode quebrar em duas linhas — cabe nos 52px e é melhor que cortar a palavra. */
+  .modal__f .btn{flex:1 1 0;min-width:0;height:52px;padding:0 10px;gap:7px;font-size:13px;white-space:normal;line-height:1.25;text-align:center}
+  .modal__f .btn svg{flex:none}
+  .olist{max-height:none}
+}
+</style>
+</head>
+<body>
+
+<header class="shell">
+  <a class="shell__brand" href="painel.html" aria-label="WhatTheChip 什么芯片"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <nav class="shell__nav">
+    <a class="nlink" href="painel.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+    <a class="nlink" href="estoque.html" data-wtc-needs="lots"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+    <a class="nlink" href="vendas-lista.html" data-wtc-needs="sales"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+  </nav>
+  <div class="shell__spacer"></div>
+  <div class="shell__org">
+    <div class="shell__org-logo" data-wtc-avatar>eM</div>
+    <div class="shell__org-txt"><span class="shell__org-name" data-wtc-company>eMiner</span></div>
+  </div>
+  <div class="shell__who">
+    <div class="shell__avatar" data-wtc-initials>MG</div>
+    <div class="shell__user"><b data-wtc-user>Matheus G.</b><span class="shell__role" data-wtc-role>Gerente</span></div>
+  </div>
+  <button class="shell__ico" aria-label="Notificações" id="bell"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">PT</button>
+  <a class="shell__ico shell__ico--out" href="login.html" aria-label="Sair"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<div class="rhead" data-wtc-needs="lots"><div class="wrap">
+  <div class="rhead__u">
+    <a class="rhead__back" id="lot-back" href="estoque.html"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span id="lot-back-t">Estoque</span></a>
+    <span class="rhead__sp"></span>
+    <div class="rhead__act">
+      <button class="btn btn--ter btn--sm btn--sq" id="xp-lot" type="button" title="Exportar ficha do lote" aria-label="Exportar ficha do lote"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4 16v4.5h16V16"/></svg></button>
+      <button class="btn btn--dan btn--sm" id="kill-lot" type="button" title="Eliminar lote" aria-label="Eliminar lote"><span>Eliminar lote</span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M10 7.5V5.5h4v2"/><path d="M6.5 7.5l.9 12.5h9.2l.9-12.5"/><path d="M10.3 11v6M13.7 11v6"/></svg></button>
+      <button class="btn btn--pri btn--sm" id="close-lot" type="button"><span>Fechar lote</span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+  </div>
+  <div class="rhead__bar">
+    <span class="rhead__code" data-lot-code>LOT/042/07/26</span>
+    <span id="lot-origin" class="otag otag--pcb"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="9" y="9" width="6" height="6"/><path d="M9 3.5v2M15 3.5v2M9 18.5v2M15 18.5v2M3.5 9h2M3.5 15h2M18.5 9h2M18.5 15h2"/></svg>PCB</span>
+    <span class="tag tag--yes" id="lot-st"><span class="dot"></span>ABERTO</span>
+    <span class="tag tag--info" data-wtc-needs="unmasked"><span class="dot"></span>DECODE VISÍVEL</span>
+  </div>
+  <div class="rhead__desc" id="descw">
+    <button class="rhead__dt" id="desc-pen" type="button" aria-label="Editar descrição do lote">
+      <p id="lot-desc"></p>
+      <span class="rhead__pen"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4L20 8l-4-4L4.5 15.5v4z"/><path d="M14.5 5.5l4 4"/></svg></span>
+    </button>
+  </div>
+  <div class="rhead__mx" id="rmx"></div>
+  <div class="rhead__mx rhead__mx--f" id="rmxf"></div>
+</div></div>
+
+<main class="wrap">
+
+<div class="bench">
+
+  <div class="col">
+    <section class="tile">
+      <div class="tile__h">
+        <h3><span class="step">1</span>Ler o código gravado</h3>
+        <span class="tile__hint" data-lot-code>LOT/042/07/26</span>
+      </div>
+      <form class="bigfield" id="finder">
+        <button class="bigfield__ico" type="button" id="clear" aria-label="Apagar o código" title="Apagar (Esc)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9L3 12z"/><path d="M16 9l-5 6M11 9l5 6"/></svg></button>
+        <div class="bigfield__in"><input type="text" id="pn" placeholder="Código do chip" autocomplete="off" spellcheck="false" autocapitalize="characters" aria-label="Código gravado no chip" /></div>
+        <button class="bigfield__go" id="go" type="submit" disabled><span class="spin" id="spin"></span><span id="go-t">Identificar</span></button>
+      </form>
+    </section>
+
+    <div id="answer">
+      <div class="idle">
+        <div class="idle__ph">
+          <div class="ghost">C-•••</div>
+          <p>A caixa de destino aparece aqui, do tamanho da bancada. Você não precisa saber o que o chip é — só onde ele vai.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+
+  <section class="tile hist">
+    <div class="tile__h">
+      <h3><span class="step">2</span>Histórico de adições</h3>
+      <button class="btn btn--ghost btn--sm" id="undo">Desfazer<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10H9"/></svg></button>
+    </div>
+    <div class="rows" id="rows"></div>
+    <div class="tfoot"><span><b id="f-ses">0</b> un. nesta sessão</span></div>
+  </section>
+
+  <section class="tile">
+    <div class="tile__h"><h3>Marcas suportadas</h3><span class="tile__n" id="mk-n"></span></div>
+    <div class="mks" id="mks"></div>
+  </section>
+
+  </div>
+
+  <section class="tile" id="cont" hidden>
+    <div class="tile__h"><h3>Conteúdo do lote</h3><span class="tile__n" id="cont-n"></span></div>
+    <div class="dtab__wrap"><table class="dtab dtab--static" id="ctab"><thead id="chead"></thead><tbody id="crows"></tbody></table></div>
+    <div class="tfoot tfoot--sum" id="cfoot"></div>
+  </section>
+
+  <div class="blk" id="blk" hidden>
+    <div class="blk__c">
+      <div class="blk__ic"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="9.5"/><path d="M8 10.5V7.2a4 4 0 0 1 8 0v3.3"/></svg></div>
+      <h4>Bancada de outra pessoa</h4>
+      <p id="blk-t"></p>
+      <button class="xbtn" id="blk-go" type="button"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 10.5V7.2a4 4 0 0 0-8 0"/><rect x="4.5" y="10.5" width="15" height="9.5"/></svg>Habilitar lançamento</button>
+    </div>
+  </div>
+
+</div></main>
+
+<div class="scrim" id="scrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Fechar lote">
+    <div class="modal__h"><h2>Fechar <b class="mono" style="font-weight:600" data-lot-code>LOT/042/07/26</b></h2><button class="modal__x" type="button" aria-label="Fechar sem salvar" title="Fechar sem salvar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal__b">
+      <div class="msum" id="msum"></div>
+      <div class="note" id="mfx" style="margin-bottom:18px"></div>
+      <div class="mlbl">Para confirmar, digite o código completo do lote: <b data-lot-code>LOT/042/07/26</b></div>
+      <input class="minput" id="cc" data-lot-code-ph placeholder="LOT/042/07/26" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="m-cancel">Cancelar</button>
+      <button class="btn btn--pri" id="m-go" disabled>Fechar e ir para vendas</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="vscrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="vt" style="max-width:520px">
+    <div class="modal__h"><h2 id="vt">Ordem de venda de <b class="mono" style="font-weight:600" data-lot-code>LOT/042/07/26</b></h2><button class="modal__x" id="v-x" type="button" aria-label="Fechar sem gerar" title="Fechar sem gerar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal__b">
+      <div class="msum" id="vsum"></div>
+      <div class="note" id="vfx"></div>
+    </div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="v-no">Cancelar</button>
+      <button class="btn btn--pri" id="v-go">Gerar ordem</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="kscrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="kt" style="max-width:470px">
+    <div class="modal__h"><h2 id="kt">Eliminar <b class="mono" style="font-weight:600" data-lot-code>LOT/042/07/26</b></h2><button class="modal__x" type="button" aria-label="Fechar sem salvar" title="Fechar sem salvar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal__b">
+      <div class="msum" id="ksum"></div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.55;text-wrap:pretty;margin-bottom:18px">Eliminar apaga o lote e <b style="font-weight:700;color:var(--text)">todos os lançamentos feitos nele</b>. As peças saem do estoque e não há como desfazer — a ação fica registrada em auditoria com o seu nome.</p>
+      <div class="mlbl">Para confirmar, digite o código completo do lote: <b data-lot-code>LOT/042/07/26</b></div>
+      <input class="minput" id="kc" data-lot-code-ph placeholder="LOT/042/07/26" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="k-no">Cancelar</button>
+      <button class="btn btn--dan" id="k-go" disabled>Eliminar lote<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M10 7.5V5.5h4v2"/><path d="M6.5 7.5l.9 12.5h9.2l.9-12.5"/><path d="M10.3 11v6M13.7 11v6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="uscrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ut" style="max-width:470px">
+    <div class="modal__h"><h2 id="ut">Habilitar lançamento neste lote?</h2><button class="modal__x" type="button" aria-label="Fechar sem salvar" title="Fechar sem salvar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal__b">
+      <div class="msum" id="usum"></div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.55;text-wrap:pretty">Habilitar libera a leitura de chips e a remoção de lançamentos <b style="font-weight:700;color:var(--text)">em seu nome</b>. Tudo o que você registrar entra no lote de quem está na bancada e fica no histórico com o seu usuário.</p>
+    </div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="u-no">Cancelar</button>
+      <button class="btn btn--pri" id="u-yes">Habilitar lançamento<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="rmscrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rmt" style="max-width:430px">
+    <div class="modal__h"><h2 id="rmt">Remover do lote</h2><button class="modal__x" type="button" aria-label="Fechar sem remover" title="Fechar sem remover"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal__b">
+      <div class="msum" id="rmsum"></div>
+      <div class="mlbl" style="margin-top:18px">Digite as unidades a remover:</div>
+      <input class="minput" id="rmq" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" />
+      <p class="rmh" id="rmh"></p>
+      <div class="mlbl" style="margin-top:18px">Para confirmar, digite o código do chip: <b id="rmpn"></b></div>
+      <input class="minput" id="rmc" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="rm-no" type="button">Cancelar</button>
+      <button class="btn btn--dan" id="rm-go" type="button" disabled>Remover<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M10 7.5V5.5h4v2"/><path d="M6.5 7.5l.9 12.5h9.2l.9-12.5"/><path d="M10.3 11v6M13.7 11v6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="oscrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ot" style="max-width:560px">
+    <div class="modal__h">
+      <div class="modal__ht">
+        <h2 id="ot">Operadores do lote</h2>
+        <p>Quem pode lançar chips em <b class="mono" style="font-weight:600" data-lot-code>LOT/042/07/26</b>. Tirar alguém não apaga o que já foi lançado.</p>
+      </div>
+      <button class="modal__x" type="button" aria-label="Fechar sem salvar" title="Fechar sem salvar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal__b" style="padding-bottom:0">
+      <div class="osrch"><svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="oq" type="text" placeholder="Buscar operador ou bancada…" autocomplete="off" /></div>
+      <div class="olist" id="olist"></div>
+    </div>
+    <div class="modal__f">
+      <button class="btn btn--sec" id="o-no">Cancelar</button>
+      <button class="btn btn--pri" id="o-yes">Salvar<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg id="toast-ico" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="access.js?v=3"></script>
+<script src="fx.js"></script>
+<script src="notifications.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="live.js"></script>
+<script src="viewport.js?v=7"></script>
+<script>
+(function(){
+"use strict";
+var LOTS={
+ /* target é o mínimo de envio da plataforma: 10.000 un. Abaixo disso o lote NÃO fecha — não há
+    exceção, taxa ou liberação. É o que trava o botão de fechar. */
+ /* lote de teste do fechamento: entra a 12 un. do mínimo, com bancada ativa — o contador ao vivo
+    cruza a meta em segundos e o botão "Fechar lote" sai do inativo sozinho. */
+ 44:{code:"LOT/044/07/26",origin:"pcb",desc:"Contêiner Shenzhen — hashboards mistas",base:{r:7440,x:2196,m:352},cats:71,cny:329604,target:10000,session:true,ops:["RS","JL"],rate:452,cnyH:14916,time:"2h 18min"},
+ 43:{code:"LOT/043/07/26",origin:"pcb",desc:"Recuperação placas — turno noite",base:{r:210,x:60,m:30},cats:9,cny:7036,target:10000,session:false,ops:["RS"],rate:388,cnyH:2704,time:"38min"},
+ 42:{code:"LOT/042/07/26",origin:"pcb",desc:"Compra Jul/2026 — hashboards S19",base:{r:1152,x:516,m:138},cats:34,cny:61075,target:10000,session:true,ops:["RS","JL","AP"],rate:412,cnyH:13937,time:"1h 12min"},
+ 41:{code:"LOT/041/07/26",origin:"phone",desc:"Celulares recolhidos",base:{r:301,x:108,m:21},cats:12,cny:14195,target:10000,session:false,ops:[],rate:0,cnyH:0,time:"—"},
+ /* lotes fechados: mesma ficha, sem bancada. O conteúdo está travado e o câmbio também —
+    a página abre em leitura, e é por isso que eles não podem cair no fallback do lote aberto. */
+ 40:{code:"LOT/040/07/26",origin:"phone",desc:"Recuperação placas Galaxy J-series",base:{r:2100,x:890,m:130},cats:58,cny:111502,target:3120,session:false,ops:["RS","AP"],rate:0,cnyH:0,time:"—",closed:"14/07 17:22",lock:0.1478,lockD:"14/07",lines:[["uMCP","128GB","C-007",120,120],["AP/SoC","recondicionado","C-002",60,210],["uMCP","64GB","C-007",140,84],["eMMC","128GB","C-014",150,62],["RF front-end","","C-019",130,55],["LPDDR4X","4GB","C-031",160,40],["PMIC","","C-022",90,38],["eMMC","64GB","C-014",50,26]],rest:{c:50,u:1200,y:45172}},
+ 39:{code:"LOT/039/06/26",origin:"pcb",desc:"Compra Jun/2026 — Lote B",base:{r:1450,x:610,m:90},cats:44,cny:74834,target:2150,session:false,ops:["JL","AP"],rate:0,cnyH:0,time:"—",closed:"03/07 16:40",lock:0.1502,lockD:"03/07",sale:127,lines:[["NAND SLC","4Gb","C-011",150,54],["DDR4","8GB","C-018",180,28],["DDR4","4GB","C-018",220,16],["DDR5","8GB","C-026",60,44],["ASIC hash","BM1397","C-014",90,22]],rest:{c:39,u:750,y:53554}},
+ 38:{code:"LOT/038/06/26",origin:"pcb",desc:"Sucata mista importada",base:{r:900,x:1400,m:210},cats:51,cny:33694,target:2510,session:false,ops:["BM"],rate:0,cnyH:0,time:"—",closed:"25/06 12:10",legacy:true,lines:[["NAND SLC","4Gb","C-011",140,38],["eMMC","16GB","C-005",180,11],["DDR3","4GB","C-009",150,11]],rest:{c:48,u:430,y:24744}}
+};
+/* qual lote — vem da URL, mesmo padrão de venda.js. Sem parâmetro, o lote da bancada.
+   Id desconhecido não cai em outro lote: avisa e volta para o estoque, porque abrir a ficha
+   errada calado é pior do que não abrir. */
+var LOTN=(function(){
+  var m=location.search.match(/[?&]lot=(\d+)/);
+  if(!m)return 42;
+  if(LOTS[+m[1]])return +m[1];
+  try{sessionStorage.setItem("wtc_lot_miss",m[1]);}catch(e){}
+  location.replace("estoque.html");
+  return 42;
+})();
+var L=LOTS[LOTN];
+var CLOSED=!!L.closed;
+var LOT=L.code;
+/* real decode — only surfaced when unmasked. dest: box|geral|conf|desc */
+var DB={
+ "BM1397AG":{cat:"C-014",dest:"box",type:"ASIC hash",sub:"Categoria 04 · Bitmain",mfr:"Bitmain",v:"r",cny:22,quoted:"28/07/2026",specs:[["Função","ASIC hash",1],["Fabricante","Bitmain",0],["Encapsulamento","BGA",0],["Categoria","04",0]]},
+ "BM1387B":{cat:"C-014",dest:"box",type:"ASIC hash",sub:"Categoria 04 · Bitmain",mfr:"Bitmain",v:"r",cny:17,quoted:"28/07/2026",specs:[["Função","ASIC hash",1],["Fabricante","Bitmain",0],["Encapsulamento","BGA",0],["Categoria","04",0]]},
+ "BM1362AF":{cat:"C-031",dest:"box",type:"ASIC hash",sub:"Categoria 07 · Bitmain",mfr:"Bitmain",v:"r",cny:35,band:[30,40],quoted:"30/07/2026",specs:[["Função","ASIC hash",1],["Fabricante","Bitmain",0],["Encapsulamento","BGA",0],["Categoria","07",0]]},
+ "BM1362AH":{cat:null,dest:"conf",type:"ASIC hash",sub:"variante não confirmada",mfr:"Bitmain",v:"m",cny:null,np:"pending",specs:[["Função","ASIC hash",1],["Fabricante","Bitmain",0],["Encapsulamento","BGA",0],["Decode","parcial",0]]},
+ "BM1360AB":{cat:"C-031",dest:"box",type:"ASIC hash",sub:"Categoria 07 · Bitmain",mfr:"Bitmain",v:"m",cny:null,np:"notmade",specs:[["Função","ASIC hash",1],["Fabricante","Bitmain",0],["Encapsulamento","BGA",0],["Categoria","07",0]]},
+ "BM1385":{cat:null,dest:"desc",type:"ASIC hash",sub:"geração morta (S7)",mfr:"Bitmain",v:"x",cny:null,np:"buy_no",specs:[["Função","ASIC hash",1],["Fabricante","Bitmain",0],["Geração","S7 · 2015",0],["Mercado","sem revenda",0]]},
+ "W25Q80DV":{cat:"C-007",dest:"box",type:"Flash SPI",sub:"Categoria 11 · Winbond",mfr:"Winbond",v:"m",cny:null,np:"pending",specs:[["Densidade","8 Mb",1],["Função","Flash SPI",0],["Encapsulamento","SOIC-8",0],["Categoria","11",0]]},
+ "W25Q64FV":{cat:"C-007",dest:"box",type:"Flash SPI",sub:"Categoria 11 · Winbond",mfr:"Winbond",v:"r",cny:4,quoted:"28/07/2026",specs:[["Densidade","64 Mb",1],["Função","Flash SPI",0],["Encapsulamento","SOIC-8",0],["Categoria","11",0]]},
+ "CP2102N":{cat:"C-007",dest:"box",type:"USB-UART",sub:"Categoria 11 · Silabs",mfr:"Silabs",v:"r",cny:12,quoted:"25/07/2026",specs:[["Função","USB-UART",1],["Fabricante","Silabs",0],["Encapsulamento","QFN-24",0],["Categoria","11",0]]},
+ "TPS40170":{cat:"C-022",dest:"box",type:"Buck controller",sub:"Categoria 15 · TI",mfr:"Texas Instruments",v:"r",cny:8,quoted:"25/07/2026",specs:[["Função","Buck controller",1],["Fabricante","TI",0],["Encapsulamento","QFN-20",0],["Categoria","15",0]]},
+ "AP3441SHE":{cat:"C-031",dest:"box",type:"Buck 4A",sub:"Categoria 07 · Diodes",mfr:"Diodes",v:"m",cny:null,np:"nokey",npwhy:"variante de encapsulamento não mapeada na tabela do comprador",specs:[["Função","Buck 4A",1],["Fabricante","Diodes",0],["Encapsulamento","TSOT-26",0],["Categoria","07",0]]},
+ "LM75BD":{cat:"C-022",dest:"box",type:"Sensor temp.",sub:"Categoria 15 · NXP",mfr:"NXP",v:"x",cny:null,np:"buy_no",specs:[["Função","Sensor temp. I²C",1],["Fabricante","NXP",0],["Encapsulamento","SO-8",0],["Categoria","15",0]]},
+ "XC6206P332":{cat:"C-022",dest:"box",type:"LDO 3.3V",sub:"Categoria 15 · Torex",mfr:"Torex",v:"x",cny:null,np:"buy_no",specs:[["Função","LDO 3.3 V",1],["Fabricante","Torex",0],["Encapsulamento","SOT-23",0],["Categoria","15",0]]}
+};
+var DEST={
+ box:  {cls:"box",  eye:"Destino", act:"Lançar no lote",      cat:"box"},
+ geral:{cls:"geral",eye:"Destino", act:"Lançar no lote",      cat:"geral"},
+ conf: {cls:"conf", eye:"Destino", act:"Enviar à conferência", cat:"conf", word:"CONFERÊNCIA"},
+ desc: {cls:"desc", eye:"Destino", act:"Registrar descarte", cat:"desc", word:"DESCARTE"}
+};
+var VL={r:["Rentável","yes"],x:["Não rentável","no"],m:["Indeterminado","maybe"]};
+var NDB={};for(var k in DB){if(DB.hasOwnProperty(k)){DB[k].pn=k;NDB[k.toUpperCase().replace(/[^A-Z0-9]/g,"")]=DB[k];}}
+
+var entries=[
+ {pn:"BM1397AG",cat:"C-014",dest:"box",v:"r",mfr:"Bitmain",type:"ASIC hash",qty:24,t:"15:14"},
+ {pn:"W25Q64FV",cat:"C-007",dest:"box",v:"r",mfr:"Winbond",type:"Flash SPI",qty:4,t:"15:06"},
+ {pn:"LM75BD",cat:"C-022",dest:"box",v:"x",mfr:"NXP",type:"Sensor temp.",qty:3,t:"14:52"},
+ {pn:"BM1362AH",cat:null,dest:"conf",v:"m",mfr:"Bitmain",type:"ASIC hash",qty:2,t:"14:37"},
+ {pn:"BM1385",cat:null,dest:"desc",v:"x",mfr:"Bitmain",type:"ASIC hash",qty:1,t:"14:19"}
+];
+/* base + esta sessão = o total do lote — igual a painel.html e estoque.html.
+   ¥ é o dado do lote; US$ sai da taxa vigente enquanto o lote está aberto. */
+var base={r:L.base.r,x:L.base.x,m:L.base.m},catsBase=L.cats,baseCNY=L.cny,TARGET=L.target,RATE_CNY_H=L.cnyH;
+var LIVE=L.ops.length>0;   /* lote sem ninguém na bancada não produz — e não se move */
+var current=null,qty=1,busy=false,undoStack=[];
+if(!L.session)entries=[];   /* a sessão de lançamentos pertence à bancada do lote 42 */
+/* identidade do lote na tela — uma fonte, nenhum código escrito à mão no markup */
+document.querySelectorAll("[data-lot-code]").forEach(function(el){el.textContent=LOT;});
+document.querySelectorAll("[data-lot-code-ph]").forEach(function(el){el.setAttribute("placeholder",LOT);});
+var OPNAMES={RS:"Rafael S.",JL:"Julia L.",AP:"Ana P.",BM:"Bruno M."};
+/* quadro de operadores da empresa — dezenas é o caso normal, então a lista mora num buscador */
+var ROSTER=[
+ {i:"RS",n:"Rafael S.",b:"Assunção"},{i:"JL",n:"Julia L.",b:"Assunção"},
+ {i:"AP",n:"Ana P.",b:"Assunção"},{i:"BM",n:"Bruno M.",b:"Assunção"},
+ {i:"CF",n:"Carla F.",b:"Assunção"},{i:"DL",n:"Diego L.",b:"Assunção"},
+ {i:"EM",n:"Elisa M.",b:"Ciudad del Este"},{i:"FR",n:"Fábio R.",b:"Ciudad del Este"},
+ {i:"GS",n:"Gabriel S.",b:"Ciudad del Este"},{i:"HT",n:"Helena T.",b:"Assunção"},
+ {i:"IC",n:"Igor C.",b:"Assunção"},{i:"JM",n:"Joana M.",b:"Assunção"},
+ {i:"LP",n:"Lucas P.",b:"Ciudad del Este"},{i:"MV",n:"Marina V.",b:"Assunção"},
+ {i:"NO",n:"Nicolas O.",b:"Assunção"},{i:"PB",n:"Paula B.",b:"Ciudad del Este"}
+];
+ROSTER.forEach(function(o){OPNAMES[o.i]=o.n;});
+/* quem está em outro lote agora — a lista precisa dizer isso antes de alguém ser puxado */
+var BUSY={};Object.keys(LOTS).forEach(function(k){if(+k!==LOTN)LOTS[k].ops.forEach(function(i){BUSY[i]=LOTS[k].code;});});
+(function(){
+  var o=document.getElementById("lot-origin");
+  if(o)o.outerHTML=window.WTCFX.origin(L.origin,"sm").replace("<span ",'<span id="lot-origin" ');
+  /* estado, bancada, sessão e ritmo vêm do lote — nada escrito à mão no markup */
+  var st=document.getElementById("lot-st");
+  st.className="tag "+(CLOSED?"tag--mute":LIVE?"tag--yes":"tag--maybe");
+  st.innerHTML='<span class="dot"></span>'+(CLOSED?"FECHADO":LIVE?"ABERTO":"PARADO");
+  document.getElementById("lot-desc").textContent=L.desc||"";
+  /* lote fechado abre em leitura: o conteúdo está travado, então a bancada, o fechamento e a
+     edição da descrição saem de cena — só resta consultar e exportar. O câmbio travado vira
+     selo, que é a informação que rege a venda deste lote. */
+  if(CLOSED){
+    document.body.classList.add("is-closed");
+    var cl=document.getElementById("close-lot");if(cl)cl.remove();
+    var kl=document.getElementById("kill-lot");if(kl)kl.remove();
+    /* a ação que resta num lote fechado é a venda. Se ela já existe, o botão LEVA até ela em vez
+       de oferecer criar de novo — dois lotes vendidos duas vezes é o erro caro deste fluxo. */
+    var act=document.querySelector(".rhead__act"),ac=A();
+    if(act&&L.sale)act.insertAdjacentHTML("beforeend",'<a class="btn btn--sec btn--sm" href="venda.html?v='+L.sale+'" title="Abrir a venda gerada a partir deste lote"><span>Ver venda</span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>');
+    else if(act&&ac&&ac.can_lots)act.insertAdjacentHTML("beforeend",'<button class="btn btn--pri btn--sm" id="sale-lot" type="button"><span>Gerar ordem de venda</span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>');
+    var seal=L.lock
+      ?'<span class="lockseal"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>1 ¥ = US$ '+L.lock.toFixed(4)+' · '+L.lockD+'</span>'
+      :'<span class="lockseal lockseal--warn"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>sem taxa travada</span>';
+    st.insertAdjacentHTML("afterend",seal);
+    var b=document.querySelector(".bench");
+    if(b)b.insertAdjacentHTML("beforebegin",'<div class="rdonly"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>'
+      +'<p><b>Lote fechado em '+L.closed+'.</b> O conteúdo está travado — nada entra nem sai. '
+      +(L.lock?'O câmbio de US$ '+L.lock.toFixed(4)+' rege a venda deste lote.':'Fechado sem taxa travada: os valores seguem em ¥.')+'</p></div>');
+  }
+  /* o operador volta ao painel (é a home dele); quem administra lotes volta ao registro */
+  var a=window.WTCAccess&&window.WTCAccess.access();
+  if(a&&!a.can_lots){
+    document.getElementById("lot-back").href="painel.html";
+    document.getElementById("lot-back-t").textContent="Painel";
+  }
+})();
+
+/* descrição editável no lugar: clicar no texto (ou no lápis, que faz parte do mesmo botão)
+   troca o parágrafo por um campo do mesmo tamanho.
+   Enter grava, Esc desiste, sair do campo grava — sem botões extras no cabeçalho. */
+(function(){
+  var w=document.getElementById("descw"),p=document.getElementById("lot-desc"),pen=document.getElementById("desc-pen");
+  function show(){p.textContent=L.desc||"Sem descrição";p.className=L.desc?"":"is-none";}
+  show();
+  pen.onclick=function(){
+    if(w.querySelector(".rhead__din"))return;
+    var i=document.createElement("input");
+    i.type="text";i.className="rhead__din";i.value=L.desc||"";
+    i.maxLength=140;i.placeholder="De onde veio este lote";
+    i.setAttribute("aria-label","Descrição do lote");
+    pen.style.display="none";
+    w.insertBefore(i,pen);
+    var done=false;
+    function end(save){
+      if(done)return;done=true;
+      if(save){var v=i.value.trim();if(v!==(L.desc||"")){L.desc=v;say(v?"Descrição atualizada":"Descrição removida");}}
+      i.remove();pen.style.display="";show();
+    }
+    i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();end(true);}else if(e.key==="Escape"){e.preventDefault();end(false);}};
+    i.onblur=function(){end(true);};
+    i.focus();i.select();
+  };
+})();
+
+/* trava da bancada: só quem está na bancada deste lote lança de imediato. Gerente, admin e
+   plataforma leem tudo, mas precisam assumir o lançamento — sem isso um clique acidental
+   entraria no lote de outra pessoa. */
+(function(){
+  var a=window.WTCAccess&&window.WTCAccess.access();
+  /* lote fechado não tem bancada para tomar: o velamento de "bancada de outra pessoa" não
+     se aplica, a página inteira já está em leitura */
+  if(CLOSED||!a||L.ops.indexOf(a.me)>=0)return;
+  var bench=document.querySelector(".bench"),blk=document.getElementById("blk");
+  var who=L.ops.map(function(i){return OPNAMES[i]||i;});
+  bench.classList.add("is-locked");
+  blk.hidden=false;
+  document.getElementById("blk-t").innerHTML=who.length
+    ?"Este lote está na bancada de <b>"+who.join(", ")+"</b>. Você vê tudo o que foi lançado, mas o registro de chips está travado."
+    :"Nenhum operador está neste lote agora. O registro de chips está travado até alguém assumir a bancada.";
+  document.getElementById("blk-go").onclick=function(){
+    document.getElementById("usum").innerHTML=
+       '<div class="msum__r"><span>Lote</span><b>'+LOT+'</b></div>'
+      +'<div class="msum__r"><span>Na bancada</span><b>'+(who.length?who.join(", "):"ninguém")+'</b></div>'
+      +'<div class="msum__r"><span>Vai lançar como</span><b>'+a.user+' · '+a.label+'</b></div>';
+    document.getElementById("uscrim").classList.add("is-on");
+    setTimeout(function(){document.getElementById("u-yes").focus();},60);
+  };
+  document.getElementById("u-no").onclick=function(){document.getElementById("uscrim").classList.remove("is-on");};
+  document.getElementById("uscrim").onclick=function(e){if(e.target===this)this.classList.remove("is-on");};
+  document.getElementById("u-yes").onclick=function(){
+    document.getElementById("uscrim").classList.remove("is-on");
+    unlock(true);
+  };
+  /* habilitado não é silencioso: uma tarja fica na bancada com o nome de quem assumiu e o
+     caminho de volta — e ela mora dentro da bancada, para não empurrar o cabeçalho */
+  function unlock(on){
+    bench.classList.toggle("is-locked",!on);
+    blk.hidden=!!on;
+    var n=document.getElementById("bnote");
+    if(!on){if(n)n.remove();return;}
+    if(!n){
+      bench.insertAdjacentHTML("afterbegin",'<div class="benchnote" id="bnote">'
+        +'<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M16.5 10.5V7.2a4 4 0 0 0-8 0"/><rect x="4.5" y="10.5" width="15" height="9.5"/></svg>'
+        +'<span>Lançamento habilitado · o que você registrar entra como <b>'+a.me+'</b> no lote de '+(who.length?who.join(", "):"ninguém")+'.</span>'
+        +'<button type="button" id="bnote-x">Travar de novo</button></div>');
+      document.getElementById("bnote-x").onclick=function(){unlock(false);say("Bancada travada de novo",true);};
+    }
+    say("Lançamento habilitado · registros entram como <span class=\"m\">"+a.me+"</span>");
+    var pn=document.getElementById("pn");if(pn)pn.focus();
+  }
+})();
+var $=function(i){return document.getElementById(i);};
+var input=$("pn"),go=$("go"),ansEl=$("answer"),toast=$("toast"),toastT;
+var IDLE=ansEl.innerHTML;
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function norm(s){return (s||"").toUpperCase().replace(/[^A-Z0-9]/g,"");}
+function fmt(n){return Number(n).toLocaleString("pt-BR");}
+function money(n){return Number(n).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function money0(n){return Number(n).toLocaleString("pt-BR",{maximumFractionDigits:0});}
+function now(){var d=new Date();function p(x){return("0"+x).slice(-2);}return p(d.getHours())+":"+p(d.getMinutes());}
+/* data do lançamento: a MESMA que a página estampa na taxa de câmbio, para o histórico e o carimbo
+   de câmbio não divergirem em um dia */
+function today(){
+  try{var s=FX().state().date;if(s)return s;}catch(e){}
+  var d=new Date();function p(x){return("0"+x).slice(-2);}
+  return p(d.getDate())+"/"+p(d.getMonth()+1);
+}
+function A(){return window.WTCAccess.access();}
+function FX(){return window.WTCFX;}
+function tot(){var r=base.r,x=base.x,m=base.m;entries.forEach(function(e){if(e.v==="r")r+=e.qty;else if(e.v==="x")x+=e.qty;else m+=e.qty;});return{r:r,x:x,m:m,t:r+x+m};}
+function sesUn(){var n=0;entries.forEach(function(e){n+=e.qty;});return n;}
+function cats(){var s={};entries.forEach(function(e){if(e.cat)s[e.cat]=1;});return catsBase+Object.keys(s).length;}
+function lotCNY(){var v=baseCNY;entries.forEach(function(e){var raw=NDB[norm(e.pn)];if(raw&&raw.cny)v+=raw.cny*e.qty;});return v;}
+function say(m,bad){$("toast-txt").innerHTML=m;$("toast-ico").style.stroke=bad?"var(--red-50)":"var(--green-40)";toast.classList.add("is-on");clearTimeout(toastT);toastT=setTimeout(function(){toast.classList.remove("is-on");},2600);}
+
+function renderTotals(){
+  var a=A(),s=tot(),r=FX().rate();
+  /* o operador vê composição por destino; quem tem decode vê o veredito de rentabilidade */
+  var legs=a.is_unmasked
+    ?[["r","Rentável",s.r],["x","Não rentável",s.x],["m","Indeterminado",s.m]]
+    :[["b","Em caixa",s.t-s.m-s.x],["m","Conferência",s.m],["x","Descarte",s.x]];
+  var prog=Math.min(100,s.t/TARGET*100),cny=lotCNY();
+  var bar='<div class="rmx__bar">'+legs.map(function(l){return '<i class="'+l[0]+'" style="width:'+(s.t?l[2]/TARGET*100:0)+'%"></i>';}).join("")+'</div>'
+    +'<div class="rmx__leg">'+legs.map(function(l){
+      return '<span class="rmx__lr'+(l[2]?"":" is-z")+'"><i class="'+l[0]+'"></i><span>'+l[1]+'</span><b>'+fmt(l[2])+'</b></span>';
+    }).join("")+'</div>';
+  function cell(o){
+    return '<div class="rmx'+(o.cls?" "+o.cls:"")+'">'
+      +'<div class="rmx__l">'+o.l+'</div><div class="rmx__v">'+o.v+'</div>'
+      +(o.d?'<div class="rmx__d">'+o.d+'</div>':'')+(o.x||"")+'</div>';
+  }
+  var h=[],f=[];
+  /* nível 1: o valor e o volume, mesmo peso. nível 2: os fatos.
+     Lote fechado não tem bancada: os fatos passam a descrever o registro, não o turno. */
+  if(a.can_see_price)h.push(cell({cls:"rmx--hero",l:"Valor do lote",
+    v:'<span class="m">'+FX().cny(cny)+'</span>',
+    d:"≈ "+(r?FX().usd(cny*r):"sem taxa do dia"),
+    x:'<div class="rmx__leg rmx__leg--solo"><span class="rmx__lr"><span>'+(s.t?(r?FX().usd(cny/s.t*r):FX().cny(cny/s.t))+" por chip":"sem chips lançados")+'</span></span>'
+      +'<span class="rmx__lr"><span>'+(CLOSED?(L.lock?"câmbio travado em "+L.lockD:"fechado sem taxa travada"):"câmbio trava no fechamento")+'</span></span></div>'}));
+  h.push(cell({cls:"rmx--hero rmx--vol",l:"Chips no lote",
+    v:'<span class="m">'+fmt(s.t)+'</span> <small>'+(CLOSED?"un.":"de "+fmt(TARGET)+" un.")+'</small>',
+    d:CLOSED?(cats()+" categorias · conteúdo travado"):(Math.round(prog)+"% da meta"),x:bar}));
+  /* fechar lote é a ação primária desta ficha, mas só vale a partir do volume mínimo de envio
+     (TARGET). Abaixo dele o botão fica no estado inativo do sistema e o title diz o que falta. */
+  var cbtn=$("close-lot");
+  if(cbtn){var falta=TARGET-s.t;cbtn.disabled=falta>0;
+    cbtn.title=falta>0?"Faltam "+fmt(falta)+" un. para o mínimo de "+fmt(TARGET)+" un.":"Fechar o lote e travar o câmbio";}
+  /* operador responsável: quem responde pelo lote. A empresa pode ter dezenas — os atribuídos
+     aparecem aqui, o resto vive no buscador do modal. Lote fechado não aceita troca. */
+  f.push(cell({l:"Operador responsável",
+    v:'<span class="avs">'
+      +(L.ops.length
+        ?L.ops.slice(0,4).map(function(i){return '<span class="av" title="'+(OPNAMES[i]||i)+'">'+i+'</span>';}).join("")
+          +(L.ops.length>4?'<span class="av av--more" title="'+L.ops.slice(4).map(function(i){return OPNAMES[i]||i;}).join(", ")+'">+'+(L.ops.length-4)+'</span>':'')
+        :'<span class="avs__none">ninguém</span>')
+      +(a.can_lots&&!CLOSED?'<button class="rmx__add" id="ops-edit" type="button" aria-label="Gerenciar operadores" title="Gerenciar operadores"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg></button>':'')
+      +'</span>'+(LIVE&&!CLOSED?'<span class="live"></span>':''),
+    d:L.ops.length?(OPNAMES[L.ops[0]]||L.ops[0])+(L.ops.length>1?" +"+(L.ops.length-1)+(CLOSED?" no lote":" na bancada"):""):(CLOSED?"sem registro":"lote parado")}));
+  if(CLOSED){
+    f.push(cell({l:"Fechado em",v:'<span class="m">'+(L.closed||"—").split(" ")[0]+'</span>',
+      d:(L.closed||"").split(" ")[1]?"às "+L.closed.split(" ")[1]:"conteúdo travado"}));
+    f.push(cell({l:"Categorias",v:'<span class="m">'+cats()+'</span>',
+      d:fmt(s.m)+" em conferência"}));
+    /* aproveitamento: o que sobreviveu à triagem. O valor por chip já aparece no herói. */
+    f.push(cell({l:"Aproveitamento",v:'<span class="m">'+(s.t?Math.round((s.t-s.x)/s.t*100):0)+'</span> <small>%</small>',
+      d:s.x?fmt(s.x)+" un. descartadas":"nada descartado"}));
+  }else{
+    f.push(cell({l:"Hoje",v:'<span class="m">'+fmt(sesUn())+'</span> <small>un.</small>',
+      d:L.time?"em "+L.time:"nada lançado ainda"}));
+    f.push(cell({l:"Ritmo",v:'<span class="m">'+(L.rate?fmt(L.rate):"0")+'</span> <small>un./h</small>',
+      d:L.rate?"bancada ativa":"bancada parada"}));
+    if(a.can_see_price)f.push(cell({l:"Valor por hora",v:'<span class="m">'+FX().cny(RATE_CNY_H)+'</span>',
+      d:r?("≈ "+FX().usd(RATE_CNY_H*r)):"≈ sem taxa do dia"}));
+  }
+  $("rmx").innerHTML=h.join("");
+  $("rmxf").innerHTML=f.join("");
+  if($("ops-edit"))$("ops-edit").onclick=openOps;
+  $("f-ses").textContent=fmt(sesUn());
+}
+function renderRows(newPn){
+  var a=A(),r=$("rows");
+  if(!entries.length){r.innerHTML='<div class="rows__empty">Nenhum chip lançado nesta sessão.</div>';}
+  else r.innerHTML=entries.map(function(e,i){
+    var d=DEST[e.dest],txt=e.dest==="conf"?"CONF.":e.dest==="desc"?"DESC.":e.cat;
+    return '<div class="erow'+(e.pn===newPn?" is-new":"")+'">'
+      +'<span class="erow__q">'+e.qty+'<small>×</small></span>'
+      +'<span class="erow__m"><span class="erow__pn">'+esc(e.pn)+'</span>'+(a.is_unmasked?'<span class="erow__meta">'+esc((e.mfr?e.mfr+" · ":"")+e.type)+'</span>':'')+'</span>'
+      +'<span class="cat cat--'+d.cat+'">'+esc(txt)+'</span>'
+      +'<span class="erow__t"><i>'+esc(e.d||today())+'</i>'+e.t+'</span>'
+      +'<button class="erow__rm" data-rm="'+i+'" aria-label="Remover" title="Remover do lote"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9.5 7V4.5h5V7"/><path d="M6.5 7l1 13h9l1-13"/><path d="M10.5 11v5M13.5 11v5"/></svg></button></div>';
+  }).join("");
+  r.querySelectorAll("[data-rm]").forEach(function(b){b.onclick=function(){openRm(+b.getAttribute("data-rm"));};});
+  if(newPn)setTimeout(function(){var n=r.querySelector(".is-new");if(n)n.classList.remove("is-new");},1400);
+}
+function paint(){renderTotals();renderRows.apply(null,arguments.length?arguments:[]);if(window.WTCAccess)window.WTCAccess.apply();}
+
+function setBusy(b){busy=b;go.disabled=b||norm(input.value).length<4;$("spin").style.display=b?"block":"none";$("go-t").textContent=b?"Consultando…":(current?"Lançar":"Identificar");}
+function idle(){current=null;ansEl.innerHTML=IDLE;$("go-t").textContent="Identificar";}
+function onInput(){var c=input.value.toUpperCase();if(c!==input.value)input.value=c;go.disabled=norm(c).length<4;if(current&&norm(c)!==current.key)idle();}
+function reset(){input.value="";go.disabled=true;idle();input.focus();}
+
+function identify(){
+  var key=norm(input.value);if(key.length<4)return;
+  setBusy(true);
+  setTimeout(function(){
+    setBusy(false);
+    var raw=NDB[key];
+    if(raw){current={key:key,pn:raw.pn,dest:raw.dest,cat:raw.cat,type:raw.type,sub:raw.sub,mfr:raw.mfr,v:raw.v,cny:raw.cny,band:raw.band,quoted:raw.quoted,np:raw.np,npwhy:raw.npwhy,specs:raw.specs};}
+    else{
+      var pre=[];if(key.length>=3)for(var n in NDB){if(NDB.hasOwnProperty(n)&&n!==key&&n.indexOf(key)===0)pre.push(NDB[n]);}
+      if(pre.length){renderSugs(key,pre.slice(0,4));return;}
+      current={key:key,pn:input.value.toUpperCase(),dest:"conf",cat:null,type:"—",sub:"",mfr:"",v:"m",cny:null,np:"pending",specs:null,unknown:true};
+    }
+    qty=1;renderAns();
+    var q=$("qtyv");if(q){q.focus();q.select();}
+    $("go-t").textContent="Lançar";
+  },380);
+}
+function renderSugs(key,list){
+  current=null;
+  var html='<div class="sugs"><div class="sugs__h"><p>Sem correspondência exata para <b>'+esc(input.value)+'</b></p><span class="tag tag--maybe">'+list.length+(list.length>1?" próximos":" próximo")+'</span></div>';
+  list.forEach(function(c){
+    var out="",matched=0;
+    for(var j=0;j<c.pn.length;j++){var ch=c.pn[j];
+      if(/[A-Z0-9]/i.test(ch)&&matched<key.length&&ch.toUpperCase()===key[matched]){out+=esc(ch);matched++;}
+      else out+='<span class="add">'+esc(ch)+'</span>';}
+    var d=DEST[c.dest],txt=c.dest==="conf"?"CONF.":c.dest==="desc"?"DESC.":c.cat;
+    html+='<button class="sug" data-s="'+esc(c.pn)+'"><span class="sug__pn">'+out+'</span><span class="sug__d">'+esc(txt)+'</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>';
+  });
+  html+='<div class="sugs__foot"><span>Nada parecido? O código vai para conferência.</span><button class="btn btn--ghost btn--sm" id="force" style="height:28px">Enviar à conferência</button></div></div>';
+  ansEl.innerHTML=html;
+  ansEl.querySelectorAll("[data-s]").forEach(function(b){b.onclick=function(){input.value=b.getAttribute("data-s");onInput();identify();};});
+  $("force").onclick=function(){current={key:norm(input.value),pn:input.value.toUpperCase(),dest:"conf",cat:null,type:"—",sub:"",mfr:"",v:"m",cny:null,np:"pending",specs:null,unknown:true};qty=1;renderAns();};
+}
+function renderAns(){
+  var a=A(),c=current,d=DEST[c.dest];
+  var codeHtml=d.word?'<div class="ans__c ans__c--word">'+d.word+'</div>':'<div class="ans__c">'+esc(c.cat)+'</div>';
+  var stockDest=(c.dest==="box"||c.dest==="geral"),blocked=stockDest&&c.v==="m";
+  var more="";
+  if(a.is_unmasked){
+    more='<div class="ans__more">'+(c.specs?c.specs.map(function(s){return '<div class="spec'+(s[2]?" spec--hi":"")+'"><div class="spec__l">'+esc(s[0])+'</div><div class="spec__v">'+esc(s[1])+'</div></div>';}).join(""):'<div class="spec"><div class="spec__l">Decode</div><div class="spec__v">não catalogado</div></div>')
+      +(a.can_see_price?priceCard(c,true):'')+'</div>';
+  }else if(a.can_see_price){
+    more='<div class="ans__more">'+priceCard(c,false)+'</div>';
+  }
+  var vp=c.v?'<span class="tag tag--'+VL[c.v][1]+'"><span class="dot"></span>'+VL[c.v][0]+'</span>':'';
+  var actions=blocked
+    ?'<div class="blocked"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4M12 17h.01"/></svg>'
+      +'<span>Sem avaliação de rentabilidade — <b>não entra no estoque</b> até o dado ficar completo.</span></div>'
+      +'<span class="tipw" data-tip="Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo" style="display:block">'
+      +'<button class="commit" id="commit" disabled>'+esc(d.act)+'<span class="commit__k">Enter</span></button></span>'
+      +'<button class="commit commit--alt" id="commit-alt">Enviar à conferência<span class="commit__k">Enter</span></button>'
+    :'<button class="commit" id="commit">'+esc(d.act)+'<span class="commit__k">Enter</span></button>';
+  ansEl.innerHTML='<div class="ans ans--'+d.cls+'"><div class="ans__top">'
+    +'<div class="ans__code"><div class="ans__eye">'+esc(d.eye)+'</div>'+codeHtml+'</div>'
+    +'<div class="ans__side">'
+      +'<div class="ans__pn"><b>'+esc(c.pn)+'</b>'+vp+(c.unknown?'<span class="tag tag--maybe">não catalogado</span>':'')
+      +(a.is_unmasked&&c.type!=="—"?'<span class="tag tag--mute">'+esc(c.type)+'</span>':'')+'</div>'
+      +'<div class="ans__note">'+(c.unknown?'Este código não está na base. Ele fica separado para conferência e a plataforma cataloga depois.':'Identificado às <b>'+now()+'</b> · confira o código antes de lançar.')+'</div>'
+      +'<div class="addrow">'
+        +'<div class="qty"><button type="button" data-q="-1" aria-label="Menos">−</button><input id="qtyv" type="text" inputmode="numeric" value="1" aria-label="Quantidade" /><button type="button" data-q="1" aria-label="Mais">+</button><span class="qty__u">un.</span></div>'
+        +actions
+      +'</div>'
+    +'</div></div>'+more+'</div>';
+  if(window.WTCAccess)window.WTCAccess.apply();
+  var q=$("qtyv");
+  q.oninput=function(){var n=parseInt(q.value.replace(/\D/g,""),10);qty=isNaN(n)||n<1?1:n;};
+  q.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();commit(blocked?"conf":null);}};
+  ansEl.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){qty=Math.max(1,qty+(+b.getAttribute("data-q")));q.value=qty;q.focus();};});
+  if(!blocked)$("commit").onclick=function(){commit();};
+  if($("commit-alt"))$("commit-alt").onclick=function(){commit("conf");};
+  if($("dbg"))$("dbg").onclick=function(){say("debug · <span class=\"m\">"+esc(c.pn)+"</span> → "+(c.cat||c.dest)+" · v="+c.v);};
+}
+/* card de preço: ¥ é o preço; US$ é tradução · o carimbo diz de quando e por qual taxa */
+function priceCard(c,dbg){
+  var NP={
+    buy_no:["não compra este item","o comprador não cota esta referência"],
+    notmade:["não fabricado pela marca","combinação inexistente na tabela do comprador"],
+    pending:["aguardando cotação","linha enviada · na fila do comprador"],
+    nokey:["sem chave de preço",""]
+  };
+  var d=dbg?'<button class="dbg" id="dbg" style="align-self:flex-end">debug</button>':'';
+  if(c.cny!=null){
+    var u=FX().toUsd(c.cny);
+    return '<div class="ans__price"><div><span class="l">Preço do comprador</span>'
+      +'<span class="cny">'+FX().cny(c.cny)+'</span>'
+      +'<span class="usd">'+(u==null?"≈ sem taxa do dia":"≈ "+FX().usd(u))+'</span>'
+      +(c.band?'<span class="band">faixa ¥ '+c.band[0]+'–'+c.band[1]+'</span>':'')
+      +'</div><span class="stamp">'+FX().stamp(c.quoted||"—")+'</span>'+d+'</div>';
+  }
+  var np=NP[c.np]||NP.pending;
+  return '<div class="ans__price"><div><span class="l">Preço do comprador</span>'
+    +'<span class="none">'+np[0]+'</span><span class="why2">'+esc(c.npwhy||np[1])+'</span></div>'
+    +'<span class="stamp">'+FX().rateLine()+'<br />mid-market '+FX().state().date+'</span>'+d+'</div>';
+}
+function commit(destOverride){
+  if(!current)return;
+  var c=current,n=qty||1,dst=destOverride||c.dest;
+  var stockDest=(c.dest==="box"||c.dest==="geral");
+  if(!destOverride&&stockDest&&c.v==="m"){say("Sem avaliação de rentabilidade — envie à conferência.",true);return;}
+  entries.unshift({pn:c.pn,cat:dst==="conf"?null:c.cat,dest:dst,v:c.v,mfr:c.mfr,type:c.type,qty:n,d:today(),t:now()});
+  undoStack.push({added:true});
+  paint(c.pn);
+  /* HX-Trigger est:added — o widget de câmbio e o valor do lote se atualizam sem F5 */
+  document.dispatchEvent(new CustomEvent("est:added",{detail:{lot:LOT,qty:n,pn:c.pn}}));
+  say(n+"× <span class=\"m\">"+(dst==="conf"?"CONFERÊNCIA":dst==="desc"?"DESCARTE":esc(c.cat))+"</span> lançado no lote");
+  reset();
+}
+function undo(){
+  var u=undoStack.pop();
+  if(!u){say("Nada para desfazer",true);return;}
+  if(u.added){var e=entries.shift();paint();say("Desfeito: "+e.qty+"× "+esc(e.pn),true);}
+  else if(u.part){var q=entries[u.part.i];q.qty+=u.part.n;paint(q.pn);say("Restauradas "+u.part.n+"× "+esc(q.pn));}
+  else{entries.splice(u.i,0,u.e);paint(u.e.pn);say("Restaurado: "+esc(u.e.pn));}
+}
+
+/* ============ REMOVER LANÇAMENTO ============
+   Remover é sempre por QUANTIDADE. Uma linha do histórico pode ter 40 unidades do mesmo PN, e o que
+   o operador erra quase sempre é a CONTAGEM, não o chip — apagar a linha inteira obrigava a lançar
+   tudo de novo. O campo nasce em 0 de propósito: nada sai por inércia, quem confirma escreve quanto.
+   O botão só acende com um número entre 1 e o que a linha tem — E com o código do chip digitado, a
+   mesma trava de "Eliminar lote": remoção não se desfaz na base, então quem confirma escreve o que
+   está tirando. Comparação por norm(), como o leitor da bancada: caixa e pontuação não contam. */
+var rmIdx=-1;
+function rmEntry(){return entries[rmIdx];}
+function rmN(){return parseInt(String($("rmq").value).replace(/\D/g,""),10)||0;}
+function rmCheck(){
+  var e=rmEntry(),max=e?e.qty:0,n=rmN(),h=$("rmh");
+  var codeOk=!!e&&norm($("rmc").value)===norm(e.pn);
+  $("rm-go").disabled=!(n>=1&&n<=max&&codeOk);
+  h.className="rmh"+(n>max?" is-bad":"");
+  h.textContent=!n?"Digite a quantidade — em 0 nada é removido."
+    :n>max?"Esta linha tem só "+max+(max===1?" unidade.":" unidades."):
+     n===max?"Remove a linha inteira do histórico.":"Ficam "+(max-n)+" un. no lote.";
+}
+function openRm(i){
+  var e=entries[i];if(!e)return;
+  rmIdx=i;
+  $("rmsum").innerHTML='<div class="msum__r"><span>Chip</span><b>'+esc(e.pn)+'</b></div>'
+    +'<div class="msum__r"><span>Destino</span><b>'+(e.dest==="conf"?"Conferência":e.dest==="desc"?"Descarte":esc(e.cat))+'</b></div>'
+    +'<div class="msum__r"><span>Último lançado em</span><b>'+esc(e.d||today())+' · '+e.t+'</b></div>'
+    +'<div class="msum__r"><span>No lote</span><b>'+e.qty+' un.</b></div>';
+  $("rmq").value="0";
+  $("rmpn").textContent=e.pn;
+  $("rmc").value="";$("rmc").placeholder=e.pn;
+  rmCheck();
+  $("rmscrim").classList.add("is-on");
+  setTimeout(function(){$("rmq").focus();$("rmq").select();},40);
+}
+function rmGo(){
+  var i=rmIdx,e=entries[i],n=rmN();
+  if(!e||n<1||n>e.qty||norm($("rmc").value)!==norm(e.pn))return;
+  if(n===e.qty){entries.splice(i,1);undoStack.push({e:e,i:i});}
+  else{e.qty-=n;undoStack.push({part:{i:i,n:n}});}
+  $("rmscrim").classList.remove("is-on");
+  paint();
+  say("Removidas <span class=\"m\">"+n+"×</span> "+esc(e.pn),true);
+}
+
+input.addEventListener("input",onInput);
+input.addEventListener("keydown",function(e){if(e.key==="Escape")reset();});
+$("finder").addEventListener("submit",function(e){e.preventDefault();if(busy)return;
+  if(current&&norm(input.value)===current.key){
+    var stock=(current.dest==="box"||current.dest==="geral");
+    commit(stock&&current.v==="m"?"conf":null);
+  }else identify();});
+$("clear").onclick=function(){reset();};
+/* todo X fecha o diálogo em que está — um só laço, para não repetir três handlers iguais */
+Array.prototype.forEach.call(document.querySelectorAll(".modal__x"),function(b){
+  b.onclick=function(){var s=b.closest(".scrim");if(s)s.classList.remove("is-on");};
+});
+/* MARCAS SUPORTADAS — derivadas do próprio DB de decode, nunca escritas à mão: a bancada e este
+   cartão não podem discordar sobre o que a plataforma reconhece. Marca nova no DB aparece aqui
+   sozinha. É lista de COBERTURA: só o nome. */
+(function(){
+  var seen={},names=[];
+  for(var k in DB){if(!DB.hasOwnProperty(k))continue;var m=DB[k].mfr;if(!m||seen[m])continue;
+    seen[m]=1;names.push(m);}
+  names.sort(function(a,b){return a.localeCompare(b,"pt-BR");});
+  $("mk-n").textContent=names.length+(names.length===1?" marca":" marcas");
+  $("mks").innerHTML=names.map(function(m){return '<span class="mk">'+esc(m)+'</span>';}).join("");
+})();
+
+$("undo").onclick=undo;
+$("rmq").oninput=rmCheck;
+$("rmc").oninput=function(){var v=$("rmc").value.toUpperCase();if(v!==$("rmc").value)$("rmc").value=v;rmCheck();};
+/* Enter em qualquer um dos dois campos confirma — se ainda falta algo, o botão está travado e o
+   Enter não faz nada, que é o mesmo contrato do diálogo de eliminar */
+$("rmq").onkeydown=$("rmc").onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();if(!$("rm-go").disabled)rmGo();}};
+$("rm-no").onclick=function(){$("rmscrim").classList.remove("is-on");};
+$("rm-go").onclick=rmGo;
+document.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();undo();}
+  if(e.key==="Escape"&&$("scrim").classList.contains("is-on"))$("scrim").classList.remove("is-on");
+  if(e.key==="Escape"&&$("uscrim").classList.contains("is-on"))$("uscrim").classList.remove("is-on");
+  if(e.key==="Escape"&&$("rmscrim").classList.contains("is-on"))$("rmscrim").classList.remove("is-on");
+  if(e.key==="Escape"&&$("oscrim").classList.contains("is-on"))$("oscrim").classList.remove("is-on");
+  if(e.key==="Escape"&&$("vscrim").classList.contains("is-on"))$("vscrim").classList.remove("is-on");
+  if(e.key==="Escape"&&$("kscrim").classList.contains("is-on"))$("kscrim").classList.remove("is-on");
+});
+
+/* exportar: o que está lançado no lote, PN por PN — mesmo CSV das outras fichas */
+$("xp-lot").onclick=function(){
+  var a=A(),q=function(v){v=String(v==null?"":v);return /[";,\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+  var rows=[["Part number","Fabricante","Tipo","Destino","Qtd."].concat(a.can_see_price?["CNY unit."]:[])];
+  entries.forEach(function(e){
+    rows.push([e.pn,e.mfr||"",e.type||"",e.dest==="conf"?"Conferência":e.dest==="desc"?"Descarte":(e.cat||""),e.qty]
+      .concat(a.can_see_price?[e.cny||""]:[]));
+  });
+  var csv="\ufeff"+rows.map(function(r){return r.map(q).join(";");}).join("\r\n");
+  var f=LOT.replace(/\//g,"-")+"-triagem.csv";
+  var el=document.createElement("a");
+  el.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  el.download=f;document.body.appendChild(el);el.click();
+  setTimeout(function(){URL.revokeObjectURL(el.href);el.remove();},400);
+  say("Exportado · "+f+" · "+entries.length+" lançamentos");
+};
+
+/* ------- operadores do lote: buscador porque a empresa tem dezenas ------- */
+var opsDraft=null;
+function openOps(){
+  opsDraft=L.ops.slice();
+  $("oq").value="";
+  drawOps();
+  $("oscrim").classList.add("is-on");
+  setTimeout(function(){$("oq").focus();},60);
+}
+function drawOps(){
+  var q=$("oq").value.trim().toLowerCase();
+  /* atribuídos primeiro: a lista responde "quem está neste lote" antes de "quem existe" */
+  var list=ROSTER.filter(function(o){
+    return !q||o.n.toLowerCase().indexOf(q)>=0||o.i.toLowerCase().indexOf(q)>=0||o.b.toLowerCase().indexOf(q)>=0;
+  }).sort(function(x,y){
+    var a=opsDraft.indexOf(x.i)>=0?0:1,b=opsDraft.indexOf(y.i)>=0?0:1;
+    return a-b||x.n.localeCompare(y.n,"pt-BR");
+  });
+  $("olist").innerHTML=list.length?list.map(function(o){
+    var on=opsDraft.indexOf(o.i)>=0;
+    return '<div class="orow'+(on?" on":"")+'" data-o="'+o.i+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'
+      +'<span class="orow__b"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      +'<span class="av">'+o.i+'</span>'
+      +'<span class="orow__n">'+o.n+'<small>'+o.b+'</small></span>'
+      +(!on&&BUSY[o.i]?'<span class="orow__t">EM '+BUSY[o.i]+'</span>':'')+'</div>';
+  }).join(""):'<div class="oempty">Nenhum operador encontrado.</div>';
+  $("olist").querySelectorAll("[data-o]").forEach(function(el){
+    var tog=function(){
+      var i=el.getAttribute("data-o"),k=opsDraft.indexOf(i);
+      if(k>=0)opsDraft.splice(k,1);else opsDraft.push(i);
+      drawOps();
+    };
+    el.onclick=tog;
+    el.onkeydown=function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();tog();}};
+  });
+}
+$("oq").oninput=drawOps;
+$("o-no").onclick=function(){$("oscrim").classList.remove("is-on");};
+$("oscrim").onclick=function(e){if(e.target===this)this.classList.remove("is-on");};
+$("o-yes").onclick=function(){
+  var before=L.ops.slice();
+  L.ops=opsDraft.slice();
+  LIVE=L.ops.length>0;
+  $("oscrim").classList.remove("is-on");
+  var st=$("lot-st");
+  st.className="tag "+(LIVE?"tag--yes":"tag--maybe");
+  st.innerHTML='<span class="dot"></span>'+(LIVE?"ABERTO":"PARADO");
+  renderTotals();
+  var add=L.ops.filter(function(i){return before.indexOf(i)<0;}).length;
+  var rem=before.filter(function(i){return L.ops.indexOf(i)<0;}).length;
+  say(add||rem
+    ?(add?"+"+add+" ":"")+(rem?"−"+rem+" ":"")+"· agora <span class=\"m\">"+L.ops.length+"</span> no lote"
+    :"Nada mudou nos operadores");
+};
+
+/* lote fechado não tem este botão — ele é removido do cabeçalho na abertura da página */
+if($("close-lot"))$("close-lot").onclick=function(){
+  var s=tot(),a=A(),r=FX().rate(),fs=FX().state();
+  $("msum").innerHTML='<div class="msum__r"><span>Unidades no lote</span><b>'+fmt(s.t)+'</b></div>'
+    +'<div class="msum__r"><span>Categorias</span><b>'+cats()+'</b></div>'
+    +'<div class="msum__r"><span>Em conferência</span><b>'+fmt(s.m)+'</b></div>'
+    +(a.can_see_price?'<div class="msum__r"><span>Valoração</span><b>'+FX().cny(lotCNY())+(r?(' <span style="color:var(--muted);font-weight:500">≈ '+FX().usd(lotCNY()*r)+'</span>'):'')+'</b></div>':'');
+  $("mfx").className="note "+(r?"note--ok":"note--warn");
+  $("mfx").innerHTML='<div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>'+(r?"Câmbio que será travado agora":"Sem taxa do dia")+'</div>'
+    +(r?('<div class="note__v">1 ¥ = US$ '+r.toFixed(4)+'<span>'+(fs.is_market?"mid-market":"contrato")+' · '+fs.date+'</span></div>'):'')
+    +'<div class="note__d">'+(r?"Essa taxa rege a venda e os pagamentos deste lote.":"O lote fecha sem taxa travada. Rode fetch_fx_rate antes de fechar — sem taxa, ele fica com selo amarelo até a próxima captura.")+'</div>';
+  $("cc").value="";$("m-go").disabled=true;$("scrim").classList.add("is-on");
+  setTimeout(function(){$("cc").focus();},80);
+};
+$("m-cancel").onclick=function(){$("scrim").classList.remove("is-on");};
+$("scrim").addEventListener("click",function(e){if(e.target===$("scrim"))$("scrim").classList.remove("is-on");});
+$("cc").addEventListener("input",function(e){$("m-go").disabled=e.target.value.trim().toUpperCase()!==LOT;});
+$("m-go").onclick=function(){window.location.href="vendas-lista.html";};
+
+/* eliminar lote: irreversível, então pede o código digitado — mesma trava do fechamento. Lote
+   fechado não aparece aqui: ele já virou venda, e apagar a origem quebraria o registro. */
+if($("kill-lot"))$("kill-lot").onclick=function(){
+  var s=tot(),a=A();
+  $("ksum").innerHTML='<div class="msum__r"><span>Lote</span><b>'+LOT+'</b></div>'
+    +'<div class="msum__r"><span>Lançamentos que serão apagados</span><b>'+fmt(s.t)+' un.</b></div>'
+    +'<div class="msum__r"><span>Categorias</span><b>'+cats()+'</b></div>'
+    +'<div class="msum__r"><span>Eliminando como</span><b>'+a.user+' · '+a.label+'</b></div>';
+  $("kc").value="";$("k-go").disabled=true;$("kscrim").classList.add("is-on");
+  setTimeout(function(){$("kc").focus();},80);
+};
+if($("k-no"))$("k-no").onclick=function(){$("kscrim").classList.remove("is-on");};
+$("kscrim").addEventListener("click",function(e){if(e.target===$("kscrim"))$("kscrim").classList.remove("is-on");});
+$("kc").addEventListener("input",function(e){$("k-go").disabled=e.target.value.trim().toUpperCase()!==LOT;});
+$("k-go").onclick=function(){
+  $("kscrim").classList.remove("is-on");
+  say("<b>"+LOT+"</b> eliminado. Registro enviado para auditoria.",true);
+  setTimeout(function(){window.location.href="estoque.html";},1200);
+};
+
+paint();setTimeout(function(){input.focus();},150);
+FX().onChange(function(){renderTotals();if(current)renderAns();});
+
+/* ============ CONTEÚDO DO LOTE FECHADO ============
+   O lote fechado não tem sessão de bancada, então o corpo da página deixa de ser o histórico de
+   lançamentos (que estaria sempre vazio) e passa a ser O QUE HÁ DENTRO DO LOTE.
+
+   Três decisões:
+   1. A tabela lista as MAIORES linhas por valor e soma o resto numa linha só. Um lote tem dezenas
+      de categorias; imprimir 58 linhas não é transparência, é despejo. A soma fecha exata com o
+      valor do cabeçalho — a última linha existe para isso.
+   2. Só entram as unidades EM CAIXA. Descarte e conferência não têm preço, e misturá-los aqui
+      faria a tabela contradizer o próprio total do lote. O rodapé diz isso em palavras.
+   3. US$ sai da TAXA TRAVADA no fechamento, nunca da taxa de hoje. É a regra que rege a venda
+      deste lote — lote antigo, fechado antes da trava, mostra só ¥ e diz por quê. */
+if(CLOSED&&L.lines){(function(){
+  var a=A(),money=a.can_see_price,lock=L.lock||0,tb=$("crows");
+  function usd(y){return lock?'<span>≈ '+FX().usd(y*lock)+'</span>':'';}
+  $("chead").innerHTML='<tr><th>Categoria</th><th>Item</th><th>Unidades</th>'
+    +(money?'<th class="hide-md">Unitário</th><th>Valor</th>':'')+'</tr>';
+  var det=L.lines.slice().sort(function(x,y){return y[3]*y[4]-x[3]*x[4];});
+  var html=det.map(function(l){var v=l[3]*l[4];
+    return '<tr><td class="c" data-label="Categoria">'+l[2]+'</td>'
+      +'<td data-label="Item">'+esc(l[0]+(l[1]?" "+l[1]:""))+'</td>'
+      +'<td class="n" data-label="Unidades" data-suffix="un.">'+fmt(l[3])+'</td>'
+      +(money?'<td class="n hide-md" data-label="Unitário">'+FX().cny(l[4])+'</td>'
+        +'<td class="v key" data-label="Valor">'+FX().cny(v)+usd(v)+'</td>':'')+'</tr>';
+  }).join("");
+  var r=L.rest;
+  if(r)html+='<tr class="dim"><td class="c" data-label="Categoria">OUTRAS</td>'
+    +'<td data-label="Item">'+r.c+' categorias de menor valor</td>'
+    +'<td class="n" data-label="Unidades" data-suffix="un.">'+fmt(r.u)+'</td>'
+    +(money?'<td class="n hide-md" data-label="Unitário">—</td>'
+      +'<td class="v key" data-label="Valor">'+FX().cny(r.y)+usd(r.y)+'</td>':'')+'</tr>';
+  tb.innerHTML=html;
+  var s=tot();
+  $("cont-n").textContent=cats()+" categorias · "+fmt(s.t)+" un. no lote";
+  $("cfoot").innerHTML='<span>Só as <b>'+fmt(s.r)+'</b> un. em caixa têm preço — descarte e conferência não entram no valor.</span>'
+    +(money?'<span><b>'+FX().cny(L.cny)+'</b>'+(lock?" ≈ "+FX().usd(L.cny*lock)+" na taxa travada":" · sem taxa travada")+'</span>':'');
+  $("cont").hidden=false;
+})();}
+
+/* ORDEM DE VENDA — o lote fechado vira venda uma vez só. O diálogo mostra o que vai na ordem e
+   qual taxa a rege; quem já tem venda não chega aqui (o botão vira link para ela). */
+if($("sale-lot"))$("sale-lot").onclick=function(){
+  var s=tot(),a=A(),lock=L.lock||0;
+  $("vsum").innerHTML='<div class="msum__r"><span>Unidades em caixa</span><b>'+fmt(s.r)+' un.</b></div>'
+    +'<div class="msum__r"><span>Categorias</span><b>'+cats()+'</b></div>'
+    +(a.can_see_price?'<div class="msum__r"><span>Valor do lote</span><b>'+FX().cny(L.cny)+'</b></div>':'')
+    +'<div class="msum__r"><span>Fechado em</span><b>'+(L.closed||"—")+'</b></div>';
+  $("vfx").innerHTML=lock
+    ?'A ordem sai na taxa travada no fechamento: <b>1 ¥ = US$ '+lock.toFixed(4)+'</b> ('+(L.lockD||"")+'). A taxa de hoje não altera esta venda.'
+    :'Lote fechado antes da trava de câmbio: a ordem sai em ¥ e o valor em US$ será definido no acerto.';
+  $("vscrim").classList.add("is-on");
+};
+if($("v-no"))$("v-no").onclick=function(){$("vscrim").classList.remove("is-on");};
+if($("v-x"))$("v-x").onclick=function(){$("vscrim").classList.remove("is-on");};
+if($("vscrim"))$("vscrim").addEventListener("click",function(e){if(e.target===$("vscrim"))$("vscrim").classList.remove("is-on");});
+if($("v-go"))$("v-go").onclick=function(){
+  $("vscrim").classList.remove("is-on");
+  say("Ordem de venda gerada a partir de <b>"+LOT+"</b>.",true);
+  setTimeout(function(){window.location.href="vendas-lista.html";},1200);
+};
+
+/* Lote ao vivo: JL e AP estão na mesma bancada. O que cresce sozinho é o LOTE (base), nunca as
+   entradas desta sessão — o histórico ao lado é só do operador que está digitando.
+   Lote fechado é número final: nada sobe, nada pisca. Só lote ABERTO com gente na bancada anda
+   sozinho, e só até o alvo — lote parado que anda, ou que tria mais peça do que contém, é mentira. */
+if(window.WTCLive&&LIVE&&!CLOSED){
+  window.WTCLive.drive([{
+    bump:function(n){
+      var s=tot(),room=TARGET-s.t;
+      if(room<=0){window.WTCLive.stop();return;}
+      if(n>room)n=room;
+      var avg=baseCNY/(base.r+base.x+base.m);
+      base.r+=n;baseCNY+=avg*n;
+      if(Math.random()<0.3&&TARGET-tot().t>0)base.x+=1;
+    },
+    /* o marcador "+n" conta CHIPS: ancora na linha inteira do total ("368 de 10.000 un."),
+       à direita dela. Preso só ao número, ele cairia no meio da frase. */
+    mode:"side",
+    el:function(){return document.querySelector(".rmx--vol .rmx__v");}
+  }],function(){renderTotals();});
+}
+})();
+</script>
+</body>
+</html>

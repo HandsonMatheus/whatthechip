@@ -1,0 +1,66 @@
+<!-- @dsCard group="Carbon" viewport="900x1490" name="Alinhamento com o IBM Carbon" subtitle="O que bate, o que diverge e por quê — leia antes de reconstruir sobre @carbon/react" -->
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--sans);background:var(--surface);color:var(--text);padding:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h2{font-size:var(--fs-05);font-weight:var(--fw-light);letter-spacing:var(--ls-tight);margin:0 0 4px}
+.sub{font-size:var(--fs-01);color:var(--muted);margin-bottom:20px;letter-spacing:var(--ls-body)}
+table{width:100%;border-collapse:separate;border-spacing:0;margin-bottom:22px}
+th{background:var(--ink-90);color:#fff;text-align:left;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:0 12px;height:38px;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);font-size:var(--fs-01);vertical-align:top}
+td.m{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.k{font-size:var(--fs-01);font-weight:var(--fw-black);letter-spacing:var(--ls-label);text-transform:uppercase;padding:2px 7px;white-space:nowrap}
+.ok{background:var(--green-10);color:var(--green-70)}
+.di{background:var(--amber-10);color:var(--amber-70)}
+.br{background:var(--blue-10);color:var(--blue-70)}
+.lbl{font-size:var(--fs-01);font-weight:var(--fw-black);letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+</style>
+</head><body>
+<h2>Alinhamento com o <b style="font-weight:var(--fw-bold)">IBM Carbon</b></h2>
+<p class="sub">Valores do Carbon lidos da fonte (carbon-design-system/carbon) — não de memória. <b>BATE</b> = idêntico · <b>MARCA</b> = divergência deliberada, com razão declarada. Toda a <b>geometria</b> converge: raio, elevação, escala de tipo, espaçamento, easing, duração e as seis alturas de controle. O que resta é tipográfico, e vem de uma única escolha — Manrope no lugar de IBM Plex Sans.</p>
+
+<div class="lbl">Fundamentos</div>
+<table>
+<thead><tr><th>Eixo</th><th>Carbon</th><th>WhatTheChip</th><th>Estado</th><th>Nota</th></tr></thead>
+<tbody>
+<tr><td>Raio de canto</td><td class="m">0</td><td class="m">0</td><td><span class="k ok">bate</span></td><td>$button-border-radius: 0. Sem tokens de raio no sistema.</td></tr>
+<tr><td>Elevação</td><td class="m">—</td><td class="m">—</td><td><span class="k ok">bate</span></td><td>Sem sombra. Separação por fio de 1px e chapa rebaixada.</td></tr>
+<tr><td>Azul primário</td><td class="m">#0f62fe</td><td class="m">#0f62fe</td><td><span class="k ok">bate</span></td><td>blue-60 do Carbon.</td></tr>
+<tr><td>Foco</td><td class="m">2px, inset</td><td class="m">2px, inset</td><td><span class="k ok">bate</span></td><td>outline-offset:-2px — nunca cresce a caixa.</td></tr>
+<tr><td>Escala de tipo</td><td class="m">12·14·16·18·20·24·28·32·36·42·48·54·60·68·76…</td><td class="m">idem</td><td><span class="k ok">bate</span></td><td>Y1=12, Yn=Yn-1+(INT[(n-2)/4]+1)×2. --fs-NN <b>é</b> o número do degrau.</td></tr>
+<tr><td>Espaçamento</td><td class="m">2·4·8·12·16·24·32·40·48·64·80·96·160</td><td class="m">idem</td><td><span class="k ok">bate</span></td><td>--spacing-NN mapeia 1:1 para $spacing-NN.</td></tr>
+<tr><td>Easing</td><td class="m">.2,0,.38,.9</td><td class="m">.2,0,.38,.9</td><td><span class="k ok">bate</span></td><td>+ entrance (0,0,.38,.9) e exit (.2,0,1,.9).</td></tr>
+<tr><td>Duração</td><td class="m">70·110·150·240·400·700</td><td class="m">idem</td><td><span class="k ok">bate</span></td><td>A bancada usa a metade produtiva.</td></tr>
+<tr><td>Tipo de UI</td><td class="m">IBM Plex Sans</td><td class="m">Manrope</td><td><span class="k br">marca</span></td><td>Escolha do time, mantida. Grotesca de largura próxima; a escala é a mesma.</td></tr>
+<tr><td>Mono</td><td class="m">IBM Plex Mono</td><td class="m">IBM Plex Mono</td><td><span class="k ok">bate</span></td><td>Todo part number, código, figura e valor.</td></tr>
+</tbody>
+</table>
+
+<div class="lbl">Altura de controle — as seis sobre degraus da escada</div>
+<table>
+<thead><tr><th>Token</th><th>Nosso</th><th>Degrau do Carbon</th><th>Estado</th><th>Uso</th></tr></thead>
+<tbody>
+<tr><td class="m">--ctl-md</td><td class="m">48</td><td class="m">lg 48 — o botão padrão</td><td><span class="k ok">bate</span></td><td>Botão, campo, seletor, barra de ferramentas.</td></tr>
+<tr><td class="m">--ctl-xl</td><td class="m">80</td><td class="m">2xl 80</td><td><span class="k ok">bate</span></td><td>Campo herói da bancada.</td></tr>
+<tr><td class="m">--ctl-sm</td><td class="m">40</td><td class="m">field 40</td><td><span class="k ok">bate</span></td><td>Era 36, entre dois degraus. 'field' é o degrau do botão que fica ao lado de um campo — o uso exato.</td></tr>
+<tr><td class="m">--ctl-lg</td><td class="m">64</td><td class="m">xl 64</td><td><span class="k ok">bate</span></td><td>Era 56. Ação principal da tela, linha tocável de gaveta.</td></tr>
+<tr><td class="m">--shell-h</td><td class="m">48</td><td class="m">header 48</td><td><span class="k ok">bate</span></td><td>Era 52. É o offset de todo cabeçalho grudado, então o número viaja sozinho pelo token.</td></tr>
+<tr><td class="m">--row-h</td><td class="m">48</td><td class="m">linha lg 48</td><td><span class="k ok">bate</span></td><td>Era 56. A tabela ficou mais densa — densidade é a marca do Carbon, não efeito colateral.</td></tr>
+</tbody>
+</table>
+
+<div class="lbl">Componente — o que resta é tipográfico</div>
+<table>
+<thead><tr><th>Eixo</th><th>Carbon</th><th>Nosso</th><th>Estado</th><th>Nota</th></tr></thead>
+<tbody>
+<tr><td>Peso do rótulo de botão</td><td class="m">400</td><td class="m">600</td><td><span class="k br">marca</span></td><td>$button-font-weight: 400 — mas 400 do Carbon é <b>Plex Sans</b>, que é opticamente mais pesado que Manrope 400. Casar o número desencontraria a intenção: o rótulo sairia fino sobre o azul. Consequência da substituição de fonte, não descuido.</td></tr>
+<tr><td>Corpo do rótulo de botão</td><td class="m">14</td><td class="m">14</td><td><span class="k ok">bate</span></td><td>$button-font-size: .875rem.</td></tr>
+<tr><td>Borda de botão secundário</td><td class="m">2px</td><td class="m">2px</td><td><span class="k ok">bate</span></td><td>$button-border-width: 2px. Era 1px.</td></tr>
+<tr><td>Rótulo caixa-alta</td><td class="m">400 / 0.32px</td><td class="m">800 / 0.09em</td><td><span class="k br">marca</span></td><td>label-01 do Carbon é peso 400. O nosso é a voz da marca.</td></tr>
+</tbody>
+</table>
+</body></html>

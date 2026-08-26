@@ -1,0 +1,35 @@
+<!-- @dsCard group="Spacing" viewport="760x430" name="Escala de espaçamento" subtitle="A escala do IBM Carbon — grade de 8px com mini-unit de 2px. --spacing-NN mapeia 1:1 para $spacing-NN" -->
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--sans);background:var(--surface);color:var(--text);padding:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.r{display:flex;align-items:center;gap:14px;height:26px}
+.t{font-family:var(--mono);font-size:var(--fs-01);font-weight:600;color:var(--ink-50);width:112px;flex:none;letter-spacing:var(--ls-mono)}
+.b{height:12px;background:var(--blue-60);flex:none}
+.v{font-family:var(--mono);font-size:var(--fs-01);font-weight:600;color:var(--text);width:48px;flex:none}
+.n{font-size:var(--fs-01);color:var(--muted);letter-spacing:var(--ls-body)}
+.hd{font-size:var(--fs-01);font-weight:var(--fw-black);letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+.hd+.hd,.r+.hd{margin-top:18px}
+</style>
+</head><body>
+<p class="hd">Componente · o que separa coisas dentro de um bloco</p>
+<div class="r"><span class="t">--spacing-01</span><span class="b" style="width:2px"></span><span class="v">2px</span><span class="n">mini-unit — folga de fio e de marcador</span></div>
+<div class="r"><span class="t">--spacing-02</span><span class="b" style="width:4px"></span><span class="v">4px</span><span class="n">colagem de dois elementos irmãos</span></div>
+<div class="r"><span class="t">--spacing-03</span><span class="b" style="width:8px"></span><span class="v">8px</span><span class="n">gap de ícone e rótulo</span></div>
+<div class="r"><span class="t">--spacing-04</span><span class="b" style="width:12px"></span><span class="v">12px</span><span class="n">gap de itens em barra</span></div>
+<div class="r"><span class="t">--spacing-05</span><span class="b" style="width:16px"></span><span class="v">16px</span><span class="n">sarjeta e padding padrão de célula</span></div>
+<div class="r"><span class="t">--spacing-06</span><span class="b" style="width:24px"></span><span class="v">24px</span><span class="n">padding de cartão</span></div>
+<div class="r"><span class="t">--spacing-07</span><span class="b" style="width:32px"></span><span class="v">32px</span><span class="n">sarjeta da régua de página</span></div>
+<div class="r"><span class="t">--spacing-08</span><span class="b" style="width:40px"></span><span class="v">40px</span><span class="n"></span></div>
+<div class="r"><span class="t">--spacing-09</span><span class="b" style="width:48px"></span><span class="v">48px</span><span class="n">entre blocos</span></div>
+<p class="hd">Layout · o que separa blocos e seções</p>
+<div class="r"><span class="t">--spacing-10</span><span class="b" style="width:64px"></span><span class="v">64px</span><span class="n">entre seções</span></div>
+<div class="r"><span class="t">--spacing-11</span><span class="b" style="width:80px"></span><span class="v">80px</span><span class="n"></span></div>
+<div class="r"><span class="t">--spacing-12</span><span class="b" style="width:96px"></span><span class="v">96px</span><span class="n">respiro de seção na landing</span></div>
+<div class="r"><span class="t">--spacing-13</span><span class="b" style="width:160px"></span><span class="v">160px</span><span class="n">respiro de dobra</span></div>
+<p class="hd" style="color:var(--amber-70)">Saiu: 20px — o Carbon não tem esse degrau (ficava entre 16 e 24)</p>
+</body></html>

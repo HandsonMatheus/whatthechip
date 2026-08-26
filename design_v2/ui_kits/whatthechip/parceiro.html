@@ -1,0 +1,147 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x1000" name="Parceiro · Preços" subtitle="Resumo das tabelas do comprador — catálogo PDF e cobertura por tipo de chip" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Parceiro · Preços</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<link rel="stylesheet" href="wtc-parceiro.css?v=33" />
+<style>
+/* a lista é o padrão .dtab do wtc-carbon.css — só a sub-linha em âmbar precisa vencer
+   a regra genérica de sub-linha da tabela, que a pintaria de cinza */
+.dtab .v span.miss{color:var(--amber-70);font-weight:600;font-family:var(--sans);letter-spacing:0}
+/* faixa de pedidos travados: abre a tela porque é a fila de trabalho do comprador — as tabelas
+   completas podem esperar, um lote fechado sem preço não. Vermelha, e desaparece quando zera. */
+.blk{border:1px solid var(--red-60);background:var(--red-10);padding:14px 16px;margin-bottom:20px}
+.blk__h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.blk__t{font-size:14px;font-weight:700;color:var(--red-70)}
+.blk__d{font-size:12.5px;color:var(--muted)}
+.blk__l{display:flex;gap:1px;background:var(--line);margin-top:12px;flex-wrap:wrap}
+.blk__i{flex:1 1 200px;min-width:0;background:var(--surface);padding:10px 12px;text-decoration:none;display:block;transition:background var(--d2) var(--ez)}
+.blk__i:hover{background:var(--ink-05)}
+.blk__n{font-size:13px;font-weight:700;color:var(--text)}
+.blk__n em{font-family:var(--mono);font-style:normal;font-weight:600;color:var(--muted);margin-left:7px;font-size:12px}
+.blk__m{font-size:11.5px;color:var(--muted);margin-top:3px}
+.blk__m b{font-family:var(--mono);font-weight:600;color:var(--red-70)}
+</style>
+</head>
+<body>
+
+<header class="pshell">
+  <a class="pshell__brand" href="parceiro-compras.html"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /><span class="pshell__tag">Parceiro</span></a>
+  <nav class="pshell__nav">
+    <a class="pnav" href="parceiro-compras.html"><svg viewBox="0 0 24 24"><path d="M3.5 7.5h17v12h-17z"/><path d="M3.5 11.5h17M9 7.5V5a3 3 0 0 1 6 0v2.5"/></svg>Compras<span class="pnav__b" data-buys-badge></span></a>
+    <a class="pnav on" href="parceiro.html"><svg viewBox="0 0 24 24"><path d="M4 4h16v5H4z"/><path d="M7 13h4M7 17h7"/></svg>Preços</a>
+    <a class="pnav" href="parceiro-catalogo.html"><svg viewBox="0 0 24 24"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5M8 14h8"/></svg>Catálogo</a>
+  </nav>
+  <div class="pshell__spacer"></div>
+  <div class="pshell__fx"><b id="fxr">1 ¥ ≈ US$ 0.1478</b><span class="pshell__sub"><i class="live live--g"></i><em>ao vivo</em><span id="fxd">· mid-market 01/08</span></span></div>
+  <div class="pshell__who">
+    <div class="pshell__av">SZ</div>
+    <div class="pshell__u"><b>Shenzhen Yuan</b><span>Comprador</span></div>
+  </div>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">ZH</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<div class="papp">
+  <aside class="pside">
+    <div class="pside__l">Tipos de chip</div>
+    <div id="types"></div>
+    <div class="pside__foot"><p><b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça.</p></div>
+  </aside>
+
+  <main class="pmain">
+  <div class="phd">
+    <div>
+      <h1>Suas <b>tabelas de preço</b></h1>
+      <p>Você cota em ¥ (RMB). A plataforma converte para US$ só para leitura do vendedor — o dado é sempre o seu ¥.</p>
+    </div>
+    <div class="seals">
+      <span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Todos os preços em ¥ (RMB)</span>
+    </div>
+  </div>
+
+  <div id="block"></div>
+
+  <section class="tile">
+    <div class="dtab__wrap"><table class="dtab">
+      <thead><tr>
+        <th>Tipo de chip</th>
+        <th class="d">Estrutura da tabela</th>
+        <th class="num">Linhas</th>
+        <th class="num">Cotadas</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="sum"></tbody>
+    </table></div>
+  </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="fx.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="viewport.js?v=7"></script>
+<script src="parceiro-compras.js?v=29"></script>
+<script src="parceiro-data.js?v=7"></script>
+<script src="parceiro-side.js?v=3"></script>
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i);},T=window.WTCPartner.TYPES;
+var toast=$("toast"),tT;
+function say(m){$("toast-txt").textContent=m;toast.classList.add("is-on");clearTimeout(tT);tT=setTimeout(function(){toast.classList.remove("is-on");},2600);}
+var FORM={uni:"unificada — uma coluna de preço",dual:"celular × PCB — duas tabelas",brand:"por marca — matriz",linear:"linear ¥/GB, com piso por peça"};
+
+/* a faixa de travados abre a tela: é a ordem em que o comprador deve abrir as tabelas hoje */
+(function(){
+  var P=window.WTCPartner,bt=P.blockTotal(),host=$("block");
+  if(!bt.orders){host.innerHTML="";return;}
+  host.innerHTML='<div class="blk"><div class="blk__h">'
+    +'<span class="blk__t">'+bt.orders+(bt.orders===1?" pedido travado":" pedidos travados")+" esperando a sua cotação"+'</span>'
+    +'<span class="blk__d">'+bt.units.toLocaleString("pt-BR")+' un. em '+bt.types+(bt.types===1?" tabela":" tabelas")
+    +' · a plataforma não consegue emitir a ordem sem o seu preço</span></div>'
+    +'<div class="blk__l">'+T.filter(function(t){return t.block;}).map(function(t){
+      var b=t.block;
+      return '<a class="blk__i" href="'+t.href+'">'
+        +'<div class="blk__n">'+t.n+'<em>'+b.row+'</em></div>'
+        +'<div class="blk__m">caixa '+b.box+' · <b>'+b.orders+(b.orders===1?" pedido":" pedidos")+'</b> · '
+        +b.units.toLocaleString("pt-BR")+' un. · desde '+b.since+'</div></a>';
+    }).join("")+'</div></div>';
+})();
+
+$("sum").innerHTML=T.map(function(t){
+  var ok=t.lines-t.miss;
+  return '<tr data-h="'+t.href+'">'
+    +'<td class="c">'+t.n+'</td>'
+    +'<td class="d" data-label="Estrutura">'+(FORM[t.form]||t.form)+'</td>'
+    +'<td class="n" data-label="Linhas" data-suffix="linhas">'+t.lines+'</td>'
+    +'<td class="v key" data-label="Cotadas">'+ok
+      +(t.block?'<span class="miss">travando '+t.block.orders+(t.block.orders===1?' pedido':' pedidos')+'</span>'
+      :t.miss?'<span class="miss">'+t.miss+' sem cotação</span>':'<span class="got">completa</span>')+'</td>'
+    +'<td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td></tr>';
+}).join("");
+Array.prototype.forEach.call($("sum").querySelectorAll("[data-h]"),function(tr){
+  tr.onclick=function(){location.href=tr.getAttribute("data-h");};
+});
+
+function fx(){
+  var s=window.WTCFX.state();
+  $("fxr").textContent=s.has?("1 ¥ ≈ US$ "+s.rate.toFixed(4)):"sem taxa do dia";
+  $("fxd").textContent=s.has?("\u00b7 "+(s.is_market?"mid-market ":"contrato ")+s.date):"\u00b7 rode fetch_fx_rate";
+  var lv=document.querySelector(".pshell__sub");if(lv)lv.classList.toggle("off",!s.has);
+}
+window.WTCFX.onChange(fx);fx();
+})();
+</script>
+<script>(function(){var B=window.WTCBuys;if(!B)return;var A=B.all();var pend=A.filter(function(b){return b.st==="received";}).length;var owe=A.filter(function(b){return (b.st==="settled"||b.st==="paid")&&B.restCny(b)>0;}).length;document.querySelectorAll("[data-buys-badge]").forEach(function(e){e.textContent=(pend+owe)||"";});})();</script>
+</body>
+</html>

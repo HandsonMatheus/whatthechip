@@ -1,0 +1,74 @@
+/* WhatTheChip — typography tokens. IBM Carbon type scale, Manrope as the face.
+
+   THE SCALE IS A FORMULA, NOT A TASTE LIST. Carbon computes it as
+       Y1 = 12px,  Yn = Yn-1 + (INT[(n-2)/4] + 1) × 2
+   giving 12 · 14 · 16 · 18 · 20 · 24 · 28 · 32 · 36 · 42 · 48 · 54 · 60 · 68 · 76 · 84 · 92 · 102 · 112.
+   Every token below sits ON a step of that scale and names the step. Ten of the previous eighteen
+   sizes did not (34, 31, 27, 17, 15, 13, 11, 10, 52, 46, 40) — they were eyeballed, and a scale you
+   can eyeball into is not a scale. There is no step below 12px in Carbon: 11px and 10px labels are
+   gone, and uppercase micro-labels now use step 1 with the letter-spacing doing the work.
+
+   MONO for every part number, code, figure and money value — that is a product rule, not a Carbon
+   one, and it is absolute here.
+
+   FACE: Manrope substitutes IBM Plex Sans (the team's choice, kept). Carbon's own weights are
+   300 light / 400 regular / 600 semibold; Manrope gives us those plus 700/800, which the product
+   uses for uppercase labels. Carbon's label-01 is weight 400 — our 800 labels are a deliberate
+   brand divergence, flagged in the README. */
+:root{
+  --font-sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --font-cjk:'Noto Sans SC',var(--font-sans);
+  --sans:var(--font-sans);--mono:var(--font-mono);--cjk:var(--font-cjk);
+
+  /* ---- Carbon type scale: --fs-<step> is the step number, so it maps 1:1 to type-scale(n) ---- */
+  --fs-01:12px;--fs-02:14px;--fs-03:16px;--fs-04:18px;--fs-05:20px;--fs-06:24px;
+  --fs-07:28px;--fs-08:32px;--fs-09:36px;--fs-10:42px;--fs-11:48px;--fs-12:54px;
+  --fs-13:60px;--fs-15:76px;--fs-19:112px;
+
+  /* ---- Semantic roles, each pinned to a step. Use these; the raw steps are the ladder. ---- */
+  --fs-answer:var(--fs-19);      /* 112 · step 19 — o destino na bancada, a um braço de distância */
+  --fs-answer-sm:var(--fs-11);   /* 48  · step 11 — destino por palavra (CONFERÊNCIA/DESCARTE) */
+  --fs-display:var(--fs-08);     /* 32  · step 8  — h1 de página (peso 300) ~ heading-04 */
+  --fs-display-sm:var(--fs-07);  /* 28  · step 7  — h1 em viewport estreita */
+  --fs-h1:var(--fs-08);          /* 32  · step 8  — valor de KPI */
+  --fs-h2:var(--fs-06);          /* 24  · step 6  — título de bloco ~ heading-03 */
+  --fs-title:var(--fs-05);       /* 20  · step 5  — título de modal (peso 400) */
+  --fs-lg:var(--fs-04);          /* 18  · step 4  — mono · código de lote */
+  --fs-md:var(--fs-03);          /* 16  · step 3  — mono · identificador ~ body-02 / code-02 */
+  --fs-mono-in:var(--fs-03);     /* 16  · step 3  — mono · texto digitado em campo */
+  --fs-body:var(--fs-02);        /* 14  · step 2  — corpo e rótulo de controle ~ body-01 */
+  --fs-sm:var(--fs-02);          /* 14  · step 2  — secundário e navegação (Carbon não tem 13) */
+  --fs-xs:var(--fs-01);          /* 12  · step 1  — meta e legenda ~ label-01 / caption-01 */
+  --fs-label:var(--fs-01);       /* 12  · step 1  — rótulo caixa-alta (o peso e o tracking separam) */
+  --fs-micro:var(--fs-01);       /* 12  · step 1  — Carbon não desce abaixo de 12 */
+
+  /* landing pública: os três degraus de display de marketing, também na escala */
+  --fs-mkt-1:var(--fs-15);       /* 76 · step 15 ~ display-01 */
+  --fs-mkt-2:var(--fs-12);       /* 54 · step 12 */
+  --fs-mkt-3:var(--fs-10);       /* 42 · step 10 */
+
+  /* ---- entrelinha: os valores do Carbon, não arredondamentos ---- */
+  /* tight = heading-06/07 e display · num = heading-05 · body = body-01 (a entrelinha de corpo do
+     Carbon) · compact = body-compact-01 e heading-compact · relaxed = body-02 */
+  --lh-tight:1.19; /* @kind other */
+  --lh-num:1.25; /* @kind other */
+  --lh-body:1.42857; /* @kind other */
+  --lh-compact:1.28572; /* @kind other */
+  --lh-relaxed:1.5; /* @kind other */
+
+  /* ---- tracking: Carbon usa POSITIVO nos tamanhos pequenos (legibilidade em densidade) e
+       negativo só nos displays. O produto aperta mais os números, que são mono. ---- */
+  --ls-label:0.32px;  /* label-01 / caption-01 — o valor do Carbon */
+  --ls-micro:0.09em;  /* micro-rótulo caixa-alta: divergência de marca, o tracking é o sinal */
+  --ls-body:0.16px;   /* body-01 */
+  --ls-hero:-0.02em;--ls-num:-0.035em;--ls-tight:-0.02em;--ls-mono:-0.01em;
+
+  /* ---- pesos: os três do Carbon + os dois que o produto usa em rótulo ---- */
+  --fw-light:300; /* @kind other */
+  --fw-regular:400; /* @kind other */
+  --fw-medium:500; /* @kind other */
+  --fw-semibold:600; /* @kind other */
+  --fw-bold:700; /* @kind other */
+  --fw-black:800; /* @kind other */
+}

@@ -1,0 +1,1436 @@
+/* WhatTheChip — base Carbon/Manrope compartilhada pelas telas internas.
+   Cada tela carrega este arquivo e mantém no seu <style> só o que é exclusivo dela.
+   Espelha os tokens de /tokens (typography, colors, controls). */
+:root{
+  --ink-100:#161616;--ink-90:#21272a;--ink-80:#343a3f;--ink-70:#4d5358;--ink-60:#697077;
+  --ink-50:#878d96;--ink-40:#a2a9b0;--ink-30:#c1c7cd;--ink-20:#dde1e6;--ink-10:#f2f4f8;--ink-05:#f7f8fb;--white:#fff;
+  --blue-10:#edf5ff;--blue-20:#d0e2ff;--blue-40:#78a9ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;
+  --green-10:#e6f7ec;--green-40:#42be65;--green-50:#24a148;--green-60:#198038;--green-70:#0e6027;
+  --amber-10:#fdf3d6;--amber-30:#fddc69;--amber-40:#f1c21b;--amber-60:#b28600;--amber-70:#8a6a00;
+  --red-10:#fff1f1;--red-50:#fa4d56;--red-60:#da1e28;--red-70:#a2191f;
+  --sans:'Manrope',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;--cjk:'Noto Sans SC',var(--sans);
+  --bg:var(--ink-10);--surface:var(--white);--line:var(--ink-20);--line-2:var(--ink-30);
+  --text:var(--ink-100);--muted:var(--ink-60);--faint:var(--ink-50);--accent:var(--blue-60);
+  /* a escada de controle do Carbon: sm 32 · field 40 · lg 48 · xl 64 · 2xl 80; header 48; linha 48.
+     Estes quatro POUSAM em degraus — antes 36/56/76 e header 52 ficavam entre dois, do mesmo modo
+     que a escala de tipo estimada a olho. Espelho de tokens/controls.css: mudar lá é mudar aqui. */
+  --cds-sm:32px;--cds-field:40px;--cds-lg:48px;--cds-xl:64px;--cds-2xl:80px;
+  --ctl-sm:var(--cds-field);--ctl-md:var(--cds-lg);--ctl-lg:var(--cds-xl);--ctl-xl:var(--cds-2xl);
+  --shell-h:48px;--row-h:48px;
+  --d1:70ms;--d2:150ms;--d3:240ms;--ez:cubic-bezier(.2,0,.38,.9);
+}
+/* ============ MODO ESCURO (Carbon Gray 100) ============
+   Mesma paleta do site público, para uma tela só de tokens: as telas internas não redefinem cor.
+   Duas regras que o modo escuro impõe ao sistema:
+   1. Superfície invertida (o preto que virou branco) nunca escreve em #fff literal — escreve em
+      var(--white), que acompanha a virada. É o que mantém legível o avatar, o selo PCB, o toast.
+   2. Azul de TEXTO não é o azul de BOTÃO: --accent vira o azul claro (blue-40), enquanto --blue-60
+      segue sendo o fundo do botão primário, como manda o Carbon. */
+[data-theme="dark"]{
+  --ink-100:#ffffff;--ink-90:#f4f4f4;--ink-80:#e0e0e0;--ink-70:#c6c6c6;--ink-60:#a8a8a8;
+  --ink-50:#8d8d8d;--ink-40:#6f6f6f;--ink-30:#525252;--ink-20:#393939;--ink-10:#333333;--ink-05:#2f2f2f;--white:#161616;
+  --blue-10:#001d6c;--blue-20:#0043ce;--blue-40:#4589ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#a6c8ff;
+  --green-10:#022d0d;--green-40:#42be65;--green-50:#24a148;--green-60:#42be65;--green-70:#6fdc8c;
+  --amber-10:#302400;--amber-30:#fddc69;--amber-40:#f1c21b;--amber-60:#d2a106;--amber-70:#fdd13a;
+  --red-10:#2d0709;--red-50:#fa4d56;--red-60:#fa4d56;--red-70:#ff8389;
+  --bg:#161616;--surface:#262626;--line:#393939;--line-2:#525252;
+  --text:#f4f4f4;--muted:#c6c6c6;--faint:#8d8d8d;--accent:var(--blue-40);
+}
+/* azul de texto sobre fundo escuro: o azul de botão (blue-60) não tem contraste aqui.
+   Toda ação que se apresenta como TEXTO azul entra nesta lista — 4.5:1 é o piso. */
+[data-theme="dark"] .btn--ter,[data-theme="dark"] .btn--ghost,
+[data-theme="dark"] .ndrop__mark,[data-theme="dark"] .ndrop__all,
+[data-theme="dark"] .dtab tbody tr:hover .go,
+[data-theme="dark"] .nrow:hover .nrow__go,[data-theme="dark"] .rhead__back:hover{color:var(--blue-40)}
+/* barra do grupo de comparação: --ink-100 vira BRANCO no escuro, então o degrau extra é preto */
+[data-theme="dark"] .dtab th.hr,[data-theme="dark"] .dtab th.hg,[data-theme="dark"] .dtab th.hb{background:#000}
+[data-theme="dark"] .btn--ter{border-color:var(--blue-40)}
+[data-theme="dark"] .nlink.is-active svg{stroke:var(--blue-40)}
+[data-theme="dark"] .shell__role,[data-theme="dark"] .me__hd .shell__role{color:var(--blue-40)}
+[data-theme="dark"] .shell__ico .dot{border-color:var(--surface)}
+[data-theme="dark"] .dtab th{color:#fff}
+[data-theme="dark"] .toast svg{stroke:var(--green-50)}
+/* superfície neutra escura (botão secundário, teclas de apoio): no tema escuro ela não vira
+   quase-branca — desce para o cinza 60 do Carbon, senão rouba a atenção do azul primário */
+[data-theme="dark"] .btn--sec{background:var(--ink-30);color:#fff}
+[data-theme="dark"] .btn--sec:hover{background:var(--ink-40)}
+/* perigo: --red-60 no escuro é a cor de TEXTO de erro (#fa4d56). Como FUNDO de botão ela não
+   sustenta o branco (3.35:1), então o botão sólido mantém o vermelho do tema claro. */
+[data-theme="dark"] .btn--dan,[data-theme="dark"] .btn--danger{background:#da1e28;color:#fff}
+[data-theme="dark"] .btn--dan:hover,[data-theme="dark"] .btn--danger:hover{background:#b81922}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;min-height:100vh}
+button,input,select{font-family:inherit;font-size:inherit}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue-60);outline-offset:-2px}
+h1,h2,h3,h4,p{margin:0}
+.mono{font-family:var(--mono);letter-spacing:-.01em}
+.wrap{max-width:1680px;margin:0 auto;padding:0 32px}
+
+/* ============ SHELL ============ */
+/* sem overflow:hidden aqui: o recorte pertence a .shell__nav, e um shell que corta esconderia
+   o painel de notificações (que pende de dentro dele) */
+.shell{position:sticky;top:0;z-index:40;height:var(--shell-h);background:var(--surface);display:flex;align-items:stretch;border-bottom:1px solid var(--line-2)}
+.shell__brand{display:flex;align-items:center;padding:0 20px 0 18px;flex:none}
+.shell__brand img{height:24px;width:auto;display:block}
+/* a marca tem duas artes: a clara e a de fundo escuro. Sem isso o 什么芯片 desaparece no escuro.
+   Regra pela CLASSE, não pelo shell que a contém: todo lockup da plataforma (operador, parceiro,
+   login) troca a arte pelo mesmo par — escopar em .shell__brand deixava os outros no claro.
+   O seletor precisa de html img.: cada folha de shell declara `<brand> img{display:block}` também
+   com 0,1,1 e é carregada DEPOIS desta — no empate quem vence é a última folha, e as duas artes
+   ficavam lado a lado no claro. html sobe para 0,1,2 e continua perdendo do [data-theme] (0,2,1). */
+html img.lg-d{display:none}
+[data-theme="dark"] img.lg-d{display:block}
+[data-theme="dark"] img.lg-l{display:none}
+.shell__nav{display:flex;align-items:stretch;flex:0 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+.shell__nav::-webkit-scrollbar{display:none}
+.nlink{display:flex;align-items:center;gap:8px;padding:0 18px;color:var(--ink-70);font-size:13px;font-weight:600;text-decoration:none;border:0;background:none;cursor:pointer;position:relative;white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.nlink svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9;opacity:.75}
+.nlink:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.nlink.is-active{color:var(--text)}
+.nlink.is-active svg{opacity:1;stroke:var(--blue-60)}
+.nlink.is-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--blue-60)}
+.shell__spacer{flex:1;min-width:0}
+.shell__org{display:flex;align-items:center;gap:10px;padding:0 16px;border-left:1px solid var(--line);flex:none}
+.shell__org-logo{height:28px;width:28px;background:var(--blue-60);display:grid;place-items:center;font-weight:800;color:#fff;font-size:11px;flex:none;letter-spacing:-.02em}
+.shell__org-txt{display:flex;flex-direction:column;line-height:1.2}
+.shell__org-name{font-size:12px;font-weight:700;white-space:nowrap}
+.shell__org-branch{color:var(--faint);font-size:10px;white-space:nowrap}
+.shell__who{display:flex;align-items:center;gap:10px;padding:0 16px;border-left:1px solid var(--line);flex:none}
+.shell__avatar{width:28px;height:28px;background:var(--ink-100);display:grid;place-items:center;color:var(--white);font-size:10px;font-weight:700;flex:none}
+.shell__user{display:flex;flex-direction:column;line-height:1.2;white-space:nowrap}
+.shell__user b{font-size:12px;font-weight:700}
+.shell__role{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-60)}
+/* quadrada com a barra por construção: lê --shell-h em vez de repetir o número, que era o que
+   deixava a célula de 52 pendurada quando a barra virou 48 */
+.shell__ico{width:var(--shell-h);flex:none;display:grid;place-items:center;border:0;border-left:1px solid var(--line);background:none;color:var(--ink-60);cursor:pointer;transition:background var(--d1),color var(--d1);position:relative;text-decoration:none}
+.shell__ico:hover{background:var(--ink-05);color:var(--text);text-decoration:none}
+.shell__ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9}
+.shell__ico .dot{position:absolute;top:14px;right:15px;width:7px;height:7px;background:var(--blue-60);border:2px solid #fff}
+.shell__ico--lang{font-family:var(--mono);font-size:12px;font-weight:500}
+.shell__ico--out:hover{background:var(--red-10);color:var(--red-60)}
+.shell__ico--theme .moon{display:none}
+[data-theme="dark"] .shell__ico--theme .moon{display:block}
+[data-theme="dark"] .shell__ico--theme .sun{display:none}
+
+/* ============ BOTÕES ============ */
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;height:var(--ctl-md);padding:0 16px;border:2px solid transparent;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;transition:background var(--d1),color var(--d1),border-color var(--d1)}
+.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.btn--pri{background:var(--blue-60);color:#fff}.btn--pri:hover{background:var(--blue-60h);text-decoration:none}
+.btn--sec{background:var(--ink-80);color:var(--white)}.btn--sec:hover{background:var(--ink-90);text-decoration:none}
+.btn--ter{background:transparent;color:var(--blue-60);border-color:var(--blue-60)}.btn--ter:hover{background:var(--blue-60);color:#fff;text-decoration:none}
+.btn--ghost{background:transparent;color:var(--blue-60);gap:12px}.btn--ghost:hover{background:var(--blue-10);text-decoration:none}
+.btn--dgh{background:transparent;color:var(--red-60);border-color:var(--red-60)}.btn--dgh:hover{background:var(--red-60);color:#fff;text-decoration:none}
+.btn--dan,.btn--danger{background:var(--red-60);color:#fff}.btn--dan:hover,.btn--danger:hover{background:var(--red-70);text-decoration:none}
+/* danger terciário: contorno vermelho que preenche no hover. Para ação irreversível que vive
+   num cabeçalho — o vermelho sólido ali gritaria mais alto que o próprio registro. */
+.btn--dan-ter{background:transparent;color:var(--red-70);border-color:var(--red-50)}
+.btn--dan-ter:hover{background:var(--red-60);border-color:var(--red-60);color:#fff;text-decoration:none}
+.btn--lg{height:var(--ctl-lg);width:100%}
+.btn--sm{height:var(--ctl-sm);font-size:13px;gap:12px;padding:0 12px}
+.btn--sm svg{width:14px;height:14px}
+/* ícone sozinho: o botão vira QUADRADO — largura igual à altura, em qualquer tamanho e qualquer
+   variante. Só para ação de ícone inequívoco (exportar, imprimir, apagar) e SEMPRE com title e
+   aria-label: sem rótulo visível, é o único jeito de saber o que o botão faz. */
+.btn--sq{padding:0;gap:0;justify-content:center;width:var(--ctl-md);flex:none}
+.btn--sm.btn--sq{width:var(--ctl-sm)}
+.btn--lg.btn--sq{width:var(--ctl-lg)}
+.btn:disabled{background:var(--ink-20);color:var(--ink-50);border-color:transparent;cursor:not-allowed}
+
+/* ============ TAGS / SINAIS ============ */
+/* todo selo do sistema fala em caixa alta — vale para .tag e .otag */
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;white-space:nowrap}
+.tag .dot{width:6px;height:6px;flex:none}
+.tag--yes{background:var(--green-10);color:var(--green-70)}.tag--yes .dot{background:var(--green-50)}
+.tag--no{background:var(--red-10);color:var(--red-70)}.tag--no .dot{background:var(--red-60)}
+.tag--maybe{background:var(--amber-10);color:var(--amber-70)}.tag--maybe .dot{background:var(--amber-60)}
+.tag--info{background:var(--blue-10);color:var(--blue-70)}.tag--info .dot{background:var(--blue-60)}
+.tag--mute{background:var(--ink-10);color:var(--ink-70)}.tag--mute .dot{background:var(--ink-50)}
+.live{width:8px;height:8px;border-radius:50%;background:#fff;flex:none;animation:bl 1.6s var(--ez) infinite}
+.live--g{background:var(--green-50)}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
+.kbd{font-family:var(--mono);font-size:11px;font-weight:500;border:1px solid var(--line-2);padding:1px 6px;color:var(--ink-70);background:var(--surface);white-space:nowrap}
+
+/* ============ BARRA DE COMPOSIÇÃO ============ */
+.bar{height:8px;background:var(--ink-10);display:flex;overflow:hidden}
+.bar i{height:100%}
+.bar .r{background:var(--green-50)}.bar .x{background:var(--red-50)}.bar .m{background:var(--amber-40)}.bar .b{background:var(--blue-60)}
+
+/* ============ SUPERFÍCIES ============ */
+.tile{background:var(--surface);border:1px solid var(--line)}
+.tile__h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line)}
+.tile__h h3{font-size:14px;font-weight:700;letter-spacing:-.005em}
+.tile__h p{font-size:12px;color:var(--faint);margin-top:2px}
+.toast{position:fixed;left:32px;bottom:74px;background:var(--ink-100);color:var(--white);font-size:13px;font-weight:500;padding:14px 18px;box-shadow:0 12px 32px -10px rgba(0,0,0,.5);opacity:0;transform:translateY(10px);pointer-events:none;transition:all var(--d3) var(--ez);display:flex;align-items:center;gap:10px;z-index:80;max-width:460px}
+.toast.is-on{opacity:1;transform:translateY(0)}
+.toast svg{width:16px;height:16px;fill:none;stroke:var(--green-40);stroke-width:2.4;flex:none}
+.toast .m{font-family:var(--mono);font-weight:600}
+
+/* ============ MENU DE PERFIL ============
+   O cabeçalho tinha oito células disputando largura (marca, nav, empresa, usuário, sino, tema,
+   idioma, sair) e o widget de câmbio entrava no meio — por isso a nav era comprimida e o último
+   link ficava atrás dele. Empresa, usuário, tema, idioma e sair viraram UM botão com gaveta:
+   sobram marca · nav · câmbio · sino · perfil. */
+.me{position:relative;display:flex;align-items:stretch;flex:none;border-left:1px solid var(--line)}
+.me__btn{display:flex;align-items:center;gap:10px;padding:0 14px;border:0;background:none;cursor:pointer;font-family:inherit;transition:background var(--d1)}
+.me__btn:hover{background:var(--ink-05)}
+.me.on .me__btn{background:var(--ink-05)}
+.me__chev{width:14px;height:14px;flex:none;color:var(--ink-50);transition:transform var(--d2) var(--ez)}
+.me__chev svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2}
+.me.on .me__chev{transform:rotate(180deg)}
+.me__pop{position:absolute;top:100%;right:0;width:284px;background:var(--surface);border:1px solid var(--line-2);box-shadow:0 10px 30px -8px rgba(22,22,22,.22);opacity:0;visibility:hidden;transform:translateY(-5px);transition:opacity var(--d2),transform var(--d2) var(--ez),visibility var(--d2);z-index:50}
+.me.on .me__pop{opacity:1;visibility:visible;transform:none}
+.me__org{display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--ink-05)}
+.me__sec{padding:6px 0;border-bottom:1px solid var(--line)}
+.me__sec:last-of-type{border-bottom:0}
+.me__l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);padding:8px 16px 4px}
+.me__row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;height:40px;font-size:13px;color:var(--ink-80)}
+.me__row b{font-weight:600}
+/* o botão de tema é o mesmo elemento de antes (theme.js o conhece), só reposicionado */
+/* o botão de tema mora na barra, ao lado do sino — estas regras valiam quando ele descia para
+   dentro do menu de perfil, e só sobrevivem para o caso de alguém recolocar um .shell__ico lá */
+.me .shell__ico{width:auto;height:28px;padding:0 10px;border:1px solid var(--line-2);border-left:1px solid var(--line-2);display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
+.me .shell__ico--theme::after{content:"Escuro"}
+[data-theme="dark"] .me .shell__ico--theme::after{content:"Claro"}
+.me__langs{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin:2px 16px 10px}
+.me__langs button{flex:1;height:32px;border:0;background:var(--surface);font-family:inherit;font-size:12px;font-weight:600;color:var(--ink-70);cursor:pointer;transition:background var(--d1),color var(--d1)}
+.me__langs button:hover{background:var(--ink-05);color:var(--text)}
+.me__langs button.on{background:var(--ink-100);color:var(--white);font-weight:700}
+.me .shell__ico--out{width:100%;height:44px;border:0;border-top:1px solid var(--line);justify-content:flex-start;gap:10px;padding:0 16px;font-size:13px;font-weight:600;color:var(--red-60)}
+.me .shell__ico--out::after{content:"Sair da conta"}
+.me .shell__ico--out:hover{background:var(--red-10)}
+/* dentro da gaveta a identidade volta a aparecer, mesmo quando a barra a esconde.
+   Especificidade de 3 classes de propósito: as regras responsivas que escondem empresa e usuário
+   na barra têm 2 e alcançavam também o que foi MOVIDO para cá dentro — a empresa sumia do menu. */
+.shell .me__pop .shell__org-txt,.shell .me__hd .shell__user{display:flex}
+.me__hd{padding:14px 16px 12px}
+.me__hd .shell__user,.me__hd .pshell__u{display:flex;flex-direction:column;line-height:1.3}
+.me__hd .shell__user b,.me__hd .pshell__u b{font-size:14px;font-weight:700}
+.me__hd .shell__role,.me__hd .pshell__u span{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-60)}
+.me__pop .shell__org,.me__pop .pshell__org{display:flex;border-left:0;padding:12px 16px}
+.me__pop .shell__org-txt{display:flex}
+
+/* ============ PAINEL DE LISTAGEM + TOOLBAR ============
+   Padrão das telas de lista (Estoque, Vendas): busca à esquerda que absorve a sobra, filtros em
+   seguida, ações à direita.
+   O separador é o gap de 1px sobre o fundo da régua — mesmo truque de .kpis__in e .opl__facts.
+   Com border-left, um controle que virasse o primeiro item de uma linha quebrada desenharia um
+   fio contra o nada (e CSS não tem seletor de "primeiro da linha"). Com gap isso é impossível.
+   Mora aqui, não nas páginas: mudar esta regra muda todas as listas do sistema. */
+.panel{background:var(--surface);border:1px solid var(--line)}
+.tbar{display:flex;align-items:stretch;gap:1px;background:var(--line);border-bottom:1px solid var(--line);position:relative;min-height:48px;flex-wrap:wrap}
+.tbar__search{flex:1 1 160px;position:relative;min-width:0;background:var(--surface)}
+.tbar__search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:16px;height:16px;fill:none;stroke:var(--ink-50);stroke-width:2;pointer-events:none}
+.tbar__search input{width:100%;height:47px;padding:0 16px 0 44px;border:0;background:transparent;color:var(--text);font-family:inherit;font-size:13px}
+.tbar__search input:focus{outline:2px solid var(--blue-60);outline-offset:-2px}
+.tbar__sel{height:47px;padding:0 34px 0 14px;border:0;background:var(--surface);color:var(--ink-70);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23697077' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 12px center;background-size:15px}
+.tbar__sel:hover{background-color:var(--ink-05)}
+.tbar__ico{width:47px;height:47px;display:grid;place-items:center;border:0;background:var(--surface);color:var(--ink-70);cursor:pointer;transition:background var(--d1),color var(--d1)}
+.tbar__ico:hover{background:var(--ink-05);color:var(--text)}
+.tbar__ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9}
+.tbar__new{height:47px;padding:0 18px;border:0;background:var(--blue-60);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:22px}
+.tbar__new:hover{background:var(--blue-60h)}
+.tbar__new svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2}
+/* o intervalo de datas ocupa uma linha inteira — é largo demais para a faixa. `order` o joga
+   para o fim para que nenhum controle caia numa terceira linha. */
+.drange{order:9;flex:0 0 100%;display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--surface);font-size:12px;color:var(--faint);white-space:nowrap}
+.drange input{height:32px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);font-family:var(--mono);font-size:12px;padding:0 8px;color:var(--text)}
+.drange input:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.drange.hide{display:none}
+.slabel{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px}
+.slabel h2{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-70)}
+.slabel span{font-size:12px;color:var(--faint)}
+@media(max-width:880px){.tbar__search{flex:1 1 100%}}
+
+/* ============ TABELA DE DADOS (.dtab) ============
+   Modelo único das listas do sistema — Estoque, Vendas e Compras usam ESTA tabela.
+   Antes cada tela tinha a sua cópia (`table` solto, `.vt`, `.bt`) e as três divergiam em
+   cabeçalho, altura de linha, hover e alinhamento. Decisões:
+
+   1. Cabeçalho grafite, mono, espaçado e GRUDADO abaixo da barra do app — em lista longa você
+      continua sabendo que coluna está lendo sem voltar ao topo. Grafite (--ink-90) e não preto:
+      preto puro contra a superfície branca pesa demais e rouba a atenção do conteúdo.
+   2. Identificador na primeira coluna, sempre mono, e GRUDADO à esquerda no scroll horizontal:
+      em telas estreitas você desliza os números sem perder de vista de que lote se trata.
+   3. TUDO alinhado à esquerda — título e conteúdo, texto e número. Uma única margem vertical
+      corta a tabela inteira e o olho desce reto; misturar esquerda e direita cria duas margens
+      concorrentes e cada coluna vira uma decisão. `font-variant-numeric:tabular-nums` mantém
+      os dígitos na mesma grade, então a comparação vertical sobrevive sem alinhar à direita.
+   4. Linha inteira clicável, 56px, com a seta à direita; hover azul (a cor de "leva a algum lugar"
+      em todo o sistema) e um fio azul de 3px à esquerda que marca onde o cursor está.
+   5. Sem borda vertical entre células — a régua horizontal de 1px basta para guiar o olho, e
+      grade completa em tabela densa vira ruído.
+   6. O cabeçalho gruda abaixo da barra do app (--shell-h), não em 0 — em 0 ele ficaria embaixo
+      dela. E o wrap SÓ vira scrollport abaixo de 900px: `overflow-x:auto` com o eixo Y em
+      `visible` faz o Y computar para `auto` também, e aí o sticky passaria a se resolver contra
+      o wrap (que não rola na vertical) em vez da janela — o cabeçalho nunca grudaria.
+   7. Uma escala tipográfica só, aplicada também ao componente de dinheiro (.mval) quando ele cai
+      dentro da tabela: valor mono 14/600, sub-linha mono 11/500 cinza. Antes o Estoque desenhava
+      dinheiro em 13/10 e Vendas em 14/11 — duas escalas para a mesma coisa. */
+.dtab__wrap{position:relative;background:var(--surface)}
+.dtab{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface)}
+.dtab th{position:sticky;top:var(--shell-h);z-index:3;background:var(--ink-90);color:#fff;text-align:left;
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  padding:0 16px;height:44px;white-space:nowrap;border-bottom:1px solid var(--ink-90)}
+.dtab th.s{cursor:pointer;user-select:none;transition:background var(--d1)}
+.dtab th.s:hover{background:var(--ink-80)}
+.dtab th .ar{opacity:0;margin-left:6px;font-size:9px;transition:opacity var(--d1)}
+.dtab th.s:hover .ar{opacity:.45}
+.dtab th.is-sort{color:#fff}
+.dtab th.is-sort .ar{opacity:1;color:var(--blue-40)}
+.dtab td{padding:0 16px;height:var(--row-h);border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle;white-space:nowrap;background:var(--surface);transition:background var(--d1)}
+.dtab tbody tr{cursor:pointer}
+.dtab tbody tr:hover td{background:var(--blue-10)}
+.dtab tbody tr.sel td{background:var(--blue-10)}
+/* fio de posição: nasce da própria célula, então acompanha a coluna grudada sem truque de layout */
+.dtab tbody td:first-child{box-shadow:inset 3px 0 0 transparent}
+.dtab tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--blue-60)}
+.dtab tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--blue-60)}
+.dtab tbody tr.dim td{color:var(--ink-60)}
+/* tabela que só mostra: nenhuma linha leva a lugar nenhum. Cursor de mão, hover azul e fio de
+   posição são as três coisas que dizem "clique aqui" — numa tabela de consulta, mentem. */
+.dtab--static tbody tr{cursor:default}
+.dtab--static tbody tr:hover,.dtab--static tbody tr:hover td{background:var(--surface)}
+.dtab--static tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 transparent}
+
+/* tipos de célula — uma escala só, sempre à esquerda */
+.dtab .c{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
+.dtab .n{font-family:var(--mono);font-size:14px;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dtab .v{font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* sub-linha (≈ US$, taxa) — o marcador ao vivo .wtc-pop também é um span solto aqui e tem
+   estilo próprio, então fica de fora: esta regra o sobrescreveria e o apagaria contra o verde */
+.dtab .v span:not(.wtc-pop),.dtab .n span:not(.wtc-pop){display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);margin-top:3px;letter-spacing:-.01em}
+/* rótulo em palavra volta para a sans — mono se justifica em cifra, não em texto */
+.dtab .v span.due{color:var(--amber-70);font-weight:600;font-family:var(--sans);letter-spacing:0}
+.dtab .v span.got{color:var(--green-70);font-weight:600;font-family:var(--sans);letter-spacing:0}
+/* o componente de dinheiro herda a escala da tabela, para o Estoque não desenhar valor menor
+   que Vendas na mesma coluna. Duas classes na âncora (.mval.mval--xs) para vencer os
+   modificadores de tamanho, que moram depois nesta folha e empatariam em especificidade. */
+.dtab .mval,.dtab .mval--xs,.dtab .mval--sm{align-items:flex-start;text-align:left}
+.dtab .mval.mval--xs .mval__c,.dtab .mval.mval--sm .mval__c,.dtab .mval .mval__c{font-size:14px;font-weight:600;letter-spacing:-.02em}
+.dtab .mval.mval--xs .mval__u,.dtab .mval.mval--sm .mval__u,.dtab .mval .mval__u{font-size:11px;font-weight:500;margin-top:3px;letter-spacing:-.01em}
+.dtab .none{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink-30)}
+/* pastilha de categoria WTC: é CLASSIFICAÇÃO, não estado — mono curta e cinza, sem cor semântica,
+   para não disputar leitura com os selos de estado que moram na mesma linha */
+.dtab .wtc{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);background:var(--ink-05);padding:2px 7px;white-space:nowrap}
+/* recusa: o número que tira dinheiro da linha. Zero fica apagado — nesta coluna, zero é a boa
+   notícia e não precisa de tinta. */
+/* text-align explícito porque a bancada do comprador define .rej solto (com alinhamento à direita)
+   e a classe vaza para cá: nesta tabela TUDO fica à esquerda, número inclusive */
+.dtab .rej{text-align:left}
+.dtab .rej.some{color:var(--red-70);font-weight:600}
+.dtab .rej.zero{color:var(--ink-30)}
+/* GRUPO DE COLUNAS TINGIDO — só onde a tabela COMPARA (o que saiu × o que a conferência recusou ×
+   o que aprovou × quanto rendeu). A tinta pertence ao GRUPO, não ao valor: fundo 10 na célula e o
+   rótulo do cabeçalho na cor da família, para o olho pular direto para o bloco certo em vez de ler
+   oito colunas iguais. Numa lista comum isso seria ruído — lá o dinheiro não tem fundo. Alinhamento
+   não muda: como em toda a tabela, tudo à esquerda. */
+.dtab tbody td.hr{background:var(--red-10)}
+.dtab tbody td.hg{background:var(--green-10)}
+.dtab tbody td.hb{background:var(--blue-10)}
+/* no cabeçalho o grupo NÃO se anuncia com fundo claro (furaria a barra escura e deixaria pastel
+   sobre pastel): a barra fica um degrau mais escura e o rótulo recebe a cor da família */
+.dtab th.hr,.dtab th.hg,.dtab th.hb{background:var(--ink-100)}
+.dtab th.hr{color:var(--red-50)}
+.dtab th.hg{color:var(--green-40)}
+.dtab th.hb{color:var(--blue-40)}
+/* no hover a linha inteira acende, mas o grupo mantém identidade: um tom acima da própria cor —
+   com o azul do hover por cima, as três colunas viravam uma faixa só */
+.dtab tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
+.dtab tbody tr:hover td.hg{background:color-mix(in srgb,var(--green-10) 88%,var(--green-50))}
+.dtab tbody tr:hover td.hb{background:var(--blue-20)}
+.dtab td.d{color:var(--muted);font-size:12px;max-width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dtab .go{width:44px;text-align:right;color:var(--ink-30);padding-left:0}
+.dtab .go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;display:inline-block;vertical-align:middle;transition:transform var(--d1)}
+.dtab tbody tr:hover .go{color:var(--blue-60)}
+.dtab tbody tr:hover .go svg{transform:translateX(2px)}
+/* ação pendente: o que espera o usuário nesta linha. Mesma casca dos selos de estado (fundo,
+   entrelinha, caixa alta) — sem ela a palavra flutuava solta na coluna, com peso de texto num
+   lugar onde tudo é pastilha. A cor separa AS DUAS AÇÕES: azul é despachar (movimento do lote),
+   âmbar é aceitar (decisão sobre dinheiro, o mesmo âmbar de todo saldo em aberto). */
+.dtab .act{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;white-space:nowrap;background:var(--blue-10);color:var(--blue-70)}
+.dtab .act i{width:6px;height:6px;background:var(--blue-60);flex:none}
+.dtab .act--ship{background:var(--blue-10);color:var(--blue-70)}
+.dtab .act--ship i{background:var(--blue-60)}
+.dtab .act--accept{background:var(--amber-10);color:var(--amber-70)}
+.dtab .act--accept i{background:var(--amber-60)}
+/* conferir é ato sobre a CAIXA (azul, como despachar); pagar é ato sobre DINHEIRO (âmbar, como
+   aceitar). A cor diz a natureza do ato, nunca quem o pratica.
+   E a pastilha de chamada aparece só na lista de quem TEM de agir: do outro lado do balcão a mesma
+   linha é estado, e estado é neutro. Sem essa regra as duas listas gritariam a mesma linha para os
+   dois lados, e "ação pendente" deixaria de querer dizer nada. */
+.dtab .act--check{background:var(--blue-10);color:var(--blue-70)}
+.dtab .act--check i{background:var(--blue-60)}
+.dtab .act--pay{background:var(--amber-10);color:var(--amber-70)}
+.dtab .act--pay i{background:var(--amber-60)}
+/* data ao lado do código, na célula de identidade: o código identifica, a data situa — mesma linha,
+   um degrau abaixo em corpo e em cor, sem virar uma segunda coluna. */
+.dtab .c .when{font-family:var(--sans);font-size:11.5px;font-weight:500;color:var(--muted);letter-spacing:0}
+/* marcador ao vivo: com o número à esquerda, o "+n" nasce depois dele, nunca por cima */
+.dtab .n--live{position:relative;min-width:104px}
+.dtab .n--live .wtc-pop--in{left:auto;right:14px}
+.dtab .cbx{width:44px;padding-right:0}
+.dtab__empty{padding:56px 20px;text-align:center;color:var(--faint);background:var(--surface);border-bottom:1px solid var(--line)}
+.dtab__empty b{display:block;font-size:14px;color:var(--muted);margin-bottom:4px;font-weight:600}
+
+/* ---- PLANILHA DE DETALHE: a mesma .dtab, com três papéis que só ela tem ----
+   Uma tabela de detalhe (capacidade × categoria, com subtotal por tipo) NÃO é outro componente:
+   é .dtab com faixa de grupo, célula de lançamento e rodapé de coluna. Tudo o que a lista já
+   resolve continua valendo — TUDO à esquerda, sem borda vertical, cabeçalho grafite grudado, e os
+   grupos tingidos .hr/.hg/.hb para as colunas que COMPARAM. Antes isso vivia numa folha própria
+   (.sst) que alinhava número à direita e desenhava grade completa: as duas coisas que este
+   modelo existe para não fazer. */
+/* a planilha rola no próprio bloco, não na página: o cabeçalho gruda no topo do scrollport e os
+   totais no fundo, então os dois extremos da comparação ficam sempre à vista. Dentro de um
+   scrollport o sticky se resolve contra ELE, então o topo volta a ser 0 e não --shell-h. */
+.dtab__sc{position:relative;overflow:auto;max-height:min(70vh,680px)}
+.dtab__sc .dtab th{top:0}
+/* faixa de tipo: abre cada bloco com o subtotal já somado. Chapa rebaixada e duas réguas — o
+   mesmo par que separa manchete de rodapé na faixa de indicadores, nunca uma segunda barra
+   escura: duas barras escuras na mesma tabela e o olho perde qual delas manda. */
+.dtab tbody tr.g td{height:44px;background:var(--ink-10);border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);font-size:12px;font-weight:700}
+.dtab tbody tr.g:hover td{background:var(--ink-10)}
+.dtab tbody tr.g td:first-child{box-shadow:none}
+.dtab tbody tr.g td.n,.dtab tbody tr.g td.v{font-family:var(--mono);font-size:13px;font-weight:700}
+.dtab .g__n{display:flex;align-items:center;gap:9px;min-width:0}
+.dtab .g__n i{width:9px;height:9px;flex:none}
+.dtab .g__n em{font-style:normal;font-size:11px;font-weight:600;color:var(--ink-70);letter-spacing:.02em}
+/* capacidade: filha da faixa acima. A sangria é o que diz "pertence a este tipo" — sem ela a
+   planilha vira lista plana e o subtotal do grupo perde o dono. */
+.dtab .cap{font-family:var(--mono);font-size:14px;font-weight:600;padding-left:30px}
+/* CAMPO DE LANÇAMENTO — uma anatomia só para toda célula em que se DIGITA, na tabela de recusas
+   e na grade de preços: caixa contida (nunca sangrada de borda a borda), fio de 1px em volta,
+   régua de 2px embaixo com a cor do que está em jogo, mono à esquerda como todo número daqui.
+   Antes eram duas coisas diferentes — a recusa era um campo discreto, o preço era a célula
+   inteira pintada de âmbar. Mesma ação, duas linguagens.
+   A régua é quem fala: VERMELHA onde se tira dinheiro da linha (recusa), ÂMBAR no preço ainda sem
+   cotação, AZUL no preço já informado. O campo em si nasce sempre igual e discreto — numa grade de
+   duzentas células, fundo colorido em cada uma é ruído, régua de 2px é sinal. */
+.dtab .rjin,.dtab .cell{width:100%;max-width:104px;height:var(--ctl-sm);padding:0 10px;border:1px solid var(--line-2);border-bottom:2px solid var(--line-2);background:var(--surface);font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);text-align:left;transition:border-color var(--d1)}
+.dtab .rjin::placeholder,.dtab .cell::placeholder{color:var(--ink-40);font-family:var(--sans);font-size:12px;font-weight:500}
+.dtab .rjin:focus,.dtab .cell:focus{outline:2px solid var(--blue-60);outline-offset:-2px}
+/* recusa: a régua é vermelha desde vazia — o campo existe para tirar unidades da linha */
+.dtab .rjin{border-bottom-color:var(--red-50)}
+.dtab .rjin:focus{outline:0;border-color:var(--red-60);box-shadow:0 0 0 2px rgba(218,30,40,.18)}
+.dtab .rjin.bad{border-color:var(--red-60);background:var(--red-60);color:#fff}
+/* preço: âmbar enquanto não há cotação — mesmo âmbar de todo pendência do sistema */
+.dtab .cell{border-bottom-color:var(--amber-40);max-width:132px}
+.dtab th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
+/* a linha em edição vence o hover neutro de .dtab--static: é estado, não passagem de cursor */
+.dtab tbody tr.on td,.dtab--static tbody tr.on:hover td{background:var(--ink-05)}
+.dtab .dl2{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--red-60)}
+/* rodapé de coluna: o total embaixo da própria coluna, colado no fundo do scrollport. Claro e
+   não escuro, pela mesma razão da faixa de grupo — a barra escura pertence ao cabeçalho. */
+.dtab tfoot td{position:sticky;bottom:0;z-index:2;height:var(--row-h);padding:0 16px;background:var(--ink-10);border-top:1px solid var(--line-2);border-bottom:0;font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap}
+.dtab tfoot td small{display:block;font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+.dtab tfoot td.lbl{font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-70)}
+.dtab tfoot td.hr{background:var(--red-10)}
+.dtab tfoot td.hg{background:var(--green-10)}
+.dtab tfoot td.hb{background:var(--blue-10)}
+
+/* ---- GRADE DE LANÇAMENTO: a .dtab quando cada célula É um campo ----
+   A grade de preços é a planilha levada ao extremo: a célula não mostra um valor, ela é o campo.
+   Continua .dtab — cabeçalho grafite, sem borda vertical, TUDO à esquerda — e só a geometria da
+   célula muda: o campo contido herda a altura de controle do sistema e a régua de baixo diz em que
+   pé está a cotação. Antes isso era uma folha à parte (.gt) com cabeçalho claro e número
+   centralizado — duas grades de preço e de lista que não se pareciam. */
+/* conta pronta (SSD: ¥/GB × capacidade): é valor derivado, não campo — sem caixa, sem régua, só a
+   escala mono dos outros números da tabela */
+.dtab .calc{display:flex;align-items:center;height:var(--ctl-sm);font-size:14px;color:var(--ink-70)}
+/* rótulo de linha com selo de estado: o selo vem DEPOIS do nome, no mesmo eixo. Empurrá-lo para a
+   direita da célula abria a segunda margem que este modelo existe para não ter. */
+.dtab .gl{display:flex;align-items:center;justify-content:flex-start;gap:12px;height:auto;padding:0}
+/* a grade por marca é a ÚNICA lista do sistema que rola de lado, e por um motivo que as outras não
+   têm: o que sai da vista é outra marca, não a coluna de dinheiro do fim. Aí vale a regra 2 — o
+   identificador gruda à esquerda para o preço nunca perder de vista a que linha pertence. */
+.dtab__wrap--x{overflow-x:auto}
+/* mesma armadilha da regra 6, do outro lado: overflow-x:auto faz o eixo Y computar para auto, o
+   wrap vira scrollport e o sticky passa a se resolver contra ELE. Como o wrap não rola na
+   vertical, o cabeçalho nunca solta e fica cravado --shell-h abaixo do próprio topo, escondendo a
+   primeira linha atrás dele. Dentro de um scrollport o topo é 0 — não "restaure" --shell-h aqui. */
+.dtab__wrap--x .dtab th{top:0}
+.dtab__wrap--x .dtab th:first-child,.dtab__wrap--x .dtab td:first-child{position:sticky;left:0;z-index:4;min-width:210px}
+/* o fio da coluna grudada soma ao fio de posição em vez de substituí-lo: numa lista clicável com
+   rolagem lateral os dois precisam conviver — um diz onde a coluna termina, o outro onde o
+   cursor está. */
+.dtab__wrap--x .dtab tbody td:first-child{background:var(--surface);box-shadow:inset 3px 0 0 transparent,1px 0 0 var(--line-2)}
+.dtab__wrap--x .dtab thead th:first-child{box-shadow:1px 0 0 var(--line-2)}
+.dtab__wrap--x .dtab tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--blue-60),1px 0 0 var(--line-2)}
+.dtab__wrap--x .dtab tbody tr.g td:first-child{background:var(--ink-10)}
+
+/* Nem no tablet a tabela rola de lado. A rolagem horizontal (com identificador grudado e sombra
+   constante) foi tirada daqui de propósito: em toda lista deste sistema a última coluna é dinheiro,
+   e era exatamente ela que saía da tela. A tabela CABE porque solta colunas por papel — .desc já
+   sai em 1100px, .hide-md sai em 880 — e o wrap fica com overflow apenas como rede de segurança. */
+@media(max-width:900px){.dtab__wrap{overflow-x:auto}}
+[data-theme="dark"] .dtab th{background:#000;border-bottom-color:#393939}
+[data-theme="dark"] .dtab th.s:hover{background:#161616}
+
+/* a descrição é a primeira coisa a sair quando falta largura: sem ela a tabela transbordaria e
+   levaria a coluna de Status (onde vive a ação pendente) para fora da tela */
+@media(max-width:1100px){.desc,.dtab .d{display:none}}
+/* .hide-lg é SUBTRAÇÃO, não descrição: a célula sai na mesma largura que .d, mas sem herdar a
+   tipografia de descrição (12px, cinza, elipse). É o que uma coluna de DINHEIRO precisa — .d ali
+   dava duas escalas de dinheiro na mesma linha, exatamente o que o modelo .dtab existe para evitar.
+   Par @media + @container, como todo bloco responsivo desta folha. */
+@media(max-width:1100px){.dtab .hide-lg{display:none}}
+@container vp (max-width:1100px){.dtab .hide-lg{display:none}}
+
+@media(max-width:1180px){.shell__org-txt{display:none}}
+@media(max-width:1080px){.shell__who{display:none}}
+@media(max-width:980px){.shell__org{display:none}}
+/* o nome sai do botão antes dos rótulos da nav: ele já aparece dentro da gaveta, os links não.
+   Assim a nav guarda as palavras até 900px — e nunca corta uma no meio. */
+@media(max-width:1100px){.me__btn{padding:0 12px;gap:8px}}
+@media(max-width:900px){.nlink span{display:none}.nlink{padding:0 15px;gap:0}.nlink svg{width:18px;height:18px}}
+@media(max-width:820px){.shell__brand{padding:0 14px}.nlink{padding:0 13px}}
+@media(max-width:680px){.nlink{padding:0 11px}}
+@media(max-width:760px){.fx__s{display:none}}
+@media(max-width:880px){
+  .shell__org-txt,.shell__user{display:none}
+  .wrap{padding:0 16px}
+  .toast{left:16px;right:16px;max-width:none}
+}
+
+/* ============ MENU MOBILE / TABLET (gaveta do shell) ============
+   MODELO DO SISTEMA — a barra vira uma pilha. Qualquer tela do app herda: basta carregar shell.js,
+   que mede a PRÓPRIA barra (não a janela) e escreve data-shell="desktop|tablet|phone". Medir o
+   elemento é o que faz a mesma regra valer no aparelho real e no enquadramento do protótipo.
+
+   Por que display e não recorte por max-height: o painel de notificações pende do shell (absoluto,
+   escondido por visibility). Um shell com overflow:hidden o cortaria, e com overflow-y:auto ele
+   contava a altura dele — abria um vazio com barra de rolagem dentro da própria barra. Fechada,
+   cada faixa da gaveta simplesmente NÃO EXISTE no layout.
+
+   A RÉGUA DA GAVETA — quatro números, e nada fora deles:
+     altura de linha  64px (--ctl-lg, degrau xl do Carbon) para TODA linha tocável; 48px (--ctl-md) só para o
+                      segmentado de idioma, que é controle, não linha
+     sarjeta          16px, a mesma do .wrap no celular — marca, linhas, rótulos e chips
+     eixo do texto    52px = 16 de sarjeta + 24 de slot de ícone + 12 de intervalo. Ícone de 20
+                      centrado no slot de 24; avatar de 24 ocupa o slot inteiro. Toda etiqueta
+                      da gaveta começa no MESMO x — é o que faz a pilha ler como uma lista só
+     tipo             etiqueta 15/600 · rótulo de seção 11/800 caixa alta · apoio 12 · número
+                      mono 15. Nada de 16, 13 ou 10 soltos: eram eles que pareciam desproporcionais */
+.shell__burger{display:none;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:var(--shell-h);height:var(--shell-h);border:0;border-left:1px solid var(--line);background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.shell__burger:hover{background:var(--ink-05)}
+.shell__burger i{display:block;width:20px;height:2px;background:var(--ink-80);transition:transform var(--d2) var(--ez),opacity var(--d1)}
+.shell__burger[aria-expanded="true"] i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.shell__burger[aria-expanded="true"] i:nth-child(2){opacity:0}
+.shell__burger[aria-expanded="true"] i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ---------- a barra ---------- */
+.shell:is([data-shell="tablet"],[data-shell="phone"]){flex-wrap:wrap;align-content:flex-start;height:auto}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .shell__nav,.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx,.shell:is([data-shell="tablet"],[data-shell="phone"]) .me{display:none}
+.shell:is([data-shell="tablet"],[data-shell="phone"]).is-open .shell__nav,.shell:is([data-shell="tablet"],[data-shell="phone"]).is-open .fx,.shell:is([data-shell="tablet"],[data-shell="phone"]).is-open .me{display:flex}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .shell__brand{order:1;flex:1;height:var(--shell-h);padding:0 16px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .nbell,.shell:is([data-shell="tablet"],[data-shell="phone"]) .shell__ico--theme{order:2}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .shell__burger{order:3;display:flex}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .shell__spacer{display:none}
+
+/* ---------- destinos: a lista ---------- */
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .shell__nav{order:4;flex:0 0 100%;flex-direction:column;align-items:stretch;overflow:visible;border-top:1px solid var(--line-2)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .nlink{height:var(--ctl-lg);padding:0 16px;gap:12px;font-size:15px;font-weight:600;color:var(--text);border-bottom:1px solid var(--line)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .nlink svg{width:20px;height:20px;margin:0 2px;opacity:.85}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .nlink.is-active{background:var(--blue-10);color:var(--blue-70)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .nlink.is-active svg{opacity:1;stroke:currentColor}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .nlink.is-active::after{left:0;right:auto;top:0;bottom:0;width:3px;height:auto}
+
+/* ---------- câmbio: linha da lista, não widget de barra ----------
+   sem ícone próprio, então o texto entra direto no eixo de 52px; o selo de aviso, quando existe,
+   ocupa esse slot vazio. O pulso ao vivo vai para a borda direita, como as setas das outras linhas */
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx{order:5;flex:0 0 100%;height:var(--ctl-lg);padding:0 16px 0 52px;gap:12px;border-left:0;border-bottom:1px solid var(--line)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx__r{font-size:15px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx__s{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx__live{margin-left:auto}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx__ic{order:-1;width:20px;height:20px;margin-left:-40px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .fx__ic svg{width:20px;height:20px}
+
+/* ---------- perfil: linha que abre um painel aninhado ---------- */
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me{order:6;flex:0 0 100%;flex-direction:column;border-left:0}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__btn{height:var(--ctl-lg);padding:0 16px;gap:12px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__btn .shell__avatar{width:24px;height:24px;font-size:9.5px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__btn::after{order:1;content:"Conta e preferências";font-size:15px;font-weight:600;color:var(--text)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__chev{order:2;margin-left:auto;width:16px;height:16px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__chev svg{width:16px;height:16px}
+/* o painel é conteúdo, não janela: fundo aninhado (ink-05), sem sombra, e recolhido por display —
+   visibility:hidden ainda ocuparia a altura e abriria um vazio na pilha */
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__pop{position:static;width:auto;background:var(--ink-05);border:0;border-top:1px solid var(--line);box-shadow:none;opacity:1;visibility:visible;transform:none;display:none}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me.on .me__pop{display:block}
+/* identidade é BLOCO, não linha: nome, cargo e empresa numa só respiração */
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__hd{padding:16px 16px 10px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__hd .shell__user b{font-size:15px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__hd .shell__role{font-size:11px;letter-spacing:.08em;margin-top:3px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__pop .shell__org{padding:0 16px 16px;gap:12px;background:none;border-bottom:1px solid var(--line)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__pop .shell__org-logo{width:24px;height:24px;font-size:9.5px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__pop .shell__org-name{font-size:13px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__sec{padding:0;border-bottom:0}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__l{padding:14px 16px 8px;font-size:11px;letter-spacing:.08em}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__langs{margin:0 16px 16px;border-color:var(--line-2)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me__langs button{height:var(--ctl-md);font-size:14px}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me .shell__ico--out{height:var(--ctl-lg);padding:0 16px;gap:12px;font-size:15px;border-top:1px solid var(--line)}
+.shell:is([data-shell="tablet"],[data-shell="phone"]) .me .shell__ico--out svg{width:20px;height:20px;margin:0 2px}
+
+/* ---------- celular: só a marca aperta ---------- */
+.shell[data-shell="phone"] .shell__brand img{height:21px}
+/* o painel de notificações ocupa a largura da barra: com .nbell estático ele se resolve contra o
+   próprio shell, e não contra a célula de 52px do sino */
+.shell[data-shell="phone"] .nbell{position:static}
+.shell[data-shell="phone"] .ndrop{left:0;right:0;width:auto}
+
+/* ============ RODAPÉ DA LISTA (.tfoot / .pgn) ============
+   Contagem à esquerda, tamanho de página e os dois passos à direita. Vivia dentro do estoque.html,
+   onde vencia por ordem de carga as próprias regras responsivas desta folha. */
+.tfoot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 0 0 16px;min-height:48px;font-size:12px;color:var(--muted);background:var(--ink-05);border-top:1px solid var(--line)}
+.tfoot b{font-family:var(--mono);font-weight:700;color:var(--text);white-space:nowrap}
+/* rodapé de SOMA, não de paginação: duas pontas de texto, então tem margem nas duas bordas e pode
+   quebrar em duas linhas. O rodapé de lista é nowrap porque os passos de página têm alvo de toque
+   com altura fixa; aqui não há passo nenhum. */
+.tfoot--sum{padding:9px 16px;flex-wrap:wrap;gap:4px 16px}
+/* mesmo par de cores que a sub-linha da célula de dinheiro: âmbar é saldo em aberto, verde é quitado */
+.tfoot .due{color:var(--amber-70)}
+.tfoot .got{color:var(--green-70)}
+.pgn{display:flex;align-items:stretch;margin-left:auto}
+.pgn__per{display:flex;align-items:center;gap:9px;padding:0 14px;border-left:1px solid var(--line);white-space:nowrap}
+.pgn__per select{height:30px;border:0;background:var(--surface);border-bottom:1px solid var(--ink-50);font-family:inherit;font-size:12px;font-weight:700;color:var(--text);padding:0 6px;cursor:pointer}
+.pgn__per select:focus{outline:2px solid var(--blue-60);outline-offset:-2px}
+.pgn__i{display:flex;align-items:center;padding:0 14px;border-left:1px solid var(--line);white-space:nowrap}
+.pgn__b{width:44px;border:0;border-left:1px solid var(--line);background:transparent;color:var(--ink-70);cursor:pointer;display:grid;place-items:center;transition:background var(--d1)}
+.pgn__b:hover:not(:disabled){background:var(--ink-10);color:var(--text)}
+.pgn__b:disabled{color:var(--ink-30);cursor:not-allowed}
+.pgn__b svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* ============ DIÁLOGO (.mscrim / .mbox) ============
+   MODELO DO SISTEMA — a casca do diálogo mora aqui; o conteúdo de cada um (campos, prévia,
+   seletores) segue na tela que o abre. Três alturas, três formas:
+
+     desktop   caixa centrada de 560px sobre o escurecimento
+     tablet    a mesma caixa, só mais rente à borda — 768px ainda é tela de janela
+     celular   deixa de ser janela e vira PÁGINA: ocupa os quatro cantos
+
+   Por que página inteira no telefone: uma caixa de 560px em 390px de tela vira 342px com
+   escurecimento inútil em volta, e formulário com três campos passa de 90vh — ou seja, a caixa
+   flutuante já era tela cheia, só com moldura falsa. Como página, o cabeçalho e as ações ficam
+   presos nas pontas e só o meio rola, que é o comportamento esperado de formulário no aparelho. */
+.mscrim{position:fixed;inset:0;background:rgba(22,22,22,.72);z-index:95;display:none;align-items:center;justify-content:center;padding:24px}
+.mscrim.on{display:flex}
+.mbox{background:var(--surface);width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;animation:mpop var(--d3) var(--ez)}
+@keyframes mpop{from{opacity:0;transform:translateY(8px)}}
+@keyframes msheet{from{opacity:0;transform:translateY(16px)}}
+.mbox__h{position:relative;padding:20px 60px 18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex:none}
+/* sair sem decidir é sempre possível, e o X é onde a mão procura. Fica absoluto no canto: assim
+   ele não entra na conta do space-between e os dois blocos de texto seguem nas pontas. */
+.mbox__x{position:absolute;top:14px;right:14px;width:32px;height:32px;display:grid;place-items:center;border:0;background:none;color:var(--ink-60);cursor:pointer;transition:color var(--d1),background var(--d1)}
+.mbox__x:hover{background:var(--ink-10);color:var(--text)}
+.mbox__x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.mbox__h h2{font-size:20px;font-weight:400;letter-spacing:-.02em}
+.mbox__h p{font-size:12px;color:var(--muted);margin-top:4px;max-width:34ch}
+.mbox__b{padding:20px 24px 24px;overflow:auto;display:flex;flex-direction:column;gap:20px}
+.mbox__f{display:flex;gap:1px;background:var(--line);border-top:1px solid var(--line);flex:none}
+.mbox__f .btn{flex:1;justify-content:center;height:60px;gap:12px}
+
+@media(max-width:880px){.mscrim{padding:20px}.mbox{max-height:92vh}.mbox__f .btn{height:56px}}
+@container vp (max-width:880px){.mscrim{padding:20px}.mbox{max-height:92vh}.mbox__f .btn{height:56px}}
+
+/* celular: página inteira. A ação principal sobe para o topo da pilha — empilhada, a ordem do
+   código (cancelar primeiro) deixaria o botão que resolve embaixo, longe do polegar e do olho. */
+@media(max-width:600px){
+  .mscrim{padding:0;align-items:stretch;justify-content:stretch}
+  .mbox{max-width:none;max-height:none;height:100%;animation:msheet var(--d3) var(--ez)}
+  /* título antes do código: empilhado, o código vinha primeiro e a tela abria por um dado solto,
+     antes de dizer o que se está fazendo ali. */
+  .mbox__h{padding:14px 56px 14px 16px;flex-direction:column;align-items:flex-start;gap:9px}
+  .mbox__h p{max-width:none}
+  .mbox__x{top:8px;right:6px;width:44px;height:44px}
+  .mbox__x svg{width:20px;height:20px}
+  .mbox__b{padding:16px 16px 20px;gap:18px}
+  /* rodapé no telefone: as duas ações LADO A LADO, na mesma ordem do desktop (a que resolve à
+     direita, onde o polegar já está). Empilhado, cada botão virava uma faixa de 356px e o par
+     comia 110px do pouco que a folha tem; e a que resolve, no topo, ficava longe do polegar.
+     Rótulo pode quebrar em duas linhas — cabe nos 52px e é melhor que cortar a palavra. */
+  .mbox__f .btn{flex:1 1 0;min-width:0;height:52px;padding:0 10px;gap:7px;font-size:13px;white-space:normal;line-height:1.25;text-align:center}
+  .mbox__f .btn svg{flex:none}
+}
+@container vp (max-width:600px){
+  .mscrim{padding:0;align-items:stretch;justify-content:stretch}
+  .mbox{max-width:none;max-height:none;height:100%;animation:msheet var(--d3) var(--ez)}
+  /* título antes do código: empilhado, o código vinha primeiro e a tela abria por um dado solto,
+     antes de dizer o que se está fazendo ali. */
+  .mbox__h{padding:14px 56px 14px 16px;flex-direction:column;align-items:flex-start;gap:9px}
+  .mbox__h p{max-width:none}
+  .mbox__x{top:8px;right:6px;width:44px;height:44px}
+  .mbox__x svg{width:20px;height:20px}
+  .mbox__b{padding:16px 16px 20px;gap:18px}
+  /* rodapé no telefone: as duas ações LADO A LADO, na mesma ordem do desktop (a que resolve à
+     direita, onde o polegar já está). Empilhado, cada botão virava uma faixa de 356px e o par
+     comia 110px do pouco que a folha tem; e a que resolve, no topo, ficava longe do polegar.
+     Rótulo pode quebrar em duas linhas — cabe nos 52px e é melhor que cortar a palavra. */
+  .mbox__f .btn{flex:1 1 0;min-width:0;height:52px;padding:0 10px;gap:7px;font-size:13px;white-space:normal;line-height:1.25;text-align:center}
+  .mbox__f .btn svg{flex:none}
+}
+
+/* ============ AVATARES EMPILHADOS ============
+   Quem está na bancada, dentro de uma célula: o anel da cor da superfície separa um do outro sem
+   gastar largura. Vivia repetido em Estoque e Triagem — é padrão, então mora aqui. */
+.avs{display:flex;flex-wrap:nowrap;padding-left:4px}
+.av{width:24px;height:24px;background:var(--ink-80);color:var(--white);font-size:10px;font-weight:700;display:grid;place-items:center;flex:none;letter-spacing:-.01em;margin-left:-4px;box-shadow:0 0 0 2px var(--surface)}
+.avs .none{color:var(--ink-40);margin-left:0;box-shadow:none}
+.dtab tbody tr:hover .av{box-shadow:0 0 0 2px var(--ink-05)}
+.dtab tbody tr.sel .av{box-shadow:0 0 0 2px var(--blue-10)}
+.dtab tbody tr.dim .av{background:var(--ink-30);color:var(--ink-70)}
+
+/* ============ TABELA RESPONSIVA (padrão .dtab) ============
+   Dois espelhos de cada bloco: @media para a página que roda solta no aparelho e @container para
+   a página enquadrada pelo viewport.js do protótipo (media query lê a janela, não o frame). */
+@media(max-width:880px){
+/* ---------- TABLET: SEGUE TABELA, e sem rolar de lado ----------
+   Tablet tem grade: virar cartão aqui jogaria fora a única vantagem da tela. Então a tabela
+   continua tabela e o ajuste é por SUBTRAÇÃO — a célula que não se justifica no toque leva
+   .hide-md (no Estoque, os operadores do lote: detalhe de bancáda, que vive na ficha). Isso é o
+   que faz caber em 768px de iPad retrato sem empurrar o dinheiro para fora.
+   O papel vale do tablet para baixo, então o telefone herda a mesma subtração. */
+.dtab td,.dtab th{padding-left:12px;padding-right:12px}
+/* o degrau md do Carbon (40): o tablet é mais denso que o desktop. Era 52px, que fazia sentido
+   contra os 56 do desktop e virou MAIS ALTO quando o desktop pousou em 48. */
+.dtab td{height:var(--cds-field)}
+/* o mesmo par que .hide-sm precisa: a regra do sufixo (.dtab tbody td[data-suffix]) e mais
+   especifica e nasce depois nesta folha, entao a celula com "un." reaparecia no telefone mesmo
+   marcada para sair no tablet. Subtrair tem de vencer qualquer regra de forma. */
+.dtab .hide-md,.dtab tbody td.hide-md[data-suffix]{display:none}
+.dtab .n--live{min-width:88px}
+.dtab td.d,.dtab th.d{display:none}
+}
+@container vp (max-width:880px){
+/* ---------- TABLET: SEGUE TABELA, e sem rolar de lado ----------
+   Tablet tem grade: virar cartão aqui jogaria fora a única vantagem da tela. Então a tabela
+   continua tabela e o ajuste é por SUBTRAÇÃO — a célula que não se justifica no toque leva
+   .hide-md (no Estoque, os operadores do lote: detalhe de bancáda, que vive na ficha). Isso é o
+   que faz caber em 768px de iPad retrato sem empurrar o dinheiro para fora.
+   O papel vale do tablet para baixo, então o telefone herda a mesma subtração. */
+.dtab td,.dtab th{padding-left:12px;padding-right:12px}
+/* o degrau md do Carbon (40): o tablet é mais denso que o desktop. Era 52px, que fazia sentido
+   contra os 56 do desktop e virou MAIS ALTO quando o desktop pousou em 48. */
+.dtab td{height:var(--cds-field)}
+/* o mesmo par que .hide-sm precisa: a regra do sufixo (.dtab tbody td[data-suffix]) e mais
+   especifica e nasce depois nesta folha, entao a celula com "un." reaparecia no telefone mesmo
+   marcada para sair no tablet. Subtrair tem de vencer qualquer regra de forma. */
+.dtab .hide-md,.dtab tbody td.hide-md[data-suffix]{display:none}
+.dtab .n--live{min-width:88px}
+.dtab td.d,.dtab th.d{display:none}
+}
+@media(max-width:600px){
+/* ---------- CELULAR: a linha vira ITEM DE LISTA ----------
+   Convenção de mercado para tabela densa em telefone: a tabela COLAPSA. Rolagem horizontal foi
+   descartada de propósito — esconde justamente a última coluna, que aqui é sempre dinheiro.
+
+   O que NÃO fazer (e que já erramos): repetir o cabeçalho como rótulo de cada campo. Vira
+   formulário — rótulo com o mesmo peso do valor, quatro blocos disputando atenção, cartão de
+   200px para quatro dados. A lista precisa de HIERARQUIA, não de legenda:
+
+     linha 1   [seleção]  IDENTIFICADOR ....................  NÚMERO QUE DECIDE
+     linha 2   estado · campos secundários · quem ...................... [seta]
+
+   Duas coisas a tela precisa marcar: a célula que carrega o número que decide leva a classe
+   .key (vai para a direita da 1ª linha, alinhada à direita), e célula cujo valor não se explica
+   sozinho leva data-suffix="un." — o sufixo entra depois do número. O resto é forma: pastilha
+   é estado, avatar é gente, ¥ é dinheiro. Nenhum rótulo impresso. */
+.dtab__wrap{overflow-x:visible}
+.dtab,.dtab tbody{display:block}
+.dtab thead{display:none}
+.dtab tbody td:first-child,.dtab tbody td.cbx,.dtab tbody td.cbx+td{position:static;left:auto;box-shadow:none}
+/* gap vertical de 4px porque a quebra dura conta duas vezes (linha 1 ↔ quebra ↔ linha 2) */
+.dtab tbody tr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dtab tbody tr:last-child{border-bottom:0}
+.dtab tbody td{display:block;height:auto;padding:0;border:0;background:none;flex:0 0 auto;white-space:nowrap}
+.dtab tbody tr:hover td,.dtab tbody tr.sel td{background:none}
+/* a tinta de GRUPO também sai: a comparação já virou duas linhas, e um retângulo de cor atrás de um
+   número solto não diz que ele pertence a um grupo — só mancha o cartão */
+.dtab tbody tr td.hr,.dtab tbody tr td.hg,.dtab tbody tr td.hb,
+.dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb{background:none}
+/* o fio azul de posição é da LINHA de tabela: no cartão ele nascia da 1ª célula (a da seleção) e
+   virava um traço solto ao lado da caixa. Aqui quem marca hover é o fundo, e o fio fica só para a
+   seleção — uma vez, na borda do cartão inteiro. */
+.dtab tbody tr:hover td:first-child,.dtab tbody tr.sel td:first-child,.dtab tbody tr:hover td.cbx,.dtab tbody tr.sel td.cbx,.dtab tbody tr:hover td.cbx+td,.dtab tbody tr.sel td.cbx+td{box-shadow:none}
+.dtab tbody tr:hover,.dtab tbody tr.sel{background:var(--blue-10)}
+.dtab tbody tr.sel{box-shadow:inset 3px 0 0 var(--blue-60)}
+/* Ordem e quebra: a 1ª linha é fechada por um item de largura total e altura zero. Depender do
+   espaço que sobra não funciona — o flex decide a quebra pela BASE do item, então um selo curto
+   ("PCB") ainda entrava na 1ª linha e um largo ("CELULAR") ia para a 2ª: dois desenhos diferentes
+   na mesma lista. Com a quebra dura, toda linha tem a MESMA forma. */
+.dtab tbody tr::before{content:"";order:4;flex:0 0 100%;height:0;margin:0;padding:0}
+/* 1ª linha: identificador e o número que decide */
+.dtab .cbx{order:1;width:auto}
+/* base mínima de 140px: o identificador cede espaço em vez de empurrar o dinheiro para a linha
+   de baixo (era isso que desmontava a linha quando o selo de origem era largo, "CELULAR") */
+.dtab .c{order:2;flex:1 1 140px;min-width:0;font-size:15px}
+.dtab .c>div{flex-wrap:wrap}
+.dtab .key{order:3;flex:0 0 auto;margin-left:auto;text-align:right}
+.dtab .key .mval{align-items:flex-end;text-align:right}
+/* 2ª linha: o resto, um tom abaixo, sem rótulo — a forma de cada valor já diz o que ele é */
+.dtab tbody td:not(.cbx):not(.c):not(.key):not(.go){order:6;font-size:12.5px;color:var(--muted)}
+/* célula em flex para o sufixo ficar na mesma linha do número: o marcador ao vivo (+n) é um
+   span de display:block e quebrava a linha, jogando "un." para baixo */
+.dtab tbody td[data-suffix]{display:flex;align-items:baseline;gap:5px}
+.dtab tbody td[data-suffix]::after{content:attr(data-suffix);font-size:11px;color:var(--faint)}
+.dtab tbody td[data-label]::before{content:none}
+.dtab .go{order:7;margin-left:auto;width:auto;padding:0;text-align:right}
+.dtab td.d{display:none}
+/* célula que a tela decidiu não mostrar no telefone (no Estoque, os operadores do lote).
+   O segundo seletor não é redundância: a regra do sufixo, logo acima, é .dtab tbody td[data-suffix]
+   — mais específica que .dtab .hide-sm, então uma célula com sufixo ("120 un.") reaparecia mesmo
+   marcada para sair. Subtrair precisa vencer qualquer regra de forma. */
+.dtab .hide-sm,.dtab tbody td.hide-sm[data-suffix]{display:none}
+/* palavra de contexto da própria linha — origem, tipo, canal. Entra na 2ª linha sem virar coluna
+   nem inflar o identificador: era o selo largo ("CELULAR") ao lado do código que fazia um cartão
+   ter altura diferente do vizinho. Assim toda linha tem a MESMA forma: duas linhas, sempre. */
+.dtab tbody tr[data-meta]::after{content:attr(data-meta);order:5;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+.dtab .c .otag{display:none}
+/* rodapé da lista: UMA linha, nunca empilhada — contagem à esquerda, os dois passos à direita.
+   "Por página" é conforto de desktop: no telefone quem rola não escolhe tamanho de página, e
+   era esse seletor que quebrava o rodapé em três faixas. */
+/* min-height da base preservado de propósito: nenhum filho tem altura intrínseca (texto de 17px,
+   svg de 15px), então zerá-lo colapsa a faixa — e 52px também dá ao passo o alvo de toque de 44px */
+.tfoot{flex-wrap:nowrap;padding:0;min-height:52px}
+.tfoot--sum{flex-wrap:wrap;min-height:0;padding:11px 16px}
+.pgn{margin-left:0;flex:1 1 100%;min-width:0;flex-wrap:nowrap;padding:0;border-top:1px solid var(--line)}
+.pgn__per{display:none}
+.pgn__i{flex:1;min-width:0;min-height:52px;padding:0 16px;border-left:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pgn__b{width:56px;min-height:52px;border-left:1px solid var(--line)}
+}
+@container vp (max-width:600px){
+/* ---------- CELULAR: a linha vira ITEM DE LISTA ----------
+   Convenção de mercado para tabela densa em telefone: a tabela COLAPSA. Rolagem horizontal foi
+   descartada de propósito — esconde justamente a última coluna, que aqui é sempre dinheiro.
+
+   O que NÃO fazer (e que já erramos): repetir o cabeçalho como rótulo de cada campo. Vira
+   formulário — rótulo com o mesmo peso do valor, quatro blocos disputando atenção, cartão de
+   200px para quatro dados. A lista precisa de HIERARQUIA, não de legenda:
+
+     linha 1   [seleção]  IDENTIFICADOR ....................  NÚMERO QUE DECIDE
+     linha 2   estado · campos secundários · quem ...................... [seta]
+
+   Duas coisas a tela precisa marcar: a célula que carrega o número que decide leva a classe
+   .key (vai para a direita da 1ª linha, alinhada à direita), e célula cujo valor não se explica
+   sozinho leva data-suffix="un." — o sufixo entra depois do número. O resto é forma: pastilha
+   é estado, avatar é gente, ¥ é dinheiro. Nenhum rótulo impresso. */
+.dtab__wrap{overflow-x:visible}
+.dtab,.dtab tbody{display:block}
+.dtab thead{display:none}
+.dtab tbody td:first-child,.dtab tbody td.cbx,.dtab tbody td.cbx+td{position:static;left:auto;box-shadow:none}
+/* gap vertical de 4px porque a quebra dura conta duas vezes (linha 1 ↔ quebra ↔ linha 2) */
+.dtab tbody tr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dtab tbody tr:last-child{border-bottom:0}
+.dtab tbody td{display:block;height:auto;padding:0;border:0;background:none;flex:0 0 auto;white-space:nowrap}
+.dtab tbody tr:hover td,.dtab tbody tr.sel td{background:none}
+/* a tinta de GRUPO também sai: a comparação já virou duas linhas, e um retângulo de cor atrás de um
+   número solto não diz que ele pertence a um grupo — só mancha o cartão */
+.dtab tbody tr td.hr,.dtab tbody tr td.hg,.dtab tbody tr td.hb,
+.dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb{background:none}
+/* o fio azul de posição é da LINHA de tabela: no cartão ele nascia da 1ª célula (a da seleção) e
+   virava um traço solto ao lado da caixa. Aqui quem marca hover é o fundo, e o fio fica só para a
+   seleção — uma vez, na borda do cartão inteiro. */
+.dtab tbody tr:hover td:first-child,.dtab tbody tr.sel td:first-child,.dtab tbody tr:hover td.cbx,.dtab tbody tr.sel td.cbx,.dtab tbody tr:hover td.cbx+td,.dtab tbody tr.sel td.cbx+td{box-shadow:none}
+.dtab tbody tr:hover,.dtab tbody tr.sel{background:var(--blue-10)}
+.dtab tbody tr.sel{box-shadow:inset 3px 0 0 var(--blue-60)}
+/* Ordem e quebra: a 1ª linha é fechada por um item de largura total e altura zero. Depender do
+   espaço que sobra não funciona — o flex decide a quebra pela BASE do item, então um selo curto
+   ("PCB") ainda entrava na 1ª linha e um largo ("CELULAR") ia para a 2ª: dois desenhos diferentes
+   na mesma lista. Com a quebra dura, toda linha tem a MESMA forma. */
+.dtab tbody tr::before{content:"";order:4;flex:0 0 100%;height:0;margin:0;padding:0}
+/* 1ª linha: identificador e o número que decide */
+.dtab .cbx{order:1;width:auto}
+/* base mínima de 140px: o identificador cede espaço em vez de empurrar o dinheiro para a linha
+   de baixo (era isso que desmontava a linha quando o selo de origem era largo, "CELULAR") */
+.dtab .c{order:2;flex:1 1 140px;min-width:0;font-size:15px}
+.dtab .c>div{flex-wrap:wrap}
+.dtab .key{order:3;flex:0 0 auto;margin-left:auto;text-align:right}
+.dtab .key .mval{align-items:flex-end;text-align:right}
+/* 2ª linha: o resto, um tom abaixo, sem rótulo — a forma de cada valor já diz o que ele é */
+.dtab tbody td:not(.cbx):not(.c):not(.key):not(.go){order:6;font-size:12.5px;color:var(--muted)}
+/* célula em flex para o sufixo ficar na mesma linha do número: o marcador ao vivo (+n) é um
+   span de display:block e quebrava a linha, jogando "un." para baixo */
+.dtab tbody td[data-suffix]{display:flex;align-items:baseline;gap:5px}
+.dtab tbody td[data-suffix]::after{content:attr(data-suffix);font-size:11px;color:var(--faint)}
+.dtab tbody td[data-label]::before{content:none}
+.dtab .go{order:7;margin-left:auto;width:auto;padding:0;text-align:right}
+.dtab td.d{display:none}
+/* célula que a tela decidiu não mostrar no telefone (no Estoque, os operadores do lote).
+   O segundo seletor não é redundância: a regra do sufixo, logo acima, é .dtab tbody td[data-suffix]
+   — mais específica que .dtab .hide-sm, então uma célula com sufixo ("120 un.") reaparecia mesmo
+   marcada para sair. Subtrair precisa vencer qualquer regra de forma. */
+.dtab .hide-sm,.dtab tbody td.hide-sm[data-suffix]{display:none}
+/* palavra de contexto da própria linha — origem, tipo, canal. Entra na 2ª linha sem virar coluna
+   nem inflar o identificador: era o selo largo ("CELULAR") ao lado do código que fazia um cartão
+   ter altura diferente do vizinho. Assim toda linha tem a MESMA forma: duas linhas, sempre. */
+.dtab tbody tr[data-meta]::after{content:attr(data-meta);order:5;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+.dtab .c .otag{display:none}
+/* rodapé da lista: UMA linha, nunca empilhada — contagem à esquerda, os dois passos à direita.
+   "Por página" é conforto de desktop: no telefone quem rola não escolhe tamanho de página, e
+   era esse seletor que quebrava o rodapé em três faixas. */
+/* min-height da base preservado de propósito: nenhum filho tem altura intrínseca (texto de 17px,
+   svg de 15px), então zerá-lo colapsa a faixa — e 52px também dá ao passo o alvo de toque de 44px */
+.tfoot{flex-wrap:nowrap;padding:0;min-height:52px}
+.tfoot--sum{flex-wrap:wrap;min-height:0;padding:11px 16px}
+.pgn{margin-left:0;flex:1 1 100%;min-width:0;flex-wrap:nowrap;padding:0;border-top:1px solid var(--line)}
+.pgn__per{display:none}
+.pgn__i{flex:1;min-width:0;min-height:52px;padding:0 16px;border-left:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pgn__b{width:56px;min-height:52px;border-left:1px solid var(--line)}
+}
+
+/* ============ CÂMBIO — widget do cabeçalho ============ */
+.fx{display:flex;align-items:center;gap:9px;padding:0 15px;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;text-align:left;flex:none;transition:background var(--d1)}
+.fx:hover{background:var(--ink-05)}
+.fx__t{display:flex;flex-direction:column;line-height:1.25}
+.fx__r{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:-.01em;color:var(--text);white-space:nowrap}
+.fx__s{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.fx__live{width:7px;height:7px;flex:none;background:var(--green-50);animation:bl 1.6s var(--ez) infinite}
+.fx__ic{display:grid;place-items:center;width:18px;height:18px;flex:none;color:var(--amber-60)}
+.fx__ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+/* taxa defasada e ausência de taxa são avisos, não erros: âmbar, e o pulso verde se apaga */
+.fx--fallback .fx__s{color:var(--amber-70)}
+.fx--fallback .fx__live{background:var(--amber-40)}
+.fx--none{background:var(--amber-10)}
+.fx--none .fx__ic{color:var(--amber-70)}
+.fx--none .fx__live{display:none}
+.fx.is-fresh .fx__r{animation:fxfresh .7s ease-out}
+@keyframes fxfresh{0%,32%{color:var(--blue-60)}100%{color:var(--text)}}
+
+/* ============ DINHEIRO (par ¥ / US$) ============
+   ¥ é o dado e vem primeiro, grande; US$ é tradução de mercado e vem abaixo, menor e em cinza,
+   sempre com ≈. Alinhado à direita por padrão (é número); a tabela o realinha à esquerda. */
+.mval{display:inline-flex;flex-direction:column;align-items:flex-end;text-align:right;line-height:1.15;min-width:0}
+.mval__c{font-family:var(--mono);font-weight:600;letter-spacing:-.025em;white-space:nowrap}
+.mval__u{font-family:var(--mono);font-weight:500;color:var(--muted);white-space:nowrap;letter-spacing:-.01em;margin-top:3px}
+.mval--xs .mval__c{font-size:13px}.mval--xs .mval__u{font-size:10.5px;margin-top:2px}
+.mval--sm .mval__c{font-size:15px}.mval--sm .mval__u{font-size:11px}
+.mval--md .mval__c{font-size:19px}.mval--md .mval__u{font-size:12px}
+.mval--kpi .mval__c{font-size:31px;letter-spacing:-.035em}.mval--kpi .mval__u{font-size:13px;margin-top:5px}
+/* em card o dinheiro é conteúdo de uma coluna alinhada à esquerda: as duas linhas rentes ao rótulo
+   do indicador. O alinhamento à direita é da TABELA de números, e lá a régua é a própria coluna. */
+.mval--kpi{align-items:flex-start;text-align:left}
+/* uma linha só: para quando a folga do layout é horizontal (ficha de consulta, rodapés) */
+.mval--row{flex-direction:row;align-items:baseline;gap:9px;text-align:left}
+.mval--row .mval__u{margin-top:0}
+.mval--g .mval__u{color:var(--faint)}
+/* lote fechado sem câmbio travado: só US$, congelado — número morto, cinza */
+.mval--froz .mval__c{color:var(--ink-70)}
+.mval--froz .mval__u{color:var(--faint);font-family:var(--sans);font-weight:600}
+
+/* ============ DINHEIRO EM PÉ DE IGUALDADE (.mvd) ============
+   Segunda hierarquia, não substituta da primeira. .mval serve onde o dinheiro é CONSEQUÊNCIA
+   (estoque, triagem, painel): ¥ grande, US$ abaixo em cinza. .mvd serve o ciclo de venda, onde o
+   dinheiro é o ARGUMENTO da tela — o comprador fecha em ¥ e paga em US$, e pôr um dos dois em
+   corpo menor faria metade da negociação virar nota de rodapé.
+   As duas moedas têm o MESMO tamanho, o MESMO peso e a MESMA cor; o que as separa é o sinal de
+   igual, e ele é literal porque a afirmação é literal: à taxa travada, os dois valores são o
+   mesmo dinheiro. O ≈ é ESTIMATIVA (valor ainda re-resolvível), vem uma vez na frente do par e
+   nunca uma vez por moeda — dois tis dizem "duas incertezas" onde existe uma. */
+.mvd{display:inline-flex;align-items:baseline;gap:8px;min-width:0;flex-wrap:wrap;line-height:1.15}
+.mvd__a,.mvd__b{font-family:var(--mono);font-weight:600;letter-spacing:-.025em;white-space:nowrap;color:inherit}
+/* o igual é pontuação, não valor: um degrau abaixo no peso e na cor, sem competir com os números */
+.mvd__x{font-family:var(--mono);font-style:normal;font-weight:400;color:var(--ink-30);flex:0 0 auto}
+/* o til é irmão do NÚMERO dentro do valor, não do par: inline, com um respiro à direita */
+.mvd__e{font-style:normal;font-weight:500;color:var(--muted);margin-right:5px}
+.mvd--xs{gap:6px}.mvd--xs .mvd__a,.mvd--xs .mvd__b{font-size:13px}.mvd--xs .mvd__x,.mvd--xs .mvd__e{font-size:12px}
+.mvd--sm .mvd__a,.mvd--sm .mvd__b{font-size:15px}.mvd--sm .mvd__x,.mvd--sm .mvd__e{font-size:13px}
+.mvd--md .mvd__a,.mvd--md .mvd__b{font-size:19px}.mvd--md .mvd__x,.mvd--md .mvd__e{font-size:15px}
+/* no herói o par É EMPILHADO por definição. Em uma linha só, o "=" é exatamente onde a quebra cai
+   quando a coluna aperta — e um sinal de igual pendurado no fim da linha é pior que nenhum.
+   Empilhado, o par continua par pela adjacência e pelo corpo idêntico, que é o que a regra pede. */
+.mvd--kpi{flex-direction:column;align-items:flex-start;gap:2px}
+.mvd--kpi .mvd__x{display:none}
+.mvd--kpi .mvd__a,.mvd--kpi .mvd__b{font-size:24px;letter-spacing:-.035em}
+.mvd--kpi .mvd__e{font-size:17px}
+/* célula estreita (coluna de tabela, cartão no telefone): empilha e o igual sai — em duas linhas
+   ele viraria um traço solto no meio do nada. O par continua sendo par pela adjacência. */
+.mvd--stack{flex-direction:column;align-items:flex-end;gap:3px}
+.mvd--stack .mvd__x{display:none}
+
+.dtab .mvd--stack{align-items:flex-start}
+.dtab .mvd,.dtab .mvd--xs,.dtab .mvd--sm{gap:6px}
+.dtab .mvd .mvd__a,.dtab .mvd .mvd__b{font-size:14px;font-weight:600}
+.dtab .mvd .mvd__x,.dtab .mvd .mvd__e{font-size:12.5px}
+/* saldo em aberto e valor quitado: a cor mora no par, não em cada moeda */
+.mvd--due{color:var(--amber-70)}
+.mvd--ok{color:var(--green-70)}
+
+/* ============ ORIGEM DO LOTE ============ */
+/* selo sempre em caixa alta — mesma voz de .tag, decisão de design do sistema */
+.otag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px 3px 7px;white-space:nowrap}
+.otag svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;flex:none}
+.otag--phone{background:var(--blue-70);color:var(--white)}
+.otag--pcb{background:var(--ink-100);color:var(--white)}
+.otag--ghost{background:var(--ink-10);color:var(--ink-80)}
+.otag--sm{font-size:10px;padding:2px 7px 2px 5px}.otag--sm svg{width:11px;height:11px}
+
+/* ============ CÂMBIO TRAVADO (lote fechado) ============ */
+.lockseal{display:inline-flex;align-items:center;gap:8px;padding:4px 10px;background:var(--ink-10);border-left:2px solid var(--ink-80);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink-80);white-space:nowrap}
+.lockseal svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.lockseal--warn{background:var(--amber-10);border-left-color:var(--amber-40);color:var(--amber-70);font-family:var(--sans);font-weight:700}
+/* ============ AVISO EM LINHA (.note) ============
+   MODELO DO SISTEMA — o bloco que declara uma CONSEQUÊNCIA dentro de um diálogo ou formulário:
+   a taxa que vai ser travada, o que falta para uma ação valer, o que o export vai conter.
+   Não confundir com .brd (aviso da plataforma, na tela) nem com toast (o que ACABOU de acontecer).
+
+   1. Sem faixa vertical. A tarja à esquerda empurrava todo o texto para dentro e criava uma segunda
+      margem dentro de um bloco que já é pequeno; e ela é o clichê visual que o sistema evita. O
+      estado vira um FILETE DE 2px NO TOPO, mesma ideia do card de aviso — o bloco inteiro se
+      apoia numa borda de cor, em vez de carregar uma etiqueta lateral.
+   2. Uma margem só: ícone e rótulo dividem a MESMA linha, então título, número e explicação
+      começam todos no mesmo eixo. Antes o ícone abria uma coluna própria e desalinhava os três.
+   3. Três degraus de leitura, sempre nesta ordem: rótulo micro (mono, caixa alta — a escala de
+      rótulo do sistema, a mesma do cabeçalho da tabela), o DADO em mono 17, e a consequência em
+      12,5 sans. A fonte do dado (mid-market, contrato, data) é palavra, não cifra: sai da mono e
+      vira sufixo cinza na mesma linha.
+   4. Tom por variação, em uma linha cada: --nt fundo, --ne filete, --nc tinta do rótulo. Trocar de
+      estado é trocar de classe; nada de reescrever regra por regra. */
+.note{--nt:var(--ink-10);--ne:var(--ink-50);--nc:var(--ink-70);background:var(--nt);border-top:2px solid var(--ne);padding:13px 16px 15px}
+.note--ok{--nt:var(--green-10);--ne:var(--green-50);--nc:var(--green-70)}
+.note--warn{--nt:var(--amber-10);--ne:var(--amber-40);--nc:var(--amber-70)}
+.note--info{--nt:var(--blue-10);--ne:var(--blue-60);--nc:var(--blue-70)}
+.note--dan{--nt:var(--red-10);--ne:var(--red-50);--nc:var(--red-70)}
+.note__h{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--nc)}
+.note__h svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.note__v{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:-.02em;margin-top:9px;line-height:1.2}
+.note__v span{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0;margin-left:9px;white-space:nowrap}
+.note__d{font-size:12.5px;color:var(--ink-70);line-height:1.5;margin-top:7px;text-wrap:pretty;max-width:64ch}
+/* sem dado numérico o aviso é só rótulo + frase: a frase encosta no rótulo */
+.note__h+.note__d{margin-top:6px}
+@media(max-width:600px){.note__v{font-size:16px}.note__v span{display:block;margin-left:0;margin-top:4px}}
+@container vp (max-width:600px){.note__v{font-size:16px}.note__v span{display:block;margin-left:0;margin-top:4px}}
+.finaln{font-size:12px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.finaln b{color:var(--text);font-weight:700}
+
+/* ============ TOOLTIP ============ */
+.tipw{position:relative;display:inline-flex}
+[data-tip]{position:relative}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(3px);background:var(--ink-100);color:var(--white);font-family:var(--sans);font-size:12px;font-weight:500;line-height:1.45;letter-spacing:0;text-transform:none;text-align:left;padding:9px 11px;width:max-content;max-width:250px;white-space:normal;opacity:0;pointer-events:none;transition:opacity var(--d2) var(--ez),transform var(--d2) var(--ez);z-index:70;box-shadow:0 8px 22px -8px rgba(0,0,0,.4)}
+[data-tip]:hover::after,[data-tip]:focus-visible::after{opacity:1;transform:translateX(-50%)}
+[data-tip-end]::after{left:auto;right:0;transform:translateY(3px)}
+[data-tip-end]:hover::after{transform:none}
+
+/* ============ NOTIFICAÇÕES (sino + página) ============ */
+.nbell{position:relative;display:flex;align-items:stretch}
+.ndrop{position:absolute;top:100%;right:0;width:380px;background:var(--surface);border:1px solid var(--line-2);box-shadow:0 8px 24px rgba(22,22,22,.16);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity var(--d2) var(--ez),transform var(--d2) var(--ez),visibility var(--d2);z-index:60}
+.nbell.on .ndrop{opacity:1;visibility:visible;transform:none}
+.ndrop__h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--ink-05)}
+.ndrop__t{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-70)}
+.ndrop__n{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0;background:var(--blue-60);color:#fff;padding:1px 6px}
+.ndrop__mark{border:0;background:none;font-size:12px;font-weight:600;color:var(--blue-60);cursor:pointer;padding:2px}
+.ndrop__mark:hover{text-decoration:underline}
+.ndrop__list{max-height:min(56vh,420px);overflow:auto}
+.nitem{display:grid;grid-template-columns:3px minmax(0,1fr) auto;grid-template-areas:"d t w" "d b b";gap:3px 12px;padding:12px 16px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:background var(--d1)}
+.nitem:hover{background:var(--blue-10);text-decoration:none}
+.nitem__d{grid-area:d;background:var(--ink-30)}
+.nitem__t{grid-area:t;font-size:13px;font-weight:700;line-height:1.3}
+.nitem__w{grid-area:w;font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.nitem__b{grid-area:b;font-size:12px;color:var(--muted);line-height:1.45}
+.nitem__b .m,.nrow__b .m{font-family:var(--mono);font-weight:600;color:var(--text)}
+.nitem--new .nitem__d,.nrow--new .nrow__d{background:var(--blue-60)}
+.nitem--risk.nitem--new .nitem__d,.nrow--risk.nrow--new .nrow__d{background:var(--red-50)}
+.nitem--warn.nitem--new .nitem__d,.nrow--warn.nrow--new .nrow__d{background:var(--amber-40)}
+.nitem--good.nitem--new .nitem__d,.nrow--good.nrow--new .nrow__d{background:var(--green-50)}
+.ndrop__empty{padding:28px 16px;font-size:13px;color:var(--faint);text-align:center}
+.ndrop__all{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-top:1px solid var(--line);background:var(--ink-05);font-size:13px;font-weight:600;color:var(--blue-60)}
+.ndrop__all:hover{background:var(--blue-10);text-decoration:none}
+.ndrop__all svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+.ngroup{margin-bottom:28px}
+.ngroup__h{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:0;padding-bottom:10px}
+.ngroup__h i{flex:1;height:1px;background:var(--line-2)}
+.ngroup__c{font-family:var(--mono);letter-spacing:0;color:var(--ink-70)}
+.nrow{display:grid;grid-template-columns:3px minmax(0,1fr) auto 44px;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);border-bottom:0;padding:14px 16px 14px 0;color:inherit;text-decoration:none;transition:background var(--d1)}
+.nrow:last-child{border-bottom:1px solid var(--line)}
+.nrow:hover{background:var(--blue-10);text-decoration:none}
+.nrow__d{align-self:stretch;background:var(--ink-30)}
+.nrow__main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.nrow__t{font-size:14px;font-weight:700;line-height:1.3}
+.nrow__b{font-size:13px;color:var(--muted);line-height:1.45}
+.nrow__meta{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.nrow__w{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.nrow__new{font-size:10px;font-weight:800;letter-spacing:.08em;background:var(--blue-60);color:#fff;padding:2px 7px}
+.nrow__go{display:grid;place-items:center;color:var(--ink-40)}
+.nrow__go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.nrow:hover .nrow__go{color:var(--blue-60)}
+.nempty{border:1px solid var(--line);background:var(--surface);padding:40px 24px;text-align:center;font-size:14px;color:var(--faint)}
+@media(max-width:600px){
+  .ndrop{position:fixed;top:var(--shell-h);left:0;right:0;width:auto}
+  .nrow{grid-template-columns:3px minmax(0,1fr) 44px;gap:12px}
+  .nrow__meta{grid-column:2;flex-direction:row-reverse;justify-content:flex-end}
+}
+
+/* ============ CABEÇALHO DE REGISTRO ============
+   Convenção das páginas internas (lote em triagem, venda, compra). Uma casca, três faixas:
+   1. utilitários — de onde você veio, à esquerda; o que dá para fazer, à direita. Linha própria:
+      navegação e ação não disputam espaço com a identidade, e a linha do código respira.
+   2. identidade — código, selos e a descrição logo abaixo, num bloco só.
+   3. indicadores — heróis sobre a superfície, fatos sobre fundo rebaixado: hierarquia pela
+      cor do chão, não por mais uma régua.
+   A faixa de indicadores tem o mesmo peso das listas (mesmo padding, mesma sangria).
+   Separador = gap de 1px sobre o fundo da régua, como em .tbar — quebra de linha nunca orfana fio. */
+.rhead{background:var(--surface);border-bottom:1px solid var(--line)}
+/* faixa 1: utilitários */
+.rhead__u{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0 0;min-height:30px}
+.rhead__back{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 6px;margin-left:-6px;font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;transition:background var(--d1),color var(--d1)}
+.rhead__back:hover{background:var(--ink-05);color:var(--blue-60);text-decoration:none}
+.rhead__back svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2}
+.rhead__sp{flex:1;min-width:0}
+.rhead__act{display:flex;gap:8px;flex:none}
+/* faixa 2: identidade */
+.rhead__bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 0 0}
+.rhead__code{font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:-.03em;white-space:nowrap;margin-right:2px}
+/* descrição: mora colada na identidade. O texto inteiro é o alvo de edição — esconder a ação
+   atrás do hover economiza um ícone e custa a descoberta, então o lápis fica sempre à vista */
+.rhead__desc{display:flex;align-items:center;gap:2px;padding:5px 0 14px;min-width:0}
+.rhead__dt{display:inline-flex;align-items:center;gap:6px;min-width:0;border:0;background:none;padding:2px 6px;margin-left:-6px;font-family:inherit;text-align:left;cursor:pointer;transition:background var(--d1)}
+.rhead__dt:hover{background:var(--ink-05)}
+.rhead__desc p{font-size:13.5px;color:var(--muted);text-wrap:pretty;min-width:0}
+.rhead__desc p.is-none{color:var(--ink-40)}
+.rhead__pen{width:22px;height:22px;flex:none;display:grid;place-items:center;border:0;background:none;color:var(--ink-50);cursor:pointer;transition:color var(--d1)}
+.rhead__dt:hover .rhead__pen{color:var(--blue-60)}
+.rhead__pen svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9}
+.rhead__din{flex:1 1 auto;min-width:0;max-width:620px;height:34px;padding:0 11px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);font-family:inherit;font-size:13.5px;color:var(--text)}
+.rhead__din:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+/* indicadores em dois níveis: os heróis (valor e volume) e, abaixo, a fileira de fatos.
+   Dois contentores em vez de um só com wrap: assim a quebra é sempre a mesma e nunca sobra
+   uma célula esticada ocupando meia faixa. */
+/* TRILHO DE ETAPAS (.rhead__stat): mora NA linha da identidade, no vão entre o nome do lote e os
+   botões — o espaço que sobra ali no desktop é justamente do tamanho dele. Assim a linha inteira
+   se lê como uma frase: QUAL registro › EM QUE PONTO está › O QUE fazer agora.
+   Em faixa própria (acima ou abaixo) ele virava uma terceira barra horizontal empilhada, e a
+   página abria com três réguas seguidas antes de qualquer conteúdo.
+
+   O DESENHO muda com o lugar. A carroceria de setas (fundo cinza, seis abas recortadas) tem peso
+   de navegação: no vão de uma linha de título ela vira um segundo menu competindo com o de cima.
+   Aqui o trilho é uma RÉGUA — sem caixa, sem fundo, sem recorte: marcador + rótulo sobre fio de
+   1px. O que carrega o estado é a marca, não o preenchimento:
+     cumprida  ✓ verde, rótulo em cinza médio (é passado, não pede leitura)
+     corrente  ● azul cheio, rótulo em preto forte, com a data em mono ao lado
+     futura    ○ anel vazado, rótulo em cinza claro
+   O seletor leva o #stat junto onde precisa vencer o width:100% e o clip-path que a folha da
+   ficha dá ao mesmo id/classe quando ele é item de flex na barra de ação. */
+/* as etapas são CÉLULAS de um controle segmentado: fio de 1px em volta e entre cada uma, canto
+   vivo, na mesma cor das outras bordas do sistema. Altura = a MESMA dos botões que estão ao lado
+   dele nesta faixa — o cabeçalho de registro usa a variante compacta (.btn--sm, --ctl-sm 36px),
+   não o botão de 48px do corpo da página. Com --ctl-md o trilho ficava mais alto que os vizinhos
+   e a linha inteira perdia o rodapé comum.
+   Fio interno = gap de 1px sobre o fundo da grade: nunca engorda para 2px onde duas se encontram.
+   O que já passou e o que ainda vem ficam em chapa rebaixada, com texto fraco — leem-se como
+   botões desativados. Só a etapa da vez fica na superfície cheia, com texto forte: no meio de
+   seis caixas apagadas, a única "acesa" é o próprio estado do registro. */
+#stat.rhead__stat{flex:1 1 auto;width:auto;min-width:0;overflow:visible;display:flex;justify-content:center;align-self:center;padding:0 12px}
+/* a célula desconta os 2px de fio do contorno acima, então a CAIXA do trilho mede exatamente
+   --ctl-sm e encosta na altura do botão ao lado — antes o fio somava e sobravam 2px. */
+#stat.rhead__stat .stat{display:flex;width:auto;max-width:100%;flex-wrap:nowrap;align-items:stretch;gap:1px;background:var(--line);border:1px solid var(--line);min-width:0}
+#stat.rhead__stat .stat__s{clip-path:none;background:var(--ink-05);flex:0 1 auto;height:calc(var(--ctl-sm) - 2px);padding:0 13px;gap:7px;font-size:11.5px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#stat.rhead__stat .stat__s>i{width:6px;height:6px;border-radius:50%;background:none;opacity:1;box-shadow:inset 0 0 0 1.5px var(--ink-30)}
+#stat.rhead__stat .stat__s.is-done{color:var(--ink-60)}
+#stat.rhead__stat .stat__s.is-now{background:var(--surface);color:var(--text);font-weight:700}
+#stat.rhead__stat .stat__s.is-now>i{width:7px;height:7px;background:var(--blue-60);box-shadow:none;animation:statpulse 1.8s ease-in-out infinite}
+/* a bolinha da etapa corrente pulsa: num trilho onde todo o resto é estático, o único movimento
+   da tela é o ponto que diz "é aqui que o registro está agora". O halo cresce e some no anel de
+   fora — a bolinha em si não muda de tamanho, senão a linha de base do rótulo tremeria junto. */
+@keyframes statpulse{0%,100%{box-shadow:0 0 0 0 rgba(15,98,254,.45)}50%{box-shadow:0 0 0 5px rgba(15,98,254,0)}}
+@media(prefers-reduced-motion:reduce){#stat.rhead__stat .stat__s.is-now>i{animation:none}}
+#stat.rhead__stat .stat__s.is-next{color:var(--ink-40)}
+/* só a etapa da vez leva data — é a única com algo novo a dizer. Vence a regra geral que apaga o
+   small em 1000px, escrita para o trilho apertado dentro da barra de ação. */
+#stat.rhead__stat .stat__s small{display:inline-block;font-size:11px;font-weight:500}
+/* identidade e ações na MESMA linha: o código é o título da página e a ação da vez pertence a ele
+   — em faixas separadas o olho subia e descia duas vezes para ligar uma coisa à outra */
+.rhead__idl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.rhead__bar>.rhead__act{margin-left:auto;align-self:center}
+.rhead__mx{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);margin:0 -32px}
+.rhead__mx+.rhead__mx{border-top:1px solid var(--line)}
+.rmx{background:var(--surface);flex:1 1 158px;padding:15px 32px 16px;min-width:0}
+.rmx__l{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rmx__v{font-size:19px;font-weight:700;letter-spacing:-.025em;margin-top:9px;white-space:nowrap;display:flex;align-items:baseline;gap:7px;min-width:0}
+.rmx__v .m{font-family:var(--mono);font-weight:600;letter-spacing:-.03em}
+.rmx__v small{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0}
+.rmx__d{font-size:12px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* a DIFERENÇA vive na legenda do herói, não numa quarta célula: ela é a conta entre os dois números
+   acima, e uma célula própria a trataria como um terceiro valor independente. Mas leva peso e cor,
+   porque é justamente ela que se discute quando há recusa. */
+.rmx__d .dif{font-weight:700;color:var(--text)}
+.rmx__d .dif--neg{color:var(--amber-70)}
+.rmx__d .dif--ok{color:var(--green-70)}
+/* heróis: valor e volume mandam na faixa — mesmo tamanho, mesmo peso, um ao lado do outro */
+.rmx--hero{flex:1 1 288px}
+.rmx--hero .rmx__l{color:var(--blue-70)}
+.rmx--hero .rmx__v{font-family:var(--mono);font-size:29px;font-weight:600;letter-spacing:-.04em;margin-top:7px;align-items:baseline}
+.rmx--vol .rmx__l{color:var(--ink-70)}
+/* heróis coloridos: quando a faixa carrega dinão em estágios (estimado → resultado → a receber),
+   a cor diz em que pé está cada número sem precisar de mais texto */
+.rmx--est .rmx__l{color:var(--ink-70)}
+.rmx--res .rmx__l{color:var(--blue-70)}
+.rmx--res .rmx__v{color:var(--blue-70)}
+.rmx--due .rmx__l,.rmx--due .rmx__v{color:var(--amber-70)}
+.rmx--ok .rmx__l,.rmx--ok .rmx__v{color:var(--green-70)}
+/* número que ainda não existe: o traço fica leve para não competir com os que existem */
+.rmx--off .rmx__l{color:var(--ink-40)}
+.rmx--off .rmx__v{color:var(--ink-30)}
+/* espera: ocupa o lugar do botão sem parecer clicável */
+.wait{display:inline-flex;align-items:center;gap:10px;height:36px;padding:0 13px;background:var(--ink-05);border:1px solid var(--line)}
+.wait__d{width:7px;height:7px;flex:none;background:var(--amber-40);animation:wpulse 1.8s var(--ez) infinite}
+@keyframes wpulse{0%,100%{opacity:1}50%{opacity:.28}}
+.wait__t{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.wait__t b{font-size:12px;font-weight:700}
+.wait__t i{font-style:normal;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* fatos: mesma anatomia dos heróis, um tom abaixo em tudo — inclusive no chão, que é o que
+   separa "manchete" de "rodapé" sem gastar mais uma régua */
+.rhead__mx--f{background:var(--line)}
+.rhead__mx--f .rmx{flex:1 1 132px;padding:12px 32px 13px;background:var(--ink-05)}
+.rhead__mx--f .rmx__l{font-size:10px;letter-spacing:.07em}
+.rhead__mx--f .rmx__v{font-size:16px;margin-top:6px}
+.rhead__mx--f .rmx__d{font-size:11px;margin-top:4px}
+/* gerenciar: um chip tracejado no fim da pilha de avatares. Fica na LINHA DO VALOR, então a
+   célula guarda a mesma anatomia das vizinhas (rótulo / valor / descrição) e nenhuma fica mais
+   alta que as outras — era isso que deixava o botão antigo torto. */
+.rmx__add{width:24px;height:24px;flex:none;display:grid;place-items:center;margin-left:6px;border:1px dashed var(--ink-40);background:var(--surface);color:var(--ink-60);cursor:pointer;transition:border-color var(--d1),color var(--d1),background var(--d1)}
+.rmx__add:hover{border-style:solid;border-color:var(--blue-60);color:var(--blue-60);background:var(--blue-10)}
+.rmx__add svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+.avs__none{font-size:13px;color:var(--ink-40)}
+/* composição: barra fina + legenda */
+.rmx__bar{display:flex;height:5px;background:var(--ink-10);margin-top:11px}
+.rmx__bar i{display:block;height:100%;transition:width var(--d3) var(--ez)}
+.rmx__bar .r,.rmx__leg .r{background:var(--green-50)}
+.rmx__bar .b,.rmx__leg .b{background:var(--blue-60)}
+.rmx__bar .m,.rmx__leg .m{background:var(--amber-40)}
+.rmx__bar .x,.rmx__leg .x{background:var(--red-50)}
+.rmx__leg{display:flex;flex-wrap:wrap;gap:4px 13px;margin-top:8px}
+/* legenda sem barra: desce até a linha da célula vizinha para os dois heróis terminarem juntos */
+.rmx__leg--solo{margin-top:24px}
+.rmx__lr{display:flex;align-items:center;gap:6px;min-width:0}
+.rmx__lr i{width:8px;height:8px;flex:none}
+.rmx__lr span{font-size:11px;color:var(--muted);white-space:nowrap}
+.rmx__lr b{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink-80)}
+.rmx__lr.is-z b{color:var(--ink-30);font-weight:500}
+/* faixa de grupos: a terceira variante da banda. Cada célula é uma ETAPA do registro, com
+   cabeçalho de estado (feito / agora / a fazer) e as linhas que aquela etapa produz. O trilho
+   de etapas na faixa 1 é o RESUMO (onde estou, de relance); estas caixas são o DETALHE (o que
+   cada etapa produziu). Os dois convivem porque respondem a perguntas diferentes. */
+.rhead__mx--g{background:var(--line)}
+.rgrp{background:var(--surface);flex:1 1 216px;padding:0;min-width:0;display:flex;flex-direction:column}
+.rgrp__h{display:flex;align-items:center;gap:8px;padding:11px 32px 9px;min-width:0}
+.rgrp__i{width:15px;height:15px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--ink-20)}
+.rgrp__i svg{width:9px;height:9px;fill:none;stroke:#fff;stroke-width:3.4}
+.rgrp__n{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-70);white-space:nowrap;flex:none}
+.rgrp__w{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.rgrp__b{padding:0 32px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.rgrp--done .rgrp__i{background:var(--green-50)}
+/* etapa da vez: anel azul pulsando e o nome em destaque — é onde o olho deve cair */
+.rgrp--now .rgrp__i{background:none;box-shadow:inset 0 0 0 2px var(--blue-60);animation:rgpulse 2s var(--ez) infinite}
+.rgrp--now .rgrp__n{color:var(--blue-70)}
+.rgrp--now .rgrp__w{color:var(--blue-60)}
+@keyframes rgpulse{0%,100%{opacity:1}50%{opacity:.42}}
+/* etapa futura: o gabarito fica visível, os valores não — a caixa promete sem mentir */
+.rgrp--next{background:var(--ink-05)}
+.rgrp--next .rgrp__i{background:none;box-shadow:inset 0 0 0 1px var(--ink-30)}
+.rgrp--next .rgrp__n{color:var(--ink-40)}
+/* linha de dado dentro da etapa: rótulo à esquerda, valor à direita */
+.fld2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0}
+.fld2 span{font-size:11.5px;color:var(--muted);white-space:nowrap;flex:none}
+.fld2 b{font-size:12.5px;font-weight:600;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fld2 b.m{font-family:var(--mono);letter-spacing:-.02em}
+.fld2 b.good{color:var(--green-70)}
+.fld2 b.bad{color:var(--red-70)}
+.fld2 b.off{color:var(--ink-30);font-weight:500}
+/* botão-dado: um valor que também é ação (copiar rastreio, copiar endereço) */
+.rgrp__x{margin-top:9px;display:flex;align-items:center;gap:7px;height:28px;padding:0 9px;width:100%;border:1px solid var(--line-2);background:var(--surface);font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink-80);cursor:pointer;text-align:left;transition:border-color var(--d1),color var(--d1),background var(--d1)}
+.rgrp__x:hover{border-color:var(--blue-60);color:var(--blue-60);background:var(--blue-10)}
+.rgrp__x svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.rgrp__x span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rgrp__why{margin-top:9px;font-size:11px;color:var(--ink-40);line-height:1.5;text-wrap:pretty}
+@media(max-width:880px){
+  /* tablet ainda tem largura para DUAS colunas de etapa; virar pilha aqui só alonga a página */
+  .rgrp{flex:1 1 46%}
+  .rgrp__h{padding:10px 16px 8px}
+  .rgrp__b{padding:0 16px 13px}
+}
+@media(max-width:880px){
+  .rhead__u{padding-top:8px}
+  .rhead__code{font-size:19px}
+  /* TABLET: as ações ficam na linha do "voltar", como no desktop — 3 botões somam ~340px e cabem
+     nos 800px que sobram. Em faixa própria elas esticavam para a largura toda e viravam três
+     blocos de peso diferente disputando a mesma fileira. */
+  .rhead__act{flex:none}
+  /* no tablet o vão entre nome e botões não dá 500px: o trilho passa para a fileira de baixo,
+     inteiro, ainda em régua — só que agora com espaço de sobra para os seis rótulos. */
+  #stat.rhead__stat{order:3;flex:1 1 100%;justify-content:flex-start;padding:12px 0 2px}
+  /* na fileira inteira as células dividem a largura por igual — encostadas à esquerda, seis
+     caixas de tamanhos diferentes deixariam um vão solto na direita. */
+  #stat.rhead__stat .stat{width:100%}
+  #stat.rhead__stat .stat__s{flex:1 1 0;justify-content:center;padding:0 8px}
+  .rhead__mx{margin:0 -16px}
+  .rmx{padding:13px 16px 14px;flex:1 1 136px}
+  /* TABLET: os dois indicadores-herói ficam LADO A LADO. Em faixa cheia, um valor de 31px sobra
+     sozinho num bloco de 800px e empurra a bancada para fora da tela — o cabeçalho vira um muro
+     de 600px na frente do trabalho. A regra de telefone (herói ocupando a faixa) desce para 600. */
+  .rmx--hero{flex:1 1 46%}
+  /* a fileira de fatos guarda as QUATRO colunas do desktop: com 3 por linha, o quarto fato sobrava
+     esticado sozinho numa faixa de 800px */
+  .rhead__mx--f .rmx{padding:11px 16px 12px;flex:1 1 22%}
+}
+/* ESPELHO EM @container: as páginas que carregam viewport.js (enquadramento de celular/tablet do
+   protótipo) leem a largura do FRAME, não da janela — sem este espelho o bloco @media acima fica
+   morto dentro do enquadramento e o cabeçalho da ficha transborda. Os dois convivem: página sem
+   frame usa o @media, página com frame usa este. */
+@container vp (max-width:880px){
+  /* tablet ainda tem largura para DUAS colunas de etapa; virar pilha aqui só alonga a página */
+  .rgrp{flex:1 1 46%}
+  .rgrp__h{padding:10px 16px 8px}
+  .rgrp__b{padding:0 16px 13px}
+  .rhead__u{padding-top:8px}
+  .rhead__code{font-size:19px}
+  /* TABLET: as ações ficam na linha do "voltar", como no desktop — cabem nos 800px que sobram. */
+  .rhead__act{flex:none}
+  /* no tablet o vão entre nome e botões não dá 500px: o trilho passa para a fileira de baixo,
+     inteiro, ainda em régua — só que agora com espaço de sobra para os seis rótulos. */
+  #stat.rhead__stat{order:3;flex:1 1 100%;justify-content:flex-start;padding:12px 0 2px}
+  /* na fileira inteira as células dividem a largura por igual — encostadas à esquerda, seis
+     caixas de tamanhos diferentes deixariam um vão solto na direita. */
+  #stat.rhead__stat .stat{width:100%}
+  #stat.rhead__stat .stat__s{flex:1 1 0;justify-content:center;padding:0 8px}
+  .rhead__mx{margin:0 -16px}
+  .rmx{padding:13px 16px 14px;flex:1 1 136px}
+  .rmx--hero{flex:1 1 46%}
+  /* a fileira de fatos guarda as QUATRO colunas do desktop: com 3 por linha, o quarto fato sobrava
+     esticado sozinho numa faixa de 800px */
+  .rhead__mx--f .rmx{padding:11px 16px 12px;flex:1 1 22%}
+}
+/* CELULAR: o herói toma a faixa. Não é o número que não cabe (27px em 179px caberia) — é o resto
+   da célula: sub-linha em US$, nota de câmbio e, no volume, barra de meta com três legendas. Em
+   meia faixa cada herói viraria uma pilha de quatro linhas, e duas pilhas dessas somam mais altura
+   do que as duas faixas cheias. As etapas voltam a ser pilha pelo mesmo motivo.
+   Alvos de toque: no telefone toda ação do cabeçalho vai a 44px, o piso do sistema — inclusive o
+   lápis da descrição, que em 22px era o menor alvo da página. */
+@media(max-width:600px){
+  .rmx--hero{flex:1 1 100%}
+  .rmx--hero .rmx__v{font-size:27px}
+  .rgrp{flex:1 1 100%}
+  .rhead__mx--f .rmx{flex:1 1 44%}
+  /* CABEÇALHO DO REGISTRO NO TELEFONE — duas correções de hierarquia, não de espaçamento.
+
+     1. ORDEM. Empilhado, o cabeçalho apresentava os VERBOS antes do SUJEITO: voltar, três botões,
+        e só então o código do lote. Aqui a ordem é voltar › código › descrição › ações — você
+        aprende em que registro está antes do que pode fazer nele. Sem mexer no HTML: a faixa de
+        utilitários vira display:contents e seus filhos se ordenam direto na pilha do cabeçalho — a
+        pilha é o .wrap interno, que é quem de fato guarda as faixas.
+
+     2. DOIS TRATAMENTOS, NÃO TRÊS. Em 390px havia um botão fantasma, um contornado e um vermelho
+        cheio lado a lado — três pesos para três ações, e o mais pesado era o que ninguém deveria
+        tocar. Agora o que é rotina (exportar, fechar) divide uma fileira de metades IGUAIS, mesma
+        casca; e o destrutivo desce sozinho, sem casca, em tinta vermelha — peso de link, não de
+        botão. Quem confirma a destruição é o diálogo, não o tamanho do alvo.
+
+     O ritmo vertical fica em uma régua só: 8 acima do voltar, 8 antes do código, 4 antes da
+     descrição, 12 antes das ações, 14 antes da primeira faixa de indicadores. */
+  .rhead>.wrap{display:flex;flex-direction:column}
+  .rhead>.wrap>*{order:9}
+  .rhead__u{display:contents}
+  .rhead__sp{display:none}
+  .rhead__back{order:1;align-self:flex-start;height:44px;padding:0 12px 0 8px;margin:8px 0 0 -8px}
+  .rhead>.wrap>.rhead__bar{order:2;padding:8px 0 0;gap:8px}
+  .rhead>.wrap>.rhead__desc{order:3;padding:4px 0 0}
+  /* CELULAR: a MESMA fileira do desktop, em 44px. Nada de recasca — as variantes do sistema
+     (quadrado, perigo, primário) valem aqui igual; o que muda é que os dois primeiros perdem o
+     rótulo e viram quadrados, e o azul de fechar toma o resto da linha. O rótulo não some do
+     produto: continua no title/aria-label. */
+  .rhead__act{order:4;flex-wrap:wrap;gap:8px;padding:12px 0 14px}
+  .rhead__act>.btn{height:44px}
+  .rhead__act>.btn--sq{width:44px}
+  .rhead__act>.btn--dan{width:44px;flex:none;padding:0;gap:0;justify-content:center}
+  .rhead__act>.btn--dan>span{display:none}
+  /* base de 40%: com dois botões na fileira o primário divide a linha (é o caso do Estoque e do
+     Painel); com três ele não cabe, desce para uma linha só sua e cresce até a largura toda. */
+  .rhead__act>.btn--pri{flex:1 1 40%;min-width:0;justify-content:center;gap:10px}
+  /* atalho para o outro lado do registro: é só rótulo, sem ícone, então no telefone ele encolhe
+     pelo texto em vez de virar quadrado — um quadrado sem glifo não diz nada. */
+  .rhead__act>[data-lot-link]{flex:none;padding:0 12px}
+  /* sem vão entre o nome e os botões, o trilho desce para uma fileira só sua — ainda entre os dois,
+     que é o que ele descreve. Fio de ligação some: em duas colunas ele ligaria a etapa da ponta
+     direita à da esquerda de baixo, apontando para trás. A data sai — as caixas de etapa logo
+     abaixo já a carregam. */
+  #stat.rhead__stat{order:3;flex:1 1 100%;justify-content:flex-start;padding:12px 0 2px}
+  #stat.rhead__stat .stat{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  /* CÉLULA ÍMPAR OCUPA A FILEIRA. Duas colunas foram escritas para o trilho de SEIS células, que
+     divide por 2. O do comprador tem cinco (ele não despacha), e cinco em duas colunas deixa um
+     buraco no canto — a faixa passava a parecer tabela quebrada. Quem fecha a conta é a última
+     célula quando o total é ímpar, não uma coluna a menos para todo mundo. */
+  #stat.rhead__stat .stat__s:last-child:nth-child(odd){grid-column:1/-1}
+  #stat.rhead__stat .stat__s{height:44px;padding:0 12px}
+  #stat.rhead__stat .stat__s small{display:none}
+  /* na pilha do cabeçalho as ações fecham a identidade, não a linha do voltar */
+  .rhead__bar>.rhead__act{flex:1 1 100%;margin-left:0;padding:12px 0 2px}
+  /* o lápis não precisa ser alvo: quem recebe o toque é o botão inteiro da descrição (texto +
+     lápis). Em 44px o ícone descolava do texto e virava um terceiro elemento solto na linha. */
+  .rhead__dt{min-height:44px;padding-right:2px}
+  .rhead__pen{width:26px;height:26px}
+  .rmx--hero{padding-top:12px;padding-bottom:13px}
+  .rmx--hero .rmx__v{font-size:25px;margin-top:5px}
+}
+@container vp (max-width:600px){
+  .rmx--hero{flex:1 1 100%}
+  .rmx--hero .rmx__v{font-size:27px}
+  .rgrp{flex:1 1 100%}
+  .rhead__mx--f .rmx{flex:1 1 44%}
+  /* CABEÇALHO DO REGISTRO NO TELEFONE — duas correções de hierarquia, não de espaçamento.
+
+     1. ORDEM. Empilhado, o cabeçalho apresentava os VERBOS antes do SUJEITO: voltar, três botões,
+        e só então o código do lote. Aqui a ordem é voltar › código › descrição › ações — você
+        aprende em que registro está antes do que pode fazer nele. Sem mexer no HTML: a faixa de
+        utilitários vira display:contents e seus filhos se ordenam direto na pilha do cabeçalho — a
+        pilha é o .wrap interno, que é quem de fato guarda as faixas.
+
+     2. DOIS TRATAMENTOS, NÃO TRÊS. Em 390px havia um botão fantasma, um contornado e um vermelho
+        cheio lado a lado — três pesos para três ações, e o mais pesado era o que ninguém deveria
+        tocar. Agora o que é rotina (exportar, fechar) divide uma fileira de metades IGUAIS, mesma
+        casca; e o destrutivo desce sozinho, sem casca, em tinta vermelha — peso de link, não de
+        botão. Quem confirma a destruição é o diálogo, não o tamanho do alvo.
+
+     O ritmo vertical fica em uma régua só: 8 acima do voltar, 8 antes do código, 4 antes da
+     descrição, 12 antes das ações, 14 antes da primeira faixa de indicadores. */
+  .rhead>.wrap{display:flex;flex-direction:column}
+  .rhead>.wrap>*{order:9}
+  .rhead__u{display:contents}
+  .rhead__sp{display:none}
+  .rhead__back{order:1;align-self:flex-start;height:44px;padding:0 12px 0 8px;margin:8px 0 0 -8px}
+  .rhead>.wrap>.rhead__bar{order:2;padding:8px 0 0;gap:8px}
+  .rhead>.wrap>.rhead__desc{order:3;padding:4px 0 0}
+  /* CELULAR: a MESMA fileira do desktop, em 44px. Nada de recasca — as variantes do sistema
+     (quadrado, perigo, primário) valem aqui igual; o que muda é que os dois primeiros perdem o
+     rótulo e viram quadrados, e o azul de fechar toma o resto da linha. O rótulo não some do
+     produto: continua no title/aria-label. */
+  .rhead__act{order:4;flex-wrap:wrap;gap:8px;padding:12px 0 14px}
+  .rhead__act>.btn{height:44px}
+  .rhead__act>.btn--sq{width:44px}
+  .rhead__act>.btn--dan{width:44px;flex:none;padding:0;gap:0;justify-content:center}
+  .rhead__act>.btn--dan>span{display:none}
+  /* base de 40%: com dois botões na fileira o primário divide a linha (é o caso do Estoque e do
+     Painel); com três ele não cabe, desce para uma linha só sua e cresce até a largura toda. */
+  .rhead__act>.btn--pri{flex:1 1 40%;min-width:0;justify-content:center;gap:10px}
+  /* atalho para o outro lado do registro: é só rótulo, sem ícone, então no telefone ele encolhe
+     pelo texto em vez de virar quadrado — um quadrado sem glifo não diz nada. */
+  .rhead__act>[data-lot-link]{flex:none;padding:0 12px}
+  /* sem vão entre o nome e os botões, o trilho desce para uma fileira só sua — ainda entre os dois,
+     que é o que ele descreve. Fio de ligação some: em duas colunas ele ligaria a etapa da ponta
+     direita à da esquerda de baixo, apontando para trás. A data sai — as caixas de etapa logo
+     abaixo já a carregam. */
+  #stat.rhead__stat{order:3;flex:1 1 100%;justify-content:flex-start;padding:12px 0 2px}
+  #stat.rhead__stat .stat{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  /* CÉLULA ÍMPAR OCUPA A FILEIRA. Duas colunas foram escritas para o trilho de SEIS células, que
+     divide por 2. O do comprador tem cinco (ele não despacha), e cinco em duas colunas deixa um
+     buraco no canto — a faixa passava a parecer tabela quebrada. Quem fecha a conta é a última
+     célula quando o total é ímpar, não uma coluna a menos para todo mundo. */
+  #stat.rhead__stat .stat__s:last-child:nth-child(odd){grid-column:1/-1}
+  #stat.rhead__stat .stat__s{height:44px;padding:0 12px}
+  #stat.rhead__stat .stat__s small{display:none}
+  /* na pilha do cabeçalho as ações fecham a identidade, não a linha do voltar */
+  .rhead__bar>.rhead__act{flex:1 1 100%;margin-left:0;padding:12px 0 2px}
+  /* o lápis não precisa ser alvo: quem recebe o toque é o botão inteiro da descrição (texto +
+     lápis). Em 44px o ícone descolava do texto e virava um terceiro elemento solto na linha. */
+  .rhead__dt{min-height:44px;padding-right:2px}
+  .rhead__pen{width:26px;height:26px}
+  .rmx--hero{padding-top:12px;padding-bottom:13px}
+  .rmx--hero .rmx__v{font-size:25px;margin-top:5px}
+}

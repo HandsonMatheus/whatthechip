@@ -1,0 +1,631 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x1240" name="Estoque · Lotes" subtitle="Versão admin — lotes com custo/valor/margem, painel lateral; lista de lotes oculta para operador" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Estoque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+/* tokens: vêm de wtc-carbon.css (com o bloco de modo escuro). Repetir o :root aqui anulava o
+   escuro — mesma especificidade, e o que vem depois vence. */
+
+/* ============ SHELL ============ */
+.phead{background:var(--surface)}
+.phead__in{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:34px 0 24px}
+.phead h1{font-size:34px;font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.phead h1 b{font-weight:700}
+.phead__meta{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--muted)}
+.phead__meta .sep{width:1px;height:12px;background:var(--line-2)}
+.phead__meta b{font-weight:700;color:var(--text)}
+.phead__right{display:flex;align-items:center;gap:12px;flex:none}
+
+/* ============ BUTTONS ============ */
+.btn--full{width:100%;justify-content:space-between}
+
+/* ============ KPIs ============ */
+.kpis{background:var(--surface);border-bottom:1px solid var(--line)}
+.kpis__in{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);margin:0 -32px}
+.kpi{background:var(--surface);flex:1 1 185px;padding:18px 32px 20px;min-width:0}
+.kpi__l{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.kpi__v{font-size:31px;font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:11px;white-space:nowrap}
+.kpi__v small{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:0}
+.kpi__d{font-size:12px;color:var(--muted);margin-top:6px;white-space:nowrap}
+.kpi__d b{font-weight:800}
+.up{color:var(--green-60)}.down{color:var(--red-60)}
+
+/* ============ LAYOUT ============ */
+.work{padding:26px 0 96px}
+
+/* open lots strip */
+
+/* ============ TABLE ============ */
+.batch{position:absolute;inset:0;background:var(--blue-60);color:#fff;display:none;align-items:center;padding-left:16px;z-index:2}
+.batch.on{display:flex}
+.batch__n{font-size:13px;font-weight:700;flex:1}
+.batch button{height:47px;padding:0 16px;border:0;background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:18px}
+.batch button:hover{background:var(--blue-60h)}
+.batch button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+.batch .x{border-left:1px solid rgba(255,255,255,.3)}
+
+/* a lista usa o modelo .dtab do wtc-carbon.css — aqui só o que é próprio desta tela */
+.dtab .cbx input{width:16px;height:16px;accent-color:var(--blue-60);cursor:pointer;display:block}
+/* prévia de exportação: tabela estática de leitura, não é a lista — regras próprias e enxutas */
+#xp-prev table{width:100%;border-collapse:collapse}
+#xp-prev th{background:var(--ink-05);text-align:left;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-70);padding:0 14px;height:36px;border-bottom:1px solid var(--line);white-space:nowrap}
+#xp-prev td{padding:0 14px;height:38px;border-bottom:1px solid var(--line);font-size:12.5px}
+#xp-prev .num{text-align:right;font-family:var(--mono);font-weight:600;white-space:nowrap}
+#xp-prev .code{font-family:var(--mono);font-weight:600;white-space:nowrap}
+/* rodapé da lista (.tfoot/.pgn) subiu para wtc-carbon.css — é padrão, e ficando aqui
+   vencia por ordem de carga as regras responsivas da folha do sistema */
+/* avatares empilhados: o anel da cor da superfície separa um do outro sem gastar largura */
+.avs{display:flex;flex-wrap:nowrap;padding-left:4px}
+.av{width:24px;height:24px;background:var(--ink-80);color:var(--white);font-size:10px;font-weight:700;display:grid;place-items:center;flex:none;letter-spacing:-.01em;margin-left:-4px;box-shadow:0 0 0 2px var(--surface)}
+.avs .none{color:var(--ink-40);margin-left:0;box-shadow:none}
+tr:hover .av{box-shadow:0 0 0 2px var(--ink-05)}
+tr.sel .av{box-shadow:0 0 0 2px var(--blue-10)}
+tr.dim .av{background:var(--ink-30);color:var(--ink-70)}
+
+/* conteúdo dos diálogos desta tela — a casca (.mscrim/.mbox) é do sistema, no carbon */
+.nlcode{text-align:right;flex:none}
+.nlcode .l{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.nlcode .v{font-family:var(--mono);font-size:20px;font-weight:600;letter-spacing:-.03em;margin-top:3px}
+.fldm label{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-70);margin-bottom:7px}
+.fldm input{width:100%;height:48px;padding:0 14px;border:0;background:var(--ink-05);border-bottom:1px solid var(--ink-50);color:var(--text);font-size:14px}
+.fldm input:focus{outline:2px solid var(--blue-60);outline-offset:-2px;border-bottom-color:var(--blue-60)}
+.fldm input.mono{font-family:var(--mono)}
+.fldm .hint{font-size:11px;color:var(--faint);margin-top:7px}
+.opick{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+/* <button> não herda fonte nem cor: sem estas duas linhas o nome do operador saía na tinta padrão
+   do navegador — preto sobre superfície escura, invisível no modo escuro. */
+.opk{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--surface);border:0;cursor:pointer;text-align:left;font-family:inherit;color:var(--text);transition:background var(--d1)}
+.opk:hover{background:var(--ink-05)}
+.opk.on{background:var(--blue-10)}
+.opk__c{width:18px;height:18px;border:1px solid var(--ink-50);display:grid;place-items:center;flex:none;background:var(--surface)}
+.opk.on .opk__c{background:var(--blue-60);border-color:var(--blue-60)}
+.opk__c svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3;opacity:0}
+.opk.on .opk__c svg{opacity:1}
+.opk__av{width:26px;height:26px;background:var(--ink-80);color:var(--white);font-size:10px;font-weight:700;display:grid;place-items:center;flex:none}
+.opk.on .opk__av{background:var(--blue-60)}
+.opk__n{font-size:13px;font-weight:700;min-width:0;line-height:1.25}
+.opk__n span{display:block;font-size:11px;font-weight:500;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req{float:right;font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--red-60)}
+.orpick{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.orp{display:flex;align-items:flex-start;gap:11px;padding:14px 14px;background:var(--surface);border:0;cursor:pointer;text-align:left;font-family:inherit;color:var(--text);transition:background var(--d1)}
+.orp:hover{background:var(--ink-05)}
+.orp.on{background:var(--blue-10)}
+.orp__r{width:16px;height:16px;border:1px solid var(--ink-50);border-radius:50%;flex:none;margin-top:2px;display:grid;place-items:center;background:var(--surface)}
+.orp.on .orp__r{border-color:var(--blue-60);border-width:5px}
+.orp__ic{width:30px;height:30px;display:grid;place-items:center;background:var(--ink-10);color:var(--ink-70);flex:none}
+.orp.on .orp__ic{background:var(--blue-60);color:#fff}
+.orp__ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+.orp__n{font-size:14px;font-weight:700;line-height:1.25;min-width:0}
+.orp__n span{display:block;font-size:11px;font-weight:500;color:var(--faint);margin-top:3px;text-wrap:pretty;white-space:normal}
+.xls{border:1px solid var(--line);overflow-x:auto}
+.xls table{width:100%;border-collapse:collapse;min-width:560px}
+.xls th{background:var(--ink-05);font-size:10px;height:34px;padding:0 10px;letter-spacing:.05em}
+.xls td{height:34px;padding:0 10px;font-size:12px;border-bottom:1px solid var(--line)}
+.xls tbody tr{cursor:default}
+.xls tbody tr:hover{background:none}
+.xls tr.sumr td{background:var(--ink-05);font-weight:800;border-bottom:0}
+.tabname{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;background:var(--ink-100);color:var(--white);font-family:var(--mono);font-size:12px;font-weight:600}
+/* a prévia da planilha é a única rolagem lateral aceita no sistema: é planilha mesmo, com a
+   forma da aba que vai ser baixada — não uma lista onde a última coluna é dinheiro */
+@media(max-width:600px){.opick,.orpick{grid-template-columns:1fr}.nlcode{display:flex;align-items:baseline;gap:9px;text-align:left}.nlcode .v{font-size:18px;margin-top:0}.fldm input{font-size:16px}}
+@container vp (max-width:600px){.opick,.orpick{grid-template-columns:1fr}.nlcode{display:flex;align-items:baseline;gap:9px;text-align:left}.nlcode .v{font-size:18px;margin-top:0}.fldm input{font-size:16px}}
+
+.hide{display:none !important}
+
+@container vp (max-width:1100px){
+  .desc{display:none}
+}
+@container vp (max-width:880px){
+  .shell__org-txt,.shell__user{display:none}
+  .wrap{padding:0 16px}.kpis__in{margin:0 -16px}
+  .phead__in{flex-direction:column;align-items:flex-start;gap:18px;padding:22px 0}
+  .phead h1{font-size:27px}
+  .toast{left:16px;right:16px;max-width:none}
+}
+
+/* ============ TABLET (≤880) ============ */
+@container vp (max-width:880px){
+  .kpi{flex:1 1 46%;padding:15px 16px 17px}
+  .kpi__v{font-size:27px}
+  .work{padding:20px 0 72px}
+  .slabel span{display:none}
+}
+/* ============ CELULAR (≤600) ============
+   Uma tabela de sete colunas não cabe em 390px, e rolagem horizontal em lista de lotes esconde
+   justamente a coluna que decide (valor). Então cada linha vira CARTÃO, com a mesma ordem de
+   leitura da tabela: código → estado e volume → dinheiro e quem está na bancada. O <table>
+   segue o mesmo no HTML — quem muda é só a formatação. */
+@container vp (max-width:600px){
+  .kpi{flex:1 1 100%;padding:14px 16px 16px}
+  .kpi__v{font-size:27px;white-space:normal}
+  .kpi__d{white-space:normal}
+  /* barra de ferramentas: busca ocupa a linha, filtros dividem a seguinte, ação fecha */
+  .tbar__search{flex:1 1 100%}
+  .tbar__sel{flex:1 1 calc(50% - 1px);min-width:0}
+  .tbar__ico{flex:0 0 48px}
+  .tbar__new{flex:1 1 auto;justify-content:center}
+  .drange{flex:1 1 100%}
+  /* seleção em massa deixa de cobrir a barra (que aqui tem três linhas) e entra como faixa */
+  .batch{position:static;flex:1 1 100%;padding:0;flex-wrap:wrap}
+  .batch__n{flex:1 1 100%;padding:11px 16px 3px}
+  .batch button{flex:1 1 auto;justify-content:center;gap:10px;height:44px}
+  .batch .x{border-left:0}
+}
+</style>
+</head>
+<body>
+
+<header class="shell">
+  <a class="shell__brand" href="painel.html" aria-label="WhatTheChip 什么芯片"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <nav class="shell__nav">
+    <a class="nlink" href="painel.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></a>
+    <button class="nlink is-active" data-wtc-needs="lots"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></button>
+    <a class="nlink" href="vendas-lista.html" data-wtc-needs="sales"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+  </nav>
+  <div class="shell__spacer"></div>
+  <div class="shell__org">
+    <div class="shell__org-logo" data-wtc-avatar>eM</div>
+    <div class="shell__org-txt"><span class="shell__org-name" data-wtc-company>eMiner</span></div>
+  </div>
+  <div class="shell__who">
+    <div class="shell__avatar" data-wtc-initials>MG</div>
+    <div class="shell__user"><b data-wtc-user>Matheus G.</b><span class="shell__role" data-wtc-role>Gerente</span></div>
+  </div>
+  <button class="shell__ico" aria-label="Notificações" id="bell"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">PT</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<div class="phead">
+  <div class="wrap"><div class="phead__in">
+    <div>
+      <h1>Estoque <b>eMiner</b></h1>
+    </div>
+    <div class="phead__right">
+    </div>
+  </div></div>
+</div>
+
+<div class="kpis" data-wtc-needs="lots">
+  <div class="wrap"><div class="kpis__in">
+    <div class="kpi" data-wtc-needs="price"><div class="kpi__l">Valor em triagem</div><div class="kpi__v" id="k-val">—</div></div>
+    <div class="kpi"><div class="kpi__l">Lotes abertos</div><div class="kpi__v" id="k-open">—</div></div>
+    <div class="kpi"><div class="kpi__l">Aproveitamento médio</div><div class="kpi__v" id="k-yield">—</div><div class="kpi__d" id="k-yield-d">—</div></div>
+  </div></div>
+</div>
+
+<main class="wrap"><div class="work">
+
+  <!-- ============ LOTES ============ -->
+  <div id="v-lotes">
+
+    <div data-wtc-needs="lots">
+    <div class="slabel"><h2>Todos os lotes</h2><span>clique em uma linha para abrir o lote</span></div>
+    <section class="panel">
+      <div class="tbar">
+        <div class="tbar__search">
+          <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+          <input id="q" type="text" placeholder="Buscar por código ou descrição…" autocomplete="off" />
+        </div>
+        <select class="tbar__sel" id="f-status"><option value="all">Todos os status</option><option value="open">Abertos</option><option value="closed">Fechados</option></select>
+        <select class="tbar__sel" id="f-period"><option value="any">Qualquer período</option><option value="d7">Últimos 7 dias</option><option value="d30">Últimos 30 dias</option><option value="custom">Datas específicas…</option></select>
+        <div class="drange hide" id="drange"><span>de</span><input type="date" id="d-from" value="2026-06-01" aria-label="Data inicial" /><span>até</span><input type="date" id="d-to" value="2026-07-16" aria-label="Data final" /></div>
+        <button class="tbar__ico" id="exp-tbl" title="Exportar CSV"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></button>
+        <button class="tbar__new" id="new-btn">Novo lote<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        <div class="batch" id="batch">
+          <span class="batch__n" id="batch-n">0 selecionados</span>
+          <button id="b-exp">Exportar<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></button>
+          <button id="b-close">Fechar lotes<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <button class="x" id="b-cancel">Cancelar<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="dtab__wrap"><table id="tbl" class="dtab">
+        <thead><tr>
+          <th class="cbx"><input type="checkbox" id="all-cbx" aria-label="Selecionar todos" /></th>
+          <th class="s" data-k="n">Lote <span class="ar">▼</span></th>
+          <th class="d">Descrição</th>
+          <th>Status</th>
+          <th class="s num" data-k="units">Unidades <span class="ar">▼</span></th>          <th class="s hide-md" data-k="ops">Operadores <span class="ar">▼</span></th>
+          <th class="s num" data-k="val" data-wtc-needs="price">Valor triado <span class="ar">▼</span></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <div class="dtab__empty hide" id="empty"><b>Nenhum lote encontrado</b>Ajuste a busca ou os filtros.</div>
+      <div class="tfoot">
+        <div class="pgn">
+          <div class="pgn__per"><label for="per">Por página</label><select id="per"><option>5</option><option selected>10</option><option>25</option></select></div>
+          <div class="pgn__i" id="tf-n"></div>
+          <button class="pgn__b" id="pg-prev" aria-label="Página anterior"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="pgn__b" id="pg-next" aria-label="Próxima página"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+    </div>
+  </div>
+
+</div></main>
+
+<div class="mscrim" id="nl">
+  <form class="mbox" id="nl-form" role="dialog" aria-modal="true" aria-label="Abrir novo lote">
+    <div class="mbox__h">
+      <div><h2>Abrir novo lote</h2><p>O código segue a sequência do mês e não pode ser editado.</p></div>
+      <div class="nlcode"><div class="l">Próximo código</div><div class="v" id="nl-code">LOT/045/07/26</div></div>
+      <button class="mbox__x" type="button" id="nl-x" aria-label="Fechar sem criar" title="Fechar sem criar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mbox__b">
+      <div class="fldm">
+        <label>Origem do lote <span class="req">obrigatório</span></label>
+        <div class="orpick" id="nl-orig" role="radiogroup" aria-label="Origem do lote">
+          <button type="button" class="orp" data-or="phone" role="radio" aria-checked="false">
+            <span class="orp__r"></span>
+            <span class="orp__ic"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19"/><path d="M10.5 18.6h3"/></svg></span>
+            <span class="orp__n">Celular<span>placas de telefone</span></span>
+          </button>
+          <button type="button" class="orp" data-or="pcb" role="radio" aria-checked="false">
+            <span class="orp__r"></span>
+            <span class="orp__ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="9" y="9" width="6" height="6"/><path d="M9 3.5v2M15 3.5v2M9 18.5v2M15 18.5v2M3.5 9h2M3.5 15h2M18.5 9h2M18.5 15h2"/></svg></span>
+            <span class="orp__n">PCB<span>set-top box, TV, tablet, notebook, industrial…</span></span>
+          </button>
+        </div>
+      </div>
+      <div class="fldm"><label for="nl-desc">Descrição do lote</label><input id="nl-desc" type="text" placeholder="Ex.: Compra Jul/2026 — recuperação de placas" maxlength="120" autocomplete="off" /></div>
+      <div class="fldm"><label>Operadores atribuídos</label><div class="opick" id="nl-ops"></div><div class="hint">Só quem está atribuído vê o lote e pode lançar chips nele. Dá para mudar depois pelo painel do lote.</div></div>
+    </div>
+    <div class="mbox__f">
+      <button class="btn btn--sec" type="button" id="nl-cancel">Cancelar</button>
+      <button class="btn btn--pri" type="submit" id="nl-go" disabled>Criar e abrir<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </form>
+</div>
+
+<div class="mscrim" id="xp">
+  <div class="mbox" role="dialog" aria-modal="true" aria-label="Exportar lote">
+    <div class="mbox__h">
+      <div><h2>Exportar lote</h2><p>Uma aba por lote. O preço é ¥; US$ é tradução da taxa.</p></div>
+      <div class="nlcode"><div class="l">Nome da aba</div><div style="margin-top:6px"><span class="tabname" id="xp-tab">Lote 042 PCB</span></div></div>
+      <button class="mbox__x" type="button" id="xp-x" aria-label="Fechar sem exportar" title="Fechar sem exportar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mbox__b">
+      <div class="xls" id="xp-prev"></div>
+      <div class="note" id="xp-rate"></div>
+    </div>
+    <div class="mbox__f">
+      <button class="btn btn--sec" type="button" id="xp-cancel">Cancelar</button>
+      <button class="btn btn--pri" type="button" id="xp-go">Baixar .xlsx<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="access.js?v=3"></script>
+<script src="fx.js"></script>
+<script src="notifications.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="viewport.js?v=7"></script>
+<script src="shell.js?v=4"></script>
+<script src="live.js"></script>
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i);};
+function A(){return (window.WTCAccess&&window.WTCAccess.access())||{is_unmasked:false,can_see_price:false};}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function fmt(n){return Number(n).toLocaleString("pt-BR");}
+function usd(n){return "US$ "+Number(Math.round(n)).toLocaleString("pt-BR");}
+function usdk(n){return "US$ "+(n/1000).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"k";}
+function FX(){return window.WTCFX;}
+/* ¥ é o dado do lote. US$ sai da taxa TRAVADA (lote fechado) ou da vigente (lote aberto). */
+function lotRate(l){return l.lock||(l.legacy?0.1478:FX().rate());}
+function lotUsd(l){var r=lotRate(l);return r?l.cny*r:0;}
+function lotMoney(l,size){
+  if(l.legacy)return FX().frozen(lotUsd(l),size);
+  if(l.lock)return '<span class="mval mval--'+(size||"md")+'"><b class="mval__c">'+FX().cny(l.cny)+'</b><span class="mval__u">≈ '+FX().usd(lotUsd(l))+'</span></span>';
+  return FX().pair(l.cny,size);
+}
+function lockSeal(l){
+  if(l.st!=="closed")return "";
+  var lk='<svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>';
+  if(!l.lock)return '<span class="lockseal lockseal--warn">'+lk+'fechado sem taxa travada</span>';
+  return '<span class="lockseal">'+lk+'1 ¥ = US$ '+l.lock.toFixed(4)+' · '+l.lockD+'</span>';
+}
+var toast=$("toast"),ttxt=$("toast-txt"),tT;
+function say(m){ttxt.textContent=m;toast.classList.add("is-on");clearTimeout(tT);tT=setTimeout(function(){toast.classList.remove("is-on");},2600);}
+function refresh(){if(window.WTCAccess)window.WTCAccess.apply();}
+
+/* ---------- dados ---------- */
+var LOTS=[
+ {n:44,st:"open",origin:"pcb",lock:null,lockD:"",desc:"Contêiner Shenzhen — hashboards mistas",op:"17/07 06:40",cl:"",r:7440,x:2196,m:352,cat:71,cost:23050,cny:329604,ops:["RS","JL"],dest:[["C-014",2480],["C-031",1960],["C-007",1420],["C-022",880],["C-009",700]]},
+ {n:43,st:"open",origin:"pcb",lock:null,lockD:"",desc:"Recuperação placas — turno noite",op:"16/07 19:40",cl:"",r:210,x:60,m:30,cat:9,cost:480,cny:7036,ops:["RS"],dest:[["C-014",120],["C-031",60],["C-007",30]]},
+ {n:42,st:"open",origin:"pcb",lock:null,lockD:"",desc:"Compra Jul/2026 — hashboards S19",op:"16/07 08:12",cl:"",r:1180,x:520,m:140,cat:37,cost:4200,cny:61597,ops:["RS","JL","AP"],dest:[["C-014",620],["C-031",340],["C-007",140],["C-022",80]]},
+ {n:41,st:"open",origin:"phone",lock:null,lockD:"",desc:"",op:"10/07 09:40",cl:"",r:301,x:108,m:21,cat:12,cost:1150,cny:14195,ops:[],dest:[["C-031",180],["C-009",121]]},
+ {n:40,st:"closed",origin:"phone",lock:0.1478,lockD:"14/07",desc:"Recuperação placas Galaxy J-series",op:"11/07 09:40",cl:"14/07 17:22",r:2100,x:890,m:130,cat:58,cost:7900,cny:111502,ops:["RS","AP"],dest:[["C-014",680],["C-007",1140],["C-018",280]]},
+ {n:39,st:"closed",origin:"pcb",lock:0.1502,lockD:"03/07",desc:"Compra Jun/2026 — Lote B",op:"28/06 10:15",cl:"03/07 16:40",r:1450,x:610,m:90,cat:44,cost:5600,cny:74834,ops:["JL","AP"],dest:[["C-009",519],["C-005",320],["C-022",611]]},
+ {n:38,st:"closed",origin:"pcb",lock:null,lockD:"",legacy:true,desc:"Sucata mista importada",op:"20/06 08:00",cl:"25/06 12:10",r:900,x:1400,m:210,cat:51,cost:6800,cny:33694,ops:["BM"],dest:[["C-026",180],["C-022",199],["C-018",121],["C-007",400]]}
+];
+var DEST=[
+ {c:"C-014",cat:"Categoria 04",comp:"ASIC hash · Bitmain",un:1420,cny:60487,age:0,ageT:"há 4 min"},
+ {c:"C-031",cat:"Categoria 07",comp:"ASIC hash + buck",   un:980, cny:42084,age:0,ageT:"há 2 h"},
+ {c:"C-007",cat:"Categoria 11",comp:"Flash SPI · Winbond",un:1310,cny:23545,age:1,ageT:"há 1 dia"},
+ {c:"C-022",cat:"Categoria 15",comp:"PMIC · LDO · sensor",un:890, cny:8390, age:3,ageT:"há 3 dias"},
+ {c:"C-009",cat:"Categoria 02",comp:"ASIC hash · Canaan", un:640, cny:28282,age:6,ageT:"há 6 dias"},
+ {c:"C-018",cat:"Categoria 21",comp:"Reguladores diversos",un:401,cny:21110,age:14,ageT:"há 14 dias"},
+ {c:"C-005",cat:"Categoria 09",comp:"USB-UART · Silabs",  un:320, cny:13600,age:9,ageT:"há 9 dias"},
+ {c:"C-026",cat:"Categoria 33",comp:"Passivos e diodos",  un:180, cny:8390, age:21,ageT:"há 21 dias"}
+];
+function code(l){var m=/(\d{2})\/(\d{2})/.exec(l.op);return "LOT/"+("00"+l.n).slice(-3)+"/"+(m?m[2]:"07")+"/26";}
+function tot(l){return l.r+l.x+l.m;}
+function yld(l){var t=tot(l);return t?Math.round(l.r/t*100):0;}
+function segs(l){var t=tot(l)||1;return '<i class="r" style="width:'+(l.r/t*100)+'%"></i><i class="x" style="width:'+(l.x/t*100)+'%"></i><i class="m" style="width:'+(l.m/t*100)+'%"></i>';}
+function segs2(l){var t=tot(l)||1;return '<i class="r" style="width:'+(l.r/t*100)+'%"></i><i style="width:'+((l.x+l.m)/t*100)+'%;background:var(--ink-30)"></i>';}
+function dayIdx(s){var m=/(\d{2})\/(\d{2})/.exec(s||"");return m?(+m[2])*31+(+m[1]):0;}
+
+/* ---------- KPIs ---------- */
+/* KPI ao vivo: o número rola do valor antigo ao novo em vez de pular. Sem marcador "+1" —
+   aqui é o total da empresa, não o lançamento de uma bancada. */
+var rollT={};
+function roll(id,to,paint){
+  var el=$(id);if(!el)return;
+  var from=rollT[id]&&rollT[id].to!=null?rollT[id].to:to;
+  if(rollT[id]&&rollT[id].raf)cancelAnimationFrame(rollT[id].raf);
+  rollT[id]={to:to,raf:0};
+  if(from===to){el.innerHTML=paint(to);return;}
+  var t0=performance.now(),dur=680;
+  var step=function(now){
+    var p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);
+    el.innerHTML=paint(from+(to-from)*e);
+    if(p<1)rollT[id].raf=requestAnimationFrame(step);
+  };
+  rollT[id].raf=requestAnimationFrame(step);
+}
+
+function kpis(){
+  /* os dois primeiros seguem os LOTES ABERTOS, não as caixas de destino: é o que a bancada
+     move em tempo real, e é o que o rótulo promete ("em lotes abertos"). */
+  var open=LOTS.filter(function(l){return l.st==="open";});
+  var cny=open.reduce(function(a,l){return a+l.cny;},0);
+  var r=LOTS.reduce(function(a,l){return a+l.r;},0), t=LOTS.reduce(function(a,l){return a+tot(l);},0);
+  roll("k-val",cny,function(v){return FX().pair(v,"kpi");});
+  var mylots=MY(),op=mylots.filter(function(l){return l.st==="open";}).length;
+  $("k-open").textContent=op;
+  $("k-yield").innerHTML=Math.round(r/t*100)+'<small>%</small>';
+  $("k-yield-d").innerHTML=fmt(r)+" de "+fmt(t)+" triados";
+}
+
+/* ---------- atribuição: operador só vê os lotes em que está ---------- */
+function mine(l){var a=A();return a.can_lots||l.ops.indexOf(a.me)>=0;}
+function MY(){return LOTS.filter(mine);}
+
+/* ---------- tabela de lotes ---------- */
+var sortK="n",sortD=-1,sel={},page=1;
+function lotDate(s){var m=/(\d{2})\/(\d{2})/.exec(s||"");return m?new Date(2026,(+m[2])-1,+m[1]):null;}
+function isoDate(s){var m=/(\d{4})-(\d{2})-(\d{2})/.exec(s||"");return m?new Date(+m[1],(+m[2])-1,+m[3]):null;}
+var TODAY=new Date(2026,6,16);
+function inPeriod(l){
+  var pe=$("f-period").value,d=lotDate(l.op);if(pe==="any"||!d)return true;
+  if(pe==="custom"){
+    var f=isoDate($("d-from").value),t=isoDate($("d-to").value);
+    if(f&&d<f)return false;
+    if(t&&d>t)return false;
+    return true;
+  }
+  return (TODAY-d)/864e5<=(pe==="d7"?7:30);
+}
+function view(){
+  var q=$("q").value.trim().toLowerCase(),st=$("f-status").value;
+  var v=MY().filter(function(l){
+    if(st!=="all"&&l.st!==st)return false;
+    if(!inPeriod(l))return false;
+    if(q&&code(l).toLowerCase().indexOf(q)<0&&(l.desc||"").toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  var f={n:function(l){return l.n;},units:tot,yield:yld,ops:function(l){return l.ops.length;},val:function(l){return l.cny;}}[sortK]||function(l){return l.n;};
+  return v.sort(function(a,b){return (f(a)-f(b))*sortD;});
+}
+function avs(l){
+  if(!l.ops.length)return '<span class="none">—</span>';
+  return l.ops.map(function(i){return '<span class="av" title="'+opName(i)+'">'+i+'</span>';}).join("");
+}
+function rows(){
+  var all=view(),price=A().can_see_price,a=A(),per=+$("per").value;
+  var pages=Math.max(1,Math.ceil(all.length/per));
+  if(page>pages)page=pages;
+  var from=(page-1)*per,v=all.slice(from,from+per);
+  $("empty").classList.toggle("hide",!!all.length);
+  $("rows").innerHTML=v.map(function(l){
+    var op=l.st==="open";
+    return '<tr data-n="'+l.n+'" data-meta="'+(l.origin==="pcb"?"PCB":"Celular")+'" class="'+(op?"":"dim")+(sel[l.n]?" sel":"")+'">'
+      +'<td class="cbx keep"><input type="checkbox" data-cb="'+l.n+'"'+(sel[l.n]?" checked":"")+' aria-label="Selecionar '+code(l)+'" /></td>'
+      +'<td class="c keep"><div style="display:flex;align-items:center;gap:9px">'+code(l)+FX().origin(l.origin,"sm")+'</div></td>'
+      +'<td class="d">'+(l.desc?esc(l.desc):"—")+'</td>'
+      +'<td class="keep" data-label="Status"><span class="tag '+(op?"tag--yes":"tag--mute")+'"><span class="dot"></span>'+(op?"ABERTO":"FECHADO")+'</span></td>'
+      +'<td class="n n--live" data-label="Unidades" data-suffix="un."><span data-un>'+fmt(tot(l))+'</span></td>'
+      +'<td class="hide-md" data-label="Operadores"><span class="avs">'+avs(l)+'</span></td>'
+      +'<td class="n key" data-wtc-needs="price" data-label="Valor triado"><div data-val style="display:flex">'+lotMoney(l,"xs")+'</div></td>'
+      +'<td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>'
+    +'</tr>';
+  }).join("");
+  $("tf-n").innerHTML=all.length?('<span><b>'+(from+1)+'–'+(from+v.length)+'</b> de <b>'+all.length+'</b> lotes</span>'):"<span>nenhum lote</span>";
+  $("pg-prev").disabled=page<=1;$("pg-next").disabled=page>=pages;
+  Array.prototype.forEach.call($("rows").querySelectorAll("tr"),function(tr){
+    tr.onclick=function(e){
+      if(e.target.closest("input"))return;
+      var n=+tr.dataset.n,l=LOTS.filter(function(x){return x.n===n;})[0];
+      if(l&&!mine(l)){say("Você não está atribuído a "+code(l)+".");return;}
+      location.href="triagem.html?lot="+n;
+    };
+  });
+  Array.prototype.forEach.call($("rows").querySelectorAll("[data-cb]"),function(cb){
+    cb.onchange=function(){var n=+cb.dataset.cb;if(cb.checked)sel[n]=1;else delete sel[n];rows();batch();};
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("th.s"),function(th){
+    th.classList.toggle("is-sort",th.dataset.k===sortK);
+    th.querySelector(".ar").textContent=sortD<0?"▼":"▲";
+  });
+  refresh();
+}
+function pageItems(){var all=view(),per=+$("per").value,from=(page-1)*per;return all.slice(from,from+per);}
+function batch(){
+  var n=Object.keys(sel).length,pi=pageItems();
+  $("batch").classList.toggle("on",n>0);
+  $("batch-n").textContent=n+(n===1?" lote selecionado":" lotes selecionados");
+  $("all-cbx").checked=!!pi.length&&pi.every(function(l){return sel[l.n];});
+}
+Array.prototype.forEach.call(document.querySelectorAll("th.s"),function(th){
+  th.onclick=function(){var k=th.dataset.k;if(sortK===k)sortD=-sortD;else{sortK=k;sortD=-1;}page=1;rows();};
+});
+$("q").oninput=function(){sel={};page=1;batch();rows();};
+$("f-status").onchange=function(){sel={};page=1;batch();rows();};
+$("f-period").onchange=function(){sel={};page=1;$("drange").classList.toggle("hide",$("f-period").value!=="custom");batch();rows();};
+$("d-from").onchange=function(){page=1;rows();};
+$("d-to").onchange=function(){page=1;rows();};
+$("per").onchange=function(){page=1;rows();};
+$("pg-prev").onclick=function(){if(page>1){page--;rows();}};
+$("pg-next").onclick=function(){page++;rows();};
+$("all-cbx").onchange=function(){sel={};if($("all-cbx").checked)pageItems().forEach(function(l){sel[l.n]=1;});rows();batch();};
+$("b-cancel").onclick=function(){sel={};rows();batch();};
+/* um lote selecionado abre a prévia da planilha; vários, só o resumo do que sai */
+$("b-exp").onclick=function(){
+  var ks=Object.keys(sel);
+  if(ks.length===1){
+    var l=LOTS.filter(function(x){return x.n===+ks[0];})[0];
+    if(l){openExport(l);return;}
+  }
+  say(ks.length+" lote(s) · uma aba por lote · Preço unit. (¥ RMB) · Preço unit. (US$ ≈) · Total (US$ ≈)");
+};
+$("b-close").onclick=function(){
+  var n=0,r=FX().rate();Object.keys(sel).forEach(function(k){var l=LOTS.filter(function(x){return x.n===+k;})[0];if(l&&l.st==="open"){l.st="closed";l.cl="16/07 15:20";l.lock=r;l.lockD=FX().state().date;n++;}});
+  sel={};rows();batch();kpis();
+  say(n?(n+" lote(s) fechados · câmbio travado "+(r?("1 ¥ = US$ "+r.toFixed(4)):"indisponível")):"Nenhum lote aberto na seleção.");
+};
+$("exp-tbl").onclick=function(){say("Exportando "+view().length+" lotes · uma aba por lote · ¥ RMB + US$ ≈");};
+
+/* ---------- criar lote ---------- */
+var OPS=[
+ {i:"RS",n:"Rafael S.",s:"412 un./h hoje"},
+ {i:"JL",n:"Julia L.",s:"366 un./h hoje"},
+ {i:"AP",n:"Ana P.",s:"298 un./h hoje"},
+ {i:"BM",n:"Bruno M.",s:"sem lançamentos hoje"}
+];
+var pick={},norig=null;
+function nextN(){return Math.max.apply(null,LOTS.map(function(l){return l.n;}))+1;}
+function opName(i){var o=OPS.filter(function(x){return x.i===i;})[0];return o?o.n:i;}
+function paintOps(){
+  $("nl-ops").innerHTML=OPS.map(function(o){
+    return '<button type="button" class="opk'+(pick[o.i]?" on":"")+'" data-o="'+o.i+'" aria-pressed="'+(pick[o.i]?"true":"false")+'">'
+      +'<span class="opk__c"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      +'<span class="opk__av">'+o.i+'</span>'
+      +'<span class="opk__n">'+o.n+'<span>'+o.s+'</span></span></button>';
+  }).join("");
+  Array.prototype.forEach.call($("nl-ops").querySelectorAll("[data-o]"),function(b){
+    b.onclick=function(){var k=b.getAttribute("data-o");if(pick[k])delete pick[k];else pick[k]=1;paintOps();};
+  });
+  nlValid();
+}
+function paintOrig(){
+  Array.prototype.forEach.call($("nl-orig").querySelectorAll("[data-or]"),function(b){
+    var on=b.getAttribute("data-or")===norig;
+    b.classList.toggle("on",on);b.setAttribute("aria-checked",on?"true":"false");
+  });
+  nlValid();
+}
+Array.prototype.forEach.call(document.querySelectorAll("#nl-orig [data-or]"),function(b){
+  b.onclick=function(){norig=b.getAttribute("data-or");paintOrig();};
+});
+function nlValid(){$("nl-go").disabled=!norig||!$("nl-desc").value.trim()||!Object.keys(pick).length;}
+function openCreate(){
+  pick={};norig=null;$("nl-desc").value="";
+  $("nl-code").textContent="LOT/"+("00"+nextN()).slice(-3)+"/07/26";
+  paintOrig();paintOps();$("nl").classList.add("on");refresh();
+  setTimeout(function(){$("nl-desc").focus();},80);
+}
+function closeCreate(){$("nl").classList.remove("on");}
+$("new-btn").onclick=openCreate;
+$("nl-cancel").onclick=closeCreate;
+$("nl-x").onclick=closeCreate;
+$("nl-desc").oninput=nlValid;
+$("nl").addEventListener("click",function(e){if(e.target===$("nl"))closeCreate();});
+$("nl-form").onsubmit=function(e){
+  e.preventDefault();
+  var d=$("nl-desc").value.trim();
+  var who=Object.keys(pick);
+  if(!d||!who.length||!norig)return;
+  LOTS.unshift({n:nextN(),st:"open",origin:norig,lock:null,lockD:"",desc:d,op:"16/07 15:20",cl:"",r:0,x:0,m:0,cat:0,cost:0,cny:0,ops:who,dest:[]});
+  closeCreate();rows();kpis();
+  say(code(LOTS[0])+" · "+FX().originName(norig).toUpperCase()+" · "+who.map(opName).join(", ")+(who.length>1?" atribuídos":" atribuído"));
+};
+
+/* ---------- export XLSX: 3 colunas de preço + aba por lote ---------- */
+var XROWS=[["BM1397AG","Categoria 04",620,22],["BM1362AF","Categoria 07",340,35],["W25Q64FV","Categoria 11",140,4],["CP2102N","Categoria 11",80,12]];
+function openExport(l){
+  var rate=lotRate(l),n=("00"+l.n).slice(-3),tab="Lote "+n+" "+(l.origin==="phone"?"PHONE":"PCB");
+  $("xp-tab").textContent=tab;
+  var totU=0;
+  var body=XROWS.map(function(r){
+    var t=r[2]*r[3]*rate;totU+=t;
+    return '<tr><td class="code" style="font-size:12px">'+r[0]+'</td><td style="color:var(--muted)">'+r[1]+'</td>'
+      +'<td class="num">'+fmt(r[2])+'</td><td class="num">'+FX().cny(r[3])+'</td>'
+      +'<td class="num" style="color:var(--muted)">'+FX().usd(r[3]*rate)+'</td>'
+      +'<td class="num">'+FX().usd(t)+'</td></tr>';
+  }).join("");
+  $("xp-prev").innerHTML='<table><thead><tr><th>Part number</th><th>Categoria</th><th class="num">Qtd.</th>'
+    +'<th class="num">Preço unit. (¥ RMB)</th><th class="num">Preço unit. (US$ ≈)</th><th class="num">Total (US$ ≈)</th></tr></thead>'
+    +'<tbody>'+body+'<tr class="sumr"><td colspan="2">'+XROWS.length+' de '+l.cat+' linhas</td><td class="num">'+fmt(XROWS.reduce(function(a,r){return a+r[2];},0))+'</td><td></td><td></td><td class="num">'+FX().usd(totU)+'</td></tr></tbody></table>';
+  $("xp-rate").className="note "+(rate?"note--ok":"note--warn");
+  $("xp-rate").innerHTML='<div class="note__h"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>'+(l.lock?"Câmbio travado do lote":rate?"Câmbio vigente":"Sem taxa do dia")+'</div>'
+    +(rate?('<div class="note__v">1 ¥ = US$ '+rate.toFixed(4)+'<span>'+(l.lock?("travado em "+l.lockD):("mid-market · "+FX().state().date))+'</span></div>'):'')
+    +'<div class="note__d">'+(rate?"As colunas em US$ são tradução desta taxa. A coluna ¥ é o dado.":"O export sai só com a coluna ¥. Rode fetch_fx_rate para incluir a tradução em US$.")+'</div>';
+  $("xp").classList.add("on");
+  $("xp-go").onclick=function(){$("xp").classList.remove("on");say("Baixando "+code(l)+".xlsx · aba «"+tab+"»");};
+}
+$("xp-cancel").onclick=function(){$("xp").classList.remove("on");};
+$("xp-x").onclick=function(){$("xp").classList.remove("on");};
+$("xp").addEventListener("click",function(e){if(e.target===$("xp"))$("xp").classList.remove("on");});
+
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){if($("xp").classList.contains("on"))$("xp").classList.remove("on");else if($("nl").classList.contains("on"))closeCreate();}});
+FX().onChange(function(){rows();kpis();});
+
+kpis();rows();batch();refresh();
+
+/* ---------- valores ao vivo ----------
+   Só cresce lote aberto COM operador na bancada: "PARADO" parado é a informação, não um bug.
+   O passo em ¥ vem do preço médio do próprio lote, então cada um sobe no seu ritmo real.
+   Repintamos SÓ as duas células da linha — refazer o tbody mataria o marcador no meio da animação. */
+if(window.WTCLive){
+  var liveLots=LOTS.filter(function(l){return l.st==="open"&&l.ops.length;});
+  window.WTCLive.drive(liveLots.map(function(l){
+    var cell=function(){return $("rows").querySelector('tr[data-n="'+l.n+'"] .n--live');};
+    return {
+      bump:function(n){
+        var avg=tot(l)?l.cny/tot(l):18;
+        l.r+=n;l.cny+=avg*n;
+        if(Math.random()<0.28)l.x+=1;
+      },
+      el:cell,
+      mode:"inline",
+      flashEl:function(){var c=cell();return c&&c.querySelector("[data-un]");}
+    };
+  }),function(){
+    liveLots.forEach(function(l){
+      var tr=$("rows").querySelector('tr[data-n="'+l.n+'"]');
+      if(!tr)return;
+      var un=tr.querySelector("[data-un]");if(un)un.textContent=fmt(tot(l));
+      var vd=tr.querySelector("[data-val]");if(vd)vd.innerHTML=lotMoney(l,"xs");
+    });
+    kpis();
+  });
+}
+})();
+</script>
+</body>
+</html>

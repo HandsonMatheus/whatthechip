@@ -1,0 +1,30 @@
+/* WhatTheChip — control sizes. IBM Carbon's ladder, nothing beside it.
+
+   A ESCADA (a mesma para botão e para campo; o botão PADRÃO do Carbon é o 'lg' de 48px —
+   packages/styles/scss/components/button/_vars.scss: $button-height: 3rem):
+       sm 32 · field 40 · lg 48 · xl 64 · 2xl 80
+   Linha de tabela: xs 24 · sm 32 · md 40 · lg 48 · xl 64.   Header: 48.
+
+   Os quatro nomes do produto agora POUSAM em degraus, sem sobrar nada no meio. O que mudou e por
+   quê — cada um estava entre dois degraus, que é o mesmo defeito da escala de tipo estimada a olho:
+     --ctl-sm  36 → 40  o degrau 'field' do Carbon: a altura de um botão que fica ao lado de um
+                        campo, que é exatamente o uso (rodapé de tabela, célula de lançamento,
+                        trilho de etapas). 32 seria o degrau 'sm', apertado demais com rótulo.
+     --ctl-lg  56 → 64  degrau 'xl'.
+     --ctl-xl  76 → 80  degrau '2xl'.
+     --shell-h 52 → 48  a altura de header do Carbon. É o offset de TODO cabeçalho grudado, então
+                        este número viaja: as tabelas seguem sozinhas porque leem o token.
+     --row-h   56 → 48  a linha 'lg' do Carbon. A tabela fica mais densa — e densidade é a marca
+                        do Carbon, não um efeito colateral. */
+:root{
+  /* a escada canônica — use estes ao construir sobre @carbon/react */
+  --cds-sm:32px;--cds-field:40px;--cds-lg:48px;--cds-xl:64px;--cds-2xl:80px;
+
+  /* os quatro do produto, cada um sobre um degrau */
+  --ctl-sm:var(--cds-field); /* 40 · ação compacta, célula de lançamento, trilho de etapas */
+  --ctl-md:var(--cds-lg);    /* 48 · padrão: botão, campo, seletor, barra de ferramentas */
+  --ctl-lg:var(--cds-xl);    /* 64 · ação principal da tela, linha tocável de gaveta */
+  --ctl-xl:var(--cds-2xl);   /* 80 · campo herói de leitura na bancada */
+  --shell-h:48px;            /* barra de navegação — o header do Carbon */
+  --row-h:48px;              /* linha de tabela — a linha lg do Carbon */
+}

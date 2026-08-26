@@ -1,0 +1,481 @@
+<!-- @dsCard group="WhatTheChip" viewport="1440x880" name="Painel" subtitle="Resumo de uma tela para gerente e admin — lotes abertos, produção do dia e consulta" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatTheChip · Painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="wtc-carbon.css?v=27" />
+<style>
+/* ============ LAYOUT DE UMA TELA ============ */
+.app{min-height:calc(100vh - var(--shell-h))}
+
+.main{max-width:1680px;margin:0 auto;padding:22px 32px 32px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.mhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px}
+.mhead h1{font-size:27px;font-weight:300;letter-spacing:-.025em;line-height:1.1}
+.mhead h1 b{font-weight:700}
+.mhead__meta{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.mhead__meta .sep{width:1px;height:12px;background:var(--line-2)}
+.mhead__meta b{font-weight:700;color:var(--text)}
+
+/* ============ CONSULTA ============ */
+.look{background:var(--surface);border:1px solid var(--line)}
+.look__row{display:flex;align-items:stretch}
+.look__lbl{display:flex;align-items:center;gap:9px;padding:0 18px;font-size:12px;font-weight:700;color:var(--ink-70);white-space:nowrap;flex:none}
+.look__lbl svg{width:16px;height:16px;fill:none;stroke:var(--blue-60);stroke-width:2}
+.field__in{flex:1;position:relative;background:var(--ink-05);border-left:1px solid var(--line);border-bottom:1px solid var(--ink-50);transition:border-color var(--d1);min-width:0}
+.field__in:focus-within{border-bottom-color:var(--blue-60);outline:2px solid var(--blue-60);outline-offset:-2px}
+.field__in input{width:100%;height:var(--ctl-md);padding:0 88px 0 16px;border:0;background:transparent;font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:.02em;color:var(--text)}
+.field__in input::placeholder{color:var(--ink-50);letter-spacing:0;font-family:var(--sans);font-size:13px}
+.field__in input:focus{outline:none}
+.field__kbd{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:11px;color:var(--ink-50);border:1px solid var(--line-2);padding:1px 7px;pointer-events:none}
+.field__clr{width:var(--ctl-md);flex:none;display:grid;place-items:center;border:0;background:var(--ink-80);color:var(--white);cursor:pointer;transition:background var(--d1)}
+.field__clr:hover{background:var(--ink-90)}
+.field__clr svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9}
+[data-theme="dark"] .field__clr{background:var(--ink-30);color:#fff}
+[data-theme="dark"] .field__clr:hover{background:var(--ink-40)}
+.sug__row{display:flex;align-items:center;gap:16px;width:100%;padding:11px 18px;border:0;border-top:1px solid var(--line);background:var(--surface);cursor:pointer;text-align:left;transition:background var(--d1)}
+.sug__row:hover,.sug__row.is-cur{background:var(--blue-10)}
+.sug__pn{font-family:var(--mono);font-size:13px;font-weight:600;min-width:150px}
+.sug__meta{font-size:12px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug__dest{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue-70);background:var(--blue-10);padding:2px 8px}
+.sug__none{padding:14px 18px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--amber-10)}
+.sug__none p{font-size:12px;color:var(--ink-80)}
+.sug__none b{font-family:var(--mono)}
+.res{border-top:1px solid var(--line);display:flex;align-items:stretch;gap:1px;background:var(--line);flex-wrap:wrap}
+.res__dest{background:var(--blue-60);color:#fff;padding:12px 18px;flex:none;min-width:132px}
+.res__dest .l{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.res__dest .v{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.03em;margin-top:3px;line-height:1.1}
+.res__body{background:var(--surface);padding:12px 18px;display:flex;align-items:center;gap:22px;flex:1;flex-wrap:wrap;min-width:0}
+.res__pn{display:flex;align-items:center;gap:10px}
+.res__pn .p{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:-.02em}
+.fact__l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.fact__v{font-size:13px;font-weight:600;margin-top:2px}
+/* na consulta o par é uma linha só: o dólar acompanha o yuan no mesmo corpo */
+#res .mval__u{font-size:15px}
+
+/* ============ KPIs ============ */
+/* auto-fit em vez de 4 colunas fixas: um dos cards é trocado por papel (dinheiro para admin,
+   ritmo para gerente), então a fileira tem 3 visíveis e não pode deixar uma coluna vazia */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.kpi{background:var(--surface);padding:16px 20px 18px;min-width:0}
+.kpi__l{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:7px}
+.kpi__v{font-size:31px;font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:10px}
+.kpi__v small{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:0}
+.kpi__d{font-size:12px;color:var(--muted);margin-top:5px;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.kpi__d b{font-weight:800}
+.up{color:var(--green-60)}
+
+/* ============ QUADRO DE AVISOS ============
+   Comunicação da plataforma para o cliente. Ocupa a largura toda abaixo dos indicadores — com
+   os cards em uma linha só, sobra altura para o aviso mostrar a chamada junto do título, e não
+   só a manchete. Mesma linha, mesma régua e mesma gramática das notificações. */
+.brd{background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.brd__h{display:flex;align-items:center;gap:9px;padding:0 0 0 16px;height:44px;border-bottom:1px solid var(--line);background:var(--ink-05);flex:none}
+.brd__l{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-70);white-space:nowrap}
+.brd__l svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--blue-60);stroke-width:1.9}
+.brd__n{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--blue-60);padding:1px 6px;flex:none}
+.brd__sp{flex:1;min-width:0}
+.brd__all{display:flex;align-items:center;gap:8px;align-self:stretch;padding:0 16px;border-left:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--accent);white-space:nowrap;transition:background var(--d1)}
+.brd__all:hover{background:var(--blue-10);text-decoration:none}
+.brd__all svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2}
+.brd__list{flex:1;display:flex;flex-direction:column}
+/* sem régua lateral: quantos avisos estão por ler já é dito pelo contador no cabeçalho */
+.brd__i{display:grid;grid-template-columns:104px minmax(0,1fr) auto 44px;align-items:center;gap:16px;padding:14px 0 14px 16px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:background var(--d1)}
+.brd__i:last-child{border-bottom:0}
+.brd__i:hover{background:var(--blue-10);text-decoration:none}
+.brd__k{display:flex;justify-content:flex-start}
+.brd__m{display:flex;flex-direction:column;gap:4px;min-width:0}
+.brd__t{font-size:14px;font-weight:700;line-height:1.3;text-wrap:pretty}
+.brd__b{font-size:13px;color:var(--muted);line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brd__w{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap}
+.brd__go{display:grid;place-items:center;color:var(--ink-40)}
+.brd__go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;display:block}
+.brd__i:hover .brd__go{color:var(--blue-60)}
+
+/* ============ LOTES ABERTOS ============ */
+/* superfície invertida escreve em var(--white): no modo escuro o fundo clareia e o texto escurece */
+.tag--pcb{background:var(--ink-100);color:var(--white)}.tag--pcb .dot{background:var(--blue-40)}
+.tag--mob{background:var(--blue-70);color:var(--white)}.tag--mob .dot{background:var(--blue-20)}
+
+/* ============ OPERADOR: home ============
+   Uma pergunta só: onde eu paro e como eu volto. O lote ocupa a coluna larga e termina no botão
+   azul de largura cheia — no telefone esse botão desgruda e fica fixo no rodapé, ao alcance do
+   polegar de quem está de pé na bancada. Nada de preço aqui: o operador nunca vê dinheiro. */
+.ophome{display:block;padding:0 0 48px}
+.oph{max-width:1140px;margin:0 auto;padding:26px 0 0}
+.oph__hi{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
+.oph__hi h1{font-size:31px;font-weight:300;letter-spacing:-.03em;line-height:1.05}
+.oph__hi h1 b{font-weight:700}
+.oph__when{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.oph__when .sep{width:1px;height:12px;background:var(--line-2)}
+.oph__when b{font-weight:700;color:var(--text)}
+.opg{display:grid;grid-template-columns:minmax(0,50%);gap:16px;margin-top:16px;align-items:start}
+.opg[hidden]{display:none}
+
+/* cartão do lote */
+.opl{background:var(--surface);border:1px solid var(--line);min-width:0}
+.opl__h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 20px;background:var(--ink-05);border-bottom:1px solid var(--line)}
+.opl__code{font-family:var(--mono);font-size:20px;font-weight:600;letter-spacing:-.025em;line-height:1.1}
+.opl__sp{flex:1;min-width:0}
+.opl__tags{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.opl__body{padding:20px}
+.opl__desc{font-size:14px;color:var(--muted);line-height:1.45}
+.opl__pt{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-top:22px}
+.opl__pl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.opl__pn{font-size:38px;font-weight:700;letter-spacing:-.04em;line-height:1;margin-top:6px}
+.opl__pn small{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0}
+.opl__pc{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--accent)}
+.opl__track{height:8px;background:var(--ink-10);margin-top:14px;display:flex}
+.opl__track i{background:var(--blue-60);transition:width var(--d3) var(--ez)}
+.opl__pf{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.opl__pf b{font-weight:700;color:var(--text)}
+.opl__pf .sep{width:1px;height:11px;background:var(--line-2)}
+/* a ação É o rodapé do cartão — botão padrão do sistema (.btn--pri .btn--lg), sem borda própria */
+.opgo{border:0}
+/* onde a mão parou: o próximo chip entra depois deste */
+.opl__last{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 20px;border-top:1px solid var(--line);background:var(--ink-05);font-size:12.5px;color:var(--muted)}
+.opl__ll{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.opl__last .pn{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--text)}
+.opl__last .ar{width:14px;height:14px;fill:none;stroke:var(--ink-40);stroke-width:2}
+.opl__last .d{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--blue-70);background:var(--blue-10);padding:2px 8px}
+.opl__last .t{margin-left:auto;font-family:var(--mono)}
+
+/* coluna lateral: só o que é do operador */
+.ops{display:flex;flex-direction:column;gap:16px;min-width:0}
+.opbox{background:var(--surface);border:1px solid var(--line)}
+.opbox__h{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-bottom:1px solid var(--line);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-70)}
+.opst{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.opst:last-child{border-bottom:0}
+.opst__l{font-size:13px;color:var(--muted)}
+.opst__v{font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.opst__v small{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0}
+.opmates{display:flex;flex-direction:column}
+.opmate{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.opmate:last-child{border-bottom:0}
+.opmate .av{width:26px;height:26px;flex:none;display:grid;place-items:center;background:var(--ink-80);color:var(--white);font-family:var(--mono);font-size:11px;font-weight:600}
+.opmate .r{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--faint)}
+/* sem lote atribuído: a tela do operador não inventa conteúdo, só diz o que falta */
+.opnone{background:var(--surface);border:1px solid var(--line);margin-top:32px;padding:52px 36px;text-align:center}
+.opnone__ic{width:48px;height:48px;margin:0 auto 20px;display:grid;place-items:center;background:var(--ink-05);border:1px solid var(--line)}
+.opnone__ic svg{width:22px;height:22px;fill:none;stroke:var(--ink-40);stroke-width:1.7}
+.opnone h2{font-size:20px;font-weight:400;letter-spacing:-.02em}
+.opnone p{font-size:13.5px;color:var(--muted);line-height:1.6;margin:11px auto 0;max-width:46ch;text-wrap:pretty}
+
+/* os cards são o resumo de relance: ficam lado a lado enquanto couberem em uma linha única */
+@container vp (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container vp (max-width:880px){.brd__i{grid-template-columns:minmax(0,1fr) 44px;gap:12px}.brd__k{grid-column:1;margin-bottom:2px}.brd__b{white-space:normal}.brd__w{grid-column:1}}
+/* CELULAR/TABLET — o quadro de avisos vira lista empilhada: o selo abre a linha, título e chamada
+   ocupam a largura toda (a chamada em duas linhas, cortada por -webkit-line-clamp em vez de
+   reticências numa linha só), a data fecha, e a seta fica à direita, centrada na altura. */
+@container vp (max-width:880px){
+  .brd__h{height:auto;min-height:52px;padding:0 0 0 16px;flex-wrap:nowrap}
+  .brd__all{padding:0 14px}
+  .brd__i{grid-template-columns:minmax(0,1fr) 28px;grid-template-areas:"k go" "m go" "w go";align-items:start;gap:6px 8px;padding:14px 16px}
+  .brd__k{grid-area:k}
+  .brd__m{grid-area:m}
+  .brd__w{grid-area:w}
+  .brd__go{grid-area:go;align-self:center}
+  .brd__t{font-size:14.5px}
+  /* .brd__m volta a ser block no celular: como item flex, o display:-webkit-box que o line-clamp
+     exige é bloquificado e a elipse do corte nunca é desenhada */
+  .brd__m{display:block}
+  .brd__t{margin-bottom:4px}
+  .brd__b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+}
+/* TABLET — o cartão do lote deixa de ser meia página: em 834px meia página é estreita demais
+   para o número grande conviver com a porcentagem. A ação continua dentro do cartão. */
+@container vp (max-width:880px){
+  .opg{grid-template-columns:minmax(0,1fr)}
+  .oph{padding-top:22px}
+}
+@container vp (max-width:880px){
+  .wrap{padding:0 16px}
+  .shell .shell__org-txt,.shell .shell__user{display:none}
+  .main{padding:20px 16px 28px}
+  .mhead h1{font-size:24px}
+  .look__lbl{display:none}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .brd__all span{display:none}
+  body .toast{left:16px;right:16px;max-width:none}
+  .oph{padding-top:20px}
+  .oph__hi h1{font-size:26px}
+  .opl__pn{font-size:34px}
+}
+@container vp (max-width:560px){.kpis{grid-template-columns:1fr}}
+/* CELULAR — o cartão é a tela: o código do lote fica com a linha inteira e os selos descem para
+   a linha de baixo, para nada empurrar o título. A ação segue sendo o rodapé do cartão. */
+@container vp (max-width:600px){
+  .oph{padding-top:16px}
+  .oph__hi h1{font-size:24px}
+  .opl__h{flex-direction:column;align-items:flex-start;gap:10px;padding:14px 16px}
+  .opl__sp{display:none}
+  .opl__code{font-size:18px}
+  .opl__body{padding:16px}
+  .opl__desc{font-size:13px}
+  .opl__pt{margin-top:16px}
+  .opl__pn{font-size:28px}
+  .opl__pn small{font-size:13px}
+  .opl__pc{font-size:17px}
+  .opl__track{margin-top:12px}
+  .opl__pf{font-size:12px;margin-top:8px}
+  .opnone{margin-top:22px;padding:36px 20px}
+  .opnone h2{font-size:18px}
+  .opnone p{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<header class="shell">
+  <a class="shell__brand" href="painel.html" aria-label="WhatTheChip 什么芯片"><img class="lg-l" src="../../static/img/whatthechip-lightmode.svg" alt="WhatTheChip" /><img class="lg-d" src="../../static/img/whatthechip-darkmode.svg" alt="WhatTheChip" /></a>
+  <nav class="shell__nav">
+    <button class="nlink is-active"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.2L12 3.5l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/></svg><span>Painel</span></button>
+    <a class="nlink" href="estoque.html" data-wtc-needs="lots"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg><span>Estoque</span></a>
+    <a class="nlink" href="vendas-lista.html" data-wtc-needs="sales"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12"/><circle cx="12" cy="12" r="2.7"/><path d="M6 9.6v4.8M18 9.6v4.8"/></svg><span>Vendas</span></a>
+  </nav>
+  <div class="shell__spacer"></div>
+  <div class="shell__org">
+    <div class="shell__org-logo" data-wtc-avatar>eM</div>
+    <div class="shell__org-txt"><span class="shell__org-name" data-wtc-company>eMiner</span></div>
+  </div>
+  <div class="shell__who">
+    <div class="shell__avatar" data-wtc-initials>MG</div>
+    <div class="shell__user"><b data-wtc-user>Matheus G.</b><span class="shell__role" data-wtc-role>Gerente</span></div>
+  </div>
+  <button class="shell__ico" aria-label="Notificações" id="bell"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button>
+  <button class="shell__ico shell__ico--theme" id="theme-btn" type="button" aria-label="Alternar modo escuro" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+  <button class="shell__ico shell__ico--lang" aria-label="Idioma">PT</button>
+  <a class="shell__ico shell__ico--out" aria-label="Sair" href="login.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg></a>
+</header>
+
+<main class="ophome" data-wtc-needs="nolots"><div class="wrap"><div class="oph">
+  <div class="oph__hi">
+    <h1>Olá, <b data-wtc-user>Rafael S.</b></h1>
+  </div>
+
+  <div class="opg" id="op-lot" data-ops="RS,JL,AP" data-n="42">
+    <article class="opl">
+      <div class="opl__h">
+        <span class="opl__code">LOT/042/07/26</span>
+        <span class="opl__sp"></span>
+        <span class="opl__tags"><span class="otag otag--pcb"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="9" y="9" width="6" height="6"/><path d="M9 3.5v2M15 3.5v2M9 18.5v2M15 18.5v2M3.5 9h2M3.5 15h2M18.5 9h2M18.5 15h2"/></svg>PCB</span><span class="tag tag--yes"><span class="dot"></span>EM TRIAGEM</span></span>
+      </div>
+      <div class="opl__body">
+        <p class="opl__desc">Compra Jul/2026 — hashboards S19</p>
+        <div class="opl__pt">
+          <div>
+            <div class="opl__pn">1.806<small> de 10.000 un.</small></div>
+          </div>
+          <div class="opl__pc">18%</div>
+        </div>
+        <div class="opl__track"><i style="width:18%"></i></div>
+        <div class="opl__pf"><span><b>8.194 un.</b> pela frente</span></div>
+      </div>
+      <a class="btn btn--pri btn--lg opgo" href="triagem.html?lot=42">Continuar triagem<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </article>
+
+  </div>
+
+  <section class="opnone" id="op-none" hidden>
+    <div class="opnone__ic"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg></div>
+    <h2>Nenhum lote atribuído a você</h2>
+    <p>Quando o gerente abrir um lote e colocar você na bancada, ele aparece aqui e a triagem começa.</p>
+  </section>
+</div></div></main>
+<div class="app" data-wtc-needs="lots">
+
+  <div class="main">
+
+    <div class="mhead">
+      <div>
+        <h1>Olá, <b data-wtc-user>Matheus G.</b></h1>
+        <div class="mhead__meta">
+          <span>Quinta-feira, 16 de julho de 2026 · 15:20</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="look">
+      <div class="look__row">
+        <span class="look__lbl"><svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>Consulta de chip</span>
+        <div class="field__in">
+          <input id="pn" type="text" placeholder="Digite o part number — ex.: BM1397AG" autocomplete="off" spellcheck="false" />
+          <span class="field__kbd" id="kbd">tecla /</span>
+        </div>
+        <button class="field__clr" id="clear" aria-label="Apagar a consulta" title="Apagar (Esc)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9L3 12z"/><path d="M16 9l-5 6M11 9l5 6"/></svg></button>
+      </div>
+      <div id="sug"></div>
+      <div id="res"></div>
+    </section>
+
+    <div class="kpis">
+      <div class="kpi" data-wtc-needs="price">
+        <div class="kpi__l"><span class="live live--g"></span>Valor triado agora</div>
+        <div class="kpi__v" id="k-cny" data-fx-cny="75792" data-fx-size="kpi"></div>
+        <div class="kpi__d"><b>3</b> lotes abertos · <b class="up">+¥ 2.788</b> na última hora</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__l"><span class="live live--g"></span>Em triagem agora</div>
+        <div class="kpi__v" id="k-un">2.270<small> un.</small></div>
+        <div class="kpi__d"><b class="up">+84 un.</b> na última hora</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__l">Aproveitamento médio</div>
+        <div class="kpi__v">65<small>%</small></div>
+        <div class="kpi__d" id="k-yldd">1.481 de 2.270 un. nos lotes abertos</div>
+      </div>
+      <div class="kpi" data-wtc-needs="noprice">
+        <div class="kpi__l">Ritmo agora</div>
+        <div class="kpi__v">357<small> un./h</small></div>
+        <div class="kpi__d">média das 3 bancadas ativas</div>
+      </div>
+    </div>
+
+    <aside class="brd" data-wtc-needs="notices">
+      <div class="brd__h">
+        <span class="brd__l"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h2.5l10.5-5v15l-10.5-5H4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1z"/><path d="M7 14.5v4a1.6 1.6 0 0 0 3.2 0v-2.5"/></svg>Avisos importantes</span>
+        <span class="brd__n" id="brd-n" hidden></span>
+        <span class="brd__sp"></span>
+        <a class="brd__all" href="avisos.html"><span>Ver todos</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="brd__list" id="brd-list"></div>
+    </aside>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toast-txt"></span></div>
+
+<script src="access.js?v=3"></script>
+<script src="fx.js"></script>
+<script src="avisos.js"></script>
+<script src="notifications.js"></script>
+<script src="theme.js?v=3"></script>
+<script src="shell.js?v=4"></script>
+<script src="live.js"></script>
+<script src="viewport.js?v=7"></script>
+<script>
+(function(){
+"use strict";
+var A=(window.WTCAccess&&window.WTCAccess.access())||{is_unmasked:false,can_see_price:false};
+/* home do operador: mostra o lote em que ELE está na bancada. Sem atribuição, não há tela —
+   só o aviso. O vínculo é a inicial do operador na lista de quem está no lote. */
+(function(){
+  var lot=document.getElementById("op-lot"),none=document.getElementById("op-none");
+  if(!lot||!none)return;
+  var ops=(lot.getAttribute("data-ops")||"").split(",").filter(Boolean);
+  var mine=!A.me||ops.indexOf(A.me)>=0;
+  lot.hidden=!mine;none.hidden=mine;
+})();
+var toast=document.getElementById("toast"),ttxt=document.getElementById("toast-txt"),tT;
+/* quadro de avisos: os três mais recentes, com a régua acesa nos não lidos */
+(function(){
+  var box=document.getElementById("brd-list");if(!box||!window.WTCAvisos)return;
+  var AV=window.WTCAvisos;
+  box.innerHTML=AV.all().slice(0,3).map(function(a){
+    var k=AV.kind(a.kind),novo=!AV.isRead(a.id);
+    return '<a class="brd__i'+(novo?" brd__i--new":"")+'" href="avisos.html?a='+a.id+'">'
+      +'<span class="brd__k"><span class="tag '+k.tag+'">'+k.label+'</span></span>'
+      +'<span class="brd__m"><span class="brd__t">'+a.t+'</span><span class="brd__b">'+a.lead+'</span></span>'
+      +'<span class="brd__w">'+a.d+'</span>'
+      +'<span class="brd__go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></span></a>';
+  }).join("");
+  var n=AV.unread(),badge=document.getElementById("brd-n");
+  badge.hidden=!n;badge.textContent=n+(n===1?" novo":" novos");
+})();function say(m){ttxt.textContent=m;toast.classList.add("is-on");clearTimeout(tT);tT=setTimeout(function(){toast.classList.remove("is-on");},2600);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+var DB=[
+ {pn:"BM1397AG",   dest:"C-014", cat:"Categoria 04", verdict:"yes",   spec:"ASIC hash · Bitmain · BGA",        stock:"1.240 un.", cny:22},
+ {pn:"BM1387B",    dest:"C-014", cat:"Categoria 04", verdict:"yes",   spec:"ASIC hash · Bitmain · BGA",        stock:"860 un.",   cny:17},
+ {pn:"BM1362AF",   dest:"C-031", cat:"Categoria 07", verdict:"yes",   spec:"ASIC hash · Bitmain · BGA",        stock:"402 un.",   cny:35},
+ {pn:"W25Q80DV",   dest:"C-007", cat:"Categoria 11", verdict:"maybe", spec:"Flash SPI 8Mb · Winbond · SOIC-8", stock:"3.110 un.", cny:null, why:"aguardando cotação"},
+ {pn:"W25Q64FV",   dest:"C-007", cat:"Categoria 11", verdict:"yes",   spec:"Flash SPI 64Mb · Winbond · SOIC-8",stock:"1.905 un.", cny:4},
+ {pn:"TPS40170",   dest:"C-022", cat:"Categoria 15", verdict:"yes",   spec:"Buck controller · TI · QFN-20",    stock:"640 un.",   cny:8},
+ {pn:"LM75BD",     dest:"C-022", cat:"Categoria 15", verdict:"no",    spec:"Sensor temp. I²C · NXP · SO-8",    stock:"2.240 un.", cny:null, why:"não compra este item"},
+ {pn:"XC6206P332", dest:"C-022", cat:"Categoria 15", verdict:"no",    spec:"LDO 3.3V · Torex · SOT-23",        stock:"5.400 un.", cny:null, why:"não compra este item"},
+ {pn:"AP3441SHE",  dest:"C-031", cat:"Categoria 07", verdict:"maybe", spec:"Buck 4A · Diodes · TSOT-26",       stock:"310 un.",   cny:null, why:"sem chave de preço · variante não mapeada"},
+ {pn:"CP2102N",    dest:"C-007", cat:"Categoria 11", verdict:"yes",   spec:"USB-UART · Silabs · QFN-24",       stock:"188 un.",   cny:12}
+];
+var VMAP={yes:["tag--yes","RENTÁVEL"],no:["tag--no","NÃO RENTÁVEL"],maybe:["tag--maybe","INDETERMINADO"]};
+var inp=document.getElementById("pn"),sug=document.getElementById("sug"),res=document.getElementById("res"),cur=-1,hits=[];
+
+function render(){
+  var q=inp.value.trim().toUpperCase();res.innerHTML="";
+  if(q.length<2){sug.innerHTML="";hits=[];cur=-1;return;}
+  hits=DB.filter(function(d){return d.pn.indexOf(q)>-1;}).slice(0,4);
+  if(!hits.length){
+    sug.innerHTML='<div class="sug__none"><p><b>'+esc(q)+'</b> não está no catálogo da plataforma — envie para decodificação.</p><button class="btn btn--sec btn--sm" id="send-dec">Enviar<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h14M13 6l6 6-6 6"/></svg></button></div>';
+    document.getElementById("send-dec").onclick=function(){say(q+" enviado para decodificação da plataforma.");inp.value="";render();inp.focus();};
+    cur=-1;return;
+  }
+  cur=0;
+  sug.innerHTML=hits.map(function(d,i){
+    var meta=A.is_unmasked?d.spec:(d.cat+" · em estoque "+d.stock);
+    return '<button class="sug__row'+(i===0?" is-cur":"")+'" data-i="'+i+'"><span class="sug__pn">'+esc(d.pn)+'</span><span class="sug__meta">'+esc(meta)+'</span><span class="sug__dest">'+esc(d.dest)+'</span></button>';
+  }).join("");
+  Array.prototype.forEach.call(sug.querySelectorAll(".sug__row"),function(b){b.onclick=function(){pick(+b.dataset.i);};});
+}
+function pick(i){
+  var d=hits[i];if(!d)return;
+  inp.value=d.pn;sug.innerHTML="";
+  var facts='<div><div class="fact__l">Em estoque</div><div class="fact__v mono">'+esc(d.stock)+'</div></div>';
+  if(A.is_unmasked) facts+='<div><div class="fact__l">Especificação</div><div class="fact__v" style="font-weight:500">'+esc(d.spec)+'</div></div>';
+  if(A.can_see_price) facts+='<div><div class="fact__l">Preço unitário</div>'
+    +(d.cny!=null?'<div style="margin-top:2px">'+window.WTCFX.pair(d.cny,"sm","mval--row mval--g")+'</div>'
+                 :'<div class="fact__v" style="color:var(--amber-70)">'+esc(d.why)+'</div>')+'</div>';
+  /* mascarado, o destino já aparece em caixa alta na célula azul — repetir "confirmado" ao lado
+     do PN não acrescenta nada. O selo só existe quando há veredito real para mostrar. */
+  var verdict=A.is_unmasked?'<span class="tag '+VMAP[d.verdict][0]+'"><span class="dot"></span>'+VMAP[d.verdict][1]+'</span>':'';
+  res.innerHTML='<div class="res"><div class="res__dest"><div class="l">Destino</div><div class="v">'+esc(d.dest)+'</div></div>'
+    +'<div class="res__body"><div class="res__pn"><span class="p">'+esc(d.pn)+'</span>'+verdict+'</div>'+facts+'</div></div>';
+}
+function move(dir){
+  var rows=sug.querySelectorAll(".sug__row");if(!rows.length)return;
+  cur=(cur+dir+rows.length)%rows.length;
+  Array.prototype.forEach.call(rows,function(r,i){r.classList.toggle("is-cur",i===cur);});
+}
+inp.addEventListener("input",render);
+inp.addEventListener("keydown",function(e){
+  if(e.key==="ArrowDown"){e.preventDefault();move(1);}
+  else if(e.key==="ArrowUp"){e.preventDefault();move(-1);}
+  else if(e.key==="Enter"){e.preventDefault();if(hits.length)pick(cur<0?0:cur);}
+  else if(e.key==="Escape"){inp.value="";render();inp.blur();}
+});
+document.addEventListener("keydown",function(e){if(e.key==="/"&&document.activeElement!==inp){e.preventDefault();inp.focus();}});
+inp.addEventListener("focus",function(){document.getElementById("kbd").style.display="none";});
+inp.addEventListener("blur",function(){if(!inp.value)document.getElementById("kbd").style.display="";});
+document.getElementById("clear").onclick=function(){inp.value="";render();inp.focus();};
+})();
+</script>
+<script>
+/* Valores ao vivo: os KPIs do topo somam o que as bancadas estão lançando agora. O detalhe por
+   lote vive em Estoque — aqui é só o agregado. */
+(function(){
+"use strict";
+if(!window.WTCLive)return;
+var $=function(i){return document.getElementById(i);};
+var fmt=function(n){return Math.round(n).toLocaleString("pt-BR");};
+var K={un:2270,cny:75792,r:1481};
+function paint(){
+  if($("k-cny"))$("k-cny").setAttribute("data-fx-cny",Math.round(K.cny));
+  if(window.WTCFX)window.WTCFX.paint(document);
+  if($("k-un"))$("k-un").innerHTML=fmt(K.un)+'<small> un.</small>';
+  if($("k-yldd"))$("k-yldd").textContent=fmt(K.r)+" de "+fmt(K.un)+" un. nos lotes abertos";
+}
+window.WTCLive.drive([{
+  bump:function(n){
+    var avg=K.cny/K.un;
+    K.un+=n;K.cny+=avg*n;K.r+=Math.random()<0.64?n:0;
+  },
+  el:function(){var e=$("k-cny");return (e&&e.offsetParent?e:null)||$("k-un");},
+  flashEl:function(){var e=$("k-cny");return (e&&e.offsetParent?e.querySelector(".mval__c"):null)||$("k-un");}
+}],paint);
+})();
+</script>
+</body>
+</html>
