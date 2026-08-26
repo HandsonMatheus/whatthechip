@@ -141,6 +141,7 @@ def _pdf_codepoints(pdf: bytes) -> set:
     achava nenhum dos dois. O packing list passava só porque sai sem
     compressão — e passaria a dar alarme falso no dia em que não saísse.
     """
+    import re
     import zlib
     achados = set()
     for bloco in re.findall(rb'stream\r?\n(.*?)endstream', pdf, re.S):
