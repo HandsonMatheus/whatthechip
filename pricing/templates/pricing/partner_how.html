@@ -2,102 +2,100 @@
 {% load i18n %}
 {% block title %}{% trans "Como funciona" %}{% endblock %}
 {% block content %}
-
 {% comment %}
-  "Como funciona" (F6.2, dono 2026-07-09; REESCRITA F10 2026-07-16: preços em
-  ¥ RMB, taxa contratual): guia CURTO — o comprador não gosta de ler. Proposta
-  em 1 frase, 4 passos, estados, 3 dicas e FAQ dobravel (details/summary, sem
-  JS). Tudo {% trans %} (MULTILANGUAGE.md §7); emojis fora do trans;
-  USD/RMB/WhatTheChip/nomes de marca = glossário protegido.
+  "Como funciona" (F6.2, dono 2026-07-09) — guia CURTO: o comprador não gosta
+  de ler. Vestido com o pacote v2 na Etapa 9.
+
+  ⚠ A REESCRITA NÃO FOI SÓ DE ROUPA. O texto tinha envelhecido e mentia em
+  quatro pontos, cada um por uma decisão posterior:
+    · "Escolha uma MARCA no menu à esquerda" — a barra é por TIPO desde
+      2026-07-27; marca virou coluna dentro da grade.
+    · "escolha o estado da linha" — o seletor de estado morreu na v3: hoje é
+      UM campo, e o estado é selo informativo (número · x · vazio).
+    · "a taxa no topo é a do seu CONTRATO" — desde o PLANO_FX ela é
+      mid-market do dia; o contrato só entra como bootstrap. O `title` do
+      cabeçalho já tinha sido corrigido em 2026-08-26; este ficou para trás.
+    · "o contador da página INÍCIO" — a seção passou a se chamar Preços.
+
+  Página que ensina errado é pior que página que não ensina: ela é lida com
+  confiança.
 {% endcomment %}
 
-<h1 style="font-weight:300;font-size:28px;margin:0 0 8px;">{% trans "Como funciona" %}</h1>
-<p style="font-size:15px;color:#393939;margin:0 0 24px;max-width:640px;line-height:1.55;">
-  {% trans "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em ¥ (RMB), sempre atualizada, sem planilhas." %}
-</p>
-
-{# ── 4 passos ─────────────────────────────────────────────────── #}
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:26px;">
-  <div class="ptn-card" style="margin:0;">
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:#0f62fe;">1</div>
-    <div style="font-size:14px;line-height:1.5;margin-top:6px;">{% trans "Escolha uma marca no menu à esquerda." %}</div>
-  </div>
-  <div class="ptn-card" style="margin:0;">
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:#0f62fe;">2</div>
-    <div style="font-size:14px;line-height:1.5;margin-top:6px;">{% trans "Digite o preço em ¥ (RMB) e escolha o estado da linha." %}</div>
-  </div>
-  <div class="ptn-card" style="margin:0;">
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:#0f62fe;">3</div>
-    <div style="font-size:14px;line-height:1.5;margin-top:6px;">{% trans "Confirme o envio — sua mudança vai para a revisão do WhatTheChip." %}</div>
-  </div>
-  <div class="ptn-card" style="margin:0;">
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:#0f62fe;">4</div>
-    <div style="font-size:14px;line-height:1.5;margin-top:6px;">🔔 {% trans "Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações." %}</div>
+<div class="phd">
+  <div>
+    <h1>{% trans "Como funciona" %}</h1>
+    <p>{% blocktrans trimmed %}Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em <b>¥ (RMB)</b>, sempre atualizada, sem planilhas.{% endblocktrans %}</p>
   </div>
 </div>
 
-{# ── Estados ──────────────────────────────────────────────────── #}
-<div class="ptn-card">
-  <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;margin-bottom:12px;">{% trans "Os estados de cada linha" %}</div>
-  <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;">
-    <div><span class="ptn-tag ptn-tag--quoted">{% trans "Cotado" %}</span> — {% trans "você já deu o preço deste chip." %}</div>
-    <div><span class="ptn-tag ptn-tag--pending">{% trans "Não cotado" %}</span> — {% trans "falta você dar o preço. As linhas amarelas são a sua lista de tarefas." %}</div>
-    <div><span class="ptn-tag ptn-tag--inherited">{% trans "Não fabricado" %}</span> — {% trans "esta marca não produz este chip; o campo de preço fica travado." %}</div>
-    <div><span class="ptn-tag ptn-tag--nobuy">{% trans "Não compro" %}</span> — {% trans "a marca produz, mas você não compra este item." %}</div>
+<section class="tile">
+  <div class="tile__h"><div><h3>{% trans "Quatro passos" %}</h3></div></div>
+  <div class="step4">
+    <div class="on"><b>1</b> {% trans "Abra um tipo de chip na barra à esquerda." %}</div>
+    <div class="on"><b>2</b> {% trans "Digite o preço em ¥ (RMB) na linha que quiser mudar." %}</div>
+    <div class="on"><b>3</b> {% trans "Envie no fim da página — só as linhas alteradas viram pedido." %}</div>
+    <div class="on"><b>4</b> {% trans "Aprovado, passa a valer na hora. A decisão chega nas notificações." %}</div>
   </div>
+</section>
+
+<section class="tile">
+  <div class="tile__h"><div><h3>{% trans "O que você digita na célula" %}</h3>
+    <p>{% trans "Um campo só. O que você escreve nele decide o estado da linha." %}</p></div></div>
+  <div class="dtab__wrap"><table class="dtab dtab--static">
+    <thead><tr><th style="min-width:120px">{% trans "Você escreve" %}</th><th style="min-width:132px">{% trans "Status" %}</th><th>{% trans "Significa" %}</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="c" data-label="{% trans 'Você escreve' %}">90</td>
+        <td data-label="{% trans 'Status' %}"><span class="tag tag--yes"><span class="dot"></span>{% trans "Cotado" %}</span></td>
+        <td class="d" data-label="{% trans 'Significa' %}">{% trans "compro a este preço, em ¥ por chip." %}</td>
+      </tr>
+      <tr>
+        <td class="c" data-label="{% trans 'Você escreve' %}">x</td>
+        <td data-label="{% trans 'Status' %}"><span class="tag tag--no"><span class="dot"></span>{% trans "Não compro" %}</span></td>
+        <td class="d" data-label="{% trans 'Significa' %}">{% trans "decisão ativa: este item existe e você não quer." %}</td>
+      </tr>
+      <tr>
+        <td class="c" data-label="{% trans 'Você escreve' %}">{% trans "(vazio)" %}</td>
+        <td data-label="{% trans 'Status' %}"><span class="tag tag--mute"><span class="dot"></span>{% trans "Não cotado" %}</span></td>
+        <td class="d" data-label="{% trans 'Significa' %}">{% trans "ainda não decidiu. É a sua lista de tarefas." %}</td>
+      </tr>
+      <tr>
+        <td class="c" data-label="{% trans 'Você escreve' %}">—</td>
+        <td data-label="{% trans 'Status' %}"><span class="tag tag--mute"><span class="dot"></span>{% trans "Não fabricado" %}</span></td>
+        <td class="d" data-label="{% trans 'Significa' %}">{% trans "não existe no mundo. Não tem campo, e não conta como lacuna." %}</td>
+      </tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="tile">
+  <div class="tile__h"><div><h3>{% trans "Bom saber" %}</h3></div></div>
+  <div style="padding:16px 20px;font-size:13.5px;line-height:1.8;">
+    <ul style="margin:0;padding-left:18px;">
+      <li>{% blocktrans trimmed %}Os preços de <b>«Outras»</b> valem para todo chip de marca que não tem coluna própria.{% endblocktrans %}</li>
+      <li>{% blocktrans trimmed %}A taxa no topo (1 ¥ → US$) é a <b>mid-market do dia</b>, usada só para o vendedor ler o valor em dólar. Os seus preços em ¥ nunca mudam junto. Cada lote guarda a taxa do dia em que foi fechado.{% endblocktrans %}</li>
+      <li>{% blocktrans trimmed %}O preço é <b>por chip</b> (unitário).{% endblocktrans %}</li>
+      <li>{% blocktrans trimmed %}<b>SSD</b> e <b>K9</b> não têm grade: o preço é uma taxa de contrato — ¥/GB com piso por peça, e ¥ por unidade.{% endblocktrans %}</li>
+      <li>{% blocktrans trimmed %}Um selo <b>vermelho</b> na barra de tipos conta <b>pedidos travados</b>: lote já fechado que a plataforma não consegue precificar sem o seu preço. O âmbar conta lacuna, que pode esperar.{% endblocktrans %}</li>
+    </ul>
+  </div>
+</section>
+
+<h2 style="font-size:22px;font-weight:300;letter-spacing:-.02em;">{% trans "Perguntas frequentes" %}</h2>
+<div class="faq">
+  <details><summary>{% trans "Em que moeda eu preencho os preços?" %}</summary>
+    <p>{% trans "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema." %}</p></details>
+  <details><summary>{% trans "E se a taxa de câmbio mudar?" %}</summary>
+    <p>{% trans "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles — e o lote já fechado guarda a taxa do dia do fechamento, que não se mexe mais." %}</p></details>
+  <details><summary>{% trans "Meu preço vale na hora?" %}</summary>
+    <p>{% trans "Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de aprovada, vale na hora — e você recebe uma notificação." %}</p></details>
+  <details><summary>{% trans "O que significa “em revisão”?" %}</summary>
+    <p>{% trans "Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua valendo." %}</p></details>
+  <details><summary>{% trans "Errei um preço. Posso corrigir?" %}</summary>
+    <p>{% trans "Sim. Envie o valor certo na mesma linha — o novo pedido substitui o anterior." %}</p></details>
+  <details><summary>{% trans "O que é “travando N pedidos”?" %}</summary>
+    <p>{% trans "É um lote já fechado esperando o seu preço para virar ordem. Enquanto a linha estiver sem cotação, a compra não congela nem fatura — por isso ela vem em vermelho, antes das lacunas comuns." %}</p></details>
+  <details><summary>{% trans "Está faltando um chip na minha tabela?" %}</summary>
+    <p>{% trans "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar." %}</p></details>
 </div>
-
-{# ── 3 dicas ──────────────────────────────────────────────────── #}
-<div class="ptn-card">
-  <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;margin-bottom:12px;">{% trans "Bom saber" %}</div>
-  <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.8;">
-    <li>{% trans "Os preços de “Outras marcas” valem para todo chip de marca que não tem tabela própria." %}</li>
-    <li>{% trans "A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥ nunca mudam junto." %}</li>
-    <li>{% trans "O preço é por chip (unitário)." %}</li>
-  </ul>
-</div>
-
-{# ── FAQ ──────────────────────────────────────────────────────── #}
-<h2 style="font-weight:300;font-size:22px;margin:26px 0 12px;">{% trans "Perguntas frequentes" %}</h2>
-<style>
-  .ptn-faq { background:#fff;border:1px solid #e0e0e0;margin-bottom:8px; }
-  .ptn-faq summary { padding:13px 16px;font-size:14px;font-weight:600;cursor:pointer;list-style:none;display:flex;gap:8px;align-items:baseline; }
-  .ptn-faq summary::before { content:'+';font-family:'IBM Plex Mono',monospace;color:#0f62fe;font-weight:700; }
-  .ptn-faq[open] summary::before { content:'–'; }
-  .ptn-faq p { margin:0;padding:0 16px 14px 34px;font-size:14px;color:#393939;line-height:1.6; }
-</style>
-
-<details class="ptn-faq">
-  <summary>{% trans "Em que moeda eu preencho os preços?" %}</summary>
-  <p>{% trans "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida no topo." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "E se a taxa do contrato mudar?" %}</summary>
-  <p>{% trans "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "Meu preço vale na hora?" %}</summary>
-  <p>{% trans "Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de aprovada, vale na hora — e você recebe uma notificação." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "O que significa “em revisão”?" %}</summary>
-  <p>{% trans "Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua valendo." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "Errei um preço. Posso corrigir?" %}</summary>
-  <p>{% trans "Sim. Envie o valor certo na mesma linha — o novo pedido substitui o anterior." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "O que é a linha amarela?" %}</summary>
-  <p>{% trans "É um chip sem cotação — falta você dar o preço. O contador da página Início mostra quantos faltam." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "Para que serve a tabela “Outras marcas”?" %}</summary>
-  <p>{% trans "É a sua tabela geral. Esses preços valem para chips de qualquer marca que não tem tabela própria." %}</p>
-</details>
-<details class="ptn-faq">
-  <summary>{% trans "Está faltando um chip na minha tabela?" %}</summary>
-  <p>{% trans "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar." %}</p>
-</details>
-
 {% endblock %}

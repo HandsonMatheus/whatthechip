@@ -4060,6 +4060,124 @@ msgstr "sin cotización"
 msgid "sem piso"
 msgstr "sin piso"
 
+msgid "(vazio)"
+msgstr "(vacío)"
+
+msgid ""
+"<b>SSD</b> e <b>K9</b> não têm grade: o preço é uma taxa de contrato — ¥/GB "
+"com piso por peça, e ¥ por unidade."
+msgstr ""
+"<b>SSD</b> y <b>K9</b> no tienen grilla: el precio es una tasa de contrato —"
+" ¥/GB con piso por pieza, y ¥ por unidad."
+
+msgid ""
+"A taxa no topo (1 ¥ → US$) é a <b>mid-market do dia</b>, usada só para o "
+"vendedor ler o valor em dólar. Os seus preços em ¥ nunca mudam junto. Cada "
+"lote guarda a taxa do dia em que foi fechado."
+msgstr ""
+"La tasa de arriba (1 ¥ → US$) es la <b>mid-market del día</b>, usada solo "
+"para que el vendedor lea el valor en dólares. Sus precios en ¥ nunca cambian"
+" con ella. Cada lote guarda la tasa del día en que fue cerrado."
+
+msgid "Abra um tipo de chip na barra à esquerda."
+msgstr "Abra un tipo de chip en la barra de la izquierda."
+
+msgid "Aprovado, passa a valer na hora. A decisão chega nas notificações."
+msgstr ""
+"Aprobado, pasa a valer al instante. La decisión llega en las notificaciones."
+
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em <b>¥ (RMB)</b>, sempre atualizada, sem planilhas."
+msgstr ""
+"Aquí usted mantiene su tabla de precios de compra de chips de memoria — "
+"siempre en <b>¥ (RMB)</b>, siempre actualizada, sin planillas."
+
+msgid "Digite o preço em ¥ (RMB) na linha que quiser mudar."
+msgstr "Escriba el precio en ¥ (RMB) en la fila que quiera cambiar."
+
+msgid "E se a taxa de câmbio mudar?"
+msgstr "¿Y si la tasa de cambio cambia?"
+
+msgid "Envie no fim da página — só as linhas alteradas viram pedido."
+msgstr ""
+"Envíe al final de la página — solo las filas alteradas se vuelven pedido."
+
+msgid "O preço é <b>por chip</b> (unitário)."
+msgstr "El precio es <b>por chip</b> (unitario)."
+
+msgid "O que você digita na célula"
+msgstr "Lo que usted escribe en la celda"
+
+msgid "O que é “travando N pedidos”?"
+msgstr "¿Qué es “trabando N pedidos”?"
+
+msgid ""
+"Os preços de <b>«Outras»</b> valem para todo chip de marca que não tem "
+"coluna própria."
+msgstr ""
+"Los precios de <b>«Otras»</b> valen para todo chip de marca que no tiene "
+"columna propia."
+
+msgid ""
+"Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula "
+"a partir deles — e o lote já fechado guarda a taxa do dia do fechamento, que"
+" não se mexe mais."
+msgstr ""
+"Sus precios en ¥ no cambian. Solo cambia el valor en US$ que el sistema "
+"calcula a partir de ellos — y el lote ya cerrado guarda la tasa del día del "
+"cierre, que no se mueve más."
+
+msgid "Quatro passos"
+msgstr "Cuatro pasos"
+
+msgid ""
+"Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado "
+"— a conversão para US$ é feita pelo sistema."
+msgstr ""
+"Siempre en ¥ (RMB), por chip. El número que usted escribe es el que queda "
+"guardado — la conversión a US$ la hace el sistema."
+
+msgid "Significa"
+msgstr "Significa"
+
+msgid "Um campo só. O que você escreve nele decide o estado da linha."
+msgstr ""
+"Un solo campo. Lo que usted escribe en él decide el estado de la fila."
+
+msgid ""
+"Um selo <b>vermelho</b> na barra de tipos conta <b>pedidos travados</b>: "
+"lote já fechado que a plataforma não consegue precificar sem o seu preço. O "
+"âmbar conta lacuna, que pode esperar."
+msgstr ""
+"Un sello <b>rojo</b> en la barra de tipos cuenta <b>pedidos trabados</b>: "
+"lote ya cerrado que la plataforma no puede cotizar sin su precio. El ámbar "
+"cuenta laguna, que puede esperar."
+
+msgid "Você escreve"
+msgstr "Usted escribe"
+
+msgid "ainda não decidiu. É a sua lista de tarefas."
+msgstr "todavía no decidió. Es su lista de tareas."
+
+msgid "compro a este preço, em ¥ por chip."
+msgstr "compro a este precio, en ¥ por chip."
+
+msgid "decisão ativa: este item existe e você não quer."
+msgstr "decisión activa: este ítem existe y usted no lo quiere."
+
+msgid "não existe no mundo. Não tem campo, e não conta como lacuna."
+msgstr "no existe en el mundo. No tiene campo, y no cuenta como laguna."
+
+msgid ""
+"É um lote já fechado esperando o seu preço para virar ordem. Enquanto a "
+"linha estiver sem cotação, a compra não congela nem fatura — por isso ela "
+"vem em vermelho, antes das lacunas comuns."
+msgstr ""
+"Es un lote ya cerrado esperando su precio para volverse orden. Mientras la "
+"fila esté sin cotización, la compra no congela ni factura — por eso viene en"
+" rojo, antes de las lagunas comunes."
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

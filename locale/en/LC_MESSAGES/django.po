@@ -4028,6 +4028,124 @@ msgstr "not quoted"
 msgid "sem piso"
 msgstr "no floor"
 
+msgid "(vazio)"
+msgstr "(empty)"
+
+msgid ""
+"<b>SSD</b> e <b>K9</b> não têm grade: o preço é uma taxa de contrato — ¥/GB "
+"com piso por peça, e ¥ por unidade."
+msgstr ""
+"<b>SSD</b> and <b>K9</b> have no grid: the price is a contract rate — ¥/GB "
+"with a floor per piece, and ¥ per unit."
+
+msgid ""
+"A taxa no topo (1 ¥ → US$) é a <b>mid-market do dia</b>, usada só para o "
+"vendedor ler o valor em dólar. Os seus preços em ¥ nunca mudam junto. Cada "
+"lote guarda a taxa do dia em que foi fechado."
+msgstr ""
+"The rate at the top (1 ¥ → US$) is the <b>day’s mid-market</b>, used only so"
+" the seller can read the dollar value. Your ¥ prices never move with it. "
+"Each lot keeps the rate of the day it was closed."
+
+msgid "Abra um tipo de chip na barra à esquerda."
+msgstr "Open a chip type in the left bar."
+
+msgid "Aprovado, passa a valer na hora. A decisão chega nas notificações."
+msgstr ""
+"Once approved, it takes effect immediately. The decision arrives in "
+"notifications."
+
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em <b>¥ (RMB)</b>, sempre atualizada, sem planilhas."
+msgstr ""
+"Here you keep your buying price table for memory chips — always in <b>¥ "
+"(RMB)</b>, always current, no spreadsheets."
+
+msgid "Digite o preço em ¥ (RMB) na linha que quiser mudar."
+msgstr "Type the price in ¥ (RMB) on the row you want to change."
+
+msgid "E se a taxa de câmbio mudar?"
+msgstr "What if the exchange rate changes?"
+
+msgid "Envie no fim da página — só as linhas alteradas viram pedido."
+msgstr "Submit at the end of the page — only changed rows become a request."
+
+msgid "O preço é <b>por chip</b> (unitário)."
+msgstr "The price is <b>per chip</b> (unit)."
+
+msgid "O que você digita na célula"
+msgstr "What you type in the cell"
+
+msgid "O que é “travando N pedidos”?"
+msgstr "What does “blocking N orders” mean?"
+
+msgid ""
+"Os preços de <b>«Outras»</b> valem para todo chip de marca que não tem "
+"coluna própria."
+msgstr ""
+"The <b>«Other»</b> prices apply to every branded chip with no column of its "
+"own."
+
+msgid ""
+"Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula "
+"a partir deles — e o lote já fechado guarda a taxa do dia do fechamento, que"
+" não se mexe mais."
+msgstr ""
+"Your ¥ prices do not change. Only the US$ value the system derives from them"
+" does — and a lot already closed keeps the rate of its closing day, which "
+"never moves again."
+
+msgid "Quatro passos"
+msgstr "Four steps"
+
+msgid ""
+"Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado "
+"— a conversão para US$ é feita pelo sistema."
+msgstr ""
+"Always in ¥ (RMB), per chip. The number you type is what gets stored — the "
+"US$ conversion is done by the system."
+
+msgid "Significa"
+msgstr "Means"
+
+msgid "Um campo só. O que você escreve nele decide o estado da linha."
+msgstr "One field only. What you write in it decides the row’s status."
+
+msgid ""
+"Um selo <b>vermelho</b> na barra de tipos conta <b>pedidos travados</b>: "
+"lote já fechado que a plataforma não consegue precificar sem o seu preço. O "
+"âmbar conta lacuna, que pode esperar."
+msgstr ""
+"A <b>red</b> badge on the type bar counts <b>blocked orders</b>: a lot "
+"already closed that the platform cannot price without you. The amber one "
+"counts gaps, which can wait."
+
+msgid "Você escreve"
+msgstr "You type"
+
+msgid "ainda não decidiu. É a sua lista de tarefas."
+msgstr "not decided yet. This is your to-do list."
+
+msgid "compro a este preço, em ¥ por chip."
+msgstr "I buy at this price, in ¥ per chip."
+
+msgid "decisão ativa: este item existe e você não quer."
+msgstr "active decision: this item exists and you do not want it."
+
+msgid "não existe no mundo. Não tem campo, e não conta como lacuna."
+msgstr ""
+"does not exist in the world. It has no field, and does not count as a gap."
+
+msgid ""
+"É um lote já fechado esperando o seu preço para virar ordem. Enquanto a "
+"linha estiver sem cotação, a compra não congela nem fatura — por isso ela "
+"vem em vermelho, antes das lacunas comuns."
+msgstr ""
+"It is a lot already closed, waiting for your price to become an order. While"
+" the row has no quote, the purchase neither freezes nor invoices — that is "
+"why it comes in red, ahead of ordinary gaps."
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

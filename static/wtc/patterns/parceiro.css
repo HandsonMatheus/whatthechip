@@ -524,3 +524,15 @@
 .pdoor__g{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--blue-60);white-space:nowrap;flex:none}
 .pdoor__g svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;transition:transform var(--d1)}
 .pdoor:hover .pdoor__g svg{transform:translateX(2px)}
+
+/* ---------- FAQ dobrável (sem JS: <details>/<summary>) ---------- */
+.faq details{background:var(--surface);border:1px solid var(--line);border-bottom:0}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{padding:13px 16px;font-size:13.5px;font-weight:600;cursor:pointer;list-style:none;display:flex;gap:9px;align-items:baseline}
+.faq summary::-webkit-details-marker{display:none}
+/* `+`/`–` em mono: o triângulo nativo muda de forma entre navegadores e some
+   no Safari quando `list-style:none` — dois caracteres não somem em lugar nenhum. */
+.faq summary::before{content:"+";font-family:var(--mono);font-weight:700;color:var(--blue-60);flex:none}
+.faq details[open] summary::before{content:"\2013"}
+.faq p{margin:0;padding:0 16px 14px 34px;font-size:13px;color:var(--muted);line-height:1.65;text-wrap:pretty}
+.step4>div b{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--blue-60);margin-right:7px}

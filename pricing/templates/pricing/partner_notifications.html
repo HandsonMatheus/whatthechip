@@ -2,36 +2,47 @@
 {% load i18n %}
 {% block title %}{% trans "Notificações" %}{% endblock %}
 {% block content %}
+{% comment %}
+  🔔 As decisões do WhatTheChip sobre os pedidos do comprador. Vestida com o
+  pacote v2 na Etapa 9.
 
-<h1 style="font-weight:300;font-size:28px;margin:0 0 6px;">{% trans "Notificações" %}</h1>
-<p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
-  {% trans "As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam a valer na hora; rejeitadas mantêm o valor anterior." %}
-</p>
+  Sem nome de revisor: a decisão é **do WhatTheChip**, não de uma pessoa —
+  quem revisou é auditoria, e auditoria não atravessa o balcão.
 
-<div class="ptn-card" style="padding:0;">
-  <table class="ptn-table">
-    <thead>
-      <tr><th>{% trans "Decisão" %}</th><th>{% trans "Chip" %}</th><th>{% trans "Mudança pedida" %}</th><th>{% trans "Decidido em" %}</th></tr>
-    </thead>
+  Preço de grade e TAXA DE CONTRATO (SSD/K9) caem na MESMA lista. Duas páginas
+  partiriam em duas uma coisa que para ele é uma só: pediu mudança de preço,
+  quer saber se passou.
+{% endcomment %}
+
+<div class="phd">
+  <div>
+    <h1>{% trans "Notificações" %}</h1>
+    <p>{% blocktrans trimmed %}As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam a valer na hora; rejeitadas mantêm o valor anterior.{% endblocktrans %}</p>
+  </div>
+</div>
+
+<section class="tile">
+  <div class="dtab__wrap"><table class="dtab dtab--static">
+    <thead><tr>
+      <th style="min-width:132px">{% trans "Decisão" %}</th>
+      <th>{% trans "Chip" %}</th>
+      <th>{% trans "Mudança pedida" %}</th>
+      <th style="min-width:130px">{% trans "Decidido em" %}</th>
+    </tr></thead>
     <tbody>
       {% for it in itens %}
       <tr>
-        <td>
-          {% if it.review_status == 'approved' %}
-            <span class="ptn-tag ptn-tag--quoted">✔ {% trans "Aprovado" %}</span>
-          {% else %}
-            <span class="ptn-tag ptn-tag--nobuy">✘ {% trans "Rejeitado" %}</span>
-          {% endif %}
-        </td>
-        <td style="font-weight:600;">{{ it.resumo }}</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ it.novo }}</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">{{ it.reviewed_at|date:"d/m/y H:i" }}</td>
+        <td data-label="{% trans 'Decisão' %}">
+          {% if it.review_status == 'approved' %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Aprovado" %}</span>
+          {% else %}<span class="tag tag--no"><span class="dot"></span>{% trans "Rejeitado" %}</span>{% endif %}</td>
+        <td class="c" data-label="{% trans 'Chip' %}">{{ it.resumo }}</td>
+        <td class="v" data-label="{% trans 'Mudança pedida' %}">{{ it.novo }}</td>
+        <td class="n" data-label="{% trans 'Decidido em' %}">{{ it.reviewed_at|date:"d/m/y H:i" }}</td>
       </tr>
       {% empty %}
-      <tr><td colspan="4" style="color:#6f6f6f;padding:18px;">{% trans "Nenhuma decisão ainda — suas mudanças enviadas aparecem aqui quando forem revisadas." %}</td></tr>
+      <tr><td colspan="4" class="pempty">{% trans "Nenhuma decisão ainda — suas mudanças enviadas aparecem aqui quando forem revisadas." %}</td></tr>
       {% endfor %}
     </tbody>
-  </table>
-</div>
-
+  </table></div>
+</section>
 {% endblock %}

@@ -1279,8 +1279,8 @@ class PartnerDashboardTests(TestCase):
         self.assertEqual(resp.wsgi_request.partner_unseen, 2)
         # …a página lista as decisões e ZERA o badge ao abrir:
         resp = self.client.get('/partner/notifications/')
-        self.assertContains(resp, '✔ Aprovado')
-        self.assertContains(resp, '✘ Rejeitado')
+        self.assertContains(resp, 'Aprovado')
+        self.assertContains(resp, 'Rejeitado')
         self.assertContains(resp, '¥ 5.75')              # F10: pedido em ¥
         resp = self.client.get('/partner/')
         self.assertEqual(resp.wsgi_request.partner_unseen, 0)

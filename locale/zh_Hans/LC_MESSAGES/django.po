@@ -3803,6 +3803,103 @@ msgstr "未报价"
 msgid "sem piso"
 msgstr "无保底"
 
+msgid "(vazio)"
+msgstr "（留空）"
+
+msgid ""
+"<b>SSD</b> e <b>K9</b> não têm grade: o preço é uma taxa de contrato — ¥/GB "
+"com piso por peça, e ¥ por unidade."
+msgstr "<b>SSD</b> 和 <b>K9</b> 没有价格表：价格是合同费率——¥/GB 加每片保底价，以及每颗 ¥。"
+
+msgid ""
+"A taxa no topo (1 ¥ → US$) é a <b>mid-market do dia</b>, usada só para o "
+"vendedor ler o valor em dólar. Os seus preços em ¥ nunca mudam junto. Cada "
+"lote guarda a taxa do dia em que foi fechado."
+msgstr ""
+"顶部的汇率（1 ¥ → US$）是<b>当日 mid-market</b>，仅供卖方查看美元金额。您的 ¥ "
+"价格不会随之变动。每个批次保存其关闭当天的汇率。"
+
+msgid "Abra um tipo de chip na barra à esquerda."
+msgstr "在左侧栏打开一个芯片类型。"
+
+msgid "Aprovado, passa a valer na hora. A decisão chega nas notificações."
+msgstr "批准后立即生效。结果会出现在通知中。"
+
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em <b>¥ (RMB)</b>, sempre atualizada, sem planilhas."
+msgstr "在这里维护您的内存芯片收购价目表——始终以 <b>¥（人民币）</b>计价，始终最新，无需表格文件。"
+
+msgid "Digite o preço em ¥ (RMB) na linha que quiser mudar."
+msgstr "在要修改的行中输入 ¥（人民币）价格。"
+
+msgid "E se a taxa de câmbio mudar?"
+msgstr "如果汇率变动怎么办？"
+
+msgid "Envie no fim da página — só as linhas alteradas viram pedido."
+msgstr "在页面底部提交——只有改动过的行才会生成申请。"
+
+msgid "O preço é <b>por chip</b> (unitário)."
+msgstr "价格按<b>每颗芯片</b>计。"
+
+msgid "O que você digita na célula"
+msgstr "在单元格里输入什么"
+
+msgid "O que é “travando N pedidos”?"
+msgstr "“卡住 N 个订单”是什么意思？"
+
+msgid ""
+"Os preços de <b>«Outras»</b> valem para todo chip de marca que não tem "
+"coluna própria."
+msgstr "<b>「其他」</b>的价格适用于所有没有单独列的品牌芯片。"
+
+msgid ""
+"Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula "
+"a partir deles — e o lote já fechado guarda a taxa do dia do fechamento, que"
+" não se mexe mais."
+msgstr "您的 ¥ 价格不变。只有系统据此折算的 US$ 金额会变——已关闭的批次保存关闭当天的汇率，此后不再变动。"
+
+msgid "Quatro passos"
+msgstr "四个步骤"
+
+msgid ""
+"Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado "
+"— a conversão para US$ é feita pelo sistema."
+msgstr "始终以 ¥（人民币）按颗计价。您输入的数字就是保存的数字——US$ 折算由系统完成。"
+
+msgid "Significa"
+msgstr "含义"
+
+msgid "Um campo só. O que você escreve nele decide o estado da linha."
+msgstr "只有一个输入框。您写什么，就决定这一行的状态。"
+
+msgid ""
+"Um selo <b>vermelho</b> na barra de tipos conta <b>pedidos travados</b>: "
+"lote já fechado que a plataforma não consegue precificar sem o seu preço. O "
+"âmbar conta lacuna, que pode esperar."
+msgstr "类型栏上的<b>红色</b>标记统计<b>卡住的订单</b>：已关闭的批次，没有您的价格平台无法定价。琥珀色标记统计缺口，可以等。"
+
+msgid "Você escreve"
+msgstr "您输入"
+
+msgid "ainda não decidiu. É a sua lista de tarefas."
+msgstr "尚未决定。这就是您的待办清单。"
+
+msgid "compro a este preço, em ¥ por chip."
+msgstr "按此价格收购，单位为每颗 ¥。"
+
+msgid "decisão ativa: este item existe e você não quer."
+msgstr "主动决定：此项存在，但您不要。"
+
+msgid "não existe no mundo. Não tem campo, e não conta como lacuna."
+msgstr "世界上不存在此产品。没有输入框，也不算缺口。"
+
+msgid ""
+"É um lote já fechado esperando o seu preço para virar ordem. Enquanto a "
+"linha estiver sem cotação, a compra não congela nem fatura — por isso ela "
+"vem em vermelho, antes das lacunas comuns."
+msgstr "这是一个已关闭的批次，等待您的价格才能生成订单。只要该行未报价，采购就无法锁定也无法开票——所以它显示为红色，排在普通缺口之前。"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."
