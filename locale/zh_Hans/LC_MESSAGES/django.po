@@ -3492,6 +3492,88 @@ msgstr[0] ""
 "<b>%(n)s 个订单卡住</b>，自 %(since)s 起等待 <b>%(row)s</b>（箱 %(box)s）的价格 — %(units)s "
 "件，没有您平台无法定价。"
 
+msgid " · piso ¥ %(piso)s"
+msgstr " · 保底 ¥ %(piso)s"
+
+msgid "%(item)s: piso ilegível — use números"
+msgstr "%(item)s：保底价无法识别——请输入数字"
+
+msgid "%(item)s: taxa ilegível — use números"
+msgstr "%(item)s：单价无法识别——请输入数字"
+
+msgid "%(item)s: piso sem ¥/GB não precifica nada — informe a taxa"
+msgstr "%(item)s：没有 ¥/GB 单价，保底价无法定价——请填写单价"
+
+msgid ""
+"As capacidades são <strong>calculadas</strong>, não cotadas: <code>preço = "
+"maior valor entre (¥/GB × GB) e o mínimo por peça</code>, arredondado ao ¥ "
+"inteiro. A marca <strong>piso</strong> diz que o mínimo por peça decidiu "
+"aquela linha — é informação, não erro."
+msgstr ""
+"容量是<strong>计算</strong>出来的，不是报价：<code>价格 = (¥/GB × GB) "
+"与每片最低价中的较大者</code>，四舍五入到整数 ¥。<strong>保底</strong>标记表示该行由每片最低价决定——这是提示，不是错误。"
+
+msgid "Ativo"
+msgstr "启用"
+
+msgid "Em revisão"
+msgstr "审核中"
+
+msgid "Preço"
+msgstr "价格"
+
+msgid "Sem piso"
+msgstr "无保底"
+
+msgid "Taxa"
+msgstr "单价"
+
+msgid ""
+"Você já pediu uma mudança aqui — o valor acima continua valendo até o "
+"WhatTheChip aprovar. Enviar de novo substitui o pedido."
+msgstr "您已提交过修改申请——在 WhatTheChip 批准之前，上面的数值继续有效。再次提交会替换原申请。"
+
+msgid "mínimo por peça"
+msgstr "每片最低价"
+
+msgid "nenhuma peça sai por menos que isto, por menor que seja a capacidade"
+msgstr "无论容量多小，每片都不低于此价"
+
+msgid ""
+"número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão "
+"do WhatTheChip; o valor atual continua valendo até a aprovação."
+msgstr "数字 = ¥（人民币）价格 · 留空 = 未报价。修改将提交 WhatTheChip 审核；在批准之前当前数值继续有效。"
+
+msgid "piso"
+msgstr "保底"
+
+msgid "por unidade"
+msgstr "每颗"
+
+msgid "qualquer capacidade · qualquer formato"
+msgstr "任意容量 · 任意规格"
+
+msgid "qualquer part number · qualquer densidade"
+msgstr "任意料号 · 任意容量"
+
+msgid "¥ %(taxa)s/GB"
+msgstr "¥ %(taxa)s/GB"
+
+msgid "¥ %(v)s/un."
+msgstr "¥ %(v)s/颗"
+
+msgid "¥ (RMB)"
+msgstr "¥（人民币）"
+
+msgid "¥ por peça"
+msgstr "每片 ¥"
+
+msgid "¥ · vazio = sem cotação"
+msgstr "¥ · 留空 = 未报价"
+
+msgid "¥ · vazio = sem piso"
+msgstr "¥ · 留空 = 无保底"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

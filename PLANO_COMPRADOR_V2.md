@@ -111,7 +111,12 @@ Spec §3.2 lista **oito** tipos e dá regra fechada para os dois que faltam:
 Repo: `Buyer.ssd_rmb_per_gb` e `Buyer.k9_rmb_each` existem, mas **só no Django admin**. Nenhum dos dois está
 em `_NAV_KINDS` nem no catálogo PDF. E **o piso por peça não existe** — nem campo, nem lógica.
 
-**Decisão necessária:** (a) expor os dois ao comprador? (b) criar o campo de piso do SSD?
+**Decidido (dono, 2026-08-26):** (a) sim; (b) sim; (c) **editáveis com moderação** — ele propõe, a
+plataforma aprova, e a taxa vigente continua valendo até lá. Ver **Etapa 7** no §9.
+
+⚠ Duas correções ao levantamento acima, achadas ao implementar: o catálogo PDF **já tinha** a seção SSD
+(uma linha, "por GB") — quem faltava lá era o **K9**. E o protótipo desenha o SSD com **seis classes**,
+taxonomia que **não existe no repo**; ficou uma linha só, que é o que o dado suporta.
 
 ### C4. Aba Observações — hoje é um textarea de mão única 🟠
 
@@ -156,7 +161,7 @@ aponta pra elas** — a sidebar só linka `partner_home` e `partner_kind`. A v2 
 |---|---|---|
 | **C1** | **Manter o estado DERIVADO**, só mapear pro vocabulário da spec | Zero migração. A resposta ao §12.3 da spec é a tabela de C1. `order_stage`/`order_steps` ficam como estão |
 | **C2** | **Aceitar §4.1**: só lote despachado entra na lista + criar `BlockedQuote` | A lista de compras perde `sem_preco`/`a_congelar`. A fila de cotação travada vira card no resumo de preços. O selo "Congelar" morre |
-| **C3** | **Expor SSD e K9 ao comprador + criar o piso por peça do SSD** | Migração nova em `pricing` (⚠ blast radius: `pricing/models.py` é compartilhado com a bancada). SSD `form:linear` com capacidades derivadas e âmbar no piso; K9 uma linha, um campo |
+| **C3** ✅ | **Expor SSD e K9 ao comprador + criar o piso por peça do SSD**, **editáveis com moderação** (2026-08-26) | Migração nova em `pricing` — mas **aditiva**: campo nullable no `Buyer` + tabela nova (`RateChangeRequest`). Nada que a bancada lê foi alterado. SSD `form:linear` com capacidades derivadas e marca no piso; K9 uma linha, um campo |
 | **C4** | **Model `OrderNote` novo + migrar as notas de acerto existentes** | O textarea do modal passa a criar a primeira nota. PDF imprime a lista com autoria **"Conferência"**. 1 linha de migração por `Settlement` com nota |
 | **C5** | Comprovante: manter **5 MB + MIME sniffado** (contra os 10 MB da spec) | Ajustar só o texto da tela |
 | **C6** | Manter `/partner/compras/<pk>/` (não trocar por código do lote) e as rotas em **inglês** | Não quebra link guardado; preserva o teste que crava `/partner/how/` |
@@ -282,7 +287,7 @@ Cada etapa fecha sozinha, com teste, e não deixa a tela pela metade.
 | **4** | `LotNote` + aba Observações + PDF com autoria "Conferência" | C4 |
 | **5** | CSV por aba + modal de pagamento completo + carteira + rastreio clicável | 4 |
 | **6** ✅ | `BlockedQuote` no resumo de preços | C2 |
-| **7** | SSD + K9 nas telas de preço, piso do SSD | C3 |
+| **7** ✅ | SSD + K9 nas telas de preço, piso do SSD | C3 |
 | **8** | Catálogo parametrizado | 7 |
 | **9** | Aplicar o design v2 em todos os templates do comprador | 1–8 |
 | **10** | Celular (≤600px) + 4 idiomas das strings novas | 9 |
@@ -665,14 +670,89 @@ tem coluna Estado, a frase sai por extenso e **vence** o selo "Não cotado".
 não **tem** a linha, não há o que marcar — e é por isso que o aviso do topo é separado da marca. Há teste
 para esse caso.
 
-**Sem grade, sem link** (SSD linear, K9 fixo — Etapa 7): a célula continua na fila, só não vira `<a>`.
-Esconder o que trava seria pior que não ter para onde ir.
+**Sem grade, sem link**: a célula continua na fila, só não vira `<a>`. Esconder o que trava seria pior
+que não ter para onde ir. *(Na Etapa 6 os dois casos eram SSD e K9; a Etapa 7 deu tela aos dois, e o
+`if kind in _NAV_KINDS` passou a cobri-los — a salvaguarda fica de pé para o próximo tipo sem grade.)*
 
 24 testes (14 script + 10 interface) · 6 msgids novos nos 3 catálogos.
 
 ⚠ **Asserção que não prova nada:** `assertIn('ptn-tag--block', html)` passa pelo **CSS embutido** do
 `partner_base`, não pela tela. As asserções cravam a classe **como ela é servida** (`ptn-tag
 ptn-tag--block`). Foi um `assertNotIn` que denunciou — o `assertIn` teria passado calado.
+
+### ✅ Etapa 7 — SSD e K9 ganham tela (piso por peça, taxa moderada) (2026-08-26)
+
+Os dois existiam no motor e no catálogo desde julho/agosto e o comprador **não tinha onde vê-los**: o
+preço só se mexia pelo Django admin, e ele nem sabia qual era.
+
+| Onde | O quê |
+|---|---|
+| `pricing/models.py` | `Buyer.ssd_floor_rmb` (o piso) + `RateChangeRequest` (a moderação das taxas) |
+| `0027_ssd_floor_e_pedido_de_taxa` · `0028_ratechangerequest_rls` | tabela + RLS/FORCE no molde da 0021 |
+| `pricing/engine.py` | `ssd_linear_rmb` · `ssd_piso_venceu` · `ssd_rmb` — a fórmula em UM lugar |
+| `pricing/pdf.py` | `SSD_CAPS` + capacidades derivadas na seção SSD, e o **K9 que faltava** |
+| `pricing/views.py` | `_RATE_KINDS`, `_contrato_ctx`, `_rate_post`, `_rate_mensagens`, o sino somando as duas tabelas |
+| `pricing/admin.py` | `RateChangeRequestAdmin` — a fila irmã, com a mesma ordem de pendente-primeiro |
+| `partner_kind.html` | o bloco de contrato: campo(s), o aviso de pedido em pé, as capacidades e o cálculo ao vivo |
+
+**Por que TABELA NOVA e não afrouxar o `PriceChangeRequest`.** SSD e K9 não têm linha de grade — o preço
+mora no `Buyer` porque não varia com marca, geração nem densidade. A FK `price` daquele modelo é
+**obrigatória**. As três saídas eram: afrouxá-la (mexer na tabela que a bancada lê, com constraint e RLS
+em cima), cunhar `Price` falso para SSD/K9 (duas fontes de verdade para o mesmo número — e o ¥/GB tem 3
+casas, que `price_min` não guarda), ou tabela nova. A nova é a única que não põe em risco o que já roda.
+
+**A moderação é a mesma, e o comprador não vê a diferença.** Uma frase só para os dois envios
+(`_rate_mensagens`), e a decisão cai na **mesma** lista de notificações: ele pediu uma mudança de preço e
+quer saber se passou — de que tabela ela saiu é problema nosso.
+
+**O piso por peça** (§3.2): `preço(cap) = max(round(¥/GB × GB), piso)`. Nasce NULL, e NULL é *exatamente*
+o comportamento de antes — nenhum preço muda até alguém pôr um número. O linear puro cobra ¥13 por um SSD
+de 128GB e ¥102 por um de 1TB, mas manusear, testar e embalar custa o mesmo nos dois.
+
+**Empate NÃO é piso** (`>` e não `>=`): piso igual ao linear não corrigiu nada, e marcar a célula ali
+diria que o piso está mordendo quando não está. E a comparação é contra o **¥ inteiro** — senão um piso
+de ¥13 "venceria" um linear de 12,8 e a linha sairia marcada sem mudar de número.
+
+**A fórmula mora em UM lugar.** `engine.ssd_rmb` precifica o lote, a grade e o catálogo. O JS da tela
+repete a conta porque precisa recalcular enquanto ele digita — e por isso repete o arredondamento
+meio-pra-cima também: tela que promete um preço que a compra não pratica é pior que tela sem cálculo.
+
+**No papel o piso é RÓTULO, não cor.** O catálogo é impresso e lido por quem não tem âmbar: `128 GB ·
+piso`. Sem isso a célula viraria "a conta deles está errada".
+
+**Capacidade derivada não tem campo.** Campo que não vira preço é promessa falsa. Há teste cravando que
+a página inteira tem **dois** campos — a taxa e o piso.
+
+**A legenda da planilha sai.** `x = não compro` e `não fabricado` são convenções de CÉLULA; numa taxa de
+contrato não existem, e ensiná-las ali faria o comprador digitar um "x" que a tela recusa.
+
+**O selo âmbar da barra conta a taxa em branco.** SSD e K9 não têm `Price` para contar, e zero ali seria
+dizer "tabela completa" a quem não tem preço nenhum.
+
+**Uma linha, não seis.** O protótipo desenha o SSD com seis classes (SATA TLC/QLC, M.2 SATA, M.2 NVMe
+TLC/QLC, PCIe 4.0), cada uma com taxa e piso próprios. **Essa taxonomia não existe no repo** — nem no
+modelo, nem no classificador — e criá-la não estava no C3. Ficou UMA linha, que é o que o dado suporta.
+
+**⚠ O único ponto em que esta etapa cruza a fronteira do cliente** — e é de propósito. `_ssd_quote` é o
+mesmo motor que valora o lote na bancada e desenha o card da busca. Com o piso preenchido, o SSD passa a
+valer mais lá também. Está certo assim: o piso **é** o preço que o comprador paga, e a bancada existe
+para mostrar esse preço. Enquanto o campo estiver NULL — que é como ele nasce — nada muda em lugar
+nenhum. Fora isso, tudo o que a etapa acrescentou é aditivo: campo nullable, tabela nova, e três funções
+novas no motor que ninguém mais chama.
+
+30 testes (11 do piso + 19 da tela) · 24 msgids novos nos 3 catálogos.
+
+⚠ **Teste existente alterado:** `PartnerKindNavTests::test_tipo_fora_da_navegacao_404` usava `ssd` como
+exemplo de "tipo fora da navegação". A REGRA não mudou, só o exemplo (`nand`/`xyz`) — e o par novo
+(`ssd`/`k9` → 200) foi cravado logo abaixo, para a mudança de decisão ficar **provada**, não subtraída.
+
+⚠ **Asserção que não prova nada, de novo:** `assertIn('ptn-cell--unquoted', html)` passa pelo CSS
+embutido do `partner_base`. Toda asserção de classe destas classes crava a forma **servida**
+(`class="ptn-cell ptn-cell--unquoted"`). Foi um `assertNotIn` que denunciou — o `assertIn` teria passado
+calado, pela segunda vez em dois dias.
+
+⚠ **Depois do deploy:** conferir `ssd_rmb_per_gb`, `ssd_floor_rmb` e `k9_rmb_each` em
+`/admin/pricing/buyer/`. O piso nasce vazio de propósito.
 
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 

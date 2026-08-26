@@ -11,8 +11,9 @@ mostra auditoria.
 from django.contrib import admin
 from django.db.models import Case, IntegerField, Value, When
 
-from .models import (Buyer, CategoryCode, LotPricing, Price,
-                     PriceChangeRequest, PriceList, PricingConfig)
+from .models import (Buyer, CategoryCode, KIND_SSD, LotPricing, Price,
+                     PriceChangeRequest, PriceList, PricingConfig,
+                     RateChangeRequest)
 
 
 class PlatformScopedAdmin(admin.ModelAdmin):
@@ -41,7 +42,7 @@ class BuyerAdmin(PlatformScopedAdmin):
     # Price — só o US$ derivado na leitura. k9_rmb_each (2026-08-14): preço
     # fixo do K9 por unidade — o ¥1 entra aqui após o OK do Wu Quan.
     list_display  = ('name', 'company', 'fx_usd_rate', 'ssd_rmb_per_gb',
-                     'k9_rmb_each', 'prices_in_rmb',
+                     'ssd_floor_rmb', 'k9_rmb_each', 'prices_in_rmb',
                      'active', 'created_at')
     list_filter   = ('active', 'company')
     search_fields = ('name', 'slug')
@@ -223,6 +224,99 @@ class PriceChangeRequestAdmin(PlatformScopedAdmin):
             req.reject(request.user)
             n += 1
         self.message_user(request, f'{n} mudança(s) rejeitada(s).')
+
+
+class RevisaoTaxaFilter(RevisaoFilter):
+    """Mesma fila do `RevisaoFilter`, sobre a tabela de TAXAS.
+
+    Herda o comportamento inteiro (default = pendente, "Todos" explícito) e
+    troca só de quem vêm as opções — as duas tabelas usam o mesmo vocabulário
+    de revisão, e reescrever o filtro seria criar uma segunda chance de as
+    duas divergirem.
+    """
+
+    def lookups(self, request, model_admin):
+        return [(self.TODOS, 'Todos')] + list(RateChangeRequest.REVIEW_CHOICES)
+
+    def queryset(self, request, queryset):
+        valor = self.value()
+        if valor is None:
+            return queryset.filter(
+                review_status=RateChangeRequest.REVIEW_PENDING)
+        if valor == self.TODOS:
+            return queryset
+        return queryset.filter(review_status=valor)
+
+
+@admin.register(RateChangeRequest)
+class RateChangeRequestAdmin(PlatformScopedAdmin):
+    """A fila de revisão das TAXAS DE CONTRATO — SSD (¥/GB + piso) e K9.
+
+    Irmã do `PriceChangeRequestAdmin`, e separada pela mesma razão que os
+    modelos são separados: SSD e K9 não têm linha de grade, e o número deles
+    mora no `Buyer`. Aprovar aqui grava no comprador; até lá vale o antigo.
+    """
+
+    list_display  = ('buyer', 'kind', 'delta', 'review_status',
+                     'requested_by', 'created_at', 'reviewed_by',
+                     'reviewed_at')
+    list_filter   = (RevisaoTaxaFilter, 'kind', 'buyer')
+    ordering      = ()          # a ordem real vem de get_ordering() — ver lá
+    actions       = ('aprovar', 'rejeitar')
+    readonly_fields = ('buyer', 'kind', 'company', 'new_rate', 'new_floor',
+                       'old_rate', 'old_floor', 'review_status',
+                       'requested_by', 'created_at', 'reviewed_by',
+                       'reviewed_at')
+
+    @admin.display(description='Mudança pedida')
+    def delta(self, obj):
+        """O pedido é em ¥, cru — o que ele digitou. O piso só aparece no SSD
+        (no K9 ele não existe, e desenhar 'piso —' sugeriria que poderia)."""
+        def _n(v):
+            return f'¥ {v.normalize():f}' if v is not None else 'sem preço'
+        linha = f'{_n(obj.old_rate)} → {_n(obj.new_rate)}'
+        if obj.kind == KIND_SSD:
+            def _p(v):
+                return f'¥ {v.normalize():f}' if v is not None else 'sem piso'
+            linha += f'  ·  piso {_p(obj.old_floor)} → {_p(obj.new_floor)}'
+        return linha
+
+    def get_ordering(self, request):
+        """`_fila` é ANOTAÇÃO, não campo — no atributo `ordering` o check
+        admin.E033 derrubaria o projeto. Mesma armadilha do irmão."""
+        return ('_fila', '-created_at')
+
+    def get_queryset(self, request):
+        """Pendente primeiro — e pelo mesmo Case/When do irmão: os valores são
+        'approved'/'pending'/'rejected' e o alfabeto crescente poria o já
+        aprovado no topo, dando a impressão de que aprovar não fez nada."""
+        return (self.model.all_companies.get_queryset()
+                .annotate(_fila=Case(
+                    When(review_status=RateChangeRequest.REVIEW_PENDING,
+                         then=Value(0)),
+                    default=Value(1), output_field=IntegerField()))
+                .order_by(*self.get_ordering(request)))
+
+    def has_add_permission(self, request):
+        return False        # pedido nasce só no /partner/
+
+    @admin.action(description='✔ Aprovar selecionadas (aplica no comprador)')
+    def aprovar(self, request, queryset):
+        n = 0
+        for req in queryset.filter(
+                review_status=RateChangeRequest.REVIEW_PENDING):
+            req.approve(request.user)
+            n += 1
+        self.message_user(request, f'{n} taxa(s) aprovada(s) e aplicada(s).')
+
+    @admin.action(description='✘ Rejeitar selecionadas (taxa fica como está)')
+    def rejeitar(self, request, queryset):
+        n = 0
+        for req in queryset.filter(
+                review_status=RateChangeRequest.REVIEW_PENDING):
+            req.reject(request.user)
+            n += 1
+        self.message_user(request, f'{n} taxa(s) rejeitada(s).')
 
 
 class AposentadoFilter(admin.SimpleListFilter):

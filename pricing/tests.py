@@ -2278,9 +2278,22 @@ class PartnerKindNavTests(TestCase):
         self.assertContains(resp, '¥ 95–105')
 
     def test_tipo_fora_da_navegacao_404(self):
+        """⚠ TESTE ALTERADO em 2026-08-26 (decisão C3 do dono, Etapa 7).
+
+        O `ssd` estava aqui como exemplo de "tipo fora da navegação" — e
+        deixou de ser: SSD e K9 passaram a ter tela própria (taxa de contrato,
+        sem grade). A REGRA não mudou, só o exemplo: `nand` nunca existiu e
+        continua sendo o caso que ela guarda.
+
+        E o par novo é cravado logo abaixo, para que a mudança de decisão
+        fique provada, e não apenas subtraída do teste.
+        """
         self.client.force_login(self.partner)
-        self.assertEqual(self.client.get('/partner/tipo/ssd/').status_code, 404)
         self.assertEqual(self.client.get('/partner/tipo/nand/').status_code, 404)
+        self.assertEqual(self.client.get('/partner/tipo/xyz/').status_code, 404)
+        for k in ('ssd', 'k9'):
+            self.assertEqual(
+                self.client.get(f'/partner/tipo/{k}/').status_code, 200, k)
 
     def test_gate_anonimo(self):
         resp = self.client.get('/partner/tipo/emcp/')
@@ -2966,3 +2979,466 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
         html = self.client.get('/partner/precos/').content.decode()
         self.assertNotIn('class="blk"', html)
         self.assertNotIn('esperando a sua cotação', html)
+
+
+class SsdPisoPorPecaTests(TestCase):
+    """O PISO POR PEÇA do SSD (spec v2 §3.2, decisão C3 do dono 2026-08-26).
+
+        preço(capacidade) = max( round(¥_por_GB × GB), piso_por_peça )
+
+    POR QUE existe: o linear puro cobra ¥13 por um SSD de 128GB e ¥102 por um
+    de 1TB — mas manusear, testar e embalar a peça custa o mesmo nos dois. Sem
+    piso, a capacidade pequena sai abaixo do trabalho que dá, e é justamente
+    ela que chega em quantidade.
+
+    O que estes testes seguram:
+
+    1. **NULL não muda nada.** O campo nasce vazio, e vazio tem de significar
+       exatamente o comportamento de antes da migração.
+    2. **A fórmula mora em UM lugar** (`engine.ssd_rmb`) — a cotação do lote,
+       a grade do comprador e o catálogo leem a mesma função.
+    3. **O `via` conta qual regra decidiu.** Quem vê ¥18 num 128GB a ¥0,10/GB
+       precisa saber que não foi conta errada, foi o piso.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'Piso Co', 'piso-co')
+        cls.buyer.ssd_rmb_per_gb = Decimal('0.100')
+        cls.buyer.save(update_fields=['ssd_rmb_per_gb'])
+
+    def _quote(self, gb):
+        from pricing.engine import BuyerPricingContext
+        with company_scope(self.company):
+            return BuyerPricingContext(self.buyer).price_from_key(
+                'ssd', '', Decimal(gb), 'GB')
+
+    # ── a fórmula ───────────────────────────────────────────────────────────
+
+    def test_script_piso_vazio_e_exatamente_o_linear_de_antes(self):
+        from pricing.engine import ssd_rmb
+        r = Decimal('0.100')
+        self.assertIsNone(self.buyer.ssd_floor_rmb)
+        for gb, esperado in ((128, 13), (256, 26), (512, 51), (1024, 102)):
+            self.assertEqual(ssd_rmb(r, gb, None), Decimal(esperado), gb)
+            self.assertEqual(ssd_rmb(r, gb), Decimal(esperado), gb)
+
+    def test_script_o_piso_so_vence_onde_o_linear_fica_abaixo(self):
+        from pricing.engine import ssd_piso_venceu, ssd_rmb
+        r, piso = Decimal('0.100'), Decimal('18')
+        self.assertEqual(ssd_rmb(r, 128, piso), Decimal('18'))   # 12,8 → 13
+        self.assertTrue(ssd_piso_venceu(r, 128, piso))
+        self.assertEqual(ssd_rmb(r, 256, piso), Decimal('26'))   # linear ganha
+        self.assertFalse(ssd_piso_venceu(r, 256, piso))
+
+    def test_script_empate_NAO_e_piso(self):
+        """Piso igual ao linear não "venceu" — nada foi corrigido, e marcar a
+        célula ali diria ao comprador que o piso está mordendo quando não
+        está. `>` e não `>=`, de propósito."""
+        from pricing.engine import ssd_piso_venceu, ssd_rmb
+        r = Decimal('0.100')
+        self.assertEqual(ssd_rmb(r, 512, Decimal('51')), Decimal('51'))
+        self.assertFalse(ssd_piso_venceu(r, 512, Decimal('51')))
+
+    def test_script_arredonda_meio_pra_cima_antes_de_comparar(self):
+        """128 × 0,1 = 12,8 → ¥13. A comparação com o piso é contra o ¥
+        INTEIRO, não contra o valor cheio — senão um piso de ¥13 "venceria"
+        um linear de 12,8 e a célula sairia marcada sem mudar de número."""
+        from pricing.engine import ssd_linear_rmb, ssd_piso_venceu
+        r = Decimal('0.100')
+        self.assertEqual(ssd_linear_rmb(r, 128), Decimal('13'))
+        self.assertFalse(ssd_piso_venceu(r, 128, Decimal('13')))
+
+    # ── o motor ─────────────────────────────────────────────────────────────
+
+    def test_script_a_cotacao_do_lote_obedece_ao_piso(self):
+        self.assertEqual(self._quote(128).value_rmb(), Decimal('13'))
+        self.buyer.ssd_floor_rmb = Decimal('18')
+        self.buyer.save(update_fields=['ssd_floor_rmb'])
+        q = self._quote(128)
+        self.assertEqual(q.value_rmb(), Decimal('18'))
+        self.assertEqual(q.via, 'piso por peça')
+
+    def test_script_via_diz_qual_regra_decidiu(self):
+        self.buyer.ssd_floor_rmb = Decimal('18')
+        self.buyer.save(update_fields=['ssd_floor_rmb'])
+        self.assertEqual(self._quote(128).via, 'piso por peça')
+        self.assertEqual(self._quote(512).via, 'por GB')
+
+    def test_script_sem_taxa_o_piso_sozinho_nao_inventa_preco(self):
+        """Piso sem ¥/GB não precifica nada: continua SEM COTAÇÃO, com motivo.
+        Chutar aqui poria um número em cima de uma caixa de verdade."""
+        self.buyer.ssd_rmb_per_gb = None
+        self.buyer.ssd_floor_rmb = Decimal('18')
+        self.buyer.save(update_fields=['ssd_rmb_per_gb', 'ssd_floor_rmb'])
+        q = self._quote(128)
+        self.assertNotEqual(q.status, 'PRICED')
+        self.assertIn('¥/GB', q.reason)
+
+    # ── o catálogo ──────────────────────────────────────────────────────────
+
+    def test_script_catalogo_traz_as_capacidades_derivadas_e_marca_o_piso(self):
+        from pricing.pdf import catalog_data
+        self.buyer.ssd_floor_rmb = Decimal('18')
+        self.buyer.save(update_fields=['ssd_floor_rmb'])
+        with company_scope(self.company):
+            secoes = catalog_data(self.buyer, currency='rmb')
+        ssd = next(s for s in secoes if s['title'] == 'SSD')
+        rotulos = [r['label'] for r in ssd['rows']]
+        self.assertIn('por GB', rotulos)
+        self.assertIn('mínimo por peça', rotulos)
+        # 1024 vira 1 TB — tabela que diz "1024 GB" denuncia que foi máquina
+        self.assertIn('1 TB', rotulos)
+        self.assertNotIn('1024 GB', rotulos)
+        # a capacidade que o piso decidiu leva o rótulo (no papel não há cor)
+        self.assertIn('128 GB · piso', rotulos)
+        self.assertNotIn('512 GB · piso', rotulos)
+        valores = {r['label']: r['cell'][1] for r in ssd['rows']}
+        self.assertEqual(valores['128 GB · piso'], '18')
+        self.assertEqual(valores['512 GB'], '51')
+
+    def test_script_catalogo_sem_piso_nao_desenha_a_linha_do_piso(self):
+        from pricing.pdf import catalog_data
+        with company_scope(self.company):
+            secoes = catalog_data(self.buyer, currency='rmb')
+        ssd = next(s for s in secoes if s['title'] == 'SSD')
+        rotulos = [r['label'] for r in ssd['rows']]
+        self.assertNotIn('mínimo por peça', rotulos)
+        self.assertFalse([r for r in rotulos if 'piso' in r])
+
+    def test_script_catalogo_ganhou_o_K9_que_faltava(self):
+        """O K9 tinha preço no motor desde 2026-08-14 e nunca apareceu no
+        documento que o comprador repassa aos clientes dele."""
+        from pricing.pdf import catalog_data
+        with company_scope(self.company):
+            self.assertFalse([s for s in catalog_data(self.buyer)
+                              if s['title'] == 'K9'])
+        self.buyer.k9_rmb_each = Decimal('7')
+        self.buyer.save(update_fields=['k9_rmb_each'])
+        with company_scope(self.company):
+            secoes = catalog_data(self.buyer, currency='rmb')
+        k9 = next(s for s in secoes if s['title'] == 'K9')
+        self.assertEqual(len(k9['rows']), 1)          # UMA linha, um número
+        self.assertEqual(k9['rows'][0]['cell'][1], '7')
+
+    def test_script_o_pdf_do_catalogo_nasce_com_as_secoes_novas(self):
+        """Prova que a estrutura nova ATRAVESSA o reportlab — seção que quebra
+        o desenho só aparece aqui."""
+        from pricing.pdf import catalog_data, render_catalog_pdf
+        self.buyer.ssd_floor_rmb = Decimal('18')
+        self.buyer.k9_rmb_each = Decimal('7')
+        self.buyer.save(update_fields=['ssd_floor_rmb', 'k9_rmb_each'])
+        with company_scope(self.company):
+            secoes = catalog_data(self.buyer, currency='rmb')
+        pdf = render_catalog_pdf(self.buyer.name, secoes, currency='rmb')
+        self.assertTrue(pdf.startswith(b'%PDF'))
+        self.assertGreater(len(pdf), 1000)
+
+
+class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
+    """SSD e K9 no painel do comprador (decisão C3 do dono, 2026-08-26).
+
+    Os dois existiam no motor e no catálogo desde julho/agosto, mas o
+    comprador **não tinha onde vê-los**: o preço só se mexia pelo Django
+    admin, e ele nem sabia qual era.
+
+    A diferença estrutural, que é o que estes testes guardam: **SSD e K9 não
+    têm linha de grade.** O preço mora no `Buyer` (taxa de contrato), e a FK
+    `price` do `PriceChangeRequest` é obrigatória — daí a tabela própria
+    `RateChangeRequest`. A regra da spec §3.4 vale igual nas duas: o número
+    vigente continua valendo até a plataforma aprovar.
+
+    E o desenho de cada uma vem da spec §3.2:
+    · **K9** — UMA linha, UM campo. Nada de grade por densidade "para ficar
+      consistente": a consistência é a tabela ter o tamanho da realidade.
+    · **SSD** — ¥/GB + piso, e as capacidades **derivadas**, não editáveis.
+
+    ⚠ Toda asserção de classe crava a forma SERVIDA (`class="ptn-cell
+    ptn-cell--unquoted"`), nunca o seletor solto: o `partner_base` embute o
+    CSS legado das telas de preço, e `ptn-cell--unquoted` sozinho casa com a
+    folha de estilo — um `assertIn` desses passa sem a tela ter nada.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'Taxa Co', 'taxa-co')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('taxa_parceiro')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        from tenancy.scope import set_current_company
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        self.client.force_login(self.parceiro)
+
+    def _taxa(self, ssd=None, piso=None, k9=None):
+        self.buyer.ssd_rmb_per_gb = ssd
+        self.buyer.ssd_floor_rmb = piso
+        self.buyer.k9_rmb_each = k9
+        self.buyer.save(update_fields=['ssd_rmb_per_gb', 'ssd_floor_rmb',
+                                       'k9_rmb_each'])
+
+    def _pedido(self, kind):
+        from pricing.models import RateChangeRequest
+        return RateChangeRequest.all_companies.filter(
+            buyer=self.buyer, kind=kind,
+            review_status=RateChangeRequest.REVIEW_PENDING).first()
+
+    # ── as telas ────────────────────────────────────────────────────────────
+
+    def test_interface_o_K9_tem_UMA_linha_e_UM_campo(self):
+        self._taxa(k9=Decimal('7'))
+        html = self.client.get('/partner/tipo/k9/').content.decode()
+        self.assertIn('name="rate"', html)
+        self.assertIn('value="7"', html)
+        self.assertIn('por unidade', html)
+        # UM campo: nem piso (é do SSD), nem campo de faixa, nem célula de grade
+        self.assertNotIn('name="floor"', html)
+        self.assertNotIn('name="pmax', html)
+        self.assertEqual(html.count('name="rate"'), 1)
+        # e NENHUMA grade por densidade inventada "para ficar consistente".
+        # ⚠ A classe se crava COMO É SERVIDA: `ptn-matrix__gen` sozinho está
+        # no CSS embutido do `partner_base`, e o assertNotIn nunca passaria.
+        self.assertNotIn('class="ptn-matrix__gen"', html)
+
+    def test_interface_o_SSD_tem_taxa_piso_e_capacidades_derivadas(self):
+        self._taxa(ssd=Decimal('0.100'), piso=Decimal('18'))
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        self.assertIn('name="rate"', html)
+        self.assertIn('name="floor"', html)
+        self.assertIn('value="0.1"', html)      # sem zeros à direita
+        self.assertIn('value="18"', html)
+        # as quatro capacidades, com 1024 rotulado em TB
+        for rotulo in ('128 GB', '256 GB', '512 GB', '1 TB'):
+            self.assertIn(rotulo, html)
+        self.assertNotIn('1024 GB', html)
+        # …calculadas no servidor: 128→piso 18, 512→linear 51
+        self.assertIn('¥ 18', html)
+        self.assertIn('¥ 51', html)
+
+    def test_interface_capacidade_derivada_NAO_tem_campo(self):
+        """Campo que não vira preço é promessa falsa: a capacidade é
+        calculada, e um input ali convidaria a digitar o que o servidor ia
+        sobrescrever."""
+        self._taxa(ssd=Decimal('0.100'))
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        corpo = html[html.index('wtc-calc'):]
+        self.assertNotIn('<input', corpo[:corpo.index('</table>')])
+        # dois campos na página inteira, e são a taxa e o piso
+        self.assertEqual(html.count('class="ptn-cell__in"'), 2)
+
+    def test_interface_o_piso_marca_so_a_capacidade_que_ele_decidiu(self):
+        self._taxa(ssd=Decimal('0.100'), piso=Decimal('18'))
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        # a linha do 128 leva a marca; a do 512, não
+        linha128 = html[html.index('>128 GB<'):]
+        linha128 = linha128[:linha128.index('</tr>')]
+        self.assertIn('ptn-tag ptn-tag--pending', linha128)
+        linha512 = html[html.index('>512 GB<'):]
+        linha512 = linha512[:linha512.index('</tr>')]
+        self.assertNotIn('ptn-tag ptn-tag--pending', linha512)
+
+    def test_interface_sem_taxa_a_tela_diz_que_nao_ha_e_a_barra_conta(self):
+        """Zero na barra seria dizer 'tabela completa' a quem não tem preço
+        nenhum — o oposto da verdade."""
+        self._taxa()
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        self.assertIn('Não cotado', html)
+        self.assertIn('class="ptn-cell ptn-cell--unquoted"', html)
+        # o selo âmbar da barra conta os dois tipos sem taxa
+        resumo = self.client.get('/partner/precos/').content.decode()
+        item = resumo[resumo.index('href="/partner/tipo/ssd/"'):]
+        self.assertIn('ptype__b', item[:item.index('</a>')])
+
+    def test_interface_a_legenda_da_planilha_nao_aparece_na_taxa(self):
+        """"x = não compro" e "não fabricado" são convenções de CÉLULA. Numa
+        taxa de contrato elas não existem, e ensiná-las ali faria o comprador
+        digitar um "x" que a tela recusa."""
+        self._taxa(k9=Decimal('7'))
+        html = self.client.get('/partner/tipo/k9/').content.decode()
+        self.assertNotIn('x = não compro', html)
+        self.assertNotIn('não fabricado', html)
+        self.assertIn('continua valendo até a aprovação', html)
+
+    # ── a moderação ─────────────────────────────────────────────────────────
+
+    def test_interface_enviar_NAO_muda_o_preco_cria_pedido(self):
+        """Spec §3.4: o valor antigo continua valendo até a aprovação."""
+        self._taxa(k9=Decimal('7'))
+        resp = self.client.post('/partner/tipo/k9/enviar/', {'rate': '9'})
+        self.assertEqual(resp.status_code, 302)
+        self.buyer.refresh_from_db()
+        self.assertEqual(self.buyer.k9_rmb_each, Decimal('7'))   # INTACTO
+        pedido = self._pedido('k9')
+        self.assertIsNotNone(pedido)
+        self.assertEqual(pedido.new_rate, Decimal('9'))
+        self.assertEqual(pedido.old_rate, Decimal('7'))
+        self.assertEqual(pedido.requested_by, self.parceiro)
+        # …e a tela avisa que há pedido em pé
+        html = self.client.get('/partner/tipo/k9/').content.decode()
+        self.assertIn('Em revisão', html)
+        self.assertIn('value="7"', html)          # o vigente, não o pedido
+
+    def test_script_aprovar_aplica_no_comprador_e_fecha_a_revisao(self):
+        from django.utils import timezone
+        self._taxa(ssd=Decimal('0.100'))
+        self.client.post('/partner/tipo/ssd/enviar/',
+                         {'rate': '0,42', 'floor': '18'})   # vírgula do teclado
+        pedido = self._pedido('ssd')
+        self.assertEqual(pedido.new_rate, Decimal('0.42'))
+        self.assertEqual(pedido.new_floor, Decimal('18'))
+        with company_scope(self.company):
+            pedido.approve(self.parceiro)
+        self.buyer.refresh_from_db()
+        self.assertEqual(self.buyer.ssd_rmb_per_gb, Decimal('0.420'))
+        self.assertEqual(self.buyer.ssd_floor_rmb, Decimal('18'))
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.review_status, 'approved')
+        self.assertLessEqual(pedido.reviewed_at, timezone.now())
+
+    def test_script_rejeitar_deixa_a_taxa_exatamente_como_estava(self):
+        self._taxa(ssd=Decimal('0.100'), piso=Decimal('18'))
+        self.client.post('/partner/tipo/ssd/enviar/',
+                         {'rate': '0.9', 'floor': '99'})
+        with company_scope(self.company):
+            self._pedido('ssd').reject(self.parceiro)
+        self.buyer.refresh_from_db()
+        self.assertEqual(self.buyer.ssd_rmb_per_gb, Decimal('0.100'))
+        self.assertEqual(self.buyer.ssd_floor_rmb, Decimal('18'))
+
+    def test_script_um_pedido_pendente_por_tipo_o_segundo_ATUALIZA(self):
+        from pricing.models import RateChangeRequest
+        self._taxa(k9=Decimal('7'))
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': '9'})
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': '11'})
+        pendentes = RateChangeRequest.all_companies.filter(
+            buyer=self.buyer, kind='k9', review_status='pending')
+        self.assertEqual(pendentes.count(), 1)
+        self.assertEqual(pendentes.first().new_rate, Decimal('11'))
+
+    def test_script_nada_mudou_nao_gera_pedido_fantasma(self):
+        from pricing.models import RateChangeRequest
+        self._taxa(k9=Decimal('7'))
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': '7'})
+        self.assertEqual(RateChangeRequest.all_companies.filter(
+            buyer=self.buyer).count(), 0)
+
+    def test_script_campo_vazio_pede_para_TIRAR_o_preco(self):
+        """Vazio é decisão, não desistência — a mesma semântica da célula da
+        planilha. Sem isso não haveria como voltar atrás pelo painel."""
+        self._taxa(k9=Decimal('7'))
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': ''})
+        pedido = self._pedido('k9')
+        self.assertIsNotNone(pedido)
+        self.assertIsNone(pedido.new_rate)
+        self.assertEqual(pedido.old_rate, Decimal('7'))
+
+    def test_interface_piso_sem_taxa_e_recusado_com_frase(self):
+        """O `max()` nem roda sem o linear: aprovar isso não faria nada. A
+        recusa vira mensagem, não 500."""
+        from pricing.models import RateChangeRequest
+        self._taxa()
+        resp = self.client.post('/partner/tipo/ssd/enviar/',
+                                {'rate': '', 'floor': '18'}, follow=True)
+        self.assertContains(resp, 'piso sem ¥/GB')
+        self.assertEqual(RateChangeRequest.all_companies.count(), 0)
+
+    def test_interface_numero_ilegivel_vira_mensagem_e_nao_pedido(self):
+        from pricing.models import RateChangeRequest
+        self._taxa(k9=Decimal('7'))
+        resp = self.client.post('/partner/tipo/k9/enviar/',
+                                {'rate': 'abc'}, follow=True)
+        self.assertContains(resp, 'ilegível')
+        self.assertEqual(RateChangeRequest.all_companies.count(), 0)
+        self.buyer.refresh_from_db()
+        self.assertEqual(self.buyer.k9_rmb_each, Decimal('7'))
+
+    def test_script_o_K9_nunca_carrega_piso(self):
+        """Piso é coisa de SSD. No K9 ele não significa nada, e um número que
+        ninguém lê é um número que um dia alguém lê errado."""
+        from django.core.exceptions import ValidationError as VE
+        from pricing.models import RateChangeRequest
+        self._taxa(k9=Decimal('7'))
+        # pela porta da tela: o campo nem é lido
+        self.client.post('/partner/tipo/k9/enviar/',
+                         {'rate': '9', 'floor': '18'})
+        self.assertIsNone(self._pedido('k9').new_floor)
+        # e pela porta do modelo: recusa explícita
+        with self.assertRaises(VE):
+            RateChangeRequest(buyer=self.buyer, kind='k9',
+                              new_rate=Decimal('9'),
+                              new_floor=Decimal('18')).save()
+
+    # ── o sino ──────────────────────────────────────────────────────────────
+
+    def test_interface_a_decisao_da_taxa_cai_na_MESMA_lista_de_avisos(self):
+        """Duas páginas de notificação partiriam em duas uma coisa que para
+        ele é uma só: pediu mudança de preço, quer saber se passou."""
+        self._taxa(k9=Decimal('7'))
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': '9'})
+        with company_scope(self.company):
+            self._pedido('k9').approve(self.parceiro)
+        html = self.client.get('/partner/notifications/').content.decode()
+        self.assertIn('K9', html)
+        self.assertIn('¥ 9/un.', html)
+        self.assertIn('Aprovado', html)
+
+    def test_interface_o_badge_do_sino_conta_as_duas_tabelas(self):
+        self._taxa(k9=Decimal('7'))
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': '9'})
+        with company_scope(self.company):
+            self._pedido('k9').approve(self.parceiro)
+        resp = self.client.get('/partner/precos/')
+        self.assertEqual(resp.context['request'].partner_unseen, 1)
+        # abrir a página de avisos zera — inclusive o que veio da taxa
+        self.client.get('/partner/notifications/')
+        resp = self.client.get('/partner/precos/')
+        self.assertEqual(resp.context['request'].partner_unseen, 0)
+
+    def test_script_a_taxa_de_um_comprador_nao_vaza_para_o_outro(self):
+        from pricing.models import RateChangeRequest
+        outra = Company.objects.create(name='Taxa outra', slug='taxa-outra')
+        rival = Buyer.all_companies.create(company=outra, name='Rival taxa',
+                                           slug='rival-taxa')
+        self._taxa(k9=Decimal('7'))
+        self.client.post('/partner/tipo/k9/enviar/', {'rate': '9'})
+        self.assertEqual(RateChangeRequest.all_companies.filter(
+            buyer=rival).count(), 0)
+        self.assertEqual(RateChangeRequest.all_companies.filter(
+            buyer=self.buyer).count(), 1)
+
+    # ── a costura com a Etapa 6 ─────────────────────────────────────────────
+
+    def test_interface_lote_de_SSD_sem_taxa_agora_tem_para_onde_apontar(self):
+        """A Etapa 6 deixou a célula da fila SEM LINK quando o tipo não tinha
+        grade — SSD e K9 eram os dois casos. Agora têm tela, então a fila
+        aponta, e o aviso vermelho aparece em cima da taxa que resolve."""
+        from django.utils import timezone
+        from estoque.models import InventoryEntry, Lot
+        from vendas import services as vendas_services
+        from django.core.management import call_command
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        self._taxa()                       # SSD sem taxa: o lote trava
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.parceiro, 'ssdblk',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='SSD1', quantity=30, brand=self.samsung,
+                chip_type='SSD', company=self.company, price_kind='ssd',
+                price_gen='', price_tier_value=Decimal('512'),
+                price_tier_unit='GB')
+            vendas_services.create_draft_for_lot(lot, self.parceiro)
+            Lot.all_companies.filter(pk=lot.pk).update(
+                status=Lot.STATUS_CLOSED, closed_at=timezone.now())
+        resumo = self.client.get('/partner/precos/').content.decode()
+        faixa = resumo[resumo.index('class="blk"'):]
+        faixa = faixa[:faixa.index('</div>', faixa.index('class="blk__l"'))]
+        self.assertIn('href="/partner/tipo/ssd/"', faixa)    # AGORA linka
+        # …e a tela do SSD avisa em cima do campo que resolve
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        self.assertIn('class="blkw"', html)
+        self.assertIn('30 un. que a plataforma não consegue precificar', html)
+        self.assertIn('name="rate"', html)

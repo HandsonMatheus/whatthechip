@@ -42,6 +42,87 @@
 <form method="post" action="{% url 'pricing:partner_kind_save' kind %}">
 {% csrf_token %}
 
+{% if contrato %}
+{% comment %}
+  TIPOS SEM GRADE (spec v2 §3.2) — SSD e K9. Não há linha de `Price` aqui: o
+  preço é uma TAXA DE CONTRATO, e a tela edita a taxa, não uma célula.
+
+  · K9 — UMA linha, UM campo. O preço não varia com part number, densidade
+    nem marca. A spec é explícita: não invente grade por densidade "para
+    ficar consistente" — a consistência é a tabela ter o tamanho da realidade.
+  · SSD — ¥/GB + piso por peça, e as capacidades saem CALCULADAS do servidor
+    pela mesma função que precifica o lote. Elas não são editáveis, e é por
+    isso que não têm campo: campo que não vira preço é promessa falsa.
+
+  A moderação é a mesma da grade (§3.4): o número vigente continua valendo
+  até a plataforma aprovar.
+{% endcomment %}
+<div class="ptn-card">
+  <table class="ptn-table">
+    <thead><tr>
+      <th>{% if rate_kind == 'ssd' %}{% trans "Taxa" %}{% else %}{% trans "Preço" %}{% endif %}</th>
+      <th>{% trans "¥ (RMB)" %}</th>
+      <th>{% trans "Estado" %}</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:600;">{% if rate_kind == 'ssd' %}{% trans "por GB" %}{% else %}{% trans "por unidade" %}{% endif %}
+          <div style="font-weight:400;font-size:12px;color:#6f6f6f;">{% if rate_kind == 'ssd' %}{% trans "qualquer capacidade · qualquer formato" %}{% else %}{% trans "qualquer part number · qualquer densidade" %}{% endif %}</div></td>
+        <td><span class="ptn-cell{% if not rate_disp %} ptn-cell--unquoted{% endif %}" style="flex-direction:row;">
+          <input class="ptn-cell__in" type="text" inputmode="decimal" name="rate" id="wtc-rate"
+                 style="width:88px;" value="{{ rate_disp }}"
+                 title="{% trans '¥ · vazio = sem cotação' %}">
+        </span></td>
+        <td>{% if rate_disp %}<span class="ptn-tag ptn-tag--quoted">{% trans "Cotado" %}</span>
+          {% else %}<span class="ptn-tag ptn-tag--pending">{% trans "Não cotado" %}</span>{% endif %}</td>
+      </tr>
+      {% if rate_kind == 'ssd' %}
+      <tr>
+        <td style="font-weight:600;">{% trans "mínimo por peça" %}
+          <div style="font-weight:400;font-size:12px;color:#6f6f6f;">{% trans "nenhuma peça sai por menos que isto, por menor que seja a capacidade" %}</div></td>
+        <td><span class="ptn-cell{% if not floor_disp %} ptn-cell--unquoted{% endif %}" style="flex-direction:row;">
+          <input class="ptn-cell__in" type="text" inputmode="decimal" name="floor" id="wtc-floor"
+                 style="width:88px;" value="{{ floor_disp }}"
+                 title="{% trans '¥ · vazio = sem piso' %}">
+        </span></td>
+        <td>{% if floor_disp %}<span class="ptn-tag ptn-tag--quoted">{% trans "Ativo" %}</span>
+          {% else %}<span class="ptn-tag ptn-tag--inherited">{% trans "Sem piso" %}</span>{% endif %}</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% if pedido %}
+<div class="ptn-card" style="border-left:4px solid var(--blue-60);">
+  <span class="ptn-tag ptn-tag--review">⏳ {% trans "Em revisão" %}</span>
+  <span style="font-size:13px;margin-left:8px;">{% blocktrans trimmed %}Você já pediu uma mudança aqui — o valor acima continua valendo até o WhatTheChip aprovar. Enviar de novo substitui o pedido.{% endblocktrans %}</span>
+</div>
+{% endif %}
+
+{% if rate_kind == 'ssd' %}
+<div class="ptn-card" style="padding:0;overflow-x:auto;">
+  <table class="ptn-table">
+    <thead><tr>
+      <th>{% trans "Capacidade" %}</th><th>{% trans "¥ por peça" %}</th><th></th>
+    </tr></thead>
+    <tbody>
+      {% for c in caps %}
+      <tr>
+        <td style="font-family:'IBM Plex Mono',monospace;">{{ c.label }}</td>
+        <td class="wtc-calc" data-cap="{{ c.gb }}" style="font-family:'IBM Plex Mono',monospace;font-weight:600;">{% if c.rmb %}¥ {{ c.rmb }}{% else %}—{% endif %}</td>
+        <td class="wtc-calc-note">{% if c.piso %}<span class="ptn-tag ptn-tag--pending">{% trans "piso" %}</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p style="font-size:12.5px;color:#6f6f6f;line-height:1.6;margin:0;">
+  {% blocktrans trimmed %}As capacidades são <strong>calculadas</strong>, não cotadas: <code>preço = maior valor entre (¥/GB × GB) e o mínimo por peça</code>, arredondado ao ¥ inteiro. A marca <strong>piso</strong> diz que o mínimo por peça decidiu aquela linha — é informação, não erro.{% endblocktrans %}
+</p>
+{% endif %}
+{% endif %}
+
 {% if unified or dual %}
 {# ── COLUNA ÚNICA (eMCP/uMCP/LPDDR; eMMC = subset CELULAR) ──────── #}
 {% if dual %}<h2 style="font-size:14px;font-weight:700;margin:0 0 8px;color:#525252;">📱 {% trans "eMMC de CELULAR — preço unificado, todas as marcas" %}</h2>{% endif %}
@@ -94,7 +175,7 @@
 </div>
 
 {% endif %}
-{% if not unified %}
+{% if not unified and not contrato %}
 {# ── MATRIZ POR MARCA (DDR; eMMC = subset PCB) ──────────────────── #}
 {% if dual %}<h2 style="font-size:14px;font-weight:700;margin:14px 0 8px;color:#525252;">🔌 {% trans "eMMC de PCB — preço por marca (set-top box, TV, notebook…)" %}</h2>{% endif %}
 <div class="ptn-card" style="padding:0;overflow-x:auto;">
@@ -149,7 +230,62 @@
 {# ── Rodapé FIXO: legenda + o botão de envio (dono: "botão no final") ── #}
 <div style="position:sticky;bottom:0;background:#fff;border:1px solid #e0e0e0;border-top:2px solid #0f62fe;padding:12px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;z-index:3;">
   <button type="submit" class="ptn-btn">{% trans "Enviar para revisão" %}</button>
+  {% comment %} A legenda é da PLANILHA — "x", "não fabricado", "linhas
+     alteradas". Nada disso existe numa taxa de contrato, e repetir ali
+     ensinaria uma convenção que a tela não aceita. {% endcomment %}
+  {% if contrato %}
+  <span style="font-size:12.5px;color:#6f6f6f;line-height:1.5;">{% trans "número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão do WhatTheChip; o valor atual continua valendo até a aprovação." %}</span>
+  {% else %}
   <span style="font-size:12.5px;color:#6f6f6f;line-height:1.5;">{% trans "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas." %}</span>
+  {% endif %}
 </div>
 </form>
+
+{% if rate_kind == 'ssd' %}
+{% comment %}
+  As capacidades recalculam ENQUANTO ELE DIGITA — é o único jeito de ele ver
+  o efeito do piso antes de enviar. A fórmula é a MESMA do servidor
+  (`engine.ssd_rmb`), incluindo o arredondamento meio-pra-cima: se as duas
+  divergirem, a tela promete um preço que a compra não pratica.
+  Sem JS a página continua correta — o servidor já mandou os números
+  calculados; só param de se mexer.
+{% endcomment %}
+{% trans "piso" as rotulo_piso %}
+<script>
+(function () {
+  var rate = document.getElementById('wtc-rate');
+  var floor = document.getElementById('wtc-floor');
+  var celulas = document.querySelectorAll('.wtc-calc');
+  if (!rate || !celulas.length) return;
+  var MARCA_PISO = '{{ rotulo_piso|escapejs }}';
+  function num(el) {
+    var v = parseFloat(((el && el.value) || '').trim().replace(',', '.'));
+    return isFinite(v) && v >= 0 ? v : null;
+  }
+  function pinta() {
+    var r = num(rate), f = num(floor);
+    for (var i = 0; i < celulas.length; i++) {
+      var td = celulas[i];
+      var gb = parseInt(td.getAttribute('data-cap'), 10);
+      var nota = td.nextElementSibling;
+      if (nota) { while (nota.firstChild) nota.removeChild(nota.firstChild); }
+      if (r === null) { td.textContent = '\u2014'; continue; }
+      var linear = Math.round(gb * r);
+      var venceu = f !== null && f > linear;
+      td.textContent = '\u00a5 ' + (venceu ? Math.round(f) : linear);
+      if (venceu && nota) {
+        // textContent, nunca innerHTML: o rótulo vem do catálogo de tradução,
+        // e montar HTML com string traduzida é como se abre injeção por .po.
+        var selo = document.createElement('span');
+        selo.className = 'ptn-tag ptn-tag--pending';
+        selo.textContent = MARCA_PISO;
+        nota.appendChild(selo);
+      }
+    }
+  }
+  rate.addEventListener('input', pinta);
+  if (floor) floor.addEventListener('input', pinta);
+})();
+</script>
+{% endif %}
 {% endblock %}

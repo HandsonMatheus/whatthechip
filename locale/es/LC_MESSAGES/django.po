@@ -3727,6 +3727,94 @@ msgstr[1] ""
 "<b>%(row)s</b> (caja %(box)s) — %(units)s un. que la plataforma no puede "
 "cotizar sin usted."
 
+msgid " · piso ¥ %(piso)s"
+msgstr " · piso ¥ %(piso)s"
+
+msgid "%(item)s: piso ilegível — use números"
+msgstr "%(item)s: piso ilegible — use números"
+
+msgid "%(item)s: taxa ilegível — use números"
+msgstr "%(item)s: tasa ilegible — use números"
+
+msgid "%(item)s: piso sem ¥/GB não precifica nada — informe a taxa"
+msgstr "%(item)s: un piso sin ¥/GB no cotiza nada — informe la tasa"
+
+msgid ""
+"As capacidades são <strong>calculadas</strong>, não cotadas: <code>preço = "
+"maior valor entre (¥/GB × GB) e o mínimo por peça</code>, arredondado ao ¥ "
+"inteiro. A marca <strong>piso</strong> diz que o mínimo por peça decidiu "
+"aquela linha — é informação, não erro."
+msgstr ""
+"Las capacidades son <strong>calculadas</strong>, no cotizadas: <code>precio "
+"= el mayor entre (¥/GB × GB) y el mínimo por pieza</code>, redondeado al ¥ "
+"entero. La marca <strong>piso</strong> indica que el mínimo por pieza "
+"decidió esa fila — es información, no un error."
+
+msgid "Ativo"
+msgstr "Activo"
+
+msgid "Em revisão"
+msgstr "En revisión"
+
+msgid "Preço"
+msgstr "Precio"
+
+msgid "Sem piso"
+msgstr "Sin piso"
+
+msgid "Taxa"
+msgstr "Tasa"
+
+msgid ""
+"Você já pediu uma mudança aqui — o valor acima continua valendo até o "
+"WhatTheChip aprovar. Enviar de novo substitui o pedido."
+msgstr ""
+"Usted ya pidió un cambio aquí — el valor de arriba sigue vigente hasta que "
+"WhatTheChip apruebe. Enviar de nuevo reemplaza el pedido."
+
+msgid "mínimo por peça"
+msgstr "mínimo por pieza"
+
+msgid "nenhuma peça sai por menos que isto, por menor que seja a capacidade"
+msgstr "ninguna pieza sale por menos que esto, por menor que sea la capacidad"
+
+msgid ""
+"número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão "
+"do WhatTheChip; o valor atual continua valendo até a aprovação."
+msgstr ""
+"número = precio en ¥ (RMB) · vacío = sin cotización. El cambio va a revisión"
+" de WhatTheChip; el valor actual sigue vigente hasta la aprobación."
+
+msgid "piso"
+msgstr "piso"
+
+msgid "por unidade"
+msgstr "por unidad"
+
+msgid "qualquer capacidade · qualquer formato"
+msgstr "cualquier capacidad · cualquier formato"
+
+msgid "qualquer part number · qualquer densidade"
+msgstr "cualquier part number · cualquier densidad"
+
+msgid "¥ %(taxa)s/GB"
+msgstr "¥ %(taxa)s/GB"
+
+msgid "¥ %(v)s/un."
+msgstr "¥ %(v)s/un."
+
+msgid "¥ (RMB)"
+msgstr "¥ (RMB)"
+
+msgid "¥ por peça"
+msgstr "¥ por pieza"
+
+msgid "¥ · vazio = sem cotação"
+msgstr "¥ · vacío = sin cotización"
+
+msgid "¥ · vazio = sem piso"
+msgstr "¥ · vacío = sin piso"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

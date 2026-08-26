@@ -257,26 +257,65 @@ def derive_price_key(result: dict):
     return None, (kind, gen, Decimal(str(tier)), KIND_UNIT[kind])
 
 
+def ssd_linear_rmb(rate, gb):
+    """¥ do SSD só pelo LINEAR, sem piso — ¥ INTEIRO, meio pra cima."""
+    return (Decimal(gb) * rate).quantize(Decimal('1'), ROUND_HALF_UP)
+
+
+def ssd_piso_venceu(rate, gb, floor) -> bool:
+    """O piso por peça decidiu este preço? (a célula âmbar da grade)
+
+    Predicado público de propósito: a grade do comprador precisa pintar de
+    âmbar exatamente as capacidades em que o piso mandou, e reimplementar a
+    comparação lá é como as duas telas passam a discordar num centavo.
+    """
+    return floor is not None and Decimal(floor) > ssd_linear_rmb(rate, gb)
+
+
+def ssd_rmb(rate, gb, floor=None):
+    """¥ de UMA peça de SSD — a fórmula da spec v2 §3.2, em UM lugar só:
+
+        preço(capacidade) = max( round(¥_por_GB × GB), piso_por_peça )
+
+    Existe como função pública porque três lugares precisam do MESMO número:
+    a cotação do lote, a grade do comprador (as capacidades derivadas) e o
+    catálogo em PDF. Recalcular em cada um é como dois deles divergem.
+
+    O piso vence quando a capacidade é pequena: a ¥0,10/GB um SSD de 128GB
+    daria ¥13, mas manuseá-lo, testá-lo e embalá-lo custa o mesmo que um de
+    1TB. `floor=None` = sem piso, e o linear vale sozinho.
+    """
+    if ssd_piso_venceu(rate, gb, floor):
+        return Decimal(floor).quantize(Decimal('1'), ROUND_HALF_UP)
+    return ssd_linear_rmb(rate, gb)
+
+
 def _ssd_quote(buyer, tier_value, tier_unit):
     """SSD é LINEAR (dono 2026-07-24: '512GB×0.1=51rmb'): ¥ = GB ×
     Buyer.ssd_rmb_per_gb, arredondado ao ¥ INTEIRO (128×0.1=12.8→13, meio
-    pra cima); US$ derivado do ¥ como sempre. SEM linhas de grid; taxa
-    ausente → sem preço COM MOTIVO (nunca chute). Taxa é contratual →
-    nunca 'velha' (is_stale=False)."""
+    pra cima) — e desde 2026-08-26 nunca abaixo do PISO POR PEÇA
+    (`Buyer.ssd_floor_rmb`, spec v2 §3.2). US$ derivado do ¥ como sempre.
+    SEM linhas de grid; taxa ausente → sem preço COM MOTIVO (nunca chute).
+    Taxa é contratual → nunca 'velha' (is_stale=False)."""
     rate = buyer.ssd_rmb_per_gb
     if rate is None:
         return PriceQuote(status=UNQUOTED,
                           reason='SSD sem taxa ¥/GB — defina no comprador (admin)',
                           kind='ssd', gen='', tier_value=tier_value,
                           tier_unit=tier_unit)
-    rmb = (Decimal(tier_value) * rate).quantize(Decimal('1'), ROUND_HALF_UP)
+    piso = buyer.ssd_floor_rmb
+    rmb = ssd_rmb(rate, tier_value, piso)
     # PLANO_FX (2026-08-01): USD pela taxa de MERCADO vigente.
     usd = (rmb * (current_fx_rate(buyer)[0] or Decimal('0'))
            ).quantize(_CENT, ROUND_HALF_UP)
+    # `via` conta QUAL regra decidiu — quem vê "¥18" num SSD de 128GB a
+    # ¥0,10/GB precisa saber que não foi conta errada, foi o piso.
+    via = ('piso por peça' if ssd_piso_venceu(rate, tier_value, piso)
+           else 'por GB')
     return PriceQuote(status=PRICED, kind='ssd', gen='',
                       tier_value=tier_value, tier_unit=tier_unit,
                       price_min=usd, price_max=usd, rmb_min=rmb, rmb_max=rmb,
-                      quote_date=None, is_stale=False, via='por GB')
+                      quote_date=None, is_stale=False, via=via)
 
 
 def _k9_quote(buyer):

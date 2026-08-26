@@ -49,13 +49,28 @@ _KIND_ORDER = {k: i for i, (k, _) in enumerate(KIND_CHOICES)}
 _KIND_LABEL = dict(KIND_CHOICES)
 
 
+#: Estados de revisão já DECIDIDOS — o que vira notificação.
+_DECIDIDOS = ('approved', 'rejected')
+
+
 def _unseen_decisions(buyer):
-    """🔔 Decisões (aprovado/rejeitado) que o parceiro ainda não viu."""
+    """🔔 Decisões (aprovado/rejeitado) de PREÇO que o parceiro ainda não viu."""
     return PriceChangeRequest.all_companies.filter(
         price__price_list__buyer=buyer,
-        review_status__in=(PriceChangeRequest.REVIEW_APPROVED,
-                           PriceChangeRequest.REVIEW_REJECTED),
-        seen_by_partner=False)
+        review_status__in=_DECIDIDOS, seen_by_partner=False)
+
+
+def _unseen_rates(buyer):
+    """🔔 O mesmo, para as TAXAS DE CONTRATO (SSD/K9).
+
+    Duas consultas e não uma união: são tabelas diferentes por razão
+    estrutural (SSD e K9 não têm linha de grade), e o badge só precisa de dois
+    `count()`. Para o comprador, porém, **é um sino só** — ele pediu uma
+    mudança de preço; de que tabela ela saiu é problema nosso.
+    """
+    from .models import RateChangeRequest
+    return RateChangeRequest.all_companies.filter(
+        buyer=buyer, review_status__in=_DECIDIDOS, seen_by_partner=False)
 
 
 def partner_required(view_func):
@@ -82,10 +97,12 @@ def partner_required(view_func):
         request.buyer = buyer
         if buyer.company_id:
             with company_scope(buyer.company):
-                request.partner_unseen = _unseen_decisions(buyer).count()
+                request.partner_unseen = (_unseen_decisions(buyer).count()
+                                          + _unseen_rates(buyer).count())
                 request.buys_badge = buys_badge(buyer)
                 return view_func(request, *args, **kwargs)
-        request.partner_unseen = _unseen_decisions(buyer).count()
+        request.partner_unseen = (_unseen_decisions(buyer).count()
+                                  + _unseen_rates(buyer).count())
         request.buys_badge = buys_badge(buyer)
         return view_func(request, *args, **kwargs)   # comprador de plataforma (futuro)
     return _wrapped
@@ -125,8 +142,16 @@ def _lists_with_stats(buyer):
 # Correção do comprador 2026-08-01: eMMC/UFS também são UNIFICADOS (a
 # planilha sempre disse — coluna Unified). Só DDR é por marca (matriz);
 # SSD é linear ¥/GB (sem grid) — fora.
-_NAV_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
+# Ordem = a do FLUXO DE TRIAGEM (spec v2 §3.2), nunca alfabética. K9 e SSD
+# entraram em 2026-08-26 (decisão C3): existiam no motor e no catálogo desde
+# julho, mas o comprador não tinha onde vê-los — o preço deles só se mexia
+# pelo Django admin, e ele nem sabia qual era.
+_NAV_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr', 'k9', 'ssd')
 _MATRIX_KINDS = ('ddr',)
+#: Tipos SEM grade: o preço é uma TAXA DE CONTRATO no `Buyer`, não uma linha
+#: de `Price`. SSD é linear (¥/GB + piso por peça, capacidades derivadas); K9
+#: é um número só. Ver `RateChangeRequest`.
+_RATE_KINDS = ('ssd', 'k9')
 
 
 def _fx_info(buyer):
@@ -180,9 +205,127 @@ def _kind_nav(request):
             for d in Price.all_companies
             .filter(price_list__buyer=request.buyer, status=STATUS_UNQUOTED)
             .values('kind').annotate(n=Count('id'))}
+    # SSD e K9 não têm linha de `Price` para contar — a lacuna deles é a taxa
+    # de contrato em branco. Zero ali seria dizer "tabela completa" para quem
+    # não tem preço nenhum, que é o oposto da verdade.
+    b = request.buyer
+    if b.ssd_rmb_per_gb is None:
+        pend['ssd'] = 1
+    if b.k9_rmb_each is None:
+        pend['k9'] = 1
     trav = _travados(request)['por_tipo']
     return [(k, _KIND_LABEL[k], pend.get(k, 0), trav.get(k, 0))
             for k in _NAV_KINDS]
+
+
+def _rate_mensagens(request, enviados, erros):
+    """A resposta do envio, uma só para as duas portas (grade e taxa).
+
+    O comprador não sabe — nem precisa saber — que uma tela grava `Price` e a
+    outra grava taxa de contrato. Duas frases diferentes para o mesmo ato
+    fariam ele achar que uma das duas não foi moderada.
+    """
+    if enviados:
+        messages.success(request, _(
+            '%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam '
+            'a valer após a aprovação.') % {'n': enviados})
+    elif not erros:
+        messages.info(request, _('Nada a enviar — nenhuma linha mudou.'))
+    for e in erros:
+        messages.error(request, e)
+
+
+def _contrato_ctx(request, kind):
+    """Contexto das telas SEM grade — SSD (linear) e K9 (um número).
+
+    Aqui não há `Price`: o preço é taxa de contrato no `Buyer`, e o que a tela
+    desenha é o VIGENTE mais, quando existe, o PEDIDO pendente ao lado. A
+    regra da spec §3.4 vale igual: o número antigo continua valendo até a
+    plataforma aprovar — quem lê preço lê o `Buyer`, nunca o pedido.
+    """
+    from .engine import ssd_piso_venceu, ssd_rmb
+    from .models import RateChangeRequest
+    from .pdf import SSD_CAPS, _ssd_cap_label
+    b = request.buyer
+    pedido = (RateChangeRequest.all_companies
+              .filter(buyer=b, kind=kind,
+                      review_status=RateChangeRequest.REVIEW_PENDING).first())
+
+    def _n(v):
+        """¥ sem zeros à direita — 0.100 vira 0.1, 18.00 vira 18. Formatado
+        em PYTHON: `floatformat` ignora localize-off (pegadinha F10)."""
+        return '' if v is None else f'{v.normalize():f}'
+
+    ctx = {'contrato': True, 'rate_kind': kind, 'pedido': pedido,
+           'rate_disp': _n(b.ssd_rmb_per_gb if kind == 'ssd'
+                           else b.k9_rmb_each)}
+    if kind != 'ssd':
+        return ctx
+    taxa, piso = b.ssd_rmb_per_gb, b.ssd_floor_rmb
+    ctx['floor_disp'] = _n(piso)
+    # As CAPACIDADES SÃO DERIVADAS (§3.2) — não são linhas, não se editam, e
+    # é por isso que elas saem do servidor já calculadas pela MESMA função que
+    # precifica o lote. Uma segunda conta no template seria a chance de a tela
+    # e a compra discordarem.
+    ctx['caps'] = [
+        {'gb': gb, 'label': _ssd_cap_label(gb),
+         'rmb': (f'{ssd_rmb(taxa, gb, piso):f}' if taxa is not None else None),
+         'piso': taxa is not None and ssd_piso_venceu(taxa, gb, piso)}
+        for gb in SSD_CAPS]
+    return ctx
+
+
+def _rate_post(request, kind):
+    """O POST das telas sem grade: vira `RateChangeRequest`, nunca preço.
+
+    Devolve (enviados, erros). Mesmo contrato do laço de `partner_kind_save`:
+    campo vazio = TIRAR o preço (volta a sem cotação, com motivo), e nada
+    mudou = nenhum pedido fantasma.
+    """
+    from .models import RateChangeRequest
+    b, erros = request.buyer, []
+    rotulo = _KIND_LABEL[kind]
+
+    def _num(nome):
+        """'' → None; vírgula normaliza para ponto (o comprador digita 0,42)."""
+        raw = (request.POST.get(nome) or '').strip().replace(',', '.')
+        if raw == '':
+            return None, True
+        try:
+            v = Decimal(raw)
+        except InvalidOperation:
+            return None, False
+        return (v, True) if v >= 0 else (None, False)
+
+    taxa, ok_taxa = _num('rate')
+    piso, ok_piso = (_num('floor') if kind == 'ssd' else (None, True))
+    if not ok_taxa:
+        erros.append(_('%(item)s: taxa ilegível — use números') % {'item': rotulo})
+    if not ok_piso:
+        erros.append(_('%(item)s: piso ilegível — use números') % {'item': rotulo})
+    if erros:
+        return 0, erros
+    # Piso sem taxa não precifica nada — o max() nem roda. O modelo recusa, e
+    # recusar aqui devolve a frase em vez do 500.
+    if kind == 'ssd' and piso is not None and taxa is None:
+        return 0, [_('%(item)s: piso sem ¥/GB não precifica nada — informe a '
+                     'taxa') % {'item': rotulo}]
+    velho_taxa = b.ssd_rmb_per_gb if kind == 'ssd' else b.k9_rmb_each
+    velho_piso = b.ssd_floor_rmb if kind == 'ssd' else None
+    if (taxa, piso) == (velho_taxa, velho_piso):
+        return 0, []
+    try:
+        with transaction.atomic():
+            RateChangeRequest.all_companies.update_or_create(
+                buyer=b, kind=kind,
+                review_status=RateChangeRequest.REVIEW_PENDING,
+                defaults={'new_rate': taxa, 'new_floor': piso,
+                          'old_rate': velho_taxa, 'old_floor': velho_piso,
+                          'requested_by': request.user})
+    except (ValidationError, IntegrityError):
+        return 0, [_('%(item)s: conflito ao salvar — tente de novo')
+                   % {'item': rotulo}]
+    return 1, []
 
 
 @partner_required
@@ -225,6 +368,12 @@ def partner_kind(request, kind):
            'fx_info': _fx_info(request.buyer),
            'travados': trav_deste,
            'active_pk': None}
+
+    # SSD e K9 saem por aqui: não têm `Price`, então nada abaixo (o grid
+    # unificado, a matriz, a moderação por linha) se aplica a eles.
+    if kind in _RATE_KINDS:
+        ctx.update(_contrato_ctx(request, kind))
+        return render(request, 'pricing/partner_kind.html', ctx)
 
     def _pend_disp(q):
         """Texto do pedido pendente, formatado em Python (floatformat
@@ -458,8 +607,7 @@ def partner_notifications(request):
     itens = list(
         PriceChangeRequest.all_companies
         .filter(price__price_list__buyer=buyer,
-                review_status__in=(PriceChangeRequest.REVIEW_APPROVED,
-                                   PriceChangeRequest.REVIEW_REJECTED))
+                review_status__in=_DECIDIDOS)
         .select_related('price__price_list__brand')
         .order_by('-reviewed_at')[:50])
     for it in itens:
@@ -478,7 +626,32 @@ def partner_notifications(request):
         else:
             it.novo = dict(STATUS_CHOICES).get(it.new_status, it.new_status)
 
+    # As TAXAS DE CONTRATO (SSD/K9) entram na MESMA lista. Uma segunda página
+    # de notificações partiria em duas uma coisa que para ele é uma só: ele
+    # pediu uma mudança de preço e quer saber se passou — de que tabela ela
+    # saiu é problema nosso, não dele.
+    from .models import RateChangeRequest
+    for it in (RateChangeRequest.all_companies
+               .filter(buyer=buyer, review_status__in=_DECIDIDOS)
+               .order_by('-reviewed_at')[:50]):
+        it.resumo = _KIND_LABEL.get(it.kind, it.kind)
+        if it.new_rate is None:
+            it.novo = _('sem preço')
+        elif it.kind == 'ssd':
+            it.novo = _('¥ %(taxa)s/GB') % {'taxa': f'{it.new_rate.normalize():f}'}
+            if it.new_floor is not None:
+                it.novo += _(' · piso ¥ %(piso)s') % {
+                    'piso': f'{it.new_floor.normalize():f}'}
+        else:
+            it.novo = _('¥ %(v)s/un.') % {'v': f'{it.new_rate.normalize():f}'}
+        itens.append(it)
+    # `reviewed_at` nunca é nulo aqui (só entra o já decidido), mas a ordem
+    # tem de ser refeita: as duas fontes chegaram ordenadas cada uma por si.
+    itens.sort(key=lambda i: i.reviewed_at, reverse=True)
+    itens = itens[:50]
+
     _unseen_decisions(buyer).update(seen_by_partner=True)   # zera o badge
+    _unseen_rates(buyer).update(seen_by_partner=True)
     return render(request, 'pricing/partner_notifications.html', {
         'buyer': buyer, 'itens': itens,
         'nav_lists': _lists_with_stats(buyer), 'active_pk': 'notifications',
@@ -500,6 +673,10 @@ def partner_kind_save(request, kind):
     if kind not in _NAV_KINDS:
         from django.http import Http404
         raise Http404
+    if kind in _RATE_KINDS:
+        enviados, erros = _rate_post(request, kind)
+        _rate_mensagens(request, enviados, erros)
+        return redirect('pricing:partner_kind', kind=kind)
     ranged = kind in ('emcp', 'umcp')
     enviados, erros = 0, []
     rows = Price.all_companies.filter(price_list__buyer=request.buyer,
@@ -551,14 +728,7 @@ def partner_kind_save(request, kind):
                          % {'item': rotulo})
         else:
             enviados += 1
-    if enviados:
-        messages.success(request, _(
-            '%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam '
-            'a valer após a aprovação.') % {'n': enviados})
-    elif not erros:
-        messages.info(request, _('Nada a enviar — nenhuma linha mudou.'))
-    for e in erros:
-        messages.error(request, e)
+    _rate_mensagens(request, enviados, erros)
     return redirect('pricing:partner_kind', kind=kind)
 
 

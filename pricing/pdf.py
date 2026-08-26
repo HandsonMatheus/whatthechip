@@ -89,6 +89,20 @@ def _money(mn, mx, currency, rate):
     return lo if lo == hi else f'{lo}\u2013{hi}'
 
 
+#: Capacidades DERIVADAS do SSD (spec v2 §3.2). Não são linhas de grade — o
+#: preço de cada uma sai da fórmula; a lista existe só para dar ao cliente do
+#: comprador as quatro que ele pede na prática.
+SSD_CAPS = (128, 256, 512, 1024)
+
+
+def _ssd_cap_label(gb: int) -> str:
+    """``128 GB`` … ``1 TB`` — a partir de 1024 o mercado fala em TB, e uma
+    tabela que diz "1024 GB" já denuncia que foi máquina que a escreveu."""
+    if gb >= 1024 and gb % 1024 == 0:
+        return f'{gb // 1024} TB'
+    return f'{gb} GB'
+
+
 def _cell(p, currency, rate):
     if p.status == STATUS_QUOTED:
         return ('quoted', _money(p.price_min, p.price_max, currency, rate))
@@ -109,8 +123,10 @@ def catalog_data(buyer, currency='usd'):
     - POR MARCA (eMMC/UFS/DDR): ``unified=False``, ``columns`` SÓ com as
       marcas que têm linha do tipo (+ "Outras marcas" por último), rows
       ``{'label', 'cells'}`` alinhadas às colunas.
-    - SSD (linear, sem grid): seção de UMA linha "por GB" quando o contrato
-      tem ``ssd_rmb_per_gb``.
+    - SSD (linear, sem grid): seção com a taxa ``por GB``, o ``mínimo por
+      peça`` (quando há) e as CAPACIDADES DERIVADAS de ``SSD_CAPS`` — a que
+      o piso decidiu leva o rótulo ``· piso``.
+    - K9 (fixo por unidade): UMA linha, quando o contrato tem ``k9_rmb_each``.
 
     ``currency`` (F10.6): ``'usd'`` = DERIVADO (¥ × ``fx_usd_rate``, 2
     casas); ``'rmb'`` = o ¥ armazenado, inteiro/sem zeros à direita.
@@ -203,15 +219,47 @@ def catalog_data(buyer, currency='usd'):
         sections.append({'title': title, 'unified': False,
                          'columns': columns, 'rows': rows})
 
-    # SSD (linear, F12.20): não tem grid — a linha nasce da taxa contratual.
+    # ── SSD (linear, F12.20): não tem grid — a linha nasce da taxa ────────
+    # Desde 2026-08-26 (spec v2 §3.2) a seção mostra também o PISO e as
+    # CAPACIDADES DERIVADAS. Só a taxa não servia ao cliente do comprador,
+    # que compra peça, não GB: ele tinha de fazer a conta — e, com piso, a
+    # conta dele daria errado justamente nas capacidades pequenas.
     if buyer.ssd_rmb_per_gb is not None:
-        v = buyer.ssd_rmb_per_gb
-        if currency == 'rmb':
-            money = f'{v.normalize():f}'
-        else:
-            money = f'{(v * rate).quantize(Decimal("0.001"), ROUND_HALF_UP).normalize():f}'
+        from .engine import ssd_piso_venceu, ssd_rmb
+        v, piso = buyer.ssd_rmb_per_gb, buyer.ssd_floor_rmb
+
+        def _mostra(valor, casas='0.001'):
+            if currency == 'rmb':
+                return f'{Decimal(valor).normalize():f}'
+            return f'{(Decimal(valor) * rate).quantize(Decimal(casas), ROUND_HALF_UP).normalize():f}'
+
+        linhas = [{'label': _('por GB'), 'cell': ('quoted', _mostra(v))}]
+        if piso is not None:
+            linhas.append({'label': _('mínimo por peça'),
+                           'cell': ('quoted', _mostra(piso, '0.01'))})
+        for gb in SSD_CAPS:
+            preco = ssd_rmb(v, gb, piso)
+            rotulo = _ssd_cap_label(gb)
+            # O piso que vence vira RÓTULO, não cor: no papel preto-e-branco
+            # (e no leitor de quem imprime) âmbar não existe, e uma célula
+            # sem explicação viraria "a conta deles está errada".
+            if ssd_piso_venceu(v, gb, piso):
+                rotulo += ' · ' + _('piso')
+            linhas.append({'label': rotulo,
+                           'cell': ('quoted', _mostra(preco, '0.01'))})
         sections.append({'title': 'SSD', 'unified': True, 'columns': [],
-                         'rows': [{'label': _('por GB'),
+                         'rows': linhas})
+
+    # ── K9 (fixo por unidade): faltava no catálogo desde que o kind nasceu ──
+    # Uma linha, um número — a tabela tem o tamanho da realidade (spec §3.2).
+    if buyer.k9_rmb_each is not None:
+        k = buyer.k9_rmb_each
+        if currency == 'rmb':
+            money = f'{k.normalize():f}'
+        else:
+            money = f'{(k * rate).quantize(Decimal("0.01"), ROUND_HALF_UP).normalize():f}'
+        sections.append({'title': 'K9', 'unified': True, 'columns': [],
+                         'rows': [{'label': _('por unidade'),
                                    'cell': ('quoted', money)}]})
     return sections
 

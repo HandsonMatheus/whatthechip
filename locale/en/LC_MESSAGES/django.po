@@ -3700,6 +3700,94 @@ msgstr[1] ""
 "<b>%(row)s</b> (box %(box)s) — %(units)s units the platform cannot price "
 "without you."
 
+msgid " · piso ¥ %(piso)s"
+msgstr " · floor ¥ %(piso)s"
+
+msgid "%(item)s: piso ilegível — use números"
+msgstr "%(item)s: unreadable floor — use numbers"
+
+msgid "%(item)s: taxa ilegível — use números"
+msgstr "%(item)s: unreadable rate — use numbers"
+
+msgid "%(item)s: piso sem ¥/GB não precifica nada — informe a taxa"
+msgstr "%(item)s: a floor with no ¥/GB prices nothing — enter the rate"
+
+msgid ""
+"As capacidades são <strong>calculadas</strong>, não cotadas: <code>preço = "
+"maior valor entre (¥/GB × GB) e o mínimo por peça</code>, arredondado ao ¥ "
+"inteiro. A marca <strong>piso</strong> diz que o mínimo por peça decidiu "
+"aquela linha — é informação, não erro."
+msgstr ""
+"Capacities are <strong>calculated</strong>, not quoted: <code>price = the "
+"greater of (¥/GB × GB) and the minimum per piece</code>, rounded to a whole "
+"¥. The <strong>floor</strong> mark says the minimum per piece decided that "
+"row — it is information, not an error."
+
+msgid "Ativo"
+msgstr "Active"
+
+msgid "Em revisão"
+msgstr "Under review"
+
+msgid "Preço"
+msgstr "Price"
+
+msgid "Sem piso"
+msgstr "No floor"
+
+msgid "Taxa"
+msgstr "Rate"
+
+msgid ""
+"Você já pediu uma mudança aqui — o valor acima continua valendo até o "
+"WhatTheChip aprovar. Enviar de novo substitui o pedido."
+msgstr ""
+"You already requested a change here — the value above stays in force until "
+"WhatTheChip approves. Sending again replaces the request."
+
+msgid "mínimo por peça"
+msgstr "minimum per piece"
+
+msgid "nenhuma peça sai por menos que isto, por menor que seja a capacidade"
+msgstr "no piece goes for less than this, however small the capacity"
+
+msgid ""
+"número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão "
+"do WhatTheChip; o valor atual continua valendo até a aprovação."
+msgstr ""
+"number = price in ¥ (RMB) · empty = not quoted. The change goes to "
+"WhatTheChip for review; the current value stays in force until approval."
+
+msgid "piso"
+msgstr "floor"
+
+msgid "por unidade"
+msgstr "per unit"
+
+msgid "qualquer capacidade · qualquer formato"
+msgstr "any capacity · any form factor"
+
+msgid "qualquer part number · qualquer densidade"
+msgstr "any part number · any density"
+
+msgid "¥ %(taxa)s/GB"
+msgstr "¥ %(taxa)s/GB"
+
+msgid "¥ %(v)s/un."
+msgstr "¥ %(v)s/unit"
+
+msgid "¥ (RMB)"
+msgstr "¥ (RMB)"
+
+msgid "¥ por peça"
+msgstr "¥ per piece"
+
+msgid "¥ · vazio = sem cotação"
+msgstr "¥ · empty = not quoted"
+
+msgid "¥ · vazio = sem piso"
+msgstr "¥ · empty = no floor"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

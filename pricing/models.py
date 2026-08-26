@@ -232,6 +232,24 @@ class Buyer(models.Model):
         verbose_name='SSD — ¥ por GB',
         help_text='Preço linear do SSD: ¥ por GB (ex.: 0.10 → 512GB = ¥51). '
                   'Arredonda ao ¥ inteiro. Vazio = SSD sem preço.')
+    # PISO POR PEÇA do SSD (spec v2 do comprador §3.2, dono 2026-08-26):
+    #
+    #     preço(capacidade) = max( round(¥_por_GB × GB), piso_por_peça )
+    #
+    # POR QUE existe: o linear puro precifica um SSD de 128GB em ¥ 13 e um de
+    # 1TB em ¥ 102 — mas o CUSTO de manusear, testar e embalar a peça é o
+    # mesmo nos dois. Sem piso, a capacidade pequena sai abaixo do trabalho
+    # que dá, e é justamente ela que chega em quantidade.
+    #
+    # NULL = sem piso, e o linear vale sozinho — que é exatamente o
+    # comportamento de antes desta migração. Nenhum preço muda até o dono (ou
+    # o comprador, via pedido) pôr um número aqui.
+    ssd_floor_rmb = models.DecimalField(
+        max_digits=8, decimal_places=2, null=True, blank=True,
+        verbose_name='SSD — ¥ mínimo por peça',
+        help_text='Piso por PEÇA do SSD: nenhuma peça sai por menos que '
+                  'isto, por menor que seja a capacidade (ex.: 18 → 128GB a '
+                  '¥0,10/GB daria ¥13, mas sai ¥18). Vazio = sem piso.')
     # K9 (dono 2026-08-14, HANDOFF_K9): NAND cru TSOP a preço FIXO por
     # UNIDADE — sem marca, sem capacidade ("commodity genérica"). Nasce NULL
     # de propósito: K9 fica "sem preço" com motivo até o comprador confirmar
@@ -879,6 +897,193 @@ class PriceChangeRequest(models.Model):
 
     def reject(self, reviewer):
         """Rejeita: o Price fica exatamente como estava."""
+        from django.utils import timezone as _tz
+        self.review_status = self.REVIEW_REJECTED
+        self.reviewed_by, self.reviewed_at = reviewer, _tz.now()
+        self.save()
+
+
+@pghistory.track()  # a trilha da moderação também é auditável
+class RateChangeRequest(models.Model):
+    """MODERAÇÃO das taxas de CONTRATO — SSD (¥/GB + piso) e K9 (¥/unidade).
+
+    Mesmo four-eyes do `PriceChangeRequest` (parceiro propõe, plataforma
+    dispõe), em TABELA PRÓPRIA — e a razão é estrutural, não estilística:
+
+    **SSD e K9 não têm linha de grade.** O preço deles não é uma célula de
+    `Price`; é uma taxa contratual guardada no `Buyer` (`ssd_rmb_per_gb`,
+    `ssd_floor_rmb`, `k9_rmb_each`), porque não varia com marca, geração nem
+    densidade — no SSD ele é *calculado* a partir da capacidade, e no K9 é
+    um número só. O `PriceChangeRequest.price` é FK **obrigatória** para uma
+    linha que aqui não existe.
+
+    As três saídas possíveis eram: afrouxar aquela FK (mexer na tabela que a
+    bancada lê, com constraint e RLS em cima), cunhar linhas de `Price`
+    falsas para SSD/K9 (duas fontes de verdade para o mesmo número — e o
+    ¥/GB tem 3 casas, que `Price.price_min` não guarda), ou uma tabela nova.
+    A tabela nova é a única que não põe em risco nada que já funciona.
+
+    **A taxa vigente continua valendo até a aprovação** (spec §3.4): este
+    registro é o PEDIDO, nunca o preço. Quem lê preço lê o `Buyer`.
+
+    Regra de unicidade: no máximo UM pedido pendente por (comprador, tipo) —
+    o parceiro editar de novo ATUALIZA o pendente, não empilha. Igual à
+    `one_pending_per_price`.
+    """
+
+    RATE_KINDS = [(KIND_SSD, 'SSD'), (KIND_K9, 'K9')]
+
+    REVIEW_PENDING, REVIEW_APPROVED, REVIEW_REJECTED = ('pending', 'approved',
+                                                        'rejected')
+    REVIEW_CHOICES = [(REVIEW_PENDING, _lazy('Pendente')),
+                      (REVIEW_APPROVED, _lazy('Aprovado')),
+                      (REVIEW_REJECTED, _lazy('Rejeitado'))]
+
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE,
+                              related_name='rate_requests',
+                              verbose_name='Comprador')
+    # Denormalizada (RLS exige coluna local — padrão da casa). Vem do buyer:
+    # comprador de PLATAFORMA tem `company` NULL, e é assim que a policy de
+    # leitura ampla o enxerga de qualquer empresa.
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    kind = models.CharField(max_length=8, choices=RATE_KINDS,
+                            verbose_name='Tipo')
+
+    # ── O PEDIDO ────────────────────────────────────────────────────────────
+    # `new_rate` é ¥/GB no SSD e ¥/unidade no K9 — 3 casas nos dois, porque o
+    # ¥/GB precisa delas (0,425) e guardar o K9 com folga não custa nada.
+    # NULL = "tirar o preço" (volta a ficar sem cotação, com motivo).
+    new_rate = models.DecimalField(max_digits=8, decimal_places=3,
+                                   null=True, blank=True,
+                                   verbose_name='Nova taxa ¥')
+    # Só o SSD tem piso. NULL aqui significa DUAS coisas diferentes conforme
+    # o tipo — e é por isso que `clean()` recusa piso em pedido de K9.
+    new_floor = models.DecimalField(max_digits=8, decimal_places=2,
+                                    null=True, blank=True,
+                                    verbose_name='Novo piso ¥/peça (SSD)')
+    # Snapshot do ANTES (para o admin decidir vendo o delta — e para o
+    # histórico continuar legível depois que o Buyer mudar):
+    old_rate = models.DecimalField(max_digits=8, decimal_places=3,
+                                   null=True, blank=True,
+                                   verbose_name='Taxa anterior')
+    old_floor = models.DecimalField(max_digits=8, decimal_places=2,
+                                    null=True, blank=True,
+                                    verbose_name='Piso anterior')
+
+    review_status = models.CharField(max_length=10, choices=REVIEW_CHOICES,
+                                     default=REVIEW_PENDING,
+                                     verbose_name='Revisão')
+    requested_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                     on_delete=models.SET_NULL, null=True,
+                                     blank=True, related_name='+',
+                                     verbose_name='Pedido por')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Pedido em')
+    reviewed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                    on_delete=models.SET_NULL, null=True,
+                                    blank=True, related_name='+',
+                                    verbose_name='Revisado por')
+    reviewed_at = models.DateTimeField(null=True, blank=True,
+                                       verbose_name='Revisado em')
+    #: 🔔 mesma semântica do PriceChangeRequest: decisão ainda não vista em
+    #: /partner/notifications/.
+    seen_by_partner = models.BooleanField(default=False,
+                                          verbose_name='Visto pelo parceiro')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Mudança de taxa de contrato (revisão)'
+        verbose_name_plural = 'Mudanças de taxa de contrato (revisão)'
+        ordering = ['-created_at']
+        base_manager_name = 'all_companies'
+        # default = CRU, pela mesma razão do PriceChangeRequest: a validação
+        # de UniqueConstraint do Django 5 usa _default_manager, e fail-closed
+        # ali quebra o admin de plataforma (bug 2026-07-09).
+        default_manager_name = 'all_companies'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['buyer', 'kind'], condition=Q(review_status='pending'),
+                name='one_pending_rate_per_kind'),
+            models.CheckConstraint(
+                name='rcr_review_vocab',
+                condition=Q(review_status__in=['pending', 'approved',
+                                               'rejected'])),
+            # Piso é coisa de SSD. No K9 ele não significa nada, e deixar o
+            # campo aberto criaria um número que ninguém lê.
+            models.CheckConstraint(
+                name='rcr_floor_only_ssd',
+                condition=Q(kind=KIND_SSD) | Q(new_floor__isnull=True)),
+        ]
+
+    def __str__(self):
+        alvo = (f'¥ {self.new_rate.normalize():f}' if self.new_rate is not None
+                else 'sem preço')
+        if self.kind == KIND_SSD:
+            alvo += ('/GB · piso ' + (f'¥ {self.new_floor}'
+                                      if self.new_floor is not None
+                                      else 'nenhum'))
+        else:
+            alvo += '/un.'
+        return f'{self.get_kind_display()} · {self.buyer} → {alvo}'
+
+    def clean(self):
+        super().clean()
+        if self.kind not in dict(self.RATE_KINDS):
+            raise ValidationError({'kind': 'Só SSD e K9 têm taxa de contrato.'})
+        if self.kind == KIND_K9 and self.new_floor is not None:
+            raise ValidationError({'new_floor': 'Piso por peça é só do SSD.'})
+        if self.new_rate is not None and self.new_rate < 0:
+            raise ValidationError({'new_rate': 'Taxa não pode ser negativa.'})
+        if self.new_floor is not None and self.new_floor < 0:
+            raise ValidationError({'new_floor': 'Piso não pode ser negativo.'})
+        # Piso sem taxa não precifica nada: o max() nunca roda porque o linear
+        # nem existe. Recusar aqui evita um pedido que "aprova" e não faz nada.
+        if self.new_floor is not None and self.new_rate is None:
+            raise ValidationError({'new_rate': 'Piso sem ¥/GB não precifica '
+                                               'nada — informe a taxa.'})
+
+    def save(self, *args, **kwargs):
+        if self.buyer_id and self.company_id is None:
+            self.company_id = Buyer.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.buyer_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+    # ── Decisão do admin ────────────────────────────────────────────────────
+    def approve(self, reviewer):
+        """Aplica no `Buyer` e fecha a revisão.
+
+        ⚠ Grava com `update_fields` para não reescrever o comprador inteiro:
+        o `Buyer` carrega endereço de embarque, taxa de câmbio e vínculos, e
+        um `save()` cheio a partir de uma instância carregada aqui poderia
+        desfazer o que outra tela salvou no meio.
+        """
+        from django.utils import timezone as _tz
+        b = self.buyer
+        campos = []
+        if self.kind == KIND_SSD:
+            b.ssd_rmb_per_gb = self.new_rate
+            b.ssd_floor_rmb = self.new_floor
+            campos = ['ssd_rmb_per_gb', 'ssd_floor_rmb']
+        else:
+            b.k9_rmb_each = self.new_rate
+            campos = ['k9_rmb_each']
+        b.save(update_fields=campos)
+        self.review_status = self.REVIEW_APPROVED
+        self.reviewed_by, self.reviewed_at = reviewer, _tz.now()
+        self.save()
+        # Mesmo laço do PriceChangeRequest.approve: o lote que fechou com SSD
+        # ou K9 sem preço deixou a ordem em rascunho esperando. Aprovar fecha
+        # o laço. Nunca levanta — aprovar não pode falhar por efeito colateral.
+        from vendas.services import freeze_pending_orders
+        freeze_pending_orders(self.buyer, reviewer)
+
+    def reject(self, reviewer):
+        """Rejeita: o `Buyer` fica exatamente como estava."""
         from django.utils import timezone as _tz
         self.review_status = self.REVIEW_REJECTED
         self.reviewed_by, self.reviewed_at = reviewer, _tz.now()
