@@ -3548,6 +3548,42 @@ msgstr "Notas"
 msgid "Sai no PDF do resultado, com a data."
 msgstr "Sale en el PDF del resultado, con su fecha."
 
+#: vendas/views_partner.py:1
+msgid "Autor"
+msgstr "Autor"
+
+#: vendas/views_partner.py:1
+msgid "Exportar esta aba em CSV"
+msgstr "Exportar esta pestaña en CSV"
+
+#: vendas/views_partner.py:1
+msgid "INTEGRAL"
+msgstr "ÍNTEGRO"
+
+#: vendas/views_partner.py:1
+msgid "Identificação"
+msgstr "Identificación"
+
+#: vendas/views_partner.py:1
+msgid "Observação"
+msgstr "Nota"
+
+#: vendas/views_partner.py:1
+msgid "PARCIAL"
+msgstr "PARCIAL"
+
+#: vendas/views_partner.py:1
+msgid "Part number"
+msgstr "Part number"
+
+#: vendas/views_partner.py:1
+msgid "QUITAÇÃO"
+msgstr "LIQUIDACIÓN"
+
+#: vendas/views_partner.py:1
+msgid "Registro"
+msgstr "Registro"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

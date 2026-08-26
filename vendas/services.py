@@ -898,6 +898,39 @@ def remove_order_note(so, note_pk, user):
     nota.delete()
 
 
+#: Tolerância de comparação de dinheiro (spec v2 §2.5). Sem ela um resíduo de
+#: 3,6e-12 faz um lote quitado dizer "PARCIAL".
+PAY_TOL = Decimal('0.004')
+
+
+def payment_kinds(invoice) -> dict:
+    """``{pagamento.pk: 'integral'|'parcial'|'quitacao'}`` — o REGISTRO de
+    cada parcela (spec v2 §3.9).
+
+    DERIVADO, nunca gravado: o que define o rótulo é o efeito do pagamento
+    sobre o saldo NAQUELE instante, e isso já está na sequência. Gravar um
+    campo criaria uma segunda verdade que envelhece no primeiro estorno.
+
+    · **integral** — zerou o saldo E foi o primeiro. Pagou tudo de uma vez.
+    · **quitacao** — zerou o saldo mas não foi o primeiro. Fechou a conta.
+    · **parcial** — não zerou.
+
+    As CHAVES são canônicas e não traduzem; o rótulo é prosa da tela.
+    """
+    if invoice is None:
+        return {}
+    saldo = invoice.total_usd or Decimal('0.00')
+    saida = {}
+    for i, p in enumerate(invoice.payments.all()
+                          .order_by('paid_at', 'created_at', 'pk')):
+        saldo -= p.amount_usd
+        if saldo <= PAY_TOL:
+            saida[p.pk] = 'integral' if i == 0 else 'quitacao'
+        else:
+            saida[p.pk] = 'parcial'
+    return saida
+
+
 def payment_history(invoice, com_autor=False):
     """O histórico de pagamentos da fatura, mais recente primeiro (dono,
     2026-08-18). Sempre em US$ — é a moeda em que ele paga.
@@ -1489,10 +1522,16 @@ def order_steps(so):
 #: Rastreio clicável por transportadora. Chave = o que o cliente digita,
 #: normalizado (minúsculas, sem espaço). Transportadora desconhecida cai no
 #: texto puro — melhor sem link do que com link quebrado.
+# As seis que a spec v2 do comprador §3.13 nomeia. Fora da lista o código fica
+# em TEXTO PURO copiável — melhor sem link do que com link quebrado, que é o
+# que acontece quando se chuta o padrão de URL de uma transportadora regional.
 TRACKING_URL = {
     'dhl': 'https://www.dhl.com/global-en/home/tracking.html?tracking-id={}',
     'fedex': 'https://www.fedex.com/fedextrack/?trknbr={}',
     'ups': 'https://www.ups.com/track?tracknum={}',
+    'sfexpress': 'https://www.sf-express.com/chn/en/dynamic_function/waybill/#search/bill-number/{}',
+    'ems': 'https://www.ems.com.cn/english/queryOrder?number={}',
+    'correios': 'https://rastreamento.correios.com.br/app/index.php?objetos={}',
 }
 
 

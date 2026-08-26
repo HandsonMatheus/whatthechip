@@ -31,6 +31,10 @@ urlpatterns = [
     path('compras/<int:pk>/resultado/', views.compra_resultado, name='resultado'),
     path('compras/<int:pk>/resultado.pdf', views.compra_resultado_pdf,
          name='resultado_pdf'),
+    # A aba aberta em CSV (spec v2 §6.10). Uma rota POR ABA, não `?aba=`: o
+    # nome do arquivo faz parte da entrega.
+    path('compras/<int:pk>/<slug:aba>.csv', views.compra_aba_csv,
+         name='aba_csv'),
     path('compras/<int:pk>/pagar/', views.compra_pagar, name='pagar'),
     path('compras/<int:pk>/observacao/', views.compra_observacao,
          name='observacao'),

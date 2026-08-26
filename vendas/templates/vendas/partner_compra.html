@@ -253,6 +253,15 @@
     {% endif %}
     <button type="button"{% if aba_inicial == 'observacoes' %} class="on"{% endif %} data-aba="observacoes">{% trans "Observações" %} <em>{{ observacoes|length }}</em></button>
     <span class="nb__sp"></span>
+    {% comment %} Exporta A ABA ABERTA (spec v2 §6.10). Um link só, com o href
+       trocado pelo JS ao mudar de aba — e já servido apontando para a aba
+       inicial, para funcionar sem JS também. {% endcomment %}
+    <a class="tbar__ico nb__exp" id="exp-aba"
+       href="{% url 'compras:aba_csv' so.pk aba_inicial %}"
+       title="{% trans 'Exportar esta aba em CSV' %}"
+       aria-label="{% trans 'Exportar esta aba em CSV' %}">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>
+    </a>
   </div>
 
   {% if pode_acertar %}
@@ -650,12 +659,16 @@
   // outros, porque o array não sabia que ela existia.
   var abas = document.querySelectorAll('.nb button[data-aba]');
   var chaves = Array.prototype.map.call(abas, function (b) { return b.dataset.aba; });
+  var exp = document.getElementById('exp-aba');
   function mostrar(k) {
     abas.forEach(function (o) { o.classList.toggle('on', o.dataset.aba === k); });
     chaves.forEach(function (c) {
       var p = document.getElementById('pane-' + c);
       if (p) p.hidden = (c !== k);
     });
+    // O export segue a aba: exportar "a aba aberta" com o href da anterior
+    // entregaria o arquivo errado com o nome certo, que é o pior dos dois.
+    if (exp) exp.href = exp.href.replace(/[^/]+\.csv$/, k + '.csv');
   }
   abas.forEach(function (b) {
     b.addEventListener('click', function () { mostrar(b.dataset.aba); });

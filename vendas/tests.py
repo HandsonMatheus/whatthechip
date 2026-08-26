@@ -2228,6 +2228,101 @@ class CompradorComprasTests(TestCase):
                         ord(ch), pontos,
                         f'sem glifo para {ch!r} ({chave}) no PDF do resultado')
 
+    # ── CSV por aba (spec v2 §6.10) ────────────────────────────────────────
+
+    def _aba_csv(self, so, aba):
+        self.client.force_login(self.parceiro)
+        resp = self.client.get(reverse('compras:aba_csv', args=[so.pk, aba]))
+        self.assertEqual(resp.status_code, 200, aba)
+        texto = resp.content.decode('utf-8')
+        self.assertTrue(texto.startswith('\ufeff'), f'{aba}: sem BOM')
+        linhas = [l for l in texto.lstrip('\ufeff').splitlines() if l]
+        return resp, [l.split(';') for l in linhas]
+
+    def test_interface_cada_aba_exporta_o_proprio_recorte(self):
+        so = self._compra(self.emp_a, 'CV1')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:observacao', args=[so.pk]),
+                         {'text': 'chegou molhada'})
+        esperado = {'resumo': 7, 'chips': 7, 'categorias': 4,
+                    'pagamentos': 7, 'observacoes': 3}
+        for aba, colunas in esperado.items():
+            resp, linhas = self._aba_csv(so, aba)
+            self.assertEqual(len(linhas[0]), colunas, f'{aba}: colunas')
+            # o NOME do arquivo é o código do lote com `/` virando `-`
+            self.assertIn(f'{so.lot.code.replace("/", "-")}-{aba}.csv',
+                          resp['Content-Disposition'], aba)
+        # e cada aba traz o SEU dado, não o da vizinha
+        self.assertIn('chegou molhada',
+                      self._aba_csv(so, 'observacoes')[1][1][2])
+
+    def test_interface_aba_desconhecida_e_404(self):
+        """`?aba=` inválido cai no resumo; URL de CSV inválida é 404 — aqui o
+        que sairia é um ARQUIVO, e arquivo errado com nome certo é pior do que
+        erro nenhum."""
+        so = self._compra(self.emp_a, 'CV2')
+        self.client.force_login(self.parceiro)
+        self.assertEqual(self.client.get(
+            reverse('compras:detail', args=[so.pk]) + '?aba=drop'
+        ).status_code, 200)
+        self.assertEqual(self.client.get(
+            f'/partner/compras/{so.pk}/drop.csv').status_code, 404)
+
+    def test_script_resumo_so_ganha_as_colunas_de_recusa_DEPOIS_do_recebimento(self):
+        """Antes não há recusa para relatar, e coluna vazia num export é
+        pergunta sem resposta (§6.4)."""
+        so = self._compra(self.emp_a, 'CV3')
+        with company_scope(self.emp_a):
+            SalesOrder.all_companies.filter(pk=so.pk).update(received_at=None)
+        _r, linhas = self._aba_csv(so, 'resumo')
+        self.assertEqual(len(linhas[0]), 7)
+        self.assertNotIn('Recusados', linhas[0])
+        with company_scope(self.emp_a):
+            services.mark_received(so)
+        _r, linhas = self._aba_csv(so, 'resumo')
+        self.assertEqual(len(linhas[0]), 10)
+        self.assertIn('Recusados', linhas[0])
+
+    def test_script_pagamento_no_csv_traz_registro_e_o_CNY_da_taxa_TRAVADA(self):
+        """O pago nasce em US$; o ¥ é leitura DERIVADA pela taxa travada do
+        lote, nunca pela de hoje (§2.4)."""
+        so = self._compra(self.emp_a, 'CV4')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        self._quitar(so)                                   # zera de uma vez
+        _r, linhas = self._aba_csv(so, 'pagamentos')
+        campos = linhas[1]
+        self.assertEqual(campos[1], 'INTEGRAL')            # primeiro E único
+        self.assertEqual(campos[2], '21.00')               # US$ nativo
+        self.assertEqual(campos[3], '150')                 # 21 / 0.14 travada
+
+    def test_script_registro_da_parcela_e_derivado_da_sequencia(self):
+        """INTEGRAL só quando o primeiro já zera. Fechar depois é QUITAÇÃO —
+        a mesma linha, com significado diferente por causa da ordem."""
+        from datetime import date
+        so = self._compra(self.emp_a, 'CV5')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        with company_scope(self.emp_a):
+            inv = Invoice.all_companies.get(order=so)
+            services.register_payment(inv, Decimal('9.00'),
+                                      date(2026, 8, 18), self.parceiro)
+            services.register_payment(inv, Decimal('12.00'),
+                                      date(2026, 8, 19), self.parceiro)
+            inv.refresh_from_db()
+            registros = list(services.payment_kinds(inv).values())
+        self.assertEqual(registros, ['parcial', 'quitacao'])
+
+    def test_script_transportadora_conhecida_vira_link_e_o_resto_fica_texto(self):
+        """Fora da lista o código fica em texto puro copiável — melhor sem
+        link do que com link quebrado (§3.13)."""
+        for transportadora in ('DHL', 'FedEx', 'UPS', 'SF Express', 'EMS',
+                               'Correios'):
+            self.assertIsNotNone(
+                services.tracking_url(transportadora, 'JD123'), transportadora)
+        self.assertIsNone(services.tracking_url('Transportadora do Zé', 'X1'))
+        self.assertIsNone(services.tracking_url('DHL', ''))   # sem código
+
     def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):
         """Devolvem lista nova. A original é a mesma que alimenta a contagem —
         mutá-la faria o número do filtro depender da ordem das chamadas."""

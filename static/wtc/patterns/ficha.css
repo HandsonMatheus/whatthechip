@@ -367,3 +367,6 @@
 /* aba desabilitada continua VISÍVEL (spec §6.3) — apagada, não ausente */
 .nb button:disabled{color:var(--ink-30);cursor:not-allowed}
 .nb button:disabled em{color:var(--ink-30)}
+
+/* export da aba aberta: encostado na direita da barra de abas, mesma altura */
+.nb__exp{margin-left:auto;align-self:center;flex:none}

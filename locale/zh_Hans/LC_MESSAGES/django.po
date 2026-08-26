@@ -3334,6 +3334,42 @@ msgstr "备注"
 msgid "Sai no PDF do resultado, com a data."
 msgstr "将带日期打印在结果 PDF 上。"
 
+#: vendas/views_partner.py:1
+msgid "Autor"
+msgstr "作者"
+
+#: vendas/views_partner.py:1
+msgid "Exportar esta aba em CSV"
+msgstr "将此标签页导出为 CSV"
+
+#: vendas/views_partner.py:1
+msgid "INTEGRAL"
+msgstr "全额"
+
+#: vendas/views_partner.py:1
+msgid "Identificação"
+msgstr "识别信息"
+
+#: vendas/views_partner.py:1
+msgid "Observação"
+msgstr "备注"
+
+#: vendas/views_partner.py:1
+msgid "PARCIAL"
+msgstr "部分"
+
+#: vendas/views_partner.py:1
+msgid "Part number"
+msgstr "Part number"
+
+#: vendas/views_partner.py:1
+msgid "QUITAÇÃO"
+msgstr "结清"
+
+#: vendas/views_partner.py:1
+msgid "Registro"
+msgstr "记录"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

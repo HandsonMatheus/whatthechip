@@ -36,6 +36,7 @@ from decimal import Decimal, InvalidOperation
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -367,6 +368,115 @@ def _detalhe(so):
         # Observações da conferência (spec §6.9) — lista, com autor e data.
         'observacoes': services.order_notes(so),
     }
+
+
+def _csv_resposta(nome, colunas, linhas):
+    """CSV canônico do painel: `;` + BOM UTF-8.
+
+    O separador e o BOM não são gosto: quem abre é Excel em máquina chinesa.
+    Sem o BOM os acentos viram mojibake; com vírgula o Excel pt/es/zh não
+    separa colunas.
+    """
+    import csv
+    import io
+    from django.http import HttpResponse
+    buf = io.StringIO()
+    escritor = csv.writer(buf, delimiter=';')
+    escritor.writerow(colunas)
+    escritor.writerows(linhas)
+    resp = HttpResponse('\ufeff' + buf.getvalue(),
+                        content_type='text/csv; charset=utf-8')
+    resp['Content-Disposition'] = f'attachment; filename="{nome}"'
+    return resp
+
+
+def _kind_labels():
+    """Rótulo do REGISTRO da parcela. Chaves canônicas, prosa traduzida."""
+    return {'integral': _('INTEGRAL'), 'parcial': _('PARCIAL'),
+            'quitacao': _('QUITAÇÃO')}
+
+
+@partner_required
+def compra_aba_csv(request, pk, aba):
+    """Exporta A ABA ABERTA da ficha (spec v2 §6.10).
+
+    Uma rota por aba, e não um `?aba=`: o nome do arquivo faz parte da
+    entrega — `LOT-EMI-041-08-26-chips.csv` diz sozinho o que é, meses depois,
+    numa pasta de downloads. Código do lote com `/` trocado por `-`, mesma
+    convenção do PDF do resultado (§3.6).
+    """
+    if aba not in _ABAS:
+        raise Http404('Aba desconhecida.')
+    with services.buyer_order(request.buyer, pk) as so:
+        base = so.lot.code.replace('/', '-') if so.lot_id else so.code
+        nome = f'{base}-{aba}.csv'
+        fatura = next((i for i in so.invoices.all()
+                       if i.status != 'cancelled'), None)
+
+        if aba == 'resumo':
+            # As três últimas colunas só existem DEPOIS do recebimento — antes
+            # não há recusa para relatar, e coluna vazia num export é pergunta
+            # sem resposta. A tabela é a mesma, mais curta (§6.4).
+            recebido = so.received_at is not None
+            colunas = [_('Marca'), _('Tipo'), _('Capacidade'), _('Caixa WTC'),
+                       _('Enviados'), 'CNY unit.', 'CNY esperado']
+            if recebido:
+                colunas += [_('Recusados'), _('Aprovados'), 'CNY resultado']
+            linhas = []
+            for grupo in services.result_rows(so):
+                for l in grupo['lines']:
+                    linha = [grupo['brand'], l['type'], l['capacity'],
+                             l['wtc'], l['qty'], _csv_num(l['unit_rmb']),
+                             _csv_num(l['total_rmb'])]
+                    if recebido:
+                        linha += [l['rejected'], l['accepted'],
+                                  _csv_num(l.get('pago_rmb'))]
+                    linhas.append(linha)
+
+        elif aba == 'chips':
+            colunas = [_('Part number'), _('Fabricante'), _('Caixa WTC'),
+                       _('Identificação'), _('Chips'), 'CNY unit.', 'CNY total']
+            linhas = [[c['pn'], c['brand'], c['wtc'], c['spec'], c['qty'],
+                       _csv_num(c['unit_rmb']), _csv_num(c['total_rmb'])]
+                      for c in services.lot_chips(so)['linhas']]
+
+        elif aba == 'categorias':
+            colunas = [_('Categoria'), _('Tipo'), _('Capacidade'),
+                       _('Nesta compra')]
+            # ⚠ `no_lote` é BOOLEANO hoje. A spec §6.6 quer a QUANTIDADE
+            # ("dizer 'veio' é menos do que dizer quanto veio") — é o mesmo
+            # dado que a tela mostra com um visto. Anotado no plano; mudar
+            # exige mexer no `category_glossary`, que não é só do comprador.
+            linhas = [[c['code'], c['type'], c['capacity'],
+                       'sim' if c['no_lote'] else '']
+                      for c in services.category_glossary(so)]
+
+        elif aba == 'pagamentos':
+            # ⚠ CNY equivalente é LEITURA DERIVADA (§2.4): o pago nasce em US$
+            # e vira ¥ pela taxa TRAVADA do lote, nunca pela de hoje.
+            taxa = so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None)
+            rotulos = _kind_labels()
+            registros = services.payment_kinds(fatura)
+            colunas = [_('Data'), _('Registro'), 'USD pago', 'CNY equivalente',
+                       _('Referência'), _('Registrado por'), _('Comprovante')]
+            linhas = []
+            for p in services.payment_history(fatura, com_autor=True):
+                cny = ((p['amount_usd'] / taxa).quantize(Decimal('1'))
+                       if taxa else None)
+                linhas.append([
+                    p['paid_at'].strftime('%d/%m/%Y') if p['paid_at'] else '',
+                    str(rotulos.get(registros.get(p['pk']), '')),
+                    _csv_num(p['amount_usd']), _csv_num(cny),
+                    p['reference'], p.get('by') or '',
+                    p['receipt_name'] or ('sim' if p['has_receipt'] else '')])
+
+        else:                                    # observacoes
+            colunas = [_('Data'), _('Autor'), _('Observação')]
+            linhas = [[n['at'].strftime('%d/%m/%Y %H:%M'), n['by'],
+                       ' '.join((n['text'] or '').split())]
+                      for n in services.order_notes(so)]
+
+        return _csv_resposta(nome, colunas, linhas)
 
 
 @partner_required

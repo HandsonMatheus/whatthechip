@@ -522,6 +522,39 @@ ganhou a **outra metade da regra**, que a fatia sozinha não alcançava: o formu
 estar no **topo** do painel dela — painel próprio não basta se o campo estiver no fim de uma lista
 longa de notas.
 
+### ✅ Etapa 5a — CSV por aba + rastreio das seis transportadoras (2026-08-26)
+
+**Uma rota por aba, não `?aba=`.** O nome do arquivo faz parte da entrega:
+`LOT-EMI-041-08-26-chips.csv` diz sozinho o que é, meses depois, numa pasta de downloads. Código do
+lote com `/` virando `-`, mesma convenção do PDF do resultado (§3.6).
+
+**Aba desconhecida é 404, não fallback.** No `?aba=` da tela um valor inválido cai no resumo; aqui o
+que sairia é um **arquivo**, e arquivo errado com nome certo é pior do que erro nenhum.
+
+**O link segue a aba.** Um `<a>` só, com o href trocado pelo JS ao mudar de aba, servido já apontando
+para a aba inicial (funciona sem JS). Exportar "a aba aberta" com o href da anterior entregaria o
+arquivo errado com o nome certo — de novo, o pior dos dois.
+
+**As três colunas de recusa só existem depois do recebimento** (§6.4): antes não há recusa para
+relatar, e coluna vazia num export é pergunta sem resposta.
+
+**`payment_kinds` — o "Registro" da parcela (§3.9), derivado e nunca gravado.** `integral` (zerou e foi
+o primeiro) · `quitacao` (zerou e não foi) · `parcial`. Gravar um campo criaria uma segunda verdade que
+envelhece no primeiro estorno. Tolerância `PAY_TOL = 0.004` (§2.5) — sem ela um resíduo de 3,6e-12 faz
+um lote quitado dizer PARCIAL.
+
+**CNY equivalente do pagamento é leitura derivada** pela taxa **travada** do lote, nunca pela de hoje.
+
+**Rastreio:** as seis transportadoras da §3.13 (DHL, FedEx, UPS, SF Express, EMS, Correios). Fora da
+lista o código fica em texto puro copiável — melhor sem link do que com link quebrado.
+
+7 testes (5 script + 2 interface) · 9 msgids novos. Cobertura: 150 msgids nas três telas, zero sem
+tradução.
+
+⚠ **Dívida anotada:** a aba Categorias marca a caixa desta compra com um **booleano**. A §6.6 quer a
+**quantidade** — *"dizer 'veio' é menos do que dizer quanto veio, e é a quantidade que se confere
+contra a bancada"*. Mudar exige mexer no `category_glossary`, que não é exclusivo do comprador.
+
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 
 Tudo que se implementa sai com as duas camadas:
