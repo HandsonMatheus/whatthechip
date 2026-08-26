@@ -129,6 +129,33 @@ def _sem_compressao(test):
     test.addCleanup(setattr, rl_config, 'pageCompression', antes)
 
 
+def _pdf_codepoints(pdf: bytes) -> set:
+    """Os pontos de código que as fontes EMBUTIDAS no PDF mapeiam.
+
+    Lê o `ToUnicode` (tabela `bfchar`) de cada fonte do documento.
+
+    ⚠ Esses streams podem vir COMPRIMIDOS (FlateDecode) — e vêm, no PDF do
+    resultado. Procurar `<XXXX>` nos bytes crus, que é o que este arquivo
+    fazia até 2026-08-26, acusa falta de glifo que é falta de zlib: `備註` e
+    `驗貨` estão os DOIS na fonte do documento de resultado, e a busca crua não
+    achava nenhum dos dois. O packing list passava só porque sai sem
+    compressão — e passaria a dar alarme falso no dia em que não saísse.
+    """
+    import zlib
+    achados = set()
+    for bloco in re.findall(rb'stream\r?\n(.*?)endstream', pdf, re.S):
+        try:
+            texto = zlib.decompress(bloco)
+        except zlib.error:
+            texto = bloco                       # já vem em texto puro
+        if b'beginbfchar' not in texto:
+            continue
+        for destino in re.findall(
+                rb'<[0-9A-Fa-f]{2,4}>\s*<([0-9A-Fa-f]{4,})>', texto):
+            achados.add(int(destino[:4], 16))
+    return achados
+
+
 class SalesOrderFlowTests(TestCase):
     """O ciclo inteiro: fechar → draft agregado → confirmar congela → cancelar."""
 
@@ -1009,11 +1036,12 @@ class PdfConferenciaGerenteTests(TestCase):
         # não tem CMap para conferir. Exigir glifo dela na TTF é cobrar da fonte
         # errada.
         from pricing.pdf import _CJK_RE
+        pontos = _pdf_codepoints(pdf)
         for ch in set(''.join(v[1] for k, v in _L.items()
                               if k not in fora)):
             if not _CJK_RE.fullmatch(ch):
                 continue
-            self.assertIn(f'<{ord(ch):04X}>'.encode(), pdf,
+            self.assertIn(ord(ch), pontos,
                           f'sem glifo para {ch!r} na fonte embutida')
 
     def test_subtitulo_diz_o_que_o_papel_E_e_mais_nada(self):
@@ -2191,11 +2219,12 @@ class CompradorComprasTests(TestCase):
         pdf = self.client.get(
             reverse('compras:resultado_pdf', args=[so.pk])).content
         self.assertIn(b'/BaseFont', pdf)              # a TTF foi embutida
+        pontos = _pdf_codepoints(pdf)
         for chave in ('notes', 'checked_by'):
             for ch in _L[chave][1]:
                 if _CJK_RE.fullmatch(ch):
                     self.assertIn(
-                        f'<{ord(ch):04X}>'.encode(), pdf,
+                        ord(ch), pontos,
                         f'sem glifo para {ch!r} ({chave}) no PDF do resultado')
 
     def test_script_filtrar_e_ordenar_NAO_mexem_na_lista_original(self):

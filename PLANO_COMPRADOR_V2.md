@@ -497,6 +497,16 @@ aparece no documento de RESULTADO, não no packing list. O próprio teste já ex
 `test_script_o_PDF_do_resultado_tem_glifo_para_os_rotulos_DELE`, que renderiza **com nota** (sem ela o
 `checked_by` não é desenhado e o teste conferiria uma fonte onde ele nunca entrou).
 
+**E o portão novo falhou — por um defeito da TÉCNICA, não do PDF.** Copiei do packing list a busca por
+`<XXXX>` nos bytes crus. Só que o `ToUnicode` do PDF do resultado sai **comprimido** (FlateDecode), e a
+busca crua não acha nada: `備註` e `驗貨` estão os **dois** na fonte — verificado chamando
+`render_result_pdf` direto, fora do banco.
+
+O helper `_pdf_codepoints` descomprime os streams e lê a tabela `bfchar` de cada fonte. **Os dois
+portões passaram a usá-lo:** o do packing list dá a mesma garantia de hoje e para de ser refém de o
+reportlab decidir comprimir aquele documento — no dia em que decidisse, acusaria falta de glifo que é
+falta de zlib. Foi o que gastou meia hora aqui.
+
 **2. "Nada abaixo da tabela".** Este pegou de verdade, e vale registrar por quê. A regra do dono
 (19/08) é: *"lote grande faz a tabela ter centenas de linhas, e botão no fim dela é botão que ninguém
 alcança."* O teste media do fim da planilha até o primeiro diálogo e exigia zero controles ali — e a
