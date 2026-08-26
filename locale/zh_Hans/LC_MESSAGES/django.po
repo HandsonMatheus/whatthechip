@@ -3141,7 +3141,9 @@ msgid "Digite só o que <b>recusou</b> — campo em branco vale zero."
 msgstr "只填写您<b>拒收</b>的数量——留空即为零。"
 
 #. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
-msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
+msgid ""
+"Marque o recebimento para começar a conferência — não se confere caixa que "
+"ainda não chegou."
 msgstr "先确认收货再开始验收——货未到不验收。"
 
 #. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
@@ -3173,5 +3175,14 @@ msgid "Taxa de serviço (%(p)s%%)"
 msgstr "服务费（%(p)s%%）"
 
 #. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
-msgid "Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha."
+msgid ""
+"Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha."
 msgstr "尚未转账——结果一确认，WhatTheChip 即刻转出。"
+
+#. estoque/ (origem do lote: 3ª categoria 'Módulo de memória', 2026-08-24)
+msgid "Módulo de memória"
+msgstr "内存模组"
+
+#. estoque/ (origem do lote: 3ª categoria 'Módulo de memória', 2026-08-24)
+msgid "Módulo de memória (pente DDR, SODIMM)"
+msgstr "内存模组（DDR 内存条、SODIMM）"

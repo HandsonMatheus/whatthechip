@@ -23,9 +23,17 @@ class Lot(models.Model):
     # Chave canônica NUNCA traduz; o rótulo sim (i18n).
     ORIGIN_PHONE  = 'phone'
     ORIGIN_PCB    = 'pcb'
+    #: Módulo de memória (pente DDR de PC/servidor, SODIMM) — 3ª origem, 2026-08-24.
+    #: ⚠ NÃO é chave de preço: `pricing/engine.py::_row_origin` só usa a origem no
+    #: eMMC (celular × PCB, acordo com o comprador). Qualquer origem fora dessas
+    #: duas cai no fallback conservador 'phone' — então um eMMC que apareça num
+    #: lote de RAM é cotado como celular, de propósito. Aqui a origem é
+    #: PROCEDÊNCIA declarada, não tabela.
+    ORIGIN_RAM    = 'ram'
     ORIGIN_CHOICES = [
         (ORIGIN_PHONE, _lazy('Celular')),
         (ORIGIN_PCB,   'PCB'),
+        (ORIGIN_RAM,   _lazy('Módulo de memória')),
     ]
 
     STATUS_OPEN   = 'open'
@@ -144,7 +152,10 @@ class Lot(models.Model):
             # fora do open_for_company (shell/teste) ainda no INSERT.
             models.CheckConstraint(
                 name='lot_origin_vocab',
-                condition=models.Q(origin__in=['phone', 'pcb'])),
+                # Lista LITERAL de propósito: constraint de banco não pode
+                # depender de constante Python (migração congela o SQL). Ao
+                # somar origem nova, some aqui E gere migration.
+                condition=models.Q(origin__in=['phone', 'pcb', 'ram'])),
         ]
         indexes = [
             # Toda consulta do app começa por company (§5.2).
@@ -221,10 +232,11 @@ class Lot(models.Model):
                      .aggregate(Max('number'))['number__max'])
             next_n = max(locked.last_lot_number,
                          floor if floor is not None else -1) + 1
-            if origin not in (cls.ORIGIN_PHONE, cls.ORIGIN_PCB):
+            if origin not in dict(cls.ORIGIN_CHOICES):
                 raise ValidationError({'origin': (
-                    'Origem do lote é OBRIGATÓRIA (celular ou PCB) — acordo '
-                    'com o comprador, 2026-08-01. Sem default de propósito.')})
+                    'Origem do lote é OBRIGATÓRIA — acordo com o comprador, '
+                    '2026-08-01. Sem default de propósito. Válidas: '
+                    + ', '.join(dict(cls.ORIGIN_CHOICES)) + '.')})
             locked.last_lot_number = next_n
             locked.save(update_fields=['last_lot_number'])
             return cls.all_companies.create(number=next_n, company=locked,

@@ -3319,8 +3319,12 @@ msgid "Digite só o que <b>recusou</b> — campo em branco vale zero."
 msgstr "Enter only what you <b>rejected</b> — a blank field counts as zero."
 
 #. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
-msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
-msgstr "Mark the delivery to start checking — you do not check a box that has not arrived."
+msgid ""
+"Marque o recebimento para começar a conferência — não se confere caixa que "
+"ainda não chegou."
+msgstr ""
+"Mark the delivery to start checking — you do not check a box that has not "
+"arrived."
 
 #. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
 msgid "Resultado (bruto)"
@@ -3351,5 +3355,15 @@ msgid "Taxa de serviço (%(p)s%%)"
 msgstr "Service fee (%(p)s%%)"
 
 #. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
-msgid "Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha."
-msgstr "No transfer yet — WhatTheChip sends it as soon as the result is closed."
+msgid ""
+"Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha."
+msgstr ""
+"No transfer yet — WhatTheChip sends it as soon as the result is closed."
+
+#. estoque/ (origem do lote: 3ª categoria 'Módulo de memória', 2026-08-24)
+msgid "Módulo de memória"
+msgstr "Memory module"
+
+#. estoque/ (origem do lote: 3ª categoria 'Módulo de memória', 2026-08-24)
+msgid "Módulo de memória (pente DDR, SODIMM)"
+msgstr "Memory module (DDR DIMM, SODIMM)"

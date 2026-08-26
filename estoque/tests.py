@@ -2921,3 +2921,68 @@ class DelegatedHandlerGuardTests(TestCase):
         # `uib` é classe CSS do redesenho — nunca variável de JS aqui.
         self.assertNotIn('uib', corpo,
                          'o rename btn→uib voltou a vazar para o JavaScript')
+
+
+class OrigemRamTests(TestCase):
+    """Terceira origem de lote: `ram` (módulo de memória) — 2026-08-24.
+
+    O que ela É: procedência declarada do material. O que ela NÃO é: chave de
+    preço. O `pricing/engine.py::_row_origin` só usa origem no **eMMC** (celular
+    × PCB, acordo com o comprador de 2026-08-01) e manda qualquer outro valor
+    para o fallback conservador `'phone'`. Isso é deliberado e está testado
+    abaixo — sem o teste, alguém "conserta" o fallback um dia e o eMMC de lote
+    RAM muda de preço sem ninguém pedir.
+    """
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='opram', password='x')
+        self.company = _grant(self.user, role='manager')
+        _scope(self, self.company)
+
+    def test_abrir_lote_com_origem_ram(self):
+        from estoque.models import Lot
+        lot = Lot.open_for_company(self.company, self.user,
+                                   description='teste RAM',
+                                   origin=Lot.ORIGIN_RAM)
+        self.assertEqual(lot.origin, 'ram')
+        self.assertEqual(lot.get_origin_display(), 'Módulo de memória')
+
+    def test_origem_invalida_continua_recusada(self):
+        """A origem segue OBRIGATÓRIA e fechada — abrir o vocabulário não pode
+        virar 'aceita qualquer coisa'."""
+        from django.core.exceptions import ValidationError
+        from estoque.models import Lot
+        for ruim in ('', 'RAM', 'memoria', 'ddr'):
+            with self.assertRaises(ValidationError, msg=f'aceitou {ruim!r}'):
+                Lot.open_for_company(self.company, self.user, origin=ruim)
+
+    def test_ram_NAO_muda_o_preco_do_emmc(self):
+        """O eMMC de um lote RAM é cotado como CELULAR (fallback conservador).
+        Não é descuido: é o mesmo tratamento de material sem origem declarada."""
+        from pricing.engine import _row_origin
+        self.assertEqual(_row_origin('emmc', 'ram'), 'phone')
+        self.assertEqual(_row_origin('emmc', 'pcb'), 'pcb')
+        self.assertEqual(_row_origin('emmc', 'phone'), 'phone')
+        # e para todo o resto a origem é irrelevante, com RAM como com as outras
+        for kind in ('ddr', 'lpddr', 'emcp', 'ufs'):
+            self.assertEqual(_row_origin(kind, 'ram'), '')
+
+    def test_o_template_oferece_as_TRES(self):
+        """O cartão tem que existir na tela — modelo aberto sem template é
+        origem que ninguém consegue escolher."""
+        import pathlib
+        from django.conf import settings
+        html = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates'
+                / 'estoque' / 'lotes.html').read_text(encoding='utf-8')
+        for valor in ('phone', 'pcb', 'ram'):
+            self.assertIn(f'value="{valor}"', html, f'sem cartão para {valor!r}')
+
+    def test_constraint_do_banco_conhece_ram(self):
+        """A `CheckConstraint` é SQL congelado na migration — `choices` do
+        Django não a atualiza sozinha. Se alguém somar origem no modelo e
+        esquecer a migration, o INSERT estoura só em produção."""
+        from estoque.models import Lot
+        cond = next(c.condition for c in Lot._meta.constraints
+                    if c.name == 'lot_origin_vocab')
+        self.assertEqual(set(cond.children[0][1]), set(dict(Lot.ORIGIN_CHOICES)),
+                         'a constraint do banco e os choices do modelo divergiram')
