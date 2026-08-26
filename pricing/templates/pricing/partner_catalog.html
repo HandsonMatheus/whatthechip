@@ -17,11 +17,11 @@
 {% block sidebar %}{% endblock %}
 
 {% block content %}
-<div class="ptn-card" style="margin-bottom:14px;">
-  <h1 style="margin:0 0 4px;font-size:22px;font-weight:600;">{% trans "Catálogo" %}</h1>
-  <p style="margin:0;font-size:13px;color:#6f6f6f;max-width:70ch;line-height:1.6;">
-    {% blocktrans trimmed %}A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes. Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado de agora, nunca de uma cópia guardada.{% endblocktrans %}
-  </p>
+<div class="phd">
+  <div>
+    <h1>{% trans "Catálogo" %}</h1>
+    <p>{% blocktrans trimmed %}A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes. Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado de agora, nunca de uma cópia guardada.{% endblocktrans %}</p>
+  </div>
 </div>
 
 <form method="post" action="{% url 'pricing:partner_catalog' %}" id="wtc-cat">
@@ -29,22 +29,27 @@
 <div class="cat">
 
   {% comment %} ── ESQUERDA: a seleção ─────────────────────────────── {% endcomment %}
-  <div class="ptn-card" style="padding:0;">
-    <div class="cat__f">
-      <input type="search" id="cat-q" class="ptn-input" style="width:200px;"
-             placeholder="{% trans 'buscar tipo…' %}"
-             aria-label="{% trans 'Buscar tipo por nome ou descrição' %}">
-      <select id="cat-cov" class="ptn-input" style="width:auto;font-family:inherit;"
+  <section class="tile">
+  {% comment %} A `.tbar` do pacote — a mesma barra de filtro da lista de
+     compras. Um filtro que se parece com o filtro da outra tela é um filtro
+     que ele já sabe usar. {% endcomment %}
+    <div class="tbar">
+      <div class="tbar__search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></svg>
+        <input type="search" id="cat-q" placeholder="{% trans 'buscar tipo…' %}"
+               aria-label="{% trans 'Buscar tipo por nome ou descrição' %}">
+      </div>
+      <select id="cat-cov" class="tbar__sel"
               aria-label="{% trans 'Filtrar por cobertura' %}">
         <option value="all">{% trans "todas as tabelas" %}</option>
         <option value="full">{% trans "só completas" %}</option>
         <option value="gap">{% trans "só com lacuna" %}</option>
       </select>
-      <button type="button" id="cat-todos" class="ptn-btn ptn-btn--ghost">{% trans "Desmarcar todos" %}</button>
+      <button type="button" id="cat-todos" class="tbar__sel">{% trans "Desmarcar todos" %}</button>
     </div>
-    <table class="ptn-table">
+    <div class="dtab__wrap"><table class="dtab dtab--static">
       <thead><tr>
-        <th style="width:34px;"><input type="checkbox" id="cat-mestre" checked
+        <th style="width:40px;"><input type="checkbox" id="cat-mestre" checked
               aria-label="{% trans 'Marcar ou desmarcar todos' %}"></th>
         <th>{% trans "Tipo de chip" %}</th>
         <th>{% trans "Estrutura" %}</th>
@@ -57,24 +62,24 @@
             data-txt="{{ t.label|lower }} {{ t.desc|lower }}">
           <td><input type="checkbox" name="types" value="{{ t.key }}" checked
                      class="cat__c" aria-label="{{ t.label }}"></td>
-          <td style="font-weight:600;">{{ t.label }}
-            <div style="font-weight:400;font-size:12px;color:#6f6f6f;">{{ t.desc }}</div></td>
-          <td style="font-size:12.5px;color:#6f6f6f;">{{ t.form }}</td>
-          <td style="font-family:'IBM Plex Mono',monospace;" data-lines="{{ t.lines }}">{{ t.lines }}</td>
-          <td data-quoted="{{ t.quoted }}" data-miss="{{ t.miss }}">
-            <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;">{{ t.quoted }}</span>
-            {% if t.miss %}<span class="ptn-tag ptn-tag--pending" style="margin-left:6px;">{% blocktrans trimmed count n=t.miss %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
-            {% else %}<span class="ptn-tag ptn-tag--quoted" style="margin-left:6px;">{% trans "completa" %}</span>{% endif %}</td>
+          <td class="c" data-label="{% trans 'Tipo de chip' %}">{{ t.label }}
+            <div style="font-family:var(--sans);font-weight:400;font-size:11.5px;color:var(--muted);margin-top:3px;">{{ t.desc }}</div></td>
+          <td class="d" data-label="{% trans 'Estrutura' %}">{{ t.form }}</td>
+          <td class="n" data-label="{% trans 'Linhas' %}" data-lines="{{ t.lines }}">{{ t.lines }}</td>
+          <td class="v" data-label="{% trans 'Cotadas' %}" data-quoted="{{ t.quoted }}" data-miss="{{ t.miss }}">
+            {{ t.quoted }}
+            {% if t.miss %}<span class="tag tag--maybe" style="margin-left:6px;">{% blocktrans trimmed count n=t.miss %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
+            {% else %}<span class="tag tag--yes" style="margin-left:6px;">{% trans "completa" %}</span>{% endif %}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="5" style="color:#6f6f6f;padding:18px;">{% trans "Nenhuma tabela ainda — fale com a equipe WhatTheChip." %}</td></tr>
+        <tr><td colspan="5" class="pempty">{% trans "Nenhuma tabela ainda — fale com a equipe WhatTheChip." %}</td></tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table></div>
     {% comment %} O rodapé conta O QUE VAI SAIR, não o que existe: é a única
        leitura que responde "o que estou mandando?" sem abrir o PDF. {% endcomment %}
     <div class="cat__sum" id="cat-sum" data-total="{{ tipos|length }}"></div>
-  </div>
+  </section>
 
   {% comment %} ── DIREITA: as opções do documento ─────────────────── {% endcomment %}
   <div class="catopt">
@@ -127,7 +132,7 @@
       <div class="catopt__fxs">{% trans "vai no rodapé de todas as páginas" %}</div>
     </div>
 
-    <button type="submit" class="ptn-btn catopt__go" id="cat-go">{% trans "Gerar PDF" %}</button>
+    <button type="submit" class="btn btn--pri catopt__go" id="cat-go">{% trans "Gerar PDF" %}</button>
   </div>
 </div>
 </form>

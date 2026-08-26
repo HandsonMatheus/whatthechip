@@ -344,7 +344,7 @@ def partner_kind(request, kind):
     """Grid de UM TIPO de chip. Unificado (eMCP/uMCP/LPDDR): coluna única —
     linhas da genérica (faixa mín–máx nos combos). Por marca (eMMC/UFS/DDR):
     MATRIZ — linha = geração+faixa, coluna = marca (+ Outras); cada célula
-    posta no partner_save da lista dela (moderação intacta)."""
+    posta no `partner_kind_save` (moderação intacta)."""
     if kind not in _NAV_KINDS:
         from django.http import Http404
         raise Http404
@@ -510,58 +510,6 @@ def partner_home(request):
         'fila': _travados(request),
         'pending': pending, 'stale': stale, 'quoted': quoted,
         'staleness_days': PricingConfig.get_config().staleness_days,
-    })
-
-
-@partner_required
-def partner_list(request, list_pk):
-    """Grid de edição de UMA lista — GRID UNIFICADO (decisão 2026-07-07): toda
-    marca tem as MESMAS linhas (semeadas pelo `seed_price_grid`); nada de
-    exibir herança aqui. Filtros por tipo e por estado via GET."""
-    pl = get_object_or_404(
-        PriceList.all_companies.filter(buyer=request.buyer)
-        .select_related('brand'), pk=list_pk)
-
-    f_kind = request.GET.get('kind', '')
-    f_state = request.GET.get('state', '')
-    qs = Price.all_companies.filter(price_list=pl)
-    # Repactuação 2026-07-27 (ESTRUTURAL): kinds unificados (eMCP/uMCP/LPDDR)
-    # vivem SÓ na genérica — aba de MARCA nem os oferece no filtro.
-    from .models import UNIFIED_KINDS
-    if pl.brand_id is not None:
-        qs = qs.exclude(kind__in=UNIFIED_KINDS)
-    if f_kind in KINDS:
-        qs = qs.filter(kind=f_kind)
-    if f_state in {s for s, _ in STATUS_CHOICES}:
-        qs = qs.filter(status=f_state)
-
-    rows = sorted(qs, key=lambda p: (p.kind not in UNIFIED_KINDS,
-                                     _KIND_ORDER.get(p.kind, 99),
-                                     p.gen, p.tier_value))
-    # F6.1: mudanças EM REVISÃO — o parceiro precisa ver que o pedido existe
-    # (o valor vigente só muda quando o admin aprovar).
-    pendentes = {
-        r.price_id: r
-        for r in PriceChangeRequest.all_companies.filter(
-            price__price_list=pl,
-            review_status=PriceChangeRequest.REVIEW_PENDING)
-    }
-    for p in rows:
-        p.kind_label = _KIND_LABEL.get(p.kind, p.kind)
-        p.pending = pendentes.get(p.pk)
-        p.unified = p.kind in UNIFIED_KINDS
-        p.ranged = p.kind in ('emcp', 'umcp')   # únicos em FAIXA (2026-07-27)
-
-    kind_choices = (KIND_CHOICES if pl.brand_id is None else
-                    [(k, l) for k, l in KIND_CHOICES
-                     if k not in UNIFIED_KINDS])
-    return render(request, 'pricing/partner_list.html', {
-        'buyer': request.buyer, 'price_list': pl, 'rows': rows,
-        'f_kind': f_kind, 'f_state': f_state,
-        'kind_choices': kind_choices, 'state_choices': STATUS_CHOICES,
-        'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
-        'kind_nav': _kind_nav(request), 'active_kind': None,
-        'fx_info': _fx_info(request.buyer),
     })
 
 
@@ -882,121 +830,3 @@ def partner_kind_save(request, kind):
             enviados += 1
     _rate_mensagens(request, enviados, erros)
     return redirect('pricing:partner_kind', kind=kind)
-
-
-@partner_required
-@require_POST
-def partner_save(request, list_pk):
-    """F6.1 — MODERAÇÃO: o parceiro NÃO grava o preço — grava um PEDIDO
-    (`PriceChangeRequest`, pendente) que o admin aprova/rejeita no Django
-    admin. Só a aprovação aplica no `Price`. Um pedido pendente por linha
-    (editar de novo ATUALIZA o pedido)."""
-    pl = get_object_or_404(PriceList.all_companies.filter(buyer=request.buyer),
-                           pk=list_pk)
-
-    kind = (request.POST.get('kind') or '').strip()
-    gen = (request.POST.get('gen') or '').strip()
-    tier_unit = (request.POST.get('tier_unit') or '').strip()
-    try:
-        tier_value = Decimal(request.POST.get('tier_value', ''))
-    except InvalidOperation:
-        tier_value = None
-    # Navegação por TIPO (2026-07-27): envio vindo de /partner/tipo/<kind>/
-    # volta pra lá (from_kind); sem ela, comportamento antigo (partner_list).
-    from_kind = (request.POST.get('from_kind') or '').strip()
-
-    if kind not in KINDS or tier_value is None or tier_unit not in ('GB', 'Gb'):
-        messages.error(request, _('Linha inválida — recarregue a página.'))
-        if from_kind in _NAV_KINDS:
-            return redirect('pricing:partner_kind', kind=from_kind)
-        return redirect('pricing:partner_list', list_pk=pl.pk)
-
-    # PREÇO FIXO + ESTADO EXPLÍCITO (decisões 2026-07-07): o parceiro escolhe o
-    # estado no select; "Cotado" exige o preço (um valor só — min = max interno).
-    raw = (request.POST.get('price') or '').strip().replace(',', '.')
-    state_req = (request.POST.get('state') or '').strip()
-
-
-    def _volta():
-        if from_kind in _NAV_KINDS:
-            return redirect('pricing:partner_kind', kind=from_kind)
-        url = redirect('pricing:partner_list', list_pk=pl.pk)
-        f_kind, f_state = request.POST.get('f_kind', ''), request.POST.get('f_state', '')
-        if f_kind or f_state:                      # preserva os filtros ativos
-            url['Location'] += f'?kind={f_kind}&state={f_state}'
-        return url
-
-    if state_req == STATUS_QUOTED:
-        if not raw:
-            messages.error(request, _('Estado "Cotado" exige o preço em ¥ (RMB).'))
-            return _volta()
-        try:
-            # F10 (RMB canônico): o ¥ digitado entra CRU no pedido — nenhuma
-            # conversão aqui; o USD é derivado na leitura pelo engine.
-            mn = mx = Decimal(raw)
-            # Repactuação 2026-07-27: eMCP/uMCP são os ÚNICOS em FAIXA — o
-            # form manda price_max separado; vazio = preço fixo (max = min).
-            raw_max = (request.POST.get('price_max') or '').strip().replace(',', '.')
-            if kind in ('emcp', 'umcp') and raw_max:
-                mx = Decimal(raw_max)
-                if mx < mn:
-                    messages.error(request, _('Faixa invertida: máx menor que mín.'))
-                    return _volta()
-        except InvalidOperation:
-            messages.error(request, _('Preço ilegível — use números (ex.: 90).'))
-            return _volta()
-        status, qd = STATUS_QUOTED, date.today()
-    elif state_req in (STATUS_UNQUOTED, STATUS_NOT_MADE, STATUS_NO_BUY):
-        status, mn, mx, qd = state_req, None, None, None
-    else:
-        messages.error(request, _('Estado inválido — recarregue a página.'))
-        return _volta()
-
-    obj = Price.all_companies.filter(
-        price_list=pl, kind=kind, gen=gen,
-        tier_value=tier_value, tier_unit=tier_unit).first()
-    if obj is None:
-        # Grid unificado: a linha SEMPRE existe (seed_price_grid). Sumiu =
-        # página velha. Nada de criar Price por fora da moderação.
-        messages.error(request, _('Linha não existe mais — recarregue a página.'))
-        return _volta()
-
-    # Nada mudou? Não gera pedido fantasma.
-    if status == obj.status and (status != STATUS_QUOTED
-                                 or (mn, mx) == (obj.price_min, obj.price_max)):
-        messages.info(request, _('Nada a enviar — a linha já está assim.'))
-        return _volta()
-
-    try:
-        with transaction.atomic():
-            PriceChangeRequest.all_companies.update_or_create(
-                price=obj,
-                review_status=PriceChangeRequest.REVIEW_PENDING,
-                defaults={
-                    'new_status': status, 'new_price': mn,
-                    # Faixa (2026-07-27, só eMCP/uMCP): NULL = fixo (max=min).
-                    'new_price_max': (mx if mx != mn else None),
-                    'old_status': obj.status, 'old_price': obj.price_min,
-                    'requested_by': request.user,
-                })
-    except ValidationError as e:
-        messages.error(request, ' · '.join(
-            f'{msgs[0]}' for msgs in e.message_dict.values()))
-    except IntegrityError:
-        messages.error(request, _('Conflito ao salvar — tente de novo.'))
-    else:
-        # i18n: os rótulos exibidos traduzem; STATUS_* (chaves) nunca.
-        _val = f'{mn}–{mx}' if mx != mn else f'{mn}'
-        rot = {STATUS_QUOTED: _('cotado em ¥ %s') % _val,
-               STATUS_NO_BUY: '"%s"' % _('não compro'),
-               STATUS_UNQUOTED: _('não cotado'),
-               STATUS_NOT_MADE: _('não fabricado')}
-        messages.success(
-            request,
-            _('%(item)s → %(state)s: enviado para REVISÃO do WhatTheChip — '
-              'passa a valer após a aprovação.') % {
-                'item': f'{_KIND_LABEL.get(kind, kind)} '
-                        f'{tier_value.normalize():f}{tier_unit}',
-                'state': rot[status],
-            })
-    return _volta()

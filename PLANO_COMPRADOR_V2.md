@@ -165,7 +165,7 @@ aponta pra elas** — a sidebar só linka `partner_home` e `partner_kind`. A v2 
 | **C4** | **Model `OrderNote` novo + migrar as notas de acerto existentes** | O textarea do modal passa a criar a primeira nota. PDF imprime a lista com autoria **"Conferência"**. 1 linha de migração por `Settlement` com nota |
 | **C5** | Comprovante: manter **5 MB + MIME sniffado** (contra os 10 MB da spec) | Ajustar só o texto da tela |
 | **C6** | Manter `/partner/compras/<pk>/` (não trocar por código do lote) e as rotas em **inglês** | Não quebra link guardado; preserva o teste que crava `/partner/how/` |
-| **C7** | Remover `/partner/lists/<pk>/` e `/partner/save/<pk>/` (órfãs) na v2 | Com teste cravando o 404/redirect |
+| **C7** ✅ | Remover `/partner/lists/<pk>/` e `/partner/save/<pk>/` (órfãs) na v2 (2026-08-26) | Feito com teste cravando o 404 — e a cobertura que elas tinham desceu para a rota viva |
 
 ---
 
@@ -289,7 +289,7 @@ Cada etapa fecha sozinha, com teste, e não deixa a tela pela metade.
 | **6** ✅ | `BlockedQuote` no resumo de preços | C2 |
 | **7** ✅ | SSD + K9 nas telas de preço, piso do SSD | C3 |
 | **8** ✅ | Catálogo parametrizado | 7 |
-| **9** | Aplicar o design v2 em todos os templates do comprador | 1–8 |
+| **9** ✅ | Aplicar o design v2 em todos os templates do comprador | 1–8 |
 | **10** | Celular (≤600px) + 4 idiomas das strings novas | 9 |
 
 ---
@@ -829,6 +829,74 @@ acrescenta busca, filtro de cobertura, o mestre `all`/`indeterminate` e a conta 
 home. A REGRA é a mesma — o comprador chega ao catálogo a partir do painel —, mas o caminho ganhou um
 degrau. As duas pontas ficaram cravadas: a home linka `/partner/catalogo/`, e a tela tem o form que posta
 no `.pdf`.
+
+### ✅ Etapa 9 — o desenho v2 nas cinco telas de preço, e o fim do `ptn-*` (2026-08-26)
+
+Metade do painel já estava de roupa nova (Compras) e metade de roupa velha com peças novas costuradas.
+Acabou. As cinco telas de preço falam o vocabulário do pacote, e as ~60 linhas de CSS de mão que viviam
+no `<style>` do `partner_base` **saíram inteiras**.
+
+| Tela | O que passou a usar |
+|---|---|
+| Resumo | `.phd` · `.seals` · `.blk` (a fila) · `.pkpi` · `.pdoor` · `.tile` + `.dtab` |
+| Grade do tipo | `.phd` · `.seals` · `.gnote--blk` · `.grid2` + `.dtab` · `.tag` · `input.cell` · `.pfoot` |
+| Catálogo | `.tbar` (a mesma barra de filtro das Compras) · `.tile` + `.dtab` · `.btn` |
+| Como funciona | `.phd` · `.tile` · `.step4` · `.dtab` · `.faq` |
+| Notificações | `.phd` · `.tile` + `.dtab` · `.tag` |
+
+**O `.blkw` que inventei na Etapa 6 morreu.** O pacote já tinha `.gnote--blk` para exatamente isso — com
+uma lição embutida que a minha versão não tinha: o SVG leva `flex:none` e tamanho FIXO, senão num aviso de
+duas linhas ele vira um triângulo vermelho do tamanho da viewport e empurra a tabela para fora da tela.
+
+**A MATRIZ ganhou coluna de Status.** Era ela que faltava desde a Etapa 6: por não existir, a marca de
+"travando" tinha virado um número solto no rótulo, com a frase escondida no `title`. Agora cabe por
+extenso, como na unificada.
+
+**`data-label` em TODO `<td>`.** Abaixo de 600px a `.dtab` esconde o cabeçalho e a linha vira cartão. Sem
+o rótulo, dois campos de preço lado a lado não dizem qual é o mínimo e qual é o máximo.
+
+**Duas classes próprias, e só duas:** `.pkpi` (os três números) e `.pdoor` (a porta do catálogo). Não
+reusei `.pmet`/`.quick` do pacote — aquelas são a lista rótulo→valor do painel da ficha e a fileira de
+botões pequenos. Nome parecido, papel diferente; vestir com a classe errada é como um sistema de design
+apodrece.
+
+**🔴 O "Como funciona" não foi só roupa: o texto MENTIA em quatro pontos**, cada um por uma decisão
+posterior que ninguém voltou para refletir ali —
+
+| Dizia | Desde quando é falso |
+|---|---|
+| "Escolha uma **marca** no menu à esquerda" | 2026-07-27: a barra é por TIPO; marca virou coluna |
+| "escolha o **estado** da linha" | v3: o seletor morreu, hoje é UM campo |
+| "a taxa no topo é a do seu **contrato**" | PLANO_FX: é mid-market do dia; contrato é bootstrap |
+| "o contador da página **Início**" | a seção passou a se chamar Preços |
+
+Página que ensina errado é pior que página que não ensina: ela é lida com confiança. A tabela "o que você
+digita na célula" passou a mostrar os quatro estados com o selo que a grade realmente desenha, e o FAQ
+ganhou a pergunta que a Etapa 6 criou (*"o que é travando N pedidos?"*).
+
+**As mensagens do Django viraram `.note`** do pacote, com o mapa `success→ok · error→dan · warning→warn ·
+resto→info` num lugar só — em vez de a folha ganhar quatro apelidos para o mesmo componente.
+
+### ✅ C7 — as rotas órfãs saíram (2026-08-26)
+
+`/partner/lists/<pk>/` e `/partner/save/<pk>/` funcionavam e **nenhum link apontava para elas** desde que a
+navegação virou por tipo. Rota viva que ninguém alcança é superfície para manter, testar e traduzir de
+graça — e um segundo caminho para gravar preço, com regra própria, é onde os dois divergem calado.
+
+**A cobertura não se perdeu — desceu para a rota viva.** Os três testes que valiam (ciclo de moderação
+completo, recusa do valor ilegível, isolamento entre compradores) foram reescritos contra
+`/partner/tipo/<kind>/enviar/`, com as mesmas asserções. O que morreu junto foi só o que era da página
+morta: os filtros por tipo/estado dela. E a regra que aquele teste também guardava — *o comprador nunca vê
+auditoria* — virou teste próprio na grade viva.
+
+46 msgids novos nos 3 catálogos (21 na 9a + 25 na 9b) · 8 testes existentes atualizados, todos de
+vocabulário ou de rota, **nenhuma regra alterada**.
+
+⚠ **Nota de sandbox, não do repo:** a criação do banco de teste em memória passou de ~3s para ~37s nesta
+máquina no meio da etapa, e estourou a janela de 45s do shell. Contornei com um `settings` descartável
+FORA do repo apontando o banco de TESTE para arquivo, o que permite `--keepdb`. **Depois de qualquer
+migração nova é obrigatório apagar o arquivo** — senão os testes rodam contra um esquema velho, que é a
+única maneira de esse atalho mentir.
 
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 

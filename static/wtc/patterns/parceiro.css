@@ -480,7 +480,6 @@
    direita. Abaixo de 900px vira uma coluna e as opções vão para o FIM — a
    seleção é a decisão principal, e no telefone o polegar chega primeiro nela. */
 .cat{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
-.cat__f{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
 .cat__sum{padding:11px 14px;border-top:2px solid var(--line);font-size:12.5px;color:var(--muted);background:var(--ink-05)}
 .cat__sum.is-bad{color:var(--red-70);font-weight:600}
 /* Caixa ESCURA (o `--ink-100` do desenho): o painel de opções não é mais uma

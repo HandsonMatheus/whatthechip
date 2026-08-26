@@ -1192,66 +1192,72 @@ class PartnerDashboardTests(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['Location'], '/partner/')
 
-    def test_lista_mostra_so_linhas_proprias_sem_auditoria(self):
-        # GRID UNIFICADO (2026-07-07): a página mostra SÓ as linhas da própria
-        # lista — herança não aparece na UI (fica no engine, p/ marcas sem lista).
-        self.client.force_login(self.partner)
-        resp = self.client.get(f'/partner/lists/{self.l_gen.pk}/')
-        self.assertContains(resp, '6.00')                    # value unlocalized
-        self.assertContains(resp, 'Não fabricado')           # opção do select
-        self.assertNotContains(resp, 'herdado')
-        self.assertNotContains(resp, 'Atualizado')           # auditoria invisível
-        self.assertNotContains(resp, 'parceiro_p6')
-        # SK (sem linhas próprias antes do seed_price_grid) vem vazia:
-        resp_sk = self.client.get(f'/partner/lists/{self.l_sk.pk}/')
-        self.assertNotContains(resp_sk, '6.00')
+    def test_rotas_orfas_do_grid_por_LISTA_sairam(self):
+        """C7 (dono, 2026-08-26). `/partner/lists/<pk>/` e `/partner/save/<pk>/`
+        funcionavam mas **nenhum link apontava para elas** desde que a
+        navegação virou POR TIPO (2026-07-27): a barra só leva a
+        `partner_home` e `partner_kind`. Rota viva que ninguém alcança é
+        superfície para manter, testar e traduzir de graça — e um segundo
+        caminho para gravar preço, com regra própria, é onde as duas
+        divergem calado.
 
-    def test_filtros_por_tipo_e_estado(self):
+        A COBERTURA NÃO SE PERDEU: o ciclo de moderação, a recusa do valor
+        ilegível e o isolamento entre compradores desceram para a rota VIVA
+        (`/partner/tipo/<kind>/enviar/`) nos três testes abaixo.
+        """
         self.client.force_login(self.partner)
-        url = f'/partner/lists/{self.l_gen.pk}/'
-        resp = self.client.get(url, {'kind': 'ufs'})
-        self.assertNotContains(resp, 'value="6.00"')         # linha eMMC filtrada
-        self.assertContains(resp, 'UFS')
-        resp2 = self.client.get(url, {'state': 'quoted'})
-        self.assertContains(resp2, 'value="6.00"')
-        self.assertNotContains(resp2, '>256GB')              # a UFS 256 é unquoted
+        self.assertEqual(
+            self.client.get(f'/partner/lists/{self.l_gen.pk}/').status_code, 404)
+        self.assertEqual(
+            self.client.post(f'/partner/save/{self.l_gen.pk}/', {}).status_code,
+            404)
+
+    def test_a_grade_do_parceiro_nao_mostra_auditoria(self):
+        """Vinha do teste da lista órfã, e a regra é do PAINEL inteiro (§7):
+        `updated_by`/`last_updated` são do admin. O comprador nunca vê quem
+        mexeu."""
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/tipo/emmc/')
+        self.assertContains(resp, 'value="6"')               # ¥ inteiro
+        self.assertNotContains(resp, 'Atualizado')
+        self.assertNotContains(resp, 'parceiro_p6')
+        self.assertNotContains(resp, 'herdado')
 
     def test_save_cota_no_buy_e_volta_a_aguardando(self):
+        """F6.1 MODERAÇÃO pela rota VIVA: o envio do parceiro NÃO muda o
+        `Price` — cria um pedido pendente; só a aprovação do admin aplica."""
         self.client.force_login(self.partner)
-        # F6.1 MODERAÇÃO: o save do parceiro NÃO muda o Price — cria um pedido
-        # pendente; só a aprovação do admin aplica.
         from pricing.models import PriceChangeRequest
-        url = f'/partner/save/{self.l_gen.pk}/'
-        key = dict(kind='emmc', gen='', origin='phone', tier_value='64', tier_unit='GB')
+        url = '/partner/tipo/emmc/enviar/'
         row = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
 
         # 1) pede cotação nova → Price INTACTO + pedido pendente
-        self.client.post(url, {**key, 'state': 'quoted', 'price': '5.50'})
+        self.client.post(url, {f'p{row.pk}': '5'})
         row.refresh_from_db()
         self.assertEqual(row.price_min, Decimal('6.00'))     # nada mudou ainda
         req = PriceChangeRequest.all_companies.get(price=row)
         self.assertEqual(req.review_status, 'pending')
         self.assertEqual((req.new_price, req.old_price),
-                         (Decimal('5.50'), Decimal('6.00')))
+                         (Decimal('5'), Decimal('6.00')))
         self.assertEqual(req.requested_by, self.partner)
 
         # o grid mostra o aviso "em revisão":
-        resp = self.client.get(f'/partner/lists/{self.l_gen.pk}/')
-        self.assertContains(resp, 'em revisão')
+        self.assertContains(self.client.get('/partner/tipo/emmc/'),
+                            'em revisão')
 
         # 2) editar de novo ATUALIZA o pedido pendente (não empilha)
-        self.client.post(url, {**key, 'state': 'quoted', 'price': '5.75'})
+        self.client.post(url, {f'p{row.pk}': '7'})
         self.assertEqual(
             PriceChangeRequest.all_companies.filter(price=row).count(), 1)
         req.refresh_from_db()
-        self.assertEqual(req.new_price, Decimal('5.75'))
+        self.assertEqual(req.new_price, Decimal('7'))
 
         # 3) APROVAR aplica no Price (data = dia da aprovação; autor = parceiro)
         User = get_user_model()
         dono = User.objects.create_superuser('dono_p6', password='x')
         req.approve(dono)
         row.refresh_from_db()
-        self.assertEqual(row.price_min, Decimal('5.75'))
+        self.assertEqual(row.price_min, Decimal('7'))
         self.assertEqual(row.status, STATUS_QUOTED)
         self.assertEqual(row.quote_date, date.today())
         self.assertEqual(row.updated_by, self.partner)
@@ -1259,17 +1265,18 @@ class PartnerDashboardTests(TestCase):
         self.assertEqual((req.review_status, req.reviewed_by),
                          ('approved', dono))
 
-        # 4) REJEITAR não toca no Price
-        self.client.post(url, {**key, 'state': 'no_buy'})
+        # 4) REJEITAR não toca no Price ("x" = não compro)
+        self.client.post(url, {f'p{row.pk}': 'x'})
         req2 = PriceChangeRequest.all_companies.get(price=row,
                                                     review_status='pending')
+        self.assertEqual(req2.new_status, STATUS_NO_BUY)
         req2.reject(dono)
         row.refresh_from_db()
-        self.assertEqual(row.status, STATUS_QUOTED)          # segue cotado 5.75
-        self.assertEqual(row.price_min, Decimal('5.75'))
+        self.assertEqual(row.status, STATUS_QUOTED)          # segue cotado 7
+        self.assertEqual(row.price_min, Decimal('7'))
 
         # 5) no-op não gera pedido fantasma
-        self.client.post(url, {**key, 'state': 'quoted', 'price': '5.75'})
+        self.client.post(url, {f'p{row.pk}': '7'})
         self.assertFalse(PriceChangeRequest.all_companies.filter(
             price=row, review_status='pending').exists())
 
@@ -1281,36 +1288,35 @@ class PartnerDashboardTests(TestCase):
         resp = self.client.get('/partner/notifications/')
         self.assertContains(resp, 'Aprovado')
         self.assertContains(resp, 'Rejeitado')
-        self.assertContains(resp, '¥ 5.75')              # F10: pedido em ¥
+        self.assertContains(resp, '¥ 7')                 # F10: pedido em ¥
         resp = self.client.get('/partner/')
         self.assertEqual(resp.wsgi_request.partner_unseen, 0)
 
     def test_save_invalido_nao_grava(self):
         self.client.force_login(self.partner)
-        url = f'/partner/save/{self.l_gen.pk}/'
-        antes = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
-        resp = self.client.post(url, dict(kind='emmc', gen='', origin='phone', tier_value='64',
-                                          tier_unit='GB', state='quoted',
-                                          price='abc'), follow=True)
-        self.assertContains(resp, 'Preço ilegível')
-        resp2 = self.client.post(url, dict(kind='emmc', gen='', origin='phone', tier_value='64',
-                                           tier_unit='GB', state='quoted'),
-                                 follow=True)
-        self.assertContains(resp2, 'exige o preço')          # Cotado sem USD
-        depois = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
-        self.assertEqual(depois.price_min, antes.price_min)  # intacto
+        from pricing.models import PriceChangeRequest
+        row = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
+        resp = self.client.post('/partner/tipo/emmc/enviar/',
+                                {f'p{row.pk}': 'abc'}, follow=True)
+        self.assertContains(resp, 'ilegível')
+        row.refresh_from_db()
+        self.assertEqual(row.price_min, Decimal('6.00'))     # intacto
+        self.assertFalse(PriceChangeRequest.all_companies.exists())
 
     def test_isolamento_entre_compradores(self):
+        """O envio é por TIPO, e o queryset é filtrado pelo `request.buyer`:
+        a linha do outro comprador simplesmente não está no laço. Nada de
+        "esconder link" — a chave forjada não encontra o que gravar."""
+        from pricing.models import PriceChangeRequest
         self.client.force_login(self.other_partner)
-        self.assertEqual(
-            self.client.get(f'/partner/lists/{self.l_samsung.pk}/').status_code, 404)
-        resp = self.client.post(f'/partner/save/{self.l_gen.pk}/',
-                                dict(kind='emmc', gen='', origin='phone', tier_value='64',
-                                     tier_unit='GB', state='quoted',
-                                     price='1.00'))
-        self.assertEqual(resp.status_code, 404)              # lista de OUTRO comprador
         row = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
+        resp = self.client.post('/partner/tipo/emmc/enviar/',
+                                {f'p{row.pk}': '1'})
+        self.assertEqual(resp.status_code, 302)              # segue o PRG
+        row.refresh_from_db()
         self.assertEqual(row.price_min, Decimal('6.00'))     # intocado
+        self.assertFalse(PriceChangeRequest.all_companies.filter(
+            price=row).exists())
 
 
 class PricingRLSTests(TransactionTestCase):
@@ -2279,10 +2285,12 @@ class PartnerKindNavTests(TestCase):
         self.assertEqual(req.new_price, Decimal('95'))
 
     def test_save_da_pagina_do_tipo_volta_pra_ela(self):
+        """⚠ ATUALIZADO na Etapa 9 (decisão C7): a rota `/partner/save/<pk>/`
+        saiu. A REGRA é a mesma — enviar da página do tipo volta para ela, com
+        a faixa mín–máx no pedido —, e agora ela se prova na rota VIVA."""
         self.client.force_login(self.partner)
-        resp = self.client.post(f'/partner/save/{self.l_gen.pk}/', dict(
-            kind='emcp', gen='', tier_value='16.00', tier_unit='GB',
-            state='quoted', price='95', price_max='105', from_kind='emcp'))
+        resp = self.client.post('/partner/tipo/emcp/enviar/', {
+            f'p{self.p_emcp.pk}': '95', f'pmax{self.p_emcp.pk}': '105'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['Location'], '/partner/tipo/emcp/')
         from pricing.models import PriceChangeRequest
@@ -2898,7 +2906,7 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
         pedido. As duas são verdade — a que aparece é a que explica a
         urgência; a contagem exata está a um clique, na grade."""
         semfila = self.client.get('/partner/precos/').content.decode()
-        self.assertIn('ptn-tag--pending', semfila)      # lacuna, sozinha
+        self.assertIn('tag--maybe', semfila)            # lacuna, sozinha (v2)
         self.assertNotIn('travando', semfila)
         self._ddr('C1')
         html = self.client.get('/partner/precos/').content.decode()

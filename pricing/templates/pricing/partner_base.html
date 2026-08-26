@@ -14,9 +14,9 @@
   flag nunca o alcançaria. Decisão do dono: trocar direto na superfície do
   comprador (é um usuário só, e o rollback é reverter o commit).
 
-  As telas de PREÇO ainda não foram migradas: as classes `.ptn-*` que elas
-  usam continuam neste <style> até chegar a vez delas. Não acrescente nada
-  ali — componente novo vem do pacote.
+  As cinco telas de PREÇO migraram em 2026-08-26 (Etapa 9) e o `.ptn-*` que
+  vivia neste <style> saiu inteiro. Componente novo vem do PACOTE — CSS de
+  mão aqui é o começo de uma segunda folha de estilo.
 
   Extras do parceiro que a barra carrega:
     · TAXA CONTRATUAL ¥→US$ (F10 §12.18: server-side, é o Buyer.fx_usd_rate
@@ -83,69 +83,11 @@
     .pshell[data-shell].is-open .pshell__lbl{display:inline;margin-left:12px;
       font-size:15px;font-weight:600}
 
-    /* ══ LEGADO — telas de PREÇO ainda não migradas para o pacote ══
-       Some conforme cada uma for vestida. Nada novo entra aqui. */
-    .ptn-msg { padding:12px 16px; margin-bottom:14px; border-left:4px solid;
-               background:var(--surface); font-size:14px; }
-    .ptn-msg--success { border-color:var(--green-60); }
-    .ptn-msg--error   { border-color:var(--red-60); }
-    .ptn-card { background:var(--surface); border:1px solid var(--line); padding:20px 22px;
-                margin-bottom:18px; }
-    table.ptn-table { width:100%; border-collapse:collapse; background:var(--surface); }
-    .ptn-table th { text-align:left; font-size:11px; letter-spacing:.08em;
-                    text-transform:uppercase; color:var(--muted); padding:10px 10px;
-                    border-bottom:2px solid var(--line); }
-    .ptn-table td { padding:8px 10px; border-bottom:1px solid var(--ink-10);
-                    font-size:14px; vertical-align:middle; }
-    .ptn-row--inherited td { background:#fafafa; color:var(--faint); }
-    .ptn-row--unquoted td { background:#fffbea; }   /* não cotado */
-    .ptn-row--nobuy td    { background:var(--red-10); }   /* não compro */
-    .ptn-tag { display:inline-block; font-size:11px; font-weight:700;
-               padding:2px 8px; }
-    .ptn-tag--review   { background:var(--blue-20); color:var(--blue-70); }
-    .ptn-tag--pending  { background:#fff1c2; color:var(--amber-70); }
-    .ptn-tag--nobuy    { background:#ffd7d9; color:var(--red-70); }
-    /* PEDIDO TRAVADO (§3.5): chapa fixa, texto fixo — mesma razão do
-       .ptype__b, a chapa não inverte com o tema e a cor do texto se
-       decide contra ela. */
-    .ptn-tag--block    { background:#a2191f; color:#fff; }
-    .ptn-tag--quoted   { background:#defbe6; color:var(--green-70); }
-    .ptn-tag--inherited{ background:var(--ink-20); color:var(--ink-70); }
-    .ptn-input { width:88px; padding:6px 8px; border:1px solid var(--ink-50);
-                 font-family:var(--mono); font-size:14px; }
-    .ptn-btn { padding:7px 14px; border:none; background:var(--blue-60); color:#fff;
-               font-weight:600; font-size:13px; cursor:pointer; }
-    .ptn-btn--ghost { background:var(--surface); color:var(--text); border:1px solid var(--ink-50); }
-    .ptn-kpi { display:inline-flex; flex-direction:column; gap:4px; padding:16px 22px;
-               background:var(--surface); border:1px solid var(--line); min-width:170px; }
-    .ptn-kpi b { font-size:30px; font-family:var(--mono); }
-    .ptn-h1 { font-size:26px; font-weight:300; margin:0 0 4px; letter-spacing:-.02em; }
-    .ptn-h1 b { font-weight:700; }
-    .ptn-sub { color:var(--muted); font-size:14px; margin:0 0 22px; max-width:60ch; }
-    .ptn-matrix { width:auto; min-width:100%; }
-    .ptn-matrix th { text-align:center; padding:8px 6px; white-space:nowrap; }
-    .ptn-matrix td { padding:5px 6px; text-align:center; white-space:nowrap; }
-    .ptn-matrix th:first-child, .ptn-matrix td:first-child {
-      position:sticky; left:0; background:var(--surface); text-align:left; z-index:2;
-      box-shadow:2px 0 0 var(--line); font-family:var(--mono); }
-    .ptn-matrix__gen td { background:var(--ink-10); font-weight:700; font-size:12px;
-      letter-spacing:.06em; color:var(--ink-70); position:static; box-shadow:none; }
-    .ptn-matrix__gen td:first-child { position:sticky; left:0; background:var(--ink-10); }
-    .ptn-cell { display:inline-flex; flex-direction:column; gap:3px;
-                align-items:center; margin:0; }
-    .ptn-cell__in { width:58px; padding:5px 4px; text-align:center;
-      border:1px solid var(--line-2); font-family:var(--mono); font-size:14px; }
-    .ptn-cell__in:focus { border-color:var(--blue-60); outline:2px solid var(--blue-60);
-                          outline-offset:-2px; }
-    .ptn-cell--nobuy .ptn-cell__in { background:var(--red-10); }
-    .ptn-cell--unquoted .ptn-cell__in { background:#fffbea; }
-    .ptn-cell__ok { padding:3px 10px; border:none; background:var(--blue-60);
-      color:#fff; font-weight:700; font-size:12px; cursor:pointer; }
-    @media (max-width: 880px) {
-      .ptn-card { padding:12px; }
-      .ptn-matrix th, .ptn-matrix td { padding:4px 4px; font-size:12px; }
-      .ptn-cell__in { width:52px; font-size:16px; }  /* 16px: iOS não dá zoom */
-    }
+    /* ══ O `ptn-*` MORREU em 2026-08-26 (Etapa 9) ══
+       Eram ~60 linhas de CSS de mão que vestiam as telas de PREÇO
+       enquanto elas não falavam o pacote. As cinco falam agora, e a
+       folha saiu inteira — CSS legado que ninguém usa não é
+       inofensivo: ele é copiado por quem chega depois. */
   </style>
   {% block extra_head %}{% endblock %}
 </head>
@@ -278,7 +220,11 @@
   <main class="pmain">
     {% if messages %}
       {% for m in messages %}
-        <div class="ptn-msg ptn-msg--{{ m.tags }}">{{ m }}</div>
+        {% comment %} `.note` do pacote. As tags do Django (`success`,
+           `error`, `info`, `warning`) não são as do desenho — o mapa vive
+           aqui, uma vez, em vez de a folha ganhar quatro apelidos. {% endcomment %}
+        <div class="note note--{% if m.tags == 'success' %}ok{% elif m.tags == 'error' %}dan{% elif m.tags == 'warning' %}warn{% else %}info{% endif %}"
+             style="margin-bottom:12px;font-size:13.5px;line-height:1.5;">{{ m }}</div>
       {% endfor %}
     {% endif %}
     {% block content %}{% endblock %}
