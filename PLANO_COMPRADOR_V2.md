@@ -353,6 +353,44 @@ Duas guardas porque cada uma pega um caso: o 2º POST que chega **depois** do 1�
 
 **i18n:** 6 msgids novos, traduzidos nos 3 catálogos (`en`/`es`/`zh_Hans`), `.mo` recompilados. O `title` antigo virou **obsoleto** (convenção gettext), não foi apagado. Zero strings sem tradução.
 
+### 🔴 Achado fora do escopo — `PartnerSelfAccessRLS` está vermelho por um bug REAL
+
+O commit `a6b2008` (19/08) já registrava este teste como vermelho conhecido, sem causa. A causa é esta:
+
+**`pricing/0010_buyer_self_policy`** existe por causa de um bug de PRODUÇÃO de 2026-07-09: o parceiro não
+tem `Membership`, logo o middleware não emite `app.company_id`, logo a policy devolvia zero linhas de
+`pricing_buyer`, logo `partner_required` não achava o buyer → **403**. O conserto foi a cláusula de
+auto-acesso:
+
+```sql
+OR id IN (SELECT buyer_id FROM pricing_buyer_users
+          WHERE user_id = NULLIF(current_setting('app.user_id', true), '')::int)
+```
+
+**`pricing/0021_comprador_plataforma`** (03/08) trocou a `tenant_isolation` por quatro policies
+(`tenant_read`/`ins`/`upd`/`del`) — e **a cláusula de auto-acesso não foi para a de LEITURA**:
+
+```python
+_READ_WIDE = f"(company_id = {_GUC} OR {_PLAT} OR company_id IS NULL)"   # ← sem o parceiro
+_WRITE     = f"(company_id = {_GUC} OR {_PLAT} OR {_PARTNER})"           # ← só aqui sobrou
+```
+
+**Por que produção não cai hoje:** a mesma migração rodou `_flip_para_plataforma`, que pôs `company=NULL`
+em todo Buyer — e `company_id IS NULL` deixa a linha legível por qualquer um. O portão do parceiro
+funciona por acidente do DADO, não pela policy.
+
+**O que quebra:** no instante em que existir um Buyer com `company_id` preenchido — que o model continua
+suportando (`company` é nullable, não foi removido) — o parceiro dele leva **403**. É o bug de 2026-07-09
+de volta, dormindo.
+
+**Segundo efeito:** o teste também crava *"e nada mais"*. Com leitura ampla por `company_id IS NULL`, dois
+compradores de plataforma se enxergam. O cabeçalho da 0021 documenta esse residual para **escrita**
+(*"hoje há UM comprador; o app escopa por buyer nas views"*); para **leitura** ele existe e não está
+documentado.
+
+**Conserto:** migração nova que devolve a cláusula à `tenant_read` do `pricing_buyer`. Só AMPLIA
+visibilidade para os usuários do próprio buyer — não esconde nada de ninguém, e é reversível.
+
 ### ⚠ O que só roda na máquina do dono
 
 O sandbox não alcança o Postgres (o `venv/` do repo aponta para um Python que não existe do lado montado). Foi verificado aqui: `manage.py check` limpo, os três templates compilam, os `.mo` resolvem nos 3 idiomas, e a migração foi **gerada pelo Django**, não escrita à mão.
