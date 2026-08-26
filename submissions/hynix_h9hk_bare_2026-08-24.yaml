@@ -1,0 +1,50 @@
+# Submissão de known_parts — SK Hynix, família H9HK (forma SEM SUFIXO).
+#
+# Correção do dono (2026-08-24): eu tinha descartado submeter a forma sem sufixo
+# "H9HKNNNCTUMU" por "a gramática já decodifica igual" — ERRADO. Objetivo é PN
+# CONFIRMADO NO BANCO, gramática é problema separado (mesma regra de sempre).
+# Voltando atrás e submetendo.
+#
+# CONTEXTO: a bancada de hoje leu "H9HKNNNCPUMU" (14 caractere) — na prática a
+# leitura foi da forma SEM SUFIXO da família (12 caracteres), com 1 caractere
+# errado (P em vez de T). O dono confirmou a identidade certa é "H9HKNNNCTUMU"
+# (2 links: DigiPart CUUMU + mic-checker CRMAVAR — ambos irmãos já confirmados
+# em submissão de jul/2026, ver hynix_h9hk_2026-07-09/10/14.yaml). Ou seja: a
+# forma sem sufixo é exatamente o que sai direto da bancada — merece known_part
+# próprio, igual ao precedente já usado na família H26M.
+#
+# IDENTIDADE: "H9HKNNNCTUMU" é PN real orderável, não só um prefixo de busca —
+# a DigiPart lista ele como linha própria de estoque (distribuidor "New Strength
+# Electronic co.,Limited", DC:2016+, BGA-366, estoque 1175 unidades), separado
+# das variantes com sufixo de grade/temperatura (AR-NLH/BR-NLH/BR-NMH/TR-NLH/
+# TR-NMH/etc. — todas SKHYNIX, mesmo núcleo de PN).
+#
+# SPECS: herdadas do irmão já CONFIRMADO com sufixo completo, mesmo núcleo de PN
+# (H9HKNNNCTUMUBR-NMH, submetido e aprovado em hynix_h9hk_2026-07-09.yaml,
+# confidence=manual) — LPDDR4X 4GB. O sufixo de grade/temperatura não muda a
+# identidade elétrica/capacidade, só a faixa de temperatura/pacote comercial.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hk_bare_2026-08-24.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hk_bare_2026-08-24.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HKNNNCTUMU"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNNCTUMU"
+    notes: >
+      Forma SEM SUFIXO da família H9HK — é a leitura direta de bancada (bipada
+      hoje 2026-08-24 como "H9HKNNNCPUMU", 1 caractere errado, corrigido pelo
+      dono para "H9HKNNNCTUMU"). PN real orderável na DigiPart (New Strength
+      Electronic co.,Limited, DC:2016+, BGA-366, estoque 1175un), não apenas
+      prefixo de busca do agregador. Specs herdadas do irmão com sufixo
+      completo já CONFIRMADO (H9HKNNNCTUMUBR-NMH, hynix_h9hk_2026-07-09.yaml,
+      confidence=manual, atestado em ~25 distribuidores) — mesmo núcleo de PN,
+      sufixo é só grade/temperatura, não muda LPDDR4X 4GB. Objetivo é cobrir o
+      PN que a bancada realmente lê, independente da gramática já decodificar
+      certo (correção do dono, 2026-08-24).

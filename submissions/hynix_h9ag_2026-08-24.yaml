@@ -1,0 +1,98 @@
+# Submissão de known_parts — SK Hynix, família H9AG (eMCP eMMC5.1+LPDDR4X, FAMÍLIA NOVA).
+# Gerado a partir da investigação do PN da bancada "H9AG9G5ANB" (2026-08-24).
+#
+# ⚠ FAMÍLIA NOVA (Trilha A, chips/knowledge/hynix.yaml): a bancada leu "H9AG9G5ANB" e o
+# engine devolveu known=false — prefixo H9AG nunca visto. Confirmei real via DATASHEET OFICIAL
+# SK Hynix completo (uttc.com.tw/wp-content/uploads/2025/12/H9AG9G5ANBX100_Rev0.2.pdf, Rev
+# 0.2/Set.2020, "SK hynix Confidential") — li capa, features, block diagram e a Ordering
+# Information posição-a-posição na íntegra. Estrutura idêntica a H9HP/H9HQ (eMCP eMMC+LPDDR4X,
+# pn[4:6]=NAND 2 chars, pn[6:8]=RAM 2 chars, pn_length=14): mapa NAND PRÓPRIO da família
+# (HYX_H9AG_NAND_CAP, código '9G'=64GB/'8G'=32GB — valores DIFERENTES de qualquer código
+# H9HP/H9HQ, não é compartilhável) + mapa RAM COMPARTILHADO com H9HP/H9HQ (HYX_LPDDR4X_RAM_CAP,
+# 3 chaves novas 5A/DM/EA sem colisão com AB/AC/AD/AE/AF já existentes).
+#
+# ⚠ ARITMÉTICA CONFERIDA NA MÃO (regra permanente — quase todo distribuidor deste PN erra a
+# unidade da RAM): AB Sunshine/Win-Source/SZComponents anunciam "LPDDR4(32GB)" — ERRADO. O
+# datasheet oficial resolve: Ordering Information diz "4GB (x16)" pra LPDDR4X, e o DRAM Block
+# Diagram do PRÓPRIO datasheet mostra a conta explícita — 4 canais (CS0_A/CS0_B/CS1_A/CS1_B) de
+# 8Gb x16 cada = 4×8Gb = 32Gb = 32Gb÷8 = 4GB. O "32" que os distribuidores escrevem é o valor em
+# Gb (gigabit) da densidade bruta, não GB — confirmado também na notação estruturada da Preduo
+# ("Density: 64+32", onde o 2º número é sempre Gb, mesmo padrão já visto nos irmãos abaixo).
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a mesma varredura achou 2
+# irmãos reais na página Preduo/relacionados, ambos com densidade estruturada "NAND+RAM(Gb)":
+#   H9AG9G5ANBX100 (ALVO): Preduo "64+32" → 64GB eMMC + 32Gb÷8=4GB LPDDR4X — confirmado também
+#     pelo datasheet oficial (acima).
+#   H9AG8GDMNBX113: Preduo "32+24" → 32GB eMMC + 24Gb÷8=3GB LPDDR4X.
+#   H9AG9GEANBX101: Preduo "64+48" → 64GB eMMC + 48Gb÷8=6GB LPDDR4X — 2ª confirmação
+#     independente do código NAND '9G'=64GB (mesmo código do alvo).
+#
+# FONTES:
+#   H9AG9G5ANBX100: datasheet oficial completo (uttc.com.tw, Rev 0.2/Set.2020) — Ordering
+#     Information lida na íntegra, Density="64GB (x8)"/"4GB (x16)", Package=254-ball FBGA,
+#     Vcc(NAND)=2.7-3.6V, LPDDR4X VDD1/2/VDDQ=1.8V/1.1V/0.6V, Speed=52MHz/LPD4-4266.
+#     confidence=confirmed (li o corpo técnico completo, incluindo Ordering Information —
+#     mesmo padrão que já rendeu confirmed em H5TQ4G63EFR/H5TQ4G83EFR nesta sessão).
+#   H9AG8GDMNBX113 / H9AG9GEANBX101: Preduo (fetch direto, tabela estruturada própria "Part
+#     Number/Manufacturer/Type/Sub-Type/Density") — não abri datasheet dedicado pra estes dois,
+#     só a página do distribuidor. confidence=manual.
+# Cross reference adicional (AB Sunshine): KMDP6001DA-B425 (Samsung, mesmo package FBGA-254,
+# 2.5V, 4266MBPS) — equivalente funcional, reforça a velocidade LPD4-4266 do datasheet.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9ag_2026-08-24.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9ag_2026-08-24.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9AG9G5ANBX100"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1 + LPDDR4X"
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://uttc.com.tw/wp-content/uploads/2025/12/H9AG9G5ANBX100_Rev0.2.pdf"
+    notes: >
+      PN ALVO da bancada (2026-08-24), família NOVA H9AG. Datasheet oficial SK Hynix
+      completo (Rev 0.2/Set.2020, "SK hynix Confidential", via uttc.com.tw) lido na
+      íntegra — capa, features, functional block diagram, Ordering Information
+      posição-a-posição (14 caracteres). Density oficial: "64GB (x8)" eMMC + "4GB
+      (x16)" LPDDR4X. Package 254-ball FBGA. Cross-check aritmético dentro do próprio
+      documento: DRAM Block Diagram mostra 4 canais de 8Gb x16 cada = 32Gb totais ÷8 =
+      4GB — bate exato. ⚠ Maioria dos distribuidores (AB Sunshine, Win-Source,
+      SZComponents) anuncia "LPDDR4(32GB)" — é erro de unidade (32Gb, não 32GB); o
+      datasheet oficial resolve a ambiguidade. confidence=confirmed (Ordering
+      Information lida na íntegra).
+
+  - part_number: "H9AG8GDMNBX113"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1 + LPDDR4X"
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/h9ag8gdmnbx113"
+    notes: >
+      Irmão achado no cluster (varredura pedida pelo dono — nunca 1 só PN). Preduo
+      (tabela estruturada própria): Part Number=H9AG8GDMNBX113, Type=eMCP,
+      Sub-Type=eMMC+LPDDR4x, Density="32+24" — 32GB eMMC (bate código NAND '8G') +
+      24Gb÷8=3GB LPDDR4X (código RAM 'DM', chave nova no mapa compartilhado
+      HYX_LPDDR4X_RAM_CAP). Corroborado por Win-Source (listagem própria). NÃO
+      consegui abrir datasheet dedicado para este PN específico — confidence=manual.
+
+  - part_number: "H9AG9GEANBX101"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1 + LPDDR4X"
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/h9ag9geanbx101"
+    notes: >
+      Irmão achado no cluster (mesma varredura) — 2ª confirmação independente do
+      código NAND '9G'=64GB (mesmo código do PN alvo). Preduo: Density="64+48" —
+      64GB eMMC + 48Gb÷8=6GB LPDDR4X (código RAM 'EA', chave nova no mapa
+      compartilhado). Listado também na página "Related products" do irmão
+      H9AG8GDMNBX113 (mesma família/linha de produto). NÃO consegui abrir
+      datasheet dedicado — confidence=manual.
