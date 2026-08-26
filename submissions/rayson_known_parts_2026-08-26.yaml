@@ -1,0 +1,59 @@
+brand: Rayson
+known_parts:
+  - part_number: RS512M32LZ
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 2GB
+    confidence: confirmed
+    source_url: "https://jlcpcb.com/partdetail/Rayson-RS512M32LZ4D2ANP75BT/C2840157"
+    notes: >
+      Rayson HI-TECH. PN chegou como "RS512M32LZ" (SEM digito final) num debug ao vivo do
+      gateway do estoque em 2026-08-26 -- familia RS512M32L reconhece por gramatica
+      (chip_type=LPDDR4 default, capacity=2GB, confidence="estimated"), mas known_exact=false.
+      Pesquisa extensa e independente (2 buscas paralelas: Tier-1 szrayson.com direto incl.
+      catalogo oficial de produtos + ~6 datasheets PDF baixados do site, e Tier-2 LCSC/JLCPCB/
+      Alibaba/Octopart/Findchips/distribuidores chineses, ~50 buscas combinadas, inclusive
+      forcando fronteira de string e checando digitos vizinhos LZ0/LZ1/LZ2/LZ3/LZ5) NAO
+      encontrou "RS512M32LZ" sem digito em NENHUMA fonte -- toda ocorrencia real e
+      "RS512M32LZ4...". Motivo estrutural pra desconfiar que nao e peca distinta: datasheet
+      oficial Rayson (irma RS128M32LZ4D1ANP-75BT) decodifica "LZ4" como bloco UNICO de 3
+      caracteres ("Product Family"), nao "LZ"+"4" separavel; nenhum datasheet Rayson acessado
+      tem tabela de marcacao fisica (top-mark) que justificasse uma leitura truncada.
+      CONFIRMACAO: dono verificou o chip fisico e confirma que a marcacao real nao tem o
+      digito final -- tratado aqui como equivalente ao known_part ja existente RS512M32LZ4
+      (mesma familia, mesma profundidade 512M32), por instrucao direta do dono (nao por fonte
+      externa -- nenhuma fonte confirma essa equivalencia, so a inspecao fisica dele). Specs
+      herdados de RS512M32LZ4D2ANP-75BT (JLCPCB C2840157, Glochip, SnapEDA, todas concordantes):
+      2GB, FBGA-200, -25~85C. Datasheet Rayson da irma 128M32 da mesma linha LZ4 documenta
+      tensao dual "0.60V ou 1.10V" (peca unificada LPDDR4/LPDDR4X) -- por isso chip_type=LPDDR4,
+      nao 4X, mesma convencao ja usada em toda a familia RS512M32L nas entregas anteriores
+      (LM4/LO4/LF4/LV4, ver rayson_known_parts_2026-08-20.yaml). Capacidade: formula
+      512M x 32 / 8 = 2GB, confere com o padrao "Total Capacity: 2GB (16 gigabits)" da familia.
+      Nao incluo sufixo de velocidade nem device especifico aqui porque a marcacao fisica nao
+      trouxe essa informacao (so "RS512M32LZ" mesmo) -- ver ressalva de velocidade conflitante
+      no known_part RS512M32LZ4 (entrada separada nesta mesma submissao).
+  - part_number: RS512M32LZ4
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 2GB
+    confidence: confirmed
+    source_url: "https://jlcpcb.com/partdetail/Rayson-RS512M32LZ4D2ANP75BT/C2840157"
+    notes: >
+      Rayson HI-TECH. Known_part pre-existente no banco (de antes desta sessao de chat --
+      sem source_url/notes documentados, so "KnownPart em prod" cru no registro/anotacao
+      interna). Pesquisa nova (2026-08-26) achou a forma completa RS512M32LZ4D2ANP-75BT
+      (tambem existe D4ANP, mesma profundidade 512M32) em 3 fontes Tier-2 concordantes: JLCPCB
+      (C2840157), Glochip, SnapEDA -- todas 2GB, FBGA-200(10x14.5mm ou 10x15mm conforme a
+      fonte). Datasheet oficial Rayson (irma RS128M32LZ4D1ANP-75BT, szrayson.com PDF)
+      decodifica "LZ4 = Product Family" como bloco unico, tensao dual documentada "0.60V ou
+      1.10V" (peca unificada LPDDR4/LPDDR4X, mesma ressalva ja usada pra LM4/LO4/LF4/LV4 nesta
+      familia -- chip_type=LPDDR4, nao 4X). ATENCAO velocidade -- CONFLITO nao resolvido entre
+      fontes pro sufixo "-75BT": Glochip diz 3733Mbps; mas o padrao de decodificacao da propria
+      Rayson (visto em outros datasheets da mesma familia de sufixos, ex. RS128M32LZ4D1ANP-75BT)
+      diz "75 = 2666Mb/s/pin" (e "53 = 3733Mb/s/pin" -- sufixo diferente). Glochip parece ter
+      reaproveitado ficha de outro sufixo por engano -- sinalizando aqui, NAO resolvido, por
+      isso nao incluo campo de velocidade estruturado sem certeza. Nao achei tabela de
+      marcacao fisica (top-mark) em nenhum datasheet Rayson acessado. Curiosamente esta PN NAO
+      aparece no catalogo oficial atual da Rayson (szrayson.com/product_23/136.html, que lista
+      LO4/LM4/LX4 pra esta profundidade mas nao LZ4) -- pode ser SKU descontinuado ou so
+      distribuido por terceiros; documentando o achado, nao a causa.
