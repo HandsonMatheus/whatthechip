@@ -2904,3 +2904,271 @@ class DeployCatalogDescobertaTests(SimpleTestCase):
             self.assertIn(esperada, marcas)
         self.assertEqual(marcas[0], "samsung",
                          "Samsung tem que ser a 1ª (define os mapas globais)")
+
+
+class CampoDeMedidaComProsaTests(TestCase):
+    """PROSA em campo de MEDIDA (`capacity`, `emcp_ram`, `emcp_nand`, `density_*`).
+
+    Incidente 2026-08-24. O dono viu no admin um `KMYFE0B0CA` (Samsung eMCP) cuja
+    coluna Capacidade era uma frase inteira: *"RAM: SDRAM 1GB (pré-LPDDR, não é
+    LPDDR — ver notes) / NAND: moviNAND ~1GB (NAND MLC 8Gb + controlador, 2 dies)
+    + OneNAND 1GB"*.
+
+    **Por que o portão não pegou:** não havia o que pegar. O `KnownPartSpec`
+    declara esses campos como `str = ""` livre e o `model_validator` diz, no
+    próprio docstring, *"NÃO rejeita (known_part é ponto de dado)"*. A convenção
+    `emcp_ram = 'LPDDR{n} {cap}GB'` está no `CLAUDE.md §6` como regra ABSOLUTA e
+    não era aplicada em canto nenhum do código.
+
+    **Por que é caro:** `_extract_gib` é um `re.search` — pega o PRIMEIRO número
+    que casar. Com prosa, "o primeiro" depende da ordem das palavras, e o mesmo
+    chip vai parar em prateleiras diferentes. `test_a_mesma_informacao_em_tres_
+    caixas` mede isso.
+    """
+
+    RAM_PROSA = "SDRAM 1GB (pré-LPDDR, não é LPDDR — ver notes)"
+    NAND_PROSA = "moviNAND ~1GB (NAND MLC 8Gb + controlador, 2 dies) + OneNAND 1GB"
+
+    def test_a_mesma_informacao_em_tres_caixas(self):
+        """O núcleo do dano: prosa reordenada = prateleira diferente."""
+        from estoque.views import _compute_destination
+        base = {"chip_type": "eMCP", "subtype": "", "capacity": "",
+                "dram_density": "", "interface": "", "brand": "Samsung",
+                "is_emcp": True, "emcp_ram": "SDRAM 1GB"}
+        caixas = {
+            _compute_destination(dict(base, emcp_nand=n))[0]
+            for n in ("moviNAND ~1GB (NAND MLC 8Gb + controlador) + OneNAND 1GB",
+                      "NAND MLC 8Gb + controlador = moviNAND 1GB + OneNAND 1GB",
+                      "moviNAND + OneNAND, 2GB no total (MLC 8Gb por die)")
+        }
+        self.assertGreater(
+            len(caixas), 1,
+            "se isto virar 1, alguém tornou a extração robusta a prosa — ótimo, "
+            "mas revise este teste antes de relaxar a checagem de forma")
+        # E o pior deles: 'MLC 8Gb' (gigaBIT) lido como 8 GB — o bug de unidade
+        # da casa entrando por um canal sem vigilância.
+        self.assertIn("EMCP8+1", caixas)
+
+    def test_classificador_separa_prosa_de_forma_alternativa(self):
+        """Não pode gritar com a forma estabelecida: `emcp_nand='eMMC 5.1 16GB'`
+        aparece 55x no seed curado — é convenção real, não dívida."""
+        from chips.management.commands.audit_campo_forma import classifica
+        self.assertEqual(classifica("emcp_nand", "eMMC 5.1 16GB"), "ALTERNATIVO")
+        self.assertEqual(classifica("emcp_nand", "UFS 2.2 128GB"), "ALTERNATIVO")
+        self.assertEqual(classifica("emcp_nand", "16GB"), "CANÔNICO")
+        self.assertEqual(classifica("emcp_ram", "LPDDR3 1GB"), "CANÔNICO")
+        self.assertEqual(classifica("capacity", "512MB"), "CANÔNICO")
+        # a dívida
+        self.assertEqual(classifica("emcp_ram", self.RAM_PROSA), "PROSA")
+        self.assertEqual(classifica("emcp_nand", self.NAND_PROSA), "PROSA")
+        self.assertEqual(classifica("capacity", "NAND 512MB + mDDR1 256MB"), "PROSA")
+        # unidade faltando: '64' não diz se é 64Gb ou 64GB (8x de diferença)
+        self.assertEqual(classifica("density_gbit", "64"), "AMBÍGUO")
+        # ── falsos-positivos da 1ª versão do auditor, corrigidos 2026-08-24 ──
+        # Faixa de versão com barra é forma ESTABELECIDA (6 registros SK Hynix em
+        # prod): o engine extrai 16.0 e a caixa sai certa. Auditor que grita com
+        # dado bom treina o leitor a ignorar o auditor.
+        self.assertEqual(classifica("emcp_nand", "eMMC 4.5 / 5.0 16GB"), "ALTERNATIVO")
+        self.assertEqual(classifica("emcp_nand", "eMMC 5.x 8GB"), "ALTERNATIVO")
+        # 'None' é classe PRÓPRIA: não é "faltou unidade", é o None do Python
+        # virado texto. Origem e correção diferentes.
+        self.assertEqual(classifica("capacity", "None"), "NULO")
+        self.assertEqual(classifica("emcp_ram", "none"), "NULO")
+        # DOIS produtos no mesmo campo: a interface do NAND E a geração da RAM,
+        # com uma capacidade só — não dá pra saber de quem ela é.
+        self.assertEqual(classifica("emcp_nand", "eMMC 5.x + LPDDR3 16GB"), "PROSA")
+        self.assertEqual(classifica("emcp_nand", "eMMC 5.1 + LPDDR4X 64GB"), "PROSA")
+        # 'Gb' != 'GB' — case-sensitive de propósito (MICRON.md §4)
+        self.assertEqual(classifica("density_gbit", "4Gb"), "CANÔNICO")
+        self.assertEqual(classifica("emcp_nand", "4GB"), "CANÔNICO")
+
+    def test_auditoria_acha_o_caso_real_e_nao_grita_com_o_legitimo(self):
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import Brand, KnownPart
+        b = Brand.objects.create(name="Samsung", code="SAM")
+        KnownPart.objects.create(
+            brand=b, part_number="KMYFE0B0CA", chip_type="eMCP",
+            emcp_ram=self.RAM_PROSA, emcp_nand=self.NAND_PROSA,
+            confidence="confirmed", review_status="submitted", notes="fixture")
+        KnownPart.objects.create(
+            brand=b, part_number="KMQ310006A", chip_type="eMCP",
+            emcp_ram="LPDDR3 1GB", emcp_nand="eMMC 5.1 16GB",
+            confidence="confirmed", review_status="approved", notes="fixture")
+        out = StringIO()
+        call_command("audit_campo_forma", stdout=out)
+        texto = out.getvalue()
+        self.assertIn("KMYFE0B0CA", texto)
+        self.assertNotIn("KMQ310006A", texto, "gritou com a forma alternativa legítima")
+        self.assertIn("CAIXA:", texto, "não mostrou o impacto na prateleira")
+
+    def test_por_marca_nao_estoura_com_classe_nova(self):
+        """Regressão de um crash MEU (2026-08-24): a contagem por marca usava
+        `setdefault(nome, {"PROSA": 0, "AMBÍGUO": 0})` — dicionário que precisa
+        conhecer o vocabulário de antemão. Quando o balde NULO nasceu, o comando
+        morreu com `KeyError: 'NULO'` **em produção, no meio da varredura**, depois
+        de já ter impresso metade do relatório. Contar pelo que APARECE, nunca por
+        lista fixa."""
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import Brand, KnownPart
+        b = Brand.objects.create(name="SK Hynix", code="HYX")
+        for pn, cap in (("AAA1", ""), ("BBB2", "64"), ("CCC3", "4GB + 512MB")):
+            KnownPart.objects.create(brand=b, part_number=pn, chip_type="eMCP",
+                                     capacity=cap, confidence="confirmed",
+                                     review_status="approved", notes="fixture")
+        # ⚠ O 'None' TEM que entrar por `.update()`. Criar com `save()` não
+        # reproduz: o `apply_kp_convention` limpa a string na hora, o balde NULO
+        # fica vazio e o teste passa mesmo com o bug. Foi assim que a 1ª versão
+        # deste teste não mordeu na mutação — e é assim que o legado chegou ao
+        # banco de verdade (`.update()`/`bulk_update` não chamam `save()`).
+        KnownPart.objects.filter(part_number="AAA1").update(capacity="None")
+        out = StringIO()
+        call_command("audit_campo_forma", stdout=out)   # não pode estourar
+        texto = out.getvalue()
+        self.assertIn("Por marca", texto)
+        self.assertIn("nulo=", texto)
+
+    def test_auditoria_grita_quando_varre_zero(self):
+        """Lição do `audit_category_codes` (CLAUDE.md §7): zero silencioso numa
+        auditoria é indistinguível de 'está tudo limpo'."""
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command("audit_campo_forma", stdout=out)
+        self.assertIn("ZERO known_parts", out.getvalue())
+
+    def test_submit_AVISA_forma_suspeita(self):
+        """O portão não bloqueia (known_part é ponto de dado, por decisão), mas
+        a prosa tem que APARECER — era invisível até 2026-08-24."""
+        import tempfile, os
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import Brand
+        Brand.objects.create(name="Samsung", code="SAM")
+        yml = ("brand: Samsung\nknown_parts:\n"
+               "  - part_number: KMYFE0B0CA\n"
+               "    chip_type: eMCP\n"
+               f"    emcp_ram: '{self.RAM_PROSA}'\n"
+               f"    emcp_nand: '{self.NAND_PROSA}'\n"
+               "    confidence: confirmed\n"
+               "    notes: 'fonte Tier-1 de teste'\n")
+        fd, path = tempfile.mkstemp(suffix=".yaml")
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(yml)
+        try:
+            out = StringIO()
+            call_command("submit_known_parts", path, stdout=out)
+            texto = out.getvalue()
+        finally:
+            os.unlink(path)
+        self.assertIn("FORMA suspeita", texto,
+                      "o painel do submit não avisou sobre prosa em campo de medida")
+        self.assertIn("PROSA", texto)
+
+
+class LabelEmcpTruncadoTests(TestCase):
+    """O label da caixa de eMCP/uMCP PERDE a RAM quando ela é medida em MB.
+
+    Achado 2026-08-24, enquanto se auditava outra coisa. O branch eMCP do
+    `estoque/views.py::_compute_destination` monta a etiqueta com
+    `_extract_gb`, cuja regex é `(\\d+(?:\\.\\d+)?)\\s*GB` — **só casa 'GB',
+    nunca 'MB'**. Então um eMCP legítimo, com os campos preenchidos DIREITO::
+
+        emcp_nand = '4GB'   ·   emcp_ram = 'LPDDR3 512MB'   →   'EMCP4+'
+
+    A etiqueta sai sem a RAM. E RAM de 512MB é comuníssima em eMCP legado: no
+    seed curado são **12 de 59** (20%).
+
+    É o MESMO bug que o branch NAND teve e que foi corrigido em 2026-06-19
+    trocando `_extract_gb` por `_format_cap` (que lê MB e preserva a unidade —
+    `CLAUDE.md §7`, bullet "Label 'NAND' sem info"). O eMCP/uMCP ficou para trás.
+
+    ⚠ Este teste DOCUMENTA o comportamento atual em vez de exigir o certo, de
+    propósito: mudar o label muda a CHAVE do código de caixa (F12), e código de
+    caixa é **eterno** — gaveta já etiquetada no cliente não muda de nome
+    sozinha. A correção é decisão do dono, não refactor. Quando ele decidir,
+    troque os `assertEqual` daqui e o teste vira a especificação nova.
+    """
+
+    def _label(self, nand, ram):
+        from estoque.views import _compute_destination
+        return _compute_destination({
+            "chip_type": "eMCP", "subtype": "LPDDR3", "capacity": "",
+            "emcp_ram": ram, "emcp_nand": nand, "dram_density": "",
+            "interface": "", "brand": "SK Hynix", "is_emcp": True})[0]
+
+    def test_RAM_em_MB_some_da_etiqueta(self):
+        self.assertEqual(self._label("4GB", "LPDDR3 512MB"), "EMCP4+",
+                         "se mudou, o dono decidiu corrigir — atualize o teste E "
+                         "confira o impacto nos códigos de caixa já emitidos")
+
+    def test_RAM_em_GB_sai_completa(self):
+        self.assertEqual(self._label("16GB", "LPDDR3 2GB"), "EMCP16+2")
+
+    def test_capacity_combinada_deixa_o_chip_SEM_etiqueta(self):
+        """Pior caso: eMCP com `capacity='4GB + 512MB'` e `emcp_*` vazios sai com
+        a etiqueta literal 'eMCP' — sem número nenhum. O chip não tem prateleira.
+        4 registros assim em prod (SK Hynix), todos `approved`."""
+        from estoque.views import _compute_destination
+        label = _compute_destination({
+            "chip_type": "eMCP", "subtype": "", "capacity": "4GB + 512MB",
+            "emcp_ram": "", "emcp_nand": "", "dram_density": "",
+            "interface": "", "brand": "SK Hynix", "is_emcp": True})[0]
+        self.assertEqual(label, "eMCP")
+
+    def test_sao_TRES_causas_e_a_auditoria_separa(self):
+        """"70 truncados" parece UM problema e são TRÊS, com donos diferentes.
+        Misturar num número só faz o dono decidir errado — ou não decidir:
+
+          [ram-em-MB]  bug de CÓDIGO — `_extract_gb` cego pra MB.
+          [guard-nand] bug de CÓDIGO, OUTRO — o label é
+                       `f"EMCP{n}+{r}" if nand else 'eMCP'`, então falta de NAND
+                       **descarta a RAM que se CONHECE**.
+          [sem-dado]   NÃO é bug de label: identity-only (PN↔FBGA sem spec).
+                       Trabalho de DADO, com frente própria já existente.
+        """
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import Brand, KnownPart
+        b = Brand.objects.create(name="Samsung", code="SAM")
+        for pn, nand, ram in (("KMFJ20005A", "eMMC 4GB", "LPDDR3 512MB"),
+                              ("KMDP6001DA", "", "LPDDR4X 4GB"),
+                              ("KLM8G1GEAC", "", "")):
+            KnownPart.objects.create(brand=b, part_number=pn, chip_type="eMCP",
+                                     emcp_nand=nand, emcp_ram=ram,
+                                     confidence="confirmed",
+                                     review_status="approved", notes="fixture")
+        KnownPart.objects.filter(part_number="KLM8G1GEAC").update(
+            emcp_nand="None", emcp_ram="None")
+        out = StringIO()
+        call_command("audit_campo_forma", stdout=out)
+        texto = out.getvalue()
+        # ⚠ NÃO usar `assertIn(causa, texto)`: as três causas aparecem no texto
+        # de AJUDA da seção, então a asserção passa mesmo com a classificação
+        # quebrada — foi exatamente assim que a 1ª versão deste teste sobreviveu
+        # à mutação. Asserir na LINHA DE DETALHE, que casa causa com PN.
+        import re as _re
+        # Só as linhas de DETALHE (as que trazem `nand=`); as de resumo têm as
+        # mesmas etiquetas e contaminariam a leitura. E o nome da causa tem
+        # MAIÚSCULA ('ram-em-MB') — classe de caractere só-minúscula não casa.
+        linhas = dict(
+            _re.findall(r"\[([A-Za-z-]+)\s*\]\s+(\S+)\s+nand=", texto))
+        self.assertEqual(linhas.get("ram-em-MB"), "KMFJ20005A")
+        self.assertEqual(linhas.get("guard-nand"), "KMDP6001DA")
+        self.assertEqual(linhas.get("sem-dado"), "KLM8G1GEAC")
+
+    def test_falta_de_NAND_descarta_a_RAM_conhecida(self):
+        """A 2ª causa, isolada: o chip TEM `emcp_ram='LPDDR4X 4GB'` — em GB, na
+        convenção, sem prosa — e mesmo assim a etiqueta sai `'eMCP'`, porque o
+        guard do label exige NAND. A informação boa é jogada fora pela falta da
+        outra."""
+        self.assertEqual(self._label("", "LPDDR4X 4GB"), "eMCP")
+
+    def test_o_branch_NAND_ja_foi_corrigido_e_le_MB(self):
+        """A prova de que a correção existe e só não foi aplicada aqui:
+        `_format_cap` lê MB e preserva a unidade."""
+        from estoque.views import _format_cap, _extract_gb
+        self.assertEqual(_format_cap("LPDDR3 512MB"), "512MB")
+        self.assertEqual(_extract_gb("LPDDR3 512MB"), "",
+                         "_extract_gb não lê MB — é essa a causa")

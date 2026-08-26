@@ -231,8 +231,22 @@ class Command(SafeWriteCommand):
             else:
                 iguais.append((s, kp))
 
+        # FORMA dos campos de medida (2026-08-24). O portão Pydantic NÃO rejeita
+        # known_part de propósito ("é ponto de dado") — então prosa em
+        # capacity/emcp_* passava INVISÍVEL. Aqui ela pelo menos APARECE, usando a
+        # MESMA classificação do `audit_campo_forma` (fonte única, sem regra
+        # duplicada). Continua não bloqueando: quem decide é o revisor.
+        from chips.management.commands.audit_campo_forma import classifica, _CAMPOS
+        forma_ruim = []
+        for sp in specs:
+            for campo in _CAMPOS:
+                valor = (getattr(sp, campo, "") or "").strip()
+                if valor and classifica(campo, valor) in ("PROSA", "AMBÍGUO"):
+                    forma_ruim.append((sp.part_number, campo, valor,
+                                       classifica(campo, valor)))
+
         self._painel(brand_name, uname, specs, novos, resubmete, complemento,
-                     conflito, iguais, sem_fonte, conf_dif, opts)
+                     conflito, iguais, sem_fonte, conf_dif, opts, forma_ruim)
 
         caminho_conflitos = ""
         if conflito:
@@ -302,7 +316,7 @@ class Command(SafeWriteCommand):
 
     # ────────────────────────────────────────────────────────────────────────
     def _painel(self, brand_name, uname, specs, novos, resubmete, complemento,
-                conflito, iguais, sem_fonte, conf_dif, opts):
+                conflito, iguais, sem_fonte, conf_dif, opts, forma_ruim=()):
         """O que o dry-run NÃO mostrava: a foto do arquivo contra o banco, no TOPO."""
         w = self.stdout.write
         w(f"Marca: {brand_name} · {len(specs)} known_part(s) válido(s) no portão · "
@@ -350,6 +364,18 @@ class Command(SafeWriteCommand):
                 "\n  ⚠ confidence divergente (NÃO é alterado por este comando; mude no admin):"))
             for pn, atual, novo in conf_dif[:10]:
                 w(f"    {pn:<34} {atual} → {novo}")
+        if forma_ruim:
+            w(self.style.ERROR(
+                f"\n  ⚠ FORMA suspeita em {len(forma_ruim)} campo(s) de MEDIDA "
+                f"(capacity/emcp_*/density_*):"))
+            for pn, campo, valor, cls in forma_ruim[:10]:
+                w(f"    [{cls}] {pn:<24} {campo:<13} {valor[:52]!r}")
+            if len(forma_ruim) > 10:
+                w(f"    … +{len(forma_ruim) - 10}")
+            w("    Esses campos são lidos por regex (`_extract_gib` pega o PRIMEIRO número).")
+            w("    Prosa aí dentro faz o MESMO chip cair em caixas diferentes conforme a")
+            w("    ordem das palavras — e 'Gb' no meio da frase vira 'GB' (8x). Diagnóstico")
+            w("    completo: `python manage.py audit_campo_forma`.")
 
     def _grava_conflitos(self, arquivo, brand_name, conflito):
         """Relatório de conflito (não toca o banco) — sai em dry-run TAMBÉM, que é
