@@ -93,6 +93,24 @@ Por que é insubstituível:
 > entrar **sem** PN-âncora num `_<MARCA>_GOLDEN`. As 188 atuais são grandfathered (provadas em prod);
 > **toda família nova** tem que trazer o golden — não é mais só disciplina, a suíte trava.
 
+> 🔴 **E a suíte trava para TODO MUNDO, não só para você (incidente 2026-08-24).** O
+> `GoldenObrigatorioTests` é global: ele varre `chips/knowledge/*.yaml` inteiro. Naquele dia ele
+> falhou com **13 famílias de TRÊS marcas** — ESMT (11), SanDisk (`SD5DH26`), Toshiba-Kioxia
+> (`TYE0`) — todas criadas no mesmo dia, nenhuma com âncora. Efeito colateral: um chat de marca que
+> **não mexeu em nada** roda `test chips`, vê vermelho e não tem como saber que a dívida é de outro.
+> Os três já tinham os PNs pesquisados nos seus `submissions/*.yaml` — só não os ligaram ao golden.
+>
+> **Gramática e golden são a MESMA entrega.** Criou família no yaml? A âncora entra no mesmo passo,
+> não "na próxima rodada".
+>
+> ⚠ **Família MAGRA precisa MAIS de âncora, não menos.** É contraintuitivo: sem
+> `decode_cap_map`/`decode_density_type` a família não decodifica capacidade, então parece que "não
+> há o que provar". Ao contrário — sobra exatamente o que mais quebra: o `chip_type` e o **veredito
+> de rentabilidade**. É aí que mora o bug recorrente do projeto, "INDETERMINADO em vez de NÃO
+> RENTÁVEL para chip legado" (`CLAUDE.md §7`), que já mordeu LPDDR2, GDDR2, ePoP e eMCP de geração
+> desconhecida. A âncora de uma magra tipicamente é uma linha só — tipo + `INDETERMINADO`, ou tipo +
+> `NÃO RENTÁVEL` quando a geração já reprova. Barata de escrever, e é a única prova que existe.
+
 ### 3.4 O HANDSHAKE de rentabilidade — nenhum chip fica sem decisão comercial
 Um teste (`RentabilidadeHandshakeTests`) garante que **nenhum `chip_type` comercial cai em
 INDETERMINADO com specs saudáveis**. Consequência prática: se você adicionar um **tipo/geração novo**

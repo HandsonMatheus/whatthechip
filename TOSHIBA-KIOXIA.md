@@ -73,10 +73,47 @@ adicionar sem spec em `business.kioxia.com` (instrução do operador).
 
 ---
 
+## 2b. ⚠ Família NOVA exige PN-âncora no golden (não estava escrito aqui até 2026-08-24)
+
+Esta bíblia **não mencionava o golden** — e a marca pagou: em 2026-08-24 o `GoldenObrigatorioTests`
+ficou vermelho com a família **`TYE0`**, criada naquele dia sem âncora no `_TK_GOLDEN`
+(`chips/tests.py`). O teste varre `chips/knowledge/*.yaml` inteiro, então **a suíte quebra para TODOS
+os chats de marca**, não só para o daqui — quem não mexeu em nada vê vermelho e não sabe de quem é.
+
+**Regra:** família de prefixo novo (fora do baseline `_FAMILIES_GRANDFATHERED`) entra com **PN-âncora +
+saída esperada** — tipo, capacidade, `emcp_nand`/`emcp_ram`, densidade e **rentabilidade**. Gramática e
+golden são a MESMA entrega. Processo completo: `AUTORIA.md §3.3`.
+
+⚠ **As famílias desta marca são quase todas MAGRAS** (`TYC`, `TYD`, o grupo `TY8A0A`, `TY90`, `TYE0`) —
+e magra precisa MAIS de âncora, não menos. Sem decode de capacidade, o único comportamento que existe
+para provar é o `chip_type` e o **veredito**; é exatamente onde mora o bug recorrente "INDETERMINADO em
+vez de NÃO RENTÁVEL" (`CLAUDE.md §7`). O caso do grupo `TY8A0A` é a demonstração: o `reasoning` daquelas
+famílias documenta que **sem** o `decode_gen_map` apontando para o mapa vazio, as variantes de LETRA
+caíam em INDETERMINADO em vez de NÃO RENTÁVEL. Esse é o tipo de coisa que só a âncora congela.
+
+⚠ **`TYE0` tem um risco extra:** ela nasceu com `subtype` VAZIO de propósito (a RAM só apareceu numa
+fonte Tier-3 única, sem confirmação de geração nem de unidade) — decisão correta, mas subtype vazio é
+justamente o cenário em que o veredito pode escorregar para INDETERMINADO. A âncora é o que fixa qual
+dos dois é o comportamento pretendido.
+
+---
+
 ## 3. Armadilhas específicas (o durável)
 
 - ⚠ **Magra de prefixo longo intercepta a família de decode completo** — o engine casa o **prefixo mais longo** primeiro. Foi o caso de `THGBMFG`/`THGBMHG` (len 7) capturando antes do `THGBM` (len 5): um PN não confirmado caía na magra → `capacity=None` → INDETERMINADO, em vez de o THGBM decodificar. **Resolvido desativando as magras** (`active:false`) — o THGBM decodifica todos os `THGBMxx`; os known_parts confirmados continuam vencendo. **Sintoma diagnóstico p/ o futuro:** um `THGBM*` aparecendo como "desconhecido" → checar se alguma magra `THGBMxx` está capturando antes.
-- ⚠ **`TY890A` é SDRAM, NÃO eMCP** — o prefixo "TY" é compartilhado com o eMCP `TYC`/`TYD`, mas TY890A é SDR SDRAM standalone (confirmado: iFixit PS Vita teardown 2012). Não assumir que todo "TY…" é eMCP.
+- 🔴 **`TY890A` — ESTA BÍBLIA E O YAML SE CONTRADIZEM (aberto em 2026-08-24, precisa de decisão).**
+  Aqui está escrito em **quatro** lugares (§1, §2, esta armadilha e §4) que `TY890A` é **SDRAM
+  standalone**, fonte *iFixit, teardown do PS Vita, 2012* — "não assumir que todo TY… é eMCP".
+  Mas o **`toshiba-kioxia.yaml`, que é o que o engine realmente carrega**, declara
+  `chip_type: eMCP`, `subtype: LPDDR1`, `is_emcp: true`, fonte *rf-china.com/n22/TY.asp* (que rotula
+  `TY890A111229KC` como MCP). **As duas afirmações não podem estar certas.** O veredito comercial
+  coincide por acaso (SDRAM = resíduo; LPDDR1 = NÃO RENTÁVEL por geração), mas o `chip_type` decide
+  a **CAIXA FÍSICA** e a chave de preço — então na bancada dá em prateleira diferente. ⚠ Não
+  "resolva" escolhendo a fonte mais recente: são teardown de aparelho real × catálogo de
+  distribuidor, tiers diferentes sobre PNs possivelmente diferentes (o teardown fala do chip do PS
+  Vita; o rf-china fala do `…111229KC`). **Reabrir a pesquisa e decidir com o dono**; enquanto não
+  decidir, o que vale na prática é o yaml (é ele que o engine lê — `CLAUDE.md §10`: em conflito
+  entre documentos, o código vence).
 - ⚠ **"G" em nome Toshiba é Gbit, não GB** (densidade por die). `Gbit ÷ 8 = GB`, depois × dies (ver §2).
 - ⚠ **`TYC` (LPDDR2, BGA-162) vs `TYD` (LPDDR3, BGA-221)** — Preduo (Tier 3) confunde os dois; Octopart (Tier 2) prevalece. Distinguir por ball count / fonte Tier-2.
 - **pn[14] (sufixo bin/temp) NÃO entra no decode** — o THGBM lê só pn[5] e pn[7:10]. IAs erram alegando que o sufixo `R`/`L` "quebrou" a leitura.

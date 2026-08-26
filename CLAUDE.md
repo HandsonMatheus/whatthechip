@@ -799,6 +799,97 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   a linha fica, o número fica queimado, a categoria some das telas — e volta
   com o MESMO código se a régua de rentabilidade mudar (`label_for_key`
   reativa). O admin não tem DELETE de propósito.
+- **FAMÍLIA NOVA SEM PN-ÂNCORA NO GOLDEN QUEBRA A SUÍTE DE TODO MUNDO
+  (2026-08-24):** o `GoldenObrigatorioTests` falhou com **13 famílias** de
+  **três marcas diferentes** — ESMT (11), SanDisk (`SD5DH26`) e Toshiba-Kioxia
+  (`TYE0`) — todas criadas no mesmo dia, nenhuma com âncora. O teste é global,
+  então a suíte fica vermelha para **qualquer** chat que rode `test chips`,
+  não só para quem esqueceu: um chat que não mexeu em nada vê a suíte quebrada
+  e não sabe de quem é. **A âncora não é burocracia:** família MAGRA (sem
+  `decode_cap_map`/`decode_density_type`) não decodifica capacidade, então o
+  ÚNICO comportamento que dá pra provar é `chip_type` + **veredito de
+  rentabilidade** — que é exatamente onde mora o bug recorrente
+  "INDETERMINADO em vez de NÃO RENTÁVEL" (ver bullet acima). Sem âncora,
+  ninguém percebe se a família nova cai no balde errado. **Regra:** a entrega
+  da gramática e a entrega do golden são a MESMA entrega — os três chats já
+  tinham os PNs pesquisados nos `submissions/*.yaml`, só não os ligaram ao
+  `_<MARCA>_GOLDEN`. Ver `AUTORIA.md §3.3`.
+- **`known_part` cujo `chip_type` diverge do `is_emcp` da FAMÍLIA não
+  sobrepõe — a capacidade some em silêncio (2026-08-24):** o engine tira o
+  tipo do merge da **família**, não do known_part. Um known_part `eMCP` (com
+  `emcp_nand`/`emcp_ram`) sob família `is_emcp=False` faz o
+  `_result_from_known` **nunca ler** esses campos → capacidade `None` no
+  `classify()`, com o registro `confirmed` no banco e nenhum erro. Foi a
+  brecha do `SD5DH26A4G` (SanDisk). Hoje o
+  `chips/knowledge/convention.py::family_type_conflict` barra no `clean()` do
+  modelo (trava: `test_guard_tipo_x_familia_is_emcp`), fail-open de propósito
+  para identity-only e prefixo sem família. **Correção certa não é mudar o
+  `is_emcp` da família-mãe** (quebra os irmãos que são eMMC puro): é criar
+  **sub-prefixo próprio** com `priority` menor, para ser casado antes. ⚠ E o
+  sub-prefixo é família NOVA → **precisa de âncora no golden** (bullet acima).
+- **PROSA em campo de MEDIDA — e o portão NÃO pega, por decisão de projeto
+  (2026-08-24):** o dono achou no admin um `KMYFE0B0CA` (Samsung eMCP) com uma
+  FRASE dentro de `emcp_ram`/`emcp_nand`: *"SDRAM 1GB (pré-LPDDR, não é LPDDR —
+  ver notes)"* / *"moviNAND ~1GB (NAND MLC 8Gb + controlador, 2 dies) + OneNAND
+  1GB"*. **Por que passou:** não há o que pegar — o `KnownPartSpec` declara
+  `capacity`/`emcp_*`/`density_*` como `str = ""` livre e o `model_validator`
+  diz, no próprio docstring, *"NÃO rejeita (known_part é ponto de dado)"*. A
+  convenção `emcp_ram = 'LPDDR{n} {cap}GB'` está escrita aqui no §6 como **regra
+  absoluta** e não era aplicada em canto nenhum do código. **Por que é caro:**
+  `_extract_gib` é um `re.search` — pega o PRIMEIRO número que casar. Com prosa,
+  "o primeiro" depende da ORDEM DAS PALAVRAS. Medido com o próprio PN: a mesma
+  informação escrita de três jeitos manda o chip para `EMCP1+1`, `EMCP8+1` e
+  `EMCP2+1` — **três prateleiras diferentes**; e o caso do meio lê `8Gb`
+  (gigaBIT) como 8 GB, o bug de unidade da casa entrando por um canal sem
+  vigilância. Nesse PN o veredito não mudou, mas por coincidência dupla (o 1º
+  número era o certo, e SDRAM pré-LPDDR já é NÃO RENTÁVEL por geração) — sorte,
+  não controle. **Diagnóstico:** `audit_campo_forma` (read-only) classifica cada
+  campo em CANÔNICO / ALTERNATIVO / AMBÍGUO / PROSA e mostra **o que o engine
+  extrai e em que caixa o chip cai**. ⚠ `ALTERNATIVO` não é dívida: `emcp_nand =
+  'eMMC 5.1 16GB'` aparece 55× no seed curado — é a convenção real sendo mais
+  larga que este §6. O `submit_known_parts` agora **AVISA** (não bloqueia, a
+  decisão de "ponto de dado" segue de pé). Trava: `CampoDeMedidaComProsaTests`.
+  **Regra:** campo de medida guarda UMA medida. Contexto, ressalva e "não é
+  LPDDR" vão em `notes`/`tip` — que é para onde o operador olha quando quer
+  entender, e que nenhum regex de capacidade lê.
+- **LABEL de caixa de eMCP/uMCP PERDE a RAM quando ela é medida em MB
+  (2026-08-24, achado numa auditoria de outra coisa):** o branch eMCP do
+  `_compute_destination` monta a etiqueta com `_extract_gb`, cuja regex é
+  `(\d+(?:\.\d+)?)\s*GB` — **só casa 'GB', nunca 'MB'**. Com os campos
+  preenchidos CORRETAMENTE (`emcp_nand='4GB'`, `emcp_ram='LPDDR3 512MB'`) a
+  etiqueta sai **`EMCP4+`**, sem a RAM. RAM de 512MB é comuníssima em eMCP
+  legado: **12 de 59** no seed curado (20%). É o MESMO bug do branch NAND,
+  corrigido em 2026-06-19 trocando para `_format_cap` (que lê MB e preserva a
+  unidade) — o eMCP/uMCP ficou para trás. Pior caso relacionado: eMCP com
+  `capacity='4GB + 512MB'` e `emcp_*` VAZIOS sai com a etiqueta literal
+  `'eMCP'`, sem número nenhum — o chip **não tem prateleira** (4 registros
+  `approved` em prod, SK Hynix). ⚠ **NÃO é refactor: é decisão de negócio.**
+  Mudar o label muda a CHAVE do código de caixa (F12), e código de caixa é
+  ETERNO — gaveta já etiquetada no cliente não muda de nome sozinha. Os testes
+  (`LabelEmcpTruncadoTests`) DOCUMENTAM o comportamento atual de propósito;
+  quando o dono decidir, eles viram a especificação nova. Diagnóstico:
+  `audit_campo_forma` (seção LABEL DE CAIXA TRUNCADO).
+- **A string `'None'` no banco é legado — e um `save()` limpa (2026-08-24):**
+  a varredura achou ~200 campos com o texto `'None'` (o `None` do Python
+  virado string). O `apply_kp_convention` **já limpa** isso (`_NONE_STRINGS`)
+  em TODO caminho que chama `save()` — verificado: gravar `'None'` hoje
+  resulta em `''` no banco. Logo o que está lá é ANTERIOR à regra, ou entrou
+  por `.update()`/`bulk_update` (que não chamam `save()`). Não é incêndio (o
+  `_size_for_entry` ignora `'None'` — §6), mas some com um re-save. ⚠ Um
+  re-save em massa dispara o bump de `catalog_version` por registro e mexe no
+  `last_updated`: é escrita em prod, então dry-run + backup + decisão do dono.
+- **Resto de teste no disco vira passo do deploy (2026-08-24):** o
+  `deploy_catalog._discover_brands()` autodescobre marca por glob em
+  `chips/knowledge/*.yaml`. O `GlobalMapGuardTests` escreve um
+  `_guardtest.yaml` nessa pasta e apaga no `finally` — se a suíte morre no
+  meio (Ctrl-C, timeout, crash), o arquivo fica e o deploy o adota: apareceu
+  como `[2/16] load_brands {'brand': '_guardtest'}` numa rodada real. Como
+  esse fixture define de propósito um mapa GLOBAL (`DRAM_PC`) sendo
+  não-Samsung, o `load_brands` levanta `CommandError` — ou seja, **um arquivo
+  esquecido aborta o deploy do catálogo no passo 2 de 16**, com a Samsung
+  gravada e as outras 11 marcas não. Corrigido: nome começando com `_` **não
+  é marca** (trava: `DeployCatalogDescobertaTests`). Use `_` para qualquer
+  arquivo de fixture/rascunho que precise morar em `chips/knowledge/`.
 - **Categoria de caixa só nasce do que ENTRA no estoque (2026-08-18):** o
   `_masked_category` cunhava no RENDER do card de conferência — bipar um DDR2
   já gastava um número, mesmo o chip indo pro R-00 refino. Hoje a cunhagem

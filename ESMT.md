@@ -72,8 +72,30 @@ AUTORIA.md / CLAUDE.md §5     ← o processo OBRIGATÓRIO das duas trilhas + co
 --brand esmt` (dry-run = portão) → o **dono** roda `--commit`. **known_parts** (autoridade) →
 `submit_known_parts` (dry-run) → o **dono** roda `--commit` + **aprova no admin**. ⚠ **Toda família da ESMT
 será "nova"** (a marca não tem baseline grandfathered) → **PN-âncora no golden é OBRIGATÓRIO**, sem exceção
-(`GoldenObrigatorioTests` falha sem). **NÃO tocar sem revisão:** `chips/engine.py`, `estoque/views.py`
-(globais), yamls/known_parts de outra marca, mapas globais (`DRAM_PC`/`DRAM_MOBILE`, dono = Samsung).
+(`GoldenObrigatorioTests` falha sem).
+
+> 🔴 **Isto já falhou uma vez — 2026-08-24, 11 famílias suas de uma vez** (`M14D*`, `M14F*`, `M15F*`,
+> `FM6BD4G2GA`). A regra já estava escrita aqui, em três lugares. Duas coisas que ela NÃO dizia, e que
+> provavelmente são o motivo:
+>
+> 1. **A suíte que quebra não é a sua — é a de todo mundo.** O `GoldenObrigatorioTests` varre
+>    `chips/knowledge/*.yaml` inteiro, então qualquer chat de marca que rode `test chips` vê vermelho,
+>    inclusive quem não mexeu em nada e não tem como saber de quem é a dívida. Naquele dia foram 13
+>    famílias de TRÊS marcas; 11 eram da ESMT.
+> 2. **Família MAGRA precisa MAIS de âncora, não menos** — e as suas são todas magras. É
+>    contraintuitivo: sem `decode_cap_map`/`decode_density_type` a família não decodifica capacidade,
+>    e é fácil concluir "não há o que provar". Ao contrário: sobra exatamente o que mais quebra neste
+>    projeto — o `chip_type` e o **veredito de rentabilidade**. É aí que mora o bug recorrente
+>    "INDETERMINADO em vez de NÃO RENTÁVEL para chip legado" (`CLAUDE.md §7`), que já mordeu LPDDR2,
+>    GDDR2, ePoP e eMCP de geração desconhecida. Suas DDR2 e a eMCP LPDDR2 são dessa classe exata.
+>
+> A âncora de uma magra é **uma linha**: tipo + veredito, campos de capacidade vazios. Barata de
+> escrever, e é a única prova que existe. **Gramática e golden são a MESMA entrega** — não "na próxima
+> rodada". ⚠ E escreva o esperado a partir da SUA pesquisa, nunca copiando o que o `classify()`
+> devolve hoje: golden copiado do engine é circular e não prova nada.
+
+**NÃO tocar sem revisão:** `chips/engine.py`, `estoque/views.py` (globais), yamls/known_parts de outra
+marca, mapas globais (`DRAM_PC`/`DRAM_MOBILE`, dono = Samsung).
 
 ### 0.2 Regras de ouro — nunca violar
 
