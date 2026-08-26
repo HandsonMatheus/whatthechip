@@ -1,0 +1,1160 @@
+# Submissão de known_parts — Micron, FBGA D9GKW + família MT47H32M16 (2026-08-20)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9GKW
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9GKX, D9GVW, D9VKW, D9ZKW, D8GKM) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ⚠ Reverse-lookup e forward-lookup rodados de FORA do sandbox (API oficial
+# Micron bloqueando o IP daqui por reputação — F5 BIG-IP ASM, ver
+# diagnóstico do dono 2026-08-20). Resultado colado no chat, verificado
+# abaixo.
+#
+# ACHADO: D9GKW → MT47H32M16BN-37E:D. Prefixo MT47H = DDR2 (convenção já
+# estabelecida nesta sessão, lotes D9KSL/Z9DNC). Bloco "32M16" = 32 Meg × 16
+# (x16) — fórmula JEDEC oficial: 32.000.000 × 16 = 512.000.000 bits =
+# 512Mbit = 0,5Gb. density_gbit em fração ("0.5Gb"), não "512Mb" — regra já
+# documentada nesta sessão (extrator de densidade do engine só reconhece
+# sufixo "Gb" literal).
+#
+# Cross-check Tier-1 do ALVO: DigiKey lista sibling quase idêntico (mesmo
+# bloco "32M16") "MT47H32M16NF-25E:H" como "SDRAM - DDR2 Memory IC 512Mb
+# (32M x 16)" — bate exato com a conta.
+# https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987
+#
+# Além disso, 4 SIBLINGS desta mesma família vieram com part-name PREENCHIDO
+# pela própria API Micron: "DDR2 512M X16 TFBGA" — bate exato com a fórmula
+# e confirma a extensão pra toda a família (mesmo bloco "32M16" em todos).
+#
+# Forward-lookup no prefixo "MT47H32M16" (2026-08-20) devolveu 146 PNs.
+# Filtro ES (D9+Z9 combinados no texto do PN): 45 EXCLUÍDOS por "ES" literal
+# no part-number (nenhum Z9 sobrevive nesta família). Restam 101 (incl. um
+# fbga_code "B9DHG" — prefixo novo, mesma checagem de texto aplicada, sem
+# "ES", incluído). Dos 101, 4 confirmados por part-name direto da API
+# ("DDR2 512M X16 TFBGA" — D9SBJ/D9SBV/D9SCD/D9TCD), os outros 97 (incl. o
+# alvo D9GKW) são extensão por fórmula, mesmo bloco "32M16" em todos.
+# Variações de pacote (BT/CC/FT/GC/BN/FN/HR/HW/NF) e grade de velocidade
+# não afetam capacidade.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de part_number_norm
+# dentro da própria lista (checado programaticamente, ver check_d9gkw.py).
+# Sem sobreposição com nenhuma submissão anterior (grep em submissions/*.yaml,
+# zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9gkw_family_2026-08-20.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9gkw_family_2026-08-20.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT47H32M16BN-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GKW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via API FBGA oficial Micron (Tier-1, reverse-lookup rodado de fora do sandbox por bloqueio de IP). part-name da API veio vazio para este PN específico, mas 4 siblings da mesma família confirmam "DDR2 512M X16 TFBGA" (ver D9SBJ/D9SBV/D9SCD/D9TCD). Capacidade via fórmula JEDEC: bloco "32M16" = 32M × 16 = 512Mbit = 0,5Gb. Cross-check independente: DigiKey lista sibling quase idêntico (MT47H32M16NF-25E:H) como "512Mb (32M x 16)" — bate exato. chip_type=DDR2 (convenção já estabelecida nesta sessão).
+
+  - part_number: "MT47H32M16BT-3E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "B9DHG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-37E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9CVZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-5E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9CWB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-5E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DCB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-37E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DCD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-3:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DCG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-3E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DHJ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-3"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DMM"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-25:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DNR"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-25E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DNT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-3:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DNW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-37E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DNZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-3E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DPC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BT-5E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DPF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-3E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DPH"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-0 MS:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9FMG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-5E L:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9FSW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FT-37E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9FTD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FT-3:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9FWF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FT-5E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9FWG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16GC-5E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GBB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16GC-37E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GBC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16GC-3:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GBD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16GC-5E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GFG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-5E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GHJ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-37E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GHK"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-37E L:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GHW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GMF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GMG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-25V:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GQH"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16GC-37E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GSW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-25E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GZS"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-25:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HCG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-5E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HDX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-37E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HDZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-3 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HFB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-25E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HFC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16CC-25E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMM"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMN"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMP"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-37E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-5E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMR"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-3 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HMS"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-3E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HQV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-3 L:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HRC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-37E L:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HRD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-5E L:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9HRF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-25E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9JLG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-5E:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9JLP"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-37E:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9JLQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-3:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9JLR"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16FN-25 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KFX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16BN-3 AT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KHP"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-3 IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KHQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KHR"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-37E:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KHT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KHV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KJF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-3 L:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KJG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KJH"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-3 IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KJJ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-37E IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KKX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-3 AT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KLQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KLZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-37E IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KNB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-37E L:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KNF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25 IT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KPC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-3:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KRZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-3E:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9KVF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-3 AT:F"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9LNK"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9LPV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9LPX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9LQB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MHP"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E AIT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MHQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MHR"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E AAT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MHT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MHV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E AIT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MHW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E AAT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MJB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MJC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MJD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E L:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MSJ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E AT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9NGF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HW-25E AT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9NGG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-187E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9NKB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E V:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9RNH"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9RRZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-187E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9RSW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9RTG"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9RTJ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16HR-25E AAT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9RTK"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16NF-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9SBJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h32m16nf-25e-h"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20): "DDR2 512M X16 TFBGA", sub-category "ddr2-sdram". "512M X16" bate exato com a fórmula JEDEC (32M×16=512Mbit=0,5Gb) — confirmação Tier-1 forte, não é extensão por fórmula.
+
+  - part_number: "MT47H32M16NF-187E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9SBQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16NF-25E IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9SBV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h32m16nf-25e-it-h"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20): "DDR2 512M X16 TFBGA", sub-category "ddr2-sdram". "512M X16" bate exato com a fórmula JEDEC (32M×16=512Mbit=0,5Gb) — confirmação Tier-1 forte, não é extensão por fórmula.
+
+  - part_number: "MT47H32M16NF-25E AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9SCB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+
+  - part_number: "MT47H32M16NF-25E AAT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9SCD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h32m16nf-25e-aat-h"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20): "DDR2 512M X16 TFBGA", sub-category "ddr2-sdram". "512M X16" bate exato com a fórmula JEDEC (32M×16=512Mbit=0,5Gb) — confirmação Tier-1 forte, não é extensão por fórmula.
+
+  - part_number: "MT47H32M16NF-25E AUT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9TCD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h32m16nf-25e-aut-h"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20): "DDR2 512M X16 TFBGA", sub-category "obsolete-ddr2-sdram". "512M X16" bate exato com a fórmula JEDEC (32M×16=512Mbit=0,5Gb) — confirmação Tier-1 forte, não é extensão por fórmula.
+
+  - part_number: "MT47H32M16BN-0 MS:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.5Gb"
+    fbga_code: "Z9KFB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT47H32M16NF-25E-H/4747987"
+    notes: >
+      Identidade via forward-lookup no prefixo MT47H32M16 (2026-08-20), mesmo bloco de capacidade do alvo D9GKW ("32M16" = 0,5Gb, fórmula JEDEC/Micron, confirmada por 4 siblings desta família com part-name "DDR2 512M X16 TFBGA" direto da API). part-name deste PN vazio.
+

@@ -1,0 +1,30 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB512M8BN-CG"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=nt5cb512m8bn-cg"
+    notes: >
+      NAO e o PN do debug (que foi "NT5CB512M4BN", organizacao M4) -- ver investigacao completa
+      no dossie sobre por que "512M4BN-CG" foi EXCLUIDO e esta die "512M8BN-CG" foi submetida no
+      lugar. Confirmado diretamente no Octopart: 3 distribuidores reais (ICPartonline, Worldway
+      Electronics, SHENGYU ELECTRONICS), ficha estruturada propria "NT5CB512M8BN-CG NANYA".
+      Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate com a organizacao 512M8 ja mapeada no
+      cluster NT5CB, mesma densidade da rodada 2/NT5CB512M8CN). Die "BN" tambem confirmada em
+      outra organizacao da mesma familia (NT5CB256M8BN-CG, Octopart), reforcando que e uma die
+      real e recorrente, nao um erro isolado.
+
+  - part_number: "NT5CB512M8BN-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://octopart.com/nt5cb512m8bn-di-nanya-30008218"
+    notes: >
+      Sibling de sufixo da die "BN" acima (grade de velocidade diferente). Confirmado
+      diretamente no Octopart (ficha estruturada propria, link dedicado). Aritmetica: 512M x
+      8bit = 4096Mbit = 4Gb (bate).

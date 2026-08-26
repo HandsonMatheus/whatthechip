@@ -1,0 +1,305 @@
+# Submissão de known_parts — Micron, FBGA D9LGD + família MT41J512M4 (2026-08-20)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9LGD
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9LBD, D9LFD, D9LGP, D9LGQ, D9LGR) IGNORADO por
+# construção — já são KnownPart aprovado (D9LGQ inclusive resolvido nesta
+# mesma sessão).
+#
+# ⚠ Reverse-lookup e forward-lookup rodados de FORA do sandbox (API oficial
+# Micron bloqueando o IP daqui por reputação — F5 BIG-IP ASM, não rate limit
+# de minutos; ver diagnóstico do dono, 2026-08-20). Requisição feita por
+# terceiro de confiança, resultado colado no chat, verificado abaixo.
+#
+# ACHADO: D9LGD → MT41J512M4HX-15E:D. Família MT41J = DDR3 padrão (1,5V).
+# Bloco de configuração "512M4" = 512 Meg × 4 (x4) — fórmula JEDEC oficial
+# da Micron (mesma documentada no chart de ordering info do datasheet
+# unificado LPDDR4X/LPDDR4, aplicada aqui à família DDR3): 512.000.000 × 4 =
+# 2.048.000.000 bits = 2.048 Mbit = 2Gb.
+#
+# Cross-check Tier-1 do ALVO (part-name da API veio vazio para TODA a
+# família, sem exceção): DigiKey lista o PN exato "MT41J512M4HX-15E:D" como
+# "2Gbit capacity" — bate exato com a conta acima. Duas fontes
+# independentes concordando: fórmula JEDEC (convenção oficial Micron) +
+# DigiKey (listagem do PN exato).
+# https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627
+#
+# Forward-lookup no prefixo "MT41J512M4" (2026-08-20) devolveu 37 PNs, todos
+# com o MESMO bloco "512M4" (mesma capacidade, 2Gb, pra qualquer um deles) —
+# só variam pacote (THV/JE/THR/HX/DA) e grade de velocidade/revisão. Nenhum
+# tinha part-name preenchido pela API (extensão por fórmula, não por
+# confirmação direta de texto — mas a fórmula é a convenção OFICIAL de
+# numeração da Micron, documentada no ordering guide, e o alvo já bate com
+# fonte externa independente).
+#
+# Filtro ES (regra desta sessão, D9+Z9 combinados no PRÓPRIO texto do PN,
+# não no prefixo do fbga_code): dos 19 fbga_code "Z9", 18 têm "ES"
+# (Engineering Sample) literal no part-number — EXCLUÍDOS. Só Z9MCH
+# (MT41J512M4THR-0 MS:D) não tem "ES" no texto — INCLUÍDO mesmo sendo Z9,
+# mesma lógica já validada em Z9DNC/D9MNV.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de part_number_norm
+# dentro da própria lista (checado programaticamente, ver check_d9lgd.py).
+# Sem sobreposição com nenhuma submissão anterior (grep em submissions/*.yaml,
+# zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9lgd_family_2026-08-20.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9lgd_family_2026-08-20.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J512M4HX-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via API FBGA oficial Micron (Tier-1, reverse-lookup rodado
+      de fora do sandbox por bloqueio de IP). part-name da API veio vazio.
+      Capacidade via fórmula JEDEC/convenção oficial de numeração Micron:
+      bloco "512M4" = 512M × 4 = 2.048Mbit = 2Gb. Cross-check independente:
+      DigiKey lista o PN EXATO como "2Gbit capacity" — bate exato com a
+      conta. chip_type=DDR3 (MT41J = padrão 1,5V, distinto de MT41K=DDR3L
+      1,35V — já estabelecido nos lotes D9MNV/D9RVX desta sessão).
+
+  - part_number: "MT41J512M4THV-187E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D95VX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD: "512M4" = 512M × 4 =
+      2.048Mbit = 2Gb (fórmula JEDEC/Micron). part-name da API vazio nesta
+      família inteira; capacidade por extensão de fórmula, mesma base do
+      alvo (cross-check DigiKey do alvo se aplica à família — bloco de
+      config idêntico). chip_type=DDR3 (mesma base do D9LGD).
+
+  - part_number: "MT41J512M4JE-187E:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9JST"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4JE-25:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9JSW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4THR-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9JXQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4THR-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9KBN"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4THR-25:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9KKT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4JE-15E:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9KLX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4THV-15E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9KWB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4HX-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo pacote HX do alvo D9LGD, só velocidade -187E em vez de -15E.
+      Mesmo bloco "512M4" = 2Gb (fórmula JEDEC/Micron). part-name vazio.
+
+  - part_number: "MT41J512M4HX-125:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo pacote HX do alvo D9LGD, só velocidade -125 em vez de -15E.
+      Mesmo bloco "512M4" = 2Gb (fórmula JEDEC/Micron). part-name vazio.
+
+  - part_number: "MT41J512M4THV-125:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MFR"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4DA-15E:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MKD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4DA-187E:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MRB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4DA-125:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MRN"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4DA-107:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MRV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4DA-125:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9QND"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4DA-107:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9QXV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J512M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9LGD ("512M4" = 2Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9LGD.
+
+  - part_number: "MT41J512M4THR-0 MS:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "Z9MCH"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J512M4HX-15E-D/2663627"
+    notes: >
+      fbga_code Z9 mas SEM "ES" no texto do part-number (regra desta sessão:
+      filtro ES é sobre o texto, não sobre o prefixo do fbga_code) — incluído
+      mesmo padrão já validado em Z9DNC/D9MNV. Mesmo bloco "512M4" = 2Gb
+      (fórmula JEDEC/Micron). part-name da API vazio.

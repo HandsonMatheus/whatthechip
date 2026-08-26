@@ -1,0 +1,488 @@
+# Submissão de known_parts — Micron, FBGA D9GBM + família MT46V128M4 (2026-08-20)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9GBM
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9GBF, D9GBG, D9GBH, D9GBJ, D9GHM) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ⚠ Reverse-lookup e forward-lookup rodados de FORA do sandbox (API oficial
+# Micron bloqueando o IP daqui por reputação — F5 BIG-IP ASM, ver
+# diagnóstico do dono 2026-08-20). Resultado colado no chat, verificado
+# abaixo.
+#
+# ACHADO: D9GBM → MT46V128M4BN-5B:F. Prefixo MT46V = DDR (primeira geração,
+# "DDR1" — chip_type verificado direto em chips/chip_types.py antes de usar:
+# linha 80, ChipTypeSpec("dram_pc", "ddr", "ddr", carries_generation=True)).
+# Bloco de configuração "128M4" = 128 Meg × 4 (x4) — fórmula JEDEC oficial:
+# 128.000.000 × 4 = 512.000.000 bits = 512 Mbit = 0,5Gb.
+#
+# ⚠ density_gbit em fração de Gb, NÃO em "512Mb" — regra já documentada
+# nesta sessão (o extrator de densidade do engine só reconhece o sufixo
+# "Gb" literal; "Mb" não é parseado). density_gbit="0.5Gb".
+#
+# Cross-check Tier-1 do ALVO: DigiKey lista um sibling quase idêntico
+# (mesmo bloco "128M4", mesma grade -5B, só pacote/revisão diferentes)
+# "MT46V128M4P-5B:D TR" como "SDRAM - DDR Memory IC 512Mbit" — bate exato
+# com a conta (512Mbit = 0,5Gb). Título do datasheet oficial (hospedado
+# DigiKey): "512Mb DDR SDRAM (x4, x8, x16) Component Data Sheet".
+# https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+#
+# Além disso, 2 SIBLINGS desta mesma família vieram com part-name PREENCHIDO
+# pela própria API Micron: "DDR 512M X4 FBGA" / "DDR 512M X4 TSOP" — "512M
+# X4" bate exato com a fórmula (128M×4=512Mbit) e confirma a extensão pra
+# toda a família (mesmo bloco "128M4" em todos).
+#
+# Forward-lookup no prefixo "MT46V128M4" (2026-08-20) devolveu 46 PNs.
+# Filtro ES (D9+Z9 combinados no texto do PN): dos 14 fbga_code "Z9", TODOS
+# têm "ES" literal no part-number — EXCLUÍDOS por completo (nenhum
+# sobrevive, mesmo padrão do lote D9LJJ). Restam 32 (30 "D9" + "9MMW" +
+# "DP9PJJ") — nenhum tem "ES" no texto.
+#
+# ⚠ fbga_code "DP9PJJ" (MT46V128M4CY-6:J) tem 6 caracteres, fora do padrão
+# FBGA de 5 chars (`^[A-Z][A-Z0-9]{4}$`) — vem assim da própria API oficial,
+# reportado tal qual (Tier-1, não alterado/corrigido por mim). Pode não ser
+# alcançável pela busca por fbga_code na bancada; identidade e capacidade
+# não são afetadas (mesmo bloco "128M4").
+#
+# Dos 32, 2 têm part-name direto da API (D9MLZ, D9NGZ — "DDR 512M X4..."),
+# os outros 30 (incl. o alvo D9GBM) são extensão por fórmula, mesmo bloco
+# de config em todos. Variações de pacote (BN/FN/CV/CY/P/TG/S2FB) e grade de
+# velocidade (-5B/-6/-75/-75Z) não afetam capacidade.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de part_number_norm
+# dentro da própria lista (checado programaticamente, ver check_d9gbm.py).
+# Sem sobreposição com nenhuma submissão anterior (grep em submissions/*.yaml,
+# zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9gbm_family_2026-08-20.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9gbm_family_2026-08-20.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT46V128M4BN-5B:F"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GBM"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via API FBGA oficial Micron (Tier-1, reverse-lookup rodado
+      de fora do sandbox por bloqueio de IP). part-name da API veio vazio
+      para este PN específico, mas 2 siblings da mesma família confirmam
+      "DDR 512M X4 FBGA"/"DDR 512M X4 TSOP" (ver D9MLZ/D9NGZ abaixo).
+      Capacidade via fórmula JEDEC: bloco "128M4" = 128M × 4 = 512Mbit =
+      0,5Gb. Cross-check independente: DigiKey lista sibling quase idêntico
+      (MT46V128M4P-5B:D, mesmo bloco+grade) como "512Mbit" — bate exato.
+      chip_type=DDR1 (verificado em chips/chip_types.py antes de usar).
+
+  - part_number: "MT46V128M4CV-5B:J"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "9MMW"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-75"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9BBM"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-75"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9BLK"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-6"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9BXK"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-6"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9BXL"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-5B"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9CHC"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-5B"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9CHF"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo pacote/grade do alvo D9GBM (BN, -5B), só sem revisão explícita.
+      Mesmo bloco "128M4" = 0,5Gb (fórmula JEDEC/Micron). part-name vazio.
+
+  - part_number: "MT46V128M4BN-75 IT"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DHB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-75:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DSD"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-6:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DSJ"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-6:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DSL"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-75Z:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DSM"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-5B:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVQ"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo pacote/grade do alvo D9GBM (BN, -5B), revisão C em vez de F.
+      Mesmo bloco "128M4" = 0,5Gb (fórmula JEDEC/Micron). part-name vazio.
+
+  - part_number: "MT46V128M4BN-5B:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVR"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo pacote/grade do alvo D9GBM (BN, -5B), revisão D em vez de F —
+      é a MESMA revisão do sibling DigiKey usado no cross-check do alvo
+      (MT46V128M4P-5B:D). Mesmo bloco "128M4" = 0,5Gb. part-name vazio.
+
+  - part_number: "MT46V128M4BN-6:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVS"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-75 IT:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVT"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-75:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVV"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-75:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVW"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-5B:C"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVX"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-5B:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DVZ"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-6:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DWB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-75:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DWC"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-75Z:D"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9DWD"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4BN-6:F"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GBP"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo pacote/revisão do alvo D9GBM (BN, :F), grade -6 em vez de -5B.
+      Mesmo bloco "128M4" = 0,5Gb (fórmula JEDEC/Micron). part-name vazio.
+
+  - part_number: "MT46V128M4FN-6:F"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GBT"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4FN-5B:F"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GCG"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo pacote/revisão/grade do alvo D9GBM (-5B:F), só FN em vez de BN.
+      Mesmo bloco "128M4" = 0,5Gb (fórmula JEDEC/Micron). part-name vazio.
+
+  - part_number: "MT46V128M4BN-6 IT:F"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9GRK"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4CY-5B:J"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9MLZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v128m4cy-5b-j"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20):
+      "DDR 512M X4 FBGA", sub-category "obsolete-ddr-sdram". "512M X4" bate
+      exato com a fórmula JEDEC (128M×4=512Mbit=0,5Gb) — confirmação Tier-1
+      forte, não é extensão por fórmula.
+
+  - part_number: "MT46V128M4P-5B:J"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9NGZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v128m4p-5b-j"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20):
+      "DDR 512M X4 TSOP", sub-category "obsolete-ddr-sdram". Confirmação
+      Tier-1 forte (não é extensão por fórmula). Mesmo PN-base do sibling
+      usado no cross-check DigiKey do alvo (MT46V128M4P-5B:D, revisão D).
+
+  - part_number: "MT46V128M4TG-5B:J"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "D9NHB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      Identidade via forward-lookup no prefixo MT46V128M4 (2026-08-20),
+      mesmo bloco de capacidade do alvo D9GBM ("128M4" = 0,5Gb, fórmula
+      JEDEC/Micron). part-name da API vazio; mesma base do alvo D9GBM.
+
+  - part_number: "MT46V128M4CY-6:J"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    interface: "x4"
+    density_gbit: "0.5Gb"
+    fbga_code: "DP9PJJ"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf"
+    notes: >
+      ⚠ fbga_code "DP9PJJ" tem 6 caracteres — fora do padrão FBGA de 5 chars
+      (^[A-Z][A-Z0-9]{4}$). Vem assim da própria API oficial Micron
+      (2026-08-20), reportado tal qual, não alterado/corrigido. Pode não
+      ser alcançável pela busca por fbga_code na bancada; identidade e
+      capacidade não são afetadas. Mesmo bloco "128M4" = 0,5Gb (fórmula
+      JEDEC/Micron). part-name da API vazio.

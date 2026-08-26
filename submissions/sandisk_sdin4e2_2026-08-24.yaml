@@ -1,0 +1,49 @@
+# Submissão known_parts — SanDisk, PN SDIN4E232G (cluster SDIN geração 4, indocumentada)
+# Origem: debug do estoque, PN SDIN4E232G, 24/08/2026 09:48:41.
+# Ver INVESTIGACAO_sandisk_sdin4e2_2026-08-24.md para a análise completa.
+#
+# ⚠ ATUALIZADO 2026-08-24 — instrução direta do dono: "confirmar o SDIN4E232G com as mesmas specs
+# do SDIN5B232G" (já `confirmed` no banco, submetido 2026-07-14 via datasheet oficial SanDisk
+# 80-36-03433 Rev 1.3, Tabela 12 "Ordering Information": e.MMC 4.41 JESD84-A441, X2/2 bits por
+# célula, 32GB). Apliquei interface+device de SDIN5B232G aqui. `confidence=manual` (não
+# `confirmed`): a fonte real é a instrução do dono, não uma leitura minha de datasheet PARA ESTE PN
+# específico — mesmo padrão do override KMDL6001DA (ver memória do projeto). Isso NÃO generaliza
+# pro resto do bucket SDIN4xx (SDIN4C2/SDIN4D2 seguem como estavam) — é uma resolução pontual deste
+# PN, registrada como tal.
+#
+# 1 PN confidence=manual.
+#
+# ⚠ Nada de checagem manual em shell (regra de ouro #4 do SANDISK.md §0) — o dry-run abaixo já
+# confronta o banco por part_number_norm e mostra o painel NOVO/RESUBMETE/COMPLEMENTO/SEM FONTE/
+# CONFLITO/IGUAL (§0.1). Se cair em CONFLITO, é caso pro `resolve_conflicts`.
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdin4e2_2026-08-24.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sdin4e2_2026-08-24.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# Sem golden test afetado (grep "SDIN4" em chips/tests.py::_SD_GOLDEN não achou nenhuma âncora).
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDIN4E232G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: manual
+    notes: >
+      PN do caso original (debug do estoque 24/08/2026). Identidade (SanDisk, eMMC, BGA) já vinha
+      confirmada por 7+ catálogos independentes (Octopart/Avnet, Kynix, Jotrin, Preduo, veswin.com —
+      ver rodada anterior). alldatasheet.com confirma a AUSÊNCIA de datasheet indexado pra qualquer
+      prefixo "SDIN4*". Capacidade 32GB = sufixo declarativo padrão SanDisk.
+      Interface+device (e.MMC 4.41 JESD84-A441, X2/2 bits por célula) aplicados por INSTRUÇÃO DIRETA
+      DO DONO 2026-08-24 ("confirmar o SDIN4E232G com as mesmas specs do SDIN5B232G") — SDIN5B232G é
+      known_part `confirmed` desde 2026-07-14, fonte: datasheet oficial SanDisk 80-36-03433 Rev 1.3
+      (dez/2010), Tabela 12 "Ordering Information", variante "5B2" (X2), 32GB. Busquei cross-
+      referência independente de distribuidor ligando SDIN4E2-32G a SDIN5B2-32G explicitamente —
+      não achei nenhuma (aparecem juntos nos mesmos catálogos, mas nenhum os declara equivalentes).
+      Por isso `confidence=manual`, não `confirmed`: a fonte real da equivalência é o dono, não uma
+      leitura minha de datasheet/cross-ref PARA ESTE PN. Mesmo padrão do override KMDL6001DA (fonte
+      não-Tier-1 aceita caso a caso pelo dono) — não é precedente geral pro resto do bucket SDIN4xx.
+    source_url: "https://octopart.com/part/sandisk/SDIN4E2-32G"

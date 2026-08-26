@@ -1,0 +1,75 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3 standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN da bancada "H5TQ1G83TFR" (2026-08-20).
+#
+# ⚠ REVISÃO NOVA NA FAMÍLIA: letra "T" nunca confirmada antes em H5TQ nesta sessão (já
+# tínhamos B — hynix_h5tq_rev_b_2026-08-20.yaml — e D/E de rodadas anteriores, ver
+# hynix_h5tc_h5tq_2026-07-15.yaml). "T" estende o espaço de letras de revisão observado
+# pra esta família (mesmo padrão já visto em H5TC chegando a D nesta sessão).
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): busquei os 3 braços do
+# padrão "organização em pn[6]" (4/6/8 → x4/x16/x8, achado confirmado hoje em H5AN e H5TC)
+# pra revisão T em 1Gb:
+#   H5TQ1G83TFR (x8, ALVO da bancada) — confirmado, múltiplas fontes.
+#   H5TQ1G43TFR (x4) — confirmado, achado na varredura de cluster.
+#   H5TQ1G63TFR (x16) — NÃO encontrado. 3 buscas dedicadas (incluindo site:absunshine.com
+#     OR site:datasheets.com) só retornaram PNs de OUTRAS revisões da família H5TQ1G63
+#     (B/D/E) — nenhuma menção à combinação exata "63" + "T". Resumo de IA da própria busca
+#     confirmou "no information found" pro sufixo exato. EXCLUÍDO por rigor (regra "excluir,
+#     não adivinhar known_part") — pode existir e não ter sido indexado, ou pode não existir;
+#     não incluo sem evidência.
+#
+# FONTES (distribuidor/índice estruturado — não consegui abrir corpo de PDF em nenhum dos 2,
+# mesma limitação já documentada nas outras submissões H5TC/H5TQ/H5AN desta sessão —
+# confidence=manual):
+#   H5TQ1G83TFR-H9C: absunshine.com — "SK HYNIX H5TQ1G83TFR is a DDR3 SDRAM chip with
+#     128MX8 organization, FBGA-78 package, and 1.5V voltage". 128Mx8 = 1Gbit÷8=128MB,
+#     organização x8 (pn[6]='8'). Também aparece em datasheet4u.com e alldatasheet.com
+#     (índice, sem corpo acessível no fetch direto).
+#   H5TQ1G43TFR-H9C: datasheets.com — "SK hynix Inc's H5TQ1G43TFR-H9C is a DDR3 SDRAM dram
+#     chip with 1Gbit capacity, 256Mx4 organization, 1.5V voltage, and 78-pin FBGA package".
+#     256Mx4 = 1Gbit÷8=128MB, organização x4 (pn[6]='4') — bate exato com o padrão já
+#     confirmado (H5TC4G43AFR/BFR/DFR mais cedo hoje).
+# Manufacturer HYNIX/SK Hynix consistente nas duas fontes.
+#
+# ⚠ BUG PRÉ-EXISTENTE DO ENGINE (mesmo já documentado nas outras submissões H5TC/H5TQ/H5AN
+# desta sessão): `_result_from_known` (chips/engine.py, branch família casada) não propaga
+# `known.interface` pro classify() — campo fica salvo corretamente no banco, só não aparece
+# na saída hoje. Mantive `interface` preenchido porque o dado está correto.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq_rev_t_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq_rev_t_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ1G83TFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://absunshine.com/product/h5tq1g83tfr-h9c/"
+    notes: >
+      PN ALVO da bancada (2026-08-20), revisão "T" — nunca confirmada antes nesta família
+      nesta sessão. absunshine.com: "SK HYNIX H5TQ1G83TFR is a DDR3 SDRAM chip with 128MX8
+      organization, FBGA-78 package, and 1.5V voltage". 128Mx8 = 1Gbit÷8=128MB — bate exato
+      com pn[4:6]="1G" (1Gb total) organizado x8 (pn[6]='8', padrão já confirmado hoje em
+      H5AN/H5TC). Também indexado em datasheet4u.com e alldatasheet.com. NÃO consegui abrir
+      corpo de PDF (mesma limitação de host/viewer JS já documentada nas outras submissões
+      desta sessão) — confidence=manual.
+
+  - part_number: "H5TQ1G43TFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.datasheets.com/part-details/h5tq1g43tfr-h9c-sk-hynix-inc"
+    notes: >
+      Achado na varredura de cluster — mesma revisão T, organização x4 (3º braço do padrão
+      "4/6/8", pn[6]='4'). datasheets.com: "SK hynix Inc's H5TQ1G43TFR-H9C is a DDR3 SDRAM
+      dram chip with 1Gbit capacity, 256Mx4 organization, 1.5V voltage, and 78-pin FBGA
+      package". 256Mx4 = 1Gbit÷8=128MB — mesma densidade total do par x8, só a organização
+      muda. NÃO consegui abrir corpo de PDF — confidence=manual.

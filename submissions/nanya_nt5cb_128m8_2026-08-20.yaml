@@ -1,0 +1,58 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB128M8CN-CG"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.kynix.com/productdetails/23907044/nanya/nt5cb128m8cncg.html"
+    notes: >
+      PN do debug ao vivo do estoque (20/08/2026 13:50) foi "NT5CB128M8CN" (sem sufixo) -- esta
+      e a variante "-CG" da mesma die "C". NAO achei die "C" no indice do proprio Alldatasheet
+      pra esta organizacao (bucket NT5CB128M8* = 105 resultados, quebrado so em F(52)+G(53)=105,
+      sem "C" -- mesmo padrao ja visto varias vezes nesta serie: die real fora do crawl daquele
+      indice). Confirmado por 2 fontes independentes com pagina dedicada (nao resumo de busca):
+      (1) Kynix -- ficha estruturada completa, "In Stock: 1,056 units", atributos "Number of
+      Words: 128000000" (=128M), "Supply Voltage-Nom: 1.5V" (confirma DDR3, nao DDR3L -- bate
+      com o proprio tip do engine "NT5CB = DDR3 1.5V"), descricao tecnica "1Gb Double-Data-Rate-3
+      (DDR3/L) B-die DRAM... transfer rates of up to 2133 Mb/sec/pin"; (2) Ariat-tech, PDF de
+      datasheet dedicado ao mesmo PN exato. Aritmetica: 128M x 8bit = 1024Mbit = 1Gb (bate).
+      Ressalva de sufixo (ja documentada em rodadas anteriores): "NT5CB128M8CN" (bancada, sem
+      sufixo) normaliza diferente de "NT5CB128M8CNCG" -- normalize_pn nao equipara, entao este
+      known_part so resolve o PN exato da bancada se o "-CG" estiver de fato gravado na peca
+      fisica. Confirmar em sandbox mesmo assim.
+
+  - part_number: "NT5CB128M8FN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145457/NANYA/NT5CB128M8FN.html"
+    notes: >
+      Die "F" do mesmo cluster 128M8 (sem sufixo). Alldatasheet: "Commercial, Industrial and
+      Automotive DDR3(L) 1Gb SDRAM". Aritmetica: 128M x 8bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CB128M8FN-DH"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145461/NANYA/NT5CB128M8FN-DH.html"
+    notes: >
+      Variante de sufixo da die "F" acima. Alldatasheet: "Commercial, Industrial and Automotive
+      DDR3(L) 1Gb SDRAM". Aritmetica: 128M x 8bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CB128M8FN-EK"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145462/NANYA/NT5CB128M8FN-EK.html"
+    notes: >
+      Variante de sufixo/grade da die "F" (DDR3L-1866 em vez de 1600). Alldatasheet: "Commercial,
+      Industrial and Automotive DDR3(L) 1Gb SDRAM". Aritmetica: 128M x 8bit = 1024Mbit = 1Gb
+      (bate).

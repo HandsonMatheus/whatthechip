@@ -1,0 +1,119 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3 standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN da bancada "H5TQ1G64BFR" (2026-08-20).
+#
+# ⚠ CORREÇÃO DE LEITURA (confirmada pelo dono): o debug da bancada leu "H5TQ1G64BFR"
+# (pn[6:8]="64") — string sem NENHUM rastro em qualquer fonte pesquisada (AllDataSheet:
+# busca "Match"/"Start with" retornou "No Data" nos dois modos, dentro de um universo de 46
+# PNs "H5TQ1G63*" catalogados; zero em LCSC/JLCPCB/Octopart). Encontrei fortíssima evidência
+# de que é "H5TQ1G63BFR" mal-lido (dígito "3"→"4", posição pn[7]) — PN real, bem documentado,
+# encaixa exatamente no padrão já estabelecido da família (1Gb/x16, revisão "B", preenchendo
+# a lacuna ao lado das revisões D/E já confirmadas em hynix_h5tc_h5tq_2026-07-15.yaml). Achei
+# até um anúncio de eBay onde o PRÓPRIO VENDEDOR escreveu o mesmo PN de 5 formas diferentes por
+# erro de leitura ("H5TQIG63BFR"/"H5TQ1663BFR"/"H5TQ1GG3BFR"/"H5TQ1G638FR"/"H5TQ1G63BFR-11C") —
+# ilustra bem como "3" sai torto em leitura de chip. Perguntei ao dono ANTES de decidir (lição
+# da rodada anterior, H5AN — ver wtc-h5an-gb-gbit-nao-e-bug.md): confirmou "sim é com 3".
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a busca pela revisão B
+# achou 4 combinações reais (2 densidades × 2 organizações), todas a MESMA revisão "B":
+#   H5TQ1G63BFR (1Gb/x16, o alvo corrigido) + H5TQ1G83BFR (par x8, mesma densidade)
+#   H5TQ2G63BFR (2Gb/x16, achado de bônus) + H5TQ2G83BFR (par x8, mesma densidade)
+# Revisão B preenche uma lacuna nova na família: até agora só tínhamos D/E confirmadas em 1Gb
+# e C/E em 4Gb (ver hynix_h5tc_2026-07-13.yaml e hynix_h5tc_h5tq_2026-07-15.yaml) — nenhuma
+# revisão B em nenhuma densidade desta família ainda.
+#
+# FONTES (AllDataSheet — índice estruturado, Direct Link=skhynix.com oficial, contagem de
+# páginas/tamanho consistente com datasheet real — mas NÃO consegui abrir o corpo do PDF em
+# nenhuma das 4 (host com viewer JS não retorna texto no fetch direto; datasheet4u.com também
+# não retornou conteúdo). Mesmo padrão de rigor já usado em H5TC1G83EFR/H5TC8G63AMR nesta
+# família — confidence=manual, não confirmed):
+#   H5TQ1G63BFR: id 332936, 589.78KB/32P, "1Gb DDR3 SDRAM". Corroborado por Datasheets360,
+#     Datasheets.com, Octopart, eBay (estoque físico com múltiplas grafias do mesmo PN).
+#   H5TQ1G83BFR: id 332935 (nota: mesmo id-range do 63, adjacentes no catálogo — típico de
+#     par x16/x8 do mesmo documento-fonte), "128Mx8, 78-pin FBGA" (ElectronicsDataSheets) —
+#     bate com 1Gb÷8=128MB organizado x8. Corroborado por Datasheets360, Datasheets.com,
+#     Octopart, Lisleapex, Ovaga.
+#   H5TQ2G63BFR: "128Mx16, PBGA96" (busca geral) — bate com 2Gb÷8=256MB organizado x16.
+#     Corroborado por Datasheets360, AB Sunshine (via variante GFR relacionada), eBay.
+#   H5TQ2G83BFR: id 332937, 513KB/35P, Datasheets360, Datasheets.com, Lisleapex,
+#     ElectronicsDataSheets, Alibaba — múltiplas variantes de sufixo (-H9C/-xxC/-xxI/-xxL/-xxJ)
+#     documentadas independentemente em datasheet4u.com.
+# Manufacturer HYNIX/SK Hynix consistente em todas as fontes.
+#
+# ⚠ BUG PRÉ-EXISTENTE DO ENGINE (mesmo já documentado nas outras submissões H5TC/H5TQ desta
+# sessão): `_result_from_known` (chips/engine.py, branch família casada) não propaga
+# `known.interface` pro classify() — campo fica salvo corretamente no banco, só não aparece
+# na saída hoje. Mantive `interface` preenchido porque o dado está correto.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq_rev_b_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq_rev_b_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ1G63BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332936/HYNIX/H5TQ1G63BFR.html"
+    notes: >
+      PN da bancada (2026-08-20), corrigido: debug leu "H5TQ1G64BFR" (pn[7]='4'), zero
+      rastro em qualquer fonte (AllDataSheet: "No Data" pros dois modos de busca, dentro
+      de 46 PNs "H5TQ1G63*" catalogados). Dono confirmou após eu apresentar a evidência:
+      "sim é com 3". AllDataSheet: id 332936, 589.78KB/32 páginas, Manufacturer=HYNIX,
+      Direct Link=skhynix.com oficial. NÃO consegui abrir o corpo do PDF (host com
+      viewer JS não retorna texto no fetch) — confidence=manual. Corroborado por
+      Datasheets360, Datasheets.com, Octopart, e um anúncio de eBay com estoque físico
+      real (mesmo PN grafado de 5 formas diferentes por erro de leitura do vendedor).
+      1Gb÷8=128MB — bate exato com o decode ATUAL da gramática (dram_density já
+      mostrava "1Gb = 128MB por die [✓]" no debug da bancada).
+
+  - part_number: "H5TQ1G83BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332935/HYNIX/H5TQ1G83BFR.html"
+    notes: >
+      Par x8 do alvo corrigido (mesma revisão B, pn[6:8]="83"). AllDataSheet: id 332935
+      (adjacente ao id do par x16, típico de mesmo documento-fonte cobrindo as duas
+      variantes). ElectronicsDataSheets descreve estruturado: "128Mx8, 78-pin FBGA" —
+      bate exato com 1Gb÷8=128MB organizado x8. Corroborado por Datasheets360,
+      Datasheets.com, Octopart, Lisleapex, Ovaga. NÃO consegui abrir o corpo do PDF —
+      confidence=manual.
+
+  - part_number: "H5TQ2G63BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.datasheets360.com/part/detail/h5tq2g63bfr-h9c/-2338277757187849806/"
+    notes: >
+      Achado na varredura de cluster (mesma revisão B, densidade maior — 2Gb em vez de
+      1Gb). Descrição estruturada: "128Mx16, PBGA96" — bate exato com 2Gb÷8=256MB
+      organizado x16. Corroborado por Datasheets360, AB Sunshine (variante GFR
+      relacionada na mesma família), eBay (estoque físico real, módulo SODIMM
+      HMT325S6BFR8C usando o mesmo die B). NÃO consegui abrir o corpo do PDF —
+      confidence=manual.
+
+  - part_number: "H5TQ2G83BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/332937/HYNIX/H5TQ2G83BFR.html"
+    notes: >
+      Par x8 do H5TQ2G63BFR (mesma revisão B, densidade 2Gb). AllDataSheet: id 332937,
+      513KB/35 páginas. Corroborado por Datasheets360, Datasheets.com, Lisleapex,
+      ElectronicsDataSheets, Alibaba — múltiplas variantes de sufixo (-H9C/-xxC/-xxI/
+      -xxL/-xxJ) documentadas independentemente em datasheet4u.com (4 páginas
+      dedicadas, cada uma com Description="DDR3 SDRAM" consistente). 2Gb÷8=256MB.
+      NÃO consegui abrir o corpo do PDF — confidence=manual.

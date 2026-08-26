@@ -1,0 +1,58 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC256M16ER-EK"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145514/NANYA/NT5CC256M16ER-EK.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (20/08/2026 13:02): "NT5CC256M16EREK" (sem hífen) =
+      esta peça com sufixo "-EK". Confirmado diretamente no índice do Alldatasheet (bucket
+      NT5CC256M16ER* = 24 resultados, "Commercial and Industrial DDR3(L) 4Gb SDRAM") E por 9+
+      fontes independentes que convergem sem conflito: Octopart, LCSC (2 páginas, com estoque
+      real), JLCPCB (com estoque real), Jotrin, Rutronik24 (2 regiões), Win Source, Arrow —
+      descrição consistente "DRAM Chip DDR3L SDRAM 4Gbit 256Mx16 1.35V 96-Pin TFBGA". Aritmética:
+      256M x 16bit = 4096Mbit = 4Gb (bate). Cluster NT5CC256M16 = 124 resultados no Alldatasheet,
+      reconciliado exato: C(33)+D(38)+E(53)=124; dentro de E(53): EP(7)+EQ(22)+ER(24)=53. Ressalva
+      de sufixo (já documentada em rodadas anteriores): "NT5CC256M16EREK" (bancada, sem separador)
+      normaliza diferente de "NT5CC256M16EREK" com o "-" removido -- na prática bate exato aqui
+      porque normalize_pn só remove o hífen, não letras, e o PN da bancada já contém "EREK" (ER+EK
+      grudados) igual ao known_part sem o hífen. Confirmar em sandbox mesmo assim.
+
+  - part_number: "NT5CC256M16ER-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145512/NANYA/NT5CC256M16ER-DI.html"
+    notes: >
+      Sibling direto do PN do debug -- mesma die "ER", sufixo "-DI" em vez de "-EK" (grade de
+      velocidade diferente, DDR3L-1600 vs 1866). Alldatasheet: "Commercial and Industrial DDR3(L)
+      4Gb SDRAM". Aritmética: 256M x 16bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CC256M16EP-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425621/NANYA/NT5CC256M16EP-DI.html"
+    notes: >
+      Die "EP" do mesmo cluster 256M16 -- é o PN que o proprio engine sugeriu como
+      fuzzy_suggestion mais proximo do debug (NT5CC256M16EPEK), confirmando a proximidade real
+      entre as dies "EP"/"ER". Alldatasheet: "Commercial and Industrial DDR3(L) 4Gb SDRAM".
+      Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CC256M16EQ-DIA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145506/NANYA/NT5CC256M16EQ-DIA.html"
+    notes: >
+      Die "EQ" do mesmo cluster 256M16 (variante Automotive). Alldatasheet: "Automotive DDR3(L)
+      4Gb SDRAM". Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate).

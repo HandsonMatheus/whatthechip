@@ -1,0 +1,62 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC256M8GN-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=NT5CC256M8GN-DI"
+    notes: >
+      PN do debug ao vivo do estoque (20/08/2026 11:38) foi "NT5CC256M8GN" (sem sufixo) --
+      esta e a variante "-DI" da mesma die letter "G". NAO achei "G" no indice do proprio
+      Alldatasheet pra esta organizacao (bucket NT5CC256M8* = 80 resultados, quebrado só em
+      F(4)+I(38)+J(38)=80, sem "G" -- mesmo padrao ja visto em NT5CB256M16BP/NT6CL512M4GN:
+      die real mas fora do crawl daquele indice). Confirmado por 3 fontes independentes: (1)
+      Octopart tem a peca listada com estoque real em 5 distribuidoras (Win Source,
+      ICPartonline, Worldway, YIC, IC Components); (2) busca dedicada descreve "2Gb DDR3L
+      SDRAM 256Mx8 1.35V, 78-pin VFBGA"; (3) foto real de um chip fisico com esta MARCACAO
+      exata soldado num modulo Kingston (Wikimedia Commons: "Kingston ACR16D3LS1NGG-4G -
+      Nanya NT5CC256M8GN-DI"), ou seja evidencia fotografica de peca de verdade, nao so
+      listagem de banco de dados. Aritmetica: 256M x 8bit = 2048Mbit = 2Gb (bate). NAO achei a
+      forma BASE "NT5CC256M8GN" (sem sufixo) como entrada propria em nenhuma fonte -- mesma
+      ressalva de sufixo ja documentada nas rodadas NT6CL/NT5CB: normalize_pn nao equipara
+      "NT5CC256M8GN" a "NT5CC256M8GNDI", entao este known_part so resolve o PN exato da
+      bancada se o "-DI" estiver de fato gravado na peca fisica.
+
+  - part_number: "NT5CC256M8FN-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1132516/NANYA/NT5CC256M8FN-DI.html"
+    notes: >
+      Densidade 256M8=2Gb NAO tinha nenhum known_part confirmado antes desta submissao (a
+      rodada NT5CC anterior cobriu 64M16/1Gb, 512M8/4Gb e 512M4GN-CG/2Gb via organizacao
+      diferente -- 512x4, nao 256x8). Alldatasheet: "Commercial, Industrial and Automotive
+      DDR3(L) 2Gb SDRAM". Aritmetica: 256M x 8bit = 2048Mbit = 2Gb (bate).
+
+  - part_number: "NT5CC256M8IN-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145482/NANYA/NT5CC256M8IN-DI.html"
+    notes: >
+      Variante de die ("I" em vez de "G"/"F") do mesmo cluster 256M8, mesma densidade.
+      Alldatasheet: "Commercial, Industrial and Automotive DDR3(L) 2Gb SDRAM". Aritmetica:
+      256M x 8bit = 2048Mbit = 2Gb (bate).
+
+  - part_number: "NT5CC256M8IN-EK"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145483/NANYA/NT5CC256M8IN-EK.html"
+    notes: >
+      Variante de sufixo do IN acima ("-EK" em vez de "-DI"), mesma organizacao/densidade.
+      Alldatasheet: "Commercial, Industrial and Automotive DDR3(L) 2Gb SDRAM". Aritmetica:
+      256M x 8bit = 2048Mbit = 2Gb (bate).

@@ -1,0 +1,313 @@
+# Submissão de known_parts — Micron, FBGA NW301 + família MT29F1G08 (2026-08-24)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA NW301
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug IGNORADO por construção — já são KnownPart aprovado.
+#
+# ACHADO: NW301 → MT29F1G08ABADAH4:D. Família MT29F (NAND Flash cru),
+# organização "1G08" (1Gb totais, x8). TIPO + CAPACIDADE confirmados
+# diretamente pelo part-name da própria Micron: "SLC 1G X8 VFBGA",
+# sub-category "obsolete-slc-nand". CAPACIDADE por fórmula: 1Gb ÷ 8bit
+# = 128MB.
+#
+# Forward-lookup no PREFIXO DE PN "MT29F1G08" (2026-08-24, delegado —
+# WAF do micron.com ainda bloqueado nesta sessão, ver bloqueio F5
+# BIG-IP ASM desde 08-18) devolveu 84 PNs. Filtro aplicado (MESMO
+# CRITÉRIO de NW912/NW813/NW814): só entram PNs com part-name+sub-
+# category DIRETOS da Micron — célula (SLC/MLC/TLC) não é garantida
+# pelo prefixo sozinho, exige confirmação por PN individual (aqui, na
+# prática, os 20 confirmados vieram TODOS "SLC 1G X8" — nenhum MLC/TLC
+# nesta organização — mas cada um tem confirmação própria, não é
+# suposição por semelhança). Os 64 PNs restantes (sem part-name — a
+# API só confirma a existência do par PN/FBGA, sem detalhe de produto)
+# ficam de fora: sem confirmação Tier-1 própria, não decide.
+#
+# NOTA ES: 2 dos 20 confirmados têm "-AATES" no PN (NX001, NX003) —
+# mesmo caso do NW912 (3 PNs "ES" com confirmação própria): a
+# heurística "ES = amostra não confirmada" serve pra formula-extension
+# SEM confirmação própria; aqui cada entrada tem part-name+sub-category
+# direto da Micron, então a confirmação Tier-1 específica prevalece.
+#
+# Variante de encapsulamento (VFBGA vs TSOP) e sufixos de temperatura/
+# revisão (IT/ET/AITX/AATX/AAT/ITE) NÃO entram em campo modelado — vão
+# no notes de cada entrada (convenção: só célula no subtype).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_nw301.py). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match, incl. NW912/NW813/NW814).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_nw301_family_2026-08-24.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_nw301_family_2026-08-24.yaml --commit --fill-empty
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT29F1G08ABADAH4:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NW301"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abadah4-d"
+    notes: >
+      ALVO da investigação. Identidade via API FBGA oficial da Micron
+      (reverse lookup, 2026-08-24, delegado por bloqueio WAF):
+      NW301 → MT29F1G08ABADAH4:D. TIPO + CAPACIDADE confirmados
+      diretamente pelo part-name da própria Micron: "SLC 1G X8 VFBGA".
+      CAPACIDADE por fórmula: 1Gb ÷ 8bit = 128MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABBDAH4:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NW302"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abbdah4-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABBDAHC-IT:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ279"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abbdahc-it-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB. Sufixo
+      "-IT" = industrial temp. Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABBEAH4-IT:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ404"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abbeah4-it-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB. Sufixo
+      "-IT" = industrial temp. Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABBDAH4-ITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ430"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abbdah4-itx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABADAH4-ITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ432"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abadah4-itx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABAEAH4-AITX:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ447"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abaeah4-aitx-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABBEAH4-AITX:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ448"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abbeah4-aitx-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABAEAH4-AATX:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ461"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abaeah4-aatx-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa, não obsoleta — as demais desta leva são
+      "obsolete-slc-nand"). 1Gb ÷ 8bit = 128MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABAFAWP-AAT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ498"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abafawp-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 TSOP" (encapsulamento TSOP, não
+      VFBGA — pacote diferente do alvo NW301, mesma organização/
+      capacidade). Sub-category "slc-nand" (linha ativa). 1Gb ÷ 8bit =
+      128MB.
+
+  - part_number: "MT29F1G08ABAEAWP:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ525"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abaeawp-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABAEAWP-IT:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ526"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abaeawp-it-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). Sufixo "-IT" = industrial temp. 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABAEAWP-AITX:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ536"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abaeawp-aitx-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABAEAWP-AATX:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NQ539"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abaeawp-aatx-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABAEAH4:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NW361"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abaeah4-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". 1Gb ÷ 8bit = 128MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F1G08ABBFAH4-ITE:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NW812"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abbfah4-ite-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABBFAH4-AATES:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NX001"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abbfah4-aates-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". PN traz "-AATES" (possível
+      Engineering Sample colado ao sufixo "-AAT") — MESMO ASSIM tem
+      part-name+sub-category diretos da Micron (mesmo critério do lote
+      NW912/2026-07-15): confirmação Tier-1 própria prevalece sobre a
+      heurística de ES. 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABAFAH4-AATES:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NX003"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f1g08abafah4-aates-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". PN traz "-AATES" (mesma nota
+      de NX001 acima) — confirmação Tier-1 própria prevalece sobre a
+      heurística de ES. 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABBFAH4-AAT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NX017"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abbfah4-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 1Gb ÷ 8bit = 128MB.
+
+  - part_number: "MT29F1G08ABAFAH4-AAT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "128MB"
+    fbga_code: "NX099"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f1g08abafah4-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F1G08, 2026-08-24). Part-name
+      direto da Micron: "SLC 1G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 1Gb ÷ 8bit = 128MB.

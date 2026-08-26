@@ -1,0 +1,463 @@
+# Submissão de known_parts — Micron, FBGA D9TGJ + família MT40A512M8 (2026-08-24)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9TGJ
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9MGJ, D9QGJ, D9SGJ, D9TDJ, D9TGB) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: D9TGJ → MT40A512M8RH-075E:B. Família MT40A (DDR4 SDRAM —
+# prefixo NOVO nesta sessão, confirmado via micron.com part-catalog +
+# DigiKey + Alldatasheet antes de usar), organização "512M8" (depth
+# 512M x width 8 = 4096Mbit = 4Gb). O part-name da própria API NÃO veio
+# preenchido para o alvo, mas 15 irmãos da MESMA família (mesmo bloco
+# "512M8") vieram com part-name direto da Micron confirmando "DDR4 4G
+# X8 TFBGA" — validando a organização "512M8"=4Gb dentro desta família
+# específica, formula-extendida pros demais (mesmo padrão desta sessão
+# em D9LGD/D9LJJ/D9GBM/D9GKW/D9LGK: capacidade é legível da própria
+# organização do PN, diferente de célula NAND que exige confirmação
+# por PN individual). Cross-check independente do alvo via Alldatasheet
+# ("MT40A512M8RH-075E ... 4Gbit capacity", 2026-08-24) — bate exato com
+# 512M×8=4096Mbit=4Gb.
+#
+# Forward-lookup no PREFIXO DE PN "MT40A512M8" (2026-08-24, delegado —
+# WAF do micron.com ainda bloqueado nesta sessão) devolveu 47 PNs.
+# Filtro ES (regex de token "ES" delimitado, aplicado ao PRÓPRIO texto
+# de cada entrada): 15 Z-prefixados excluídos (Z8CGD + 14 Z9, TODOS com
+# "ES" — incl. Z9TGK, a variante-ES do próprio alvo D9TGJ). Sobraram 32
+# D-prefixados, TODOS sem "ES" — 15 com part-name direto da Micron
+# ("DDR4 4G X8 TFBGA"), 17 formula-extendidos (incl. o alvo).
+#
+# Sufixos de temperatura/revisão/embalagem (IT/AIT/AAT/AUT/AT, letra de
+# die-rev A-H) NÃO entram em campo modelado — vão no notes.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_d9tgj.py). Sem sobreposição real com nenhuma submissão
+# anterior (grep em submissions/*.yaml: 1 match falso-positivo — D9XJJ
+# aparece só num comentário de fuzzy_sugest. do arquivo D9LJJ, família
+# totalmente diferente MT41K256M8 — confirmado, não é PN submetido lá).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9tgj_family_2026-08-24.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9tgj_family_2026-08-24.yaml --commit --fill-empty
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT40A512M8RH-075E:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TGJ"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      ALVO da investigação. Identidade via API FBGA oficial da Micron
+      (reverse lookup, 2026-08-24, delegado por bloqueio WAF):
+      D9TGJ → MT40A512M8RH-075E:B. Part-name da própria API veio vazio
+      para este PN específico; capacidade por organização do PN
+      ("512M8" = depth 512M x width 8) formula-extendida a partir de
+      15 irmãos da MESMA família com part-name direto da Micron
+      ("DDR4 4G X8 TFBGA") — ver notas do arquivo. Aritmética:
+      512M × 8bit = 4096Mbit = 4Gb (4096÷1024=4). Cross-check
+      independente via Alldatasheet: "MT40A512M8RH-075E...4Gbit
+      capacity" — bate exato.
+
+  - part_number: "MT40A512M8RH-083E:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TGG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8rh-083e-b"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-083E IT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TGX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8rh-083e-it-b"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". Sufixo "IT" = industrial
+      temp. 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-075E AIT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TWZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8rh-075e-ait-b"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-075E AAT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TXB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8rh-075e-aat-b"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-083E AIT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9VWF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8rh-083e-ait-b"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-083E AAT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9VWG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8rh-083e-aat-b"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8AG-062E AUT:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D8BVK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8ag-062e-aut-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8AG-062E AUT:R"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D8CGW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8ag-062e-aut-r"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8WE-075E:E"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9WQL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8we-075e-e"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-075:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9WTD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr4-sdram/part-catalog/part-detail/mt40a512m8sa-075-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". Sub-category "ddr4-sdram"
+      (linha ATIVA — não obsoleta, diferente das demais desta leva).
+      512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XRZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8sa-062e-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E IT:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XSC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8sa-062e-it-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". Sufixo "IT" = industrial
+      temp. 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E AIT:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XSD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8sa-062e-ait-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E AUT:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XSQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8sa-062e-aut-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E AAT:F"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XST"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a512m8sa-062e-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24). Part-name
+      direto da Micron: "DDR4 4G X8 TFBGA". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E:H"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D8CGH"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida da
+      organização "512M8" (validada por 15 irmãos confirmados da mesma
+      família, ver notas do arquivo). 512M×8=4096Mbit=4Gb. Die-rev "H".
+
+  - part_number: "MT40A512M8SA-062E IT:H"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D8CGK"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Sufixo "IT" = industrial temp. Die-rev "H".
+      512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E AT:H"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D8CGM"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "H". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-083:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RBK"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "A". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-093:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RBM"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "A". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-107:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RBN"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "A". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-083E:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RGG"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "A". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-093E:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RGQ"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "A". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-093E M:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RGS"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). PN traz "M" solto antes do die-rev ":A" —
+      reportado exatamente como veio da API, não alterado. Die-rev "A".
+      512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8HX-107E:A"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RHB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "A". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-075E IT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TGZ"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Mesmo bloco "RH-075E:B" do alvo D9TGJ, só
+      difere no sufixo "IT" (industrial temp). 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-075E AUT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TXC"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Mesmo bloco "RH-075E:B" do alvo D9TGJ, só
+      difere no sufixo "AUT". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-062E:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9VCB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "B". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8RH-083E AUT:B"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9VWH"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "B". 512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E IT:G"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XHX"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Sufixo "IT" = industrial temp. Die-rev "G".
+      512M×8=4096Mbit=4Gb.
+
+  - part_number: "MT40A512M8SA-062E:G"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9XJJ"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/928196/MICRON/MT40A512M8RH-075E/226/1/MT40A512M8RH-075E.html"
+    notes: >
+      Irmão de família (forward-lookup MT40A512M8, 2026-08-24), sem
+      part-name próprio na API — capacidade formula-extendida (ver
+      notas do arquivo). Die-rev "G". 512M×8=4096Mbit=4Gb.

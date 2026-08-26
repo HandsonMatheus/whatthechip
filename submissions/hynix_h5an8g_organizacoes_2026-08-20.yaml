@@ -1,0 +1,354 @@
+# Submissão de known_parts — SK Hynix, família H5AN (DDR4 standalone, JÁ MAPEADA, GRANDFATHERED).
+# Gerado a partir da investigação do PN H5AN8G6NCJ (busca na bancada, 2026-08-20).
+#
+# ⚠ CORRIGIDO 2026-08-20 (foto do chip físico enviada pelo dono): a 1ª versão desta submissão
+# tinha "corrigido" o PN da bancada de "H5AN8G6NCJ" (10 chars) pra "H5AN8G6NCJR" (11 chars,
+# forma de catálogo/distribuidor), assumindo que faltava o "R" final por erro de leitura —
+# decisão unilateral errada, deveria ter perguntado (regra de ouro: nunca decidir PN
+# ambíguo sozinho). O dono enviou FOTO do chip físico e confirmou: "existe sem o R no final
+# sim, vide foto do chip" — a marcação FÍSICA gravada no encapsulamento é mesmo "H5AN8G6NCJ"
+# (10 chars), sem o R. Isso é NORMAL em semicondutores: o "top mark" (o que vem gravado a
+# laser no pacote) frequentemente é abreviado em relação ao PN "de pedido" que aparece no
+# datasheet/distribuidor (aqui, "H5AN8G6NCJR-VKC") — espaço físico limitado no encapsulamento.
+# O known_part abaixo foi corrigido pra bater com a marcação REAL ("H5AN8G6NCJ", sem R), que é
+# o que o operador de bancada vai digitar — é o único jeito do known_exact bater na prática.
+# As specs (x16, 8Gb=1GB, DDR4) continuam corretas e vêm do mesmo datasheet oficial (a
+# identidade do chip — família+densidade+organização+revisão — não muda, só a forma exata do
+# PN de 11 chars pra 10 chars no campo part_number).
+#
+# ⚠ RESOLVIDO 2026-08-20 (2ª mensagem do dono): "brother os dois existem! com e sem a letra!" —
+# NÃO é "a marcação física é sempre curta, a de catálogo é sempre longa" (o que eu tinha
+# assumido implicitamente ao levantar a pergunta acima). As DUAS formas são PNs reais e
+# distintos que aparecem em chips físicos diferentes — a Hynix aparentemente imprime o top
+# mark completo (11 chars, com a letra de revisão) em alguns lotes/pacotes e o abreviado (10
+# chars, sem a letra) em outros, da MESMA combinação densidade+organização+revisão. Por isso
+# esta submissão agora tem os DOIS PNs pra cada uma das 9 combinações já pesquisadas: a forma
+# de 11 chars (já vinha das 9 originais, com fonte Tier-1 direta no datasheet — Ordering
+# Information) e a forma de 10 chars (irmã, mesma identidade de chip, sem letra final — só a
+# H5AN8G6NCJ tem confirmação fotográfica direta; as outras 8 formas curtas seguem o mesmo
+# padrão que o dono confirmou existir na família, mas sem foto individual de cada uma).
+# Resultado: 18 known_parts nesta submissão (9 pares longa+curta).
+#
+# ⚠ RESOLVE A DÚVIDA DEIXADA PELA INVESTIGAÇÃO ANTERIOR DESTA SESSÃO (2026-08-20, mesmo dia
+# — "bug GB/Gb" em H5AN8G8NCJR/-VKC, ver memória wtc-h5an-gb-gbit-nao-e-bug.md): aquela
+# investigação já tinha concluído que não havia bug, mas não tinha explicado o que o dígito
+# em pn[6] (a posição logo após o código de densidade "8G") realmente significa. Agora, com
+# datasheet oficial completo lido para TRÊS revisões independentes (A/C/D), está confirmado:
+#   pn[4:6] = "8G" → densidade TOTAL do chip (8Gb = 1GB) — SEMPRE a mesma nas 9 entradas
+#   abaixo, não muda com organização.
+#   pn[6] (о dígito seguinte, reaproveitando "4"/"6"/"8" mas em OUTRO campo) = ORGANIZAÇÃO:
+#     '4' → x4 (2G x 4)      '8' → x8 (1G x 8)      '6' → x16 (512M x 16)
+#   Ou seja, H5AN8G8NCJR (o PN da investigação anterior) e H5AN8G6NCJR (o PN desta rodada,
+#   forma completa do alvo da bancada) são o MESMO die/densidade (8Gb=1GB), só organizados
+#   diferente (x8 vs x16) — dois PNs REAIS e DISTINTOS, não confusão de leitura entre si.
+#   Confirma de vez que não há e nunca houve bug de conversão nesta família.
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a busca achou TRÊS
+# datasheets oficiais completos, cada um cobrindo as MESMAS 3 organizações (x4/x8/x16) da
+# MESMA densidade (8Gb), cada um uma revisão de die diferente (mesmo padrão "die-revision-
+# letter" já visto em H5TC/H5TQ nesta sessão): revisão A (Rev.1.2/Jul.2017), revisão C
+# (Rev.1.5/Mar.2019 — inclui o PN da investigação anterior E o alvo desta rodada) e revisão D
+# (Rev.1.4/Apr.2020). Entreguei as 9 combinações (3 revisões × 3 organizações) na mesma
+# submissão — todas com o MESMO nível de evidência (datasheet oficial lido na íntegra) — e,
+# após o dono confirmar que a forma curta (sem letra final) também é real, dobrei pra 18
+# (cada combinação com sua forma longa E curta).
+#
+# FONTES (Tier-1, datasheet oficial SK Hynix, lido NA ÍNTEGRA via fetch direto do PDF em
+# cada caso — Ordering Information com a tabela Part No./Configuration/Package explícita):
+#   Revisão A: https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916
+#     "8Gb DDR4 SDRAM" Rev.1.2/Jul.2017. H5AN8G4NAFR-*xxC=2Gx4/78ball; H5AN8G8NAFR-*xxC=1Gx8/
+#     78ball; H5AN8G6NAFR-*xxC=512Mx16/96ball.
+#   Revisão C: https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261
+#     "8Gb DDR4 SDRAM" Rev.1.5/Mar.2019. Mesma tabela: H5AN8G4NCJR-*xxC=2Gx4;
+#     H5AN8G8NCJR-*xxC=1Gx8; H5AN8G6NCJR-*xxC=512Mx16/96ball.
+#   Revisão D: https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593
+#     "8Gb DDR4 SDRAM" Rev.1.4/Apr.2020. Mesma tabela: H5AN8G4NDJR-*xxC=2Gx4;
+#     H5AN8G8NDJR-*xxC=1Gx8; H5AN8G6NDJR-*xxC=512Mx16/96ball.
+# Todas as 9 corroboradas por distribuidores independentes (LCSC estoque+preço direto,
+# JLCPCB, AB Sunshine, Fusion Worldwide, Sourcengine, xonelec, ElectronicsDataSheets) —
+# manufacturer HYNIX/SK Hynix consistente em todas. confidence=confirmed em TODAS (li o
+# corpo técnico completo do datasheet + tabela Ordering Information direta em cada uma).
+#
+# GAP CONHECIDO (não incluído, não inventado): podem existir outras letras de revisão além
+# de A/C/D nesta mesma densidade/organizações (padrão já visto no resto da família) — não
+# persegui além destas 3 por já ser uma entrega robusta (9 PNs, 3 fontes independentes).
+#
+# ⚠ BUG PRÉ-EXISTENTE DO ENGINE (mesmo já documentado em hynix_h5tc_2026-07-13.yaml e nas
+# submissões H5TC/H5TQ desta sessão): `_result_from_known` (chips/engine.py, branch família
+# casada) não propaga `known.interface` pro classify() — campo fica salvo corretamente no
+# banco, só não aparece na saída hoje. Mantive `interface` preenchido nas 9 entradas porque
+# o dado está correto (extraído direto da tabela Configuration do datasheet). Fora do escopo
+# do chat de marca (não modificar código sem perguntar).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5an8g_organizacoes_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5an8g_organizacoes_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5AN8G6NCJ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261"
+    notes: >
+      PN ALVO da bancada (2026-08-20), EXATAMENTE como lido — "H5AN8G6NCJ" (10 chars).
+      Dono enviou foto do chip físico confirmando a marcação exata: "existe sem o R no
+      final sim, vide foto do chip". O PN "de catálogo/pedido" documentado no datasheet
+      oficial SK Hynix "8Gb DDR4 SDRAM" Rev.1.5/Mar.2019 (lido NA ÍNTEGRA) é
+      "H5AN8G6NCJR-*xxC" (11 chars + sufixo de velocidade) — mas o TOP MARK gravado a
+      laser no encapsulamento físico é abreviado, sem o "R" (prática comum em
+      semicondutores, espaço limitado no pacote). Registrado com a forma FÍSICA (a que
+      o operador de bancada realmente digita), não a forma de catálogo. Ordering
+      Information confirma a identidade do chip: "H5AN8G6NCJR-*xxC 512M x 16, 96ball
+      FBGA". 8Gb totais (pn[4:6]="8G") ÷8 = 1GB — bate exato com o decode ATUAL da
+      gramática (dram_density já mostrava "8Gb = 1GB por die [✓]" no debug da bancada).
+      Corroborado por LCSC/JLCPCB/AB Sunshine/Fusion Worldwide/Sourcengine/xonelec
+      (todos sob a forma de catálogo H5AN8G6NCJR-VKC) + Hackster.io (projeto real
+      usando este chip físico). confidence=confirmed (li o corpo técnico completo do
+      datasheet, tabela Ordering Information direta — a identidade do chip é
+      inequívoca, só a forma exata do PN de 11→10 chars veio da foto do dono).
+
+  - part_number: "H5AN8G6NCJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261"
+    notes: >
+      Forma LONGA (11 chars, com "R") do H5AN8G6NCJ acima — mesma identidade de chip
+      (x16, 8Gb=1GB, revisão C). Dono confirmou (2026-08-20, "brother os dois existem!
+      com e sem a letra!") que a Hynix imprime AMBAS as formas de top mark em chips
+      físicos diferentes desta mesma combinação — não é só a forma de catálogo, é
+      também uma marcação real. Ordering Information do mesmo datasheet oficial:
+      "H5AN8G6NCJR-*xxC 512M x 16, 96ball FBGA". 8Gb÷8=1GB. confidence=confirmed (li o
+      corpo técnico completo do datasheet).
+
+  - part_number: "H5AN8G4NCJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261"
+    notes: >
+      Irmão de organização (x4) da mesma revisão C — mesmo datasheet do H5AN8G6NCJR
+      (Rev.1.5/Mar.2019), documento único cobre as 3 organizações. Ordering Information:
+      "H5AN8G4NCJR-*xxC 2G x 4, 78ball FBGA". Mesma densidade total (8Gb÷8=1GB), só a
+      organização/largura de barramento muda. confidence=confirmed (li o corpo técnico
+      completo do datasheet).
+
+  - part_number: "H5AN8G4NCJ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261"
+    notes: >
+      Forma CURTA (10 chars, sem a letra final "R") do H5AN8G4NCJR acima — mesma
+      identidade de chip (x4, 8Gb=1GB, revisão C), mesmo datasheet oficial. Adicionada
+      após o dono confirmar (2026-08-20, "os dois existem! com e sem a letra!") que a
+      Hynix imprime AMBAS as formas de top mark nesta família, não só a curta do PN
+      alvo fotografado (H5AN8G6NCJ). Sem foto individual desta forma específica, mas
+      mesmo padrão confirmado pelo dono para o conjunto. confidence=confirmed (mesma
+      fonte Tier-1 do par de 11 chars — a identidade do chip é inequívoca).
+
+  - part_number: "H5AN8G8NCJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261"
+    notes: >
+      Irmão de organização (x8) da mesma revisão C — MESMO PN da investigação anterior
+      desta sessão (2026-08-20, questão "bug GB/Gb", ver memória
+      wtc-h5an-gb-gbit-nao-e-bug.md). Ordering Information do mesmo datasheet oficial:
+      "H5AN8G8NCJR-*xxC 1G x 8, 78ball FBGA". Mesma densidade total (8Gb÷8=1GB),
+      confirma formalmente (agora com datasheet completo em mãos, não só o índice
+      AllDataSheet usado na investigação anterior) que não há qualquer inconsistência —
+      é x8, 1GB total, exatamente como o engine já reportava. confidence=confirmed.
+
+  - part_number: "H5AN8G8NCJ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/c27d011a76fb9fb935e03923df73d324.pdf?productCode=C2803261"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G8NCJR acima — mesma identidade de chip
+      (x8, 8Gb=1GB, revisão C, o PN da investigação "bug GB/Gb" anterior desta sessão).
+      Adicionada após o dono confirmar que ambas as formas de top mark existem nesta
+      família. confidence=confirmed (mesma fonte Tier-1 do par de 11 chars).
+
+  - part_number: "H5AN8G6NAFR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916"
+    notes: >
+      Revisão A (die-revision-letter, mesmo padrão já visto em H5TC/H5TQ) — mesma
+      organização x16 do alvo, achada na varredura de cluster. Datasheet oficial SK
+      Hynix "8Gb DDR4 SDRAM" Rev.1.2/Jul.2017, lido NA ÍNTEGRA. Ordering Information:
+      "H5AN8G6NAFR-*xxC 512M x 16, 96ball FBGA". 8Gb÷8=1GB. confidence=confirmed.
+
+  - part_number: "H5AN8G6NAF"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G6NAFR acima — mesma identidade de chip
+      (x16, 8Gb=1GB, revisão A). Adicionada após o dono confirmar que ambas as formas
+      de top mark existem nesta família. confidence=confirmed (mesma fonte Tier-1 do
+      par de 11 chars).
+
+  - part_number: "H5AN8G4NAFR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916"
+    notes: >
+      Irmão de organização (x4) da revisão A — mesmo datasheet do H5AN8G6NAFR. Ordering
+      Information: "H5AN8G4NAFR-*xxc 2G x 4, 78ball FBGA". 8Gb÷8=1GB. confidence=confirmed
+      (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5AN8G4NAF"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G4NAFR acima — mesma identidade de chip
+      (x4, 8Gb=1GB, revisão A). confidence=confirmed (mesma fonte Tier-1 do par de 11
+      chars).
+
+  - part_number: "H5AN8G8NAFR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916"
+    notes: >
+      Irmão de organização (x8) da revisão A — mesmo datasheet do H5AN8G6NAFR. Ordering
+      Information: "H5AN8G8NAFR-*xxC 1G x 8, 78ball FBGA". 8Gb÷8=1GB. Nota: os golden
+      anchors já existentes de chips/tests.py (H5AN8G8NAFR-UHC/-VKC) testam a GRAMÁTICA
+      desta forma — este known_part formaliza a AUTORIDADE (confirmed) na Trilha B, que
+      é independente. confidence=confirmed (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5AN8G8NAF"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/6c53e5aaaf7112b7986374307a80ae1f.pdf?productCode=C499916"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G8NAFR acima — mesma identidade de chip
+      (x8, 8Gb=1GB, revisão A). confidence=confirmed (mesma fonte Tier-1 do par de 11
+      chars).
+
+  - part_number: "H5AN8G6NDJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593"
+    notes: >
+      Revisão D (die-revision-letter) — mesma organização x16 do alvo, achada na
+      varredura de cluster. Datasheet oficial SK Hynix "8Gb DDR4 SDRAM" Rev.1.4/Apr.2020,
+      lido NA ÍNTEGRA. Ordering Information: "H5AN8G6NDJR-*xxC 512M x 16, 96ball FBGA".
+      8Gb÷8=1GB. confidence=confirmed.
+
+  - part_number: "H5AN8G6NDJ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G6NDJR acima — mesma identidade de chip
+      (x16, 8Gb=1GB, revisão D). confidence=confirmed (mesma fonte Tier-1 do par de 11
+      chars).
+
+  - part_number: "H5AN8G4NDJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593"
+    notes: >
+      Irmão de organização (x4) da revisão D — mesmo datasheet do H5AN8G6NDJR. Ordering
+      Information: "H5AN8G4NDJR-*xxC 2G x 4, 78ball FBGA". 8Gb÷8=1GB. confidence=confirmed
+      (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5AN8G4NDJ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G4NDJR acima — mesma identidade de chip
+      (x4, 8Gb=1GB, revisão D). confidence=confirmed (mesma fonte Tier-1 do par de 11
+      chars).
+
+  - part_number: "H5AN8G8NDJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593"
+    notes: >
+      Irmão de organização (x8) da revisão D — mesmo datasheet do H5AN8G6NDJR. Ordering
+      Information: "H5AN8G8NDJR-*xxC 1G x 8, 78ball FBGA". 8Gb÷8=1GB. confidence=confirmed
+      (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5AN8G8NDJ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/200bb31c5ebbfb4e0d85dea907c5133c.pdf?productCode=C2961593"
+    notes: >
+      Forma CURTA (10 chars, sem "R") do H5AN8G8NDJR acima — mesma identidade de chip
+      (x8, 8Gb=1GB, revisão D). confidence=confirmed (mesma fonte Tier-1 do par de 11
+      chars).

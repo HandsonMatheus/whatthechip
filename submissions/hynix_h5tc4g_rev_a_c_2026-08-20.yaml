@@ -1,0 +1,129 @@
+# Submissão de known_parts — SK Hynix, família H5TC (DDR3L standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H5TC4G63AFR (busca na bancada, 2026-08-20) — MESMO
+# padrão "die-revision-letter" já visto váras vezes nesta família/H5TQ (H5TC2G63FFR/-GFR,
+# H5TQ1G63DFR/-EFR, H5TQ4G63CFR/-EFR): dentro da MESMA densidade+interface, uma letra final
+# diferente é uma REVISÃO/DOCUMENTO de datasheet distinto, não muda capacidade. A gramática
+# já decodifica certo (pn[4:6]="4G"→dram_density="4Gb = 512MB por die [✓]", grammar_complete=
+# true no debug) — é known_parts-only (Trilha B), sem fix de gramática.
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a chave 4G/x16 já tinha
+# a revisão E confirmada (hynix_h5tc_2026-07-13.yaml). Busca ampliada nesta rodada achou DUAS
+# revisões novas na MESMA densidade: a revisão A (alvo da bancada) E a revisão C (achada de
+# bônus — datasheet oficial com fetch DIRETO e completo, melhor evidência que o próprio alvo).
+# As 4 entradas abaixo = par x16/x8 de cada revisão nova.
+#
+# FONTES:
+#   Revisão A (H5TC4G63AFR / H5TC4G83AFR) — AllDataSheet: entrada PRÓPRIA (Part#=H5TC4G63AFR,
+#   id 533422, 497KB/35 páginas; H5TC4G83AFR-PBA, id 533416, mesma contagem de páginas/tamanho
+#   de arquivo — consistente com par x16/x8 do mesmo documento), Manufacturer=HYNIX, Direct
+#   Link=skhynix.com oficial. NÃO consegui abrir o corpo do PDF em si (host com viewer JS não
+#   retorna texto no fetch, mesma limitação já documentada nesta família p/ H5TC1G83EFR e
+#   H5TC8G63AMR). Corroborado por: Datasheets360, ElectronicsDataSheets, Kynix (descrição
+#   estruturada própria: "DDR DRAM, 512MX8, 0.225ns, CMOS, PBGA78" pro H5TC4G83AFR-PBA — bate
+#   exato com 4Gb÷8=512MB e x8/78ball), Tech-Electr, AB Sunshine — todos convergindo em "4Gb
+#   DDR3L SDRAM" / config 256Mx16 (63) e 512Mx8 (83). Metadado do PDF em datasheet.iiic.cc (não
+#   abriu corpo, só título via busca) cita "Rev. 1.0 / Apr. 2013" — documento real, revisão mais
+#   antiga que a E (confirmada Rev.1.4/1.5). confidence=manual (mesmo rigor das outras entregas
+#   manual desta família — metadado estruturado multi-fonte, não li o corpo do PDF).
+#
+#   Revisão C (H5TC4G63CFR / H5TC4G83CFR) — achada na varredura de cluster, NÃO era o alvo da
+#   bancada. Datasheet oficial SK Hynix "4Gb DDR3 SDRAM / 4Gb DDR3L SDRAM" Rev.0.2/Jul.2014,
+#   lido NA ÍNTEGRA via fetch direto do PDF (hospedado community.nxp.com, anexo de fórum oficial
+#   da NXP/imx-processors — documento técnico completo, não metadado de agregador). Ordering
+#   Information confirma EXPLICITAMENTE as duas variantes no mesmo doc.: H5TC4G83CFR-*xxA/I/L/J
+#   = "512M x 8" (x8), 78ball FBGA; H5TC4G63CFR-*xxA/I/L/J = "256M x 16" (x16), 96ball FBGA.
+#   4Gb÷8=512MB — bate exato com a gramática. Corroborado por AllDataSheet listando 5 variantes
+#   de sufixo (-H9A/-H9I/-H9J/-H9L/-PBA, Rev.1.4/Oct.2015 — revisão mais nova do mesmo produto,
+#   472KB/33P). confidence=confirmed (li o corpo técnico completo do datasheet, tabela Ordering
+#   Information direta).
+#
+# GAP CONHECIDO (não incluído, não inventado): busca também retornou sinais de uma possível
+# revisão B (H5TC4G83BFR-PBA/-RDA, vários distribuidores: AB Sunshine, Express Technology,
+# DigiPart, Avaq, Kynix) — mas o único PDF direto encontrado (datasheet.iiic.cc) teve o mesmo
+# problema de viewer JS que a revisão A, sem body de texto extraível, e não achei mirror
+# alternativo nesta rodada. Não incluída por rigor (nem confirmed nem manual com convergência
+# suficiente checada) — sinalizando pro dono como possível 5ª revisão a fechar depois.
+#
+# ⚠ BUG PRÉ-EXISTENTE DO ENGINE (já documentado em hynix_h5tc_2026-07-13.yaml e
+# hynix_h5tc_h5tq_2026-07-15.yaml, reaplica aqui): `_result_from_known` (chips/engine.py,
+# branch família casada) não propaga `known.interface` pro classify() quando há família
+# casada — campo fica salvo corretamente no banco, só não aparece na saída hoje. Fora do
+# escopo do chat de marca (não modificar código sem perguntar).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc4g_rev_a_c_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc4g_rev_a_c_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC4G63AFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533422/HYNIX/H5TC4G63AFR.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-08-20). AllDataSheet tem entrada PRÓPRIA e dedicada
+      pra esta forma exata (id 533422, 497KB/35 páginas, Manufacturer=HYNIX, Direct
+      Link=skhynix.com oficial). NÃO consegui abrir o corpo do PDF (host com viewer JS não
+      retorna texto no fetch) — confidence=manual, mesmo padrão de rigor já usado em
+      H5TC1G83EFR/H5TC8G63AMR nesta família. Corroborado por Datasheets360,
+      ElectronicsDataSheets, Tech-Electr, AB Sunshine — todos "4Gb DDR3L SDRAM"/256Mx16.
+      Metadado do PDF em datasheet.iiic.cc (título via busca, corpo não aberto) cita "Rev.
+      1.0/Apr.2013" — documento real, revisão do produto anterior à E (já confirmada nesta
+      família, Rev.1.4/1.5). 4Gb÷8=512MB — bate exato com o decode ATUAL da gramática
+      (pn[4:6]="4G", dram_density já mostrava "4Gb = 512MB por die [✓]" no debug da bancada).
+
+  - part_number: "H5TC4G83AFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533416/HYNIX/H5TC4G83AFR-PBA.html"
+    notes: >
+      Par x8 do alvo da bancada (mesma revisão A, pn[6:8]="83"). AllDataSheet: id 533416,
+      mesma contagem de páginas/tamanho de arquivo do par x16 (consistente com par do mesmo
+      documento-fonte), Manufacturer=HYNIX, Direct Link=skhynix.com oficial. Kynix tem
+      descrição estruturada PRÓPRIA: "DDR DRAM, 512MX8, 0.225ns, CMOS, PBGA78, HALOGEN FREE
+      AND ROHS COMPLIANT, FBGA-78" — 512Mx8 bate exato com 4Gb÷8=512MB e x8/78ball.
+      Corroborado por Datasheets.com, AB Sunshine, Tech-Electr. NÃO consegui abrir o corpo
+      do PDF (mesma limitação do par x16) — confidence=manual.
+
+  - part_number: "H5TC4G63CFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/63257/1/Hynix_DDR3L_H5TC4G8(6)3CFR(Rev0.2).pdf"
+    notes: >
+      Achado na varredura de cluster desta rodada (não era o alvo da bancada) — revisão C,
+      mesma densidade 4Gb/x16 do alvo. Datasheet oficial SK Hynix "4Gb DDR3(L) SDRAM"
+      Rev.0.2/Jul.2014, lido NA ÍNTEGRA via fetch direto do PDF (anexo técnico oficial no
+      fórum community.nxp.com/imx-processors, documento completo — pinout, tabelas de
+      timing, ratings — não metadado de agregador). Ordering Information confirma
+      explicitamente: H5TC4G63CFR-*xxA/I/L/J = "256M x 16" (x16), 96ball FBGA. 4Gb÷8=512MB
+      — bate exato com o decode da gramática. Corroborado por AllDataSheet: 5 variantes de
+      sufixo (-H9A/-H9I/-H9J/-H9L/-PBA), Rev.1.4/Oct.2015 (revisão mais nova do mesmo
+      produto), 472KB/33P, Manufacturer=HYNIX. confidence=confirmed (li o corpo técnico
+      completo do datasheet, tabela Ordering Information direta).
+
+  - part_number: "H5TC4G83CFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/63257/1/Hynix_DDR3L_H5TC4G8(6)3CFR(Rev0.2).pdf"
+    notes: >
+      Par x8 da revisão C — mesmo datasheet oficial do H5TC4G63CFR (Rev.0.2/Jul.2014),
+      documento único cobre as duas variantes de interface. Ordering Information confirma
+      explicitamente: H5TC4G83CFR-*xxA/I/L/J = "512M x 8" (x8), 78ball FBGA. Mesma
+      densidade total (4Gb÷8=512MB), só a largura de barramento muda. confidence=confirmed
+      (li o corpo técnico completo do datasheet).

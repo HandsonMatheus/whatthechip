@@ -1,0 +1,52 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB512M4BN-CG"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.aeri.com/pn/nanya-technology/nt5cb512m4bncg"
+    notes: >
+      OVERRIDE TIER-2 AUTORIZADO PELO DONO (20/08/2026, apos eu sinalizar a duvida no dossie
+      INVESTIGACAO_nanya_nt5cb512m4bn_2026-08-20.md: "pode confirmar ele em tier 2"). PN exato do
+      debug ao vivo do estoque (17:02): "NT5CB512M4BN" (sem sufixo). Nao achei fonte Tier-1
+      (datasheet oficial Nanya) nem confirmacao forte no Octopart (zero resultado, sugeriu
+      "512M8BN-CG" como correcao mais proxima -- ver dossie). Aceito via 3 fontes Tier-2
+      convergentes: (1) AERI -- distribuidora certificada AS6081(founding member)/AS6171/AS9120/
+      IDEA-STD-1010, testes em laboratorio proprio, descricao estruturada "IC,SDRAM,DDR,8X64MX4,
+      CMOS,BGA,78PIN,PLASTIC" (8 banks x 64M x 4bit = 2048Mbit = 2Gb, bate), estoque real 7.221
+      unidades, "Part Status: ACTIVE", catalogo com MULTIPLAS variantes de sufixo da mesma die
+      "BN" (padrao normal de catalogo real, nao entrada isolada); (2) 1sourcecomponents.com --
+      distribuidora tradicional desde 2001, confirma disponibilidade (23.958 unidades); (3)
+      datasheets360.com -- ficha "DDR3 DRAM, 512MX4, 0.255ns, CMOS, PBGA78" (dados completos atras
+      de paywall mas a descricao estrutural bate). Aritmetica: 512M x 4bit = 2048Mbit = 2Gb
+      (bate nas 3 fontes). NAO virou precedente geral -- decisao pontual do dono pra este PN
+      especifico, apos eu ter sinalizado a duvida primeiro (mesmo padrao ja usado em
+      NT5CC512M4GN-CG, rodada 3, 2026-07-15).
+
+  - part_number: "NT5CB512M4BN-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.aeri.com/pn/nanya-technology/nt5cb512m4bndi"
+    notes: >
+      Sibling de sufixo da die "BN" acima, mesmo override Tier-2 (ver PN "-CG" acima pro
+      raciocinio completo). Listado no mesmo catalogo estruturado da AERI, mesma descricao
+      "IC,SDRAM,DDR,8X64MX4,CMOS,BGA,78PIN,PLASTIC". Aritmetica: 512M x 4bit = 2048Mbit = 2Gb
+      (bate).
+
+  - part_number: "NT5CB512M4BN-DH"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.aeri.com/pn/nanya-technology/nt5cb512m4bndh"
+    notes: >
+      Sibling de sufixo da die "BN" acima, mesmo override Tier-2 (ver PN "-CG" acima pro
+      raciocinio completo). Listado no mesmo catalogo estruturado da AERI, mesma descricao
+      "IC,SDRAM,DDR,8X64MX4,CMOS,BGA,78PIN,PLASTIC". Aritmetica: 512M x 4bit = 2048Mbit = 2Gb
+      (bate).

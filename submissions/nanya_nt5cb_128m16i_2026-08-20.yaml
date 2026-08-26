@@ -1,0 +1,55 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB128M16IP-EK"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/ddr-sdram_nanya-tech-nt5cb128m16ip-ek_C2846879.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (20/08/2026 16:34): "NT5CB128M16IPEK" (sem hifen) =
+      esta peca com sufixo "-EK". Confirmado por 8+ fontes convergentes: LCSC (com estoque real),
+      Alibaba, Kynix, Rutronik24, Arrow, Worldway, SemiKey, Nyang-tech, todas descrevendo
+      "Commercial, Industrial and Automotive DDR3(L) 2Gb SDRAM" / "DDR3 2Gb 128Mx16 933MHz
+      BGA96". Reforcado indiretamente pelo Alldatasheet, que tem a die vizinha
+      "NT5CB128M16IP-EKT" (mesma die "IP", sufixo com "T" a mais) com datasheet direto. NT5CB =
+      DDR3 1.5V (nao DDR3L), padrao ja confirmado nas rodadas anteriores desta familia.
+      Aritmetica: 128M x 16bit = 2048Mbit = 2Gb (bate). Cluster NT5CB128M16I = 40, quebrado
+      IN(18)+IP(21)=39 (pequena discrepancia de indexacao, ja vista antes, nao e motivo de
+      alarme dado o volume de fontes convergentes).
+
+  - part_number: "NT5CB128M16IP-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145485/NANYA/NT5CB128M16IP-DI.html"
+    notes: >
+      Sibling direto do PN do debug -- mesma die "IP", sufixo "-DI" (grade de velocidade
+      diferente). Alldatasheet: "Commercial, Industrial and Automotive DDR3(L) 2Gb SDRAM".
+      Aritmetica: 128M x 16bit = 2048Mbit = 2Gb (bate).
+
+  - part_number: "NT5CB128M16IN-DIA"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145595/NANYA/NT5CB128M16IN-DIA.html"
+    notes: >
+      Die "IN" (irma da die "IP" acima) do mesmo cluster 128M16, mesma densidade. Alldatasheet:
+      "Commercial, Industrial and Automotive DDR3(L) 2Gb SDRAM". Aritmetica: 128M x 16bit =
+      2048Mbit = 2Gb (bate).
+
+  - part_number: "NT5CB128M16IN-EKA"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145599/NANYA/NT5CB128M16IN-EKA.html"
+    notes: >
+      Variante de sufixo/grade da die "IN" acima. Alldatasheet: "Commercial, Industrial and
+      Automotive DDR3(L) 2Gb SDRAM". Aritmetica: 128M x 16bit = 2048Mbit = 2Gb (bate).

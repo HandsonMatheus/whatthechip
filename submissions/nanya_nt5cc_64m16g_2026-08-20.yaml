@@ -1,0 +1,57 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC64M16GP-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145469/NANYA/NT5CC64M16GP-DI.html"
+    notes: >
+      Debug ao vivo do estoque (20/08/2026 13:34) leu "NT5CC64M16GPD1" (com o digito "1" no
+      final, sem fuzzy_suggestions do proprio engine). Busquei "D1" especificamente e NAO achei
+      nenhuma fonte com esse sufixo literal -- nem Alldatasheet (bucket GP* = 26 resultados,
+      todos sufixo "-DH*"/"-DI*"/"-EK*", zero com digito), nem distribuidoras. O que existe,
+      confirmado por 3 fontes (Alldatasheet direto, LCSC com estoque real, Octopart), e a die
+      exata "GP" com sufixo "-DI" (letra I, nao digito 1) -- leitura visualmente muito proxima
+      (I maiusculo vs 1), mas NAO afirmo que e o mesmo PN: reporto a divergencia, nao decido por
+      conta propria. Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate, "Commercial, Industrial and
+      AutomotiveDDR3(L) 1 Gb SDRAM"). Cluster NT5CC64M16G = 50, reconciliado exato GN(24)+GP(26).
+      Densidade 1Gb ja tinha known_parts na die "F" (rodada 3, NT5CC64M16FN-DHA/FP-DHA) mas NAO
+      na die "G" -- gap novo.
+
+  - part_number: "NT5CC64M16GP-DIT"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145480/NANYA/NT5CC64M16GP-DIT.html"
+    notes: >
+      Sibling direto do PN mais proximo do debug -- mesma die "GP", variante de sufixo "-DIT"
+      (esta tambem apareceu na busca direta pelo Octopart). Alldatasheet: "Commercial,
+      Industrial and AutomotiveDDR3(L) 1 Gb SDRAM". Aritmetica: 64M x 16bit = 1024Mbit = 1Gb
+      (bate).
+
+  - part_number: "NT5CC64M16GN-DHA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145613/NANYA/NT5CC64M16GN-DHA.html"
+    notes: >
+      Die "GN" (irma da die "GP" acima) do mesmo cluster 64M16, mesma densidade. Alldatasheet:
+      "Commercial, Industrial and AutomotiveDDR3(L) 1 Gb SDRAM". Aritmetica: 64M x 16bit =
+      1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CC64M16GN-EKA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145625/NANYA/NT5CC64M16GN-EKA.html"
+    notes: >
+      Variante de sufixo/grade da die "GN" acima. Alldatasheet: "Commercial, Industrial and
+      AutomotiveDDR3(L) 1 Gb SDRAM". Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate).

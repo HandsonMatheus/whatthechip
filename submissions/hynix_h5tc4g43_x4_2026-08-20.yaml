@@ -1,0 +1,97 @@
+# Submissão de known_parts — SK Hynix, família H5TC (DDR3L standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H5TC4G43AFR (busca na bancada, 2026-08-20).
+#
+# ⚠ ORGANIZAÇÃO x4 — TERCEIRO BRAÇO do padrão "4/6/8" (mesmo achado do H5AN mais cedo hoje,
+# ver hynix_h5an8g_organizacoes_2026-08-20.yaml): pn[6] sozinho (não pn[6:8] como par fixo)
+# é o campo de organização/bus-width — '4'→x4, '6'→x16, '8'→x8 — e pn[7] costuma ser "3"
+# nesta família mas NÃO é parte da organização (H5TC4G43AFR tem pn[7]='3' igual aos já
+# confirmados, só pn[6] muda). Já tinha confirmado hoje x16 (H5TC4G63AFR) e x8
+# (H5TC4G83AFR) pra esta MESMA revisão "A"/4Gb (hynix_h5tc4g_rev_a_c_2026-08-20.yaml) — este
+# arquivo fecha o terceiro braço (x4) da mesma densidade, junto com 2 revisões adicionais
+# (B, D) achadas na varredura de cluster.
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a busca pela organização
+# x4 em 4Gb achou 3 revisões reais: A (alvo da bancada), B e D — nenhuma delas tinha sido
+# submetida ainda (só x16/x8 desta família estavam cobertos até agora). Tentei achar também
+# C e E (revisões já confirmadas em x16/x8 há semanas) na organização x4 — não achei rastro
+# de "H5TC4G43CFR" (só devolveu H5TC2G43BFR/CFR, densidade DIFERENTE) nem confirmação sólida
+# de "H5TC4G43EFR" (só uma menção solta num PDF de lista de compatibilidade de servidor, sem
+# página de produto dedicada) — não incluí nenhuma das duas por rigor (ver regra "excluir, não
+# adivinhar known_part").
+#
+# FONTES (AllDataSheet — índice estruturado, contagem de páginas/tamanho consistente com
+# datasheet real — mas NÃO consegui abrir o corpo do PDF em nenhuma das 3; mesmo padrão de
+# rigor já usado em outras entradas manual desta família — confidence=manual):
+#   H5TC4G43AFR: AllDataSheet id 533409 (forma base) + id 533412 (variante -PBA). Descrição
+#     estruturada convergente: "4Gbit (1Gx4), 1.35V, 78-pin FBGA" (ElectronicsDataSheets).
+#     Uso real confirmado: eBay (módulos SO-DIMM físicos "SK Hynix 4Gb DDR3L SDRAM RAM
+#     H5TC4G43AFR", inclusive lote de 4 unidades testadas). Corroborado por Datasheets360,
+#     AB Sunshine, Datasheets.com.
+#   H5TC4G43BFR: AllDataSheet id 1179035 (-PBA) + id 1179029 (-XXA), 440KB/33P. Mesma
+#     estrutura "1Gx4, 78-pin FBGA, 1.35V". Corroborado por Datasheets360, Datasheets.com,
+#     AB Sunshine, ssfkg.com (catálogo próprio, "4Gb FBGA DDR3 SK Hynix").
+#   H5TC4G43DFR: descrição direta "4Gb low power DDR3L Synchronous DRAM... 1.35V" —
+#     corroborado por Datasheets.com, Datasheets360, AB Sunshine. Nota: o par x8 desta MESMA
+#     revisão (H5TC4G83DFR) aparece listado na PÁGINA OFICIAL skhynix.com/products — confirma
+#     que a revisão D é produto SK Hynix corrente/vigente, reforça confiança na variante x4.
+#
+# ⚠ BUG PRÉ-EXISTENTE DO ENGINE (mesmo já documentado nas outras submissões H5TC/H5TQ/H5AN
+# desta sessão): `_result_from_known` (chips/engine.py, branch família casada) não propaga
+# `known.interface` pro classify() — campo fica salvo corretamente no banco, só não aparece
+# na saída hoje.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc4g43_x4_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc4g43_x4_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC4G43AFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533409/HYNIX/H5TC4G43AFR.html"
+    notes: >
+      PN ALVO da bancada (2026-08-20). Organização x4 — 3º braço do padrão "4/6/8" já
+      confirmado hoje pro H5AN (pn[6] sozinho = organização, não pn[6:8] como par
+      fixo). Mesma revisão "A" já confirmada em x16 (H5TC4G63AFR) e x8 (H5TC4G83AFR)
+      hoje mesmo. AllDataSheet: id 533409 (forma base) + 533412 (-PBA), Manufacturer=
+      HYNIX. ElectronicsDataSheets descreve estruturado: "4Gbit (1Gx4), 1.35V, 78-pin
+      FBGA" — bate exato com 4Gb totais (pn[4:6]="4G") organizado x4. Uso real
+      confirmado em eBay (módulos SO-DIMM físicos, inclusive lote testado de 4
+      unidades). Corroborado por Datasheets360, AB Sunshine, Datasheets.com. NÃO
+      consegui abrir o corpo do PDF — confidence=manual.
+
+  - part_number: "H5TC4G43BFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1179035/HYNIX/H5TC4G43BFR-PBA.html"
+    notes: >
+      Achado na varredura de cluster — revisão B, organização x4, mesma densidade
+      4Gb. AllDataSheet: id 1179035 (-PBA) + id 1179029 (-XXA), 440KB/33 páginas,
+      Manufacturer=HYNIX. Mesma estrutura "1Gx4, 78-pin FBGA, 1.35V". Corroborado por
+      Datasheets360, Datasheets.com, AB Sunshine, ssfkg.com (catálogo próprio). NÃO
+      consegui abrir o corpo do PDF — confidence=manual.
+
+  - part_number: "H5TC4G43DFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.datasheets.com/part-details/h5tc4g43dfr-rda-sk-hynix-inc-63813526"
+    notes: >
+      Achado na varredura de cluster — revisão D, organização x4, mesma densidade
+      4Gb. Descrição direta: "4Gb low power DDR3L Synchronous DRAM... 1.35V".
+      Corroborado por Datasheets360, AB Sunshine. Reforço de confiança: o par x8 da
+      MESMA revisão (H5TC4G83DFR) está listado na página OFICIAL skhynix.com/
+      products.view.do — confirma revisão D como produto SK Hynix vigente. NÃO
+      consegui abrir o corpo do PDF do H5TC4G43DFR em si — confidence=manual.

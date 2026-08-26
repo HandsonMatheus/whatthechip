@@ -1,0 +1,165 @@
+# Submissão known_parts — SanDisk, clusters SDIN7DU2 + SDINADF4-...-H
+# Origem: backlog achado de relance durante a investigação SDIN4E2 (24/08/2026), pesquisado a
+# fundo depois do dono pedir "pode coletar mais e confirmar".
+# Ver INVESTIGACAO_sandisk_sdin7du2_sdinadf4h_2026-08-24.md para a análise completa.
+#
+# ⚠ CORRIGIDO 2026-08-24 (revisão do dono, ver SANDISK.md §0 — LEIA antes de usar este arquivo).
+# Os 4 SDIN7DU2 tinham sido submetidos como confidence=manual com raciocínio ERRADO: "citei o
+# número do datasheet, mas o PDF não abriu — por isso manual, não confirmed". Isso mistura duas
+# coisas que não têm relação. manual e confirmed são IGUALMENTE autoritativos sobre a gramática —
+# nenhum dos dois é "mais seguro" que o outro, e rebaixar de confirmed pra manual não reduz risco
+# nenhum. A barra do manual SEM datasheet lido é estreita e é outra: TRÊS fontes de engenharia
+# convergentes e independentes (fórum oficial + banco de programador de chip + teardown/manual de
+# placa real), nomeadas na notes — "citei o nº do doc mas não li" não é isso, é só uma fonte, não
+# lida. Corrigido para confidence=distributor (a evidência real aqui é Mouser/Avnet/Octopart —
+# distribuidores autorizados + dado técnico estruturado — sem fórum/programador/teardown).
+#
+# 4 PNs confidence=distributor (cluster SDIN7DU2 — identidade+capacidade confirmadas por
+# distribuidores autorizados Mouser/Avnet + Technical Specifications estruturado do Octopart;
+# datasheet oficial 80-36-03666 CITADO por busca independente, mas NÃO lido por mim).
+# 4 PNs confidence=confirmed (cluster SDINADF4-...-H — product brief oficial Western Digital 2017
+# lido NA ÍNTEGRA por fetch direto: "BR07-iNAND-Embedded-Integrated-Solutions-US-0217-02").
+#
+# Uso (o DONO roda, nunca o chat). O dry-run já confronta o banco por part_number_norm e mostra o
+# painel NOVO/RESUBMETE/COMPLEMENTO/SEM FONTE/CONFLITO/IGUAL (SANDISK.md §0.1) — não precisa de
+# checagem manual em shell, e não se deve escrever ORM no `manage.py shell` (regra de ouro #4):
+#   python manage.py submit_known_parts submissions/sandisk_sdin7du2_sdinadf4h_2026-08-24.yaml            # dry-run = portão + painel
+#   python manage.py submit_known_parts submissions/sandisk_sdin7du2_sdinadf4h_2026-08-24.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+# Se algum PN cair em CONFLITO no painel, é caso pro `resolve_conflicts` (política por campo), não
+# pra decisão manual daqui.
+#
+# Sem golden test afetado (grep "SDIN7DU2|SDINADF4" em chips/tests.py::_SD_GOLDEN não achou nada).
+
+brand: "SanDisk"
+known_parts:
+  # ── Cluster SDIN7DU2 — sub-linha "Ultra" mais antiga da geração 7 (e.MMC 4.41, mai/2012) ──
+  # Distinta da já confirmada SDIN7DP2 ("Ultra" e.MMC 4.51, fev/2013). Datasheet oficial CITADO
+  # (80-36-03666 V1.2 mai/2012) mas PDF não renderizou no fetch (2 tentativas) — confidence=
+  # distributor: a evidência real é distribuidor autorizado + dado estruturado, não os 3 pilares
+  # de engenharia (fórum/programador/teardown) que a barra do manual exige.
+  - part_number: "SDIN7DU28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 I/F (Ultra) — doc 80-36-03666 V1.2 mai/2012 CITADO por busca, NÃO lido por mim"
+    device: "153-ball TFBGA"
+    confidence: distributor
+    notes: >
+      Identidade confirmada por Mouser (distribuidor autorizado: "eMMC 8GB 4.41+ Ind. eMMC -25C a
+      85C", Series SDIN7DU2, Tradename iNAND) e Avnet via Octopart ("SSD eMMC Seq. 70/11 IOPS
+      2000/200). Capacidade: Octopart Technical Specifications lista Density=64 Gb; 64÷8=8GB, bate
+      exatamente com o sufixo "-8G" (aritmética mostrada, não só declarada). Datasheet oficial
+      citado por busca independente: "Ultra e.MMC 4.41 I/F Released Data Sheet 80-36-03666 V1.2 May
+      2012" (mesmo padrão de numeração 80-36-XXXXX dos 3 datasheets já verificados em rodadas
+      anteriores) — 2 tentativas de fetch direto no PDF do Octopart retornaram vazio, NÃO consegui
+      ler o conteúdo. Por isso confidence=distributor, não manual: a barra do manual sem datasheet
+      lido exige 3 fontes de engenharia convergentes (fórum oficial + programador de chip +
+      teardown/manual de placa real) — aqui só há distribuidor autorizado + dado estruturado, o que
+      é bom o bastante pra identidade/capacidade mas não pra autoridade sobre a gramática. Metadados
+      reais de supply chain (Octopart): Introduction Date 2013-05-08, Lifecycle Obsolete, LTB
+      2019-12-31, LTD 2020-12-31, HTS 8542.31.00.30.
+    source_url: "https://octopart.com/part/sandisk/SDIN7DU2-8G"
+
+  - part_number: "SDIN7DU216G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 I/F (Ultra) — doc 80-36-03666 V1.2 mai/2012 CITADO por busca, NÃO lido por mim"
+    device: "153-ball TFBGA"
+    confidence: distributor
+    notes: >
+      Mesmo cluster de SDIN7DU28G (ver notas lá para a metodologia completa e o motivo de
+      confidence=distributor, não manual). Capacidade: Octopart Density=128 Gb; 128÷8=16GB, bate com
+      o sufixo "-16G". Mesmas datas/lifecycle de introdução (2013-05-08) e obsolescência (LTB
+      2019-12-31/LTD 2020-12-31) do cluster.
+    source_url: "https://octopart.com/part/sandisk/SDIN7DU2-16G"
+
+  - part_number: "SDIN7DU232G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 4.41 I/F (Ultra) — doc 80-36-03666 V1.2 mai/2012 CITADO por busca, NÃO lido por mim"
+    device: "153-ball TFBGA"
+    confidence: distributor
+    notes: >
+      Mesmo cluster de SDIN7DU28G (ver notas lá, inclusive o motivo de confidence=distributor).
+      Capacidade: descrição estruturada Octopart "256G-bit 256G/64G/32G x 1/4-bit/8-bit";
+      256÷8=32GB, bate com o sufixo "-32G".
+    source_url: "https://octopart.com/part/sandisk/SDIN7DU2-32G"
+
+  - part_number: "SDIN7DU264G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "e.MMC 4.41 I/F (Ultra) — doc 80-36-03666 V1.2 mai/2012 CITADO por busca, NÃO lido por mim"
+    device: "153-ball TFBGA"
+    confidence: distributor
+    notes: >
+      Mesmo cluster de SDIN7DU28G (ver notas lá). Capacidade: descrição estruturada "512G-bit
+      512G/128G/64G x 1/4-bit/8-bit"; 512÷8=64GB, bate com o sufixo "-64G". "-4G" não encontrado em
+      nenhum distribuidor pesquisado — só 8/16/32/64G têm página própria.
+    source_url: "https://octopart.com/manufacturers/sandisk"
+
+  # ── Cluster SDINADF4-...-H = "iNAND 7232" — CONFIRMADO via product brief oficial WD 2017 ──
+  # PDF lido na íntegra (não resumo de ferramenta de busca): "BR07-iNAND-Embedded-Integrated-
+  # Solutions-US-0217-02", ©2017 Western Digital Corporation. Tabela "Ordering Information":
+  # iNAND 7232, 16GB-128GB, e.MMC 5.1 HS400, SKUs "SDINADF4-<cap>-L/H". Só "-H" tem evidência de
+  # mercado (TrustedParts/Jotrin/electronicsdatasheets/Octopart) — "-L" não submetido (sem fonte).
+  # Este cluster NÃO muda: leitura direta e completa do doc oficial é exatamente a barra do
+  # confirmed, sem ambiguidade.
+  - part_number: "SDINADF416GH"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 5.1 HS400"
+    device: "iNAND 7232 (2nd gen SmartSLC), BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial Western Digital/SanDisk, product brief "BR07-iNAND-Embedded-Integrated-
+      Solutions-US-0217-02" (©2017), lido na íntegra via fetch direto do PDF hospedado em
+      mouser.com (o link direto em sandisk.com não renderizou no fetch — mouser.com funcionou como
+      espelho). Tabela "Ordering Information": produto "iNAND 7232", capacidade 16GB-128GB,
+      interface e.MMC 5.1 HS400, SKU "SDINADF4-16G-L/H". Confirmado em mercado real (não só na
+      tabela oficial) via TrustedParts (distribuidores autorizados Mouser + Avnet, descrição "SSD
+      EMMC5.1 INAND 7232" / "eMMC 16GB iNAND 7232 eMMC 5.1 WD/SD") e Octopart.
+    source_url: "https://www.mouser.com/datasheet/2/669/SanDisk_10092017_iNAND-Family-Brochure-for-M_C_022-1217148.pdf"
+
+  - part_number: "SDINADF432GH"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 5.1 HS400"
+    device: "iNAND 7232 (2nd gen SmartSLC), BGA"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDINADF416GH (ver notas lá para a metodologia completa e a fonte primária).
+      Confirmado em mercado real via Octopart ("Flash Card 32G-byte 3.3V Embedded Flash Drive BGA")
+      e distribuidores autorizados (Avnet, Win Source, ICPartonline, YIC International).
+    source_url: "https://octopart.com/part/sandisk/SDINADF4-32G-H"
+
+  - part_number: "SDINADF464GH"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "e.MMC 5.1 HS400"
+    device: "iNAND 7232 (2nd gen SmartSLC), BGA"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDINADF416GH (ver notas lá). Confirmado em mercado real via Octopart ("Flash
+      Card 64G-byte Embedded MMC") e distribuidores autorizados (Avnet, Win Source, ICPartonline).
+    source_url: "https://octopart.com/part/sandisk/SDINADF4-64G-H"
+
+  - part_number: "SDINADF4128GH"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "128GB"
+    interface: "e.MMC 5.1 HS400"
+    device: "iNAND 7232 (2nd gen SmartSLC), BGA"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDINADF416GH (ver notas lá). Capacidade 128GB é o topo da faixa oficial do
+      produto "iNAND 7232" (16GB-128GB) confirmada na tabela "Ordering Information" do product
+      brief. Visto em listagens de distribuidor (electronicsdatasheets.com, Jotrin) — não abri
+      página dedicada Octopart/TrustedParts pra esta capacidade específica, mas a fonte primária
+      (product brief oficial lido na íntegra) já confirma o SKU exato "SDINADF4-128G-H" na tabela.
+    source_url: "https://www.mouser.com/datasheet/2/669/SanDisk_10092017_iNAND-Family-Brochure-for-M_C_022-1217148.pdf"

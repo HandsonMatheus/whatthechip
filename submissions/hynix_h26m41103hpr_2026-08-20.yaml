@@ -1,0 +1,169 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H26M41103HPR (busca na bancada, 2026-08-20).
+#
+# ⚠ EXPANDIDO (2026-08-20, correção do dono): 1ª versão deste arquivo submeteu só 2 PNs (alvo +
+# 1 irmão). Dono cobrou: "e como vc achou so 1? parece que vc nao esta buscando mais ou esta
+# ignorando o q pedi" — regra permanente já conhecida (nunca 1 PN/rodada, buscar o cluster
+# inteiro), reaplicada com mais força aqui. Rodada 2 varreu TODAS as linhas de organização já
+# conhecidas da família (pn[5:9] = "103"/"208"/"003") em busca de pontas faltando + testou a
+# hipótese de uma linha nova — achou 4 known_parts NOVOS, incluindo a 1ª confirmação HISTÓRICA
+# de capacidade 128GB (código 8) nesta família inteira, nunca confirmada em NENHUMA linha até
+# hoje. Total da rodada: 6 known_parts (de 2 pra 6).
+#
+# COBERTURA DE CLUSTER — 3 linhas de organização, resultado final:
+#   Linha "...103..." (pn[5:9]): 8GB=H26M41103HPR(alvo) · 16GB=H26M52103FMR(já confirmado
+#     2026-08-19) · 32GB=H26M64103EMR(já confirmado 2026-08-19) · 64GB=H26M78103CCR(NOVO,
+#     fecha a linha) — 4/4 capacidades cobertas.
+#   Linha "...208..." (pn[5:9]): já tinha as 4 pontas confirmadas desde 2026-07-14
+#     (H26M41208HPR/H26M52208FPR/H26M64208EMR/H26M78208CMR) — não mexida nesta rodada.
+#   Linha "...003..." (pn[5:9]): 4GB=H26M31003GMR(já confirmado 2026-07-09) · 8GB=H26M42003GMR
+#     (NOVO) · 16GB=H26M52003EQR(NOVO) · 32GB=H26M64003DQR(NOVO) — 4/4 capacidades cobertas,
+#     fechando a linha inteira nesta rodada (só tinha a ponta de 4GB antes).
+#   FORA de linha — capacidade nunca vista: H26M88002AMR = 128GB (código 8, NOVO) — 1ª
+#     confirmação desta capacidade em QUALQUER linha da família H26M. O tip da gramática já
+#     previa o código ('8'→128GB) mas nunca tinha sido confirmado por known_part até agora.
+#
+# ⚠ EXCLUÍDOS por rigor ("excluir, não adivinhar known_part") — busquei e NÃO achei evidência:
+#   H26M78103CMR (variante de sufixo, só ecoada no resumo de IA por estar na minha query, sem
+#     página própria — ver detalhe abaixo). H26M88103??? e H26M31103??? (pontas 128GB/4GB da
+#     linha "...103..." — zero resultado nas duas buscas dedicadas).
+#
+# ⚠ ARITMÉTICA/CONVERGÊNCIA CONFERIDA NA MÃO (regra permanente — a 1ª busca desta MESMA rodada
+# já tinha errado "32GB" pro H26M41103HPR por contaminação cruzada; refiz e cruzei fontes em
+# TODOS os PNs abaixo antes de aceitar, nunca só 1 resumo de IA):
+#   H26M41103HPR (8GB): AB Sunshine categoria PRÓPRIA "8gb-emmc" + Alibaba + memory-distributor
+#     + aritmética independente "64Gbit÷8=8GB". Bate pn[4]='4'.
+#   H26M78103CCR (64GB): Censtry meta-description própria "64GB e-MMC" + Puris + AliExpress +
+#     5 distribuidores. Bate pn[4]='7'.
+#   H26M88002AMR (128GB): Preduo categoria PRÓPRIA "emmc-5-1" + AB Sunshine + Jotrin + Censtry +
+#     ElectronicsDataSheets + Octopart + Kynix, todos convergindo em 128GB/153FBGA. Bate pn[4]='8'.
+#   H26M42003GMR (8GB): AllDataSheet id PRÓPRIO 1425074 + Alibaba "8GB eMMC 4.5" + Jotrin +
+#     AliExpress + Censtry + Kynix + uso real de campo (Xbox Forums, reparo de Xbox One com
+#     este PN físico). Bate pn[4]='4'.
+#   H26M52003EQR (16GB): AllDataSheet id PRÓPRIO 1425078 + Facebook (listagem real "16GB EMMC")
+#     + Censtry + Preduo (categoria própria "emmc-4-5") + AB Sunshine + Win-Source + Elnec
+#     (programador — uso real de bancada). Bate pn[4]='5'.
+#   H26M64003DQR (32GB): AllDataSheet id PRÓPRIO 1425085 + Alibaba + datasheet4u.com ("20nm
+#     64Gb e-NAND", citado JUNTO com H26M52003EQR no mesmo documento-fonte — corroboração
+#     cruzada direta) + Jotrin + Censtry + Veswin + Elnec. Bate pn[4]='6'.
+#   ⚠ Nota estrutural: os IDs AllDataSheet dos 6 PNs desta linha+rodada formam uma sequência
+#     CONTÍGUA (1425074→1425076→1425078→1425082→1425085→1425093 = 42003GMR→41103HPR→
+#     52003EQR→52103FMR→64003DQR→78103CCR) — forte indício de que são o MESMO bloco de
+#     catálogo/documento-fonte, reforça que não são invenção nem confusão de marca.
+#
+# ⚠ CHECAGEM NO DATASHEET OFICIAL (Rev 1.8/Set.2020, DigiKey — mesmo doc já citado no reasoning
+# da família): abri o corpo completo desta vez (fetch direto do PDF, não só o viewer). A tabela
+# "Product Line-up" (p.4) só documenta a linha "...208..." nas 4 grades AAT/AIT/IT/CT — MESMO
+# texto que já embasava o reasoning existente. Nenhum dos 6 PNs desta submissão (linhas
+# "...103.../...003..." + o 128GB avulso) aparece nesta revisão do datasheet — são produtos
+# diferentes/mais novos ou de outra linha, não cobertos por este PDF específico. Por isso todos
+# ficam confidence=manual, não confirmed (mesmo padrão já usado no resto da família).
+#
+# ⚠ BUG-JÁ-CONHECIDO desta busca (não é erro meu, é da PRÓPRIA busca): a citação de
+# "H26M78103CMR" no resumo de IA da 1ª rodada não tinha NENHUMA página própria — só CCR tem
+# fontes dedicadas. Fica de fora.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m41103hpr_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m41103hpr_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M41103HPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.absunshine.com/en/parts/H26M41103HPR-8GB-SK-HYNIX-4539039"
+    notes: >
+      PN ALVO buscado na bancada (2026-08-20), linha de organização "...103..." (mesma linha
+      confirmada ontem em H26M52103FMR=16GB/H26M64103EMR=32GB). ⚠ 1ª busca (AI overview)
+      devolveu "32GB" errado — refiz com termo "8GB" e cruzei 6+ fontes: AB Sunshine
+      (categoria PRÓPRIA "8gb-emmc"), Alibaba ("EMMC5.0 8GB"), memory-distributor.com ("eMMC
+      8GB"), aritmética própria de outra fonte ("1 dies of 64Gbit" → 64Gbit÷8=8GB — bate exato
+      com pn[4]='4'). AllDataSheet id 1425076 (mesma série de catálogo desta submissão).
+      Corroborado por Octopart, Lisleapex, Veswin, Censtry, Avaq, icsmodules.com, Preduo.
+      Package FBGA-153, 3.3V. confidence=manual (nenhum corpo de PDF aberto).
+
+  - part_number: "H26M78103CCR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/3133"
+    notes: >
+      Irmão de capacidade máxima da linha "...103..." (fecha as 4 pontas: 8/16/32/64GB).
+      Capacidade 64GB bate com pn[4]='7'. Censtry (meta-description própria): "64GB e-MMC".
+      Puris (catálogo próprio): "H26M78103CCR 64GB eMMC 5.0 SKhynix". AliExpress: "EMMC 64GB".
+      AllDataSheet id 1425093 (mesma série 1425074→…→1425093). Corroborado por NX
+      Electronics/Nextron, Jotrin, Quest Components, ElectronicsDataSheets, Elnec (página de
+      programador — uso real de bancada). Package FBGA-153. ⚠ EXCLUÍDO por rigor:
+      "H26M78103CMR" (variante de sufixo citada só no resumo de IA, sem página própria —
+      provável eco do termo da minha própria busca). confidence=manual.
+
+  - part_number: "H26M88002AMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "128GB"
+    confidence: manual
+    source_url: "https://www.absunshine.com/en/parts/H26M88002AMR-SK-HYNIX-4982836"
+    notes: >
+      Achado na varredura ampliada de cluster (rodada 2, pedida pelo dono). 1ª CONFIRMAÇÃO
+      HISTÓRICA de capacidade 128GB (código pn[4]='8') nesta família inteira — o tip da
+      gramática já previa esse código desde 2026-07-09 mas nunca tinha known_part confirmando.
+      "eMMC 5.1 128GB memory chip com 153-ball BGA package". Preduo tem categoria PRÓPRIA
+      "emmc-5-1" listando este PN. Corroborado por AB Sunshine, Jotrin, Censtry,
+      ElectronicsDataSheets, Octopart, Kynix — todos 128GB/SKHYNIX consistente. Package
+      FBGA-153 bate com a família. Datasheet oficial Rev 1.8 (mesmo já citado no reasoning da
+      família) NÃO documenta este PN (Product Line-up pára em 64GB) — produto mais novo, fora
+      desta revisão específica. confidence=manual (nenhum corpo de PDF próprio aberto).
+
+  - part_number: "H26M42003GMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425074/HYNIX/H26M42003GMR.html"
+    notes: >
+      Achado na varredura ampliada de cluster (rodada 2) — 2ª ponta da linha de organização
+      "...003..." (já tinha só 4GB=H26M31003GMR confirmado desde 2026-07-09). "8GB eMMC 4.5
+      memory IC chip, 153FBGA package" — bate pn[4]='4'. AllDataSheet id PRÓPRIO 1425074
+      (mesma série de catálogo desta submissão, o id mais baixo — precede os outros).
+      Corroborado por Alibaba, Jotrin, AliExpress, Censtry, Kynix, Datasheets.com. Uso real de
+      campo confirmado: thread do fórum Xbox Forums sobre reparo de Xbox One citando este PN
+      físico exato. confidence=manual (nenhum corpo de PDF próprio aberto).
+
+  - part_number: "H26M52003EQR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425078/HYNIX/H26M52003EQR.html"
+    notes: >
+      Achado na varredura ampliada de cluster (rodada 2) — 3ª ponta da linha "...003...".
+      "16GB e-MMC, eMMC 4.5, FBGA-153, 3.3V" — bate pn[4]='5'. AllDataSheet id PRÓPRIO 1425078
+      (mesma série). Listagem real em Facebook ("New original SK Hynix H26M52003EQR e-NAND
+      16GB EMMC"). Preduo tem categoria PRÓPRIA "emmc-4-5". Corroborado por Censtry, AB
+      Sunshine, Avaq, Win-Source, Elnec (programador — uso real de bancada), Datasheets.com.
+      Citado JUNTO com H26M64003DQR no mesmo documento-fonte (datasheet4u.com) — corroboração
+      cruzada direta entre os dois PNs desta submissão. confidence=manual.
+
+  - part_number: "H26M64003DQR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425085/HYNIX/H26M64003DQR.html"
+    notes: >
+      Achado na varredura ampliada de cluster (rodada 2) — 4ª ponta da linha "...003...",
+      FECHA a linha inteira (4/16/8/32GB todos confirmados). "20nm 64Gb e-NAND, 32GB, 2ynm
+      class, x8/x4 interface, 3.3V, MMC 4.5" — bate pn[4]='6' (64Gbit÷8=32GB de fato, não
+      confundir o "64Gb" da tecnologia do die com a capacidade final do pacote). AllDataSheet
+      id PRÓPRIO 1425085 (mesma série). Corroborado por Alibaba, Jotrin, Censtry, Veswin, Elnec
+      (programador). confidence=manual (nenhum corpo de PDF próprio aberto).

@@ -1,0 +1,85 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3 standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN da bancada "H5TQ2G83EFR" (2026-08-20).
+#
+# ⚠ GAP NA MATRIZ densidade×organização×revisão (não é revisão nova nem organização nova —
+# ambas já vistas nesta família — é a COMBINAÇÃO específica "2Gb + revisão E" que nunca tinha
+# known_part, apesar da revisão E já estar confirmada em 1Gb (H5TQ1G63EFR, 2026-07-13) e 4Gb
+# (H5TQ4G63EFR/H5TQ4G83EFR, 2026-07-13, confirmed via datasheet completo).
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono, reforçado hoje pelo round H26M — varrer
+# TODAS as organizações da mesma densidade+revisão antes de fechar, não só o alvo):
+#   x8  = H5TQ2G83EFR (ALVO da bancada) — confirmado, múltiplas fontes.
+#   x4  = H5TQ2G43EFR — confirmado, achado no cluster, direto na PÁGINA OFICIAL skhynix.com/
+#     eolproducts (fonte mais forte que qualquer agregador).
+#   x16 = H5TQ2G63EFR — NÃO encontrado. 3 buscas dedicadas (ampla, com sufixos de grade entre
+#     aspas, e site:skhynix.com) não acharam NENHUMA fonte — nem agregador, nem distribuidor,
+#     nem o próprio site oficial (que TEM x4 e, por outra busca, também referencia x8). Ao
+#     contrário do padrão simétrico das outras revisões desta densidade (D e G têm x16
+#     confirmado — H5TQ2G63DFR/H5TQ2G63GFR, ambos já known_parts), a revisão E em 2Gb parece
+#     não ter sido fabricada/catalogada em x16 — ou não é indexada em nenhuma fonte aberta.
+#     EXCLUÍDO por rigor ("excluir, não adivinhar known_part").
+#
+# FONTES:
+#   H5TQ2G83EFR: AllDataSheet tem DUAS entradas dedicadas — id 533431 (grade -PBC) e id 533433
+#     (grade -TEC) — múltiplos grades catalogados independentemente é forte indício de PN real
+#     e não de erro de agregador. Alibaba (2 listagens distintas, incluindo versão francesa):
+#     "H5TQ2G83EFR-PBC HYNIX 240pin DDR3 SDRAM... Basé Sur 2 Go" + "256mx8 ddr3 1600" —
+#     organização "256Mx8" bate exato com 2Gb÷8=256MB (pn[4:6]="2G"). Datasheets360 (página
+#     própria dedicada). AB Sunshine: "H5TQ2G83EFR-CFR-H9A" (menciona -CFR também, mas
+#     H5TQ2G83CFR já é known_part aprovado via fuzzy_sugest. — não pesquisado de novo, regra
+#     "fuzzy já é aprovado"). NÃO consegui abrir o corpo técnico do PDF (mesma limitação de
+#     host/viewer JS já documentada nas outras submissões desta família) — confidence=manual.
+#   H5TQ2G43EFR: página OFICIAL SK Hynix (skhynix.com/eolproducts.view.do?pronm=DDR3+SDRAM&
+#     rc=computing&rk=19&srnm=H5TQ2G43EFR) — "H5TQ2G43EFR < PRODUCTS < SK Hynix", indexada e
+#     citada pelo próprio resumo de busca como produto EOL oficial. "512MX4 configuration" —
+#     512M×4=2Gbit total÷8=256MB, bate exato com pn[4:6]="2G" e com o pn[6]='4'→x4 (padrão
+#     de organização já confirmado hoje em H5AN/H5TC/H5TQ-T). ⚠ Não consegui abrir o CORPO da
+#     página oficial (viewer JS, mesma limitação de sempre) — só o título/resumo indexado; por
+#     isso mantive confidence=manual (mesmo com domínio oficial, não é o mesmo rigor de "li o
+#     datasheet completo" que os 2 PNs confirmed desta família já têm). 1.5V, BGA — mesma
+#     família elétrica.
+#
+# ⚠ BUG PRÉ-EXISTENTE DO ENGINE (mesmo já documentado nas outras submissões H5TC/H5TQ/H5AN
+# desta sessão): `_result_from_known` (chips/engine.py, branch família casada) não propaga
+# `known.interface` pro classify() — campo fica salvo corretamente no banco, só não aparece
+# na saída hoje. Mantive `interface` preenchido porque o dado está correto.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq2g_rev_e_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq2g_rev_e_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ2G83EFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533431/HYNIX/H5TQ2G83EFR-PBC.html"
+    notes: >
+      PN ALVO da bancada (2026-08-20). Revisão E, nunca confirmada antes em 2Gb (já tinha
+      1Gb e 4Gb). AllDataSheet: DUAS entradas dedicadas — id 533431 (-PBC) e id 533433
+      (-TEC), múltiplos grades independentes. Alibaba (2 listagens): "240pin DDR3 SDRAM...
+      Basé Sur 2 Go" + organização "256Mx8" — bate exato com 2Gb÷8=256MB, pn[4:6]="2G".
+      Datasheets360 (página própria). AB Sunshine corrobora existência (menciona -CFR
+      junto, já known_part aprovado separadamente). NÃO consegui abrir o corpo do PDF —
+      confidence=manual.
+
+  - part_number: "H5TQ2G43EFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.skhynix.com/eolproducts.view.do?pronm=DDR3+SDRAM&rc=computing&rk=19&srnm=H5TQ2G43EFR"
+    notes: >
+      Irmão de organização x4 do alvo (mesma densidade/revisão), achado no cluster. Fonte:
+      PÁGINA OFICIAL SK Hynix (eolproducts, produto EOL catalogado pelo próprio
+      fabricante) — "H5TQ2G43EFR < PRODUCTS < SK Hynix". "512MX4 configuration" — 512M×4=
+      2Gbit÷8=256MB, bate exato com pn[4:6]="2G" e organização x4 (pn[6]='4', padrão já
+      confirmado hoje em H5AN/H5TC/H5TQ-T). ⚠ Não consegui abrir o CORPO da página (viewer
+      JS) — só título/resumo indexado, por isso confidence=manual apesar do domínio
+      oficial. 1.5V, BGA.

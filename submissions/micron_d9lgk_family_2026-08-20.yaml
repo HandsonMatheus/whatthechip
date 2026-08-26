@@ -1,0 +1,360 @@
+# Submissão de known_parts — Micron, FBGA D9LGK + família MT41J256M8 (2026-08-20)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9LGK
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9LGX, D9LCX, D9LBK, D9LGP, D9LGQ) IGNORADO por
+# construção — já são KnownPart aprovado (D9LGQ resolvido nesta sessão).
+#
+# ⚠ Reverse-lookup e forward-lookup rodados de FORA do sandbox (API oficial
+# Micron bloqueando o IP daqui por reputação — F5 BIG-IP ASM). Resultado
+# colado no chat, verificado abaixo.
+#
+# ACHADO: D9LGK → MT41J256M8HX-15E:D. Prefixo MT41J = DDR3 padrão (1,5V —
+# distinto de MT41K=DDR3L 1,35V, já separados nos lotes D9MNV/D9RVX/D9LJJ
+# desta sessão). Bloco "256M8" = 256M × 8 = 2.048Mbit = 2Gb (mesmo bloco do
+# lote D9LJJ/MT41K256M8, só a voltagem/prefixo muda).
+#
+# Cross-check Tier-1 do ALVO: DigiKey lista o PN EXATO "MT41J256M8HX-15E:D"
+# como "SDRAM - DDR3 Memory IC 2Gb (256M x 8)" — bate exato com a conta.
+# https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624
+#
+# 1 SIBLING desta família veio com part-name PREENCHIDO pela própria API
+# Micron: "DDR3 2G X8 FBGA" (D9QLG) — bate exato com a fórmula.
+#
+# Forward-lookup no prefixo "MT41J256M8" (2026-08-20) devolveu 57 PNs.
+# Filtro ES (D9+Z9 combinados no texto do PN): 28 EXCLUÍDOS por "ES" literal
+# (nenhum Z9 sobrevive nesta família). Restam 29 (incl. o alvo). 1 confirmado
+# por part-name direto (D9QLG), os outros 28 (incl. o alvo D9LGK) são
+# extensão por fórmula, mesmo bloco "256M8" em todos. Variações de pacote
+# (JE/THR/HX/THV/DA) e grade de velocidade não afetam capacidade.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de part_number_norm
+# dentro da própria lista (checado programaticamente, ver check_d9lgk.py).
+# Sem sobreposição com nenhuma submissão anterior (grep em submissions/*.yaml,
+# zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9lgk_family_2026-08-20.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9lgk_family_2026-08-20.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J256M8HX-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGK"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via API FBGA oficial Micron (Tier-1, reverse-lookup rodado de fora do sandbox por bloqueio de IP). part-name da API veio vazio; sibling D9QLG desta família confirma "DDR3 2G X8 FBGA". Capacidade via fórmula JEDEC: bloco "256M8" = 256M × 8 = 2.048Mbit = 2Gb. Cross-check independente: DigiKey lista o PN EXATO como "2Gb (256M x 8)" — bate exato. chip_type=DDR3 (MT41J = 1,5V, distinto de MT41K=DDR3L — convenção já estabelecida nesta sessão, ver lote D9LJJ).
+
+  - part_number: "MT41J256M8JE-187E:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JPV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8JE-25:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JPX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8THR-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KBP"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8THR-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KDZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8JE-15E:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KLV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KRT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8THV-15E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KZD"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8THV-187E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KZF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-125:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGL"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-15E:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MGJ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-187E:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MGL"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-15E IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MGZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-15E AIT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MHB"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-15E AAT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MHC"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-125:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MRL"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-107:H"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MRS"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-107:M"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9PFV"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-15E:J"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9PQT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-125:M"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9PQZ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-093:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9PSQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-107:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9PTF"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-125 IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9PTX"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-107T:M"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9QGN"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8DA-125:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9QLG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41j256m8da-125-k"
+    notes: >
+      Identidade + part-name DIRETO da API FBGA oficial Micron (2026-08-20): "DDR3 2G X8 FBGA", sub-category "obsolete-ddr3-sdram". "2G X8" bate exato com a fórmula JEDEC (256M×8=2.048Mbit=2Gb) — confirmação Tier-1 forte, não é extensão por fórmula.
+
+  - part_number: "MT41J256M8DA-15E:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9QWW"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8JE-0 MS:A"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "Z9KGT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8THV-0 MS:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "Z9KZT"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
+  - part_number: "MT41J256M8HX-0 MS:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "Z9LVQ"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41J256M8HX-15E-D/2663624"
+    notes: >
+      Identidade via forward-lookup no prefixo MT41J256M8 (2026-08-20), mesmo bloco de capacidade do alvo D9LGK ("256M8" = 2Gb, fórmula JEDEC/Micron). part-name deste PN vazio; mesma base do alvo D9LGK.
+
