@@ -1,16 +1,31 @@
 {% extends "pricing/partner_base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Início" %}{% endblock %}
+{% block title %}{% trans "Preços" %}{% endblock %}
 {% block content %}
+{% comment %}
+  O RESUMO — a porta da seção de Preços. Vestido com o pacote v2 na Etapa 9:
+  `.phd` no cabeçalho, `.blk` na fila travada, `.pmet` nos números e `.tile` +
+  `.dtab` na tabela por tipo.
 
-<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">{% blocktrans trimmed with name=buyer.name %}Bem-vindo, <strong style="font-weight:600;">{{ name }}</strong>{% endblocktrans %}</h1>
+  A ORDEM da tela é a ordem do trabalho: primeiro a fila (o que trava
+  dinheiro), depois o estado geral, e só então a lista de tabelas.
+{% endcomment %}
+
+<div class="phd">
+  <div>
+    <h1>{% blocktrans trimmed with name=buyer.name %}Suas <b>tabelas de preço</b>, {{ name }}{% endblocktrans %}</h1>
+    <p>{% blocktrans trimmed %}Você cota em <b>¥ (RMB)</b>. A plataforma converte para US$ só para leitura do vendedor — o dado é sempre o seu ¥. <b>eMCP, uMCP, LPDDR, eMMC e UFS</b> têm preço único para todas as marcas; o <b>DDR</b> tem preço por marca, e a coluna «Outras» vale para as marcas sem coluna própria.{% endblocktrans %}</p>
+  </div>
+  <div class="seals">
+    <span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>{% trans "Todos os preços em ¥ (RMB)" %}</span>
+  </div>
+</div>
 
 {% comment %}
-  A FILA DE COTAÇÃO TRAVADA (spec v2 §3.5) — abre a tela porque é a fila de
-  trabalho dele: tabela incompleta pode esperar, lote FECHADO sem preço não.
-  Cada célula linka para a grade que resolve; sem link só quando o tipo ainda
-  não tem grade (SSD linear, K9 fixo — Etapa 7). A faixa DESAPARECE quando
-  zera: não é painel, é fila.
+  A FILA DE COTAÇÃO TRAVADA (§3.5) — abre a tela porque é a fila de trabalho
+  dele: tabela incompleta pode esperar, lote FECHADO sem preço não. Cada célula
+  linka para a grade que resolve; sem link só quando o tipo não tem grade. A
+  faixa DESAPARECE quando zera: não é painel, é fila.
 {% endcomment %}
 {% if fila.ordens %}
 <div class="blk">
@@ -29,72 +44,91 @@
 </div>
 {% endif %}
 
-<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
-  <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">{% trans "Chips sem cotação" %}</span>
-    <b style="color:{% if pending %}#8a6d00{% else %}#198038{% endif %};">{{ pending }}</b>
+{% comment %}
+  Os três números do estado geral. Classe PRÓPRIA (`.pkpi`) e não `.pmet` do
+  pacote: aquela é a lista de rótulo→valor do painel lateral da ficha, com
+  outra forma e outro papel. Vestir com a classe errada porque o nome soa
+  parecido é como um sistema de design apodrece.
+
+  ⚠ Dois destes (sem cotação e cotados) também saem somando a tabela abaixo. O
+  que não sai de lugar nenhum é a VELHICE — e é por ela que a tira existe.
+  Enxugar para uma linha só é decisão do dono, não minha: são números que ele
+  já lê há meses.
+{% endcomment %}
+<div class="pkpi">
+  <div class="pkpi__r">
+    <span>{% trans "Chips sem cotação" %}</span>
+    <b class="{% if pending %}is-warn{% endif %}">{{ pending }}</b>
   </div>
-  <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">{% blocktrans trimmed %}Cotações com mais de {{ staleness_days }} dias{% endblocktrans %}</span>
-    <b style="color:{% if stale %}#8a6d00{% else %}#198038{% endif %};">{{ stale }}</b>
+  <div class="pkpi__r">
+    <span>{% blocktrans trimmed %}Cotações com mais de {{ staleness_days }} dias{% endblocktrans %}</span>
+    <b class="{% if stale %}is-warn{% endif %}">{{ stale }}</b>
   </div>
-  <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">{% trans "Chips cotados" %}</span>
-    <b style="color:#161616;">{{ quoted }}</b>
+  <div class="pkpi__r">
+    <span>{% trans "Chips cotados" %}</span>
+    <b>{{ quoted }}</b>
   </div>
 </div>
 
 {% comment %}
-  O CATÁLOGO virou TELA (spec v2 §5.2, 2026-08-26). Aqui ficava um card com
-  dois selects; ele ganhou seis decisões — tipos, idioma, moeda, validade,
-  lacunas e o recado de capa — e seis decisões num card viram um card que
-  ninguém lê. O card fica, como PORTA: some o formulário, fica o caminho.
-  Dois lugares para gerar a mesma coisa é um a mais.
+  O catálogo virou TELA (§5.2). Este card é a PORTA: some o formulário, fica o
+  caminho. Dois lugares para gerar a mesma coisa é um a mais.
 {% endcomment %}
-<a class="ptn-card" href="{% url 'pricing:partner_catalog_page' %}"
-   style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;text-decoration:none;color:inherit;">
-  <div style="flex:1;min-width:230px;">
-    <div style="font-weight:600;font-size:14px;">📄 {% trans "Catálogo de preços (PDF)" %}</div>
-    <div style="font-size:12.5px;color:#6f6f6f;margin-top:2px;">{% trans "Sua tabela de preços completa num único arquivo — pronta para enviar aos seus clientes." %}</div>
-  </div>
-  <span style="color:#0f62fe;font-weight:600;font-size:13px;">{% trans "Montar catálogo" %} →</span>
+<a class="pdoor" href="{% url 'pricing:partner_catalog_page' %}">
+  <span class="pdoor__t">{% trans "Catálogo de preços (PDF)" %}
+    <span>{% trans "Sua tabela completa num arquivo só — pronta para enviar aos seus clientes." %}</span></span>
+  <span class="pdoor__g">{% trans "Montar catálogo" %}
+    <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></span>
 </a>
 
 {% comment %}
-  Navegação POR TIPO (dono, 2026-07-27): a home resume por tipo de chip —
-  combos/LPDDR são preço unificado; eMMC/UFS/DDR abrem a matriz por marca.
-  Nomes de tipo são canônicos, nunca traduzem.
+  Navegação POR TIPO (dono, 2026-07-27). Nomes de tipo são canônicos, nunca
+  traduzem. A linha inteira é clicável — o chevron é o sinal, não o alvo.
 {% endcomment %}
-<div class="ptn-card">
-  <table class="ptn-table">
-    <thead>
-      <tr><th>{% trans "Tipo de chip" %}</th><th>{% trans "Cotados" %}</th><th>{% trans "Sem cotação" %}</th><th></th></tr>
-    </thead>
+<section class="tile">
+  <div class="dtab__wrap"><table class="dtab">
+    <thead><tr>
+      <th>{% trans "Tipo de chip" %}</th>
+      <th class="d">{% trans "Estrutura da tabela" %}</th>
+      <th>{% trans "Cotados" %}</th>
+      <th>{% trans "Sem cotação" %}</th>
+      <th></th>
+    </tr></thead>
     <tbody>
       {% for k in kinds_resumo %}
-      <tr>
-        <td style="font-weight:600;">{{ k.label }}
-          {% if k.unified %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "unificado" %}</span>
-          {% elif k.dual %}<span style="background:#fff1c2;color:#8a6d00;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "celular × PCB" %}</span>
-          {% else %}<span style="color:#6f6f6f;font-size:11px;margin-left:6px;">{% trans "por marca" %}</span>{% endif %}</td>
-        <td>{% if k.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ k.quoted }}</span>{% else %}—{% endif %}</td>
+      <tr data-h="{% url 'pricing:partner_kind' k.kind %}">
+        <td class="c" data-label="{% trans 'Tipo de chip' %}">{{ k.label }}</td>
+        <td class="d" data-label="{% trans 'Estrutura da tabela' %}">
+          {% if k.unified %}{% trans "unificada — uma coluna de preço" %}
+          {% elif k.dual %}{% trans "celular × PCB — duas tabelas" %}
+          {% else %}{% trans "por marca — matriz" %}{% endif %}</td>
+        <td class="n" data-label="{% trans 'Cotados' %}">{% if k.quoted %}{{ k.quoted }}{% else %}—{% endif %}</td>
         {% comment %} §3.5: `travando N pedidos` NO LUGAR de `N sem cotação`
            quando as duas coisas são verdade. As duas são — mas só uma explica
-           a urgência, e a contagem exata de lacunas está a um clique, na
-           grade. O selo âmbar da barra de tipos continua contando lacuna. {% endcomment %}
-        <td>{% if k.travados %}<span class="ptn-tag ptn-tag--block">{% blocktrans trimmed count n=k.travados %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
-          {% elif k.pending %}<span class="ptn-tag ptn-tag--pending">{{ k.pending }}</span>{% else %}—{% endif %}</td>
-        <td><a href="{% url 'pricing:partner_kind' k.kind %}" style="color:#0f62fe;font-weight:600;">{% trans "Editar" %} →</a></td>
+           a urgência, e a contagem exata está a um clique, na grade. {% endcomment %}
+        <td class="v" data-label="{% trans 'Sem cotação' %}">
+          {% if k.travados %}<span class="tag tag--no"><span class="dot"></span>{% blocktrans trimmed count n=k.travados %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
+          {% elif k.pending %}<span class="tag tag--maybe"><span class="dot"></span>{% blocktrans trimmed count n=k.pending %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
+          {% else %}<span class="tag tag--yes"><span class="dot"></span>{% trans "completa" %}</span>{% endif %}</td>
+        <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
       </tr>
       {% empty %}
-      <tr><td colspan="4" style="color:#6f6f6f;">{% trans "Nenhuma lista ainda — fale com a equipe WhatTheChip." %}</td></tr>
+      <tr><td colspan="5" class="pempty">{% trans "Nenhuma lista ainda — fale com a equipe WhatTheChip." %}</td></tr>
       {% endfor %}
     </tbody>
-  </table>
-</div>
+  </table></div>
+</section>
 
-<p style="font-size:13px;color:#6f6f6f;line-height:1.6;">
-  {% blocktrans trimmed %}Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria.{% endblocktrans %}
-</p>
-
+{% comment %} A linha inteira leva à grade. Sem JS o `.go` continua sendo só um
+   sinal — e é por isso que o rótulo do tipo também é link abaixo. {% endcomment %}
+<script>
+(function () {
+  var linhas = document.querySelectorAll('.dtab tbody tr[data-h]');
+  for (var i = 0; i < linhas.length; i++) {
+    linhas[i].addEventListener('click', function () {
+      location.href = this.getAttribute('data-h');
+    });
+  }
+})();
+</script>
 {% endblock %}

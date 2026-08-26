@@ -3943,6 +3943,91 @@ msgid_plural "%(n)s sem cotação"
 msgstr[0] "%(n)s with no quote"
 msgstr[1] "%(n)s with no quote"
 
+msgid ""
+"Este tipo não tem grade: o preço é uma taxa de contrato. Mudanças passam "
+"pela revisão do WhatTheChip, e o valor atual continua valendo até a "
+"aprovação."
+msgstr ""
+"This type has no grid: the price is a contract rate. Changes go through "
+"WhatTheChip review, and the current value stays in force until approval."
+
+msgid "Estrutura da tabela"
+msgstr "Table structure"
+
+msgid "FAIXA — mínimo e máximo por linha"
+msgstr "RANGE — minimum and maximum per row"
+
+msgid "LINEAR ¥/GB — sem grade por densidade"
+msgstr "LINEAR ¥/GB — no density grid"
+
+msgid "Linha"
+msgstr "Row"
+
+msgid "MATRIZ POR MARCA"
+msgstr "MATRIX PER BRAND"
+
+msgid "PREÇO ÚNICO — independe do part number e da densidade"
+msgstr "SINGLE PRICE — independent of part number and density"
+
+msgid "Preço por peça, calculado"
+msgstr "Price per piece, calculated"
+
+msgid "Preço ¥ por unidade"
+msgstr "Price ¥ per unit"
+
+msgid "Preço ¥ — máximo"
+msgstr "Price ¥ — maximum"
+
+msgid "Preço ¥ — mínimo"
+msgstr "Price ¥ — minimum"
+
+msgid ""
+"Sua tabela completa num arquivo só — pronta para enviar aos seus clientes."
+msgstr "Your full table in a single file — ready to send to your clients."
+
+msgid "Suas <b>tabelas de preço</b>, %(name)s"
+msgstr "Your <b>price tables</b>, %(name)s"
+
+msgid "Tabela de <b>%(tipo)s</b>"
+msgstr "<b>%(tipo)s</b> table"
+
+msgid ""
+"Você cota em <b>¥ (RMB)</b>. A plataforma converte para US$ só para leitura "
+"do vendedor — o dado é sempre o seu ¥. <b>eMCP, uMCP, LPDDR, eMMC e UFS</b> "
+"têm preço único para todas as marcas; o <b>DDR</b> tem preço por marca, e a "
+"coluna «Outras» vale para as marcas sem coluna própria."
+msgstr ""
+"You quote in <b>¥ (RMB)</b>. The platform converts to US$ only for the "
+"seller to read — the data is always your ¥. <b>eMCP, uMCP, LPDDR, eMMC and "
+"UFS</b> have a single price for every brand; <b>DDR</b> is priced per brand,"
+" and the «Other» column covers brands with no column of their own."
+
+msgid ""
+"Você cota em ¥ (RMB). Preencha o que quiser mudar e envie no fim da página —"
+" só as linhas alteradas viram pedido de revisão."
+msgstr ""
+"You quote in ¥ (RMB). Fill in whatever you want to change and submit at the "
+"end of the page — only changed rows become a review request."
+
+msgid "em revisão"
+msgstr "under review"
+
+msgid ""
+"número = preço em <b>¥ (RMB)</b> · <b>x</b> = não compro · vazio = sem "
+"cotação · <b>—</b> = não fabricado. Só as linhas alteradas são enviadas."
+msgstr ""
+"number = price in <b>¥ (RMB)</b> · <b>x</b> = do not buy · empty = not "
+"quoted · <b>—</b> = not manufactured. Only changed rows are submitted."
+
+msgid "o mínimo por peça decidiu esta linha"
+msgstr "the minimum per piece decided this row"
+
+msgid "sem cotação"
+msgstr "not quoted"
+
+msgid "sem piso"
+msgstr "no floor"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

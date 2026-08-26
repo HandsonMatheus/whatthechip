@@ -462,10 +462,18 @@
 .blk__m b{font-family:var(--mono);font-weight:600;color:var(--red-70)}
 /* Aviso no TOPO DA GRADE, para quem chegou pela barra de tipos e não pela
    faixa: sem ele o selo vermelho manda o comprador para uma tabela de trinta
-   linhas sem dizer qual delas trava. */
-.blkw{border:1px solid var(--red-60);background:var(--red-10);padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--text)}
-.blkw b{color:var(--red-70)}
-.blkw__i + .blkw__i{margin-top:7px}
+   linhas sem dizer qual delas trava.
+
+   ⚠ O SVG leva `flex:none` e tamanho FIXO. Sem isso o flex o estica para a
+   altura do texto e, num aviso de duas linhas, ele vira um triângulo vermelho
+   do tamanho da viewport que empurra a tabela para fora da tela (medido no
+   protótipo a 853px). */
+.gnote--blk{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin-bottom:20px;
+  border:1px solid var(--red-60);background:var(--red-10);font-size:12.5px;line-height:1.5;
+  color:var(--text);text-wrap:pretty}
+.gnote--blk svg{width:16px;height:16px;flex:none;margin-top:2px;fill:none;stroke:var(--red-60);stroke-width:2}
+.gnote--blk b{color:var(--red-70);font-weight:700}
+.gnote--blk .gnote__i + .gnote__i{margin-top:7px}
 
 /* ---------- a tela do CATÁLOGO (spec v2 §5.2) ----------
    Duas colunas: a seleção de tipos à esquerda, as opções do documento à
@@ -493,3 +501,26 @@
   .cat{grid-template-columns:minmax(0,1fr)}
   .catopt{position:static;order:2}
 }
+
+/* ---------- Resumo de preços: os três números e a porta do catálogo ----------
+   Classes PRÓPRIAS, e não `.pmet`/`.quick` do pacote: aquelas são a lista de
+   rótulo→valor do painel da ficha e a fileira de botões pequenos. Nome
+   parecido, papel diferente — vestir com a classe errada é como um sistema de
+   design apodrece. */
+.pkpi{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);flex-wrap:wrap}
+.pkpi__r{flex:1 1 170px;min-width:0;background:var(--surface);padding:13px 16px;display:flex;flex-direction:column;gap:4px}
+.pkpi__r span{font-size:11.5px;color:var(--muted);text-wrap:pretty}
+.pkpi__r b{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.03em;color:var(--text);line-height:1}
+.pkpi__r b.is-warn{color:var(--amber-70)}
+/* A PORTA: um card que só leva a algum lugar. O chevron é o sinal de que a
+   coisa continua noutra tela — sem ele, um card sem botão parece um card
+   morto. */
+.pdoor{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--line);padding:15px 18px;text-decoration:none;color:inherit;
+  transition:background var(--d1)}
+.pdoor:hover{background:var(--ink-05);text-decoration:none}
+.pdoor__t{font-size:14px;font-weight:700;min-width:0}
+.pdoor__t span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:3px;text-wrap:pretty}
+.pdoor__g{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--blue-60);white-space:nowrap;flex:none}
+.pdoor__g svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;transition:transform var(--d1)}
+.pdoor:hover .pdoor__g svg{transform:translateX(2px)}

@@ -1,41 +1,55 @@
 {% extends "pricing/partner_base.html" %}
 {% load i18n %}
-{% block title %}{{ kind_label }} — WhatTheChip{% endblock %}
+{% block title %}{{ kind_label }}{% endblock %}
 {% block content %}
 {% comment %}
-  Página de UM TIPO — v3 (dono, 2026-07-27): a página INTEIRA é um formulário;
-  o botão fixo "Enviar para revisão" manda tudo e o servidor (partner_kind_save)
-  faz o diff — só linha alterada vira pedido. Célula = UM campo, semântica da
-  PLANILHA do comprador: número = ¥ · "x" = não compro · vazio = sem cotação
-  (faixa mín–máx só nos combos). Estado é SELO informativo, não controle.
-  eMCP/uMCP/LPDDR = coluna única (genérica; LPDDR agrupa por geração);
-  eMMC/UFS/DDR = matriz por marca (DDR agrupa por geração). ¥ INTEIRO,
-  formatado NA VIEW (floatformat ignora localize-off — pegadinha F10).
-  Inputs p<pk>/pmax<pk> — pk é numérico, sem risco de localização.
+  A GRADE DE UM TIPO — vestida com o pacote v2 em 2026-08-26 (Etapa 9). Antes
+  era `ptn-*` com estilo de mão; agora fala o vocabulário do sistema:
+  `.phd` + `.seals` no topo, `.grid2` > `.dtab` na tabela, `.tag` no estado,
+  `input.cell` na célula e `.pfoot` no rodapé fixo.
+
+  A página INTEIRA é UM formulário (dono, 2026-07-27: "bota um botão no final
+  pra enviar"): o servidor faz o DIFF e só linha ALTERADA vira pedido.
+
+  Semântica de célula = a da PLANILHA do comprador: número = ¥ cotado · "x" =
+  não compro · vazio = sem cotação · `—` estático = não fabricado (não vira
+  campo, e o POST o ignora mesmo se vier forjado). ¥ INTEIRO, formatado NA
+  VIEW — `floatformat` ignora localize-off (pegadinha F10).
+
+  `data-label` em TODO `<td>`: abaixo de 600px a `.dtab` esconde o cabeçalho e
+  a linha colapsa em cartão. Sem o rótulo, dois campos de preço lado a lado não
+  dizem qual é o mínimo e qual é o máximo.
 {% endcomment %}
 
-<div class="ptn-card" style="margin-bottom:14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
-  <h1 style="margin:0;font-size:22px;font-weight:600;">{{ kind_label }}</h1>
-  <span style="background:#defbe6;color:#0e6027;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "Todos os preços em ¥ (RMB)" %}</span>
-  {% if unified %}
-  <span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</span>
-  {% elif dual %}
-  <span style="background:#fff1c2;color:#8a6d00;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "DUAS TABELAS — celular (unificado) × PCB (por marca)" %}</span>
-  {% endif %}
-  {% if ranged %}<span style="color:#6f6f6f;font-size:13px;">{% trans "faixa mín–máx em ¥" %}</span>{% endif %}
+<div class="phd">
+  <div>
+    <h1>{% blocktrans trimmed with tipo=kind_label %}Tabela de <b>{{ tipo }}</b>{% endblocktrans %}</h1>
+    <p>{% if contrato %}{% blocktrans trimmed %}Este tipo não tem grade: o preço é uma taxa de contrato. Mudanças passam pela revisão do WhatTheChip, e o valor atual continua valendo até a aprovação.{% endblocktrans %}
+       {% else %}{% blocktrans trimmed %}Você cota em ¥ (RMB). Preencha o que quiser mudar e envie no fim da página — só as linhas alteradas viram pedido de revisão.{% endblocktrans %}{% endif %}</p>
+  </div>
+  <div class="seals">
+    <span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>{% trans "Todos os preços em ¥ (RMB)" %}</span>
+    {% if contrato %}<span class="seal seal--brand">{% if rate_kind == 'ssd' %}{% trans "LINEAR ¥/GB — sem grade por densidade" %}{% else %}{% trans "PREÇO ÚNICO — independe do part number e da densidade" %}{% endif %}</span>
+    {% elif dual %}<span class="seal seal--dual">{% trans "DUAS TABELAS — celular (unificado) × PCB (por marca)" %}</span>
+    {% elif unified %}<span class="seal seal--uni">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</span>
+    {% else %}<span class="seal seal--brand">{% trans "MATRIZ POR MARCA" %}</span>{% endif %}
+    {% if ranged %}<span class="seal seal--brand">{% trans "FAIXA — mínimo e máximo por linha" %}</span>{% endif %}
+  </div>
 </div>
 
 {% comment %}
   §3.5, terceira parada: quem chega pela BARRA de tipos não passou pela faixa
   do Resumo. Sem este aviso o selo vermelho da barra o larga numa tabela de
-  trinta linhas sem dizer QUAL delas trava. Uma caixa só, uma frase por linha
-  travada — com uma linha (o caso comum) sai exatamente a frase do desenho.
+  trinta linhas sem dizer QUAL delas trava.
 {% endcomment %}
 {% if travados %}
-<div class="blkw">
-  {% for t in travados %}
-  <div class="blkw__i">⚠ {% blocktrans trimmed count n=t.orders with since=t.since|date:"d/m/y" row=t.row box=t.box units=t.units %}<b>{{ n }} pedido está travado</b> desde {{ since }} esperando o preço de <b>{{ row }}</b> (caixa {{ box }}) — {{ units }} un. que a plataforma não consegue precificar sem você.{% plural %}<b>{{ n }} pedidos estão travados</b> desde {{ since }} esperando o preço de <b>{{ row }}</b> (caixa {{ box }}) — {{ units }} un. que a plataforma não consegue precificar sem você.{% endblocktrans %}</div>
-  {% endfor %}
+<div class="gnote gnote--blk">
+  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5L22 20H2z"/><path d="M12 10v4M12 17h.01"/></svg>
+  <div>
+    {% for t in travados %}
+    <div class="gnote__i">{% blocktrans trimmed count n=t.orders with since=t.since|date:"d/m/y" row=t.row box=t.box units=t.units %}<b>{{ n }} pedido está travado</b> desde {{ since }} esperando o preço de <b>{{ row }}</b> (caixa {{ box }}) — {{ units }} un. que a plataforma não consegue precificar sem você.{% plural %}<b>{{ n }} pedidos estão travados</b> desde {{ since }} esperando o preço de <b>{{ row }}</b> (caixa {{ box }}) — {{ units }} un. que a plataforma não consegue precificar sem você.{% endblocktrans %}</div>
+    {% endfor %}
+  </div>
 </div>
 {% endif %}
 
@@ -44,220 +58,196 @@
 
 {% if contrato %}
 {% comment %}
-  TIPOS SEM GRADE (spec v2 §3.2) — SSD e K9. Não há linha de `Price` aqui: o
-  preço é uma TAXA DE CONTRATO, e a tela edita a taxa, não uma célula.
+  TIPOS SEM GRADE (§3.2) — SSD e K9. Não há linha de `Price`: a tela edita a
+  TAXA, não uma célula.
 
-  · K9 — UMA linha, UM campo. O preço não varia com part number, densidade
-    nem marca. A spec é explícita: não invente grade por densidade "para
-    ficar consistente" — a consistência é a tabela ter o tamanho da realidade.
-  · SSD — ¥/GB + piso por peça, e as capacidades saem CALCULADAS do servidor
-    pela mesma função que precifica o lote. Elas não são editáveis, e é por
-    isso que não têm campo: campo que não vira preço é promessa falsa.
-
-  A moderação é a mesma da grade (§3.4): o número vigente continua valendo
-  até a plataforma aprovar.
+  · K9 — UMA linha, UM campo. A spec é explícita: não invente grade por
+    densidade "para ficar consistente" — a consistência é a tabela ter o
+    tamanho da realidade.
+  · SSD — ¥/GB + piso, e as capacidades saem CALCULADAS do servidor pela mesma
+    função que precifica o lote. Elas não são editáveis, e por isso não têm
+    campo: campo que não vira preço é promessa falsa.
 {% endcomment %}
-<div class="ptn-card">
-  <table class="ptn-table">
+<section class="grid2" style="margin-bottom:20px;">
+  <div class="dtab__wrap"><table class="dtab dtab--static">
     <thead><tr>
       <th>{% if rate_kind == 'ssd' %}{% trans "Taxa" %}{% else %}{% trans "Preço" %}{% endif %}</th>
-      <th>{% trans "¥ (RMB)" %}</th>
-      <th>{% trans "Estado" %}</th>
+      <th style="min-width:132px">{% trans "Status" %}</th>
+      <th style="min-width:220px">{% trans "¥ (RMB)" %}</th>
     </tr></thead>
     <tbody>
       <tr>
-        <td style="font-weight:600;">{% if rate_kind == 'ssd' %}{% trans "por GB" %}{% else %}{% trans "por unidade" %}{% endif %}
-          <div style="font-weight:400;font-size:12px;color:#6f6f6f;">{% if rate_kind == 'ssd' %}{% trans "qualquer capacidade · qualquer formato" %}{% else %}{% trans "qualquer part number · qualquer densidade" %}{% endif %}</div></td>
-        <td><span class="ptn-cell{% if not rate_disp %} ptn-cell--unquoted{% endif %}" style="flex-direction:row;">
-          <input class="ptn-cell__in" type="text" inputmode="decimal" name="rate" id="wtc-rate"
-                 style="width:88px;" value="{{ rate_disp }}"
-                 title="{% trans '¥ · vazio = sem cotação' %}">
-        </span></td>
-        <td>{% if rate_disp %}<span class="ptn-tag ptn-tag--quoted">{% trans "Cotado" %}</span>
-          {% else %}<span class="ptn-tag ptn-tag--pending">{% trans "Não cotado" %}</span>{% endif %}</td>
+        <td><div class="gl"><span class="gl__n">{% if rate_kind == 'ssd' %}{% trans "por GB" %}{% else %}{% trans "por unidade" %}{% endif %}<span>{% if rate_kind == 'ssd' %}{% trans "qualquer capacidade · qualquer formato" %}{% else %}{% trans "qualquer part number · qualquer densidade" %}{% endif %}</span></span></div></td>
+        <td data-label="{% trans 'Status' %}">{% if rate_disp %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Cotado" %}</span>
+          {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Não cotado" %}</span>{% endif %}</td>
+        <td data-label="{% trans '¥ (RMB)' %}"><input class="cell{% if rate_disp %} has{% endif %}" type="text" inputmode="decimal"
+               name="rate" id="wtc-rate" value="{{ rate_disp }}" autocomplete="off"
+               spellcheck="false" placeholder="{% trans 'sem cotação' %}"
+               aria-label="{% trans '¥ · vazio = sem cotação' %}"></td>
       </tr>
       {% if rate_kind == 'ssd' %}
       <tr>
-        <td style="font-weight:600;">{% trans "mínimo por peça" %}
-          <div style="font-weight:400;font-size:12px;color:#6f6f6f;">{% trans "nenhuma peça sai por menos que isto, por menor que seja a capacidade" %}</div></td>
-        <td><span class="ptn-cell{% if not floor_disp %} ptn-cell--unquoted{% endif %}" style="flex-direction:row;">
-          <input class="ptn-cell__in" type="text" inputmode="decimal" name="floor" id="wtc-floor"
-                 style="width:88px;" value="{{ floor_disp }}"
-                 title="{% trans '¥ · vazio = sem piso' %}">
-        </span></td>
-        <td>{% if floor_disp %}<span class="ptn-tag ptn-tag--quoted">{% trans "Ativo" %}</span>
-          {% else %}<span class="ptn-tag ptn-tag--inherited">{% trans "Sem piso" %}</span>{% endif %}</td>
+        <td><div class="gl"><span class="gl__n">{% trans "mínimo por peça" %}<span>{% trans "nenhuma peça sai por menos que isto, por menor que seja a capacidade" %}</span></span></div></td>
+        <td data-label="{% trans 'Status' %}">{% if floor_disp %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Ativo" %}</span>
+          {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Sem piso" %}</span>{% endif %}</td>
+        <td data-label="{% trans '¥ (RMB)' %}"><input class="cell{% if floor_disp %} has{% endif %}" type="text" inputmode="decimal"
+               name="floor" id="wtc-floor" value="{{ floor_disp }}" autocomplete="off"
+               spellcheck="false" placeholder="{% trans 'sem piso' %}"
+               aria-label="{% trans '¥ · vazio = sem piso' %}"></td>
       </tr>
       {% endif %}
     </tbody>
-  </table>
-</div>
+  </table></div>
+</section>
 
 {% if pedido %}
-<div class="ptn-card" style="border-left:4px solid var(--blue-60);">
-  <span class="ptn-tag ptn-tag--review">⏳ {% trans "Em revisão" %}</span>
-  <span style="font-size:13px;margin-left:8px;">{% blocktrans trimmed %}Você já pediu uma mudança aqui — o valor acima continua valendo até o WhatTheChip aprovar. Enviar de novo substitui o pedido.{% endblocktrans %}</span>
+<div class="gnote gnote--blk" style="border-color:var(--blue-60);background:var(--blue-10);">
+  <svg viewBox="0 0 24 24" stroke-linecap="round" style="stroke:var(--blue-60);"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+  <div>{% blocktrans trimmed %}Você já pediu uma mudança aqui — o valor acima continua valendo até o WhatTheChip aprovar. Enviar de novo substitui o pedido.{% endblocktrans %}</div>
 </div>
 {% endif %}
 
 {% if rate_kind == 'ssd' %}
-<div class="ptn-card" style="padding:0;overflow-x:auto;">
-  <table class="ptn-table">
-    <thead><tr>
-      <th>{% trans "Capacidade" %}</th><th>{% trans "¥ por peça" %}</th><th></th>
-    </tr></thead>
+<section class="grid2">
+  <div class="grid2__h"><h3>{% trans "Preço por peça, calculado" %}</h3></div>
+  <div class="dtab__wrap"><table class="dtab dtab--static">
+    <thead><tr><th>{% trans "Capacidade" %}</th><th style="min-width:200px">{% trans "¥ por peça" %}</th></tr></thead>
     <tbody>
       {% for c in caps %}
       <tr>
-        <td style="font-family:'IBM Plex Mono',monospace;">{{ c.label }}</td>
-        <td class="wtc-calc" data-cap="{{ c.gb }}" style="font-family:'IBM Plex Mono',monospace;font-weight:600;">{% if c.rmb %}¥ {{ c.rmb }}{% else %}—{% endif %}</td>
-        <td class="wtc-calc-note">{% if c.piso %}<span class="ptn-tag ptn-tag--pending">{% trans "piso" %}</span>{% endif %}</td>
+        <td><div class="gl"><span class="gl__n">{{ c.label }}</span></div></td>
+        <td data-label="{% trans '¥ por peça' %}"><span class="calc wtc-calc{% if c.piso %} calc--floor{% endif %}"
+              data-cap="{{ c.gb }}" title="{% if c.piso %}{% trans 'o mínimo por peça decidiu esta linha' %}{% endif %}">{% if c.rmb %}¥ {{ c.rmb }}{% else %}—{% endif %}</span></td>
       </tr>
       {% endfor %}
     </tbody>
-  </table>
-</div>
-<p style="font-size:12.5px;color:#6f6f6f;line-height:1.6;margin:0;">
-  {% blocktrans trimmed %}As capacidades são <strong>calculadas</strong>, não cotadas: <code>preço = maior valor entre (¥/GB × GB) e o mínimo por peça</code>, arredondado ao ¥ inteiro. A marca <strong>piso</strong> diz que o mínimo por peça decidiu aquela linha — é informação, não erro.{% endblocktrans %}
-</p>
+  </table></div>
+</section>
 {% endif %}
 {% endif %}
 
 {% if unified or dual %}
-{# ── COLUNA ÚNICA (eMCP/uMCP/LPDDR; eMMC = subset CELULAR) ──────── #}
-{% if dual %}<h2 style="font-size:14px;font-weight:700;margin:0 0 8px;color:#525252;">📱 {% trans "eMMC de CELULAR — preço unificado, todas as marcas" %}</h2>{% endif %}
-<div class="ptn-card" style="padding:0;overflow-x:auto;">
-  <table class="ptn-table ptn-matrix">
+{% comment %} ── COLUNA ÚNICA (eMCP/uMCP/LPDDR/UFS; eMMC = subset CELULAR) ── {% endcomment %}
+<section class="grid2" style="margin-bottom:20px;">
+  {% if dual %}<div class="grid2__h"><h3>📱 {% trans "eMMC de CELULAR — preço unificado, todas as marcas" %}</h3></div>{% endif %}
+  <div class="dtab__wrap"><table class="dtab dtab--static">
     <thead><tr>
-      <th></th>
-      <th>{% trans "Preço ¥" %}</th>
-      <th>{% trans "Estado" %}</th>
-      <th>{% trans "Última atualização" %}</th>
+      <th>{% trans "Linha" %}</th>
+      <th style="min-width:132px">{% trans "Status" %}</th>
+      {% if ranged %}<th style="min-width:170px">{% trans "Preço ¥ — mínimo" %}</th><th style="min-width:170px">{% trans "Preço ¥ — máximo" %}</th>
+      {% else %}<th style="min-width:220px">{% trans "Preço ¥ por unidade" %}</th>{% endif %}
+      <th style="min-width:130px">{% trans "Última atualização" %}</th>
     </tr></thead>
     <tbody>
       {% for r in rows %}
       {% ifchanged r.gen %}{% if r.gen %}
-      <tr class="ptn-matrix__gen"><td colspan="4">{{ r.gen }}</td></tr>
+      <tr class="g"><td colspan="{% if ranged %}5{% else %}4{% endif %}">{{ r.gen }}</td></tr>
       {% endif %}{% endifchanged %}
       <tr>
-        <td>{{ r.tier_disp }}{% if ranged %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</td>
-        <td>
-          {% if r.status == 'not_made' %}
-          <span style="color:#a8a8a8;" title="{% trans 'Não fabricado' %}">—</span>
-          {% else %}
-          <span class="ptn-cell{% if r.status == 'no_buy' %} ptn-cell--nobuy{% elif r.status == 'unquoted' %} ptn-cell--unquoted{% endif %}" style="flex-direction:row;">
-            <input class="ptn-cell__in" type="text" inputmode="decimal" name="p{{ r.pk }}"
-                   value="{{ r.cell_disp }}" title="{% trans '¥ · x = não compro · vazio = sem cotação' %}">
-            {% if ranged %}
-            <span style="color:#8d8d8d;">–</span>
-            <input class="ptn-cell__in" type="text" inputmode="decimal" name="pmax{{ r.pk }}"
-                   value="{{ r.maxin_disp }}" title="{% trans 'máximo da faixa' %}">
-            {% endif %}
-          </span>
-          {% if r.pending %}<div><span class="ptn-tag ptn-tag--review">⏳ {{ r.pend_disp }}</span></div>{% endif %}
-          {% endif %}
-        </td>
-        <td>
+        <td><div class="gl"><span class="gl__n">{{ r.tier_disp }}{% if ranged %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</span></div></td>
+        <td data-label="{% trans 'Status' %}">
           {% comment %} A linha que TRAVA PEDIDO diz isso na própria coluna de
              estado, e VENCE "não cotado": as duas afirmações são verdade, mas
              só uma explica por que esta linha é urgente. {% endcomment %}
-          {% if r.travado %}<span class="ptn-tag ptn-tag--block">{% blocktrans trimmed count n=r.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
-          {% elif r.status == 'quoted' %}<span class="ptn-tag ptn-tag--quoted">{% trans "Cotado" %}</span>
-          {% elif r.status == 'no_buy' %}<span class="ptn-tag ptn-tag--nobuy">{% trans "Não compro" %}</span>
-          {% elif r.status == 'not_made' %}<span class="ptn-tag ptn-tag--inherited">{% trans "Não fabricado" %}</span>
-          {% else %}<span class="ptn-tag ptn-tag--pending">{% trans "Não cotado" %}</span>{% endif %}
+          {% if r.travado %}<span class="tag tag--no"><span class="dot"></span>{% blocktrans trimmed count n=r.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
+          {% elif r.pending %}<span class="tag tag--maybe"><span class="dot"></span>{% trans "em revisão" %} · {{ r.pend_disp }}</span>
+          {% elif r.status == 'quoted' %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Cotado" %}</span>
+          {% elif r.status == 'no_buy' %}<span class="tag tag--no"><span class="dot"></span>{% trans "Não compro" %}</span>
+          {% elif r.status == 'not_made' %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Não fabricado" %}</span>
+          {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Não cotado" %}</span>{% endif %}
         </td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#525252;">{% if r.status == 'quoted' and r.quote_date %}{{ r.quote_date|date:"d/m/y" }}{% else %}—{% endif %}</td>
+        {% if r.status == 'not_made' %}
+        <td data-label="{% trans 'Preço ¥ por unidade' %}"{% if ranged %} colspan="2"{% endif %}><span class="calc" title="{% trans 'Não fabricado' %}">—</span></td>
+        {% else %}
+        <td data-label="{% if ranged %}{% trans 'Preço ¥ — mínimo' %}{% else %}{% trans 'Preço ¥ por unidade' %}{% endif %}"><input
+              class="cell{% if r.status == 'no_buy' %} nox{% elif r.cell_disp %} has{% endif %}" type="text"
+              inputmode="text" autocomplete="off" spellcheck="false" name="p{{ r.pk }}"
+              value="{{ r.cell_disp }}" placeholder="{% trans 'sem cotação' %}"
+              aria-label="{% trans '¥ · x = não compro · vazio = sem cotação' %}"></td>
+        {% if ranged %}
+        <td data-label="{% trans 'Preço ¥ — máximo' %}"><input class="cell{% if r.maxin_disp %} has{% endif %}" type="text"
+              inputmode="text" autocomplete="off" spellcheck="false" name="pmax{{ r.pk }}"
+              value="{{ r.maxin_disp }}" placeholder="{% trans 'sem cotação' %}"
+              aria-label="{% trans 'máximo da faixa' %}"></td>
+        {% endif %}
+        {% endif %}
+        <td class="n" data-label="{% trans 'Última atualização' %}">{% if r.status == 'quoted' and r.quote_date %}{{ r.quote_date|date:"d/m/y" }}{% else %}—{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>
-  </table>
-</div>
-
+  </table></div>
+</section>
 {% endif %}
+
 {% if not unified and not contrato %}
-{# ── MATRIZ POR MARCA (DDR; eMMC = subset PCB) ──────────────────── #}
-{% if dual %}<h2 style="font-size:14px;font-weight:700;margin:14px 0 8px;color:#525252;">🔌 {% trans "eMMC de PCB — preço por marca (set-top box, TV, notebook…)" %}</h2>{% endif %}
-<div class="ptn-card" style="padding:0;overflow-x:auto;">
-  <table class="ptn-table ptn-matrix">
+{% comment %} ── MATRIZ POR MARCA (DDR; eMMC = subset PCB) ────────────────── {% endcomment %}
+<section class="grid2">
+  {% if dual %}<div class="grid2__h"><h3>🔌 {% trans "eMMC de PCB — preço por marca (set-top box, TV, notebook…)" %}</h3></div>{% endif %}
+  <div class="dtab__wrap dtab__wrap--x"><table class="dtab dtab--static">
     <thead><tr>
-      <th></th>
-      {% for pl in col_lists %}
-      <th>{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans "Outras" %}{% endif %}</th>
-      {% endfor %}
+      <th>{% trans "Linha" %}</th>
+      <th style="min-width:132px">{% trans "Status" %}</th>
+      {% for pl in col_lists %}<th style="min-width:112px">{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans "Outras" %}{% endif %}</th>{% endfor %}
     </tr></thead>
     <tbody>
       {% for linha in linhas %}
       {% ifchanged linha.gen %}{% if linha.gen %}
-      <tr class="ptn-matrix__gen"><td colspan="{{ col_lists|length|add:1 }}">{{ linha.gen }}</td></tr>
+      <tr class="g"><td colspan="{{ col_lists|length|add:2 }}">{{ linha.gen }}</td></tr>
       {% endif %}{% endifchanged %}
       <tr>
-        {% comment %} A matriz por marca não tem coluna de estado — cada célula
-           é um campo. Então a marca de travado vai no CABEÇALHO da linha, que
-           é a "linha exata" da spec: a trava é da LINHA, e o preço que falta
-           pode estar em qualquer coluna dela.
-
-           Aqui o selo é o NÚMERO, não a frase — a primeira coluna é `sticky` e
-           `nowrap`, e "travando 2 pedidos" a alargaria o bastante para empurrar
-           colunas de marca para fora da tela. A frase inteira está no título e,
-           por extenso, no aviso do topo. Mesma convenção do selo da barra. {% endcomment %}
-        <td>{{ linha.tier }}{{ linha.unit }}{% if linha.travado %}
-          <span class="ptn-tag ptn-tag--block" style="margin-left:6px;" title="{% blocktrans trimmed count n=linha.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}">{{ linha.travado }}</span>{% endif %}</td>
+        <td><div class="gl"><span class="gl__n">{{ linha.tier }}{{ linha.unit }}</span></div></td>
+        {% comment %} A trava é da LINHA, e a matriz tem coluna de Status como
+           a unificada — foi ela que faltava aqui até 2026-08-26, e por isso o
+           selo tinha virado um número solto no rótulo. {% endcomment %}
+        <td data-label="{% trans 'Status' %}">
+          {% if linha.travado %}<span class="tag tag--no"><span class="dot"></span>{% blocktrans trimmed count n=linha.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
+          {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "por marca" %}</span>{% endif %}
+        </td>
         {% for pl, p in linha.cells %}
-        <td>
-          {% if p %}
-            {% if p.status == 'not_made' %}
-            <span style="color:#a8a8a8;" title="{% trans 'Não fabricado' %}">—</span>
-            {% else %}
-            <span class="ptn-cell{% if p.status == 'no_buy' %} ptn-cell--nobuy{% elif p.status == 'unquoted' %} ptn-cell--unquoted{% endif %}">
-              <input class="ptn-cell__in" type="text" inputmode="decimal" name="p{{ p.pk }}"
-                     value="{{ p.cell_disp }}" title="{% trans '¥ · x = não compro · vazio = sem cotação' %}">
-              {% if p.pending %}<span class="ptn-tag ptn-tag--review" style="font-size:10px;">⏳ {{ p.pend_disp }}</span>{% endif %}
-            </span>
-            {% endif %}
-          {% else %}
-          <span style="color:#e0e0e0;">·</span>
-          {% endif %}
+        <td data-label="{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans 'Outras' %}{% endif %}">
+          {% if not p %}<span class="calc" style="color:var(--ink-30);">·</span>
+          {% elif p.status == 'not_made' %}<span class="calc" title="{% trans 'Não fabricado' %}">—</span>
+          {% else %}<input class="cell{% if p.status == 'no_buy' %} nox{% elif p.cell_disp %} has{% endif %}" type="text"
+                 inputmode="text" autocomplete="off" spellcheck="false" name="p{{ p.pk }}"
+                 value="{{ p.cell_disp }}" placeholder="{% trans 'sem cotação' %}"
+                 aria-label="{% trans '¥ · x = não compro · vazio = sem cotação' %}">
+            {% if p.pending %}<span class="tag tag--maybe" style="margin-top:4px;">{{ p.pend_disp }}</span>{% endif %}{% endif %}
         </td>
         {% endfor %}
       </tr>
       {% endfor %}
     </tbody>
-  </table>
-</div>
+  </table></div>
+</section>
 {% endif %}
 
-{# ── Rodapé FIXO: legenda + o botão de envio (dono: "botão no final") ── #}
-<div style="position:sticky;bottom:0;background:#fff;border:1px solid #e0e0e0;border-top:2px solid #0f62fe;padding:12px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;z-index:3;">
-  <button type="submit" class="ptn-btn">{% trans "Enviar para revisão" %}</button>
-  {% comment %} A legenda é da PLANILHA — "x", "não fabricado", "linhas
-     alteradas". Nada disso existe numa taxa de contrato, e repetir ali
-     ensinaria uma convenção que a tela não aceita. {% endcomment %}
+{% comment %} Rodapé FIXO (dono: "botão no final"). O `.pmain` do pacote já
+   reserva 132px de respiro embaixo, então ele não cobre a última linha. {% endcomment %}
+<div class="pfoot">
+  <button type="submit" class="btn btn--pri">{% trans "Enviar para revisão" %}</button>
   {% if contrato %}
-  <span style="font-size:12.5px;color:#6f6f6f;line-height:1.5;">{% trans "número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão do WhatTheChip; o valor atual continua valendo até a aprovação." %}</span>
+  <span class="pfoot__lg">{% trans "número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão do WhatTheChip; o valor atual continua valendo até a aprovação." %}</span>
   {% else %}
-  <span style="font-size:12.5px;color:#6f6f6f;line-height:1.5;">{% trans "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas." %}</span>
+  <span class="pfoot__lg">{% blocktrans trimmed %}número = preço em <b>¥ (RMB)</b> · <b>x</b> = não compro · vazio = sem cotação · <b>—</b> = não fabricado. Só as linhas alteradas são enviadas.{% endblocktrans %}</span>
   {% endif %}
 </div>
 </form>
 
 {% if rate_kind == 'ssd' %}
 {% comment %}
-  As capacidades recalculam ENQUANTO ELE DIGITA — é o único jeito de ele ver
-  o efeito do piso antes de enviar. A fórmula é a MESMA do servidor
+  As capacidades recalculam ENQUANTO ELE DIGITA — é o único jeito de ver o
+  efeito do piso antes de enviar. A fórmula é a MESMA do servidor
   (`engine.ssd_rmb`), incluindo o arredondamento meio-pra-cima: se as duas
   divergirem, a tela promete um preço que a compra não pratica.
   Sem JS a página continua correta — o servidor já mandou os números
-  calculados; só param de se mexer.
+  calculados; eles só param de se mexer.
 {% endcomment %}
-{% trans "piso" as rotulo_piso %}
 <script>
 (function () {
   var rate = document.getElementById('wtc-rate');
   var floor = document.getElementById('wtc-floor');
   var celulas = document.querySelectorAll('.wtc-calc');
   if (!rate || !celulas.length) return;
-  var MARCA_PISO = '{{ rotulo_piso|escapejs }}';
   function num(el) {
     var v = parseFloat(((el && el.value) || '').trim().replace(',', '.'));
     return isFinite(v) && v >= 0 ? v : null;
@@ -265,22 +255,18 @@
   function pinta() {
     var r = num(rate), f = num(floor);
     for (var i = 0; i < celulas.length; i++) {
-      var td = celulas[i];
-      var gb = parseInt(td.getAttribute('data-cap'), 10);
-      var nota = td.nextElementSibling;
-      if (nota) { while (nota.firstChild) nota.removeChild(nota.firstChild); }
-      if (r === null) { td.textContent = '\u2014'; continue; }
+      var el = celulas[i];
+      var gb = parseInt(el.getAttribute('data-cap'), 10);
+      if (r === null) {
+        el.textContent = '—';
+        el.classList.remove('calc--floor');
+        continue;
+      }
       var linear = Math.round(gb * r);
       var venceu = f !== null && f > linear;
-      td.textContent = '\u00a5 ' + (venceu ? Math.round(f) : linear);
-      if (venceu && nota) {
-        // textContent, nunca innerHTML: o rótulo vem do catálogo de tradução,
-        // e montar HTML com string traduzida é como se abre injeção por .po.
-        var selo = document.createElement('span');
-        selo.className = 'ptn-tag ptn-tag--pending';
-        selo.textContent = MARCA_PISO;
-        nota.appendChild(selo);
-      }
+      el.textContent = '¥ ' + (venceu ? Math.round(f) : linear);
+      /* âmbar quando o piso decidiu: é feedback, não erro (§3.2). */
+      el.classList.toggle('calc--floor', venceu);
     }
   }
   rate.addEventListener('input', pinta);

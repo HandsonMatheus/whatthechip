@@ -3725,6 +3725,84 @@ msgid "%(n)s sem cotação"
 msgid_plural "%(n)s sem cotação"
 msgstr[0] "%(n)s 项未报价"
 
+msgid ""
+"Este tipo não tem grade: o preço é uma taxa de contrato. Mudanças passam "
+"pela revisão do WhatTheChip, e o valor atual continua valendo até a "
+"aprovação."
+msgstr "此类型没有价格表：价格是合同费率。修改需经 WhatTheChip 审核，在批准之前当前数值继续有效。"
+
+msgid "Estrutura da tabela"
+msgstr "表格结构"
+
+msgid "FAIXA — mínimo e máximo por linha"
+msgstr "区间——每行最低与最高"
+
+msgid "LINEAR ¥/GB — sem grade por densidade"
+msgstr "线性 ¥/GB——无容量分档表"
+
+msgid "Linha"
+msgstr "行"
+
+msgid "MATRIZ POR MARCA"
+msgstr "按品牌矩阵"
+
+msgid "PREÇO ÚNICO — independe do part number e da densidade"
+msgstr "统一价——与料号和容量无关"
+
+msgid "Preço por peça, calculado"
+msgstr "每片价格（计算值）"
+
+msgid "Preço ¥ por unidade"
+msgstr "每颗价格 ¥"
+
+msgid "Preço ¥ — máximo"
+msgstr "价格 ¥ — 最高"
+
+msgid "Preço ¥ — mínimo"
+msgstr "价格 ¥ — 最低"
+
+msgid ""
+"Sua tabela completa num arquivo só — pronta para enviar aos seus clientes."
+msgstr "您的完整价目表汇成一个文件——可直接发给客户。"
+
+msgid "Suas <b>tabelas de preço</b>, %(name)s"
+msgstr "%(name)s，您的<b>价目表</b>"
+
+msgid "Tabela de <b>%(tipo)s</b>"
+msgstr "<b>%(tipo)s</b> 价目表"
+
+msgid ""
+"Você cota em <b>¥ (RMB)</b>. A plataforma converte para US$ só para leitura "
+"do vendedor — o dado é sempre o seu ¥. <b>eMCP, uMCP, LPDDR, eMMC e UFS</b> "
+"têm preço único para todas as marcas; o <b>DDR</b> tem preço por marca, e a "
+"coluna «Outras» vale para as marcas sem coluna própria."
+msgstr ""
+"您以 <b>¥（人民币）</b>报价。平台换算成 US$ 仅供卖方阅读——数据始终是您的 ¥。<b>eMCP、uMCP、LPDDR、eMMC 和 "
+"UFS</b> 对所有品牌统一定价；<b>DDR</b> 按品牌定价，「其他」列适用于没有单独列的品牌。"
+
+msgid ""
+"Você cota em ¥ (RMB). Preencha o que quiser mudar e envie no fim da página —"
+" só as linhas alteradas viram pedido de revisão."
+msgstr "您以 ¥（人民币）报价。填写想修改的内容，在页面底部提交——只有改动过的行才会生成审核申请。"
+
+msgid "em revisão"
+msgstr "审核中"
+
+msgid ""
+"número = preço em <b>¥ (RMB)</b> · <b>x</b> = não compro · vazio = sem "
+"cotação · <b>—</b> = não fabricado. Só as linhas alteradas são enviadas."
+msgstr ""
+"数字 = <b>¥（人民币）</b>价格 · <b>x</b> = 不收 · 留空 = 未报价 · <b>—</b> = 未生产。只提交改动过的行。"
+
+msgid "o mínimo por peça decidiu esta linha"
+msgstr "本行由每片最低价决定"
+
+msgid "sem cotação"
+msgstr "未报价"
+
+msgid "sem piso"
+msgstr "无保底"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

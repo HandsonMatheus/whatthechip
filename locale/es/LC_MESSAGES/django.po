@@ -3972,6 +3972,94 @@ msgid_plural "%(n)s sem cotação"
 msgstr[0] "%(n)s sin cotización"
 msgstr[1] "%(n)s sin cotización"
 
+msgid ""
+"Este tipo não tem grade: o preço é uma taxa de contrato. Mudanças passam "
+"pela revisão do WhatTheChip, e o valor atual continua valendo até a "
+"aprovação."
+msgstr ""
+"Este tipo no tiene grilla: el precio es una tasa de contrato. Los cambios "
+"pasan por la revisión de WhatTheChip, y el valor actual sigue vigente hasta "
+"la aprobación."
+
+msgid "Estrutura da tabela"
+msgstr "Estructura de la tabla"
+
+msgid "FAIXA — mínimo e máximo por linha"
+msgstr "RANGO — mínimo y máximo por fila"
+
+msgid "LINEAR ¥/GB — sem grade por densidade"
+msgstr "LINEAL ¥/GB — sin grilla por densidad"
+
+msgid "Linha"
+msgstr "Fila"
+
+msgid "MATRIZ POR MARCA"
+msgstr "MATRIZ POR MARCA"
+
+msgid "PREÇO ÚNICO — independe do part number e da densidade"
+msgstr "PRECIO ÚNICO — independiente del part number y de la densidad"
+
+msgid "Preço por peça, calculado"
+msgstr "Precio por pieza, calculado"
+
+msgid "Preço ¥ por unidade"
+msgstr "Precio ¥ por unidad"
+
+msgid "Preço ¥ — máximo"
+msgstr "Precio ¥ — máximo"
+
+msgid "Preço ¥ — mínimo"
+msgstr "Precio ¥ — mínimo"
+
+msgid ""
+"Sua tabela completa num arquivo só — pronta para enviar aos seus clientes."
+msgstr ""
+"Su tabla completa en un solo archivo — lista para enviar a sus clientes."
+
+msgid "Suas <b>tabelas de preço</b>, %(name)s"
+msgstr "Sus <b>tablas de precio</b>, %(name)s"
+
+msgid "Tabela de <b>%(tipo)s</b>"
+msgstr "Tabla de <b>%(tipo)s</b>"
+
+msgid ""
+"Você cota em <b>¥ (RMB)</b>. A plataforma converte para US$ só para leitura "
+"do vendedor — o dado é sempre o seu ¥. <b>eMCP, uMCP, LPDDR, eMMC e UFS</b> "
+"têm preço único para todas as marcas; o <b>DDR</b> tem preço por marca, e a "
+"coluna «Outras» vale para as marcas sem coluna própria."
+msgstr ""
+"Usted cotiza en <b>¥ (RMB)</b>. La plataforma convierte a US$ solo para "
+"lectura del vendedor — el dato es siempre su ¥. <b>eMCP, uMCP, LPDDR, eMMC y"
+" UFS</b> tienen precio único para todas las marcas; el <b>DDR</b> tiene "
+"precio por marca, y la columna «Otras» vale para las marcas sin columna "
+"propia."
+
+msgid ""
+"Você cota em ¥ (RMB). Preencha o que quiser mudar e envie no fim da página —"
+" só as linhas alteradas viram pedido de revisão."
+msgstr ""
+"Usted cotiza en ¥ (RMB). Complete lo que quiera cambiar y envíe al final de "
+"la página — solo las filas alteradas se vuelven pedido de revisión."
+
+msgid "em revisão"
+msgstr "en revisión"
+
+msgid ""
+"número = preço em <b>¥ (RMB)</b> · <b>x</b> = não compro · vazio = sem "
+"cotação · <b>—</b> = não fabricado. Só as linhas alteradas são enviadas."
+msgstr ""
+"número = precio en <b>¥ (RMB)</b> · <b>x</b> = no compro · vacío = sin "
+"cotización · <b>—</b> = no fabricado. Solo se envían las filas alteradas."
+
+msgid "o mínimo por peça decidiu esta linha"
+msgstr "el mínimo por pieza decidió esta fila"
+
+msgid "sem cotação"
+msgstr "sin cotización"
+
+msgid "sem piso"
+msgstr "sin piso"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

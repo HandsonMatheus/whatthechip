@@ -1072,7 +1072,10 @@ class PartnerDashboardTests(TestCase):
         resp = self.client.get('/partner/precos/')
         self.assertContains(resp, 'Wuquan P6')
         self.assertContains(resp, 'Chips sem cotação')
-        self.assertContains(resp, 'Bem-vindo')
+        # ⚠ ATUALIZADO na Etapa 9: o Resumo trocou "Bem-vindo, X" por "Suas
+        # TABELAS DE PREÇO, X" — o título diz onde ele está, não olá. A REGRA
+        # deste teste é o gate, e ela não mudou: o parceiro ENTRA.
+        self.assertContains(resp, 'tabelas de preço')
 
     def test_como_funciona(self):
         # F6.2: guia curto do comprador — acessível só ao parceiro, com FAQ.
@@ -2132,10 +2135,14 @@ class PartnerKindNavTests(TestCase):
         # sidebar: um link por TIPO (não mais por marca)
         for kind in ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr'):
             self.assertContains(resp, f'/partner/tipo/{kind}/')
-        # home: resumo por tipo com o rótulo do modelo de compra
+        # home: resumo por tipo com o rótulo do modelo de compra.
+        # ⚠ ATUALIZADO na Etapa 9: os rótulos passaram a nomear a ESTRUTURA da
+        # tabela (o vocabulário da spec §3.2) em vez de um selo colorido —
+        # "unificado" virou "unificada — uma coluna de preço".
         self.assertContains(resp, 'Tipo de chip')
-        self.assertContains(resp, 'unificado')
-        self.assertContains(resp, 'por marca')
+        self.assertContains(resp, 'Estrutura da tabela')
+        self.assertContains(resp, 'unificada — uma coluna de preço')
+        self.assertContains(resp, 'por marca — matriz')
         # badge de pendências do DDR (1 sem cotação na genérica). A classe é a
         # do design system v2 (`.ptype__b`) desde 2026-08-19 — o trilho de tipos
         # do parceiro deixou de ter CSS de mão.
@@ -2174,7 +2181,7 @@ class PartnerKindNavTests(TestCase):
         self.assertContains(resp, '/partner/tipo/ddr/enviar/')
         self.assertContains(resp, 'Enviar para revisão')
         # v2 (dono 2026-07-27): DDR agrupa por GERAÇÃO em linha de seção…
-        self.assertContains(resp, 'class="ptn-matrix__gen"')
+        self.assertContains(resp, 'class="g"')      # v2: agrupamento por geração
         self.assertContains(resp, 'DDR3')
         # …célula SEM seletor de estado e SEM botão de seta — um campo só
         # (o único <select> da página é o de idioma, no header do base)
@@ -2896,7 +2903,7 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
         self._ddr('C1')
         html = self.client.get('/partner/precos/').content.decode()
         self.assertIn('travando 1 pedido', html)
-        self.assertIn('ptn-tag ptn-tag--block', html)
+        self.assertIn('tag--no', html)           # v2: o selo vermelho do pacote
 
     # ── 3ª parada: a barra de tipos e o topo da grade ───────────────────────
 
@@ -2922,33 +2929,31 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
             status=STATUS_UNQUOTED)
         self._travar('G1', qty=90)
         html = self.client.get('/partner/tipo/ufs/').content.decode()
-        self.assertIn('class="blkw"', html)
+        self.assertIn('gnote gnote--blk', html)
         self.assertIn('1 pedido está travado', html)
         self.assertIn('90 un. que a plataforma não consegue precificar', html)
         self.assertIn('travando 1 pedido', html)
-        self.assertIn('ptn-tag ptn-tag--block', html)
+        self.assertIn('tag--no', html)           # v2: o selo vermelho do pacote
         self.assertNotIn('Não cotado', html)     # a marca VENCE o selo neutro
 
-    def test_interface_a_matriz_marca_a_LINHA_porque_nao_tem_coluna_estado(self):
+    def test_interface_a_matriz_marca_a_LINHA_na_coluna_de_estado(self):
         """Na matriz por marca cada célula é um campo — não há coluna de
-        estado. A trava é da LINHA: o preço que falta pode estar em qualquer
-        coluna dela.
-
-        Aqui o selo é o NÚMERO com a frase no título — a primeira coluna é
-        `sticky` e `nowrap`, e a frase por extenso empurraria colunas de marca
-        para fora da tela.
+        estado — dizia o teste até a Etapa 8. Com o pacote v2 ela GANHOU a
+        coluna, e a trava passou a caber por extenso lá, como na unificada.
+        A trava é da LINHA: o preço que falta pode estar em qualquer coluna.
         """
         self._ddr('M1', qty=60)
         html = self.client.get('/partner/tipo/ddr/').content.decode()
-        self.assertIn('class="blkw"', html)
+        self.assertIn('gnote gnote--blk', html)
         self.assertIn('60 un. que a plataforma não consegue precificar', html)
-        self.assertIn('title="travando 1 pedido"', html)
-        # a marca fica no CABEÇALHO da linha DDR4, antes das células dela
-        corpo = html[html.rindex('ptn-matrix__gen'):]
-        i = corpo.index('ptn-tag ptn-tag--block')
-        self.assertLess(i, corpo.index('name="p'))
-        # …e o que se lê na célula é o NÚMERO, não a frase
-        self.assertIn('>1</span>', corpo[i:i + 220])
+        # ⚠ ATUALIZADO na Etapa 9: com o pacote v2 a matriz GANHOU coluna de
+        # Status, igual à unificada — era ela que faltava, e por isso o selo
+        # tinha virado um número solto no rótulo. Agora a frase cabe.
+        self.assertIn('travando 1 pedido', html)
+        corpo = html[html.rindex('class="g"'):]
+        i = corpo.index('travando 1 pedido')
+        self.assertLess(i, corpo.index('name="p'))     # Status antes das células
+        self.assertIn('tag--no', corpo[:i])
 
     def test_interface_grade_sem_trava_nao_ganha_aviso_nenhum(self):
         Price.all_companies.create(
@@ -2956,7 +2961,7 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
             tier_value=Decimal('256'), tier_unit='GB',
             status=STATUS_UNQUOTED)
         html = self.client.get('/partner/tipo/ufs/').content.decode()
-        self.assertNotIn('class="blkw"', html)
+        self.assertNotIn('gnote gnote--blk', html)
         self.assertNotIn('travando', html)
         self.assertIn('Não cotado', html)        # o selo neutro, intacto
 
@@ -2972,7 +2977,7 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
         """
         self._travar('T1', qty=25)               # UFS 256GB, sem linha no grid
         html = self.client.get('/partner/tipo/ufs/').content.decode()
-        self.assertIn('class="blkw"', html)
+        self.assertIn('gnote gnote--blk', html)
         self.assertIn('UFS 256GB', html)
         self.assertNotIn('ptn-tag ptn-tag--block', html)
 
@@ -3212,7 +3217,7 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         # e NENHUMA grade por densidade inventada "para ficar consistente".
         # ⚠ A classe se crava COMO É SERVIDA: `ptn-matrix__gen` sozinho está
         # no CSS embutido do `partner_base`, e o assertNotIn nunca passaria.
-        self.assertNotIn('class="ptn-matrix__gen"', html)
+        self.assertNotIn('<tr class="g">', html)
 
     def test_interface_o_SSD_tem_taxa_piso_e_capacidades_derivadas(self):
         self._taxa(ssd=Decimal('0.100'), piso=Decimal('18'))
@@ -3237,8 +3242,9 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         html = self.client.get('/partner/tipo/ssd/').content.decode()
         corpo = html[html.index('wtc-calc'):]
         self.assertNotIn('<input', corpo[:corpo.index('</table>')])
-        # dois campos na página inteira, e são a taxa e o piso
-        self.assertEqual(html.count('class="ptn-cell__in"'), 2)
+        # dois campos na página inteira, e são a taxa e o piso.
+        # ⚠ prefixo, não igualdade: a célula PREENCHIDA leva `cell has`.
+        self.assertEqual(html.count('class="cell'), 2)
 
     def test_interface_o_piso_marca_so_a_capacidade_que_ele_decidiu(self):
         self._taxa(ssd=Decimal('0.100'), piso=Decimal('18'))
@@ -3246,10 +3252,10 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         # a linha do 128 leva a marca; a do 512, não
         linha128 = html[html.index('>128 GB<'):]
         linha128 = linha128[:linha128.index('</tr>')]
-        self.assertIn('ptn-tag ptn-tag--pending', linha128)
+        self.assertIn('calc--floor', linha128)
         linha512 = html[html.index('>512 GB<'):]
         linha512 = linha512[:linha512.index('</tr>')]
-        self.assertNotIn('ptn-tag ptn-tag--pending', linha512)
+        self.assertNotIn('calc--floor', linha512)
 
     def test_interface_sem_taxa_a_tela_diz_que_nao_ha_e_a_barra_conta(self):
         """Zero na barra seria dizer 'tabela completa' a quem não tem preço
@@ -3257,7 +3263,7 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         self._taxa()
         html = self.client.get('/partner/tipo/ssd/').content.decode()
         self.assertIn('Não cotado', html)
-        self.assertIn('class="ptn-cell ptn-cell--unquoted"', html)
+        self.assertIn('class="cell"', html)      # sem `.has` = sem valor
         # o selo âmbar da barra conta os dois tipos sem taxa
         resumo = self.client.get('/partner/precos/').content.decode()
         item = resumo[resumo.index('href="/partner/tipo/ssd/"'):]
@@ -3289,7 +3295,7 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         self.assertEqual(pedido.requested_by, self.parceiro)
         # …e a tela avisa que há pedido em pé
         html = self.client.get('/partner/tipo/k9/').content.decode()
-        self.assertIn('Em revisão', html)
+        self.assertIn('continua valendo até o WhatTheChip aprovar', html)
         self.assertIn('value="7"', html)          # o vigente, não o pedido
 
     def test_script_aprovar_aplica_no_comprador_e_fecha_a_revisao(self):
@@ -3449,7 +3455,7 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         self.assertIn('href="/partner/tipo/ssd/"', faixa)    # AGORA linka
         # …e a tela do SSD avisa em cima do campo que resolve
         html = self.client.get('/partner/tipo/ssd/').content.decode()
-        self.assertIn('class="blkw"', html)
+        self.assertIn('gnote gnote--blk', html)
         self.assertIn('30 un. que a plataforma não consegue precificar', html)
         self.assertIn('name="rate"', html)
 
