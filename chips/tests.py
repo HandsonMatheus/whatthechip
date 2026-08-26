@@ -1770,6 +1770,24 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
                         "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
     "TY5701111183KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
                         "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    # TY90 (2026-08-24, família NOVA — eMCP Toshiba ~2012-2013, estrutura própria/RA-RC, RAM LPDDR1
+    # fixo como as irmãs TY8A0A): magra igual ao grupo acima, mesmo mecanismo (TY_EMCP_GEN vazio).
+    # PN da bancada TY90HH131647RA e o anchor TY90GH131451RC (Tier-1 IHS/iSuppli teardown) — ambos
+    # NÃO RENTÁVEL só por geração na gramática pura; capacidade real (8GB/16GB) vem do known_part.
+    "TY90GH131451RC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TY90HH131647RA": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # PN da bancada
+    # TYE0 (2026-08-24, família NOVA — mesma FORMA do TY90 (TY+2chars+"0"+letra+H+dígitos+RA/RC,
+    # pn_length=14) mas chave "E0", produto DIFERENTE: pacote BGA-221 (igual TYD), RAM citada em Gb
+    # não Mb (Tier-3 única, rlitl.com) — geração NÃO confirmada, subtype fica vazio de propósito.
+    # Veredito esperado por PESQUISA (não copiado do classify() de hoje): NAND=16GB confirmado
+    # (distributor), RAM sem fonte → engine sai "RAM não mapeada" → assess_profitability não
+    # completa o guard eMCP (ram_gb=None) → INDETERMINADO. Mesmo padrão já estabelecido pela
+    # família TYD (ver TYD0FH221627RA acima, também INDETERMINADO pelo mesmo motivo: geração de
+    # RAM desconhecida). Se o engine discordar deste valor, o vermelho é a informação, não o teste.
+    "TYE0HH231659RA": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "RAM não mapeada — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # PN da bancada
     "THGBMFG7C2LBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # THGBMFG desativada → THGBM decodifica (F=5.0, 7C2=16GB)
     "THGBMHG8C4LBAIR": ("eMMC", "32GB", "", "", "", "RENTÁVEL"),   # THGBMHG desativada → THGBM decodifica (H=5.1, 8C4=32GB)
     "THGAF8G8T23BAIL": ("UFS",  "32GB", "", "", "", "RENTÁVEL"),  # Kioxia THGAF — decode_cap_map 2026-07-08: pn[6:8]="G8"=32GB (Kioxia Highlight Q1/2021)
