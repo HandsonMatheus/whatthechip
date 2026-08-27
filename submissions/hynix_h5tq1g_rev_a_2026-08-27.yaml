@@ -1,0 +1,115 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3 standard-voltage standalone,
+# JÁ MAPEADA). Gerado a partir da investigação do PN H5TQ1G83AFP (busca na bancada,
+# 2026-08-27). Mesmo padrão "die-revision-letter" já visto várias vezes nesta família
+# (H5TC/H5TQ, rodadas 07-13/07-15/08-20/08-26): dentro da MESMA densidade, um sufixo
+# diferente é uma REVISÃO/DOCUMENTO distinto; pn[6:8] ("83"/"63"/"43") é a LARGURA de
+# barramento (x8/x16/x4), não muda a densidade total. A gramática já decodifica certo
+# (pn[4:6]="1G"→dram_density="1Gb = 128MB por die [✓]", grammar_complete=true no debug)
+# — é known_parts-only (Trilha B), sem fix de gramática. Objetivo é o BANCO, não a
+# gramática já decodificar certo (correção do dono, 2026-08-24 —
+# ver [[wtc-objetivo-banco-nao-gramatica]]).
+#
+# ⚠ AMBIGUIDADE P×R INVESTIGADA E DESCARTADA (não é erro de leitura): a princípio,
+# "AFP" (bancada) vs "AFR" (sufixo fixo em TODA a família até aqui, ex.:
+# H5TQ2G83DFR/AFR/BFR/CFR/FFR já submetidos) parece candidato a confusão visual P/R —
+# mas AMBOS existem como listagens DISTINTAS e INDEPENDENTES em catálogos de
+# distribuidor diferentes (não é 1 fonte dominante + 1 variante rara, como no caso
+# H8BE/H8BC): H5TQ1G83AFP tem página PRÓPRIA no censtry.com; H5TQ1G83AFR aparece em
+# listagem eBay de peça física (título repete a string 2×) + AB Sunshine. Ou seja, são
+# dois PNs reais e distintos — mesmo padrão já visto no corpo do datasheet oficial do
+# H5TQ2G83DFR (lido na íntegra nesta sessão): a MESMA base de PN легitimamente tem
+# várias variantes de sufixo/grade coexistindo (ali eram C/I/J/L; aqui é P vs R, mais
+# um code de grade/pacote). Não tratei como duplicata — submeto os dois.
+#
+# COBERTURA DE CLUSTER (pedido do dono, 2026-08-26/27: "pesquise mais... tem que
+# pesquisar o maximo possivel, nao so 1"): busquei sistematicamente as 3 larguras
+# (x8/x16/x4) da revisão "A" em 1Gb. ANTES de pesquisar, CHEQUEI submissions/*.yaml já
+# commitadas (grep) — nenhuma das 3 abaixo tinha sido submetida ainda.
+#   NOVOS nesta rodada: H5TQ1G83AFP (ALVO, x8), H5TQ1G83AFR (x8, sufixo irmão),
+#   H5TQ1G63AFR (x16).
+#   TENTADO e NÃO achado (excluir, não adivinhar): H5TQ1G43AFR (par x4 da revisão A) —
+#   a única menção foi uma INFERÊNCIA por analogia de um resumo de busca ("seria um
+#   x4"), sem nenhuma listagem/fonte própria — não incluído.
+#   FONTE DESCARTADA por baixa confiança: prodisknetwork.com listava H5TQ1G83AFP-G7C-C,
+#   mas a página tem todas as marcas de conteúdo gerado em massa (texto genérico
+#   reaproveitado tipo "workload fit: Hadoop/Spark cluster compute" pra um chip DDR3 de
+#   1Gb de ~2012, "reviews" de cliente idênticas às do censtry.com) — não usei como
+#   fonte, só o censtry.com (página estruturada e específica, sem esse padrão).
+#
+# ARITMÉTICA (1Gb÷8=128MB, confirmada em toda fonte da leva, bate com o decode ATUAL da
+# gramática): x8: 128M×8=1024Mbit=1Gb. x16: 64M×16=1024Mbit=1Gb (mesma densidade total,
+# largura diferente — H5TQ1G63AFR "1Gbit 64MX16" confere exato).
+#
+# FONTES:
+#   H5TQ1G83AFP (ALVO): censtry.com — página PRÓPRIA e dedicada ("H5TQ1G83AFP-H9C",
+#     "DDR3 128Mx8 PC1333 CL9", Manufacturer=Hynix, package BGA), com "Related Products"
+#     citando irmãos REAIS já confirmados nesta sessão (H5TQ4G83EFR-RDC,
+#     H5TQ2G83DFR-PBC, H5TQ1G83BFR-H9C) — corrobora que o catálogo da página é genuíno,
+#     não gerado. confidence=manual.
+#   H5TQ1G83AFR: eBay — anúncio de peça física ("1 Piece New HYNIX H5TQ1G83AFRG7C
+#     H5TQ1G83AFR-G7C BGA78 IC Chip", string repetida 2×) + AB Sunshine (listagem
+#     própria, ainda que formatada em conjunto com BFR-H9C-C). 128Mx8, mesma família/
+#     densidade/largura do alvo, revisão "A" — só o sufixo P×R difere (ver nota acima).
+#     confidence=manual.
+#   H5TQ1G63AFR: datasheets.com ("SK hynix Inc | H5TQ1G63AFR-G7C — DRAM chip DDR3 SDRAM
+#     1Gbit 64MX16, 96-pin FBGA") + AB Sunshine (H5TQ1G63AFR-PBC, listagem própria).
+#     Par x16 da revisão A. confidence=manual.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq1g_rev_a_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq1g_rev_a_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ1G83AFP"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.censtry.com/product/hynix/h5tq1g83afp-h9c.html"
+    notes: >
+      PN ALVO da bancada (2026-08-27). Censtry.com: página PRÓPRIA e dedicada
+      ("H5TQ1G83AFP-H9C", descrição estruturada "DDR3 128Mx8 PC1333 CL9",
+      Manufacturer=Hynix, package BGA). 128M×8=1024Mbit=1Gb÷8=128MB — bate exato com o
+      decode atual da gramática (debug já mostrava "1Gb = 128MB por die [✓]"). Página
+      lista "Related Products" com irmãos REAIS já known_parts desta sessão
+      (H5TQ4G83EFR-RDC, H5TQ2G83DFR-PBC, H5TQ1G83BFR-H9C) — corrobora catálogo genuíno.
+      ⚠ Investiguei possível confusão visual P/R com o sufixo padrão "FR" da família —
+      descartada: H5TQ1G83AFR também existe como PN distinto e independente (ver
+      abaixo), não é a mesma peça grafada diferente. confidence=manual (fonte
+      estruturada de distribuidor, mesmo rigor já usado nesta família a sessão toda).
+
+  - part_number: "H5TQ1G83AFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.ebay.com/itm/1-Piece-New-HYNIX-H5TQ1G83AFRG7C-H5TQ1GB3AFR-G7C-H5TQ1G83AFR-G7C-BGA-Flash-IC-/271363005538"
+    notes: >
+      Irmão de sufixo do alvo (cluster, 2026-08-27) — mesma família/densidade/largura
+      (H5TQ, 1Gb, x8), revisão "A", só o sufixo final difere (R em vez de P). Confirmado
+      como PN real e distinto (não erro de leitura do alvo) em 2 fontes independentes:
+      anúncio eBay de peça física ("H5TQ1G83AFR-G7C BGA78 IC Chip", string repetida 2×
+      no título) e AB Sunshine (listagem própria, "H5TQ1G83AFP/BFR-H9C-C" — formatação
+      um pouco ambígua, mas corrobora a existência da peça). 128M×8=1024Mbit=1Gb÷8=128MB.
+      confidence=manual.
+
+  - part_number: "H5TQ1G63AFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.datasheets.com/part-details/h5tq1g63afr-g7c-sk-hynix-inc-44351789"
+    notes: >
+      Par x16 da revisão A (cluster, 2026-08-27) — datasheets.com: "SK hynix Inc |
+      H5TQ1G63AFR-G7C", descrição estruturada "DRAM chip DDR3 SDRAM com 1Gbit 64MX16,
+      pacote FBGA 96-pin". Corroborado por AB Sunshine (H5TQ1G63AFR-PBC, listagem
+      própria). 64M×16=1024Mbit=1Gb÷8=128MB — mesma densidade total do par x8, largura
+      diferente (padrão já confirmado no datasheet oficial do H5TQ2G83DFR lido nesta
+      sessão). confidence=manual.
