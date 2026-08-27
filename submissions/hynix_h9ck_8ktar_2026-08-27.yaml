@@ -1,0 +1,66 @@
+# Submissão de known_parts — SK Hynix, família H9CK (LPDDR3 standalone, x64, JÁ MAPEADA e
+# já com vários known_parts). Gerado a partir da investigação do PN H9CKNNN8KTAR (busca na
+# bancada, 2026-08-27). Código de densidade pn[7]='8'=1GB já está no mapa compartilhado
+# HYX_LPDDR3_CAP — grammar_complete=true, capacity="1GB" no debug. Objetivo é o BANCO
+# (correção do dono, 2026-08-24 — ver [[wtc-objetivo-banco-nao-gramatica]]).
+#
+# ⚠ EVIDÊNCIA FRACA — SINALIZADO, NÃO BLOQUEADO (leia antes de aprovar): ao contrário de
+# TODAS as outras submissões desta sessão (que tiveram 2+ fontes independentes ou um
+# datasheet/databook oficial), H9CKNNN8KTAR só apareceu numa ÚNICA fonte em toda a
+# pesquisa: Sierra IC, order-code completo "H9CKNNN8KTARWR-NTH" (200 unidades
+# "Available"). E essa fonte NÃO atribui fabricante "Hynix"/"SKHYNIX" explicitamente —
+# lista o campo Manufacturer como "Original Equipment Manufacturer" (tag genérica que a
+# Sierra IC usa quando não tem o fabricante real catalogado, não uma contradição de marca
+# como os casos "SAMSUNG" já vistos e descartados noutras rodadas). DigiPart (que agrega
+# 100+ distribuidores e achou tudo nas rodadas H9CC/H5TQ4G desta MESMA sessão) devolveu
+# "no result was found" pra esta string exata. Jotrin/HKInventory não retornaram nada.
+#
+# POR QUE SUBMETO MESMO ASSIM: o prefixo "H9CK" é proprietário da Hynix por CONSTRUÇÃO (é
+# a nomenclatura "H-number" que só a Hynix usa — nenhum outro fabricante nomeia peças
+# assim), então não há de fato uma marca CONCORRENTE sendo alegada (diferente do caso
+# "SAMSUNG" já visto, que era uma contradição real). É a leitura física exata da bancada,
+# com 1 listagem real e comprável batendo a string exata (mesmo princípio já usado pro
+# caso H8BES0UU0MCR: leitura física é a fonte mais forte quando o resto é fraco/ausente,
+# não quando CONTRADIZ). O irmão MUITO próximo H9CKNNN8KTMR (só a posição 10 difere: M em
+# vez de A) já é known_part aprovado nesta família (hynix_h9ck_rodada2_2026-07-13.yaml,
+# como H9CKNNN8KTMRLR) com evidência forte (Sierra IC explicitamente "Hynix
+# Semiconductor"/"Apple", 100k+ unidades) — o padrão de letra variando na posição 10 sem
+# mudar densidade já está bem estabelecido nesta família (M/A/R vistos em outras
+# rodadas). Fica confidence=manual, mas SINALIZADO aqui pro dono revisar com atenção
+# extra na fila de aprovação — não é o mesmo nível de certeza dos outros PNs de hoje.
+#
+# CLUSTER: os 2 fuzzy_suggestions do debug (H9CKNNNBKTAT, H9CKNNNBKTMR) já são known_parts
+# de rodada anterior (hynix_h9ck_bjtap_2026-07-13.yaml) — nada novo pra pesquisar aí.
+# Busquei extensivamente por variantes/irmãos do PRÓPRIO H9CKNNN8KTAR (formas com/sem
+# sufixo, cross-reference Sierra IC/Kynix/Alibaba/imall) e não achei mais nenhum — só o
+# único order-code acima. Cluster genuinamente esgotado nesta rodada, não é preguiça de
+# busca.
+#
+# ARITMÉTICA: pn[7]='8'=1GB (mesmo código já confirmado 2× nesta família — ver
+# H9CKNNN8GTMP/H9CKNNN8KTMRLR, hynix_h9ck_rodada2_2026-07-13.yaml).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9ck_8ktar_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9ck_8ktar_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9CKNNN8KTAR"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.sierraic.com/H9CKNNN8KTARWRNTH"
+    notes: >
+      PN da bancada (2026-08-27), forma bare. ⚠ EVIDÊNCIA FRACA (ver cabeçalho do
+      arquivo): única fonte encontrada em toda a pesquisa foi Sierra IC, order-code
+      completo "H9CKNNN8KTARWR-NTH" (200 unidades disponíveis) — manufacturer listado
+      como tag genérica "Original Equipment Manufacturer", não "Hynix" explícito.
+      DigiPart (que agregou com sucesso 100+ distribuidores nas outras rodadas de hoje)
+      não achou nada pra esta string. Sem contradição de marca (diferente do padrão
+      "SAMSUNG" já visto e descartado noutras rodadas) — só ausência de corroboração.
+      Código de densidade pn[7]='8'=1GB já confirmado 2× nesta família noutras
+      submissões. Irmão muito próximo H9CKNNN8KTMR (só posição 10 diferente: M em vez
+      de A) já é known_part forte e aprovado. Recomendo revisão extra na fila de
+      aprovação dado o nível de evidência mais fraco que o normal desta sessão.
+      confidence=manual.
