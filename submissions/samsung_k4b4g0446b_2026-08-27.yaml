@@ -1,0 +1,73 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
+# PN alvo (debug 2026-08-27): K4B4G0446B — grammar já decodifica certo hoje
+# (pn[3:5]='4G' via DRAM_PC global → 4Gb=512MB, pn[5:7]='04'→x4,
+# grammar_complete=true, profitable=RENTÁVEL), mas o PN exato não estava
+# confirmado no banco (known_exact=false, pn_not_in_db=true no debug). Já tinha
+# aparecido como "Similar Part No." em samsung_k4b_x4_2026-08-20.yaml (datasheet
+# do K4B4G0446D), mas nunca registrado como known_part próprio.
+#
+# K4B4G0446B (alvo, base): "DDP 4Gb B-die DDR3 SDRAM Specification" — datasheet
+# oficial Samsung dedicado, TRIPLA corroboração de mirror no próprio AllDatasheet
+# (alldatasheet #411809, 59P, Direct Link samsung.com/Products/Semiconductor;
+# + #347891, 23P; + #1975715, 32P Dec.2012 — 3 documentos indexados pro mesmo PN
+# base). Texto do "Key Features": "Package : 78 balls FBGA - x4/x8" — confirma
+# organização x4 (mesma construção DDP dual-die do irmão x8 já confirmado nesta
+# sessão, K4B4G0846B — datasheet Ciiva mostra os dois PNs no MESMO documento
+# "DDP 4Gb DDR3 SDRAM K4B4G0446B K4B4G0846B", Rev.1.0 Mar.2009: x4 e x8 são a
+# MESMA construção física, só o pinout/organização mudam). B = DDR3 1.5V (MC/HC
+# na convenção de tensão da família). 4Gbit÷8=512MB/die — mesma aritmética já
+# padronizada nesta família (`capacity` em MB).
+#
+# Sufixos: K4B4G0446B-MCF8 tem datasheet dedicado próprio (#411812, mesmas 59
+# páginas/Direct Link do PN base — mesmo padrão de numeração sequencial "41xxxx"
+# já visto nos outros D/B-die desta família). MC=DDR3 1.5V (convenção de tensão
+# em densidades maiores, mesmo padrão já confirmado em K4B8G0446D-MCH9). Par de
+# tensão DDR3L: K4B4G0446B-HYK0 (Octopart, página dedicada com specs) e
+# K4B4G0446B-HYH9 (Datasheet.Directory, PDF indexado) — HY=DDR3L 1.35V, mesmo
+# padrão de par de tensão já visto em toda a família.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B4G0446B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411809/SAMSUNG/K4B4G0446B.html"
+    notes: >
+      PN alvo (debug 2026-08-27), base sem sufixo. Datasheet oficial Samsung
+      dedicado (alldatasheet mirror #411809, 59 páginas, "DDP 4Gb B-die DDR3
+      SDRAM Specification", Direct Link samsung.com/Products/Semiconductor) —
+      corroborado por MAIS 2 mirrors do mesmo PN base no próprio AllDatasheet
+      (#347891 23P, #1975715 32P Dec.2012). "Key Features": "Package : 78 balls
+      FBGA - x4/x8" confirma organização x4. Construção DDP (dual-die),
+      mesma família de documento do irmão x8 K4B4G0846B já confirmado
+      (Ciiva: doc conjunto "K4B4G0446B K4B4G0846B" Rev.1.0 Mar.2009).
+      4Gbit÷8=512MB/die.
+
+  - part_number: "K4B4G0446B-MCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411812/SAMSUNG/K4B4G0446B-MCF8.html"
+    notes: "Sufixo com datasheet dedicado próprio (#411812, mesmas 59P/Direct Link do PN base — ver notes lá). MC=DDR3 1.5V."
+
+  - part_number: "K4B4G0446B-HYK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/k4b4g0446b-hyk0-samsung-30947690"
+    notes: "Sufixo DDR3L do K4B4G0446B (ver notes do PN base). HY=DDR3L 1.35V, mesmo padrão de par de tensão da família. Octopart, página dedicada."
+
+  - part_number: "K4B4G0446B-HYH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "http://datasheet.iiic.cc/samsung/K4B4G0446B-HYH9.pdf"
+    notes: "2ª variante de pacote do par HY=DDR3L 1.35V (ver notes do PN base). Datasheet.Directory, PDF indexado."
