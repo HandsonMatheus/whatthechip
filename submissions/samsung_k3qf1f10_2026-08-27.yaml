@@ -1,0 +1,113 @@
+# Submissão de known_parts — Samsung, família K3QF (LPDDR3 alta-densidade),
+# chave de capacidade '1' (pn[4]='1' = 1GB / 8Gb). PRIMEIRA cobertura desta
+# chave: seed_known_parts.json tinha K3QF confirmado só pras chaves 2/3/4/5/7
+# (2GB/2GB-rev/4GB/1.5GB/3GB) — a chave '1' (1GB) nunca teve known_part,
+# apesar do tip da família já documentar ela extensamente.
+#
+# PN alvo (debug 2026-08-27): K3QF1F10DM (bancada digitou sem sufixo).
+#
+# ⚠ ACHADO IMPORTANTE — confusão Gb/GB em múltiplos distribuidores: vários
+# sites (absunshine, prodisknetwork) rotulam K3QF1F10DM-AGCE como "8GB".
+# Isso é o erro clássico de confundir densidade em Gb (gigabit) com
+# capacidade em GB (gigabyte) — o documento oficial de validação da INTEL
+# (lpddr3-1866-memory-down-validation-results.pdf, fonte Tier-1 de terceira
+# parte, não Samsung mas tecnicamente rigorosa) descreve o irmão exato
+# "K3QF1F10EM-AGCF" como "8Gb, 4Gb die, DDP, x64" — ou seja, 8Gb TOTAL
+# (2×4Gb dies em DDP) = 1GB em bytes. Confirma exatamente o que o tip da
+# família já dizia (pn[4]='1'=1GB). Reforçado por listagens Alibaba limpas
+# e estruturadas (não prosa de marketing) pro mesmo PN base com outros
+# sufixos: "K3QF1F10DM-BGCE LPDDR3 1GB 1600Mbps 216FBGA" e
+# "K3QF1F10DM-BGCF LPDDR3 1GB 1866Mbps 216FBGA" — ambas dizem 1GB
+# explicitamente. Suffix não muda capacidade (mesma lógica já estabelecida
+# nesta família, ver submissions anteriores K3QF/KMD).
+#
+# ⚠ REPORTAR AO DONO: o debug mostrou profitable=RENTÁVEL pra este PN
+# NÃO confirmado (pn_not_in_db=true), mas o tip da família diz "1GB
+# (K3QF1...): sem liquidez B2B atual. Destino: resíduo" — deveria ser NÃO
+# RENTÁVEL. Validado em sandbox: o mesmo resultado persiste mesmo DEPOIS
+# de confirmar via known_part. Parece o mesmo padrão de limiar/threshold já
+# visto no K4B1G1646E nesta sessão (chave de capacidade pequena cruzando um
+# limiar genérico de "LPDDR3 mínimo" sem respeitar a exceção específica
+# desta família/capacidade). Não investigado/corrigido — fora do escopo do
+# chat de marca.
+brand: "Samsung"
+known_parts:
+  - part_number: "K3QF1F10DM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.alibaba.com/product-detail/K3QF1F10DM-BGCE-LPDDR3-1GB-1600Mbps-216FBGA_1601614804241.html"
+    notes: >
+      PN alvo, forma BARE (sem sufixo) — igual a bancada leu. Chave de
+      capacidade pn[4]='1' = 1GB (8Gb), conforme o tip da própria família
+      e confirmado cruzado: listagens Alibaba estruturadas do mesmo PN base
+      (sufixos -BGCE/-BGCF) dizem "1GB" explicitamente; documento de
+      validação oficial da Intel descreve o irmão K3QF1F10EM-AGCF como
+      "8Gb, 4Gb die, DDP, x64" (8Gb=1GB). Distribuidores que dizem "8GB"
+      (absunshine, prodisknetwork) cometem o erro clássico de confundir
+      Gb com GB — não confiável, contradiz fonte técnica (Intel) e a
+      convenção já documentada no tip da família.
+
+  - part_number: "K3QF1F10DM-AGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/K3QF1F10DM-AGCE"
+    notes: >
+      Sufixo mais citado em distribuidores pro PN alvo (Octopart, ariat-tech,
+      absunshine, prodisknetwork — 6 distribuidores no Octopart). Mesma
+      capacidade do PN bare acima (1GB/8Gb) — ver notes lá pra fonte
+      completa e a correção do erro Gb/GB.
+
+  - part_number: "K3QF1F10DM-BGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.alibaba.com/product-detail/K3QF1F10DM-BGCE-LPDDR3-1GB-1600Mbps-216FBGA_1601614804241.html"
+    notes: >
+      Sufixo diferente (-BGCE), mesma base do alvo. Listagem estruturada
+      (não prosa) diz "LPDDR3 1GB 1600Mbps 216FBGA" — confirmação direta
+      da capacidade em GB, não Gb.
+
+  - part_number: "K3QF1F10DM-BGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.alibaba.com/product-detail/K3QF1F10DM-BGCF-LPDDR3-1GB-1866Mbps-216FBGA_1601614834050.html"
+    notes: >
+      Mesmo PN acima, variante de velocidade 1866Mbps (vs 1600Mbps).
+      Listagem estruturada Alibaba: "LPDDR3 1GB 1866Mbps 216FBGA".
+
+  - part_number: "K3QF1F10EM-AGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.ariat-tech.com/datasheets/5018706054/K3QF1F10EM-AGCE.pdf"
+    notes: >
+      Sibling die-rev "E" (vs "D" do alvo), mesma chave de capacidade '1'.
+      Distribuidor real com estoque (ariat-tech, 8960pcs). Mesma família
+      de sufixo -AGCE do alvo.
+
+  - part_number: "K3QF1F10EM-AGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.intel.cn/content/dam/www/public/us/en/documents/platform-memory/lpddr3-1866-memory-down-validation-results.pdf"
+    notes: >
+      MELHOR fonte desta rodada: documento OFICIAL de validação de memória
+      da Intel (terceiro-parte tecnicamente rigoroso, não Samsung mas
+      confiável) descreve este PN exato como "8Gb, 4Gb die, DDP, x64,
+      Rev E, date code 1435" — confirma 8Gb=1GB de forma inequívoca,
+      resolvendo a confusão Gb/GB dos distribuidores.
