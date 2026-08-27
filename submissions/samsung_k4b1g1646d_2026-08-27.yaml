@@ -1,0 +1,69 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
+# PN alvo (debug 2026-08-27): K4B1G1646D — grammar já decodifica certo hoje
+# (pn[3:5]='1G' via DRAM_PC global → 1Gb=128MB, pn[5:7]='16'→x16,
+# profitable=RENTÁVEL na gramática mas tip da própria família recomenda resíduo
+# pra esta densidade — ver notes do PN base), mas o PN exato não estava
+# confirmado no banco (known_exact=false, pn_not_in_db=true no debug).
+#
+# ⚠ CORREÇÃO de nota antiga: o rodapé de submissions/samsung_k4b2g0846d_2026-08-24.yaml
+# (rodada 4) dizia "célula 1G×x16 tem cobertura completa: C, D (seed), E, G" —
+# mas checagem direta no seed_known_parts.json (grep) mostra ZERO ocorrência de
+# "K4B1G1646D". Parece confusão com K4B8G1646D (8Gb, célula DIFERENTE), que esse
+# sim está no seed. A célula 1G×x16 nunca teve D-die confirmado até este submit.
+#
+# K4B1G1646D (alvo, base): datasheet oficial Samsung dedicado — AllDatasheet mirror
+# #411816 ("K4B1G1646D-HCF8", 60P, "1Gb D-die DDR3 SDRAM Specification", Direct Link
+# samsung.com/Products/Semiconductor — mesmo padrão de documento/numeração "41xxxx"
+# já usado nesta sessão pros irmãos D-die desta família: #411806/411807/411810/
+# 411718). Texto da página confirma organização: "The 1Gb DDR3 SDRAM D-die is
+# organized as a 32Mbit x4 I/Os x8banks, 16Mbit x8 I/Os x8banks or 8Mbit x16 I/Os
+# x8banks device" — x16 é uma das 3 organizações documentadas. HCF8 = HC (DDR3
+# 1.5V, mesmo padrão de tensão do tip). Sufixo irmão K4B1G1646D-HCH9 também
+# indexado com datasheet dedicado próprio (#411817, mesmo estilo/numeração
+# sequencial). Sem par DDR3L (HY) encontrado pra esta densidade+largura+die
+# específica em nenhuma fonte — não invento (excluir, não adivinhar).
+# 1Gbit÷8=128MB/die — mesma aritmética/formato (`capacity` em MB) já padronizado
+# nesta família.
+#
+# CLUSTER — checado o vizinho mais óbvio (mesmo die-gen D, densidade seguinte):
+# K4B2G1646D (2Gb×x16, D-die) NÃO existe — busca exaustiva na listagem completa
+# do AllDatasheet pra "K4B2G1646*" (17 resultados, 1 página, TODOS listados)
+# mostra só die-gens B/C/F/Q nesta célula, nenhum D. Mesmo padrão já visto nesta
+# família (K4B1G1646F confirmadamente ausente, rodada anterior) — die-gen nem
+# sempre existe em toda combinação densidade×largura. Não submetido, não é gap:
+# é ausência real confirmada.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B1G1646D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411816/SAMSUNG/K4B1G1646D-HCF8.html"
+    notes: >
+      PN alvo (debug 2026-08-27), base sem sufixo. Datasheet oficial Samsung
+      dedicado (alldatasheet mirror #411816, 60 páginas, "1Gb D-die DDR3 SDRAM
+      Specification", Direct Link samsung.com/Products/Semiconductor) — texto:
+      "The 1Gb DDR3 SDRAM D-die is organized as a 32Mbit x4 I/Os x8banks,
+      16Mbit x8 I/Os x8banks or 8Mbit x16 I/Os x8banks device". Mesmo
+      documento-família/numeração já usada pros irmãos D-die desta sessão.
+      1Gbit÷8=128MB/die.
+
+  - part_number: "K4B1G1646D-HCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411816/SAMSUNG/K4B1G1646D-HCF8.html"
+    notes: "Forma completa com sufixo (grade/pacote específico), datasheet dedicado próprio (ver notes do PN base). HC=DDR3 1.5V."
+
+  - part_number: "K4B1G1646D-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/411817/SAMSUNG/K4B1G1646D-HCH9.html"
+    notes: "2ª variante de sufixo do K4B1G1646D, datasheet dedicado próprio (#411817, mesma numeração sequencial do HCF8 acima — ver notes do PN base). HC=DDR3 1.5V."
