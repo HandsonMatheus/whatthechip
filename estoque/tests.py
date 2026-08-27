@@ -2956,6 +2956,62 @@ class OrigemRamTests(TestCase):
             with self.assertRaises(ValidationError, msg=f'aceitou {ruim!r}'):
                 Lot.open_for_company(self.company, self.user, origin=ruim)
 
+    def test_abrir_lote_ram_PELA_VIEW(self):
+        """BUG DE PROD 2026-08-27 — o que faltava na entrega de ontem.
+
+        A origem `ram` entrou em `ORIGIN_CHOICES`, em `open_for_company()` e na
+        CheckConstraint. Mas a VIEW tinha a lista dela, escrita na mão
+        (`if origin not in (ORIGIN_PHONE, ORIGIN_PCB)`), e o gerente levava
+        "escolha celular ou PCB" ao abrir o lote novo. O teste da entrega
+        exercitava `open_for_company()` — o MODELO, não a PORTA. Este vai pelo
+        POST, que é o caminho do usuário.
+
+        Trava contra a REGRESSÃO REAL: qualquer origem futura tem que funcionar
+        pela view sem ninguém lembrar de editar uma segunda lista."""
+        from django.urls import reverse
+        from estoque.models import Lot
+        self.client.force_login(self.user)
+        for origem, _rot in Lot.ORIGIN_CHOICES:
+            r = self.client.post(reverse('estoque:lot_create'),
+                                 {'origin': origem, 'description': f'lote {origem}'})
+            self.assertEqual(r.status_code, 302)
+            lote = Lot.all_companies.order_by('-pk').first()
+            self.assertEqual(lote.origin, origem,
+                             f"a view recusou a origem {origem!r} que o modelo aceita")
+
+    def test_view_continua_recusando_origem_invalida(self):
+        """Ler do modelo não pode virar 'aceita qualquer coisa'."""
+        from django.urls import reverse
+        from estoque.models import Lot
+        self.client.force_login(self.user)
+        antes = Lot.all_companies.count()
+        for ruim in ('', 'RAM', 'memoria', 'ddr'):
+            r = self.client.post(reverse('estoque:lot_create'),
+                                 {'origin': ruim, 'description': 'x'})
+            self.assertEqual(r.status_code, 302)
+        self.assertEqual(Lot.all_companies.count(), antes,
+                         'a view abriu lote com origem fora do vocabulário')
+
+    def test_a_mensagem_de_erro_nao_enumera_as_origens(self):
+        """A mensagem antiga dizia "(celular ou PCB)" — texto que envelhece
+        junto com a lista e vira mentira na tela do gerente, exatamente como
+        aconteceu. Ela não pode voltar a enumerar."""
+        import re as _re
+        fonte = open('estoque/views.py', encoding='utf-8').read()
+        bloco = fonte[fonte.index('def lot_create'):]
+        bloco = bloco[:bloco.index("return redirect('estoque:lot_detail")]
+        # ⚠ só as linhas de CÓDIGO: a 1ª versão deste teste reprovou o próprio
+        # comentário que explica o bug (ele cita "celular ou PCB" de propósito).
+        codigo = "\n".join(l for l in bloco.splitlines()
+                           if not l.strip().startswith('#'))
+        msg = _re.search(r"messages\.error\(request,\s*_\((.*?)\)\)", codigo, _re.S)
+        self.assertIsNotNone(msg, 'não achei a mensagem de erro da origem')
+        self.assertNotIn('celular', msg.group(1).lower(),
+                         'a mensagem voltou a enumerar as origens — texto que '
+                         'envelhece junto com a lista e vira mentira na tela')
+        self.assertIn('dict(Lot.ORIGIN_CHOICES)', codigo,
+                      'a view voltou a ter lista própria em vez de ler do modelo')
+
     def test_ram_NAO_muda_o_preco_do_emmc(self):
         """O eMMC de um lote RAM é cotado como CELULAR (fallback conservador).
         Não é descuido: é o mesmo tratamento de material sem origem declarada."""

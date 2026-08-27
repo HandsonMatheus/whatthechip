@@ -784,9 +784,14 @@ def lot_create(request):
     # Origem OBRIGATÓRIA e sem default (dono, 2026-08-01): a promessa
     # comercial do lote — celular × PCB — nasce na abertura.
     origin = (request.POST.get('origin') or '').strip()
-    if origin not in (Lot.ORIGIN_PHONE, Lot.ORIGIN_PCB):
-        messages.error(request, _('Escolha a ORIGEM do lote (celular ou '
-                                  'PCB) — obrigatória, sem padrão.'))
+    # ⚠ LÊ DO MODELO, nunca de uma lista escrita aqui (bug de prod 2026-08-27).
+    # A 3ª origem ('ram', módulo de memória) entrou em ORIGIN_CHOICES, no
+    # `open_for_company()` e na CheckConstraint — mas AQUI a tupla estava na
+    # mão, `(ORIGIN_PHONE, ORIGIN_PCB)`, e o gerente levava "escolha celular ou
+    # PCB" ao tentar abrir o lote novo. O teste da entrega passava porque
+    # exercitava `open_for_company()`, não o POST — testei o modelo, não a porta.
+    if origin not in dict(Lot.ORIGIN_CHOICES):
+        messages.error(request, _('Escolha a ORIGEM do lote — obrigatória, sem padrão.'))
         return redirect('estoque:index')
     # T2: numeração atômica por empresa (lock no contador da Company) — elimina
     # a corrida do antigo Max+1. request.company existe: o gate exige Membership.
