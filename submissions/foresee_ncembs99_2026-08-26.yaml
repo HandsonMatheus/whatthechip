@@ -1,0 +1,60 @@
+# Submissão known_parts — Foresee (Longsys), `NCEMBS99` (eMMC, raiz legada `NCEM*`) — 2026-08-26.
+# Origem: PN de bancada "NCEMBS9916G" (sem hífen). Eu tinha sinalizado como possível erro de
+# transcrição (F↔9 vs o já-confirmado NCEMBSF9-16G, 1 char de diferença) — o DONO confirmou
+# diretamente: "o código está correto". `NCEMBS99` é um código de vendor DISTINTO e REAL dentro do
+# mesmo cluster `NCEM*`, não um typo do `NCEMBSF9`.
+#
+# ⭐ FONTE — SEM datasheet oficial próprio achado (busca dedicada, ao contrário de ASLD/BSF9/ASD9/
+#   AD9D que tinham um), mas com evidência hands-on forte e INDEPENDENTE, lida na íntegra (não só
+#   resumo de IA):
+#   - **ripitapart.com** ("eMMC Adventures, Episode 2", blog de reparo eletrônico, autor "ginbot86"):
+#     relato próprio de reparo — "the onboard Foresee NCEMBS99-16G eMMC module was conclusively
+#     determined to be faulty" — substituído por um eMMC de 32GB porque os "barely-usable 16 GB"
+#     originais eram poucos → CONFIRMA capacidade 16GB pelo contexto de uso real (não só a leitura do
+#     PN). Um comentário do PRÓPRIO autor no mesmo post ("According to the datasheet, Foresee
+#     NCEMBS99-16G... has BGA 169 package") confirma que ele consultou o datasheet real e viu pacote
+#     **BGA169** — mesma família de pacote do NCEMBSF9/NCEMASLD (12x16mm). Um comentário de OUTRO
+#     leitor, anos depois (2023), relata ter desmontado um tablet DIFERENTE e achado o MESMO PN
+#     "Foresee NCEMBS99-16G" — 2ª pessoa independente confirmando o chip fisicamente. Não achei menção
+#     explícita à versão eMMC (5.0 vs 5.1) atribuída especificamente a este PN no texto lido — deixei
+#     `interface` em branco por honestidade de fonte (mesma disciplina já aplicada ao NCEMAD7B-08G).
+#   - Reforço de mercado: chinahao.com (revenda de chip desoldado/"disassembled", termo comum no
+#     mercado de reciclagem chinês) lista tanto `-16G` quanto `-32G`; yoycart.com lista `-16G`
+#     ("16GB EMMC chip NCEMBS99-16G FORESEE original").
+#   - `NCEMBS99-32G`: evidência mais fraca que o irmão -16G — só listagens de revenda (chinahao,
+#     sem relato hands-on nem citação de datasheet) — ainda assim capacidade literal "32G" segue a
+#     MESMA convenção sem exceção já validada em toda a família NCEM*/FEMD*. confidence=manual pros
+#     dois, mas o -32G com nota explícita de evidência mais fraca.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncembs99_2026-08-26.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncembs99_2026-08-26.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMBS99-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEMBS9916G" (sem hífen) — inicialmente sinalizado como possível erro de
+      transcrição (F↔9) do já-confirmado NCEMBSF9-16G; o DONO confirmou fisicamente que o código
+      está correto, é um PN DISTINTO. Evidência: blog de reparo eletrônico ripitapart.com ("eMMC
+      Adventures, Episode 2", autor ginbot86) — relato de reparo real, substituiu um "Foresee
+      NCEMBS99-16G" defeituoso ("barely-usable 16 GB") por um eMMC de 32GB, confirmando capacidade
+      16GB pelo contexto de uso. O próprio autor, em comentário no mesmo post, afirma ter checado
+      "the datasheet" e confirma pacote BGA169 (mesma família do NCEMBSF9/NCEMASLD). Um 2º leitor,
+      em comentário de 2023, relata ter desmontado outro tablet e achado o mesmo PN — 2ª confirmação
+      física independente. Corroborado por listagens de revenda (yoycart.com, chinahao.com — mercado
+      de chip desoldado). Versão eMMC (5.0/5.1) não confirmada em fonte que cite este PN
+      especificamente — deixada em branco.
+    source_url: "https://ripitapart.com/2018/02/25/emmc-adventures-episode-2-resurrecting-a-dead-intel-atom-based-tablet-by-replacing-failed-emmc-storage/"
+  - part_number: "NCEMBS99-32G"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: manual
+    notes: >
+      Irmão do NCEMBS99-16G acima (mesmo vendor code, capacidade diferente). Evidência MAIS FRACA que
+      o -16G: só listagem de revenda chinahao.com ("Jiang Bo Long NCEMBS99-32G Demolition Dictionary
+      169-bit chip" — chip desoldado, mercado de reciclagem chinês) — sem relato hands-on nem citação
+      de datasheet. Capacidade literal "32G" segue a mesma convenção sem exceção já validada em toda
+      a família NCEM*/FEMD* desta marca. Pacote 169-bit (BGA169) consistente com o irmão -16G.
+    source_url: "https://www.chinahao.com/product/527153148566/"

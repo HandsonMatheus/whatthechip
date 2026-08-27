@@ -1,0 +1,69 @@
+# Submissão known_parts — Foresee (Longsys), `NCEFEH58` (eMMC, raiz legada `NCEF*` — NÃO `NCEM*`)
+# — 2026-08-26. Origem: PN de bancada "NCEFEH5816G" — vendor code já flagrado como lead em rodada
+# anterior de hoje (achado só no histórico de revisão do Rockchip Support List, "1.14 Add NCEFEH58-08G,
+# NCEFEH58-16G, NCEFEH58-32G, 2014-10-15" — 3 capacidades desde então). Agora com PN de bancada real,
+# pesquisei a fundo e achei evidência BEM mais forte que os outros vendor-codes NCEM* de hoje.
+#
+# ⭐ RAIZ `NCEF`, não `NCEM` — 4º char diferente ("F" em vez de "M") logo após "NC"+"E". Reforça a nota
+#   estrutural já registrada no FORESEE.md: o código de tipo da raiz `NC` pode não ser sempre 2 chars
+#   fixos "EM" — aqui parece ser só "E" fixo (eMMC), com "M"/"F" variando por sub-linha/geração.
+# ⭐ EVIDÊNCIA FORTE via DigiPart (banco estruturado de preço/estoque, não marketplace solto):
+#   - `NCEFEH58-08G`: 8 (OITO) distribuidores independentes — YIC International (explicita
+#     "BGA153" no campo Description — pacote CONFIRMADO, mesma família 153-ball do NCEMASLD/ASD9/
+#     AD9D/AD6B), MountainView Components, Ariat Technology, Metaverse IC, New Strength Electronic
+#     ("DC:15+" = date-code 2015+), IC Components, Sierra IC, Green Light Electronics. A convergência
+#     mais forte já vista nesta marca pra um PN sem datasheet próprio aberto.
+#   - `NCEFEH58-16G` (o PN de bancada): 1 distribuidor direto (Green Light Electronics, mfr "FORE",
+#     5445un, "OEM/CM ONLY") + corroborado por yoycart.com (listagem própria citando as 3 capacidades
+#     juntas) + imall.com/AliExpress (kit "NCEFEH58-16G NCEMASD9-16G NCEMASKG-16G NCEMASLD-32G
+#     NCEMASLD-64G" — agrupado com PNs já confirmados nesta marca) + histórico Rockchip (2014).
+#   - `NCEFEH58-32G`: 2 distribuidores (New Strength Electronic 33un, Sierra IC 172un, mfr FORESEE
+#     explícito) + histórico Rockchip.
+#   Todos manual (nenhum datasheet oficial próprio aberto — busca dedicada não achou um, diferente de
+#   ASLD/BSF9/ASD9/AD9D). Versão eMMC (um resumo de busca alegou "4.51/16nm" — mais antigo que os
+#   outros vendor-codes desta marca, plausível dado o ano de adição 2014, mas NÃO confirmado em fonte
+#   própria que eu tenha aberto) deixada em branco por honestidade de fonte.
+#
+# ⭐ BÔNUS: as páginas DigiPart de NCEFEH58 revelam um sub-cluster `NCEF*` ainda maior via "See Also" —
+#   `NCEFES78-08G`, `NCEFES88-04G`, `NCEFESA8-08G`, `NCEFESE8-04G`, `NCEFES86-04G`, `NCEFES76-08G`.
+#   NÃO pesquisados/submetidos agora (cluster grande demais pra uma rodada) — registrados no gap.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncefeh58_2026-08-26.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncefeh58_2026-08-26.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEFEH58-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEFEH5816G" (sem hífen) — este é o PN real catalogado, já flagrado como
+      lead em rodada anterior de hoje via histórico de revisão do Rockchip Support List
+      ("1.14 Add NCEFEH58-16G, 2014-10-15"). Distribuidor direto: Green Light Electronics
+      (fabricante "FORE"=FORESEE, 5445 unidades em estoque, "OEM/CM ONLY"). Corroborado por
+      yoycart.com (listagem própria citando as 3 capacidades 08G/16G/32G juntas) e imall.com/
+      AliExpress (kit de reposição "NCEFEH58-16G NCEMASD9-16G NCEMASKG-16G NCEMASLD-32G
+      NCEMASLD-64G" — agrupado com PNs já confirmados nesta marca). Versão eMMC não confirmada em
+      fonte própria — deixada em branco.
+    source_url: "https://www.digipart.com/part/NCEFEH58-16G"
+  - part_number: "NCEFEH58-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      Irmão do NCEFEH58-16G (mesmo vendor code, capacidade diferente) — evidência MAIS FORTE já
+      vista nesta marca pra um PN sem datasheet próprio: 8 distribuidores independentes no DigiPart
+      (YIC International — explicita pacote "BGA153" no campo Description, confirmação direta de
+      pacote —, MountainView Components, Ariat Technology, Metaverse IC, New Strength Electronic
+      "DC:15+", IC Components, Sierra IC, Green Light Electronics). Capacidade literal "08G" segue
+      a mesma convenção sem exceção já validada em toda a família NCEM*/NCEF*/FEMD*.
+    source_url: "https://www.digipart.com/part/NCEFEH58-08G"
+  - part_number: "NCEFEH58-32G"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: manual
+    notes: >
+      Irmão do NCEFEH58-16G/08G. 2 distribuidores no DigiPart: New Strength Electronic ("DC:1424+",
+      33un) e Sierra IC (172un, fabricante FORESEE explícito). Capacidade literal "32G" segue a
+      mesma convenção. Também no histórico Rockchip Support List ("1.14 Add NCEFEH58-32G, 2014").
+    source_url: "https://www.digipart.com/part/NCEFEH58-32G"

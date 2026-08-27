@@ -1,0 +1,56 @@
+# Submissão known_parts — Foresee (Longsys), `NCEPNCCM4-1608` — eMCP na raiz legada `NC`
+# — 2026-08-26. Origem: PN de bancada "NCEPNCCM41608" (sem hífen).
+# ⚠ 2ª VERSÃO deste arquivo: a 1ª (estimated, emcp_nand/emcp_ram em branco) foi RETRATADA a
+#   pedido do dono ("nunca mais submeta sem capacidade") — ver FORESEE.md item 7 do gap +
+#   histórico. Esta versão só existe porque achei confirmação real de capacidade (Tier-1/Tier-2),
+#   não porque a regra mudou.
+#
+# ⭐ CAPACIDADE AGORA CONFIRMADA — dois documentos OFICIAIS Longsys, independentes:
+#   1) Catálogo oficial atual (longsys.com, PDF direto do fabricante — Tier-1):
+#      "EMBEDDED STORAGE PRODUCT CATALOGUE" (rev. 2023-04-23) — tabela da família **eMCP3**
+#      lista `FEPNA1608-58A4302` / `FEPNA1608-58A4324`, Density = **"16GB+8Gb"**, package
+#      FBGA221, 11.5x13x1.0mm. O sufixo numérico "1608" bate DÍGITO A DÍGITO com o da nossa
+#      peça — mesma família eMCP3, mesmo pacote. É o mesmo achado que já tinha me feito suspeitar
+#      do combo, agora com o número em uma tabela oficial do fabricante, não em resumo de busca.
+#   2) Datasheet oficial Longsys E-00784 (eMCP FEPRF6432-58A1930, mirror em community.nxp.com) —
+#      seção "Ordering Information" com Part Number Decoder explícito: confirma que a GRAMÁTICA
+#      geral do sufixo eMCP Foresee é [NAND em GB][RAM em Gb] (nesse datasheet: "64"=eMMC 64GB,
+#      "32"=LPDDR4X 32Gb) — a MESMA regra aplicada ao "16"+"08" da nossa peça.
+#   Aplicando a regra oficial (1): `emcp_nand="16GB"`, `emcp_ram` capacidade = 8Gb = **1GB**
+#   (8 bits = 1 byte, conversão exata, não arredondamento).
+#
+# ⚠ GERAÇÃO DA RAM (LPDDR3) — não é um documento direto pra NCCM4, é forte analogia de família:
+#   censtry.com tem página própria (estruturada, não resumo de IA) pro vendor-code IRMÃO
+#   `NCEPNA6M4-0808` (mesmo prefixo `NCEP`, mesma classe eMCP3 — o token "NA" do PN moderno
+#   `FEPNA1608` bate com o "NA" de `NA6M4`, mesmo pacote FBGA221/11.5x13mm) — afirma
+#   explicitamente "8 Gb LPDDR3 memory portion equals 1 GB of RAM" e "eMMC 5.0 compatibility with
+#   backward compatibility to eMMC 4.5". LPDDR3 aplicado a NCCM4 por analogia de família (mesma
+#   classe eMCP3, mesmo pacote, mesma convenção de sufixo) — não achei um documento com o PN
+#   "NCCM4" escrito nele confirmando a geração especificamente. Registrando a distinção: NAND+RAM
+#   em GB são grammar-confirmed (Tier-1, dois documentos oficiais); a geração LPDDR3 é a parte
+#   mais fraca da cadeia (só por analogia ao irmão).
+# ⭐ EXISTÊNCIA: fortíssima — 7 distribuidores independentes no DigiPart (YIC International, Ariat
+#   Technology, Atosn Technology 10.000un, Sense Electronic 17.527un, IC Components, Sierra IC,
+#   Green Light Electronics) + Allelco + Ariat-Tech, todos fabricante FORESEE.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncep_emcp_2026-08-26.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncep_emcp_2026-08-26.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEPNCCM4-1608"
+    chip_type: "eMCP"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEPNCCM41608" (sem hífen) — este é o PN real catalogado (DigiPart, 7
+      distribuidores independentes, todos fabricante FORESEE). Capacidade confirmada via catálogo
+      oficial Longsys (longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423
+      ...pdf, PDF direto do fabricante): família eMCP3 lista P/N "FEPNA1608-58A4302"/"-58A4324"
+      com Density="16GB+8Gb", mesmo sufixo numérico "1608", mesmo pacote FBGA221/11.5x13mm.
+      Gramática do sufixo (NAND em GB + RAM em Gb) confirmada também no datasheet oficial Longsys
+      E-00784 (eMCP FEPRF6432-58A1930). emcp_ram="LPDDR3 1GB": os 8Gb convertem exato pra 1GB;
+      geração LPDDR3 vem por analogia forte ao vendor-code irmão NCEPNA6M4-0808 (censtry.com,
+      mesma classe eMCP3/FBGA221, afirma "8Gb LPDDR3 = 1GB RAM" e "eMMC 5.0 compat. eMMC 4.5")
+      — não é um documento específico do NCCM4, é a parte da cadeia com menos certeza direta.
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"

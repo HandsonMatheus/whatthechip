@@ -1,0 +1,72 @@
+# Submissão known_parts — Foresee (Longsys), `NCEMAD6B-16G` (eMMC, raiz legada `NCEM*`) — 2026-08-26.
+# Origem: PN de bancada "NCEMAD6B16G" — era um dos "leads" flagrados na rodada anterior de hoje
+# (submissão `foresee_ncemad_cluster_2026-08-26.yaml`, achado só no histórico de revisão do Rockchip
+# Support List v1.63, sem linha viva na tabela). Agora com PN de bancada real, pesquisei a fundo.
+#
+# ⭐ FONTE: peguei a versão MAIS NOVA do documento Rockchip — renomeado "Rockchip EMMC Approved Vendor
+#   List" v1.95 (2026-03-31, mesma série do "Support List" anterior, redmine.rock-chips.com/documents/50).
+#   Confirma: "1.37 Add NCEMAD6B-16G, EMMC32G-TA28 and IMM8GA90SKB-WT, 2017-11-27" — adição oficial real.
+#   NÃO aparece na tabela VIVA do v1.95 (nem aparecia na v1.63) — EOL, mesmo padrão do irmão
+#   NCEMAD7B-08G (aliás, esta v1.95 CONFIRMA que `NCEMAD9D-16G`/`NCEMAD9D-08G`/`FSEIASOD-16G` — que eu
+#   tinha achado na tabela VIVA do v1.63 como `confirmed` — foram removidos oficialmente em 2023-03-03
+#   [rev 1.73], ou seja, também EOL agora; não muda a classificação, só o status comercial).
+# ⭐ Corroboração de mercado: Alibaba (2 listagens, uma explicitando pacote "153bga" — Alibaba.com
+#   "Original Ncemad6b Emmc 153bga Mobile Phone Font Chip Memory Flash Ic"), AliExpress (kit de
+#   reposição agrupando NCEMAD6B-16G + NCEMAD7B-08G + NCEMASD9-*, mesmo padrão já visto), OMO
+#   Electronic (distribuidor com página/estoque próprios).
+# ⭐ Nota estrutural: pacote 153-ball (153BGA, 11.5x13mm) — mesma família de pacote do
+#   NCEMASLD/NCEMASD9/NCEMAD9D, DIFERENTE do 169-ball (12x16mm) do NCEMBSF9/NCEMBS99. Dentro do
+#   cluster `NCEM*` existem (pelo menos) DUAS famílias físicas de pacote — vale documentar no
+#   FORESEE.md como refinamento da teoria da raiz `NC`.
+# ⭐ Sem datasheet oficial próprio achado (busca dedicada não retornou um, como já não retornou pro
+#   NCEMAD7B-08G) — versão eMMC (5.0/5.1) não confirmada em fonte própria, deixada em branco (mesma
+#   disciplina já aplicada aos irmãos desta rodada). confidence=manual.
+#
+# ⭐ AMPLIAÇÃO (mesmo dia, a pedido do dono — "só achou 1? continue procurando da mesma família"):
+#   achei o irmão `NCEMAD6B-32G` — 2 fontes de revenda independentes (hkinventory.com listagem própria
+#   "NCEMAD6B-32G FORESEE"; imall.com/AliExpress "100% test NCEMAD6B-32G NCEMASLD-32G NCEMASLG-32G
+#   EMMC32G-TA28..." — kit de reposição agrupando vários eMMC 32GB pin-compatíveis, prática comum do
+#   mercado de reparo) + menção em DigiPart. Sem datasheet/distribuidor estruturado (mesma limitação do
+#   -16G) — manual. ⚠ CUIDADO já aplicado: um resumo de busca alegou "NCEMAD6B-08G" existir e estar no
+#   Rockchip Support List, mas ao conferir os títulos reais das fontes citadas, o código verdadeiro nos
+#   dois links era `NCEMAD7B-08G`/`NCEMAM6G-08G` (códigos DIFERENTES) — não "NCEMAD6B-08G". Alucinação
+#   de resumo de busca (mesmo padrão já catalogado nesta marca) — NÃO submetido, não existe confirmação
+#   real de um "-08G" nesta família específica.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncemad6b_2026-08-26.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncemad6b_2026-08-26.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMAD6B-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEMAD6B16G" (sem hífen) — este é o PN real catalogado, já flagrado como
+      lead na rodada anterior de hoje. Existência + capacidade confirmadas pelo histórico de revisão
+      OFICIAL do Rockchip EMMC Approved Vendor List (antigo "Support List") — "1.37 Add
+      NCEMAD6B-16G, 2017-11-27" — não aparece na tabela viva de nenhuma versão consultada (v1.63
+      2022 nem v1.95 2026), indicando EOL, mesmo padrão do irmão NCEMAD7B-08G. Corroborado por
+      Alibaba (2 listagens, uma explicitando pacote "153bga"), AliExpress (kit de reposição
+      agrupando com NCEMAD7B-08G/NCEMASD9-*), OMO Electronic (distribuidor com página própria).
+      Pacote 153-ball (11.5x13mm) — mesma família física do NCEMASLD/NCEMASD9/NCEMAD9D, diferente
+      do 169-ball do NCEMBSF9/NCEMBS99. Versão eMMC (5.0/5.1) não confirmada em fonte própria —
+      deixada em branco.
+    source_url: "https://www.shtimar.com/public/uploads/file/20260423/1776911325505640.pdf"
+  - part_number: "NCEMAD6B-32G"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: manual
+    notes: >
+      Irmão do NCEMAD6B-16G acima (mesmo vendor code, capacidade diferente) — achado ao ampliar a
+      busca a pedido do dono. Evidência: hkinventory.com (listagem própria "NCEMAD6B-32G FORESEE"),
+      imall.com/AliExpress ("100% test NCEMAD6B-32G NCEMASLD-32G NCEMASLG-32G EMMC32G-TA28
+      EMMC32G-M525 EMMC32G-T527 EMMC32G-S100 BGA Chipset" — kit de reposição agrupando eMMC 32GB
+      pin-compatíveis, prática comum do mercado de reparo/reciclagem — o agrupamento com
+      NCEMASLD-32G, já confirmado nesta marca, reforça que é um chip real do mesmo porte), e menção
+      em DigiPart. Capacidade literal "32G" segue a mesma convenção sem exceção já validada em toda
+      a família NCEM*/FEMD*. Sem datasheet próprio — mesma limitação do irmão -16G. NÃO confundir com
+      um suposto "NCEMAD6B-08G": um resumo de busca alegou essa combinação, mas os links reais citados
+      mostravam os códigos `NCEMAD7B-08G`/`NCEMAM6G-08G` (diferentes) — alucinação descartada, não é
+      um PN desta família confirmado.
+    source_url: "https://www.hkinventory.com/p/d/NCEMAD6B32G.htm"

@@ -1,0 +1,86 @@
+# Submissão known_parts — Foresee (Longsys), cluster `NCEMAD*` de eMMC legado (2026-08-26).
+# Origem: PN de bancada "NCEMAD7B08G" — mesma raiz `NC`+`EM` já documentada (NCEMASLD/NCEMBSF9/
+# NCEMASD9), código de vendor NOVO. Este era um dos irmãos JÁ FLAGRADOS no gap list (FORESEE.md §5
+# item 5, "cluster maior ainda não perseguido") mas nunca antes pesquisado a fundo.
+#
+# ⭐ FONTE-OURO NOVA pra esta rodada: "Rockchip Solutions eMMC Support List" Ver 1.63 (2022-01-12,
+#   dl.xkwy2018.com) — documento OFICIAL da Rockchip (fabricante de SoC) que lista TODO eMMC
+#   validado/testado nas plataformas deles, com tabela estruturada (Manufacturer/Part Number/Device
+#   Size/Byte Size/Process/Version/Package). Mesma força de evidência que um test report de
+#   qualificação (categoria já usada pro NCEMASLD via Radxa) — um fabricante de SoC não lista peça
+#   que não testou de verdade.
+# ⭐ A tabela ATUAL (v1.63) tem 2 irmãos `NCEMAD9D*` com detalhe completo:
+#     NCEMAD9D-16G → 128Gb TLC×1 → 16GB → 3D NAND → eMMC 5.1 → 11.5x13mm
+#     NCEMAD9D-08G → [Gb do die não veio limpo na extração do PDF, célula truncada] → 8GB → 3D →
+#       eMMC 5.1 → 11.5x13mm (capacidade 8GB inequívoca — bate Byte Size da tabela + literal do PN;
+#       só o número de Gb/die específico não veio limpo, não afeta capacity/chip_type/interface)
+#   → ambos confirmed.
+# ⭐ `NCEMAD7B-08G` (o PN de bancada) NÃO está na tabela ATUAL — mas o HISTÓRICO DE REVISÃO do MESMO
+#   documento oficial confirma: "1.36 Add NCEMAD7B-08G, 2017-07-28" (provavelmente removido depois
+#   por EOL, como muitos outros marcados "Remove some EOL devices" em revisões posteriores — não é
+#   sinal de PN falso, é ciclo de vida normal de componente). Corroborado por 5+ distribuidores
+#   independentes (Alibaba ×2, AliExpress, IC-Components, Utsource, y-ic — todos convergindo em
+#   eMMC/8GB/FORESEE/153FBGA). Sem versão eMMC (5.0 vs 5.1) confirmada em fonte própria — um resumo
+#   de busca (IA) alegou "5.0/TLC/15nm" mas não abri documento primário que confirme isso
+#   especificamente pra este PN (mesmo padrão de cautela já aplicado a resumos de busca nesta marca
+#   — não copiei pro campo `interface`, deixei em branco). confidence=manual (existência + capacidade
+#   fortíssimas, versão/processo não confirmados).
+#
+# ⭐ BÔNUS ENCONTRADOS NO MESMO DOCUMENTO (histórico de revisão, NÃO na tabela atual — vendor-codes
+#   NOVOS que não estavam no meu gap list anterior): NCEMAD6B-16G (rev 1.37), NCEMAH59-16G (rev 1.23,
+#   também citado como leftover de template no datasheet NCEMASD9), NCEFEH58-08G/16G/32G +
+#   NCEFES88-04G/NCEFES78-08G/NCEFBS98-16G (rev 1.14 — nota: prefixo "NCEF" não "NCEM", 4º char
+#   diferente — refina a teoria do §0.2 regra 7, o código de tipo pode não ser sempre "EM"),
+#   NCEMBS41-04G/08G (rev 1.07), NCEMBS61-08G/16G (rev 1.09), NCEMBD39-16G (rev 1.26), FSEIASOD-16G
+#   (tabela atual, prefixo NOVO — "SOD" não "SLD"). NÃO submetidos agora (só confirmação de
+#   existência via revision-log, sem detalhe de capacidade/versão de uma linha viva da tabela) —
+#   registrados como leads no gap list, próxima rodada.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncemad_cluster_2026-08-26.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncemad_cluster_2026-08-26.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMAD7B-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEMAD7B08G" (sem hífen) — este é o PN real catalogado. Existência +
+      fabricante confirmados pelo histórico de revisão OFICIAL da Rockchip Solutions eMMC Support
+      List ("1.36 Add NCEMAD7B-08G", 2017-07-28) — não aparece na tabela viva v1.63 (provável EOL,
+      removido em alguma revisão posterior junto com outros "Remove some EOL devices"). Capacidade
+      8GB confirmada por 5+ distribuidores independentes convergentes: Alibaba (2 listagens,
+      "NCEMAD7B-08G EMMC5.0 8GB 153FBGA"), AliExpress (2 listagens, uma agrupando com NCEMAD6B-16G/
+      NCEMASD9-*), IC-Components, Utsource, y-ic.com — todos concordam eMMC/8GB/FORESEE/153FBGA.
+      Também no "RKeMMCSupportList" oficial da Rockchip (SoC vendor, mesma categoria de força de
+      Test Report). Versão eMMC (5.0 vs 5.1) e processo NÃO confirmados em fonte própria aberta —
+      um resumo de busca alegou "5.0/15nm" mas não achei documento primário que confirme
+      especificamente este PN, então deixei `interface` vazio em vez de copiar a alegação não
+      verificada (mesma cautela já aplicada a alucinação de resumo de busca nesta marca).
+    source_url: "https://dl.xkwy2018.com/downloads/RK3588/01_Official%20Release/01_Common%20Document/RKeMMCSupportList%20Ver1.63_20220112.pdf"
+  - part_number: "NCEMAD9D-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Achado como bônus no mesmo documento oficial Rockchip (RKeMMCSupportList v1.63) enquanto
+      pesquisava o irmão NCEMAD7B-08G — este era outro vendor-code do cluster `NCEM*` já flagrado
+      como "não perseguido" no gap list. Linha viva da tabela ATUAL (não só histórico): "FORESEE
+      NCEMAD9D-16G, 128Gb TLC×1, 16GB, 3D, eMMC 5.1, 11.5x13mm" — mesma qualidade de fonte que
+      NCEMASLD/NCEMBSF9/NCEMASD9 (documento de validação oficial de fabricante de SoC). Testado e
+      aprovado (status T/A ou S/A) em múltiplas plataformas Rockchip (RK328X, RV1126, RK3368, etc.).
+    source_url: "https://dl.xkwy2018.com/downloads/RK3588/01_Official%20Release/01_Common%20Document/RKeMMCSupportList%20Ver1.63_20220112.pdf"
+  - part_number: "NCEMAD9D-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Irmão do NCEMAD9D-16G acima, mesma linha viva da tabela oficial Rockchip v1.63: "FORESEE
+      NCEMAD9D-08G, [Gb/die não veio limpo na extração do PDF — célula truncada/malformada], 8GB,
+      3D, eMMC 5.1, 11.5x13mm". Capacidade 8GB inequívoca (bate Byte Size da tabela + literal "08G"
+      do PN, mesma convenção já validada em toda a família NCEM*/FEMD*) — só o número específico de
+      Gb-por-die não veio legível na extração, não afeta chip_type/capacity/interface. Testado e
+      aprovado em múltiplas plataformas Rockchip.
+    source_url: "https://dl.xkwy2018.com/downloads/RK3588/01_Official%20Release/01_Common%20Document/RKeMMCSupportList%20Ver1.63_20220112.pdf"
