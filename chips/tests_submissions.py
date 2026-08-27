@@ -330,3 +330,124 @@ class AuditSemSpecsTests(TestCase):
         kp.refresh_from_db()
         self.assertEqual(kp.chip_type, "")
         self.assertEqual(kp.review_status, "approved")
+
+
+class DeadlockSubmitResolveTests(TestCase):
+    """O LAÇO entre `submit_known_parts --fill-empty` e `resolve_conflicts`.
+
+    Relatado pelo dono em 2026-08-27 sobre 6 eMCP Micron MT29TZZZ7D7 (JZ050 e
+    irmãos), com `emcp_nand`/`emcp_ram` vazios desde a importação FBGA. A
+    sequência observada, e reproduzida aqui:
+
+      1. submit --fill-empty  → CONFLITO só em `source_url`; nada preenchido
+      2. resolve_conflicts    → não sobrescreve a url (é uma só); escreve um
+                                marcador dentro de `notes`
+      3. submit --fill-empty  → CONFLITO agora em `notes` E `source_url`
+
+    Não era empate, era CATRACA: cada rodada do passo 2 ADICIONAVA um conflito.
+    Causa raiz: os dois comandos não compartilhavam a definição de "conflito" —
+    o `resolve_conflicts` tem política por classe (notes = merge, source_url =
+    nunca sobrescreve), o `submit` comparava tudo por igualdade de string. Todo
+    campo cuja política é "acumula" era, por construção, conflito PERMANENTE.
+    """
+
+    YAML = ("brand: Micron\n"
+            "known_parts:\n"
+            '  - part_number: "MT29TZZZ7D7DKLAH-107 W.9B7"\n'
+            "    chip_type: eMCP\n"
+            '    emcp_nand: "8GB"\n'
+            '    emcp_ram: "LPDDR2 512MB"\n'
+            "    confidence: confirmed\n"
+            '    notes: "Pesquisa Tier-1: datasheet Micron MT29TZZZ7D7."\n'
+            '    source_url: "https://www.micron.com/datasheet-jz050"\n')
+
+    def _arquivo(self):
+        import tempfile, os
+        fd, p = tempfile.mkstemp(suffix=".yaml")
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(self.YAML)
+        self.addCleanup(lambda: os.path.exists(p) and os.unlink(p))
+        return p
+
+    def _kp(self, **extra):
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name="Micron", defaults={"code": "MIC"})
+        d = dict(brand=b, part_number="MT29TZZZ7D7DKLAH-107 W.9B7", chip_type="eMCP",
+                 confidence="confirmed", review_status="approved",
+                 source_url="https://api.micron.com/fbga/JZ050")
+        d.update(extra)
+        return KnownPart.objects.create(**d)
+
+    def test_fill_empty_preenche_mesmo_com_source_url_divergente(self):
+        """O caso do dono, passo 1: a url do banco (API FBGA) nunca vai bater com
+        a do arquivo (datasheet). Isso NÃO pode impedir o complemento."""
+        from django.core.management import call_command
+        from chips.models import KnownPart
+        kp = self._kp()
+        call_command("submit_known_parts", self._arquivo(), "--commit", "--fill-empty")
+        kp.refresh_from_db()
+        self.assertEqual(kp.emcp_nand, "8GB")
+        self.assertEqual(kp.emcp_ram, "LPDDR2 512MB")
+
+    def test_fill_empty_preenche_DEPOIS_do_resolve_conflicts(self):
+        """Passo 3 — o estado em que o registro ficava travado para sempre: o
+        `notes` do banco é só o marcador que o `resolve_conflicts` escreveu, e o
+        do arquivo é o texto de pesquisa inteiro. Nunca mais batem."""
+        from django.core.management import call_command
+        from chips.models import KnownPart
+        kp = self._kp(notes="— (submissão) fonte: https://www.micron.com/datasheet-jz050")
+        call_command("submit_known_parts", self._arquivo(), "--commit", "--fill-empty")
+        kp.refresh_from_db()
+        self.assertEqual(kp.emcp_nand, "8GB", "o laço voltou: campo vazio não foi preenchido")
+        self.assertEqual(kp.emcp_ram, "LPDDR2 512MB")
+
+    def test_conflito_de_DADO_continua_barrando_o_proprio_campo(self):
+        """Afrouxar proveniência não pode afrouxar DADO. Capacidade divergente
+        continua CONFLITO — e continua sem ser aplicada pelo comando."""
+        from django.core.management import call_command
+        from chips.models import KnownPart
+        kp = self._kp(emcp_nand="4GB")          # banco diz 4GB, arquivo diz 8GB
+        call_command("submit_known_parts", self._arquivo(), "--commit", "--fill-empty")
+        kp.refresh_from_db()
+        self.assertEqual(kp.emcp_nand, "4GB", "sobrescreveu valor aprovado divergente")
+        self.assertEqual(kp.emcp_ram, "LPDDR2 512MB",
+                         "o conflito em emcp_nand vetou o preenchimento do emcp_ram vazio")
+
+    def test_divergir_SO_em_proveniencia_nao_e_conflito(self):
+        """⚠ Este teste nasceu de uma MUTAÇÃO que não mordeu. As duas asserções
+        de preenchimento acima passavam mesmo com a exclusão de proveniência
+        REMOVIDA — porque o desacoplamento dos baldes, sozinho, já preenche.
+
+        A exclusão de proveniência serve a outra coisa: o RELATO. Sem ela, um
+        registro que só diverge em `notes`/`source_url` é reportado como
+        CONFLITO para sempre e gera um `.conflitos.yaml` a cada rodada — um
+        alarme que nunca apaga e que o dono aprende a ignorar. E ignorar
+        CONFLITO é caro, porque é lá que mora o conflito de verdade."""
+        from io import StringIO
+        from django.core.management import call_command
+        self._kp(emcp_nand="8GB", emcp_ram="LPDDR2 512MB",
+                 notes="— (submissão) fonte: https://www.micron.com/datasheet-jz050")
+        out = StringIO()
+        call_command("submit_known_parts", self._arquivo(), stdout=out)
+        import re as _re
+        t = out.getvalue()
+        def balde(nome):
+            m = _re.search(rf"^\s*{nome}\s+(\d+)", t, _re.M)
+            return int(m.group(1)) if m else 0
+        self.assertEqual(balde("CONFLITO"), 0,
+                         "reportou CONFLITO num registro que só diverge em "
+                         "proveniência (notes/source_url)")
+        self.assertEqual(balde("IGUAL"), 1,
+                         "não classificou como IGUAL o registro que só diverge "
+                         "em proveniência")
+        self.assertEqual(balde("COMPLEMENTO"), 0)
+
+    def test_painel_avisa_quando_o_PN_cai_nos_dois_baldes(self):
+        from io import StringIO
+        from django.core.management import call_command
+        self._kp(emcp_nand="4GB")
+        out = StringIO()
+        call_command("submit_known_parts", self._arquivo(), stdout=out)
+        t = out.getvalue()
+        self.assertIn("DOIS baldes", t,
+                      "o painel não avisou que o mesmo PN tem campo a completar E a decidir")

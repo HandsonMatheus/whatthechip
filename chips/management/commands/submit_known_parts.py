@@ -85,6 +85,13 @@ _FIELDS = ["chip_type", "subtype", "capacity", "density_gbit", "density_gb", "em
 # complemento — divergência é só reportada.
 _CAMPOS_SPEC = [f for f in _FIELDS if f != "confidence"]
 
+#: Campos de PROVENIÊNCIA, que ACUMULAM em vez de conflitar. Vêm da fonte
+#: única — a política do `resolve_conflicts` —, para os dois comandos não
+#: divergirem outra vez sobre o que é "conflito".
+from chips.management.commands.resolve_conflicts import (  # noqa: E402
+    _MERGE as _POL_MERGE, _FONTE_NO_NOTES as _POL_FONTE)
+_ACUMULAM = _POL_MERGE | _POL_FONTE
+
 
 def _vazio(v) -> bool:
     return not str(v or "").strip()
@@ -216,19 +223,42 @@ class Command(SafeWriteCommand):
                 if _vazio(atual):
                     preencher.append(campo)
                 elif str(atual).strip() != str(novo).strip():
+                    # PROVENIÊNCIA NÃO É CONFLITO (2026-08-27). `notes` e
+                    # `source_url` ACUMULAM — é o que o `resolve_conflicts` faz
+                    # com eles (_MERGE e _FONTE_NO_NOTES). Compará-los por
+                    # igualdade de string aqui tornava os dois comandos
+                    # INSATISFAZÍVEIS juntos: o `resolve_conflicts`, ao resolver
+                    # um conflito de `source_url`, NUNCA sobrescreve a url (é uma
+                    # só, juntar quebraria o link) — ele escreve um marcador
+                    # dentro de `notes`. Resultado medido: `source_url` diverge
+                    # para sempre, e `notes` passa a divergir TAMBÉM. O registro
+                    # ficava travado em CONFLITO permanente e o `--fill-empty`
+                    # não preenchia mais nada nele — nem os campos genuinamente
+                    # vazios. Pior: cada rodada do `resolve_conflicts` ADICIONAVA
+                    # um conflito (1 → 2), então o par se afastava da solução.
+                    # Caso real: 6 eMCP Micron MT29TZZZ7D7 (JZ050 e irmãos) com
+                    # `emcp_nand`/`emcp_ram` vazios desde a importação FBGA.
+                    if campo in _ACUMULAM:
+                        continue
                     muda.append((campo, str(atual), str(novo)))
             if s.confidence != kp.confidence:
                 conf_dif.append((s.part_number, kp.confidence, s.confidence))
-            if muda:
-                conflito.append((s, kp, muda))
-            elif preencher:
+            # ⚠ OS BALDES NÃO SÃO MAIS EXCLUDENTES. `preencher` e `muda` são
+            # conjuntos DISJUNTOS por construção (o `if _vazio(atual)` separa),
+            # então um conflito em `capacity` não tem por que vetar o
+            # preenchimento de um `emcp_ram` VAZIO no mesmo PN — e era isso que
+            # o antigo `if muda: … elif preencher:` fazia. Um PN pode legitimamente
+            # ter campo a completar E campo a decidir; o painel mostra os dois.
+            if preencher:
                 # Proveniência: completar um registro LIVE sem fonte Tier-1 no arquivo
                 # seria dado órfão — o revisor não teria o que conferir depois.
                 if _vazio(s.notes) and _vazio(s.source_url):
                     sem_fonte.append((s, kp, preencher))
                 else:
                     complemento.append((s, kp, preencher))
-            else:
+            if muda:
+                conflito.append((s, kp, muda))
+            if not preencher and not muda:
                 iguais.append((s, kp))
 
         # FORMA dos campos de medida (2026-08-24). O portão Pydantic NÃO rejeita
@@ -337,6 +367,19 @@ class Command(SafeWriteCommand):
                 f"  CONFLITO     {len(conflito):>4}  → APROVADOS com valor DIFERENTE — nunca "
                 f"aplicado aqui"))
         w(f"  IGUAL        {len(iguais):>4}  → aprovados e já com o que o arquivo diz")
+
+        # ⚠ Os baldes deixaram de ser excludentes em 2026-08-27, então a soma pode
+        # passar do total de PNs. Dizer isso explicitamente evita o leitor achar
+        # que a conta está errada — e mostra QUAIS PNs estão nos dois lados, que
+        # é a informação nova: parte do registro completa agora, parte espera
+        # decisão sua.
+        nos_dois = ({s.part_number for s, _, _ in complemento}
+                    & {s.part_number for s, _, _ in conflito})
+        if nos_dois:
+            w(self.style.WARNING(
+                f"  ↑ {len(nos_dois)} PN(s) contam nos DOIS baldes: campo vazio que o "
+                f"--fill-empty completa E campo divergente que só você decide — "
+                f"{', '.join(sorted(nos_dois)[:6])}"))
 
         # Proveniência dos NOVOS (aviso de sempre — a revisão humana é o filtro).
         faltando = [s.part_number for s, _ in novos + resubmete
