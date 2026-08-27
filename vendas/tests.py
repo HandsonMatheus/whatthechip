@@ -2521,8 +2521,13 @@ class CompradorValorFechadoTests(TestCase):
         self._fecha_lote(so)          # despachado: é assim que ele o enxerga
         tela = self.client.get(reverse('compras:list'))
         self.assertContains(tela, so.code)                       # SO/EMPRESA/NNN
+        # ⚠ 2026-08-27: a data passou a sair em `d/m`, sem o ano. Ele é o
+        # mesmo em toda a lista, e repeti-lo em cada linha rouba quatro
+        # caracteres da coluna sem responder nada — é o que o protótipo faz.
+        # A REGRA (a lista diz QUANDO a ordem nasceu) não mudou.
         self.assertContains(
-            tela, timezone.localtime(so.created_at).strftime('%d/%m/%Y'))
+            tela, timezone.localtime(so.created_at).strftime('%d/%m'))
+        self.assertContains(tela, 'class="when"')
         self.assertContains(tela, '≈')                           # é estimativa
         self.assertContains(tela, '150.00')                      # 10 × ¥15
 
@@ -4316,7 +4321,13 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
         self.assertContains(tela, 'dtab__wrap')
         # …e o número que decide a linha é o `.key` (1ª linha do cartão no
         # celular). A classe é o contrato com a folha responsiva.
-        self.assertContains(tela, 'v key hb')
+        # ⚠ 2026-08-27: era `v key hb`. O `.hb` tingia a coluna Resultado de
+        # azul — decisão minha de agosto que o protótipo não faz nesta tela.
+        # O tingimento de grupo é da CONFERÊNCIA, onde três colunas juntas
+        # formam um bloco de leitura; aqui a coluna é uma só. O `.key`, que é
+        # o que este teste segura, continua.
+        self.assertContains(tela, 'v key')
+        self.assertNotContains(tela, 'v key hb')
 
     def test_a_barra_e_a_CLARA_do_v2_e_o_shell_escuro_nao_volta(self):
         tela = self._tela()

@@ -4139,3 +4139,9 @@ msgstr[1] "%(n)s pcs. · closed on %(d)s"
 #: ficha da compra — realinhamento ao Claude Design (2026-08-27)
 msgid "em curso"
 msgstr "in progress"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "%(n)s linha"
+msgid_plural "%(n)s linhas"
+msgstr[0] "%(n)s line"
+msgstr[1] "%(n)s lines"

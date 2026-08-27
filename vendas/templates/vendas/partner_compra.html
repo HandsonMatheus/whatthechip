@@ -439,7 +439,18 @@
           <tbody>
           {% for g in grupos %}
             <tr class="g">
-              <td colspan="3"><span class="g__n">{{ g.brand }}
+              {% comment %} O QUADRADINHO DE COR por marca (protótipo, 2026-08-27).
+                 Numa conferência com quatro marcas e vinte linhas, o olho
+                 volta para a faixa a cada rolagem para saber onde está; a cor
+                 responde isso antes da leitura. A paleta é a mesma do
+                 `parceiro-lote.js` e gira com `{% templatetag openblock %} cycle {% templatetag closeblock %}` — a Nª marca da
+                 tela sempre recebe a Nª cor, então a mesma ficha mostra
+                 sempre as mesmas cores. Não é identidade de marca: é
+                 separador, e por isso pode repetir depois da sexta.
+              {% endcomment %}
+              <td colspan="3"><span class="g__n">
+                <i style="background:{% cycle 'var(--blue-60)' 'var(--ink-80)' 'var(--green-50)' 'var(--amber-40)' 'var(--blue-40)' 'var(--ink-40)' %}"></i>{{ g.brand }}
+                <em>{% blocktrans trimmed count n=g.lines|length %}{{ n }} linha{% plural %}{{ n }} linhas{% endblocktrans %}</em>
                 {% if g.sem_preco %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
               <td class="n" data-gq="{{ forloop.counter0 }}">{{ g.qty }}</td>
               <td class="n hide-lg"></td>

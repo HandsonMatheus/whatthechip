@@ -1,6 +1,15 @@
 {% extends "pricing/partner_base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Notificações" %}{% endblock %}
+
+{% comment %} Sem a barra de tipos (2026-08-27). Aquela barra é a navegação da
+   área de PREÇOS — escolher qual tabela abrir. Esta tela não se chega por ela:
+   chega-se pelo sino do cabeçalho, de qualquer lugar do painel, e o que ela
+   mostra são decisões já tomadas. Uma barra de navegação para outro lugar,
+   ocupando 236px numa tela de leitura, é convite para o clique errado. O
+   Catálogo faz a mesma supressão, e pela mesma razão. {% endcomment %}
+{% block sidebar %}{% endblock %}
+
 {% block content %}
 {% comment %}
   🔔 As decisões do WhatTheChip sobre os pedidos do comprador. Vestida com o

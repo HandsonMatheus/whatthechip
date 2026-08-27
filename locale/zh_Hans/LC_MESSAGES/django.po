@@ -3916,3 +3916,8 @@ msgstr[0] "%(n)s 件 · %(d)s 结单"
 #: ficha da compra — realinhamento ao Claude Design (2026-08-27)
 msgid "em curso"
 msgstr "进行中"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "%(n)s linha"
+msgid_plural "%(n)s linhas"
+msgstr[0] "%(n)s 行"

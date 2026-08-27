@@ -21,8 +21,11 @@
       moedas são COLUNAS separadas e ordenáveis (`sort=val`/`sort=usd`),
       como no protótipo. O par junto (`.mvd`) é da ficha do lote, onde o
       dinheiro é o argumento da tela e não um campo de ordenação.
-    · `.hb/.hg/.hr` grupo de colunas tingido — aqui o RESULTADO, que é o que a
-      conferência devolveu, ganha o azul do grupo.
+    ⚠ A coluna RESULTADO era tingida de azul (`.hb`), decisão minha de agosto.
+      O protótipo não tinge nada NESTA tela — o tingimento de grupo é da
+      CONFERÊNCIA, onde três colunas juntas formam um bloco de leitura
+      (recusado · aprovado · dinheiro). Aqui a coluna é uma só e a tinta
+      viraria decoração. Saiu em 2026-08-27.
     · `.tbar` barra de recorte · `.pgn` paginação · `.s`+`.ar` coluna ordenável
 
   ═══ RECORTE (spec v2 do comprador §5.3, 2026-08-26) ═══
@@ -133,11 +136,19 @@
              que diz de que bancada aquela caixa veio e, portanto, que tipo de
              chip esperar dentro. Sem ele o comprador abre para descobrir.
              Valor canônico (`phone`/`pcb`): não traduz. {% endcomment %}
-          <td class="c">{{ o.lot.code }}
+          <td class="c"><span class="lotc">{{ o.lot.code }}
             {% if o.lot.origin == 'phone' %}<span class="otag otag--phone otag--sm"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19"/><path d="M10.5 18.6h3"/></svg>Celular</span>
-            {% elif o.lot.origin == 'pcb' %}<span class="otag otag--pcb otag--sm"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="9" y="9" width="6" height="6"/><path d="M9 3.5v2M15 3.5v2M9 18.5v2M15 18.5v2M3.5 9h2M3.5 15h2M18.5 9h2M18.5 15h2"/></svg>PCB</span>{% endif %}</td>
+            {% elif o.lot.origin == 'pcb' %}<span class="otag otag--pcb otag--sm"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="9" y="9" width="6" height="6"/><path d="M9 3.5v2M15 3.5v2M9 18.5v2M15 18.5v2M3.5 9h2M3.5 15h2M18.5 9h2M18.5 15h2"/></svg>PCB</span>{% endif %}</span></td>
           <td>{{ o.company.name }}</td>
-          <td class="d">{{ o.code }} · {{ o.created_at|date:"d/m/Y" }}</td>
+          {% comment %} A data em `d/m`, e não `d/m/Y`, como no protótipo: o ano
+             é o mesmo em toda a lista e repeti-lo em cada linha rouba quatro
+             caracteres da coluna sem responder nada. O `·` também sai — quem
+             separa é a cor, que é o papel do `.when`.
+
+             ⚠ E a coluna PERDEU o `.d`: aquela classe some abaixo de 1100px, e
+             o protótipo mantém a Ordem visível. Quem cede espaço ali são
+             Chips e Total US$, que já levam `.hide-lg`. {% endcomment %}
+          <td class="c">{{ o.code }} <span class="when">{{ o.created_at|date:"d/m" }}</span></td>
           <td class="n hide-lg" data-suffix="{% trans 'Chips' %}">{{ o.units }}</td>
           {% localize off %}
           {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
@@ -145,7 +156,7 @@
              nada sobre o tamanho da compra. {% endcomment %}
           <td class="v">{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}≈ ¥ {{ o.est_rmb }}{% else %}<span class="none">—</span>{% endif %}</td>
           <td class="v hide-lg">{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}≈ US$ {{ o.est_usd }}{% else %}<span class="none">—</span>{% endif %}</td>
-          <td class="v key hb">
+          <td class="v key">
             {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="due">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% else %}<span class="got">{% trans "quitado" %}</span>{% endif %}
             {% else %}<span class="none">—</span>{% endif %}
           </td>
