@@ -1,5 +1,9 @@
-/* WhatTheChip — painel do PARCEIRO (comprador). Carbon/Manrope, mesma base de wtc-carbon.css.
-   Convenção da planilha: um input por célula · número = preço ¥ · x = não compro · vazio = sem cotação. */
+/* WhatTheChip · padrão PARCEIRO
+   grade de preços, barra de tipos, painel de saldo, cartão de conferência no telefone.
+
+   Opcional: importe só se o seu MVP tiver estas telas. Depende de tokens/ e components.css —
+   linkar isto sozinho deixa toda regra caindo em var() vazio.
+   Gerado de ui_kits/whatthechip/wtc-parceiro.css. */
 .pshell{position:sticky;top:0;z-index:40;height:var(--shell-h);background:var(--surface);display:flex;align-items:stretch;border-bottom:1px solid var(--line-2)}
 .pshell__brand{display:flex;align-items:center;gap:11px;padding:0 18px;flex:none;text-decoration:none;color:inherit}
 .pshell__brand img{height:24px;width:auto;display:block}
@@ -40,26 +44,22 @@
 .papp{display:grid;grid-template-columns:236px minmax(0,1fr);align-items:stretch;min-height:calc(100vh - var(--shell-h))}
 .pside{background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column}
 .pside__l{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:20px 18px 11px}
-/* `grid-auto-flow:column` (WTC, 2026-08-26): o item passou a poder ter DOIS selos
-   (travado + lacuna) e o gabarito de duas colunas jogava o segundo para a linha de
-   baixo, sob o nome do tipo. Coluna implícita só existe quando há item nela, então
-   o caso de um selo só continua idêntico — sem folga extra à direita. */
-.ptype{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-auto-flow:column;grid-auto-columns:auto;align-items:center;gap:10px;padding:13px 18px;border-top:1px solid var(--line);color:inherit;text-decoration:none;transition:background var(--d1)}
+.ptype{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:13px 18px;border-top:1px solid var(--line);color:inherit;text-decoration:none;transition:background var(--d1)}
 .ptype:last-of-type{border-bottom:1px solid var(--line)}
 .ptype:hover{background:var(--ink-05);text-decoration:none}
 .ptype.on{background:var(--blue-10)}
 .ptype.on .ptype__t{color:var(--blue-70)}
 .ptype__t{font-size:14px;font-weight:700;letter-spacing:-.005em;display:block}
 .ptype__d{font-size:11px;color:var(--faint);margin-top:3px;display:block}
-/* CONTRASTE DOS DOIS SELOS, e o texto é LITERAL nos dois. O selo tem chapa de cor
-   FIXA — âmbar claro, vermelho escuro —, então a cor do texto se decide contra ESSA
-   chapa, não contra o tema. Com `var(--ink-100)` o texto virava quase branco no modo
-   escuro e o contraste caía para 2,37:1. Mesmo princípio da folha impressa: fundo
-   fixo pede cor de texto fixa. */
-.ptype__b{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--amber-40);color:#161616;padding:1px 7px;flex:none}
-/* Pedido TRAVADO é fila de trabalho, não pendência de cadastro: vermelho, e vem
-   ANTES da marca âmbar de lacuna — é ele que decide a ordem em que o comprador
-   abre as tabelas hoje. */
+.ptype__b{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--amber-40);color:var(--ink-100);padding:1px 7px;flex:none}
+/* CONTRASTE DOS DOIS SELOS, e o texto é LITERAL nos dois.
+   O selo tem chapa de cor fixa — âmbar claro, vermelho escuro —, então a cor do texto se decide
+   contra ESSA chapa, não contra o tema. Com `var(--ink-100)` o texto virava quase branco no modo
+   escuro e o contraste caía para 2,37:1, pior do que antes: o token inverte com o tema e a chapa
+   não. Mesmo princípio da folha impressa — fundo fixo pede cor de texto fixa. */
+.ptype__b{color:#161616}
+/* pedido travado é fila de trabalho, não pendência de cadastro: vermelho, e vem ANTES da marca
+   âmbar de lacuna, porque é o que decide a ordem em que o comprador abre as tabelas. */
 .ptype__b--block{background:#a2191f;color:#fff}
 .pside__foot{margin-top:auto;padding:16px 18px;border-top:1px solid var(--line);background:var(--ink-05)}
 .pside__foot p{font-size:12px;color:var(--muted);line-height:1.5;text-wrap:pretty}
@@ -282,10 +282,20 @@
 .paynote svg{width:14px;height:14px;flex:none;margin-top:3px;fill:none;stroke:var(--amber-60);stroke-width:2}
 .pmet{display:flex;flex-direction:column;gap:8px;margin-top:11px}
 .pmet__r{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted)}
-.pmet__r b{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.02em}
-.pmet__r.big b{font-size:19px}
-.pmet__r.rest b{color:var(--amber-70);font-size:19px}
-.pmet__r.done b{color:var(--green-70)}
+/* filho DIRETO. O par de moeda (.mvd) também traz <b> dentro, e alcançá-lo por descendência
+   achatava as duas moedas no corpo do painel: a dedução, único <b> solto da caixa, virava o número
+   mais alto, e o líquido e o saldo — os dois que o cliente precisa ler — os mais baixos. */
+.pmet__r>b{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+.pmet__r.big>b{font-size:19px}
+.pmet__r.rest>b{color:var(--amber-70);font-size:19px}
+.pmet__r.done>b{color:var(--green-70)}
+/* tamanho e cor de estado vão no PRÓPRIO par, nunca em cada moeda: .mvd__a e .mvd__b são
+   color:inherit, então a cor desce sozinha e as duas continuam idênticas entre si. */
+.pmet__r .mvd{margin-left:auto;color:var(--text)}
+.pmet__r.big .mvd__a,.pmet__r.big .mvd__b{font-size:19px}
+.pmet__r.rest .mvd__a,.pmet__r.rest .mvd__b{font-size:19px}
+.pmet__r.rest .mvd{color:var(--amber-70)}
+.pmet__r.done .mvd{color:var(--green-70)}
 .pbar{height:8px;background:var(--ink-10);margin-top:14px;display:flex}
 .pbar i{background:var(--green-50);transition:width var(--d3) var(--ez)}
 .pbar__l{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--faint);margin-top:7px}
@@ -432,17 +442,147 @@
    a ser escura de verdade, em vez de branca sobre branca */
 [data-theme="dark"] .cat{background:#000;color:#fff}
 
-/* ============ RODAPÉ DA LISTA DE COMPRAS ============
-   O `.tfoot` do pacote é `space-between` com UMA ponta de texto + a paginação.
-   Aqui a ponta esquerda tem DUAS frases (decisão do dono, 2026-08-19: o
-   comprador quer o tamanho da fila e quanto dela é trabalho dele), e sem um
-   agrupador o `space-between` esparramaria as duas pelas bordas. */
-.tfoot__sum{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;padding:9px 0}
-@media (max-width:760px){
-  /* No celular a paginação vira faixa de largura inteira (regra do pacote);
-     a soma passa a ser a primeira linha e ganha respiro nas duas bordas. */
-  .tfoot__sum{padding:11px 16px;width:100%}
+/* AVISO DE PEDIDO TRAVADO no topo da grade. Autodefinido, NÃO modificador: a base .gnote mora em
+   wtc-ficha.css e as quatro telas de grade não carregam essa folha — só carbon + parceiro. Escrito
+   como modificador, o aviso vinha sem flex, sem padding e sem dimensão de ícone, e o SVG esticava
+   para 853px: um triângulo vermelho do tamanho do viewport empurrando a tabela de preços para fora
+   da tela. Carregar a folha da ficha aqui resolveria a cor, mas puxaria impressão e modais para
+   páginas que não têm nem um nem outro. */
+.gnote--blk{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin-bottom:20px;
+  border:1px solid var(--red-60);background:var(--red-10);font-size:12.5px;line-height:1.5;
+  color:var(--text);text-wrap:pretty}
+.gnote--blk svg{width:16px;height:16px;flex:none;margin-top:2px;fill:none;stroke:var(--red-60);stroke-width:2}
+.gnote--blk b{color:var(--red-70);font-weight:700}
+
+/* ============ PLANILHA DE CONFERÊNCIA NO TELEFONE (390px) ============
+   O caso mais difícil da tela, e é o único lugar do sistema onde se DIGITA dentro de uma tabela.
+   A .dtab já vira cartão aqui; o que faltava era o cartão saber o papel de cada célula — sem isso
+   as nove células caíam numa pilha indistinguível, com o campo de recusa perdido no meio.
+
+   A ordem do cartão é a ordem do trabalho de bancada: primeiro o que ele tem na mão (tipo,
+   capacidade, caixa), depois quanto veio, depois o campo, e só então a consequência.
+   Preço unitário e ¥ esperado saem: são referência, e referência não se lê com o dedo ocupado. */
+@media(max-width:600px){
+  /* O cartão do sistema é FLEX COM QUEBRA — as células fluem e quebram sozinhas. Eu tinha imposto
+     um grid de duas colunas por cima, e cada linha virou uma torre de 460px: nove linhas não
+     cabiam em dez telas. Aqui só digo QUAIS células abrem fileira nova (`flex:1 0 100%`) e quais
+     encostam à direita (`margin-left:auto`); o resto é o fluxo que a .dtab já sabe fazer.
+     Quatro fileiras, na ordem do trabalho de bancada: o que ele tem na mão · quanto veio · o
+     campo · a consequência. */
+  .dtab--conf tbody tr{gap:5px 10px;padding:13px 16px}
+  .dtab--conf .c-t{font-size:14.5px;font-weight:700;color:var(--text)}
+  .dtab--conf .c-cap{font-family:var(--mono);font-size:14.5px;font-weight:600;color:var(--text)}
+  .dtab--conf .c-box{margin-left:auto}
+  .dtab--conf .c-qty{flex:1 0 100%;font-family:var(--sans);font-size:12px;color:var(--muted);text-align:left}
+  /* referência não se lê com o dedo ocupado */
+  .dtab--conf .c-unit,.dtab--conf .c-exp{display:none}
+  /* o campo abre fileira e tem altura de toque: 48px, acima do mínimo de 44 */
+  .dtab--conf .c-rej{flex:1 0 100%;text-align:left;margin-top:2px}
+  .dtab--conf .c-rej .rjin{width:100%;max-width:none;height:48px;font-size:18px;text-align:left;padding:0 12px}
+  .dtab--conf .c-rej .rej{font-size:16px}
+  /* a consequência divide a última fileira: aprovados à esquerda, dinheiro à direita */
+  .dtab--conf .c-ok{flex:0 0 auto;font-size:12px;color:var(--muted)}
+  .dtab--conf .c-ok b{font-family:var(--mono);font-size:12.5px;color:var(--green-70)}
+  .dtab--conf .c-val{margin-left:auto;text-align:right;font-size:12.5px}
+  /* RÓTULO DO CARTÃO — é um <i>, não um <span>, e a diferença é de vocabulário: neste sistema
+     `.dtab .n span` É A SUB-LINHA (block, mono, 11px, cinza), com especificidade (0,3,1) que ganha
+     de qualquer regra minha de duas classes. Meu rótulo não é sub-linha, então não é span.
+     Fora do cartão ele não existe: lá o cabeçalho da coluna já nomeia o dado. */
+  .dtab--conf .c-lbl{display:inline;font-style:normal;font-family:var(--sans);color:var(--faint);margin-right:5px}
+  .dtab--conf .c-rej .c-lbl--rej{display:block;margin:0 0 5px;font-size:9.5px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--amber-70);font-family:var(--sans)}
+  /* a faixa de marca continua faixa: é ela que diz em que pilha o dedo está */
+  .dtab--conf tbody tr.g{gap:0;padding:7px 16px;min-height:0;background:var(--ink-10)}
+  .dtab--conf tbody tr.g td:first-child{line-height:1.35;height:auto;padding:0;border:0}
+  .dtab--conf tbody tr.g .g__n{padding:0;height:auto}
+  .dtab--conf tbody tr.g td{display:none}
+  .dtab--conf tbody tr.g td:first-child{display:block;flex:1 1 auto}
+  /* o rodapé de soma sai: quem soma no telefone é a barra viva, que não deixa a tela */
+  .dtab--conf tfoot{display:none}
+  .dtab__sc--conf{max-height:none;overflow:visible}
 }
+/* BARRA VIVA: só no telefone. Acima de 600px o resultado já está nos heróis e no rodapé de soma,
+   e um terceiro lugar dizendo o mesmo número seria eco. */
+.conflive{display:none}
+@media(max-width:600px){
+  /* CHAPA FIXA, CORES LITERAIS. `var(--ink-100)` inverte com o tema: no escuro a barra virava
+     branca e o valor — `color:#fff` — sumia dentro dela. A barra é uma chapa escura em qualquer
+     tema, como uma barra de ferramentas, então a cor do texto se decide contra a chapa e não
+     contra o tema. Mesmo princípio dos selos da barra de tipos e da folha impressa. */
+  .conflive{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;position:sticky;bottom:0;z-index:5;
+    padding:12px 16px;background:#161616;color:#fff;box-shadow:0 -8px 20px -10px rgba(0,0,0,.45)}
+  .conflive__l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a2a9b0}
+  .conflive__v{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.02em;margin-left:auto;color:#fff}
+  .conflive__d{flex:1 1 100%;font-size:12px;color:#a2a9b0}
+  .conflive__d.is-dif{color:#fdd13a}
+}
+@container vp (max-width:600px){
+  /* O cartão do sistema é FLEX COM QUEBRA — as células fluem e quebram sozinhas. Eu tinha imposto
+     um grid de duas colunas por cima, e cada linha virou uma torre de 460px: nove linhas não
+     cabiam em dez telas. Aqui só digo QUAIS células abrem fileira nova (`flex:1 0 100%`) e quais
+     encostam à direita (`margin-left:auto`); o resto é o fluxo que a .dtab já sabe fazer.
+     Quatro fileiras, na ordem do trabalho de bancada: o que ele tem na mão · quanto veio · o
+     campo · a consequência. */
+  .dtab--conf tbody tr{gap:5px 10px;padding:13px 16px}
+  .dtab--conf .c-t{font-size:14.5px;font-weight:700;color:var(--text)}
+  .dtab--conf .c-cap{font-family:var(--mono);font-size:14.5px;font-weight:600;color:var(--text)}
+  .dtab--conf .c-box{margin-left:auto}
+  .dtab--conf .c-qty{flex:1 0 100%;font-family:var(--sans);font-size:12px;color:var(--muted);text-align:left}
+  /* referência não se lê com o dedo ocupado */
+  .dtab--conf .c-unit,.dtab--conf .c-exp{display:none}
+  /* o campo abre fileira e tem altura de toque: 48px, acima do mínimo de 44 */
+  .dtab--conf .c-rej{flex:1 0 100%;text-align:left;margin-top:2px}
+  .dtab--conf .c-rej .rjin{width:100%;max-width:none;height:48px;font-size:18px;text-align:left;padding:0 12px}
+  .dtab--conf .c-rej .rej{font-size:16px}
+  /* a consequência divide a última fileira: aprovados à esquerda, dinheiro à direita */
+  .dtab--conf .c-ok{flex:0 0 auto;font-size:12px;color:var(--muted)}
+  .dtab--conf .c-ok b{font-family:var(--mono);font-size:12.5px;color:var(--green-70)}
+  .dtab--conf .c-val{margin-left:auto;text-align:right;font-size:12.5px}
+  /* RÓTULO DO CARTÃO — é um <i>, não um <span>, e a diferença é de vocabulário: neste sistema
+     `.dtab .n span` É A SUB-LINHA (block, mono, 11px, cinza), com especificidade (0,3,1) que ganha
+     de qualquer regra minha de duas classes. Meu rótulo não é sub-linha, então não é span.
+     Fora do cartão ele não existe: lá o cabeçalho da coluna já nomeia o dado. */
+  .dtab--conf .c-lbl{display:inline;font-style:normal;font-family:var(--sans);color:var(--faint);margin-right:5px}
+  .dtab--conf .c-rej .c-lbl--rej{display:block;margin:0 0 5px;font-size:9.5px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--amber-70);font-family:var(--sans)}
+  /* a faixa de marca continua faixa: é ela que diz em que pilha o dedo está */
+  .dtab--conf tbody tr.g{gap:0;padding:7px 16px;min-height:0;background:var(--ink-10)}
+  .dtab--conf tbody tr.g td:first-child{line-height:1.35;height:auto;padding:0;border:0}
+  .dtab--conf tbody tr.g .g__n{padding:0;height:auto}
+  .dtab--conf tbody tr.g td{display:none}
+  .dtab--conf tbody tr.g td:first-child{display:block;flex:1 1 auto}
+  /* o rodapé de soma sai: quem soma no telefone é a barra viva, que não deixa a tela */
+  .dtab--conf tfoot{display:none}
+  .dtab__sc--conf{max-height:none;overflow:visible}
+  /* CHAPA FIXA, CORES LITERAIS. `var(--ink-100)` inverte com o tema: no escuro a barra virava
+     branca e o valor — `color:#fff` — sumia dentro dela. A barra é uma chapa escura em qualquer
+     tema, como uma barra de ferramentas, então a cor do texto se decide contra a chapa e não
+     contra o tema. Mesmo princípio dos selos da barra de tipos e da folha impressa. */
+  .conflive{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;position:sticky;bottom:0;z-index:5;
+    padding:12px 16px;background:#161616;color:#fff;box-shadow:0 -8px 20px -10px rgba(0,0,0,.45)}
+  .conflive__l{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a2a9b0}
+  .conflive__v{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.02em;margin-left:auto;color:#fff}
+  .conflive__d{flex:1 1 100%;font-size:12px;color:#a2a9b0}
+  .conflive__d.is-dif{color:#fdd13a}
+}
+
+/* RÓTULO DO CARTÃO DE ENTRADA. O sistema decidiu, e está escrito no bloco de cartão do
+   wtc-carbon.css, que cartão NÃO imprime rótulo: "pastilha é estado, avatar é gente, ¥ é dinheiro".
+   A regra genérica `.dtab tbody td[data-label]::before{content:none}` faz valer isso.
+   Aqui o sistema abre exceção, e ela é explícita em vez de acidental: um cartão de ENTRADA DE DADO
+   sem rótulo não é minimalismo, é adivinhação — um campo de 48px com placeholder "0" não diz o que
+   se digita nele. E o rótulo é elemento real, não pseudo: assim existe para leitor de tela e não
+   disputa cascata com a regra genérica.
+   Na tabela (acima de 600px) ele não aparece: lá o cabeçalho da coluna já nomeia o dado. */
+.c-lbl{display:none}
+
+/* ══════════════════════════════════════════════════════════════════
+   O QUE É DO WHATTHECHIP E NÃO DO PACOTE
+   Tudo abaixo desta linha é acréscimo nosso sobre o parceiro.css do
+   design system (pacote de 2026-08-27). Acima, nada foi tocado — para
+   absorver a próxima versão basta trocar o topo e reaplicar este rodapé.
+   ══════════════════════════════════════════════════════════════════ */
+
 
 /* ---------- a fila de cotação travada (spec v2 §3.5) ----------
    Abre a tela do Resumo porque é a fila de trabalho do comprador: tabela
@@ -460,71 +600,23 @@
 .blk__n em{font-family:var(--mono);font-style:normal;font-weight:600;color:var(--muted);margin-left:7px;font-size:12px}
 .blk__m{font-size:11.5px;color:var(--muted);margin-top:3px}
 .blk__m b{font-family:var(--mono);font-weight:600;color:var(--red-70)}
-/* Aviso no TOPO DA GRADE, para quem chegou pela barra de tipos e não pela
-   faixa: sem ele o selo vermelho manda o comprador para uma tabela de trinta
-   linhas sem dizer qual delas trava.
 
-   ⚠ O SVG leva `flex:none` e tamanho FIXO. Sem isso o flex o estica para a
-   altura do texto e, num aviso de duas linhas, ele vira um triângulo vermelho
-   do tamanho da viewport que empurra a tabela para fora da tela (medido no
-   protótipo a 853px). */
-.gnote--blk{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin-bottom:20px;
-  border:1px solid var(--red-60);background:var(--red-10);font-size:12.5px;line-height:1.5;
-  color:var(--text);text-wrap:pretty}
-.gnote--blk svg{width:16px;height:16px;flex:none;margin-top:2px;fill:none;stroke:var(--red-60);stroke-width:2}
-.gnote--blk b{color:var(--red-70);font-weight:700}
-.gnote--blk .gnote__i + .gnote__i{margin-top:7px}
-
-/* ---------- a tela do CATÁLOGO (spec v2 §5.2) ----------
-   Duas colunas: a seleção de tipos à esquerda, as opções do documento à
-   direita. Abaixo de 900px vira uma coluna e as opções vão para o FIM — a
-   seleção é a decisão principal, e no telefone o polegar chega primeiro nela. */
-.cat{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
-.cat__sum{padding:11px 14px;border-top:2px solid var(--line);font-size:12.5px;color:var(--muted);background:var(--ink-05)}
-.cat__sum.is-bad{color:var(--red-70);font-weight:600}
-/* Caixa ESCURA (o `--ink-100` do desenho): o painel de opções não é mais uma
-   tabela — é o formulário que decide o documento, e a inversão o separa do
-   resto sem precisar de moldura. */
-.catopt{background:var(--ink-100);color:var(--surface);padding:16px;display:flex;flex-direction:column;gap:12px;position:sticky;top:14px}
-.catopt__l{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.72}
-.catopt__r{display:block;font-size:12px;font-weight:600;letter-spacing:.01em}
-.catopt__in{display:block;width:100%;margin-top:5px;padding:7px 8px;border:1px solid var(--ink-70);background:var(--surface);color:var(--text);font:inherit;font-size:13px;box-sizing:border-box}
-.catopt textarea.catopt__in{resize:vertical;min-height:60px;font-family:var(--sans)}
-.catopt__fx{font-family:var(--mono);font-size:11.5px;padding:9px 10px;background:rgba(255,255,255,.08);line-height:1.5}
-.catopt__fxs{font-family:var(--sans);font-size:10.5px;opacity:.6;margin-top:3px}
-.catopt__go{width:100%;padding:10px}
-/* Zero tipos = nada a gerar. Desabilitar é mais honesto que produzir um PDF
-   de uma página em branco e deixá-lo descobrir depois de enviar. */
-.catopt__go:disabled{opacity:.45;pointer-events:none}
-@media (max-width:900px){
-  .cat{grid-template-columns:minmax(0,1fr)}
-  .catopt{position:static;order:2}
+/* ============ RODAPÉ DA LISTA DE COMPRAS ============
+   O `.tfoot` do pacote é `space-between` com UMA ponta de texto + a paginação.
+   Aqui a ponta esquerda tem DUAS frases (decisão do dono, 2026-08-19: o
+   comprador quer o tamanho da fila e quanto dela é trabalho dele), e sem um
+   agrupador o `space-between` esparramaria as duas pelas bordas. */
+.tfoot__sum{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;padding:9px 0}
+@media (max-width:760px){
+  /* No celular a paginação vira faixa de largura inteira (regra do pacote);
+     a soma passa a ser a primeira linha e ganha respiro nas duas bordas. */
+  .tfoot__sum{padding:11px 16px;width:100%}
 }
 
-/* ---------- Resumo de preços: os três números e a porta do catálogo ----------
-   Classes PRÓPRIAS, e não `.pmet`/`.quick` do pacote: aquelas são a lista de
-   rótulo→valor do painel da ficha e a fileira de botões pequenos. Nome
-   parecido, papel diferente — vestir com a classe errada é como um sistema de
-   design apodrece. */
-.pkpi{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);flex-wrap:wrap}
-.pkpi__r{flex:1 1 170px;min-width:0;background:var(--surface);padding:13px 16px;display:flex;flex-direction:column;gap:4px}
-.pkpi__r span{font-size:11.5px;color:var(--muted);text-wrap:pretty}
-.pkpi__r b{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.03em;color:var(--text);line-height:1}
-.pkpi__r b.is-warn{color:var(--amber-70)}
-/* A PORTA: um card que só leva a algum lugar. O chevron é o sinal de que a
-   coisa continua noutra tela — sem ele, um card sem botão parece um card
-   morto. */
-.pdoor{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  background:var(--surface);border:1px solid var(--line);padding:15px 18px;text-decoration:none;color:inherit;
-  transition:background var(--d1)}
-.pdoor:hover{background:var(--ink-05);text-decoration:none}
-.pdoor__t{font-size:14px;font-weight:700;min-width:0}
-.pdoor__t span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:3px;text-wrap:pretty}
-.pdoor__g{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--blue-60);white-space:nowrap;flex:none}
-.pdoor__g svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;transition:transform var(--d1)}
-.pdoor:hover .pdoor__g svg{transform:translateX(2px)}
-
-/* ---------- FAQ dobrável (sem JS: <details>/<summary>) ---------- */
+/* ---------- FAQ dobrável (sem JS: <details>/<summary>) ----------
+   Fica de pé porque a tela "Como funciona" NÃO existe no pacote do comprador
+   do design (o `dist/comprador` de 2026-08-27 não a inclui) e o dono mandou
+   mantê-la. Se ela cair um dia, este bloco cai junto — não há outro uso. */
 .faq details{background:var(--surface);border:1px solid var(--line);border-bottom:0}
 .faq details:last-child{border-bottom:1px solid var(--line)}
 .faq summary{padding:13px 16px;font-size:13.5px;font-weight:600;cursor:pointer;list-style:none;display:flex;gap:9px;align-items:baseline}
@@ -535,64 +627,3 @@
 .faq details[open] summary::before{content:"\2013"}
 .faq p{margin:0;padding:0 16px 14px 34px;font-size:13px;color:var(--muted);line-height:1.65;text-wrap:pretty}
 .step4>div b{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--blue-60);margin-right:7px}
-
-/* ============ A GRADE DE PREÇO NO TELEFONE (≤600px) ============
-   Etapa 10. É o segundo lugar do sistema onde se DIGITA dentro de uma tabela
-   (o primeiro é a conferência do lote, `.dtab--conf` em ficha.css), e o
-   problema é o mesmo: a `.dtab` já vira cartão sozinha, mas o cartão não sabe
-   o PAPEL de cada célula — sem isso as cinco caem numa pilha indistinguível,
-   com o campo perdido no meio.
-
-   ⚠ A regra do sistema é "nenhum rótulo impresso": no cartão a hierarquia
-   substitui a legenda, e por isso a `.dtab` zera o `::before` do `data-label`.
-   Aqui ela precisa de exceção, e a exceção tem razão: numa linha com faixa há
-   DOIS campos de preço lado a lado, e sem rótulo nada distingue o mínimo do
-   máximo. Onde há ambiguidade, legenda não é ruído — é o dado.
-
-   Especificidade de propósito (`.dtab.dtab--grade`, 0-4-1): a regra que zera
-   o `::before` é `.dtab tbody td[data-label]` (0-3-1). Empatar e depender da
-   ordem dos arquivos é como esta correção some no dia em que alguém trocar a
-   ordem dos <link>.
-
-   A ordem do cartão é a ordem da decisão: que linha é · como ela está ·
-   quanto vale. A data da última atualização SAI — é referência, e referência
-   não se lê com o dedo ocupado. */
-@media (max-width:600px){
-  .dtab--grade tbody tr{gap:6px 12px;padding:13px 16px}
-  /* 1ª fileira: a linha do grid, e o estado encostado à direita */
-  .dtab--grade .g-lin{flex:1 1 auto;font-size:15px;font-weight:700;color:var(--text)}
-  .dtab--grade .g-st{margin-left:auto;flex:0 0 auto}
-  /* o campo abre fileira e tem altura de TOQUE: 48px, acima do mínimo de 44 */
-  .dtab--grade .g-p,.dtab--grade .g-pmax,.dtab--grade .g-brand{flex:1 0 100%;order:6}
-  .dtab--grade .g-p .cell,.dtab--grade .g-pmax .cell,.dtab--grade .g-brand .cell{
-    width:100%;max-width:none;height:48px;font-size:18px;padding:0 12px}
-  .dtab.dtab--grade tbody td[data-label]::before{
-    content:attr(data-label);display:block;margin:0 0 5px;font-size:9.5px;
-    font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--amber-70);font-family:var(--sans)}
-  /* …menos onde o próprio valor já é o rótulo: o estado é uma pastilha que se
-     lê sozinha, e "STATUS" acima dela é uma palavra a mais para rolar. */
-  .dtab.dtab--grade tbody td.g-st[data-label]::before{content:none}
-  /* referência não se lê com o dedo ocupado */
-  .dtab--grade .g-upd{display:none}
-  /* a faixa de geração continua faixa: é ela que diz em que pilha o dedo está */
-  .dtab--grade tbody tr.g{gap:0;padding:7px 16px;background:var(--ink-10)}
-  .dtab--grade tbody tr.g td{font-size:11px;font-weight:800;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--ink-70)}
-  .dtab--grade tbody tr.g td[data-label]::before{content:none}
-  /* a capacidade calculada do SSD não é campo: fica na fileira, à direita */
-  .dtab--grade .wtc-calc{justify-content:flex-end}
-
-  /* A FAIXA DA FILA vira pilha: quatro células de 200px lado a lado viravam
-     quatro tiras de uma palavra cada. */
-  .blk__l{flex-direction:column}
-  .blk__i{flex:1 1 auto}
-  /* Os três números: dois por fileira em vez de três tiras finas. */
-  .pkpi__r{flex:1 1 45%}
-  .pkpi__r b{font-size:22px}
-  /* A porta do catálogo: o chevron desce em vez de espremer o título. */
-  .pdoor{align-items:flex-start;flex-direction:column;gap:10px}
-  /* O painel de opções do catálogo já vai para o fim em 900px; aqui ele
-     também perde o `sticky`, que numa tela curta cobriria a seleção. */
-  .catopt{position:static}
-}

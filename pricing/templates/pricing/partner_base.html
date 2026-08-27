@@ -89,6 +89,13 @@
        folha saiu inteira — CSS legado que ninguém usa não é
        inofensivo: ele é copiado por quem chega depois. */
   </style>
+  {% comment %} O TEMA ANTES DA PRIMEIRA PINTURA. Tem de ser inline e tem de vir
+     ANTES do primeiro pixel: se o atributo só chegasse com o theme.js no fim do
+     body, a página abriria clara e piscaria para escura no primeiro frame. É a
+     única razão de existir script solto no <head> deste arquivo. {% endcomment %}
+  <script>(function(){try{var t=localStorage.getItem("wtc_theme");
+    document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");}
+    catch(e){document.documentElement.setAttribute("data-theme","light");}})();</script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -165,6 +172,18 @@
   </a>
 
   <div class="pshell__me">
+    {% comment %} Modo escuro (protótipo, 2026-08-27). O pacote JÁ tem as regras
+       — são 27 blocos `[data-theme="dark"]` entre o components.css e os
+       patterns — então o botão muda a tela de verdade, não é enfeite. O sol e
+       a lua convivem no mesmo botão; quem esconde um dos dois é o pacote,
+       pelo `data-theme` do <html>. {% endcomment %}
+    <button type="button" class="shell__ico shell__ico--theme" id="theme-btn"
+            title="{% trans 'Alternar modo escuro' %}"
+            aria-label="{% trans 'Alternar modo escuro' %}" aria-pressed="false">
+      <svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+    </button>
+
     {# Idioma — comprador escolhe (中文 p/ parceiro chinês); logado, persiste (I18N.md §3) #}
     {% include "partials/lang_select.html" with variant='ds' %}
 
@@ -214,6 +233,11 @@
       </a>
       {% endfor %}
     </div>
+    {% comment %} Rodapé da barra de tipos (protótipo, 2026-08-27). Existe por
+       causa de UMA pergunta que a barra provoca e não responde: o SSD aparece
+       na lista mas não tem grade como os outros. Dizer isso aqui custa uma
+       linha; deixar o comprador clicar para descobrir custa uma viagem. {% endcomment %}
+    <div class="pside__foot"><p>{% blocktrans trimmed %}<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça.{% endblocktrans %}</p></div>
   </aside>
   {% endblock %}
 
@@ -260,5 +284,6 @@
   window.addEventListener('resize', medir);
 })();
 </script>
+<script src="{% static 'wtc/theme.js' %}"></script>
 </body>
 </html>

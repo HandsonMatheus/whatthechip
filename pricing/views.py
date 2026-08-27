@@ -496,6 +496,10 @@ def partner_home(request):
          'dual': k == 'emmc',        # celular unificado × PCB por marca
          'quoted': por_kind.get(k, {}).get(STATUS_QUOTED, 0),
          'pending': pend,
+         # O protótipo mostra LINHAS (o total da tabela) ao lado de COTADAS,
+         # e não «cotadas» sozinha: sem o denominador, 12 pode ser tudo ou
+         # metade. Realinhado em 2026-08-27.
+         'lines': por_kind.get(k, {}).get(STATUS_QUOTED, 0) + pend,
          # §3.5: a coluna "Cotadas" diz `travando N pedidos` no lugar de
          # `N sem cotação` quando as duas coisas são verdade. As duas SÃO —
          # mas só uma explica a urgência, e é ela que o comprador precisa ler.

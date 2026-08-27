@@ -4152,3 +4152,83 @@ msgstr ""
 #~ msgstr ""
 #~ "Contract rate with WhatTheChip — the rate used to convert your ¥ into US$. "
 #~ "It changes only when the contract changes."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça."
+msgstr "<b>SSD has no grid</b> — the price is linear in ¥/GB, with a floor per piece."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa do dia carimbada em cada página."
+msgstr "Your full grid, the way the seller sees it. Generated on the spot, with the day's rate stamped on every page."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "A taxa vai carimbada no rodapé de cada página:"
+msgstr "The rate is stamped at the foot of every page:"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Alternar modo escuro"
+msgstr "Toggle dark mode"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Buscar tipo de chip…"
+msgstr "Search chip type…"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Catálogo de preços em PDF"
+msgstr "Price catalog as PDF"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro por conta do vendedor."
+msgstr "E.g.: prices valid for lots above 500 pieces per line. Freight and insurance paid by the seller."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Observação na capa"
+msgstr "Note on the cover"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Ocultar do PDF"
+msgstr "Hide from the PDF"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Publicar em branco"
+msgstr "Publish blank"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Sai na primeira página, abaixo do seu nome."
+msgstr "Appears on the first page, below your name."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Selecionar todos os tipos"
+msgstr "Select all types"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Seu <b>catálogo de preços</b>"
+msgstr "Your <b>price catalog</b>"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Só os com lacuna"
+msgstr "Only those with gaps"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Só os completos"
+msgstr "Only the complete ones"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Todos os tipos"
+msgstr "All types"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor — o dado publicado é sempre o seu ¥."
+msgstr "You quote in ¥ (RMB). The conversion to US$ is there only for the seller to read — the published figure is always your ¥."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "linhas"
+msgstr "lines"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "¥ mínimo/peça"
+msgstr "¥ minimum/piece"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "¥ por GB"
+msgstr "¥ per GB"
