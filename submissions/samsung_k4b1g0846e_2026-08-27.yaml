@@ -1,0 +1,29 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3 discreta).
+# PN alvo (debug 2026-08-27): K4B1G0846E — grammar_complete=true, dram_density
+# "1Gb = 128MB por die [~]" já correto pela gramática (pn[3:5]='1G'), mas o PN
+# exato não estava confirmado no banco (known_exact=false, pn_not_in_db=true).
+# Cobertura local: TODOS os 5 fuzzy_suggestions do debug já estavam cobertos
+# (K4B1G0846D/F, K4B1G0446D via submissão de 24/08; K4B1G0846I, K4B4G0846E
+# via seed) — só faltava o die "E" (base 1Gb x8) em si.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B1G0846E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347878/SAMSUNG/K4B1G0846E.html"
+    notes: >
+      PN alvo do debug (2026-08-27), forma base sem sufixo. Alldatasheet:
+      página dedicada (id 347878), "128MX8" — 128M×8=1024Mbit=1Gb;
+      1Gb÷8=128MB ✓ (bate com dram_density da gramática), PBGA78.
+
+  - part_number: "K4B1G0846E-HCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.datasheets360.com/part/detail/k4b1g0846e-hcf8/-2032437245228984059/"
+    notes: "Forma completa com sufixo. Datasheets360: 'DDR3 DRAM, 128MX8, 0.15ns, CMOS, PBGA78' — confirma capacidade e pacote diretamente para este sufixo exato. Nenhum sufixo BC/BY encontrado pra este die/densidade específico (só HC) — mesmo padrão já visto no irmão K4B1G0846F (submissão 2026-08-24), também só HC nesta densidade."
