@@ -1,0 +1,218 @@
+# Submissão known_parts — SanDisk, clusters SDIN5D1 / SDIN5D2 / SDIN5C1 / SDIN5C2
+# Origem: debug do estoque, PN SDIN5D12G, 26/08/2026 14:28:46 (pn_not_in_db=true, família
+# fallback SDIN genérica). Ver INVESTIGACAO_sandisk_sdin5d_sdin5c_2026-08-26.md.
+#
+# 15 PNs confidence=confirmed — datasheet oficial SanDisk lido NA ÍNTEGRA (não resumo de busca):
+# doc 80-36-03462 "SanDisk iNAND e.MMC 4.41 I/F - Standard and Ultra", ©2011, Table 9
+# "Ordering Information" (Seção 7), lido via mirror alldatasheet.com (fetch direto no PDF da
+# SanDisk/Octopart retornou vazio — mesmo padrão já visto em SDIN7DU2, ver
+# wtc-pdf-fetch-mirror-distribuidor). Tabela completa transcrita: Capacity | Technology
+# (X2=MLC 2 bits/célula, X3=TLC 3 bits/célula) | Part Number | Package.
+#
+# ⚠ EXCLUÍDO desta submissão: "SDIN5D2-2G" — aparece em 3 distribuidores (elnec.com, nexelec.com,
+# veswin.com) mas AUSENTE da Table 9 oficial (que só lista SDIN5D1-2G-L em 2GB, nenhuma linha
+# SDIN5D2 nessa capacidade). Regra "excluir, não adivinhar": não confirmo contra a fonte primária
+# explícita. Fica como backlog/discrepância — se aparecer na bancada, investigar à parte.
+#
+# Uso (o DONO roda, nunca o chat). Dry-run já confronta o banco por part_number_norm — painel
+# NOVO/RESUBMETE/COMPLEMENTO/SEM FONTE/CONFLITO/IGUAL (SANDISK.md §0.1). SDIN5C1/SDIN5C2 podem já
+# ter registro prévio (fuzzy do debug sugeriu SDIN5C132G/SDIN5C14G) — se cair em CONFLITO, é caso
+# pro `resolve_conflicts`, não decisão daqui:
+#   python manage.py submit_known_parts submissions/sandisk_sdin5d_sdin5c_2026-08-26.yaml
+#   python manage.py submit_known_parts submissions/sandisk_sdin5d_sdin5c_2026-08-26.yaml --commit
+#
+# Sem golden test afetado — família SDIN (fallback genérico) já tem âncora em _SD_GOLDEN.
+
+brand: "SanDisk"
+known_parts:
+  # ── SDIN5D1 (die-code "5D1") — X2 em 2GB, X3 em 4/8/16GB ──
+  - part_number: "SDIN5D12G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "2GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      PN do caso original (debug do estoque 26/08/2026). Datasheet oficial SanDisk 80-36-03462
+      "iNAND e.MMC 4.41 I/F - Standard and Ultra" (©2011), Table 9 "Ordering Information" (Seção 7),
+      lido na íntegra via mirror alldatasheet.com (fetch direto no PDF SanDisk/Octopart vazio).
+      Linha exata: "2GB | X2 | SDIN5D1-2G-L | 11.5mm x 13mm x 1.0mm". PN normalizado sem o sufixo
+      "-L" (packaging tray, conforme nota da própria tabela: "-LT" seria a variante tape/reel; "-L"
+      não é sufixo de grade/spec, é método de embalagem) — mesmo padrão já usado nos demais
+      known_parts desta marca (nunca carregam "-L"/"-LT").
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5D14G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462) — ver notas lá para a metodologia
+      completa. Linha exata: "4GB | X3 | SDIN5D1-4G-L | 11.5mm x 13mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5D18G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "8GB | X3 | SDIN5D1-8G-L |
+      11.5mm x 13mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5D116G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "16GB | X3 | SDIN5D1-16G-L |
+      11.5mm x 13mm x 1.2mm" (pacote mais alto que os menores — mesma capacidade, die maior).
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  # ── SDIN5D2 (die-code "5D2") — sempre X2, SEM variante 2GB na Table 9 (ver exclusão no header) ──
+  - part_number: "SDIN5D24G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "4GB | X2 | SDIN5D2-4G-L |
+      11.5mm x 13mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5D28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "8GB | X2 | SDIN5D2-8G-L |
+      11.5mm x 13mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5D216G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "16GB | X2 | SDIN5D2-16G-L |
+      11.5mm x 13mm x1.2mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  # ── SDIN5C1 (die-code "5C1", pacote maior 12x16mm) — X3, só 8/16/32/64GB nesta Table 9 ──
+  # ⚠ fuzzy do debug sugeriu SDIN5C132G/SDIN5C14G — podem já existir no banco (rodada 07-14, doc
+  # DIFERENTE 80-36-03433). Se cair em CONFLITO/IGUAL no painel, não é erro desta submissão.
+  - part_number: "SDIN5C18G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462) — ver notas lá. Linha exata: "8GB | X3 |
+      SDIN5C1-8G-L | 12mm x 16mm x 1.0mm". Pacote maior (12x16mm) que o cluster 5D (11.5x13mm) —
+      mesma capacidade, footprint físico diferente.
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5C116G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "16GB | X3 | SDIN5C1-16G-L |
+      12mm x 16mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5C132G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "32GB | X3 | SDIN5C1-32G-L |
+      12mm x 16mm x 1.2mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5C164G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "64GB | X3 | SDIN5C1-64G-L |
+      12mm x 16mm x 1.4mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  # ── SDIN5C2 (die-code "5C2", pacote maior 12x16mm) — sempre X2, 8/16/32/64GB ──
+  - part_number: "SDIN5C28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "8GB | X2 | SDIN5C2-8G-L |
+      12mm x 16mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5C216G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "16GB | X2 | SDIN5C2-16G-L |
+      12mm x 16mm x 1.0mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5C232G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "32GB | X2 | SDIN5C2-32G-L |
+      12mm x 16mm x 1.2mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"
+
+  - part_number: "SDIN5C264G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDIN5D12G (Table 9, doc 80-36-03462). Linha exata: "64GB | X2 | SDIN5C2-64G-L |
+      12mm x 16mm x 1.4mm".
+    source_url: "https://www.alldatasheet.com/html-pdf/646958/ETC2/SDIN5D1-2G-L/3418/32/SDIN5D1-2G-L.html"

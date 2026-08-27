@@ -1,0 +1,58 @@
+# Submissão known_parts — SanDisk, cluster SDIN8DR1 (backlog SDIN8xx, primeira leva pesquisada)
+# Origem: debug do estoque, PN SDIN8DR116G, 26/08/2026 14:42:57 (pn_not_in_db=true, família SDIN
+# genérica). Ver INVESTIGACAO_sandisk_sdin8dr1_2026-08-26.md.
+#
+# 2 PNs confidence=distributor — SEM datasheet oficial lido na íntegra pra este die-code
+# especificamente (a única fonte oficial indexada em alldatasheet.com pra "SDIN8D*" é um brief
+# GENÉRICO de marketing "SanDisk Commercial Embedded Storage Solutions", reaproveitado em ~9 PNs
+# diferentes — não é ordering table por PN, não fecha barra de confirmed/manual). Evidência real:
+# Mouser (distribuidor autorizado, campo estruturado "Memory Size: 8 GB") pro -8G; Octopart/Avnet
+# (descrição estruturada "SDIN8DR1-16G,VFBGA 11.5X1X1.0,GENERIC") pro -16G; Preduo categoriza SOB
+# "emmc/emmc-4-51" (confiável pra TIPO, não specs elétricos — CLAUDE.md §6) — corrobora mas não
+# confirma a versão e.MMC exata.
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdin8dr1_2026-08-26.yaml
+#   python manage.py submit_known_parts submissions/sandisk_sdin8dr1_2026-08-26.yaml --commit
+#
+# Sem golden test afetado — família SDIN (fallback genérico) já tem âncora em _SD_GOLDEN.
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDIN8DR116G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.51 (categoria Preduo — não confirmado por datasheet lido)"
+    device: "VFBGA 11.5x13x1.0mm (Avnet/Octopart); tecnologia bits/célula não confirmada"
+    confidence: distributor
+    notes: >
+      PN do caso original (debug do estoque 26/08/2026). Identidade e capacidade confirmadas via
+      Octopart (part id western-digital/SDIN8DR1-16G), descrição estruturada de distribuidor
+      autorizado (Avnet): "SDIN8DR1-16G,VFBGA 11.5X1X1.0,GENERIC" — sem "-V" ou outro sufixo, bate
+      exatamente com o PN normalizado do debug. Nenhum distribuidor com estoque/preço ativo no
+      momento da busca (listagem existe, sem oferta). Interface e.MMC 4.51 apoiada por Preduo
+      (categoriza SDIN8DR1-8G sob "emmc/emmc-4-51"), consistente com a suposição já registrada no
+      tip da família SDIN ("SDIN8xx = e.MMC 4.51 HS200", até hoje sem datasheet lido) — mas SEM
+      datasheet oficial lido confirmando a versão exata pra este die-code. A única fonte WD/SanDisk
+      indexada (alldatasheet.com, IDs 1452029-1452043) é um brief de MARKETING genérico
+      ("SanDisk Commercial Embedded Storage Solutions", menciona iNAND 5130/7232 em termos gerais)
+      reaproveitado em ~9 PNs diferentes (SDIN8DE1/DE2/DE4/CE4, SDIN9DS2, SDIN7DP2/DP4, SDINADB4) —
+      não é ordering table específica, não fecha barra de manual/confirmed. Por isso
+      confidence=distributor, não manual/confirmed.
+    source_url: "https://octopart.com/sdin8dr1-16g-western+digital-107717569"
+
+  - part_number: "SDIN8DR18G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.51 (categoria Preduo — não confirmado por datasheet lido)"
+    device: "VFBGA 11.5x13x1.0mm; tecnologia bits/célula não confirmada"
+    confidence: distributor
+    notes: >
+      Mesmo cluster de SDIN8DR116G (ver notas lá pra metodologia completa). Confirmado via Mouser
+      (distribuidor autorizado, PN completo no catálogo "SDIN8DR1-8G-V" — aqui o "-V" aparece, ao
+      contrário do -16G; suffix pode ser variante de grade/qualificação não investigada a fundo):
+      campo estruturado "Memory Size: 8 GB", Tradename "iNAND", Packaging "Tray", ECCN 5A992, país
+      de origem China, lifecycle Obsolete. Preduo também categoriza sob "emmc/emmc-4-51".
+    source_url: "https://www.mouser.com/ProductDetail/SanDisk/SDIN8DR1-8G-V"
