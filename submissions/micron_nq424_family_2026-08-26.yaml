@@ -1,0 +1,407 @@
+# Submissão de known_parts — Micron, FBGA NQ424 + família MT29F4G08 (2026-08-26)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA NQ424
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (NQ404, JZ424, NQ416, NQ430, NQ432) IGNORADO por
+# construção — NQ404/NQ430/NQ432 já são da submissão NW301/MT29F1G08
+# (2026-08-24) desta mesma sessão.
+#
+# ACHADO: NQ424 → MT29F4G08ABAEAH4-ITS:E. Família MT29F (NAND Flash
+# cru), organização "4G08" (4Gb totais, x8) — irmã maior da família
+# MT29F1G08 (NW301, 2026-08-24: mesmo prefixo-base, densidade 4x
+# maior). TIPO + CAPACIDADE confirmados diretamente pelo part-name da
+# própria Micron: "SLC 4G X8 VFBGA", sub-category "obsolete-slc-nand".
+# CAPACIDADE por fórmula: 4Gb ÷ 8bit = 512MB.
+#
+# Forward-lookup no PREFIXO DE PN "MT29F4G08" (2026-08-26, delegado —
+# WAF do micron.com ainda bloqueado nesta sessão) devolveu 67 PNs.
+# Filtro aplicado (MESMO CRITÉRIO de NW301/NW912/NW813/NW814): só
+# entram PNs com part-name+sub-category DIRETOS da Micron — célula
+# (SLC/MLC/TLC) não é garantida pelo prefixo sozinho, exige confirmação
+# por PN individual. Sobraram 28 confirmados (incl. alvo), TODOS "SLC
+# 4G X8" (VFBGA ou TSOP) — nenhum com "ES" no próprio texto (ao
+# contrário de NW301, aqui não houve caso de confirmação-com-ES). Os 39
+# PNs restantes (sem part-name) ficam de fora: sem confirmação Tier-1
+# própria, não decide.
+#
+# Variante de encapsulamento (VFBGA vs TSOP) e sufixos de temperatura/
+# revisão (IT/AIT/AAT/AITX/AATX/ITX/AT) NÃO entram em campo modelado —
+# vão no notes de cada entrada.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_nq424.py). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match, incl. NW301 — organização
+# "1G08" diferente de "4G08", sem overlap de PN).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_nq424_family_2026-08-26.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_nq424_family_2026-08-26.yaml --commit --fill-empty
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT29F4G08ABAEAH4-ITS:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ424"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abaeah4-its-e"
+    notes: >
+      ALVO da investigação. Identidade via API FBGA oficial da Micron
+      (reverse lookup, 2026-08-26, delegado por bloqueio WAF):
+      NQ424 → MT29F4G08ABAEAH4-ITS:E. TIPO + CAPACIDADE confirmados
+      diretamente pelo part-name da própria Micron: "SLC 4G X8 VFBGA".
+      CAPACIDADE por fórmula: 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABAEAH4-IT:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ418"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abaeah4-it-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABADAH4-ITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ437"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abadah4-itx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBDAH4-ITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ438"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abbdah4-itx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABADAH4-AITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ440"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadah4-aitx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBDAH4-AITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ444"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abbdah4-aitx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBDAHC-AIT:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ445"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abbdahc-ait-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABADAH4-AATX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ455"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadah4-aatx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABAFAWP-IT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ478"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abafawp-it-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP" (encapsulamento TSOP). Sub-
+      category "slc-nand" (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABADAWP:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ520"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadawp-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABADAWP-IT:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ521"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadawp-it-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABADAWP-ITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ532"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadawp-itx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABADAWP-AITX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ533"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadawp-aitx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABADAWP-AATX:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ537"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadawp-aatx-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABAFAWP-AAT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NQ541"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abafawp-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 TSOP". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB.
+
+  - part_number: "MT29F4G08ABADAH4-IT:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW164"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadah4-it-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBDAH4:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW189"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abbdah4-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBDAH4-IT:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW190"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abbdah4-it-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBDAHC-IT:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW193"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abbdahc-it-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBEAH4-IT:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW343"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abbeah4-it-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABAEAH4:E"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW358"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abaeah4-e"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBFAH4-IT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW824"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abbfah4-it-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABAFAH4-AIT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW933"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-slc-nand/part-catalog/part-detail/mt29f4g08abafah4-ait-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". 4Gb ÷ 8bit = 512MB.
+      Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABAFAH4-IT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW943"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abafah4-it-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABAFAH4-AAT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NW945"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abafah4-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBFAH4-AIT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NX021"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abbfah4-ait-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABADAH4:D"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NX164"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abadah4-d"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.
+
+  - part_number: "MT29F4G08ABBFAH4-AAT:F"
+    chip_type: "NAND Flash"
+    subtype: "SLC NAND"
+    interface: "Async/ONFI"
+    capacity: "512MB"
+    fbga_code: "NX879"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/slc-nand/part-catalog/part-detail/mt29f4g08abbfah4-aat-f"
+    notes: >
+      Irmão de família (forward-lookup MT29F4G08, 2026-08-26). Part-name
+      direto da Micron: "SLC 4G X8 VFBGA". Sub-category "slc-nand"
+      (linha ativa). 4Gb ÷ 8bit = 512MB. Encapsulamento VFBGA.

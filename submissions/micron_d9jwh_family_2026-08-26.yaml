@@ -1,0 +1,498 @@
+# Submissão de known_parts — Micron, FBGA D9JWH + família MT47H256M4 (2026-08-26)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9JWH
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9JWH → MT47H256M4HQ-3:G. Prefixo MT47H = DDR2 (já confirmado
+# nesta sessão, investigação D9GKW). Organização "256M4" = 256 Meg x 4 =
+# 1024Mbit = 1Gb — confirmado por datasheet oficial Micron/DigiKey ("1Gb:
+# x4, x8, x16 DDR2 SDRAM", MT47H256M4,128M8,64M16.pdf): "MT47H256M4 – 32
+# Meg x 4 x 8 banks"; pacote HQ = Rev G (60-ball 8x11.5mm, Pb-free, x4/x8).
+#
+# Forward-lookup no PREFIXO DE PN "MT47H256M4" (2026-08-26, delegado — WAF
+# do micron.com ainda bloqueado nesta sessão) devolveu 79 PNs. Processado
+# programaticamente (lote grande, mesmo padrão de D9GKW/D9LGK/D9TGJ/D9GCK
+# desta sessão — evita erro de transcrição manual): filtro ES (regex de
+# token "ES" delimitado no PRÓPRIO texto de cada entrada) excluiu 28,
+# todos Z9-prefixados, todos com "ES" confirmado individualmente. Sobraram
+# 51 (incl. o alvo) — 2 com part-name direto da Micron ("DDR2 1G X4
+# FBGA"), 48 formula-extendidos.
+#
+# ANOMALIA: Z9GMV = "MT47H256M4B7-0 MS:D" sobrevive ao filtro ES (tem
+# "MS", não "ES") — mesmo padrão já visto em Z9BWN (D9GCK, 2026-08-26).
+# Reportado exatamente como veio da API.
+#
+# Sufixos de temperatura/revisão/embalagem (IT/AIT/L/X/XIT, die-rev
+# A/B/D/E/G/H/M) NÃO entram em campo modelado — vão implícitos no PN
+# completo (identidade), sem campo próprio.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_d9jwh.py). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match — incl. D9GKW, mesma marca
+# MT47H mas organização "32M16" diferente, sem overlap de PN).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9jwh_family_2026-08-26.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9jwh_family_2026-08-26.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT47H256M4HQ-3:G'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JWH
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf'
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-26, delegado por bloqueio WAF): D9JWH → MT47H256M4HQ-3:G. Part-name da própria API veio vazio para este PN; capacidade/interface validadas por 2 irmãos da MESMA família com part-name direto da Micron ("DDR2 1G X4 FBGA") + datasheet oficial Micron/DigiKey ("1Gb: x4, x8, x16 DDR2 SDRAM", MT47H256M4,128M8,64M16.pdf): "MT47H256M4 – 32 Meg x 4 x 8 banks", pacote HQ = Rev G (60-ball 8x11.5mm, Pb-free, x4/x8). Aritmética: 256Meg×4bit=1024Mbit=1Gb (1024÷1024=1).'
+- part_number: 'MT47H256M4CF-3:H'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9LHK
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h256m4cf-3-h'
+  notes: 'Irmão de família (forward-lookup MT47H256M4, 2026-08-26). Part-name direto da Micron: "DDR2 1G X4 FBGA". 256M×4=1024Mbit=1Gb.'
+- part_number: 'MT47H256M4CF-25E:H'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9LHM
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h256m4cf-25e-h'
+  notes: 'Irmão de família (forward-lookup MT47H256M4, 2026-08-26). Part-name direto da Micron: "DDR2 1G X4 FBGA". 256M×4=1024Mbit=1Gb.'
+- part_number: 'MT47H256M4T3BT-0 MS'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9CVR
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4BT-37E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9CZT
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4BT-3:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9DNL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4BT-37E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9DNN
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4BT-5E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9DNQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4T3BT-0 MS:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9FJV
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4KBT-5E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9FPZ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4KBT-37E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9FQB
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4THK-37E:B'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9GHQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4THK-5E:B'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9GHR
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4B7-37E:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9GZJ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4THK-3:B'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9GZR
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4B7-3:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9GZW
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4B7-25E:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HBP
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4F7-5E:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HFG
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4F7-37E:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HFH
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4F7-3:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HFJ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4F7-5E IT:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HFK
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4F7-37E IT:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HFL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4F7-3 IT:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HFM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-5E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HMT
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-37E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HMV
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-3:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HMW
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-25E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HMX
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-25:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HMZ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4THK-37E:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HPL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4THK-3:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HPM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4B7-5E:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9HPQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-3 IT:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JGP
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HV-5E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JGZ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HV-37E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHB
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HV-3:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHC
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HV-5E IT:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHD
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HV-37E IT:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHF
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HV-3 IT:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHG
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-37E IT:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHV
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-3E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JHZ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-187E:E'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JKF
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-25:G'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JWK
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-25E:G'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9JWM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-3E:G'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KWK
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-3 IT:G'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KWP
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4HQ-187E:G'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KWQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4CF-25:H'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9LHL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4CF-3 IT:H'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9MNH
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4CF-25E:M'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9RRS
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4SH-25E:M'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9RZM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). 256M×4=1024Mbit=1Gb.
+- part_number: 'MT47H256M4B7-0 MS:D'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: Z9GMV
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M4,128M8,64M16.pdf
+  notes: Irmão de família (forward-lookup MT47H256M4, 2026-08-26), sem part-name próprio na API — capacidade/interface formula-extendidas (ver notas do alvo D9JWH). ANOMALIA — sobrevive ao filtro ES por ter "MS" em vez de "ES" (mesmo padrão de Z9BWN em D9GCK). 256M×4=1024Mbit=1Gb.

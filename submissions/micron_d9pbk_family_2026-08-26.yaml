@@ -1,0 +1,282 @@
+# Submissão de known_parts — Micron, FBGA D9PBK + família MT41K2G4 (2026-08-26)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9PBK
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9LBK, D9PBF, D9PBW, D9PDK, D9PFK) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: D9PBK → MT41K2G4THE-15E:D. Prefixo MT41K = DDR3L (1,35V),
+# convenção já estabelecida nesta sessão (investigação D9LJJ/BUG-9,
+# 2026-08-20 — ver MICRON.md §7). Organização "2G4" = depth 256M x 8
+# bancos x width 4 = 8192Mbit = 8Gb. Cross-check Tier-1 independente:
+# datasheet Micron (mirror alliancememory.com) confirma TEXTUALMENTE
+# "DDR3L SDRAM MT41K2G4 – 256 Meg x 4 x 8 banks" — bate exato na
+# aritmética E no rótulo de tecnologia.
+#
+# ⚠ ATENÇÃO BUG-9 (aplicado aqui de propósito, não repetido): a própria
+# API FBGA da Micron rotula esta família genericamente "DDR3 8G X4"
+# (sem o "L") nos 4 PNs que trazem part-name — mesmo artefato do
+# TECH_MAP do import_micron_catalog.py que colapsa DDR3/DDR3L (achado
+# em D9LJJ). Aqui gravo `chip_type: "DDR3L"` em TODAS as 17 entradas
+# (inclusive as 4 com part-name "DDR3" genérico da API) porque a
+# tecnologia real do prefixo MT41K é 1,35V, confirmada por datasheet
+# dedicado — não pela string solta do catálogo. Se ainda assim aparecer
+# `chip_type=DDR3` já aprovado no banco pra algum destes PNs (mesma
+# pipeline de import), o conflito de "preço" resolve com
+# `resolve_conflicts --file <este arquivo> --commit` (submissão vence).
+#
+# Forward-lookup no PREFIXO DE PN "MT41K2G4" (2026-08-26, delegado —
+# WAF do micron.com ainda bloqueado nesta sessão) devolveu 42 PNs.
+# Filtro ES: 25 Z-prefixados excluídos (TODOS com "ES" no próprio
+# texto, checado individualmente — incl. Z9PBL, a variante-ES do
+# próprio alvo). Sobraram 17 D-prefixados, TODOS sem "ES" — 4 com
+# part-name direto da Micron ("DDR3 8G X4 TFBGA"), 13 formula-
+# extendidos (incl. o alvo) — organização "2G4" é constante em toda a
+# família, mesma lógica de D9LGD/D9LJJ/D9GBM/D9GKW/D9LGK/D9TGJ.
+#
+# Sufixos de temperatura/revisão/embalagem (die-rev A/D/E/F/N/P) NÃO
+# entram em campo modelado — vão no notes.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_d9pbk.py). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match — incl. D9LJJ, mesma marca
+# MT41K mas organização "256M8" diferente, sem overlap de PN).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9pbk_family_2026-08-26.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9pbk_family_2026-08-26.yaml --commit --fill-empty
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41K2G4THE-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PBK"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      ALVO da investigação. Identidade via API FBGA oficial da Micron
+      (reverse lookup, 2026-08-26, delegado por bloqueio WAF):
+      D9PBK → MT41K2G4THE-15E:D. Part-name da própria API veio vazio
+      para este PN; capacidade+tecnologia via datasheet dedicado
+      (Micron, mirror alliancememory.com): "DDR3L SDRAM MT41K2G4 – 256
+      Meg x 4 x 8 banks". Aritmética: 256M × 4bit × 8 bancos =
+      8192Mbit = 8Gb (8192÷1024=8). chip_type=DDR3L (não "DDR3"
+      genérico — ver nota BUG-9 no cabeçalho do arquivo; prefixo MT41K
+      é 1,35V).
+
+  - part_number: "MT41K2G4TRF-125:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PZB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k2g4trf-125-e"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26). Part-name
+      direto da Micron: "DDR3 8G X4 TFBGA" (rótulo genérico da API —
+      ver nota BUG-9 no cabeçalho; tecnologia real é DDR3L, prefixo
+      MT41K). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4TRF-107:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9QBG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k2g4trf-107-e"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26). Part-name
+      direto da Micron: "DDR3 8G X4 TFBGA" (rótulo genérico — ver nota
+      BUG-9). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4RKB-107:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9SXP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k2g4rkb-107-n"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26). Part-name
+      direto da Micron: "DDR3 8G X4 TFBGA" (rótulo genérico — ver nota
+      BUG-9). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4RKB-107:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9WQM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k2g4rkb-107-p"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26). Part-name
+      direto da Micron: "DDR3 8G X4 TFBGA" (rótulo genérico — ver nota
+      BUG-9). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4THA-187E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9NFZ"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK acima). 256M×4×8bancos=
+      8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4THG-15H:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PBT"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4THG-125H:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PCF"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4THE-125:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PCT"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). Mesmo bloco "THE" do alvo, só
+      difere no speed grade "-125" vs "-15E". 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4TRF-125E:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PQK"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4TRF-15E:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9PXZ"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4SBR-125H:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9QTQ"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4SN-107:A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9SDL"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4SDC-107:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9SHV"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4SN-125:A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9SQS"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4SDC-107:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9SVX"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). 256M×4×8bancos=8192Mbit=8Gb.
+
+  - part_number: "MT41K2G4RKB-107 C:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "8Gb"
+    fbga_code: "D9VTF"
+    confidence: confirmed
+    source_url: "https://www.alliancememory.com/wp-content/uploads/Micron_8Gb_DDR3_SDRAM_PartNo.MT41K512M16HA-107_125.pdf"
+    notes: >
+      Irmão de família (forward-lookup MT41K2G4, 2026-08-26), sem
+      part-name próprio na API — capacidade+tecnologia via datasheet
+      dedicado (ver notas do alvo D9PBK). PN traz "C" solto antes do
+      die-rev ":N" — reportado exatamente como veio da API, não
+      alterado. 256M×4×8bancos=8192Mbit=8Gb.

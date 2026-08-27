@@ -1,0 +1,590 @@
+# Submissão de known_parts — Micron, FBGA D9GCK + família MT46V32M16 (2026-08-26)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9GCK
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9GCG, D9GCH, D9GCQ, D9GCT, D9GCV) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: D9GCK → MT46V32M16BN-6:F. Prefixo MT46V = DDR1 (já confirmado
+# nesta sessão contra chips/chip_types.py, investigação D9GBM,
+# 2026-08-20). Organização "32M16" = depth 32M x width 16 = 512Mbit =
+# 0,5Gb. MESMA DENSIDADE TOTAL da família D9GBM (128M4 = 512Mbit) — só
+# organização de barramento diferente (x16 vs x4); confirmado por um
+# ÚNICO datasheet Micron que cobre as duas famílias juntas (DigiKey:
+# "512Mb DDR SDRAM (x4, x8, x16) Component Data Sheet",
+# MT46V128M4,_64M8,_32M16.pdf).
+#
+# Forward-lookup no PREFIXO DE PN "MT46V32M16" (2026-08-26, delegado —
+# WAF do micron.com ainda bloqueado nesta sessão) devolveu 77 PNs.
+# Processado programaticamente (lote grande, mesmo padrão de
+# D9GKW/D9LGK/D9TGJ desta sessão — evita erro de transcrição manual):
+# filtro ES (regex de token "ES" delimitado no PRÓPRIO texto de cada
+# entrada) excluiu 23 (22 Z9-prefixados + 1 G9-prefixado "G9ZKR", todos
+# com "ES" confirmado individualmente). Sobraram 54 — 10 com part-name
+# direto da Micron ("DDR 512M X16 FBGA" ou "TSOP"), 44 formula-
+# extendidos (incl. o alvo).
+#
+# ANOMALIA: Z9BWN = "MT46V32M16FN-0 MS" sobrevive ao filtro ES (tem
+# "MS", não "ES") — sufixo "-0 MS" foge do padrão normal de grade de
+# velocidade + die-rev desta família. Reportado exatamente como veio da
+# API, sinalizado no notes da própria entrada.
+#
+# Sufixos de temperatura/revisão/embalagem (IT/AIT/AAT/X/XIT/L, die-rev
+# C/F/J) NÃO entram em campo modelado — vão no notes.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_d9gck.py). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match — incl. D9GBM, mesma marca
+# MT46V mas organização "128M4" diferente, sem overlap de PN).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9gck_family_2026-08-26.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9gck_family_2026-08-26.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: MT46V32M16BN-6:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GCK
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-26,
+    delegado por bloqueio WAF): D9GCK → MT46V32M16BN-6:F. Part-name da própria API veio vazio para este
+    PN; capacidade validada por 10 irmãos da MESMA família com part-name direto da Micron ("DDR 512M X16
+    FBGA/TSOP"). Aritmética: 32M × 16bit = 512Mbit = 0.5Gb (512÷1024=0.5).'
+- part_number: MT46V32M16CY-5B IT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MKR
+  confidence: confirmed
+  source_url: https://www.micron.com/products/memory/dram-components/ddr-sdram/part-catalog/part-detail/mt46v32m16cy-5b-it-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 FBGA". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16CY-5B AIT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MKT
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16cy-5b-ait-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 FBGA". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16CV-5B IT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MKZ
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16cv-5b-it-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 FBGA". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16CY-5B:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MLF
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16cy-5b-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 FBGA". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16CV-5B:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MLH
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16cv-5b-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 FBGA". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16P-5B IT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9NGL
+  confidence: confirmed
+  source_url: https://www.micron.com/products/memory/dram-components/ddr-sdram/part-catalog/part-detail/mt46v32m16p-5b-it-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 TSOP". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16P-5B:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9NGN
+  confidence: confirmed
+  source_url: https://www.micron.com/products/memory/dram-components/ddr-sdram/part-catalog/part-detail/mt46v32m16p-5b-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 TSOP". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16TG-5B IT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9NGQ
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16tg-5b-it-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 TSOP". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16P-5B L:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9NGR
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16p-5b-l-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 TSOP". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16CY-5B AAT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9PDV
+  confidence: confirmed
+  source_url: https://www.micron.com/products/obsolete/obsolete-ddr-sdram/part-catalog/part-detail/mt46v32m16cy-5b-aat-j
+  notes: 'Irmão de família (forward-lookup MT46V32M16, 2026-08-26). Part-name direto da Micron: "DDR 512M
+    X16 FBGA". 32M×16=512Mbit=0.5Gb.'
+- part_number: MT46V32M16BN-75
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9BBN
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9BXF
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9BXG
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-6
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9BXH
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75Z
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9BXQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-5B
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9CHD
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-5B
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9CHH
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75 IT
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9CQC
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6 IT
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9CVK
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75 L
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9CZQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DST
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DSV
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75 IT:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DTL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75 L:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DTM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-6:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DTN
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-75 IT:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DTP
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-75 L:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DTQ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-5B:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DTZ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-5B:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DVB
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-75Z:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DVJ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-75:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DXK
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6 IT:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9DXL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-6 IT:C
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9FPF
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-5B:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GCL
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GCM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-5B:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GCN
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6 IT:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GHV
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-6 IT:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GPD
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-6 L:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GRJ
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-6 L:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9GSX
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-5B IT:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9KBM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16BN-5B L IT:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9KLS
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-5B IT:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9KWR
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16CY-5B L IT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MKW
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16CV-5B AIT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9MLC
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16P-5B AIT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9NGM
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16TG-5B:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9NGP
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16P-6T:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9PJH
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16CY-5B XIT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9PVT
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16CY-5B X:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9PVW
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16CY-5B L AIT:J
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: D9RJT
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16P-6T L:F
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: FX262
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). 32M×16=512Mbit=0.5Gb.
+- part_number: MT46V32M16FN-0 MS
+  chip_type: DDR1
+  subtype: DDR1
+  interface: x16
+  density_gbit: 0.5Gb
+  fbga_code: Z9BWN
+  confidence: confirmed
+  source_url: https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT46V128M4,_64M8,_32M16.pdf
+  notes: Irmão de família (forward-lookup MT46V32M16, 2026-08-26), sem part-name próprio na API — capacidade
+    formula-extendida (ver notas do alvo D9GCK). PN traz sufixo anômalo "-0 MS" (sem grade de velocidade
+    numérica usual, "MS" no lugar de die-rev) — reportado exatamente como veio da API, não alterado; sobrevive
+    ao filtro ES por não conter o token "ES" (é "MS"). 32M×16=512Mbit=0.5Gb.

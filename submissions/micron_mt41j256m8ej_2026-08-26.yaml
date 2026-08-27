@@ -1,0 +1,70 @@
+# Submissão de known_parts — Micron, MT41J256M8EJ (2026-08-26)
+# Gerado pelo chat de marca Micron a partir de um chip lido DIRETO NA
+# BANCADA pelo dono (não via API FBGA) — busca original foi "256X8DDR3"
+# (2ª linha da marcação, descritiva, não é PN nem FBGA — por isso o
+# motor nem tentou decodificar). O dono leu a 1ª linha do chip:
+# "MT41J256M8EJ", sem sufixo de grade de velocidade/revisão visível
+# (chip antigo, marcação já desgastada) — confirmado pelo dono após
+# eu questionar explicitamente se havia mais caracteres.
+#
+# CASO ATÍPICO — sem fbga_code, sem PN completo, sem hit em NENHUMA
+# fonte externa pro código de pacote "EJ" especificamente:
+# - Reverse/forward-lookup na API oficial da Micron: zero resultado
+#   pro prefixo "MT41J256M8EJ" (2026-08-26).
+# - DigiKey/Octopart/Mouser/Google: nenhum PN "M8EJ" (nem M4EJ/M16EJ
+#   em qualquer densidade DDR3 da Micron).
+# - Datasheet oficial ATUAL (Mouser/Micron, "2Gb_DDR3_SDRAM.pdf" Rev.
+#   S 02/16 EN — a mesma família MT41J512M4/256M8/128M16 do D9LGK/
+#   D9LGD) lista só "DA" e "EF" como código de pacote x4/x8 vigente —
+#   "EJ" não consta nem nessa nem em nenhuma revisão anterior
+#   encontrada.
+#
+# TIPO + CAPACIDADE, ainda assim, ficam confirmados com segurança —
+# NÃO pelo código de pacote (que não bate em lugar nenhum), mas pela
+# ORGANIZAÇÃO "256M8", que é o que determina tipo/capacidade (o
+# pacote só varia encapsulamento/grade), confirmada por:
+# 1) A própria 2ª linha do chip, escrita pela Micron: "256X8DDR3" —
+#    DDR3, 256M x8, batendo exato.
+# 2) 29 irmãos já confirmados na MESMA organização "MT41J256M8"
+#    (submissão micron_d9lgk_family_2026-08-20.yaml), incl. um
+#    (D9QLG) com part-name direto da própria API: "DDR3 2G X8 FBGA".
+# 3) O datasheet oficial atual (mesma fonte acima) define a
+#    configuração "MT41J256M8" = 32 Meg x 8 x 8 bancos = 2Gb.
+# Aritmética: 32M(banco) × 8bancos × 8bit = 2048Mbit = 2Gb
+# (2048÷1024=2) — mesma leitura de D9LGK/D9LGK-family.
+#
+# Sem fbga_code: identidade veio do PN completo legível no chip
+# (marcação não-abreviada), não do decoder FBGA. PN gravado
+# EXATAMENTE como o dono leu, sem completar sufixo (confirmado que
+# não há mais nada visível) — casamento por string exata no engine.
+#
+# Sem colisão de part_number_norm com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_mt41j256m8ej_2026-08-26.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_mt41j256m8ej_2026-08-26.yaml --commit --fill-empty
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J256M8EJ"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "2Gb"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/671/2Gb_DDR3_SDRAM-1283766.pdf"
+    notes: >
+      Identificado DIRETO NA BANCADA pelo dono (não via API FBGA) —
+      1ª linha do chip: "MT41J256M8EJ" (sem sufixo de grade/revisão
+      visível, chip antigo/marcação desgastada — confirmado
+      explicitamente que não há mais caracteres). 2ª linha do próprio
+      chip: "256X8DDR3" (descritiva, bate exato com a organização).
+      Código de pacote "EJ" NÃO tem confirmação em nenhuma fonte
+      (API FBGA oficial, DigiKey, Octopart, Mouser, datasheet atual
+      Rev.S nem revisões anteriores) — mas TIPO+CAPACIDADE vêm da
+      ORGANIZAÇÃO "256M8", não do pacote: confirmados por 29 irmãos
+      já aprovados na mesma organização (micron_d9lgk_family_2026-
+      08-20.yaml, incl. D9QLG com part-name direto da API "DDR3 2G X8
+      FBGA") + datasheet oficial atual (MT41J256M8 = 32 Meg x 8 x 8
+      bancos = 2Gb). Aritmética: 32M×8bancos×8bit=2048Mbit=2Gb.

@@ -1,0 +1,184 @@
+# Submissão de known_parts — Micron, FBGA D9RJV + família MT42L128M64 (2026-08-26)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9RJV
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9FJV, D9RDV, D9RFV, D9RJC, D9RJF) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: D9RJV → MT42L128M64D2LL-25 IT:A. LPDDR2 AVULSO (standalone) —
+# NÃO é eMCP. Prefixo "MT42L" = Mobile LPDDR2 SDRAM (confirmado via
+# catálogo oficial Micron + datasheets Mouser/NXP da família MT42L).
+# Convenção de campo: capacity em GB (não density_gbit — esse é só p/
+# DDR/GDDR/SDRAM/RDRAM discreta).
+#
+# ⚠ ATENÇÃO — ACHADO IMPORTANTE (quebra a regra de formula-extension por
+# organização usada nos lotes DDR anteriores desta sessão): dentro do
+# MESMO forward-lookup "MT42L128M64", a MESMA organização "128M64" no
+# texto do PN aparece com DUAS densidades diferentes conforme o
+# DIE-CODE (5º campo do PN, ex. "D2LL"/"D2MC"/"D2MP"/"D2EU"/"D4KJ"):
+#   - die-code D2EU: part-name direto da API = "LPDDR2 4G X64" (4Gb)
+#   - die-codes D2LL/D2MC/D2MP: part-name direto da API = "LPDDR2 8G X64" (8Gb)
+# Ou seja, "128M64" sozinho NÃO determina a densidade nesta família —
+# ao contrário do DDR/DDR2/DDR3/DDR4 discreto (onde a organização é
+# suficiente). Por isso a extensão de capacidade aqui foi feita POR
+# DIE-CODE (mesmo die-code de um irmão com part-name confirmado), NUNCA
+# pela organização isolada.
+#
+# Forward-lookup no PREFIXO DE PN "MT42L128M64" (2026-08-26, delegado —
+# WAF do micron.com ainda bloqueado nesta sessão) devolveu 44 PNs.
+# Filtro ES (regex de token "ES" delimitado no próprio texto de cada
+# entrada) excluiu 18 (todos Z9-prefixados). Sobraram 26 — 9 com
+# part-name direto da Micron, 5 formula-extendidos POR DIE-CODE
+# (mesmo die-code de um confirmado), 12 EXCLUÍDOS por densidade
+# NÃO CONFIRMÁVEL (ver abaixo) — não submetidos, para não adivinhar.
+#
+# EXCLUÍDOS (NÃO submetidos, densidade indeterminada, zero fonte Tier-1
+# encontrada mesmo com busca dedicada por "MT42L128M64D4"):
+#   - die-code D4KJ (6): D9MBB, D9MBD, D9PRF, D9PRN, D9QGT, Z9PHQ
+#   - die-code D4LC (3): D9MCR, D9MCT, Z9PJD
+#   - die-code D4LD (2): Z9PJR, Z9PJT
+#   - die-code D2LN (1, único da família sem irmão confirmado): D9QSB
+# "D4" pode ser um die-shrink/revisão posterior do "D2" (especulação —
+# NÃO usada para classificar), mas sem part-name próprio nem datasheet
+# localizado para D4KJ/D4LC/D4LD especificamente, não há base Tier-1
+# pra decidir se são 4Gb, 8Gb ou outra densidade. Ficam de fora desta
+# submissão; sinalizados ao dono para decisão (pesquisar mais / deixar
+# na fila / aceitar risco).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente,
+# ver check_d9rjv.py). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9rjv_family_2026-08-26.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9rjv_family_2026-08-26.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT42L128M64D2LL-25 IT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9RJV
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2ll-25-it-a'
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-26, delegado por bloqueio WAF): D9RJV → MT42L128M64D2LL-25 IT:A. Part-name direto da própria API: "LPDDR2 8G X64 WFBGA". LPDDR2 avulso (standalone) — NÃO é eMCP. Organização "128M64": 128M×64=8192Mbit=8Gb; capacity em GB (convenção LPDDR avulso): 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2LL-18 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QQD
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2ll-18-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26). Part-name direto da Micron: "LPDDR2 8G X64 WFBGA". Mesmo die-code do alvo D9RJV. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2LL-25 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QQG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2ll-25-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26). Part-name direto da Micron: "LPDDR2 8G X64 WFBGA". Mesmo die-code do alvo D9RJV. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2LL-25 AT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9RJW
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2ll-25-at-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26). Part-name direto da Micron: "LPDDR2 8G X64 WFBGA". Mesmo die-code do alvo D9RJV. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2LL-3 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QQH
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2ll-18-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26), sem part-name próprio na API — capacidade/interface por MESMO DIE-CODE (D2LL) de irmão confirmado (D9QQD, part-name "LPDDR2 8G X64 WFBGA") — NÃO por organização ''128M64'' isolada (ver ATENÇÃO no cabeçalho: mesma organização mede 4Gb OU 8Gb conforme die-code). 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2LL-18 IT:C'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9SLK
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2ll-18-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26), sem part-name próprio na API — capacidade/interface por MESMO DIE-CODE (D2LL) de irmão confirmado (D9QQD, part-name "LPDDR2 8G X64 WFBGA") — NÃO por organização ''128M64'' isolada (ver ATENÇÃO no cabeçalho: mesma organização mede 4Gb OU 8Gb conforme die-code). Revisão ":C" (demais irmãos ":A") — não afeta organização/densidade. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2MC-18 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QJD
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2mc-18-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26). Part-name direto da Micron: "LPDDR2 8G X64 VFBGA". Mesmo die-code do alvo D9RJV. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2MC-18 IT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9RRG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2mc-18-it-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26). Part-name direto da Micron: "LPDDR2 8G X64 WFBGA". Mesmo die-code do alvo D9RJV. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2MC-25 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QJG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2mc-18-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26), sem part-name próprio na API — capacidade/interface por MESMO DIE-CODE (D2MC) de irmão confirmado (D9QJD, part-name "LPDDR2 8G X64 VFBGA") — NÃO por organização ''128M64'' isolada (ver ATENÇÃO no cabeçalho: mesma organização mede 4Gb OU 8Gb conforme die-code). 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2MC-3 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QJJ
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2mc-18-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26), sem part-name próprio na API — capacidade/interface por MESMO DIE-CODE (D2MC) de irmão confirmado (D9QJD, part-name "LPDDR2 8G X64 VFBGA") — NÃO por organização ''128M64'' isolada (ver ATENÇÃO no cabeçalho: mesma organização mede 4Gb OU 8Gb conforme die-code). 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2MP-25 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QJN
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2mp-25-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26). Part-name direto da Micron: "LPDDR2 8G X64 VFBGA". Mesmo die-code do alvo D9RJV. 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2MP-18 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 1GB
+  fbga_code: D9QJL
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2mp-25-wt-a'
+  notes: 'Irmão de família (forward-lookup MT42L128M64, 2026-08-26), sem part-name próprio na API — capacidade/interface por MESMO DIE-CODE (D2MP) de irmão confirmado (D9QJN, part-name "LPDDR2 8G X64 VFBGA") — NÃO por organização ''128M64'' isolada (ver ATENÇÃO no cabeçalho: mesma organização mede 4Gb OU 8Gb conforme die-code). 8Gb÷8=1GB.'
+- part_number: 'MT42L128M64D2EU-18 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 0.5GB
+  fbga_code: D9QHS
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2eu-18-wt-a'
+  notes: 'Die-code D2EU — DIFERENTE dos demais irmãos MT42L128M64 (D2LL/D2MC/D2MP = 8Gb): part-name direto da própria Micron confirma "LPDDR2 4G X64 VFBGA" = 4Gb, apesar da MESMA organização ''128M64'' no texto do PN. 4Gb÷8=0.5GB. Confirmado individualmente, não por extensão.'
+- part_number: 'MT42L128M64D2EU-25 WT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x64
+  capacity: 0.5GB
+  fbga_code: D9QHV
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt42l128m64d2eu-25-wt-a'
+  notes: 'Die-code D2EU — DIFERENTE dos demais irmãos MT42L128M64 (D2LL/D2MC/D2MP = 8Gb): part-name direto da própria Micron confirma "LPDDR2 4G X64 VFBGA" = 4Gb, apesar da MESMA organização ''128M64'' no texto do PN. 4Gb÷8=0.5GB. Confirmado individualmente, não por extensão.'
