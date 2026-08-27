@@ -58,6 +58,7 @@ maps:
   - [55, 32MB, '256Mbit — K4D553235F-GC25/GC2A/GC33 (datasheet Samsung oficial via alldatasheet: "268,435,456 bits" = 256Mbit÷8=32MB, Rev 1.6 Mai/2005 ✓). Família nova, achada 2026-07-10.']
   K4E_CAP:
   - [2E, 1.5GB, '12Gb — Galaxy Tab E / S5 Mini (~2014-2015). Sem liquidez B2B atual. K4E2E304EA-AGCF: Kynix/Worldway ✓. K4E2E304EE-AGCE: Alldatasheet Samsung PSG ✓ (2026-05-29). Galaxy Tab E SM-T560 = 1.5GB RAM confirmado — GSMarena/Icecat ✓. Chave também presente em LPDDR4_CAP (confirmado por datasheet Samsung).']
+  - [4E, 512MB, '4Gb — chave FALTANTE achada via debug K4E4E164EB (2026-08-27). Allwinner Technology "Axx SDRAM Support List" (documento oficial de qualificação de SoC, não distribuidor): "K4E4E164EB-EGCE LPDDR3 FBGA 178 4Gb 128Mx32x1CS", status S/T (Sample Tested = validado fisicamente). Aritmética: 128M×32bits=4096Mbit=4Gb; 4Gb÷8=512MB ✓. Sibling tail "324" (pacote/pin variante, mesmo padrão 304×324 já visto em K4E8E) confirmado 4Gb também: K4E4E324ED-EGCF (mesma lista Allwinner) + K4E4E324EE-EGCE (harddiskdirect.com: "LPDDR3 128Mx32" — mesma organização) + K4E4E324EB-EGCF/K4E8E324EB (LCSC/JLCPCB, mesma família). Chave também presente em LPDDR4_CAP com o MESMO valor (512MB/4Gb) — mesmo padrão de código compartilhado já confirmado na chave 2E acima.']
   - [6E, 2GB, 16Gb — Galaxy mid-range (~2014-2016).]
   - [8E, 1GB, 8Gb — Galaxy entry (~2013). Sem liquidez B2B atual.]
   - [BE, 4GB, 32Gb — Galaxy flagship (~2015). Alta demanda residual.]

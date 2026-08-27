@@ -1889,6 +1889,7 @@ _SAM_GOLDEN = {
     'K4B4G0446D': ('DDR3', '', '', '', '4Gb = 512MB por die [✓]', 'RENTÁVEL'),  # 2026-08-20: largura x4 (04), 1º golden da família com essa largura
     'K4D553235FGC33': ('GDDR2', '32MB', '', '', '0.25Gb = 32MB por die [✓]', 'NÃO RENTÁVEL'),  # densidade DERIVADA (2026-07-11)
     'K4D263238KFC40': ('GDDR2', '16MB', '', '', '0.125Gb = 16MB por die [✓]', 'NÃO RENTÁVEL'),
+    'K4E4E164': ('LPDDR3', '512MB', '', '', '', 'NÃO RENTÁVEL'),  # 2026-08-27: chave "4E" faltava em K4E_CAP (debug K4E4E164EB) — Allwinner SDRAM Support List, 512MB < lpddr3_min_cap_gb (2GB)
     'K4E6E304': ('LPDDR3', '2GB', '', '', '', 'RENTÁVEL'),
     'K4EBE304': ('LPDDR3', '4GB', '', '', '', 'RENTÁVEL'),
     'K4FHE30': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),

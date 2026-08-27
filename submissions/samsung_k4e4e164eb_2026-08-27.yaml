@@ -1,0 +1,63 @@
+# Submissão de known_parts — Samsung, família K4E (LPDDR3 standalone).
+# PN alvo (debug 2026-08-27): K4E4E164EB — grammar_complete=false, capacity=null
+# no debug: pn[3:5]="4E" NÃO existia em K4E_CAP (só tinha 2E/6E/8E/BE/FE/HE).
+#
+# ⚠ ACHADO DE GRAMÁTICA (Trilha A, mudança já aplicada em samsung.yaml): "4E"
+# é chave FALTANTE, não PN inválido. Fonte primária: Allwinner Technology
+# "Axx SDRAM Support List" (documento oficial de qualificação de memória de
+# um fabricante de SoC — mesma classe de evidência do PDF de validação da
+# Intel usado nesta sessão para K4E8E304EE) —
+# https://dl.linux-sunxi.org/A64/Allwinner_A64_full_set_of_hardware_development_materials_2015/SDK_development_kit_documentation/Allwinner_Axx_SDRAM_Support_List-V1.08_20150611.pdf
+# linha exata: "K4E4E164EB-EGCE LPDDR3 FBGA 178 4Gb 128Mx32x1CS S/T S/T"
+# (S/T = Sample Tested, validado fisicamente em 2 plataformas SoC).
+# Aritmética: 128M×32bits = 4096Mbit = 4Gb; 4Gb÷8 = 512MB ✓.
+# Cluster (mesma chave "4E", tail "324" = variante de pacote/pino, mesmo
+# padrão 304×324 já visto em K4E8E): K4E4E324ED-EGCF (mesma lista Allwinner,
+# "LPDDR3 FBGA 178 4Gb 128Mx32x1CS") + K4E4E324EE-EGCE (harddiskdirect.com,
+# título "Samsung LPDDR3 128Mx32 DRAM Memory Chip-K4E4E324EE-EGCE" — mesma
+# organização 128Mx32 = 4Gb, confirma independentemente).
+# "4E" já existia em LPDDR4_CAP com o MESMO valor (512MB/4Gb) — mesmo padrão
+# de código compartilhado LPDDR3↔LPDDR4 já confirmado na chave "2E" do
+# próprio K4E_CAP (nota: "Chave também presente em LPDDR4_CAP").
+brand: "Samsung"
+known_parts:
+  - part_number: "K4E4E164EB"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://dl.linux-sunxi.org/A64/Allwinner_A64_full_set_of_hardware_development_materials_2015/SDK_development_kit_documentation/Allwinner_Axx_SDRAM_Support_List-V1.08_20150611.pdf"
+    notes: >
+      PN alvo do debug (2026-08-27), forma base sem sufixo. Ver cabeçalho do
+      arquivo para a investigação completa (chave "4E" estava faltando em
+      K4E_CAP — corrigido em samsung.yaml na mesma entrega). Allwinner "Axx
+      SDRAM Support List": K4E4E164EB-EGCE, LPDDR3 FBGA178, 4Gb, 128Mx32x1CS,
+      Sample Tested.
+
+  - part_number: "K4E4E164EB-EGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://dl.linux-sunxi.org/A64/Allwinner_A64_full_set_of_hardware_development_materials_2015/SDK_development_kit_documentation/Allwinner_Axx_SDRAM_Support_List-V1.08_20150611.pdf"
+    notes: "Forma completa com sufixo de pacote. Allwinner Axx SDRAM Support List (documento oficial de qualificação de SoC): LPDDR3 FBGA178, 4Gb (128Mx32x1CS), status Sample Tested em 2 plataformas — ver cabeçalho do arquivo para a aritmética e o achado de gramática."
+
+  - part_number: "K4E4E324ED-EGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://dl.linux-sunxi.org/A64/Allwinner_A64_full_set_of_hardware_development_materials_2015/SDK_development_kit_documentation/Allwinner_Axx_SDRAM_Support_List-V1.08_20150611.pdf"
+    notes: >
+      Achado do cluster (mesma chave "4E", tail "324" = variante de
+      pacote/pino do mesmo produto, mesmo padrão 304×324 já visto em K4E8E).
+      Mesma fonte Allwinner, mesma linha da lista: "K4E4E324ED-EGCF LPDDR3
+      FBGA 178 4Gb 128Mx32x1CS".
+
+  - part_number: "K4E4E324EE-EGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://harddiskdirect.com/k4e4e324ee-egce-samsung-lpddr3-128mx32-dram-memory-chip.html"
+    notes: "Achado do cluster, die 'EE' (tail 324). harddiskdirect.com confirma diretamente a organização '128Mx32' (= 4Gb = 512MB, mesma aritmética do cabeçalho) — fonte independente da Allwinner, corrobora a mesma chave/capacidade."
