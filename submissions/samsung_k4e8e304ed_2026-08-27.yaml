@@ -1,0 +1,98 @@
+# Submissão de known_parts — Samsung, família K4E (LPDDR3 standalone).
+# PN alvo (debug 2026-08-27): K4E8E304ED — grammar já decodifica certo hoje
+# (pn[3:5]='8E' via K4E_CAP → 1GB, grammar_complete=true), mas o PN exato não
+# estava confirmado no banco (known_exact=false, pn_not_in_db=true no debug).
+# Tip da família já documenta "8E=1GB → sem liquidez B2B → resíduo", mas SEM
+# confirmação o engine devolve profitable=RENTÁVEL (mesmo padrão já visto
+# nesta sessão: gramática solta até o known_part confirmar).
+#
+# ⚠ INVESTIGAÇÃO DE CAPACIDADE (divergência real entre fontes, resolvida):
+# AB Sunshine tagueia K4E8E304ED-AGCE como "Part No: 2GX32 LPDDR3". Testei a
+# notação da PRÓPRIA AB Sunshine contra 2 capacidades desta família JÁ
+# confirmadas (cross-check, mesmo distribuidor, comparação como-com-como):
+#   - K4E6E304EE-EGCE (capacidade tip "6E"=2GB) → AB Sunshine: "512MX32"
+#     → 512M×32÷8 = 2GB ✓ bate com o tip.
+#   - K4EBE304EC-EGCG (capacidade tip "BE"=4GB) → AB Sunshine: "1GX32"
+#     → 1G×32÷8 = 4GB ✓ bate com o tip.
+#   - K4E8E304ED-AGCE (capacidade tip "8E"=1GB, ALVO) → AB Sunshine: "2GX32"
+#     → 2G×32÷8 = 8GB ✗ NÃO bate — 8× a capacidade que o tip/gramática dizem.
+# Resolvido com fonte MAIS forte: Intel "LPDDR3-1866 Memory Down Validation
+# Results" (documento oficial Intel, PDF, atualizado Nov.2016) lista
+# "Samsung *K4E8E304EE-EGCF | Package Density 8Gb | Density(die) 4Gb | DDP |
+# x32 | Die Rev E" — MESMA chave de capacidade "8E" (die-gen EE, irmão do
+# alvo ED), confirmando Package Density=8Gb=1GB. A MESMA tabela Intel, na
+# mesma coluna, confirma "*K4E6E304EE-EGCF | 16Gb | 4Gb | QDP" = 2GB — bate
+# EXATAMENTE com o "6E"=2GB já no seed local (K4E6E304EE, notes citam
+# Octopart Tier-1 "16Gb"). Portanto: tip + Preduo (2 páginas, campo "Density:
+# 8Gbit" estruturado) + Intel (fonte mais forte, valida a própria matemática
+# via SDP/DDP/QDP=1x/2x/4x da densidade por die) CONVERGEM em 1GB. AB
+# Sunshine é a fonte destoante (provável campo genérico/copiado, mesmo padrão
+# de risco já registrado em memória — campo curto de distribuidor pode ser
+# inconsistência de template). Uso AB Sunshine só pra confirmar EXISTÊNCIA do
+# PN K4E8E304ED-AGCE, não pra capacidade — capacidade vem de Preduo/Intel.
+#
+# CLUSTER: achei também K4E8E304EE-EGCF na tabela Intel (die-gen "EE",
+# irmão do alvo "ED", MESMA chave de capacidade "8E"=1GB) — gap real (zero
+# cobertura), fonte de altíssima qualidade (Intel, specs completos: DDP,
+# x32, die rev E, date code 1425), registrado nesta mesma submissão.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4E8E304ED"
+    chip_type: "LPDDR3"
+    subtype: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/lpddr/lpddr3/178ball-lpddr3/k4e8e304ed-egce"
+    notes: >
+      PN alvo (debug 2026-08-27), base sem sufixo de pacote. Preduo (catálogo
+      estruturado, campo "Density: 8Gbit") confirmado em 2 páginas
+      independentes (variantes 178-ball e 168-ball do mesmo PN base) — ver
+      cabeçalho do arquivo pra investigação completa da divergência com
+      AB Sunshine (resolvida a favor de 1GB via Intel validation doc).
+      8Gbit÷8=1GB, mesma aritmética/formato já padronizado nesta família
+      (ver K4E6E304EE no seed).
+
+  - part_number: "K4E8E304ED-EGCE"
+    chip_type: "LPDDR3"
+    subtype: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/lpddr/lpddr3/178ball-lpddr3/k4e8e304ed-egce"
+    notes: "Variante de pacote 178-ball do alvo (ver notes do PN base). Preduo, campo estruturado Density=8Gbit."
+
+  - part_number: "K4E8E304ED-AGCC"
+    chip_type: "LPDDR3"
+    subtype: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/lpddr/lpddr3/168ball-lpddr3/k4e8e304ed-agcc"
+    notes: "Variante de pacote 168-ball do alvo (ver notes do PN base). Preduo, campo estruturado Density=8Gbit."
+
+  - part_number: "K4E8E304ED-AGCE"
+    chip_type: "LPDDR3"
+    subtype: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.absunshine.com/en/parts/K4E8E304ED-AGCE-SAMSUNG-4527291"
+    notes: >
+      3ª variante de pacote do alvo (FBGA-178, AB Sunshine). ⚠ AB Sunshine
+      tagueia esta página com "Part No: 2GX32" (implicaria 8GB pela notação
+      depth×width da própria AB Sunshine) — DIVERGE de Preduo/Intel/tip (ver
+      investigação no cabeçalho do arquivo, resolvida a favor de 1GB). Uso
+      esta fonte só pra confirmar que o PN existe/circula; capacidade vem
+      das fontes mais fortes (Preduo + Intel).
+
+  - part_number: "K4E8E304EE-EGCF"
+    chip_type: "LPDDR3"
+    subtype: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.intel.com/content/dam/www/public/us/en/documents/platform-memory/lpddr3-1866-memory-down-validation-results.pdf"
+    notes: >
+      Achado do cluster — die-gen "EE" (irmão do alvo "ED"), MESMA chave de
+      capacidade "8E"=1GB. Fonte: Intel "LPDDR3-1866 Memory Down Validation
+      Results" (documento oficial, Nov.2016) — linha exata: "Samsung
+      *K4E8E304EE-EGCF | Package Density 8Gb | Density(die) 4Gb | DDP | x32 |
+      Die Rev E | Date Code 1425". Package Density=8Gb÷8=1GB (DDP=2 dies de
+      4Gb cada). Fonte de altíssima qualidade — valida também a chave "6E"
+      já confirmada no seed (mesma tabela: K4E6E304EE-EGCF=16Gb package=2GB).
