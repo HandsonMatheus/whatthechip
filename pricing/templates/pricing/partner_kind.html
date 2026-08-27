@@ -37,9 +37,23 @@
 
 <div class="phd">
   <div>
-    <h1>{% blocktrans trimmed with tipo=kind_label %}Tabela de <b>{{ tipo }}</b>{% endblocktrans %}</h1>
-    <p>{% if contrato %}{% blocktrans trimmed %}Este tipo não tem grade: o preço é uma taxa de contrato. Mudanças passam pela revisão do WhatTheChip, e o valor atual continua valendo até a aprovação.{% endblocktrans %}
-       {% else %}{% blocktrans trimmed %}Você cota em ¥ (RMB). Preencha o que quiser mudar e envie no fim da página — só as linhas alteradas viram pedido de revisão.{% endblocktrans %}{% endif %}</p>
+    {% comment %} ⚠ 2026-08-27. Era «Tabela de eMCP» com um parágrafo de
+       INSTRUÇÃO ("preencha o que quiser mudar e envie no fim"). O protótipo
+       escreve só o nome do tipo e, embaixo, o que o tipo É. Duas razões, e
+       nenhuma é estética:
+
+       1. A instrução já está no rodapé fixo, em cima do botão que a executa.
+          Repetida no topo, ocupa a linha e não é lida onde importa.
+       2. O parágrafo comprido empurrava os selos para uma linha própria: o
+          `.phd` é `flex-wrap`, e texto largo + três selos não cabem. Era por
+          isso que os selos apareciam embaixo e à esquerda em vez de à
+          direita do título. O layout estava certo; o conteúdo é que não
+          cabia nele. {% endcomment %}
+    <h1>{{ kind_label }}</h1>
+    {% comment %} Sem sufixo de faixa: o `_KIND_DESC` do eMCP/uMCP já termina
+       em "faixa mín–máx", e acrescentar "· faixa: mínimo e máximo por linha"
+       dizia a mesma coisa duas vezes e quebrava o subtítulo em duas linhas. {% endcomment %}
+    <p>{{ kind_desc }}</p>
   </div>
   <div class="seals">
     <span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>{% trans "Todos os preços em ¥ (RMB)" %}</span>
@@ -47,7 +61,6 @@
     {% elif dual %}<span class="seal seal--dual">{% trans "DUAS TABELAS — celular (unificado) × PCB (por marca)" %}</span>
     {% elif unified %}<span class="seal seal--uni">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</span>
     {% else %}<span class="seal seal--brand">{% trans "MATRIZ POR MARCA" %}</span>{% endif %}
-    {% if ranged %}<span class="seal seal--brand">{% trans "FAIXA — mínimo e máximo por linha" %}</span>{% endif %}
   </div>
 </div>
 
@@ -150,12 +163,13 @@
       <th style="min-width:132px">{% trans "Status" %}</th>
       {% if ranged %}<th style="min-width:170px">{% trans "Preço ¥ — mínimo" %}</th><th style="min-width:170px">{% trans "Preço ¥ — máximo" %}</th>
       {% else %}<th style="min-width:220px">{% trans "Preço ¥ por unidade" %}</th>{% endif %}
-      <th style="min-width:130px">{% trans "Última atualização" %}</th>
     </tr></thead>
     <tbody>
       {% for r in rows %}
       {% ifchanged r.gen %}{% if r.gen %}
-      <tr class="g"><td colspan="{% if ranged %}5{% else %}4{% endif %}">{{ r.gen }}</td></tr>
+      {% comment %} 4 colunas com faixa (linha · status · mín · máx), 3 sem.
+         Era 5/4 enquanto existia a coluna «Última atualização». {% endcomment %}
+      <tr class="g"><td colspan="{% if ranged %}4{% else %}3{% endif %}">{{ r.gen }}</td></tr>
       {% endif %}{% endifchanged %}
       <tr>
         <td><div class="gl"><span class="gl__n">{{ r.tier_disp }}{% if ranged %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</span></div></td>
@@ -185,7 +199,6 @@
               aria-label="{% trans 'máximo da faixa' %}"></td>
         {% endif %}
         {% endif %}
-        <td class="n" data-label="{% trans 'Última atualização' %}">{% if r.status == 'quoted' and r.quote_date %}{{ r.quote_date|date:"d/m/y" }}{% else %}—{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -237,13 +250,17 @@
 
 {% comment %} Rodapé FIXO (dono: "botão no final"). O `.pmain` do pacote já
    reserva 132px de respiro embaixo, então ele não cobre a última linha. {% endcomment %}
+{% comment %} A legenda primeiro, o botão por último: o `.pfoot__lg` tem
+   `flex:1` e empurra o `.btn` (que é `flex:none`) para a borda direita. Estava
+   invertido — botão à esquerda, legenda espremida à direita. {% endcomment %}
 <div class="pfoot">
-  <button type="submit" class="btn btn--pri">{% trans "Enviar para revisão" %}</button>
   {% if contrato %}
   <span class="pfoot__lg">{% trans "número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão do WhatTheChip; o valor atual continua valendo até a aprovação." %}</span>
   {% else %}
   <span class="pfoot__lg">{% blocktrans trimmed %}número = preço em <b>¥ (RMB)</b> · <b>x</b> = não compro · vazio = sem cotação · <b>—</b> = não fabricado. Só as linhas alteradas são enviadas.{% endblocktrans %}</span>
   {% endif %}
+  <button type="submit" class="btn btn--pri">{% trans "Enviar para revisão" %}
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
 </div>
 </form>
 

@@ -225,7 +225,13 @@ def _kind_nav(request):
     if b.k9_rmb_each is None:
         pend['k9'] = 1
     trav = _travados(request)['por_tipo']
-    return [(k, _KIND_LABEL[k], pend.get(k, 0), trav.get(k, 0))
+    # ⚠ CINCO campos desde 2026-08-27. A barra do protótipo descreve cada
+    # tipo embaixo do nome — "combo NAND + LPDDR", "memória de PCB, matriz
+    # por marca". Sem a descrição a barra é uma lista de siglas, e o
+    # comprador que ainda não decorou a convenção tem de abrir cada uma para
+    # descobrir qual é qual.
+    return [(k, _KIND_LABEL[k], _KIND_DESC.get(k, ''),
+             pend.get(k, 0), trav.get(k, 0))
             for k in _NAV_KINDS]
 
 
@@ -372,6 +378,10 @@ def partner_kind(request, kind):
     trav_linha = {(t['kind'], t['gen'], t['tier_value'], t['tier_unit']):
                   t['orders'] for t in trav_deste}
     ctx = {'buyer': request.buyer, 'kind': kind,
+           # O subtítulo da tela é o que o TIPO É, não uma instrução: a
+           # instrução mora no rodapé fixo, em cima do botão que a
+           # executa (realinhamento ao protótipo, 2026-08-27).
+           'kind_desc': _KIND_DESC.get(kind, ''),
            'kind_label': _KIND_LABEL[kind],
            'unified': kind in UNIFIED_KINDS,
            'ranged': kind in ('emcp', 'umcp'),
@@ -504,7 +514,7 @@ def partner_home(request):
          # `N sem cotação` quando as duas coisas são verdade. As duas SÃO —
          # mas só uma explica a urgência, e é ela que o comprador precisa ler.
          'travados': trav}
-        for k, lbl, pend, trav in nav]
+        for k, lbl, _desc, pend, trav in nav]
     return render(request, 'pricing/partner_home.html', {
         'buyer': buyer, 'lists': lists, 'nav_lists': lists, 'active_pk': None,
         'kind_nav': nav, 'active_kind': None,

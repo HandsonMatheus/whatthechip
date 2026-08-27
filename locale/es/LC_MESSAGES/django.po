@@ -4294,3 +4294,11 @@ msgid "Total · %(n)s marca"
 msgid_plural "Total · %(n)s marcas"
 msgstr[0] "Total · %(n)s marca"
 msgstr[1] "Total · %(n)s marcas"
+
+#: barra de tipos — realinhamento ao Claude Design (2026-08-27)
+msgid "Tipos de chip"
+msgstr "Tipos de chip"
+
+#: barra de tipos — realinhamento ao Claude Design (2026-08-27)
+msgid "visão geral da grade"
+msgstr "visión general de la tabla"
