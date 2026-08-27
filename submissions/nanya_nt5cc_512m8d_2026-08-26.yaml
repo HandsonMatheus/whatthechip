@@ -1,0 +1,54 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC512M8DN-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145488/NANYA/NT5CC512M8DN-DI.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 15:08): "NT5CC512M8DN" (sem sufixo) =
+      esta peca com sufixo "-DI". Die "DN" (a mesma do debug, sem precisar trocar de die) esta
+      DIRETO no indice principal do Alldatasheet: bucket NT5CC512M8D = 38, reconciliado exato
+      DN(20)+DP(18)=38 -- 1º caso desta rodada onde a die do debug bate exata com o indice
+      principal, sem precisar de corroboracao externa (mas confirmei mesmo assim). Datasheet do
+      fabricante indexado (4Mb/163P, "Commercial, Industrial and Automotive DDR3(L) 4Gb SDRAM").
+      Reforcado por 5+ fontes distribuidoras: Octopart, Arrow, Win Source, Xecor (estoque real:
+      8.845 unidades, descricao "4Gbit DDR3L SDRAM"), Ariat-Tech. Aritmetica: 512M x 8bit =
+      4096Mbit = 4Gb (bate). Mesma organizacao/densidade das dies "CN" (rodada 3) e "EN"/"EQ"
+      (rodada 13), ambas RENTAVEL.
+
+  - part_number: "NT5CC512M8DN-DIA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145527/NANYA/NT5CC512M8DN-DIA.html"
+    notes: >
+      Sibling de sufixo da die "DN" acima (variante automotiva "-DIA"). Confirmada no mesmo
+      indice do Alldatasheet + Ariat-Tech ("new and original in stock"). Aritmetica: 512M x 8bit
+      = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CC512M8DN-EK"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145490/NANYA/NT5CC512M8DN-EK.html"
+    notes: >
+      Sibling de sufixo da die "DN" acima (grade de velocidade diferente, "-EK"). Confirmada no
+      mesmo indice do Alldatasheet. Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CC512M8DN-DII"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145499/NANYA/NT5CC512M8DN-DII.html"
+    notes: >
+      Sibling de sufixo da die "DN" acima (variante industrial "-DII"). Confirmada no mesmo
+      indice do Alldatasheet. Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate).

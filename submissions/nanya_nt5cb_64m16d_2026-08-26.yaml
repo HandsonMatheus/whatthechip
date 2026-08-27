@@ -1,0 +1,54 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB64M16DP-CF"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.lisleapex.com/product-nt5cb64m16dp-cf"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 14:51): "NT5CB64M16DP" (sem sufixo) =
+      esta peca com sufixo "-CF". Die "D" NAO aparece em NENHUM bucket do indice principal do
+      Alldatasheet (bucket NT5CB64M16 = 108, reconciliado exato F(55)+G(53)=108, sem "D"
+      nenhum) -- mais forte que o padrao usual (aqui a die inteira falta do crawl, nao so um
+      sufixo). Confirmado por 6+ fontes distribuidoras independentes convergentes: Lisleapex
+      (tabela tecnica completa: DRAM Type=DDR3 SDRAM, Chip Density=1G, Organization=64Mx16,
+      Voltage=1.425-1.575V, Package=WBGA-96, Pin Count=96), Veswin (DDR3 SDRAM 1Gbit 64Mx16
+      1.5V 96-Pin WBGA), Ovaga, Avaq, Censtry, pdf.support. Aritmetica: 64M x 16bit = 1024Mbit
+      = 1Gb (bate exato com a tabela tecnica). Mesma organizacao/densidade da die "FP" ja
+      confirmada na rodada 2 (NAO RENTAVEL). Ressalva de sufixo de sempre: "NT5CB64M16DP"
+      (bancada, sem sufixo) so resolve se o "-CF" estiver de fato gravado na peca fisica.
+
+  - part_number: "NT5CB64M16DP-DH"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.absunshine.com/en/parts/NT5CB64M16DP-DH-NANYA-4081011"
+    notes: >
+      Sibling de sufixo da die "DP" acima (grade de velocidade diferente). Confirmado por 4+
+      fontes: AB Sunshine (tabela tecnica completa: Item=DDR3 SDRAM, Part No=64MX16 DDR3,
+      Package=FBGA-96, Voltage=1.5V, Density=1Gb, Interface=SSTL_15), Datasheets360 (DDR3 DRAM,
+      64MX16, 0.225ns, CMOS, PBGA96), datasheet oficial Nanya hospedado no Octopart (titulo
+      literal do documento: "1Gb DDR3 SDRAM NT5CB128M8DN / NT5CB64M16DP" -- datasheet do
+      fabricante cobrindo esta familia), Ariat-Tech (PDF dedicado) e DatasheetArchive/Quest
+      Components (64M X 16 DDR DRAM, 0.225NS, PBGA96, em estoque 1949un). Aritmetica: 64M x
+      16bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CB64M16DP-CFI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.aipcba.com/datasheet/pdf/nt5cb64m16dpcfi-cm473740900.html"
+    notes: >
+      Variante industrial (sufixo "I") da die "DP-CF" acima -- mesmo padrao de pares
+      comercial/industrial visto em toda a familia NT5CB (ex.: FN-DH/FN-DHI, FP-DH/FP-DHH/
+      FP-DHI). Confirmada em fonte unica (AiPCBA, listagem dedicada: "DRAM Chip DDR3 SDRAM
+      1Gbit 64Mx16 1.5V 96Pin WBGA", grade industrial). ⚠ Confianca menor que as duas acima
+      (1 fonte distribuidora, nao 2+) -- especificacoes tecnicas batem exatamente com a
+      aritmetica e com o padrao ja estabelecido da familia, mas sinalizo a fonte unica.
+      Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate).

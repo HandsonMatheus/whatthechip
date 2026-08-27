@@ -1,0 +1,56 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5AD256M16E4-JR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.octopart.com/NT5AD256M16E4-JR-Nanya-datasheet-180870360.pdf"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 15:55): "NT5AD256M16E4" (sem sufixo) =
+      esta peca com sufixo "-JR". Die "E4" e um die NOVO da familia NT5AD (a rodada 1, jul/2026,
+      confirmou só o die "D4"/"D3" nesta mesma organizacao 256M16/4Gb, via
+      NT5AD256M16D4-HR). Confirmado por datasheet OFICIAL da Nanya hospedado no Octopart
+      (documento do fabricante, versao 1.5, 07/2020) -- Tier-1. Reforcado por 6+ fontes
+      distribuidoras: Arrow, Win Source, HardDiskDirect, AIChipLink, Rutronik24. Aritmetica:
+      256M x 16bit = 4096Mbit = 4Gb (bate exato com a mesma organizacao ja confirmada RENTAVEL
+      na rodada 1, die "D4").
+
+  - part_number: "NT5AD256M16E4-JRI"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.lisleapex.com/product-nt5ad256m16e4-jri"
+    notes: >
+      Sibling de sufixo da die "E4" acima (variante industrial "-JRI"). Confirmada por
+      Lisleapex (tabela tecnica: Package=TFBGA-96, Part Status=Active, Pin Count=96) + AB
+      Sunshine + Xecor + Win Source (4+ fontes). Aritmetica: 256M x 16bit = 4096Mbit = 4Gb
+      (bate).
+
+  - part_number: "NT5AD256M16E4-HR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.absunshine.com/en/parts/NT5AD256M16E4-HR-NANYA-5616561"
+    notes: >
+      Sibling de sufixo da die "E4" acima -- mesmo sufixo "-HR" ja confirmado na rodada 1 pra
+      die "D4" (NT5AD256M16D4-HR), agora tambem na die "E4". Confirmada por AB Sunshine
+      (pagina dedicada) + Octopart (tabela tecnica: DDR4 SDRAM 4Gbit 256Mx16, VDD/VDDQ/VPP =
+      1.2V/1.2V/2.5V, 96-ball FBGA). Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5AD256M16E4-HRT"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.datasheets.com/part-details/nt5ad256m16e4-hrt-nanya-technology-1845245487"
+    notes: >
+      Sibling de sufixo da die "E4" acima (variante "-HRT", mesmo padrao de sufixo "D3-HRT"/
+      "D4-HRT" ja visto na mesma organizacao). Confirmada em pagina dedicada da Datasheets.com.
+      Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate).

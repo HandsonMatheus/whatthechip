@@ -1,0 +1,52 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT6TL128T64AR-G0"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    capacity: "128MB"
+    interface: "x64"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1153112/NANYA/NT6TL128T64AR-G0.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 17:39): "NT6TL128T64AR" (sem sufixo) =
+      esta peca com sufixo "-G0". FAMILIA NUNCA VISTA nesta conta -- prefixo "NT6TL" flagueado
+      como backlog desde a rodada 4 (onboarding do NT6CL, jul/2026), sem sinal de bancada ate
+      agora. ⚠ ACHADO IMPORTANTE: o prefixo "NT6TL" abrange DUAS geracoes MUITO diferentes sob o
+      MESMO padrao posicional -- a die "A" (como esta, "AR"/"AI"/"AQ"/"A3"/"A5"/"AA") e
+      "Commercial Mobile DDR 1Gb SDRAM" (LPDDR1, geracao antiga, confirmado por datasheet
+      Nanya direto, link nanya.com), enquanto a die "B" (ex.: "BR"/"B5") no MESMO bucket
+      organizacional "128T64" e "Commercial and Industrial Mobile LPDDR2 4Gb/8Gb(DDP) SDRAM"
+      (geracao MUITO mais nova, densidade 4-8x maior) -- confirmado por 5+ distribuidores
+      (memory-distributor.com: "LPDDR2 8Gb 128Mx64"; ssfkg.com: "8Gb LPDDR2"; Octopart, Arrow,
+      Avaq). NAO criei ChipFamily/gramatica nesta rodada por causa dessa ambiguidade de
+      letra-por-geracao -- um decode posicional simples erraria a die "B" (e possivelmente
+      outras letras) se aplicasse a formula da die "A". Submeti SO known_parts da die "A"
+      (identity-only, confirmados individualmente). Aritmetica: 1Gb (do datasheet, NAO derivado
+      de profundidade x largura -- a formula padrao nao bateria aqui) = 1024Mb / 8 = 128MB
+      (convencao LPDDR avulso: capacity em GB/MB do pacote, nao density_gbit -- CLAUDE.md §6,
+      corrigido na rodada 4 apos erro similar). lpddr_min_gen=3 (config padrao) -> LPDDR1 (ger.
+      1) fica NAO RENTAVEL so pela geracao, independente da capacidade.
+
+  - part_number: "NT6TL128T64AR-G1"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    capacity: "128MB"
+    interface: "x64"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1154552/NANYA/NT6TL128T64AR-G1.html"
+    notes: >
+      Sibling de sufixo da die "AR" acima (grade de velocidade diferente, "-G1"). Confirmada no
+      mesmo indice do Alldatasheet ("Commercial Mobile DDR 1Gb SDRAM", mesmo datasheet base
+      3Mb/81P). Mesma aritmetica/convencao da entrada acima.
+
+  - part_number: "NT6TL128T64AR-G2"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    capacity: "128MB"
+    interface: "x64"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1155992/NANYA/NT6TL128T64AR-G2.html"
+    notes: >
+      Sibling de sufixo da die "AR" acima (grade de velocidade diferente, "-G2"). Confirmada no
+      mesmo indice do Alldatasheet ("Commercial Mobile DDR 1Gb SDRAM", mesmo datasheet base
+      3Mb/81P). Mesma aritmetica/convencao da entrada acima.

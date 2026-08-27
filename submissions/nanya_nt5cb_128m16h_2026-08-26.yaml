@@ -1,0 +1,55 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB128M16HP-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.ariat-tech.com/parts/NANYA/NT5CB128M16HP-DI"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 14:35): "NT5CB128M16HP" (sem sufixo) =
+      esta peca com sufixo "-DI". Die "H" NAO aparece no indice principal do Alldatasheet (bucket
+      NT5CB128M16 = 89, reconciliado exato F(8)+I(40)+J(41)=89, sem "H") -- mesmo padrao ja visto
+      varias vezes: die real fora do crawl daquele indice. Confirmado por 5+ fontes independentes
+      convergentes: Powerline Microelectronics, Veswin, Ariat-Tech, Ovaga Technologies, e o proprio
+      Alldatasheet (datasheet dedicado, encontrado por busca de marking). Descricao tecnica
+      consistente: "DDR3 SDRAM, 2Gbit, 128Mx16, 8 bancos internos, bus 16-bit, 1.425V-1.575V"
+      (1.5V nominal, confirma DDR3 -- nao DDR3L -- padrao ja estabelecido pra NT5CB). Aritmetica:
+      128M x 16bit = 2048Mbit = 2Gb (bate). Ressalva de sufixo (ja documentada em rodadas
+      anteriores): "NT5CB128M16HP" (bancada, sem sufixo) normaliza diferente de
+      "NT5CB128M16HPDI" -- este known_part so resolve o PN exato da bancada se o "-DI" estiver
+      de fato gravado na peca fisica. Confirmar em sandbox mesmo assim.
+
+  - part_number: "NT5CB128M16HP-EK"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.datasheets360.com/part/detail/nt5cb128m16hp-ek/1526554983517772299/"
+    notes: >
+      Sibling de sufixo da die "HP" acima (grade de velocidade diferente). Aritmetica: 128M x
+      16bit = 2048Mbit = 2Gb (bate).
+
+  - part_number: "NT5CB128M16HP-CG"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.worldwayelec.com/pro/nanya/nt5cb128m16hp-cg/5021087"
+    notes: >
+      Sibling de sufixo da die "HP" acima. Confirmado tambem em datasheets360.com (ficha propria).
+      Aritmetica: 128M x 16bit = 2048Mbit = 2Gb (bate).
+
+  - part_number: "NT5CB128M16HP-DII"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/NT5CB128M16HP-DII"
+    notes: >
+      Sibling de sufixo da die "HP" acima (variante industrial "-DII"). Aritmetica: 128M x 16bit
+      = 2048Mbit = 2Gb (bate).

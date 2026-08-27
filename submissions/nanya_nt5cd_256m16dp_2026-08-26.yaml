@@ -1,0 +1,30 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CD256M16DP"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.lcsc.com/product-detail/DDR-SDRAM_Nanya-Tech-NT5CC256M16DP-DI_C2943100.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 16:11): "NT5CD256M16DP" (sem sufixo).
+      ⚠ PREFIXO "NT5CD" NAO TEM NENHUMA fonte publica Tier-1/Tier-2 -- busca exaustiva (Alldatasheet,
+      Octopart, distribuidores, site da Nanya) nao achou NENHUM resultado; o indice inteiro de
+      "NT5C*" no Alldatasheet (1.289 resultados) se esgota em NT5CB(679)+NT5CC(610), sem sobra
+      pra nenhum outro prefixo NT5C?. Perguntei ao dono se a marcacao fisica batia com NT5CB ou
+      NT5CC (confusao visual plausivel B/C/D) -- o dono CONFIRMOU FISICAMENTE NO MICROSCOPIO que
+      o PN esta correto como "NT5CD256M16DP" (nao e erro de leitura) e autorizou explicitamente
+      submeter "com as mesmas specs de suas variacoes" (26/08/2026). Specs (densidade/interface)
+      espelhadas dos dois candidatos mais proximos, ambos confirmados reais na mesma organizacao
+      256M16 (4Gb): NT5CB256M16DP-EK (DDR3 1.5V, Alldatasheet) e NT5CC256M16DP-DI (DDR3L 1.35V,
+      8+ fontes incl. voltagem explicita). Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate --
+      isso e o dado comum aos dois candidatos, aplicavel independente da letra do prefixo).
+      chip_type=DDR3L escolhido por analogia ao sibling MAIS documentado (NT5CC), mas ISSO NAO
+      FOI CONFIRMADO PARA O PREFIXO "CD" ESPECIFICAMENTE -- sinalizado ao dono para revisao no
+      admin (DDR3 vs DDR3L nao muda o veredito de rentabilidade nesta densidade, so a categoria
+      da caixa). confidence=manual (nao "confirmed"): fonte e verificacao fisica direta do dono,
+      nao datasheet publico -- consistente com a convencao de que "manual" e igualmente
+      autoritativo, so com fonte diferente. NAO inventei sufixos (-DI/-EK/etc): zero evidencia de
+      qualquer variante de sufixo pra "NT5CD" em qualquer fonte -- submeti so o PN exato
+      observado e confirmado fisicamente.

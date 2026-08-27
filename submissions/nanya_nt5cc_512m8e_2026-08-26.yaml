@@ -1,0 +1,53 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC512M8EN-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425615/NANYA/NT5CC512M8EN-DI.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 14:29): "NT5CC512M8EN" (sem sufixo) =
+      esta peca com sufixo "-DI". Confirmado diretamente no Alldatasheet: bucket NT5CC512M8E* =
+      53 resultados, reconciliado exato EN(7)+EQ(24)+ER(22)=53, "Commercial and Industrial
+      DDR3(L) 4Gb SDRAM". Reforcado por AB Sunshine Electronics (ficha dedicada) e Arrow (variante
+      -EK da mesma die). Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate). Ressalva de sufixo (ja
+      documentada em rodadas anteriores): "NT5CC512M8EN" (bancada, sem sufixo) normaliza diferente
+      de "NT5CC512M8ENDI" -- este known_part so resolve o PN exato da bancada se o "-DI" estiver
+      de fato gravado na peca fisica. Confirmar em sandbox mesmo assim.
+
+  - part_number: "NT5CC512M8EN-EK"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425617/NANYA/NT5CC512M8EN-EK.html"
+    notes: >
+      Sibling direto do PN do debug -- mesma die "EN", sufixo "-EK" em vez de "-DI" (grade de
+      velocidade diferente, DDR3L-1866 vs 1600). Confirmado tambem no Arrow (ficha propria).
+      Alldatasheet: "Commercial and Industrial DDR3(L) 4Gb SDRAM". Aritmetica: 512M x 8bit =
+      4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CC512M8EQ-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145506/NANYA/NT5CC512M8EQ-DI.html"
+    notes: >
+      Die "EQ" do mesmo cluster 512M8, mesma densidade. Alldatasheet: "Commercial and Industrial
+      DDR3(L) 4Gb SDRAM". Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CC512M8EQ-DIA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145490/NANYA/NT5CC512M8EQ-DIA.html"
+    notes: >
+      Variante de sufixo da die "EQ" acima (Automotive). Alldatasheet: "Automotive DDR3(L) 4Gb
+      SDRAM". Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate).

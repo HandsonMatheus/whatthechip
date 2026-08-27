@@ -1,0 +1,58 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB512M8EQ-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145507/NANYA/NT5CB512M8EQ-DI.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (26/08/2026 16:03): "NT5CB512M8EQ" (sem sufixo) =
+      esta peca com sufixo "-DI". Die "EQ" (a mesma do debug, sem precisar trocar de die) esta
+      DIRETO no indice principal do Alldatasheet: bucket NT5CB512M8E = 59, sub-buckets
+      EN*(8)/EQ*(25)/ER*(22). Datasheet do fabricante indexado ("Commercial and Industrial
+      DDR3(L) 4Gb SDRAM"). ⚠ Nota de metodo: o indice tambem lista 3 entradas de datasheet
+      "NT5CB512M8EQ" LITERALMENTE SEM SUFIXO (154P/155P/158P) -- verifiquei que sao documentos
+      de FAMILIA (multi-pagina, cobrindo varias variantes de sufixo na tabela de "Ordering
+      Information"), nao um SKU vendavel proprio: nenhum distribuidor real (LCSC/Win Source/
+      AIChipLink/ZTZ/ULEAD/Xecor) lista o PN sem sufixo em estoque -- todos os listings reais
+      tem sufixo (-DI/-DIA/-FL/-FLA/etc). Por isso NAO tratei o PN sem sufixo como resolvivel;
+      mesma ressalva de sufixo de sempre, testada em sandbox. Aritmetica: 512M x 8bit =
+      4096Mbit = 4Gb (bate). Mesma organizacao/densidade da die "BN" (rodada 12, confirmada via
+      override Tier-2), RENTAVEL.
+
+  - part_number: "NT5CB512M8EQ-DIA"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145491/NANYA/NT5CB512M8EQ-DIA.html"
+    notes: >
+      Sibling de sufixo da die "EQ" acima (variante automotiva "-DIA"). Confirmada no mesmo
+      indice do Alldatasheet (2 revisoes de datasheet encontradas). Aritmetica: 512M x 8bit =
+      4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CB512M8EQ-FL"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/product-detail/ddr-sdram_nanya-tech-nt5cb512m8eq-fl_C2960661.html"
+    notes: >
+      Sibling de sufixo da die "EQ" acima (grade de velocidade diferente, "-FL"). Confirmada
+      por 5+ fontes com estoque/preco real: LCSC (preco $3.3236), AIChipLink, Win Source, ZTZ
+      Technology, ULEAD Electronics. Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CB512M8EQ-DII"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145518/NANYA/NT5CB512M8EQ-DII.html"
+    notes: >
+      Sibling de sufixo da die "EQ" acima (variante industrial "-DII"). Confirmada no mesmo
+      indice do Alldatasheet. Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate).
