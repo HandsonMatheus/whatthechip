@@ -42,10 +42,14 @@
 # 4.5 specification" explícito — apliquei "eMMC 4.5" aos 6 PNs acima por inferência de família (
 # mesmo prefixo/geração/pacote, catalogados em sequência pela própria RS), não confirmado PN a PN.
 #
-# EXCLUÍDO — `KE4CN5B6A`: RS mostra capacidade "32Gbit" (não "GByte" como todos os outros — texto
-# genuinamente diferente, não parece erro de digitação da RS). Se for GByte por padrão de dobra
-# (2→4GB,3→8GB,4→16GB,5→32GB) seria 32GB; se for Gbit literal ÷8 seria só 4GB — os dois são
-# plausíveis e a página não desambiguou. Não incluí — spec contraditória, não adivinhei qual.
+# EXCLUÍDO na entrega original (2026-08-20) — `KE4CN5B6A`: RS mostra capacidade "32Gbit" (não "GByte"
+# como todos os outros — texto genuinamente diferente, não parece erro de digitação da RS). Se for
+# GByte por padrão de dobra (2→4GB,3→8GB,4→16GB,5→32GB) seria 32GB; se for Gbit literal ÷8 seria só
+# 4GB — os dois são plausíveis e a página não desambiguou. Não incluí — spec contraditória, não
+# adivinhei qual.
+# ⚠ RESOLVIDO na 3ª rodada (2026-08-26, ver atualização mais abaixo): Octopart confirma
+# independentemente "32GByte" + "eMMC V4.5" explícito — KE4CN5B6A JÁ ESTÁ incluído como known_part
+# confirmado no final deste arquivo, esta linha fica só como registro histórico da exclusão original.
 #
 # NÃO PERSEGUIDO nesta rodada: achei também "KE4CN2H5A-A58" e "KE4CN2H5C" (variantes de sufixo/
 # revisão da forma curta, via findchips) sem abrir specs — fica sinalizado, não é o gatilho desta
@@ -55,6 +59,46 @@
 # nenhuma menção de LPDDR) — mesma convenção já usada pro eMMC standalone `EMMC…G-…` (KINGSTON.md
 # §1: subtype vazio, interface=versão eMMC, capacity=GB literal). `device` = pacote/pin-count
 # (mesma inferência de campo já usada na submissão NAND cru, não existe campo dedicado no schema).
+#
+#
+# ── ATUALIZAÇÃO 2026-08-26 (3ª rodada) — 3º FORMATO de PN na linha KE4 + resolução de ambiguidade ──
+# Disparada por PN físico do debug de estoque `KE44B26BN8GB` (lido sem separador; forma real com
+# separadores é `KE44B-26BN/8GB`, confirmada via RS Components + Octopart + Elnec).
+#
+# NOVO FORMATO descoberto: "KE44B-[dígito][letra]AN/[cap]GB" — usa hífen E barra, com a CAPACIDADE
+# ESCRITA LITERAL no sufixo (diferente dos formatos curto/longo já documentados acima, que codificam
+# capacidade num dígito compacto sem separador). Também é uma GERAÇÃO eMMC DIFERENTE: "eMMC 4.41"
+# (JEDEC JESD84-A4411) confirmado EXPLÍCITO em 2 dos 3 PNs (RS Components pro /8GB: "Designed to...
+# JESD84-A4411"; Octopart pro /2GB: "Embedded MMC 4.41"), vs. "eMMC 4.5" da família KE4CN/KE4BT
+# (curta/longa) já documentada acima — a linha "KE4" cobre pelo menos 2 gerações eMMC distintas.
+#
+# CLUSTER (RS Components, cross-referenciado com Octopart):
+#   KE44B-25AN/2GB → 2GB, 153-Pin FBGA, eMMC 4.41 confirmado
+#   KE44B-26BN/4GB → 4GB, 169-Pin FBGA, eMMC 4.41 por inferência (irmã entre as 2 confirmadas)
+#   KE44B-26BN/8GB → 8GB, 169-Pin FBGA, eMMC 4.41 confirmado — PN FÍSICO do debug, 26/08/2026
+# ⚠ Achado de disambiguação: RS lista a capacidade do KE44B-25AN/2GB como "2Gbit" no campo curto de
+# "Capacity", mas o campo "Organisation" da MESMA página diz "2G x 1 bit, 2G x 4 bit, 2G x 8 bit" (bate
+# com 2GByte, não 2Gbit) e o próprio sufixo do PN diz "/2GB" — 2 contra 1 dentro da própria RS, e
+# Octopart confirma independentemente "2GB" puro. Concluí 2GByte (capacity: 2GB), tratando o "2Gbit"
+# do campo curto como inconsistência de template da RS, não spec real — mesmo tipo de inconsistência
+# que resolveu o achado abaixo.
+#
+# Tentei e não achei (excluído): "KE44B-" com capacidade 16GB ou 32GB (varri múltiplos espelhos
+# regionais da RS, só apareceram os 3 stock numbers 761-0351/354/358 = 2/4/8GB); revisões de sufixo
+# além das 3 formas-base.
+#
+# ── RESOLUÇÃO DE AMBIGUIDADE ANTIGA: KE4CN5B6A (excluído na entrega original acima) ──
+# Motivo da exclusão original: RS mostrava "32Gbit" (não "32GByte" como as demais irmãs da família
+# curta) — ambíguo entre 32GB (padrão de dobra 2→4,3→8,4→16,5→32) e 4GB (32Gbit÷8 literal), página não
+# desambiguava, não incluí por spec contraditória.
+# RESOLVIDO nesta rodada: Octopart (fonte independente da RS) confirma "32G-byte (32GB)" E "32GB eMMC
+# V4.5" explícito — bate com o padrão de dobra da família curta (dígito "5"→32GB) E confirma eMMC 4.5
+# (mesma geração das irmãs KE4CN/KE4BT). O "32Gbit" da RS era o MESMO tipo de inconsistência de
+# template achada agora no KE44B-25AN/2GB (campo curto usa unidade errada) — não uma spec real
+# diferente. Adicionado abaixo como known_part confirmado, substituindo a exclusão anterior.
+#
+# CLUSTER adicional (irmã de pacote/capacidade, achada nesta rodada varrendo a mesma família KE4BT):
+#   KE4BT5D6A → 32GB, 169-Pin FBGA — irmã de capacidade da KE4BT4B6A (16GB) já confirmada acima.
 #
 # validar: python manage.py submit_known_parts submissions/kingston_emmc_ke4_2026-08-20.yaml
 
@@ -169,3 +213,94 @@ known_parts:
       registrada é a do CHIP (fonte direta pro PN via distribuidor), não a do "storage" anunciado do
       aparelho — discrepância documentada, não escondida.
     source_url: https://octopart.com/search?q=KE4CN2L2SA5H2A
+
+  # ── 3º formato "KE44B-xx/YGB", achado 2026-08-26 (3ª rodada) — geração eMMC 4.41 ──
+  - part_number: KE44B-25AN/2GB
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.41
+    capacity: 2GB
+    device: 153-Pin FBGA
+    confidence: confirmed
+    notes: >
+      3º formato de PN da linha KE4, achado nesta rodada (diferente dos formatos curto/longo KE4CN/
+      KE4BT já documentados acima) — usa hífen+barra com capacidade literal no sufixo ("/2GB"), e é
+      geração eMMC diferente: "4.41" (JEDEC JESD84-A4411) confirmado explícito via Octopart ("Embedded
+      MMC 4.41"), não "4.5" como a família curta/longa. RS Components mostra capacidade "2Gbit" no
+      campo curto, mas o campo "Organisation" da mesma página ("2G x 1 bit, 2G x 4 bit, 2G x 8 bit")
+      e o próprio sufixo do PN ("/2GB") batem com 2GByte, e Octopart confirma "2GB" independente —
+      tratei o "2Gbit" da RS como inconsistência de template, não spec real. 3.3V, -25°C~+85°C,
+      11.5x13x1.2mm.
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7610351
+
+  - part_number: KE44B-26BN/4GB
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.41
+    capacity: 4GB
+    device: 169-Pin FBGA
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da KE44B-26BN/8GB abaixo (mesmo prefixo "KE44B-26BN", só capacidade
+      diferente) — 4GByte, 169-Pin FBGA, confirmado via RS Components (Organisation "4G x 1 bit, 4G x
+      4 bit, 4G x 8 bit" bate com 4GByte). Versão eMMC "4.41" aplicada por inferência de família — esta
+      página específica não mostrou o número de versão, mas as duas irmãs de capacidade (2GB e 8GB)
+      têm eMMC 4.41 confirmado explícito, então é inferência forte (PN entre 2 confirmados).
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7610354
+
+  # ── PN físico do debug de estoque que disparou esta rodada ──
+  - part_number: KE44B-26BN/8GB
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.41
+    capacity: 8GB
+    device: 169-Pin FBGA
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 26/08/2026 (lido sem separador: "KE44B26BN8GB"),
+      known:false — TUDO vazio, nem fallback genérico bateu. 3º formato de PN da linha KE4 (ver
+      cabeçalho do arquivo). Capacidade 8GByte, 169-Pin FBGA, eMMC "4.41" (JEDEC Standard No.
+      JESD84-A4411) confirmado EXPLÍCITO via RS Components — mais forte que a maioria das entradas
+      desta família, que dependem de inferência. 3.3V máximo, -25°C~+85°C, 32nm, 12x16x1.2mm,
+      organização "8G x 1 bit, 8G x 4 bit, 8G x 8 bit". Cross-referenciado com Octopart e Elnec
+      (listagem de dispositivo de programador, confirma pacote FBGA169 sob fabricante "Kingston
+      Solutions"). Nota transparente: 2 distribuidores menores (Jotrin, EmbedIc) atribuem esse PN à
+      STMicroelectronics — divergência isolada, contradita por RS Components (Tier-1) + Octopart +
+      Elnec + Kynix + veswin.com, todos atribuindo a Kingston; segui a maioria de fontes mais fortes.
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7610358
+
+  # ── irmã de capacidade da KE4BT4B6A (achada nesta rodada varrendo a mesma família KE4BT) ──
+  - part_number: KE4BT5D6A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 32GB
+    device: 169-Pin FBGA
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da KE4BT4B6A (16GB) já confirmada acima — mesmo prefixo "KE4BT", dígito de
+      capacidade "5" em vez de "4" (mesma posição/padrão de dobra da família curta KE4CN: 2→4,3→8,
+      4→16,5→32GB). RS Components confirma "32GByte" direto (Organisation "32G x 1 bit, 32G x 4 bit,
+      32G x 8 bit" bate) e 169-Pin FBGA. Versão eMMC "4.5" por inferência de família (mesma geração
+      KE4CN/KE4BT já estabelecida, RS não mostrou versão nesta página específica). 3.3V,
+      -25°C~+85°C, 14x18x1.4mm.
+    source_url: https://uk.rs-online.com/web/p/flash-memory/7610360
+
+  # ── KE4CN5B6A: RESOLVIDO nesta rodada (era excluído na entrega original acima por ambiguidade) ──
+  - part_number: KE4CN5B6A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 32GB
+    device: 169-Pin BGA
+    confidence: confirmed
+    notes: >
+      Excluído na entrega original de 2026-08-20 (ver cabeçalho do arquivo) por ambiguidade: RS
+      Components mostrava capacidade "32Gbit" (não "32GByte" como as demais irmãs) — indecidível entre
+      32GB (padrão de dobra) e 4GB (32Gbit÷8 literal), não adivinhei. RESOLVIDO nesta rodada (26/08):
+      Octopart (fonte independente) confirma "32G-byte (32GB)" e "32GB eMMC V4.5" explícito — bate com
+      o padrão de dobra (dígito "5"→32GB) e confirma eMMC 4.5. O "32Gbit" da RS era inconsistência de
+      template (mesmo tipo de erro achado agora no KE44B-25AN/2GB acima, campo curto com unidade
+      errada), não spec real diferente. Conta: se fosse Gbit literal seria 32Gbit÷8=4GB, mas a fonte
+      independente confirma GByte mesmo — 32GB é o valor correto.
+    source_url: https://octopart.com/ke4cn5b6a-kingston-24840774

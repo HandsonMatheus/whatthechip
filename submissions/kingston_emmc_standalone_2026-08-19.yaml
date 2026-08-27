@@ -60,6 +60,24 @@
 # existe fonte" — insistir com mais distribuidores resolveu o que ontem tinha ficado como gap. TA29
 # e TX29 (32/64/128GB cada) entraram como known_parts confirmados abaixo — 6 PN novos.
 #
+# ⚠ ADENDO 2026-08-26 (4ª expansão) — PN físico `EMMC16GS100` no debug de estoque (known:false, tudo
+# vazio). Geração de sufixo NOVA "S100" — não está em NENHUM dos 2 flyers oficiais já usados neste
+# arquivo (conferi de novo o `eMMC_Product_flyer.pdf` especificamente atrás de "S100": não tem).
+# MUITO mais antiga que TB28/TB29/TA29/TX29 — Octopart mostra lifecycle "Obsolete", LTB (last-time-
+# buy) 2016-06-01, LTD 2017-01-22 pra EMMC16G-S100/EMMC32G-S100 — geração descontinuada há quase 10
+# anos. Cluster achado (Octopart/Avnet/Elnec/Jotrin/TrustedParts/Datasheets360, cross-referenciados):
+# EMMC04G-S100, EMMC08G-S100, EMMC16G-S100, EMMC32G-S100 — todas pacote 153-ball BGA (fontes chamam
+# de "PBGA153"/"FBGA153"/"R-PBGA-B153" conforme o agregador, mesmo pacote físico). eMMC versão "5.0"
+# CONFIRMADA direto na fonte só pra EMMC32G-S100 (Octopart: "32GB eMMC v5.0") — apliquei por
+# inferência de família às outras 3 capacidades (mesmo pacote/geração/faixa de LTB), não confirmado
+# PN a PN, mesmo padrão de transparência já usado nas TX29 de 64/128GB. Tentei achar EMMC64G-S100 e
+# EMMC128-S100 (completando a progressão) — não achei em nenhuma fonte, não incluí (a geração parece
+# genuinamente parar em 32GB, consistente com ser uma geração mais antiga/pequena). Muitas variantes
+# de sufixo de revisão apareceram nas buscas (-A06U/-E06U/-R10 no 16G; -A08U/-B08U/-E08U/-G08U no
+# 04G) — não persegui nenhuma, o PN do debug é a forma BASE sem revisão, mesmo padrão de escopo já
+# usado nas demais entradas deste arquivo (registrar a forma que disparou a pesquisa, não a árvore
+# inteira de sufixos de lote/revisão).
+#
 # ⚠ TERRENO NOVO: primeiro known_part de eMMC standalone deste chat — o mapeamento pro campo
 # `capacity` (em vez de emcp_nand/emcp_ram, que são só pro eMCP composto) é inferência minha por
 # analogia ao padrão já visto (Foresee também usa "eMMC/UFS literal-GB" por nota de memória do
@@ -521,3 +539,64 @@ known_parts:
       inferência de família (mesma geração/datasheet das irmãs de 32/64GB). Corroborado em DigiKey
       (EMMC128-TX29-8AC01), Octopart, SnapEDA, Avnet.
     source_url: https://www.digikey.com/en/products/detail/kingston/EMMC128-TX29-8AC01/13627685
+
+  # ── eMMC standalone — geração de sufixo "S100", resolvida 2026-08-26 (4ª expansão) ──
+  - part_number: EMMC04G-S100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 4GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Geração "S100" — bem mais antiga que TB28/TB29/TA29/TX29 (lifecycle Obsolete, descontinuada
+      ~2016/2017, ver irmãs abaixo). Capacidade 4GB literal (código "04G"). Pacote 153-ball BGA
+      (fontes chamam "R-PBGA-B153"). Versão eMMC 5.0 aplicada por inferência de família (confirmada
+      direto só na irmã de 32GB — ver nota da EMMC32G-S100 abaixo). Status "Discontinued"/"Obsolete"
+      confirmado (Datasheets360, Octopart). Corroborado em Octopart, Kynix, SnapEDA, DigiPart,
+      Componentsense.
+    source_url: https://www.datasheets.com/en/part-details/emmc04g-s100-kingston-technology-62128833
+
+  - part_number: EMMC08G-S100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC04G-S100 acima, mesma geração "S100". Capacidade 8GB literal (código
+      "08G"). Fonte mais fraca que as outras 3 desta geração — só achei listagem de
+      programador/ferramenta de gravação (smh-tech.com), sem package/versão explícitos na página —
+      mas confirma existência real do PN como eMMC Kingston. Pacote/versão aplicados por inferência
+      de família (mesmo padrão 153-ball/eMMC 5.0 das irmãs 04G/16G/32G).
+    source_url: https://smh-tech.com/kingston-emmc08g-s100/
+
+  - part_number: EMMC16G-S100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 26/08/2026 (lido sem hífen: "EMMC16GS100"), known:false
+      — nem fallback genérico bateu. Capacidade 16GB literal (código "16G"). Pacote 153-ball BGA
+      ("PBGA153" via Octopart, "FBGA153" via Elnec — mesmo pacote físico, nomenclatura diferente por
+      agregador). Lifecycle "Obsolete" explícito, LTB (last-time-buy) 2016-06-01, LTD 2017-01-22
+      (Octopart) — geração bem antiga, descontinuada há quase 10 anos. Tensão 2.7-3.6V (nominal
+      3.3V), 13x11.5x1mm. Versão eMMC 5.0 por inferência de família (confirmada direto só na irmã de
+      32GB). Corroborado em Avnet, Elnec, Jotrin, TrustedParts, Datasheets360.
+    source_url: https://octopart.com/emmc16g-s100-kingston-46343646
+
+  - part_number: EMMC32G-S100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC16G-S100 acima, mesma geração "S100". Capacidade 32GB literal
+      (código "32G"). Versão eMMC **CONFIRMADA DIRETO** na fonte: Octopart lista "32GB eMMC v5.0"
+      explicitamente — esta é a irmã com mais rigor desta geração (as outras 3 aplicam eMMC 5.0 por
+      inferência de família, a partir desta). Pacote PBGA153/FBGA153 (153-ball, mesmo padrão das
+      irmãs), 2.7-3.6V (nominal 3.3V), 13x11.5x1mm. Lifecycle "Obsolete", LTD 2017-01-22. Corroborado
+      em Elnec, Octopart (2 listagens: PN base e variante -AB9U).
+    source_url: https://octopart.com/emmc32g-s100-kingston-47231978

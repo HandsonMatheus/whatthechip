@@ -1,0 +1,72 @@
+# Submissão known_parts — Kingston, DRAM discreta embarcada (§0.2 regra 9), família legada "EETB"
+# Chat de marca Kingston, 2026-08-26. Disparado pelo PN físico do debug de estoque `D5128EETBPGGBU`
+# (known:false, TUDO vazio — nem fallback genérico bateu, igual ao padrão MCAB/EC4B/KE4/FH32B08UCT1).
+#
+# DIAGNÓSTICO: mesmo padrão JÁ CONFIRMADO 2× antes (MCAB 17/08, EC4B 19/08) — 3º caso agora.
+# O flyer DDR3/3L oficial vigente (media.kingston.com/pdfs/emmc/MKF_585_DDR3_3L_US.pdf, também
+# espelhado em MKF_944_dram_flyer_us.pdf, já usado no batch1) lista a família "ECMD" no MESMO código
+# de densidade/organização "5128" (D5128ECMDPGJD — 4Gb, 512Mx8, DDR3L 1.35V, 1866Mbps, FBGA-78 — JÁ
+# no known_parts desde a submissão inicial de 17/08, confirmado por grep no arquivo antes de escrever
+# este). "EETB" não aparece em nenhum flyer atual — mesma assinatura de família legada.
+#
+# CONFIRMAÇÃO (Octopart + electronicsdatasheets + harddiskdirect, cross-referenciados, 2026-08-26):
+#   D5128EETBPGGBU: 4Gb (512Mx8), DDR3/3L, 1.35V, FBGA-78, **1600Mbps** (mais lento que os 1866/2133
+#   do ECMD atual — mesmo padrão do EC4B) e **lifecycle "Obsolete" explícito, last-time-buy
+#   30/09/2020** (Octopart) — confirma leitura de geração anterior descontinuada, não erro de marca.
+#   Conta Gb→GB: 512M×8bit = 4.096Mbit = 4Gbit = 512MB (bytes) — density_gbit=4Gb é o valor correto
+#   pro schema (nunca GB, ver convenção §1); harddiskdirect escreve "(4GB)" solto no título da
+#   página, típico erro Gb×GB de distribuidor — NÃO usei esse valor, segui a conta.
+#
+# CLUSTER: achei também `D5128EETBPGGBU-U` (mesmas specs exatas, catálogo Octopart separado
+# 71140301, corroborado por electronicsdatasheets) — sufixo "-U" também aparece na família ECMD
+# atual (`D5128ECMDPGJD-U`), não é exclusividade do legado, não sei o que exatamente diferencia
+# (talvez lote/embalagem) mas é PN real cadastrado à parte, incluí.
+#
+# Tentei e NÃO achei (excluído, não adivinhado):
+#   - Irmãs de outra densidade/organização (`D1216EETB…`/`D2516EETB…`/`D2568EETB…`, espelhando os
+#     códigos já confirmados da família ECMD) — nenhuma fonte. Cluster desta família parece ser só
+#     essas 2 PN, mesmo padrão do EC4B (2 PN, sem irmãs de outra capacidade).
+#   - Variante industrial (sufixo "I", como `D5128ECMDPGJDI`/`D2516EC4BXGGBI`) — não achei
+#     `D5128EETBPGGBI` nem similar em nenhuma fonte.
+#
+# Convenção de campos: idêntica ao batch1/EC4B (KINGSTON.md §1) — chip_type="DDR3L" (subtype espelha
+# chip_type), interface=largura de barramento ("x8"), density_gbit=die em Gb (nunca GB).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_dram_eetb_2026-08-26.yaml
+
+brand: Kingston
+
+known_parts:
+
+  - part_number: D5128EETBPGGBU
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x8
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 26/08/2026, known:false (tudo vazio). Família legada
+      "EETB" — mesmo código de densidade "5128" (4Gb, 512Mx8) da família atual "ECMD" (já no
+      known_parts desde 17/08: D5128ECMDPGJD), mas "EETB" não está em nenhum flyer vigente. 4Gb
+      (512Mx8), DDR3/3L, 1.35V, FBGA-78 7.5x10.6x1.2mm, 1600Mbps (mais lento que 1866/2133 do ECMD —
+      mesmo padrão do EC4B) — confirmado Octopart/electronicsdatasheets/harddiskdirect. Lifecycle
+      "Obsolete" explícito, last-time-buy 30/09/2020 (Octopart) — 3º caso confirmado do padrão
+      "família legada fora dos flyers vigentes, mesmo código de densidade estável" (depois de MCAB
+      17/08 e EC4B 19/08). Conta: 512M×8bit=4096Mbit=4Gbit — density_gbit=4Gb (não confundir com o
+      "(4GB)" solto que aparece no título da página harddiskdirect, erro Gb×GB de distribuidor).
+    source_url: https://octopart.com/d5128eetbpggbu-kingston-34111449
+
+  - part_number: D5128EETBPGGBU-U
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x8
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: >
+      Mesmas specs exatas da D5128EETBPGGBU acima (4Gb, 512Mx8, DDR3/3L, 1.35V, FBGA-78) — catálogo
+      Octopart separado (ID 71140301, distinto do PN sem "-U"), corroborado por
+      electronicsdatasheets.com. Sufixo "-U" também aparece na família ECMD atual
+      (D5128ECMDPGJD-U) — não é exclusividade do legado; não achei fonte que explique exatamente o
+      que diferencia (possível lote/variante de embalagem), mas é PN próprio catalogado à parte,
+      não uma duplicata de digitação — incluí.
+    source_url: https://octopart.com/d5128eetbpggbu-u-kingston-71140301

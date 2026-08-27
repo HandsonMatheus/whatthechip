@@ -44,6 +44,32 @@
 # 1GB em MB) — 04(RAM)÷8=0.5GB=512MB; 08(RAM)÷8=1GB. device vazio (eMCP não usa esse campo, só
 # NAND cru usa pra pacote — ver submissão kingston_nand_raw).
 #
+#
+# ── ATUALIZAÇÃO 2026-08-26 (2ª rodada) — forma BASE (sem revisão) confirmada, não é só truncamento ──
+# Disparada por PN físico do debug de estoque `08EMCP04NL2AV100` — desta vez a leitura veio COMPLETA
+# (sem truncar), diferente do `08EMCP04NL2AV1` de 20/08 (dono comentou: "tem o que termina no 1 e o
+# que termina no 100" — confirma que os dois aparecem fisicamente na bancada).
+#
+# ACHADO: `08EMCP04-NL2AV100` (forma BASE, sem sufixo de revisão "-C##") é PN real e distinto — não
+# só a truncagem hipotética do PN "AV1" que eu tinha registrado em 20/08. Confirmado em 2 fontes
+# independentes: DigiPart (catálogo estruturado: "eMCP 8GB eMMC TLC + 4Gb LPDDR2", pacote "BGA162")
+# E um teardown real no X/Twitter (Konosuke Furuhata, modem 4G USB "UFI003_MB_V02"): "eMCP:
+# 08EMCP04-NL2AV100 (8GB eMMC + 512MB LPDDR2)" — confirmação de campo, não só texto de catálogo.
+# Conta: RAM code "04"→4Gbit÷8=512MB, bate nas 2 fontes. Mesmo padrão já visto no CV100 (forma base
+# E formas com revisão coexistem como known_parts distintos).
+#
+# Tentado e NÃO achei (excluído, não adivinhado):
+#   - `08EMCP08-NL2AV100` (par de RAM=1GB, forma base) — mesma exclusão da entrega original, ainda
+#     sem fonte.
+#   - `08EMCP04-EL3AV100` (irmã LPDDR3 da forma base) — achei QUE EXISTE como página própria em 2
+#     distribuidores (Allelco, Datasheets.com), mas as 2 tentativas de fetch falharam (bloqueio
+#     Cloudflare / página só com metadata) — não consegui confirmar specs no texto, só a existência
+#     do SKU. Não incluí — specs por inferência de família sem confirmação direta não passa na barra
+#     deste chat.
+#   - `08EMCP08-EL3AV100` (forma base) — a página que aparece pra essa string é a MESMA URL/ID de
+#     produto (Worldway 2749504) que já uso como fonte da entrada `-C50` existente — não é SKU
+#     distinto, é a mesma listagem exibindo o PN base no título. Não dupliquei.
+#
 # validar: python manage.py submit_known_parts submissions/kingston_emcp_av100_2026-08-20.yaml
 
 brand: Kingston
@@ -163,3 +189,25 @@ known_parts:
       NL2/LPDDR2 dessa mesma capacidade (08EMCP08-NL2AV100) e não achei em nenhuma fonte — não
       incluído, excluir/não adivinhar.
     source_url: https://www.worldwayelec.com/pro/kingston-technology-company/08emcp08-el3av100/2749504
+
+  # ── PN físico do debug de 26/08/2026 (forma BASE, leitura completa — ver atualização no cabeçalho) ──
+  - part_number: 08EMCP04-NL2AV100
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 26/08/2026 (lido sem hífen: "08EMCP04NL2AV100"),
+      known_exact:false — mesma família/geração "AV100" da entrega original de 20/08, mas esta leitura
+      veio COMPLETA (não truncada como o "08EMCP04NL2AV1" registrado antes). Forma BASE sem sufixo de
+      revisão, confirmada como PN real e distinto em 2 fontes independentes: DigiPart ("eMCP 8GB eMMC
+      TLC + 4Gb LPDDR2", pacote "BGA162") e um teardown real de campo (X/Twitter, Konosuke Furuhata,
+      desmontagem de modem 4G USB "UFI003_MB_V02"): "eMCP: 08EMCP04-NL2AV100 (8GB eMMC + 512MB
+      LPDDR2)" — confirmação de uso real, não só texto de catálogo. Conta: RAM code "04" =
+      4Gbit÷8=512MB, bate nas 2 fontes. Subtype mostrado pela gramática (LPDDR3) está errado — mesmo
+      bug já documentado (token "NL2" sempre precisa de known_part explícito, regra KINGSTON.md
+      §0.2#5) — não um caso novo, é a mesma família AV100 com uma variante de forma (base × revisão)
+      que ainda não tinha known_part próprio.
+    source_url: https://www.digipart.com/part/08EMCP04-NL2AV100

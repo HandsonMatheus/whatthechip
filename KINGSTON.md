@@ -295,46 +295,57 @@ capacidade sempre chega em MB/GB nas duas pontas — nunca deixe um código Gbit
   melhor aparecer. ~~`EMMC32G-TA29`/`EMMC64G-TA29`/`EMMC128-TA29` e `EMMC32G-TX29`/`EMMC64G-TX29`/
   `EMMC128-TX29`~~ **RESOLVIDO 2026-08-20** — 6 known_parts confirmados (datasheet oficial Kingston
   + Arrow/Avnet/DigiKey/Mouser), ver §7. Lição: as 2 tentativas de ontem não esgotaram tier-2, só
-  pararam cedo.
+  pararam cedo. **4ª expansão 2026-08-26 — geração "S100" achada (PN físico `EMMC16GS100`), +4
+  known_parts (04G/08G/16G/32G, total 35).** Geração BEM mais antiga que as outras (Obsolete desde
+  ~2016/2017) — não está em nenhum dos 2 flyers já usados neste arquivo. eMMC 5.0 confirmado direto
+  só na irmã de 32GB, resto por inferência de família. 64G/128G tentados e não achados — ver §7.
 - **NAND Flash cru Kingston (chip_type "NAND Flash", categoria `nand_raw`) — ABERTO 2026-08-19,
   2 known_parts (`FH32B08UCT1`/`FH64B08UCT1`, ver §7).** Kingston empacota/marca NAND cru de
   terceiros (célula Toshiba confirmada nos 2 achados) sob a própria marca — `profit_family="dead"`
   no chip_types.py, preço fixo/sucata, rigor de fonte relaxado com autorização do dono. Padrão de PN
   `FH[capacidade]B08UCT1` — só 32GB/64GB confirmados até agora, tentei 08G/16G/128G sem achar fonte.
   Gatilho sempre foi PN físico direto do estoque, não varredura.
-- **eMMC gerenciado Kingston, prefixo `KE4` (chip_type "eMMC" standalone, sem RAM combo) — ABERTO
-  2026-08-20, 7 known_parts (ver §7).** Era achado lateral não perseguido desde 2026-08-19; esta
-  rodada pesquisou a fundo. **Tem PELO MENOS 2 formatos de PN diferentes**, tamanhos diferentes mas
-  MESMA lógica de dígito de capacidade (achado de 2ª rodada, ver §7): forma curta
-  `KE4CN[dígito][letra][dígito]A` (9 chars, 6 PN confirmados via RS Components: KE4CN2H5A=4GB/153pin,
-  KE4CN3H5A=8GB/153pin, KE4CN3K6A=8GB/169pin, KE4CN4A5A=16GB/153pin, KE4CN4K6A=16GB/169pin,
-  KE4BT4B6A=16GB/169pin-FBGA — prefixo "KE4BT" em vez de "KE4CN") e forma longa `KE4CN2L2…`
-  (14+ chars, mais campos — empilhamento de dies, revisão). O PN físico que disparou a rodada
-  (`KE4CN2L2SA5H2A`) foi resolvido em tier 2 (Win Source/Octopart) na 2ª rodada — 8GB (2 dies de
-  4GB), célula Toshiba, 162-Ball FBGA — com uma discrepância documentada (não escondida) contra o
-  storage anunciado do aparelho onde é usado (Huawei Y221-U22, GSMArena lista "4GB"). `KE4CN5B6A`
-  segue excluído — RS mostra "32Gbit" (não GByte, texto genuinamente diferente dos outros) e não deu
-  pra decidir se é 32GB (padrão de dobra) ou 4GB (Gbit÷8 literal).
+- **eMMC gerenciado Kingston, prefixo `KE4` (chip_type "eMMC" standalone, sem RAM combo) — 12
+  known_parts em 3 rodadas (2026-08-20 ×2 + 2026-08-26, ver §7).** Era achado lateral não perseguido
+  desde 2026-08-19; agora tem **3 formatos de PN confirmados, cobrindo PELO MENOS 2 gerações eMMC
+  diferentes**: forma curta `KE4CN[dígito][letra][dígito]A` (9 chars, eMMC 4.5, 6 PN via RS
+  Components: KE4CN2H5A=4GB/153pin, KE4CN3H5A=8GB/153pin, KE4CN3K6A=8GB/169pin, KE4CN4A5A=16GB/153pin,
+  KE4CN4K6A=16GB/169pin, KE4BT4B6A=16GB/169pin-FBGA — prefixo "KE4BT" em vez de "KE4CN"); forma longa
+  `KE4CN2L2…` (14+ chars, mais campos — empilhamento de dies/revisão; o PN físico que disparou a 1ª
+  rodada, `KE4CN2L2SA5H2A`, foi resolvido em tier 2 — 8GB, 2 dies de 4GB, célula Toshiba, 162-Ball
+  FBGA, com discrepância documentada contra o storage anunciado do aparelho onde é usado); e o formato
+  NOVO achado na 3ª rodada, `KE44B-[dígito][letra]AN/[cap]GB` (hífen+barra, capacidade LITERAL no
+  sufixo, **eMMC 4.41** — geração diferente da 4.5 da família CN/BT — 3 PN: 2/4/8GB, 153/169-pin
+  FBGA). A 3ª rodada também RESOLVEU `KE4CN5B6A` (antes excluído por ambiguidade "32Gbit"×"32GByte")
+  — Octopart confirmou independentemente 32GB/eMMC 4.5 — e achou a irmã `KE4BT5D6A` (32GB). Lição:
+  quando o campo curto de capacidade de um distribuidor usa unidade "bit" isolada sem bater com o
+  campo de organização/sufixo do próprio PN, é sinal de inconsistência de template, não spec real —
+  vale cruzar com uma 2ª fonte antes de excluir ou aceitar.
 - **128GB eMCP** — nunca confirmado em nenhuma fonte; 64GB é o teto atual da linha. Se aparecer,
   precisa de PN-âncora + fonte Tier-1/B2B antes de virar família nova.
 - **`NL2` (LPDDR2) só confirmado em 4GB/8GB.** Se aparecer numa capacidade maior (16GB+), é
   candidato a exceção real ou a sufixo mal-lido — confirmar fonte antes de aceitar.
-- **eMCP `08EMCP04`/`08EMCP08` tem 2 gerações de sufixo pesquisadas a fundo — "AV100" (8 known_parts)
-  e "CV100" (3 known_parts, 2026-08-20 — ver §7) —, além de DT227/DM327/AS100/DM627 já cobertos por
-  gramática.** Busca incidental achou AINDA MAIS sufixos não perseguidos: `BT227` (existe em 04 e
-  08), `BS100`, `CU100`, `DT527`, `EL2BV100` (esse último com token `EL2` — nem NL2 nem EL3, geração
-  não documentada ainda). Padrão igual ao TB28/TB29/TA29/TX29 do eMMC standalone — família eMCP
-  provavelmente tem MUITAS gerações paralelas de sufixo, catalogar todas é rodada própria (grande),
-  não cabe numa correção pontual disparada por 1 PN de fila de revisão.
+- **eMCP `08EMCP04`/`08EMCP08` tem 2 gerações de sufixo pesquisadas a fundo — "AV100" (9 known_parts,
+  2 rodadas: 20/08 + 26/08 — ver §7) e "CV100" (3 known_parts, 2026-08-20 — ver §7) —, além de
+  DT227/DM327/AS100/DM627 já cobertos por gramática.** AV100 tem forma BASE (sem revisão) E formas
+  com revisão "-C##" coexistindo como known_parts distintos — a 2ª rodada confirmou que a forma base
+  `08EMCP04-NL2AV100` é PN real (não só truncamento do `08EMCP04NL2AV1` registrado na 1ª rodada; os
+  dois aparecem fisicamente na bancada). Busca incidental achou AINDA MAIS sufixos não perseguidos:
+  `BT227` (existe em 04 e 08), `BS100`, `CU100`, `DT527`, `EL2BV100` (esse último com token `EL2` —
+  nem NL2 nem EL3, geração não documentada ainda). Padrão igual ao TB28/TB29/TA29/TX29 do eMMC
+  standalone — família eMCP provavelmente tem MUITAS gerações paralelas de sufixo, catalogar todas é
+  rodada própria (grande), não cabe numa correção pontual disparada por 1 PN de fila de revisão.
 - **Módulos (`KVR`/`KF`/`ACR`) seguem desativados por design** — não é backlog pendente, é decisão.
 - **DRAM discreta embarcada (§0.2 regra 9) — submissão inicial de 2026-08-17 cobriu os 4 flyers
   oficiais atuais (~30 PN: DDR3L/DDR4/LPDDR4/LPDDR4x); 2ª rodada 2026-08-19 somou a família legada
-  `EC4B` (2 PN, DDR3L 4Gb x16, obsoleta — ver §7).** Ainda por pesquisar: (a) família "MCAB"
-  do caso `D1216MCABXGGBS` — só esse PN confirmado, pode ter irmãs (outras capacidades/pacotes) que
-  nenhum flyer atual lista, prováveis legado pré-"ECMD"; (b) ~~linha eMMC standalone embarcada~~
-  RESOLVIDO 2026-08-19 — ver entradas acima, 25 known_parts; (c) o padrão de família legada obsoleta (visto 2×
-  só em DDR3L: `MCAB` e `EC4B`) pode se repetir em DDR4/LPDDR4/LPDDR4x também — só aparece quando um
-  PN físico novo dispara a busca, não dá pra antecipar sem gatilho real.
+  `EC4B` (2 PN, DDR3L 4Gb x16, obsoleta); 3ª rodada 2026-08-26 somou a família legada `EETB` (2 PN,
+  DDR3L 4Gb x8, obsoleta, mesmo código de densidade "5128" do `ECMD` atual — ver §7).** Ainda por
+  pesquisar: (a) família "MCAB" do caso `D1216MCABXGGBS` — só esse PN confirmado, pode ter irmãs
+  (outras capacidades/pacotes) que nenhum flyer atual lista, prováveis legado pré-"ECMD"; (b) ~~linha
+  eMMC standalone embarcada~~ RESOLVIDO 2026-08-19 — ver entradas acima, 31 known_parts; (c) o padrão
+  de família legada obsoleta (visto 3× agora em DDR3L: `MCAB`, `EC4B` e `EETB`) pode se repetir em
+  DDR4/LPDDR4/LPDDR4x também — só aparece quando um PN físico novo dispara a busca, não dá pra
+  antecipar sem gatilho real.
 
 ---
 
@@ -543,6 +554,23 @@ espelhado.
   quando um PN excluído por "specs não confirmados" volta no debug físico, vale re-tentar a pesquisa
   ANTES de repetir a exclusão — o gap de ontem pode ter sido só pesquisa curta, não ausência real de
   fonte.
+- **2026-08-26 — terceiro caso do padrão "família legada": DRAM discreta, PN `D5128EETBPGGBU`.**
+  Disparado por PN físico direto do estoque (`known: false`, tudo vazio — nem fallback genérico
+  bateu, mesma forma dos casos KE4/FH32B08UCT1). Mesmo padrão de `MCAB`/`EC4B`: o flyer DDR3/3L
+  oficial vigente (`MKF_585_DDR3_3L_US.pdf`, também espelhado em `MKF_944_dram_flyer_us.pdf`) lista a
+  família `ECMD` no mesmo código de densidade/organização `5128` (`D5128ECMDPGJD`, 4Gb, 512Mx8, DDR3L
+  1.35V, 1866Mbps, FBGA-78 — já no known_parts desde a submissão inicial de 17/08) — `EETB` não
+  aparece em nenhum flyer atual. Octopart/electronicsdatasheets/harddiskdirect confirmam
+  `D5128EETBPGGBU` com specs quase idênticas ao ECMD (4Gb, 512Mx8, DDR3/3L, 1.35V, FBGA-78) mas
+  velocidade MENOR (1600Mbps contra 1866/2133 do ECMD — mesmo padrão já visto no EC4B) e **lifecycle
+  "Obsolete" explícito, last-time-buy 30/09/2020** — confirma leitura de geração anterior
+  descontinuada. Achei também `D5128EETBPGGBU-U` (mesmas specs, catálogo Octopart separado) — sufixo
+  "-U" recorrente também na família `ECMD` (`D5128ECMDPGJD-U`), não é exclusividade do legado.
+  Busquei irmãs de outra densidade (`D1216EETB…`/`D2516EETB…`/`D2568EETB…`, espelhando os códigos já
+  confirmados do `ECMD`) e variante industrial (`-I`) — não achei nenhuma; cluster desta família
+  parece ser só essas 2 PN, mesmo padrão do `EC4B`. **Padrão confirmado agora 3×** (`MCAB` 17/08,
+  `EC4B` 19/08, `EETB` 26/08): quando Tier-1 vigente não bate mas o código de densidade/organização
+  sim, é forte indício de família legada — não de marca errada.
 - **2026-08-20 (mesmo dia, 4ª rodada) — `08EMCP08EL3CV100`: mesma família AV100/CV100, mas desta vez
   o subtype da gramática JÁ estava certo por coincidência.** PN físico veio com
   `classification_source:"gramática"`, `grammar_complete:true`, subtype mostrado "LPDDR3" — só que
@@ -562,6 +590,60 @@ espelhado.
   vistas juntas com `CV100`/`BT227`/`AV100`/`DT227` numa listagem Alibaba, mesmo pacote BGA221) —
   somadas à lista "não perseguido" do §5, fora do escopo desta rodada (mesmo critério já usado pra
   CV100/BT227/DT527/EL2BV100 na entrega AV100).
+- **2026-08-26 — eMMC standalone ganha uma geração de sufixo BEM mais antiga: "S100" (PN físico
+  `EMMC16GS100`).** Debug de estoque veio 100% vazio (`known:false`, nem fallback bateu). Conferi de
+  novo os 2 flyers já usados neste arquivo (`emmc_flyer_us.pdf` vigente e `eMMC_Product_flyer.pdf`
+  alternativo) especificamente atrás de "S100" — não está em nenhum dos dois, é geração nova pra
+  este chat. Diferente de TB28/TB29/TA29/TX29 (todas relativamente recentes), "S100" tem lifecycle
+  "Obsolete" explícito com last-time-buy em **2016-06-01** (Octopart) — descontinuada há quase 10
+  anos, a geração mais antiga confirmada nesta linha até agora. Cluster achado (Octopart, Avnet,
+  Elnec, Jotrin, TrustedParts, Datasheets360): `EMMC04G-S100`, `EMMC08G-S100`, `EMMC16G-S100`,
+  `EMMC32G-S100` — todas pacote 153-ball BGA. Versão eMMC "5.0" confirmada direto só na irmã de 32GB
+  (Octopart: "32GB eMMC v5.0" explícito) — apliquei às outras 3 por inferência de família, mesmo
+  padrão de transparência já usado nas TX29 de 64/128GB. Tentei achar `EMMC64G-S100`/`EMMC128-S100`
+  (completar a progressão) — não achei em nenhuma fonte; a geração parece genuinamente parar em
+  32GB, consistente com ser uma geração mais antiga/pequena (capacidades maiores viraram comuns
+  depois). Muitas variantes de sufixo de revisão apareceram nas buscas (`-A06U`/`-E06U`/`-R10` no
+  16G; `-A08U`/`-B08U`/`-E08U`/`-G08U` no 04G) — não persegui nenhuma, registrei só a forma BASE (a
+  mesma que disparou a rodada), mesmo padrão de escopo das entradas anteriores deste arquivo. +4
+  known_parts, arquivo vai de 31 pra 35.
+- **2026-08-26 (mesmo dia, depois) — linha `KE4` ganha um 3º formato de PN E resolve uma ambiguidade
+  antiga de 2026-08-20 (`KE4CN5B6A`).** PN físico do debug `KE44B26BN8GB` veio 100% vazio. Achei a
+  forma com separadores, `KE44B-26BN/8GB`, confirmada Kingston via RS Components (Tier-1) + Octopart
+  + Elnec + Kynix + veswin.com — **eMMC 4.41 explícito** (JEDEC JESD84-A4411), 169-Pin FBGA, 8GByte.
+  ⚠ 2 distribuidores menores (Jotrin, EmbedIc) atribuíam esse mesmo PN à STMicroelectronics —
+  divergência isolada contra 5 fontes mais fortes concordando em Kingston; segui a maioria. Achei o
+  cluster completo do novo formato `KE44B-[dígito][letra]AN/[cap]GB`: 2GB/153pin, 4GB/169pin,
+  8GB/169pin — todas eMMC 4.41 (2 confirmadas direto, 1 por inferência entre as duas). Achado
+  relevante de método: o `KE44B-25AN/2GB` tinha o mesmo tipo de inconsistência já visto no
+  `KE4CN5B6A` de 20/08 (campo curto "Capacity" da RS dizendo "2Gbit" enquanto o campo "Organisation"
+  da MESMA página e o próprio sufixo do PN batem com 2GByte) — dessa vez com Octopart confirmando
+  independente "2GB" puro, o que me deu confiança pra tratar como inconsistência de template da RS,
+  não spec real. Isso me fez VOLTAR no `KE4CN5B6A` (excluído em 20/08 por essa mesma ambiguidade,
+  sem 2ª fonte na hora) — Octopart agora confirma "32G-byte (32GB)" + "32GB eMMC V4.5" explícito,
+  resolvendo definitivamente: 32GB, não 4GB. Também achei a irmã `KE4BT5D6A` (32GB) varrendo a mesma
+  família KE4BT. +5 known_parts no arquivo já existente (`kingston_emmc_ke4_2026-08-20.yaml`, 7→12),
+  1 dos 5 é a resolução do `KE4CN5B6A` que antes era exclusão. Lição durável: quando um distribuidor
+  usa unidade "bit" isolada num campo resumido sem bater com um campo estruturado mais granular
+  (Organisation) OU o próprio sufixo do PN, vale desconfiar do campo resumido antes de aceitar ou
+  excluir — e revisitar exclusões antigas quando uma 2ª fonte aparecer depois.
+- **2026-08-26 (mesmo dia, depois) — eMCP "AV100" ganha a forma BASE como known_part próprio; dono
+  confirma que forma curta E longa aparecem as DUAS fisicamente.** PN físico do debug
+  `08EMCP04NL2AV100` chegou com `known_exact:false`, subtype errado (LPDDR3 em vez de LPDDR2, mesmo
+  bug de sempre) — mas desta vez a leitura veio COMPLETA (sem truncar), diferente do
+  `08EMCP04NL2AV1` registrado na 1ª rodada (20/08). Dono comentou "tem o que termina no 1 e o que
+  termina no 100" — confirmando que os dois textos aparecem de verdade na bancada, não é só uma
+  leitura truncada da outra. Pesquisei e achei `08EMCP04-NL2AV100` (forma BASE, sem sufixo de
+  revisão) como PN real e distinto em 2 fontes independentes: DigiPart (catálogo estruturado: "eMCP
+  8GB eMMC TLC + 4Gb LPDDR2", pacote BGA162) e um teardown de campo real (X/Twitter, desmontagem de
+  modem 4G USB) — "eMCP: 08EMCP04-NL2AV100 (8GB eMMC + 512MB LPDDR2)", confirmação de uso real, não
+  só catálogo. Tentei achar a irmã LPDDR3 da forma base (`08EMCP04-EL3AV100`) — existe como página
+  própria em 2 distribuidores, mas as 2 tentativas de fetch falharam (bloqueio/só metadata) e não
+  consegui confirmar specs no texto — não incluí (existência de SKU não é confirmação de spec). A
+  forma base `08EMCP08-EL3AV100` que aparecia em busca acabou sendo a MESMA página já usada como
+  fonte do `-C50` existente (mesmo ID de produto Worldway) — não duplicada. `08EMCP08-NL2AV100`
+  (par RAM=1GB) segue sem fonte, mesma exclusão da 1ª rodada. +1 known_part no arquivo já existente
+  (`kingston_emcp_av100_2026-08-20.yaml`, 8→9).
 
 > O inventário de chaves/mapas vive no **`kingston.yaml`** (gramática); os **known_parts**
 > confirmados (com a proveniência Tier-1/B2B nas `notes`) vivem no **banco** (Opção 2), submetidos
