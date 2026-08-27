@@ -2895,6 +2895,60 @@ class CompradorEtapasEResultadoTests(TestCase):
         self.assertContains(tela, '¥ 90.00')            # final, 6 × ¥15
         self.assertContains(tela, '−¥ 60.00')           # a diferença
 
+    # ── o par de moedas (.mvd) ──────────────────────────────────────────────
+
+    def test_interface_o_heroi_mostra_as_duas_moedas_como_UM_par(self):
+        """O pacote de 2026-08-27 separou dois jeitos de mostrar dinheiro.
+        `.mval` é dinheiro como CONSEQUÊNCIA — ¥ grande, US$ menor em cinza —
+        e serve estoque e triagem. `.mvd` é dinheiro como ARGUMENTO e serve o
+        ciclo de venda: as duas moedas no MESMO corpo, ligadas por um `=`
+        literal, porque à taxa travada do lote elas são o mesmo dinheiro.
+
+        A ficha do comprador é o ciclo de venda. Antes eram dois `.kpi__v`
+        empilhados — dois números sem nada dizendo que se referem um ao
+        outro."""
+        so = self._ov('MVD1')
+        services.mark_received(so)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        html = tela.content.decode()
+        self.assertIn('class="mvd mvd--kpi"', html)
+        self.assertIn('class="mvd__a"', html)
+        self.assertIn('class="mvd__x"', html)      # o = literal
+        self.assertIn('class="mvd__b"', html)
+        # e o par não pode ter voltado a ser dois valores soltos
+        bloco = html[html.index('Resultado esperado'):]
+        bloco = bloco[:bloco.index('Resultado final')]
+        self.assertNotIn('kpi__v', bloco)
+
+    def test_interface_o_til_vem_UMA_vez_na_frente_do_par(self):
+        """Regra do pacote, literal: "O ≈ é ESTIMATIVA, vem uma vez na frente
+        do par e nunca uma vez por moeda — dois tis dizem 'duas incertezas'
+        onde existe uma"."""
+        so = self._ov('MVD2')            # sem receber: o esperado é estimado
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        bloco = html[html.index('Resultado esperado'):]
+        bloco = bloco[:bloco.index('Resultado final')]
+        if '≈' in bloco:
+            self.assertEqual(bloco.count('≈'), 1, 'um til por PAR, não por moeda')
+            self.assertIn('class="mvd__e">≈', bloco)
+
+    def test_script_a_folha_tem_o_componente_do_par(self):
+        """Se o `.mvd` sair do pacote, a marcação acima vira texto sem forma —
+        e a tela volta a mostrar dois números soltos sem avisar ninguém."""
+        from pathlib import Path
+        from django.conf import settings
+        css = (Path(settings.BASE_DIR) / 'static' / 'wtc'
+               / 'components.css').read_text(encoding='utf-8')
+        self.assertIn('.mvd{', css)
+        self.assertIn('.mvd--kpi{', css)
+        # as duas moedas com o MESMO corpo é o ponto do componente
+        i = css.index('.mvd--kpi .mvd__a,.mvd--kpi .mvd__b{')
+        self.assertIn('font-size:24px', css[i:i + 120])
+        # e no herói o = some, porque empilhado ele cairia na quebra
+        j = css.index('.mvd--kpi .mvd__x{')
+        self.assertIn('display:none', css[j:j + 60])
+
     # ── glossário ───────────────────────────────────────────────────────────
 
     def test_aba_categorias_traz_a_convencao_e_marca_a_desta_compra(self):

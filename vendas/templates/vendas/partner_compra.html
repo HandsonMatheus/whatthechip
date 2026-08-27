@@ -122,15 +122,43 @@
 
     {% localize off %}
     <div class="kpis">
+      {% comment %} ⚠ 2026-08-27 — O PAR DE MOEDAS VIROU `.mvd`.
+         O pacote passou a distinguir dois jeitos de mostrar dinheiro, e a
+         regra veio escrita nele: `.mval` é dinheiro como CONSEQUÊNCIA (¥
+         grande, US$ menor em cinza) e serve estoque e triagem; `.mvd` é
+         dinheiro como ARGUMENTO e serve o ciclo de venda, "onde o comprador
+         fecha em ¥ e paga em US$, e pôr um dos dois em corpo menor faria
+         metade da negociação virar nota de rodapé".
+
+         Aqui eram dois `.kpi__v` empilhados: dois números soltos, sem nada
+         dizendo que são O MESMO dinheiro. Agora são um par — mesmo corpo,
+         mesmo peso, mesma cor — e o `=` é literal porque a afirmação é
+         literal: à taxa travada deste lote, os dois valores são iguais.
+
+         O `≈` mudou de lugar junto: era uma vez POR MOEDA e agora é uma vez
+         na frente do PAR (`.mvd__e`), porque a incerteza é uma só. No
+         `mvd--kpi` o `=` some — empilhado, ele cairia exatamente na quebra
+         de linha, e um sinal de igual pendurado no fim da linha é pior que
+         nenhum; o par continua par pela adjacência e pelo corpo idêntico.
+      {% endcomment %}
       <div class="kpi kpi--base">
         <div class="kpi__l">{% if estimado %}{% trans "Resultado esperado (estimado)" %}{% else %}{% trans "Resultado esperado" %}{% endif %}</div>
-        <div class="kpi__v">{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</div>
-        <div class="kpi__v">{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</div>
+        <div class="mvd mvd--kpi">
+          <b class="mvd__a">{% if estimado and esperado_rmb %}<i class="mvd__e">≈</i>{% endif %}{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</b>
+          <i class="mvd__x">=</i>
+          <b class="mvd__b">{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</b>
+        </div>
       </div>
       <div class="kpi {% if final_rmb or pode_acertar %}kpi--res{% else %}kpi--off{% endif %}">
         <div class="kpi__l">{% trans "Resultado final" %}</div>
-        <div class="kpi__v" id="k-rmb">{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</div>
-        <div class="kpi__v" id="k-usd">{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</div>
+        {% comment %} Os ids seguem nos `<b>`: o recálculo ao vivo escreve
+           `textContent` neles, e aqui não há `≈` para o textContent apagar —
+           o resultado final é número conferido, nunca estimativa. {% endcomment %}
+        <div class="mvd mvd--kpi">
+          <b class="mvd__a" id="k-rmb">{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</b>
+          <i class="mvd__x">=</i>
+          <b class="mvd__b" id="k-usd">{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</b>
+        </div>
         <div class="kpi__d" id="k-exp"{% if not final_rmb %} hidden{% endif %}>{% if final_rmb and esperado_rmb %}{% if final_rmb < esperado_rmb %}−¥ {{ delta_abs }}{% elif final_rmb > esperado_rmb %}+¥ {{ delta_abs }}{% else %}{% trans "sem acerto" %}{% endif %}{% endif %}</div>
       </div>
       <div class="kpi {% if not invoice %}kpi--off{% elif invoice.balance_usd > 0 %}kpi--due{% else %}kpi--ok{% endif %}">
