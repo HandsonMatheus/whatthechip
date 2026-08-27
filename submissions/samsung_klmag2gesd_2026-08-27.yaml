@@ -1,0 +1,68 @@
+# Submissão de known_parts — Samsung, família KLM (eMMC).
+# PN do debug (2026-08-27): KLMAG2GESD (bare, 16GB pela gramática pn[3]='A').
+# A gramática mostra "Interface: eMMC 5.1" (decode_gen_pos=6, pn[6]='G' →
+# SAM_EMMC_GEN), mas a pesquisa revelou que isso é SÓ METADE da verdade pra
+# esta linha de produto — ver ⚠ ACHADO DE GRAMÁTICA abaixo. Por isso NÃO
+# registrei o PN bare nesta submissão (ambíguo entre 2 gerações reais).
+#
+# ⚠ ACHADO DE GRAMÁTICA (não corrigido, sinalizo ao dono — fora do escopo do
+# chat de marca mexer em decode_gen_map sozinho): confirmado em DUAS fontes
+# Tier-1/Tier-2 independentes que a MESMA base "KLMAG2GESD" (10 chars) é
+# vendida pela PRÓPRIA Samsung como DOIS produtos de geração diferente,
+# distinguidos só pelo sufixo:
+#   - KLMAG2GESD-B03Q / -B03P → título da página oficial Samsung
+#     (semiconductor.samsung.com/estorage/emmc/emmc-5-0/klmag2gesd-b03q/) diz
+#     "(eMMC 5.0)" — confirmado também no Preduo (campo estruturado Sub-Type
+#     "eMMC 5.0", Density "16GB").
+#   - KLMAG2GESD-B04Q / -B04P → título da página oficial Samsung
+#     (.../emmc-5-1/klmag2gesd-b04q/) diz "(eMMC 5.1)" — Preduo confirma
+#     Sub-Type "eMMC 5.1", Density "16GB".
+# Ou seja: pn[6]='G' → "eMMC 5.1" (regra atual da gramática) está CERTO pros
+# sufixos B04, mas ERRADO pros sufixos B03 desta mesma linha "GESD" — a
+# geração real depende do sufixo B03/B04, não só da letra pn[6]. Só achei
+# 1 outro known_part no banco com pn[6]='G' (KLMAG2GE4A, confidence=manual,
+# tail diferente "GE4A") — não pesquisei se o mesmo padrão se repete lá;
+# pode ser recorrente na família ou específico desta linha "GESD". Não mexi
+# no yaml/decode map — é uma correção que afeta TODA a família (regra de
+# ouro CLAUDE.md), precisa de decisão/investigação mais ampla do dono.
+brand: "Samsung"
+known_parts:
+  - part_number: "KLMAG2GESD-B03Q"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/estorage/emmc/emmc-5-0/klmag2gesd-b03q/"
+    notes: >
+      Página oficial Samsung Semiconductor Global (título indexado: "(eMMC
+      5.0)"). Corroborado por Preduo (catálogo estruturado, campo Sub-Type=
+      "eMMC 5.0", Density="16GB") — fetch direto confirmado. Ver cabeçalho
+      do arquivo pra investigação completa da divergência B03/B04.
+
+  - part_number: "KLMAG2GESD-B03P"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/emea/estorage/emmc/emmc-5-0/klmag2gesd-b03p/"
+    notes: "Variante regional (EMEA) do -B03Q (ver notes lá) — página oficial Samsung, título indexado '(eMMC 5.0)'. Mesma geração, provável diferença de pacote/qualificação regional."
+
+  - part_number: "KLMAG2GESD-B04Q"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/estorage/emmc/emmc-5-1/klmag2gesd-b04q/"
+    notes: >
+      Página oficial Samsung Semiconductor Global (título indexado: "(eMMC
+      5.1)"). Corroborado por Preduo (catálogo estruturado, campo Sub-Type=
+      "eMMC 5.1", Density="16GB") — fetch direto confirmado. Ver cabeçalho
+      do arquivo pra investigação completa da divergência B03/B04.
+
+  - part_number: "KLMAG2GESD-B04P"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/us/estorage/emmc/emmc-5-1/klmag2gesd-b04p/"
+    notes: "Variante regional (US) do -B04Q (ver notes lá) — página oficial Samsung, título indexado '(eMMC 5.1)'. Corroborado por LCSC (existência + 16GB confirmados)."
