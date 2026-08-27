@@ -19,13 +19,41 @@
   `data-label` em TODO `<td>`: abaixo de 600px a `.dtab` esconde o cabeçalho e
   a linha colapsa em cartão. Sem o rótulo, dois campos de preço lado a lado não
   dizem qual é o mínimo e qual é o máximo.
+
+  ⚠ 2026-08-27 — REALINHADO AO PROTÓTIPO. A Etapa 10 tinha inventado um
+  modificador `.dtab--grade` e seis classes de papel (`.g-lin`, `.g-st`,
+  `.g-p`, `.g-pmax`, `.g-brand`, `.g-upd`) para reordenar o cartão no
+  telefone. O `parceiro-grid.js` do design resolve o MESMO problema com a
+  `.dtab` base e nada além do `data-label` — então o modificador e as seis
+  classes saíram, e o CSS delas saiu junto do `parceiro.css`.
+
+  Dois rótulos mudaram de texto na mesma passada, e os do design descrevem
+  melhor a coluna: `¥ (RMB)` virou `¥ por GB`, e o piso virou `¥ mínimo/peça`.
+  E o `Status` VOLTOU A APARECER — eu tinha escrito uma regra de CSS de
+  propósito para escondê-lo, argumentando que a pastilha se lê sozinha; o
+  design rotula, e no cartão o rótulo é o que diz de que coluna a pastilha
+  veio.
 {% endcomment %}
 
 <div class="phd">
   <div>
-    <h1>{% blocktrans trimmed with tipo=kind_label %}Tabela de <b>{{ tipo }}</b>{% endblocktrans %}</h1>
-    <p>{% if contrato %}{% blocktrans trimmed %}Este tipo não tem grade: o preço é uma taxa de contrato. Mudanças passam pela revisão do WhatTheChip, e o valor atual continua valendo até a aprovação.{% endblocktrans %}
-       {% else %}{% blocktrans trimmed %}Você cota em ¥ (RMB). Preencha o que quiser mudar e envie no fim da página — só as linhas alteradas viram pedido de revisão.{% endblocktrans %}{% endif %}</p>
+    {% comment %} ⚠ 2026-08-27. Era «Tabela de eMCP» com um parágrafo de
+       INSTRUÇÃO ("preencha o que quiser mudar e envie no fim"). O protótipo
+       escreve só o nome do tipo e, embaixo, o que o tipo É. Duas razões, e
+       nenhuma é estética:
+
+       1. A instrução já está no rodapé fixo, em cima do botão que a executa.
+          Repetida no topo, ocupa a linha e não é lida onde importa.
+       2. O parágrafo comprido empurrava os selos para uma linha própria: o
+          `.phd` é `flex-wrap`, e texto largo + três selos não cabem. Era por
+          isso que os selos apareciam embaixo e à esquerda em vez de à
+          direita do título. O layout estava certo; o conteúdo é que não
+          cabia nele. {% endcomment %}
+    <h1>{{ kind_label }}</h1>
+    {% comment %} Sem sufixo de faixa: o `_KIND_DESC` do eMCP/uMCP já termina
+       em "faixa mín–máx", e acrescentar "· faixa: mínimo e máximo por linha"
+       dizia a mesma coisa duas vezes e quebrava o subtítulo em duas linhas. {% endcomment %}
+    <p>{{ kind_desc }}</p>
   </div>
   <div class="seals">
     <span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>{% trans "Todos os preços em ¥ (RMB)" %}</span>
@@ -33,7 +61,6 @@
     {% elif dual %}<span class="seal seal--dual">{% trans "DUAS TABELAS — celular (unificado) × PCB (por marca)" %}</span>
     {% elif unified %}<span class="seal seal--uni">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</span>
     {% else %}<span class="seal seal--brand">{% trans "MATRIZ POR MARCA" %}</span>{% endif %}
-    {% if ranged %}<span class="seal seal--brand">{% trans "FAIXA — mínimo e máximo por linha" %}</span>{% endif %}
   </div>
 </div>
 
@@ -69,7 +96,7 @@
     campo: campo que não vira preço é promessa falsa.
 {% endcomment %}
 <section class="grid2" style="margin-bottom:20px;">
-  <div class="dtab__wrap"><table class="dtab dtab--static dtab--grade">
+  <div class="dtab__wrap"><table class="dtab dtab--static">
     <thead><tr>
       <th>{% if rate_kind == 'ssd' %}{% trans "Taxa" %}{% else %}{% trans "Preço" %}{% endif %}</th>
       <th style="min-width:132px">{% trans "Status" %}</th>
@@ -77,20 +104,20 @@
     </tr></thead>
     <tbody>
       <tr>
-        <td class="g-lin"><div class="gl"><span class="gl__n">{% if rate_kind == 'ssd' %}{% trans "por GB" %}{% else %}{% trans "por unidade" %}{% endif %}<span>{% if rate_kind == 'ssd' %}{% trans "qualquer capacidade · qualquer formato" %}{% else %}{% trans "qualquer part number · qualquer densidade" %}{% endif %}</span></span></div></td>
-        <td class="g-st" data-label="{% trans 'Status' %}">{% if rate_disp %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Cotado" %}</span>
+        <td><div class="gl"><span class="gl__n">{% if rate_kind == 'ssd' %}{% trans "por GB" %}{% else %}{% trans "por unidade" %}{% endif %}<span>{% if rate_kind == 'ssd' %}{% trans "qualquer capacidade · qualquer formato" %}{% else %}{% trans "qualquer part number · qualquer densidade" %}{% endif %}</span></span></div></td>
+        <td data-label="{% trans 'Status' %}">{% if rate_disp %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Cotado" %}</span>
           {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Não cotado" %}</span>{% endif %}</td>
-        <td class="g-p" data-label="{% trans '¥ (RMB)' %}"><input class="cell{% if rate_disp %} has{% endif %}" type="text" inputmode="decimal"
+        <td data-label="{% trans '¥ por GB' %}"><input class="cell{% if rate_disp %} has{% endif %}" type="text" inputmode="decimal"
                name="rate" id="wtc-rate" value="{{ rate_disp }}" autocomplete="off"
                spellcheck="false" placeholder="{% trans 'sem cotação' %}"
                aria-label="{% trans '¥ · vazio = sem cotação' %}"></td>
       </tr>
       {% if rate_kind == 'ssd' %}
       <tr>
-        <td class="g-lin"><div class="gl"><span class="gl__n">{% trans "mínimo por peça" %}<span>{% trans "nenhuma peça sai por menos que isto, por menor que seja a capacidade" %}</span></span></div></td>
-        <td class="g-st" data-label="{% trans 'Status' %}">{% if floor_disp %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Ativo" %}</span>
+        <td><div class="gl"><span class="gl__n">{% trans "mínimo por peça" %}<span>{% trans "nenhuma peça sai por menos que isto, por menor que seja a capacidade" %}</span></span></div></td>
+        <td data-label="{% trans 'Status' %}">{% if floor_disp %}<span class="tag tag--yes"><span class="dot"></span>{% trans "Ativo" %}</span>
           {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Sem piso" %}</span>{% endif %}</td>
-        <td class="g-p" data-label="{% trans '¥ (RMB)' %}"><input class="cell{% if floor_disp %} has{% endif %}" type="text" inputmode="decimal"
+        <td data-label="{% trans '¥ mínimo/peça' %}"><input class="cell{% if floor_disp %} has{% endif %}" type="text" inputmode="decimal"
                name="floor" id="wtc-floor" value="{{ floor_disp }}" autocomplete="off"
                spellcheck="false" placeholder="{% trans 'sem piso' %}"
                aria-label="{% trans '¥ · vazio = sem piso' %}"></td>
@@ -110,13 +137,13 @@
 {% if rate_kind == 'ssd' %}
 <section class="grid2">
   <div class="grid2__h"><h3>{% trans "Preço por peça, calculado" %}</h3></div>
-  <div class="dtab__wrap"><table class="dtab dtab--static dtab--grade">
+  <div class="dtab__wrap"><table class="dtab dtab--static">
     <thead><tr><th>{% trans "Capacidade" %}</th><th style="min-width:200px">{% trans "¥ por peça" %}</th></tr></thead>
     <tbody>
       {% for c in caps %}
       <tr>
-        <td class="g-lin"><div class="gl"><span class="gl__n">{{ c.label }}</span></div></td>
-        <td data-label="{% trans '¥ por peça' %}"><span class="calc wtc-calc{% if c.piso %} calc--floor{% endif %}"
+        <td><div class="gl"><span class="gl__n">{{ c.label }}</span></div></td>
+        <td data-label="{% trans '¥ por peça' %}"><span class="calc{% if c.piso %} calc--floor{% endif %}"
               data-cap="{{ c.gb }}" title="{% if c.piso %}{% trans 'o mínimo por peça decidiu esta linha' %}{% endif %}">{% if c.rmb %}¥ {{ c.rmb }}{% else %}—{% endif %}</span></td>
       </tr>
       {% endfor %}
@@ -130,22 +157,23 @@
 {% comment %} ── COLUNA ÚNICA (eMCP/uMCP/LPDDR/UFS; eMMC = subset CELULAR) ── {% endcomment %}
 <section class="grid2" style="margin-bottom:20px;">
   {% if dual %}<div class="grid2__h"><h3>📱 {% trans "eMMC de CELULAR — preço unificado, todas as marcas" %}</h3></div>{% endif %}
-  <div class="dtab__wrap"><table class="dtab dtab--static dtab--grade">
+  <div class="dtab__wrap"><table class="dtab dtab--static">
     <thead><tr>
       <th>{% trans "Linha" %}</th>
       <th style="min-width:132px">{% trans "Status" %}</th>
       {% if ranged %}<th style="min-width:170px">{% trans "Preço ¥ — mínimo" %}</th><th style="min-width:170px">{% trans "Preço ¥ — máximo" %}</th>
       {% else %}<th style="min-width:220px">{% trans "Preço ¥ por unidade" %}</th>{% endif %}
-      <th style="min-width:130px">{% trans "Última atualização" %}</th>
     </tr></thead>
     <tbody>
       {% for r in rows %}
       {% ifchanged r.gen %}{% if r.gen %}
-      <tr class="g"><td colspan="{% if ranged %}5{% else %}4{% endif %}">{{ r.gen }}</td></tr>
+      {% comment %} 4 colunas com faixa (linha · status · mín · máx), 3 sem.
+         Era 5/4 enquanto existia a coluna «Última atualização». {% endcomment %}
+      <tr class="g"><td colspan="{% if ranged %}4{% else %}3{% endif %}">{{ r.gen }}</td></tr>
       {% endif %}{% endifchanged %}
       <tr>
-        <td class="g-lin"><div class="gl"><span class="gl__n">{{ r.tier_disp }}{% if ranged %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</span></div></td>
-        <td class="g-st" data-label="{% trans 'Status' %}">
+        <td><div class="gl"><span class="gl__n">{{ r.tier_disp }}{% if ranged %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</span></div></td>
+        <td data-label="{% trans 'Status' %}">
           {% comment %} A linha que TRAVA PEDIDO diz isso na própria coluna de
              estado, e VENCE "não cotado": as duas afirmações são verdade, mas
              só uma explica por que esta linha é urgente. {% endcomment %}
@@ -157,21 +185,20 @@
           {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "Não cotado" %}</span>{% endif %}
         </td>
         {% if r.status == 'not_made' %}
-        <td class="g-p" data-label="{% trans 'Preço ¥ por unidade' %}"{% if ranged %} colspan="2"{% endif %}><span class="calc" title="{% trans 'Não fabricado' %}">—</span></td>
+        <td data-label="{% trans 'Preço ¥ por unidade' %}"{% if ranged %} colspan="2"{% endif %}><span class="calc" title="{% trans 'Não fabricado' %}">—</span></td>
         {% else %}
-        <td class="g-p" data-label="{% if ranged %}{% trans 'Preço ¥ — mínimo' %}{% else %}{% trans 'Preço ¥ por unidade' %}{% endif %}"><input
+        <td data-label="{% if ranged %}{% trans 'Preço ¥ — mínimo' %}{% else %}{% trans 'Preço ¥ por unidade' %}{% endif %}"><input
               class="cell{% if r.status == 'no_buy' %} nox{% elif r.cell_disp %} has{% endif %}" type="text"
               inputmode="text" autocomplete="off" spellcheck="false" name="p{{ r.pk }}"
               value="{{ r.cell_disp }}" placeholder="{% trans 'sem cotação' %}"
               aria-label="{% trans '¥ · x = não compro · vazio = sem cotação' %}"></td>
         {% if ranged %}
-        <td class="g-pmax" data-label="{% trans 'Preço ¥ — máximo' %}"><input class="cell{% if r.maxin_disp %} has{% endif %}" type="text"
+        <td data-label="{% trans 'Preço ¥ — máximo' %}"><input class="cell{% if r.maxin_disp %} has{% endif %}" type="text"
               inputmode="text" autocomplete="off" spellcheck="false" name="pmax{{ r.pk }}"
               value="{{ r.maxin_disp }}" placeholder="{% trans 'sem cotação' %}"
               aria-label="{% trans 'máximo da faixa' %}"></td>
         {% endif %}
         {% endif %}
-        <td class="n g-upd" data-label="{% trans 'Última atualização' %}">{% if r.status == 'quoted' and r.quote_date %}{{ r.quote_date|date:"d/m/y" }}{% else %}—{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -183,7 +210,7 @@
 {% comment %} ── MATRIZ POR MARCA (DDR; eMMC = subset PCB) ────────────────── {% endcomment %}
 <section class="grid2">
   {% if dual %}<div class="grid2__h"><h3>🔌 {% trans "eMMC de PCB — preço por marca (set-top box, TV, notebook…)" %}</h3></div>{% endif %}
-  <div class="dtab__wrap dtab__wrap--x"><table class="dtab dtab--static dtab--grade">
+  <div class="dtab__wrap dtab__wrap--x"><table class="dtab dtab--static">
     <thead><tr>
       <th>{% trans "Linha" %}</th>
       <th style="min-width:132px">{% trans "Status" %}</th>
@@ -195,16 +222,16 @@
       <tr class="g"><td colspan="{{ col_lists|length|add:2 }}">{{ linha.gen }}</td></tr>
       {% endif %}{% endifchanged %}
       <tr>
-        <td class="g-lin"><div class="gl"><span class="gl__n">{{ linha.tier }}{{ linha.unit }}</span></div></td>
+        <td><div class="gl"><span class="gl__n">{{ linha.tier }}{{ linha.unit }}</span></div></td>
         {% comment %} A trava é da LINHA, e a matriz tem coluna de Status como
            a unificada — foi ela que faltava aqui até 2026-08-26, e por isso o
            selo tinha virado um número solto no rótulo. {% endcomment %}
-        <td class="g-st" data-label="{% trans 'Status' %}">
+        <td data-label="{% trans 'Status' %}">
           {% if linha.travado %}<span class="tag tag--no"><span class="dot"></span>{% blocktrans trimmed count n=linha.travado %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
           {% else %}<span class="tag tag--mute"><span class="dot"></span>{% trans "por marca" %}</span>{% endif %}
         </td>
         {% for pl, p in linha.cells %}
-        <td class="g-brand" data-label="{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans 'Outras' %}{% endif %}">
+        <td data-label="{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans 'Outras' %}{% endif %}">
           {% if not p %}<span class="calc" style="color:var(--ink-30);">·</span>
           {% elif p.status == 'not_made' %}<span class="calc" title="{% trans 'Não fabricado' %}">—</span>
           {% else %}<input class="cell{% if p.status == 'no_buy' %} nox{% elif p.cell_disp %} has{% endif %}" type="text"
@@ -223,13 +250,17 @@
 
 {% comment %} Rodapé FIXO (dono: "botão no final"). O `.pmain` do pacote já
    reserva 132px de respiro embaixo, então ele não cobre a última linha. {% endcomment %}
+{% comment %} A legenda primeiro, o botão por último: o `.pfoot__lg` tem
+   `flex:1` e empurra o `.btn` (que é `flex:none`) para a borda direita. Estava
+   invertido — botão à esquerda, legenda espremida à direita. {% endcomment %}
 <div class="pfoot">
-  <button type="submit" class="btn btn--pri">{% trans "Enviar para revisão" %}</button>
   {% if contrato %}
   <span class="pfoot__lg">{% trans "número = preço em ¥ (RMB) · vazio = sem cotação. A mudança vai para revisão do WhatTheChip; o valor atual continua valendo até a aprovação." %}</span>
   {% else %}
   <span class="pfoot__lg">{% blocktrans trimmed %}número = preço em <b>¥ (RMB)</b> · <b>x</b> = não compro · vazio = sem cotação · <b>—</b> = não fabricado. Só as linhas alteradas são enviadas.{% endblocktrans %}</span>
   {% endif %}
+  <button type="submit" class="btn btn--pri">{% trans "Enviar para revisão" %}
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
 </div>
 </form>
 
@@ -246,7 +277,7 @@
 (function () {
   var rate = document.getElementById('wtc-rate');
   var floor = document.getElementById('wtc-floor');
-  var celulas = document.querySelectorAll('.wtc-calc');
+  var celulas = document.querySelectorAll('.calc[data-cap]');
   if (!rate || !celulas.length) return;
   function num(el) {
     var v = parseFloat(((el && el.value) || '').trim().replace(',', '.'));

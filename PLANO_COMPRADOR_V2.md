@@ -1067,3 +1067,151 @@ python manage.py test           # a suíte inteira, com RLS e pgtrigger de verda
 ```
 
 Depois: **deploy ANTES do migrate em prod** — o campo é `default=''` sem backfill, então o código velho convive com a coluna nova, mas a regra da casa é a regra da casa.
+
+---
+
+## 10. Realinhamento ao Claude Design — 2026-08-27
+
+O dono apontou que o front estava diferente do projeto dele no Claude Design.
+Estava. **O motivo não foi falta de acesso:** os protótipos vivos já estavam
+no repositório, em `design_v2/ui_kits/whatthechip/`, listados na linha 12
+deste próprio documento. A Etapa 9 foi construída a partir da spec e do pacote
+de CSS, sem nunca abrir as telas. Registro isso aqui porque o erro não foi de
+execução, foi de leitura — e é o tipo de erro que se repete se não ficar
+escrito.
+
+### O que os três zips novos trouxeram
+
+| Pacote | Veredito |
+|---|---|
+| `handoff` | Os 5 documentos são **byte a byte idênticos** aos que já estavam no repo. A spec nunca mudou. |
+| `design system` | `components.css` ganha **um** componente: `.mvd`. `patterns/parceiro.css` e `ficha.css` atualizados. |
+| `front` | Todos os JS e CSS **idênticos** aos do repo. Só os 9 HTML diferem, e a diferença é de empacotamento (caminhos relativos). |
+
+### `.mvd` — dinheiro em pé de igualdade
+
+A regra veio escrita no próprio CSS e vale para tudo que vier depois:
+
+- **`.mval`** = dinheiro como **consequência** (¥ grande, US$ menor em cinza).
+  Estoque, triagem, painel.
+- **`.mvd`** = dinheiro como **argumento**, para o ciclo de venda. As duas
+  moedas no mesmo corpo, mesmo peso, mesma cor, ligadas por um `=` **literal**
+  — à taxa travada, os dois valores são o mesmo dinheiro.
+- O **`≈` vem uma vez na frente do par**, nunca uma por moeda: "dois tis dizem
+  duas incertezas onde existe uma".
+
+Aplicado nos três heróis da ficha do lote. **Não** aplicado na lista de
+compras: ali ¥ e US$ são colunas separadas e ordenáveis, como no protótipo.
+
+### O que saiu (invenções minhas que o design não tem)
+
+`.pkpi` (a tira de três números da home) · `.pdoor` (a porta do catálogo) ·
+`.catopt` (o painel de opções, virou o `.cat` do design) · `.dtab--grade` e as
+seis classes de papel `.g-*` · `.wtc-calc` (o pacote tem `.calc`).
+
+### O que ficou, contra o alinhamento, com o dono avisado
+
+1. **`Como funciona` e `Notificações`** não existem no pacote do comprador do
+   design. São duas telas nossas, com backend e testes. Ficam.
+2. **O PDF não oferece «publicar como —»**: nesse mesmo documento o `—` já
+   significa *não fabricado*. Duas coisas no mesmo símbolo é pior que a
+   divergência.
+
+### ⚠ O achado: o `data-label` que o pacote joga fora
+
+O `parceiro-grid.js` emite `data-label` em toda célula da grade, com um
+comentário dizendo que abaixo de 600px a linha vira cartão. **Nenhuma folha do
+pacote imprime esse atributo** — o que existe é o contrário,
+`.dtab tbody td[data-label]::before{content:none}`, duas vezes (no `@media` e
+no `@container`), e o único `attr()` renderizado é o do `data-suffix`.
+
+A convenção do sistema ("no cartão a hierarquia substitui a legenda") está
+certa quase sempre. Quebra num lugar só, e é onde dói: a linha de eMCP tem um
+campo de **mínimo** e um de **máximo**; empilhados sem cabeçalho e sem rótulo,
+são dois retângulos vazios idênticos, e o comprador digita dinheiro em um deles
+sem saber qual.
+
+**Decisão do dono (2026-08-27):** abrir uma exceção nossa, escrita pela
+**condição** e não por um modificador —
+`.dtab:has(input.cell) tbody td[data-label]::before`. A tabela que tem campo é
+a tabela onde a ambiguidade existe. A marcação segue idêntica à do protótipo,
+célula por célula; o que muda é só a folha. Especificidade (0,4,2) contra
+(0,3,2) do pacote — vence por peso, não por ordem de arquivo.
+
+**Não restaurado:** a altura de toque de 48px nos campos, que também era da
+Etapa 10. Não estava na decisão, e vale perguntar antes.
+
+### Correções ao que eu havia relatado errado
+
+- Eu disse que faltava o **seletor de idioma** no shell do comprador. Falso:
+  já estava lá, via `partials/lang_select.html`.
+- Eu disse que o **idioma do PDF** era função nova a implementar. Falso: o
+  parâmetro `lang` já existia e funcionava em `partner_catalog_pdf`.
+
+### Nota de operação: sem `msgfmt` nesta máquina
+
+O GNU gettext não está instalado no Mac do dono e o `compilemessages` do Django
+shella para ele. Os `.mo` desta rodada foram compilados por um escritor de
+`.mo` em Python puro (formato do manual do gettext), com os plurais conferidos
+por `ngettext` depois. Se o gettext for instalado um dia, o caminho normal
+volta a funcionar sem nada a desfazer.
+
+### Testes
+
+`pricing 199` · `vendas 235` · `chips.tests_i18n 31`. Doze testes existentes
+foram realinhados, cada um com o comentário do que mudou e por que a **regra**
+não mudou. Três portões de regressão novos: o mecanismo paralelo não volta (na
+marcação nem na folha), e a exceção do rótulo tem de existir nos dois at-rules.
+
+### A conferência do lote — feita em 2026-08-27
+
+A tabela passou de `.sst` para `.dtab dtab--conf`, e não por gosto: **todo** o
+tratamento de celular que veio no pacote está escrito como `.dtab--conf .c-*`,
+dentro do bloco de 600px. Com a tabela em `.sst` aquelas trinta regras não
+pegariam em nada.
+
+**Duas colunas novas, e são o motivo da passada:** «Aprovados» e «¥ resultado»,
+por **linha**. Antes o aceito só existia como uma segunda linha de rodapé — um
+total. O comprador via quanto sobrou no fim, mas não via o que **cada** recusa
+custou, que é a leitura de que ele precisa enquanto digita. As três colunas do
+resultado são tingidas pelo grupo do pacote: `.hr` a recusa, `.hg` o aprovado,
+`.hb` o dinheiro. A faixa de cada marca ganhou subtotal nas três, e
+`services.result_rows` ganhou `pago_rmb` por grupo para isso.
+
+**A barra viva (`.conflive`)** só existe no telefone. Nasce preenchida pelo
+servidor — no protótipo ela só era escrita pelo `live()`, e `live()` só roda no
+input, então quem abria a aba via uma faixa preta vazia até tocar o primeiro
+campo.
+
+#### ⚠ Buraco antigo, achado por um teste novo
+
+O template decidia a existência das colunas de resultado só por
+`pode_acertar`, que responde *"ele pode digitar recusa agora?"* e vira falso
+assim que a fatura nasce. Consequência: **no instante em que o comprador
+fechava a conferência, ele perdia a vista do que tinha recusado.** A informação
+continuava no banco e sumia da tela dele.
+
+Quem decide isso agora é `tem_resultado` — *"a conferência já aconteceu?"*. A
+tela não muda de **forma** quando a etapa passa; muda só o que aceita toque. É
+a mesma distinção que a tela do cliente (`vendas/views.py`) já fazia desde
+2026-08-18; a do comprador tinha ficado para trás.
+
+### O que fica para depois
+
+**A folha do resultado** — `.pr--dif` e a família
+`.pr__ad/__adk/__cust/__custd/__custn/__sign/__tot/__two`, com os estados
+`EM CONFERÊNCIA` / `CONFERIDO`. Fora por decisão do dono (2026-08-27): o
+comentário do próprio design a descreve como "o documento que o comprador gera
+e o **cliente** recebe" — nasce no comprador e encosta no cliente, e a regra
+desta empreitada é não tocar no cliente. O CSS dela **não** foi trazido; sai do
+pacote pronto no dia em que ele liberar.
+
+**A altura de toque de 48px** nos campos da grade de preço (a da conferência já
+tem, veio no pacote). Era da Etapa 10, não entrou na decisão de realinhamento,
+e vale perguntar antes.
+
+**Fora de escopo por decisão do dono (2026-08-27):** a folha do resultado
+(`.pr__ad/__cust/__custd/__custn/__sign/__two`, estados `EM CONFERÊNCIA` /
+`CONFERIDO`). O comentário do próprio design a descreve como "o documento que o
+comprador gera e o **cliente** recebe" — nasce no comprador e encosta no
+cliente, e a regra desta empreitada é não tocar no cliente.

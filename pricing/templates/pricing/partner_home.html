@@ -3,12 +3,16 @@
 {% block title %}{% trans "Preços" %}{% endblock %}
 {% block content %}
 {% comment %}
-  O RESUMO — a porta da seção de Preços. Vestido com o pacote v2 na Etapa 9:
-  `.phd` no cabeçalho, `.blk` na fila travada, `.pmet` nos números e `.tile` +
-  `.dtab` na tabela por tipo.
+  O RESUMO — a porta da seção de Preços.
 
-  A ORDEM da tela é a ordem do trabalho: primeiro a fila (o que trava
-  dinheiro), depois o estado geral, e só então a lista de tabelas.
+  Realinhado ao protótipo em 2026-08-27 (`design_v2/ui_kits/whatthechip/
+  parceiro.html`). A tela do design é exatamente três coisas: `.phd` com o
+  selo, a faixa `.blk` da fila travada, e UM `.tile` com a tabela por tipo.
+
+  ⚠ SAÍRAM daqui nesta data, por decisão do dono, porque não existem no
+  protótipo: a tira `.pkpi` com os três números (sem cotação / velhas /
+  cotadas) e o cartão `.pdoor` que levava ao catálogo. O catálogo continua
+  alcançável — é item fixo da navegação no `partner_base`.
 {% endcomment %}
 
 <div class="phd">
@@ -45,71 +49,42 @@
 {% endif %}
 
 {% comment %}
-  Os três números do estado geral. Classe PRÓPRIA (`.pkpi`) e não `.pmet` do
-  pacote: aquela é a lista de rótulo→valor do painel lateral da ficha, com
-  outra forma e outro papel. Vestir com a classe errada porque o nome soa
-  parecido é como um sistema de design apodrece.
+  Navegação POR TIPO. Nomes de tipo são canônicos, nunca traduzem. A linha
+  inteira é clicável — o chevron é o sinal, não o alvo.
 
-  ⚠ Dois destes (sem cotação e cotados) também saem somando a tabela abaixo. O
-  que não sai de lugar nenhum é a VELHICE — e é por ela que a tira existe.
-  Enxugar para uma linha só é decisão do dono, não minha: são números que ele
-  já lê há meses.
-{% endcomment %}
-<div class="pkpi">
-  <div class="pkpi__r">
-    <span>{% trans "Chips sem cotação" %}</span>
-    <b class="{% if pending %}is-warn{% endif %}">{{ pending }}</b>
-  </div>
-  <div class="pkpi__r">
-    <span>{% blocktrans trimmed %}Cotações com mais de {{ staleness_days }} dias{% endblocktrans %}</span>
-    <b class="{% if stale %}is-warn{% endif %}">{{ stale }}</b>
-  </div>
-  <div class="pkpi__r">
-    <span>{% trans "Chips cotados" %}</span>
-    <b>{{ quoted }}</b>
-  </div>
-</div>
+  ⚠ As DUAS colunas de número seguem o protótipo desde 2026-08-27, e mudaram
+  de significado: eram «Cotados» e «Sem cotação»; agora são «Linhas» (o total
+  da tabela) e «Cotadas» (quantas dessas já têm preço). Quem falta deixou de
+  ser coluna e virou o aviso ao lado do número — `.miss` quando falta,
+  `.got` quando está completa. É a forma do design, e ela lê melhor: o
+  denominador aparece.
 
-{% comment %}
-  O catálogo virou TELA (§5.2). Este card é a PORTA: some o formulário, fica o
-  caminho. Dois lugares para gerar a mesma coisa é um a mais.
-{% endcomment %}
-<a class="pdoor" href="{% url 'pricing:partner_catalog_page' %}">
-  <span class="pdoor__t">{% trans "Catálogo de preços (PDF)" %}
-    <span>{% trans "Sua tabela completa num arquivo só — pronta para enviar aos seus clientes." %}</span></span>
-  <span class="pdoor__g">{% trans "Montar catálogo" %}
-    <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></span>
-</a>
-
-{% comment %}
-  Navegação POR TIPO (dono, 2026-07-27). Nomes de tipo são canônicos, nunca
-  traduzem. A linha inteira é clicável — o chevron é o sinal, não o alvo.
+  §3.5 continua valendo dentro do `.miss`: `travando N pedidos` toma o lugar
+  de `N sem cotação` quando as duas coisas são verdade. As duas são — mas só
+  uma explica a urgência.
 {% endcomment %}
 <section class="tile">
   <div class="dtab__wrap"><table class="dtab">
     <thead><tr>
       <th>{% trans "Tipo de chip" %}</th>
       <th class="d">{% trans "Estrutura da tabela" %}</th>
-      <th>{% trans "Cotados" %}</th>
-      <th>{% trans "Sem cotação" %}</th>
+      <th class="num">{% trans "Linhas" %}</th>
+      <th class="num">{% trans "Cotadas" %}</th>
       <th></th>
     </tr></thead>
     <tbody>
       {% for k in kinds_resumo %}
       <tr data-h="{% url 'pricing:partner_kind' k.kind %}">
-        <td class="c" data-label="{% trans 'Tipo de chip' %}">{{ k.label }}</td>
-        <td class="d" data-label="{% trans 'Estrutura da tabela' %}">
+        <td class="c">{{ k.label }}</td>
+        <td class="d" data-label="{% trans 'Estrutura' %}">
           {% if k.unified %}{% trans "unificada — uma coluna de preço" %}
           {% elif k.dual %}{% trans "celular × PCB — duas tabelas" %}
           {% else %}{% trans "por marca — matriz" %}{% endif %}</td>
-        <td class="n hide-sm" data-label="{% trans 'Cotados' %}">{% if k.quoted %}{{ k.quoted }}{% else %}—{% endif %}</td>
-        {% comment %} §3.5: `travando N pedidos` NO LUGAR de `N sem cotação`
-           quando as duas coisas são verdade. As duas são — mas só uma explica
-           a urgência, e a contagem exata está a um clique, na grade. {% endcomment %}
-        <td class="v key" data-label="{% trans 'Sem cotação' %}">
-          {% if k.travados %}<span class="tag tag--no"><span class="dot"></span>{% blocktrans trimmed count n=k.travados %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
-          {% elif k.pending %}<span class="tag tag--maybe"><span class="dot"></span>{% blocktrans trimmed count n=k.pending %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
-          {% else %}<span class="tag tag--yes"><span class="dot"></span>{% trans "completa" %}</span>{% endif %}</td>
+        <td class="n" data-label="{% trans 'Linhas' %}" data-suffix="{% trans 'linhas' %}">{{ k.lines }}</td>
+        <td class="v key" data-label="{% trans 'Cotadas' %}">{{ k.quoted }}
+          {% if k.travados %}<span class="miss">{% blocktrans trimmed count n=k.travados %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
+          {% elif k.pending %}<span class="miss">{% blocktrans trimmed count n=k.pending %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
+          {% else %}<span class="got">{% trans "completa" %}</span>{% endif %}</td>
         <td class="go"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></td>
       </tr>
       {% empty %}
