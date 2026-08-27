@@ -1,0 +1,125 @@
+# Submissão de known_parts — SK Hynix, prefixo H27U (NAND Flash raw standalone,
+# linha "Legacy MLC NAND Flash"). Gerado a partir da investigação do PN
+# H27UCG8T2MYR (busca na bancada, 2026-08-27). Prefixo H27U nunca antes visto
+# nesta sessão — "H27" é a família NAND Flash da Hynix (distinta de "H9x"/"H5x",
+# que são DRAM/eMCP), confirmado no próprio guia de nomenclatura da Hynix
+# (posição 2="Flash", posição 3="7"=NAND Flash).
+#
+# ⚠ PEDIDO REFORÇADO DO DONO (2026-08-27): "pesquise mais... tem que pesquisar o
+# maximo possivel, nao so 1" — pesquisei o cluster completo antes de fechar.
+#
+# ESTRUTURA DO PN (H27U-CG-8-T2-X-YR, 12 caracteres): prefixo "H27U" + código de
+# densidade "CG" (tabela oficial de códigos Hynix: 64=64Mb·28=256Mb·12=512Mb·
+# 1G=1Gb·2G=2Gb·4G=4Gb·8G=8Gb·AG=16Gb·BG=32Gb·CG=64Gb·DG=128Gb — "CG"=64Gb,
+# bate exato com "64Gb (8192M x 8bit)" confirmado em TODOS os PNs desta
+# submissão) + "8" (largura x8) + "T2" (código fixo, provavelmente
+# tecnologia/plano — todos os PNs achados têm "T2" igual) + 1 letra final
+# (A/B/M — varia livremente, não muda a capacidade, MESMO padrão "revision
+# letter" já visto em H5TC/H5TQ/H8AC nesta sessão) + sufixo fixo "YR".
+#
+# ⚠ POR QUE NÃO VIRA GRAMÁTICA (ChipFamily) AINDA: só temos 1 ÚNICO código de
+# densidade confirmado nesta posição ("CG"=64Gb) — nenhum PN com "8G"/"AG"/etc.
+# nessa mesma posição foi encontrado, então não dá pra provar que a posição
+# generaliza pra outras densidades (só que ESTE código específico bate). Fica
+# como known_parts-only (Trilha B) por ora — se uma bancada futura achar um
+# H27U de outra densidade, dá pra reabrir a decisão de gramática com mais
+# pontos.
+#
+# ARITMÉTICA: 64Gb÷8=8GB (capacidade em bytes, convenção NAND raw do projeto).
+# "8192M x 8bit" = 8192×8=65536Mbit=64Gbit=64Gb — bate exato, confirmado em
+# TODOS os PNs abaixo, inclusive na tabela de Electronic Signature do
+# datasheet oficial lido (H27UCG8T2ATR).
+#
+# CLASSIFICAÇÃO: chip_type="NAND Flash", subtype="MLC NAND" — confirmado
+# "Multi Level Cell (MLC) Technology" no corpo do datasheet oficial
+# (H27UCG8T2ATR, lido na íntegra). interface="" (a largura x8 já está embutida
+# na descrição "8192M x 8bit", não afeta o schema desta família — package é
+# TSOP48, não BGA com pinagem configurável tipo DDR).
+#
+# FONTES:
+#   H27UCG8T2MYR (ALVO): NENHUM datasheet oficial hospedado encontrado
+#   diretamente (AllDataSheet não retornou página própria pra esta forma nas
+#   buscas feitas), mas convergência forte e consistente em MUITAS fontes
+#   independentes — Kynix, Jotrin (H27UCG8T2MYR-BC), datasheet4u (id 731012,
+#   arquivo próprio indexado), win-source, datasheet39.com, datasheet-pdf.com,
+#   censtry, datasheet.iiic.cc (variante -BI) — todas "64Gb (8192M x 8bit)
+#   NAND Flash", MLC. confidence=manual (convergência multi-fonte, sem corpo
+#   de datasheet oficial lido pra ESTA letra específica).
+#
+#   H27UCG8T2ATR: datasheet oficial SK Hynix (AllDataSheet id 2172148, 56
+#   páginas), corpo "Product Feature" lido NA ÍNTEGRA via fetch direto:
+#   "Multi Level Cell (MLC) Technology... VCC/VCCq=2.7V~3.6V... Page Size:
+#   8192+640(Spare) bytes... Block Size: 2M+160K bytes, 256 pages... Package:
+#   TSOP, 48-pin, 12mm x 20mm x 1.2mm". confidence=confirmed (corpo técnico
+#   lido, não só metadado).
+#
+#   H27UCG8T2BTR-BC: AllDataSheet lista como "produto similar" na página do
+#   ATR (id 1132540, "64Gb(8192M x 8bit) MLC NAND Flash", mesma descrição
+#   categórica) — corpo do PDF não aberto, mas corroborado por descrição
+#   estruturada de organização interna distinta (page size 16384+1280 bytes,
+#   block 4M+320K, 256 páginas — geometria diferente da revisão A, mesma
+#   densidade total). confidence=manual.
+#
+# GAP CONHECIDO (não incluído, não inventado): "H27UCG8T2ETR" apareceu numa
+# busca (título Scribd + uma página datasheetcafe.com), mas o CORPO da própria
+# página datasheetcafe.com pra "H27UCG8T2ETR" na verdade descreve o
+# H27UCG8T2ATR ("O produto PN. H27UCG8T2ATR é..." — cola/erro de template do
+# próprio site). Não achei confirmação independente pra "ETR" como PN
+# distinto de verdade — não incluído (excluir, não adivinhar).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h27u_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h27u_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H27UCG8T2MYR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    capacity: "8GB"
+    interface: ""
+    confidence: manual
+    source_url: "https://datasheet4u.com/datasheet-pdf/Hynix/H27UCG8T2MYR/pdf.php?id=731012"
+    notes: >
+      PN ALVO da bancada (2026-08-27). Convergência forte em múltiplas fontes
+      independentes (Kynix, Jotrin, datasheet4u id 731012, win-source,
+      datasheet39.com, datasheet-pdf.com, censtry, datasheet.iiic.cc variante
+      -BI) — todas descrevem "64Gb (8192M x 8bit) NAND Flash", MLC.
+      8192M×8bit=65536Mbit=64Gbit÷8=8GB. Mesma família/densidade do
+      H27UCG8T2ATR (confirmado abaixo com corpo técnico lido) — só a letra
+      final muda (M em vez de A), padrão "revision letter" já visto em
+      H5TC/H5TQ/H8AC nesta sessão. confidence=manual (convergência
+      multi-fonte, sem datasheet oficial hospedado encontrado especificamente
+      pra esta letra).
+
+  - part_number: "H27UCG8T2ATR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    capacity: "8GB"
+    interface: ""
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.net/datasheet-pdf/pdf/2172148/HYNIX/H27UCG8T2ATR.html"
+    notes: >
+      Irmão de revisão do alvo (cluster) — datasheet oficial SK Hynix
+      (AllDataSheet id 2172148, 56 páginas), corpo "Product Feature" lido NA
+      ÍNTEGRA via fetch direto: "64Gb(8192M x 8bit) Legacy MLC NAND Flash...
+      Multi Level Cell (MLC) Technology... VCC/VCCq=2.7V~3.6V... Page Size:
+      8192+640(Spare) bytes... Block Size: 2M+160K bytes, 256 pages...
+      Package: TSOP, 48-pin, 12mm x 20mm x 1.2mm". 8192M×8bit÷8=8GB — bate
+      exato. confidence=confirmed (corpo técnico oficial lido, não só
+      metadado).
+
+  - part_number: "H27UCG8T2BTR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    capacity: "8GB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1132540/HYNIX/H27UCG8T2BTR-BC.html"
+    notes: >
+      Irmão de revisão (cluster) — AllDataSheet: página PRÓPRIA e dedicada
+      (id 1132540, descrição "64Gb(8192M x 8bit) MLC NAND Flash", mesma
+      categoria do ATR), Manufacturer=HYNIX. Corroborado por descrição de
+      organização interna distinta (page size 16384+1280 bytes, block
+      4M+320K — geometria diferente da revisão A, MESMA densidade total:
+      64Gb÷8=8GB). Corpo do PDF em si não aberto — confidence=manual.
