@@ -1,0 +1,55 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
+# PN alvo (debug 2026-08-27): K4B2G0446B — grammar já decodifica certo hoje
+# (pn[3:5]='2G' via DRAM_PC global → 2Gb=256MB, pn[5:7]='04'→x4,
+# grammar_complete=true, profitable=RENTÁVEL), mas o PN exato não estava
+# confirmado no banco (known_exact=false, pn_not_in_db=true no debug).
+#
+# K4B2G0446B (alvo, base): datasheet oficial Samsung dedicado (alldatasheet
+# mirror #347882, 23 páginas, "DDR3 SDRAM Memory", Direct Link
+# samsung.com/Products/Semiconductor). A própria listagem "Similar Part No."
+# do alldatasheet agrupa este PN com os irmãos C/D/E-die da MESMA célula
+# "0446" (2Gb×x4) — já confirmados nesta família (K4B2G0446C/D no seed). Código
+# de largura "04"=x4 já validado como convenção oficial da família inteira
+# (página Ordering Information, achado em rodada anterior desta sessão —
+# ver samsung_k4b_x4_2026-08-20.yaml) — se aplica igualmente a qualquer die-gen
+# nesta posição do PN, não é específico do D-die. 2Gbit÷8=256MB/die — mesma
+# aritmética já padronizada nesta família (`capacity` em MB).
+#
+# Sufixo: K4B2G0446B-HCH9 (AB Sunshine, página dedicada). HC=DDR3 1.5V, mesma
+# convenção de tensão da família. Sem par DDR3L (HY/BY) encontrado pra esta
+# densidade+largura+die específica em nenhuma fonte — não invento (excluir,
+# não adivinhar).
+#
+# ⚠ achado à parte (não muda este submit): a listagem do alldatasheet tagueia
+# o D-die desta MESMA célula explicitamente como "2Gb D-die DDR3L SDRAM"
+# (não "DDR3" genérico como B/C/E) — sugere que o D-die pode ser
+# especificamente DDR3L-only nesta família, ao contrário de B/C/E que são
+# DDR3 com variante L opcional por sufixo de tensão. Não investigado a fundo;
+# fica registrado caso ajude a entender por que uma submissão antiga
+# (samsung_k4b_x4_2026-08-20.yaml, K4B4G0446DBYK0) usou chip_type="DDR3L"
+# como exceção ao padrão chip_type="DDR3" usado no resto da família.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B2G0446B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347882/SAMSUNG/K4B2G0446B.html"
+    notes: >
+      PN alvo (debug 2026-08-27), base sem sufixo. Datasheet oficial Samsung
+      dedicado (alldatasheet mirror #347882, 23 páginas, "DDR3 SDRAM Memory",
+      Direct Link samsung.com/Products/Semiconductor). Listado como "Similar
+      Part No." junto dos irmãos C/D/E-die da mesma célula 2Gb×x4 (já
+      confirmados no seed/sessão). Largura x4 = convenção "04" já validada
+      pra família inteira. 2Gbit÷8=256MB/die.
+
+  - part_number: "K4B2G0446B-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.absunshine.com/en/parts/K4B2G0446B-HCH9-SAMSUNG-3939704"
+    notes: "Sufixo do K4B2G0446B (ver notes do PN base). HC=DDR3 1.5V, mesma convenção de tensão da família. AB Sunshine, página dedicada."
