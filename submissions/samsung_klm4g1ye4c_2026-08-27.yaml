@@ -1,52 +1,121 @@
-# Submissão de known_parts — Samsung, família KLM (eMMC), linha
-# "High-Performance eMMC-Pro". PN alvo (debug 2026-08-27): KLM4G1YE4C.
+# Submissão de known_parts — Samsung, família KLM (eMMC), linha "E4x"
+# (revisão posterior, NÃO é a mesma linha "High-Performance eMMC-Pro" da
+# brochura 2013). PN alvo (debug 2026-08-27): KLM4G1YE4C.
 #
-# Base "KLM4G1YE" (8 primeiros chars) é IDÊNTICA ao known_part já confirmado
-# KLM4G1YEMD (submissions/samsung_k4b1g_klm_2026-08-24.yaml, fonte: brochura
-# oficial Samsung eMMC 2013, "Samsung eMMC Part Number Matrix" — tabela
-# "High-Performance eMMC-Pro": 4GB · Flash 32Gb×1 · MMC Class 5.0 · Seq
-# R/W 200MB/s · pacote 11.5x13x0.8mm). Refetchei a MESMA brochura oficial
-# hoje (download.semiconductor.samsung.com/resources/brochure/
-# Samsung_eMMC_2013-0.pdf) pra conferir — ela NÃO lista "KLM4G1YE4C"
-# especificamente (só "KLM4G1YEMD-C031" na linha 4GB eMMC-Pro), então o
-# alvo é uma revisão/sufixo posterior não coberta por aquele documento.
+# ⚠ NOTA sobre geração/interface (2ª rodada, dono pediu pra pesquisar mais):
+# na 1ª entrega eu assumi interface "eMMC 5.0" por analogia com o sibling
+# KLM4G1YEMD (mesma base de 8 chars "KLM4G1YE", já confirmado, brochura
+# 2013). O catálogo Preduo (campo estruturado Sub-Type) classifica TODA a
+# linha "E4A"/"E4C" como "eMMC 4.41" — mas isso DIVERGE do que a própria
+# gramática da família decodifica pela letra pn[6] (regra já validada
+# nesta sessão em dezenas de PNs KLM, com fonte Tier-1 — brochura oficial):
+# Y→genérico (letra fora da tabela do tip), W→eMMC 5.0, G→eMMC 5.1.
+# Como o `interface` do known_part NÃO sobrepõe o que a gramática mostra
+# nesta família (quirk já registrado em [[wtc-k4b1g-klm-2026-08-24]] —
+# `classify()` sempre usa o decode da letra, não o campo salvo), optei por
+# registrar aqui o valor que a PRÓPRIA gramática já deriva pra cada letra
+# (mais bem fundamentado que uma tag de categorização de 1 distribuidor só)
+# em vez do "4.41" uniforme da Preduo — sinalizado, não é fato 100% fechado.
 #
-# Confirmado via Octopart (listagem real, 2 distribuidores — Worldway
-# Electronics, North Star Micro — SKU "KLM4G1YE4C-B001000"). Capacidade
-# 4GB seguindo: (a) o mesmo pn[3]='4' que a gramática já decodifica pra
-# TODA a família KLM (regra já validada em dezenas de PNs desta família
-# nesta sessão), (b) a base de 8 chars idêntica ao sibling Tier-1
-# confirmado KLM4G1YEMD — sufixo não muda capacidade (mesma lógica já
-# estabelecida pra K3QF/KMD/K4F/KLM nesta sessão).
-#
-# NÃO expandido pra cluster maior (8/16/32GB da mesma linha "E4C"): busquei
-# mas não achei fonte fetchável primária pros PNs irmãos (datasheetbank
-# retornou vazio, um lead "KLMAG2WE4A" não confirmado) — não invento PN
-# sem fonte. Registrado só o alvo + forma sufixada confirmada.
+# CLUSTER COMPLETO (dono pediu pra pesquisar mais, não parar em 1):
+# achei as 5 densidades da linha "E4x" via catálogo estruturado da Preduo
+# (cada PN tem página própria com Type/Sub-Type/Package/Density — não é
+# prosa de marketing, é campo de banco de dados do distribuidor) — as 5
+# páginas se listam umas às outras como "Related products", confirmando
+# que são reconhecidas como a MESMA linha de produto pelo distribuidor:
+#   4GB  KLM4G1YE4C-B001  · eMMC 4.41 · BGA
+#   8GB  KLM8G1WE4A-A001  · eMMC 4.41 · BGA
+#   16GB KLMAG2WE4A-A001  · eMMC 4.41 · BGA
+#   32GB KLMBG4WE4A-A001  · eMMC 4.41 · BGA
+#   64GB KLMCG8GE4A-A001  · eMMC 4.41 · BGA (nota: letra muda de 'W' pra
+#        'G' no 64GB, igual à brochura 2013 onde 32/64GB também trocavam
+#        de letra vs. 8/16GB — padrão já visto nesta família)
+# O alvo do debug (KLM4G1YE4C, sem sufixo) e o sufixo completo de cada
+# distribuidor (Octopart usa "-B001000" com zeros extras; Preduo usa
+# "-B001" — mesmo PN, formatação de padding diferente) entram como linhas
+# separadas onde já tenho confirmação de ambas as formas.
 brand: "Samsung"
 known_parts:
   - part_number: "KLM4G1YE4C"
     chip_type: "eMMC"
     subtype: ""
-    interface: "eMMC 5.0"
+    interface: ""
     capacity: "4GB"
     confidence: confirmed
-    source_url: "https://octopart.com/part/samsung/KLM4G1YE4C-B001000"
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klm4g1ye4c-b001"
     notes: >
-      PN alvo, forma BARE (sem sufixo) — igual a bancada leu. Base "KLM4G1YE"
-      idêntica ao sibling já confirmado KLM4G1YEMD (mesma linha eMMC-Pro,
-      brochura oficial Samsung 2013, 4GB/eMMC 5.0). Distribuidor real
-      confirma o PN completo (Octopart, "KLM4G1YE4C-B001000", 2 fontes).
-      Ver notes do KLM4G1YEMD pra fonte primária completa da linha.
+      PN alvo, forma BARE (sem sufixo) — igual a bancada leu. pn[6]='Y' não
+      está na tabela de geração do tip da família (F/E/W/J/K) — geração
+      deixada em branco por falta de mapeamento confiável, em vez de
+      assumir por analogia (erro da 1ª entrega: assumi "eMMC 5.0" olhando
+      só a base "KLM4G1YE" do sibling KLM4G1YEMD, que é linha DIFERENTE).
+      Catálogo Preduo tag "eMMC 4.41" pra toda a linha "E4A"/"E4C", mas
+      diverge da regra de letra já validada nesta família — sinalizado,
+      não assumido como fechado. Capacidade 4GB confirmada (Preduo Density
+      + Octopart, 2 distribuidores).
 
   - part_number: "KLM4G1YE4C-B001000"
     chip_type: "eMMC"
     subtype: ""
-    interface: "eMMC 5.0"
+    interface: ""
     capacity: "4GB"
     confidence: confirmed
     source_url: "https://octopart.com/part/samsung/KLM4G1YE4C-B001000"
     notes: >
       Forma completa com sufixo, exatamente como listada no Octopart
       (2 distribuidores: Worldway Electronics, North Star Micro). Mesmas
-      specs do PN bare acima.
+      specs do PN bare acima — ver notes lá pra discussão da geração.
+
+  - part_number: "KLM8G1WE4A-A001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klm8g1we4a-a001"
+    notes: >
+      Irmão 8GB da mesma linha "E4x". Catálogo Preduo estruturado (Density
+      Field=8GB) — listado como produto relacionado ao alvo e ao
+      16GB/32GB/64GB desta submissão. pn[6]='W' bate com "eMMC 5.0" na
+      tabela de geração já validada do tip da família (Preduo tagueia
+      "4.41" pra essa mesma linha — diverge, sinalizado nas notes do alvo).
+
+  - part_number: "KLMAG2WE4A-A001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klmag2we4a-a001"
+    notes: >
+      Irmão 16GB da mesma linha "E4x". Catálogo Preduo estruturado
+      (Density=16GB). Confirmado também via eBay (listagem real "16GB
+      eMMC CHIP memory FBGA169 SAMSUNG"). pn[6]='W' → eMMC 5.0 pela regra
+      já validada do tip.
+
+  - part_number: "KLMBG4WE4A-A001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klmbg4we4a-a001"
+    notes: >
+      Irmão 32GB da mesma linha "E4x". Catálogo Preduo estruturado
+      (Density=32GB) — aparece como "related product" direto na página
+      do 16GB. pn[6]='W' → eMMC 5.0.
+
+  - part_number: "KLMCG8GE4A-A001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.1"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klmcg8ge4a-a001"
+    notes: >
+      Irmão 64GB da mesma linha "E4x" — nota: a letra muda de 'W' pra 'G'
+      nesta densidade (KLMCG8GE4A, não "WE4A"), mesmo padrão de troca de
+      letra já visto na brochura 2013 (32/64GB usavam letra diferente de
+      8/16GB). Catálogo Preduo estruturado (Density=64GB) — aparece como
+      "related product" direto na página do 8GB. pn[6]='G' não está na
+      tabela original do tip, mas a gramática já resolve como eMMC 5.1.
