@@ -280,12 +280,12 @@ Cada etapa fecha sozinha, com teste, e não deixa a tela pela metade.
 
 | # | Etapa | Depende de |
 |---|---|---|
-| **0** | Responder C1–C7 | — |
-| **1** | B1 (idempotência do pagamento) + B2/B3 (verdade do câmbio) | — |
-| **2** | Lista de compras: busca, status com contagem, período por despacho, ordenação, paginação | C2 |
-| **3** | CSV da lista + badge do nav | 2 |
-| **4** | `LotNote` + aba Observações + PDF com autoria "Conferência" | C4 |
-| **5** | CSV por aba + modal de pagamento completo + carteira + rastreio clicável | 4 |
+| **0** ✅ | Responder C1–C7 | — |
+| **1** ✅ | B1 (idempotência do pagamento) + B2/B3 (verdade do câmbio) | — |
+| **2** ✅ | Lista de compras: busca, status com contagem, período por despacho, ordenação, paginação | C2 |
+| **3** ✅ | CSV da lista + badge do nav | 2 |
+| **4** ✅ | `LotNote` + aba Observações + PDF com autoria "Conferência" | C4 |
+| **5** ✅ | CSV por aba + modal de pagamento completo + carteira + rastreio clicável | 4 |
 | **6** ✅ | `BlockedQuote` no resumo de preços | C2 |
 | **7** ✅ | SSD + K9 nas telas de preço, piso do SSD | C3 |
 | **8** ✅ | Catálogo parametrizado | 7 |
