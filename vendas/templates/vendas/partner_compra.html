@@ -183,6 +183,106 @@
     </div>
     {% endlocalize %}
 
+    {% comment %} ── AS QUATRO CAIXAS DE ETAPA ──────────────────────────────
+       Realinhadas ao protótipo em 2026-08-27. Eram `.fgrid > .fgrp`, uma
+       faixa própria abaixo do cabeçalho; no design são um SEGUNDO
+       `.rhead__mx` — outra fileira da mesma faixa, logo abaixo dos três
+       números (o pacote já desenha a linha que separa as duas, com
+       `.rhead__mx + .rhead__mx`).
+
+       Duas coisas que a `.fgrp` não tinha e a `.rgrp` tem, e as duas são
+       informação:
+         · O ESTADO na bolinha — verde com ✓ para o que aconteceu, anel azul
+           pulsando para a etapa da vez, anel cinza para o que não chegou. A
+           `.fgrp` só tinha um quadradinho azul, igual nas quatro.
+         · A DATA à direita do título (`.rgrp__w`). É a resposta de "quando
+           isso aconteceu" sem ter de ler a caixa inteira — e no telefone,
+           onde a caixa colapsa, é a única que sobra.
+
+       O gabarito é SEMPRE o mesmo, e a etapa que ainda não aconteceu fica em
+       `--next`: a caixa promete sem mentir. É isto que faz a tela parar de
+       se remontar a cada estágio.
+    {% endcomment %}
+    <div class="rhead__mx rhead__mx--g">
+      {% localize off %}
+      <div class="rgrp rgrp--done">
+        <div class="rgrp__h">
+          <span class="rgrp__i"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <span class="rgrp__n">{% trans "Lote" %}</span>
+          <span class="rgrp__w">{% if so.lot.closed_at %}{{ so.lot.closed_at|date:"d/m" }}{% endif %}</span>
+        </div>
+        <div class="rgrp__b">
+          <div class="fld2"><span>{% trans "Cliente" %}</span><b>{{ so.company.name }}</b></div>
+          <div class="fld2"><span>{% trans "Chips" %}</span><b class="m">{{ total_qty }}</b></div>
+          <div class="fld2"><span>{% trans "Câmbio" %}</span>
+            <b class="m">{% if fx_rate %}1 ¥ = US$ {{ fx_rate }}{% else %}—{% endif %}</b></div>
+          {% if fx_locked_at %}
+          <div class="fgrp__n"><span class="why">{% blocktrans trimmed with d=fx_locked_at|date:"d/m/Y" %}travado no fechamento em {{ d }}{% endblocktrans %}</span></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="rgrp {% if so.received_at %}rgrp--done{% elif so.shipped_at %}rgrp--now{% else %}rgrp--next{% endif %}">
+        <div class="rgrp__h">
+          <span class="rgrp__i">{% if so.received_at %}<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{% endif %}</span>
+          <span class="rgrp__n">{% trans "Envio" %}</span>
+          <span class="rgrp__w">{% if so.received_at %}{{ so.received_at|date:"d/m" }}{% elif so.shipped_at %}{{ so.shipped_at|date:"d/m" }}{% endif %}</span>
+        </div>
+        <div class="rgrp__b">
+          <div class="fld2"><span>{% trans "Transportadora" %}</span>
+            <b>{% if so.carrier %}{{ so.carrier }}{% else %}—{% endif %}</b></div>
+          <div class="fld2"><span>{% trans "Enviado em" %}</span>
+            <b class="m{% if not so.shipped_at %} off{% endif %}">{% if so.shipped_at %}{{ so.shipped_at|date:"d/m/Y" }}{% else %}—{% endif %}</b></div>
+          <div class="fld2"><span>{% trans "Recebimento" %}</span>
+            <b class="m{% if not so.received_at %} off{% endif %}">{% if so.received_at %}{{ so.received_at|date:"d/m/Y" }}{% else %}—{% endif %}</b></div>
+          {% if so.tracking %}
+          <div class="fgrp__n">
+            {% if tracking_url %}
+            <a class="fmini" href="{{ tracking_url }}" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24"><path d="M10 14L21 3M21 3h-6M21 3v6M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+              {{ so.tracking }}</a>
+            {% else %}<span class="fmini">{{ so.tracking }}</span>{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="rgrp {% if invoice %}rgrp--done{% elif pode_acertar %}rgrp--now{% else %}rgrp--next{% endif %}">
+        <div class="rgrp__h">
+          <span class="rgrp__i">{% if invoice %}<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{% endif %}</span>
+          <span class="rgrp__n">{% trans "Resultado" %}</span>
+          <span class="rgrp__w">{% if invoice %}{{ invoice.created_at|date:"d/m" }}{% elif pode_acertar %}{% trans "em curso" %}{% endif %}</span>
+        </div>
+        <div class="rgrp__b">
+          <div class="fld2"><span>{% trans "Enviados" %}</span><b class="m">{{ total_qty }}</b></div>
+          <div class="fld2"><span>{% trans "Recusados" %}</span>
+            <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-rej">{% if invoice or pode_acertar %}0{% else %}—{% endif %}</b></div>
+          <div class="fld2"><span>{% trans "Aprovados" %}</span>
+            <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-ace">{% if invoice or pode_acertar %}{{ total_qty }}{% else %}—{% endif %}</b></div>
+          {% if so.unkeyed_units %}
+          <div class="fgrp__n"><span class="why">{% blocktrans trimmed with n=so.unkeyed_units %}A caixa traz ainda {{ n }} unidade(s) sem preço na tabela — elas não entram nesta conta.{% endblocktrans %}</span></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="rgrp {% if invoice and invoice.balance_usd <= 0 %}rgrp--done{% elif invoice %}rgrp--now{% else %}rgrp--next{% endif %}">
+        <div class="rgrp__h">
+          <span class="rgrp__i">{% if invoice and invoice.balance_usd <= 0 %}<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{% endif %}</span>
+          <span class="rgrp__n">{% trans "Pagamento" %}</span>
+          <span class="rgrp__w">{% if not invoice %}—{% elif invoice.balance_usd > 0 %}{% trans "em aberto" %}{% else %}{% trans "quitado" %}{% endif %}</span>
+        </div>
+        <div class="rgrp__b">
+          <div class="fld2"><span>{% trans "Fatura" %}</span>
+            <b class="m{% if not invoice %} off{% endif %}">{% if invoice %}US$ {{ invoice.total_usd }}{% else %}—{% endif %}</b></div>
+          <div class="fld2"><span>{% trans "Pago" %}</span>
+            <b class="m{% if not invoice %} off{% elif invoice.paid_usd %} good{% endif %}">{% if invoice %}US$ {{ invoice.paid_usd }}{% else %}—{% endif %}</b></div>
+          <div class="fld2"><span>{% trans "Falta" %}</span>
+            <b class="m{% if not invoice %} off{% elif invoice.balance_usd > 0 %} due{% else %} good{% endif %}">{% if invoice %}US$ {{ invoice.balance_usd }}{% else %}—{% endif %}</b></div>
+        </div>
+      </div>
+      {% endlocalize %}
+    </div>
+
   </div>
 </div>
 {% endblock %}
@@ -193,66 +293,6 @@
      O gabarito é SEMPRE o mesmo; a etapa que ainda não aconteceu fica em
      `.is-off` — a caixa promete sem mentir. É isto que faz a tela parar de
      se remontar a cada estágio. {% endcomment %}
-  <div class="fgrid">
-    <div class="fgrp">
-      <div class="fgrp__l"><i></i>{% trans "Lote" %}</div>
-      <div class="fld2"><span>{% trans "Cliente" %}</span><b>{{ so.company.name }}</b></div>
-      <div class="fld2"><span>{% trans "Chips" %}</span><b class="m">{{ total_qty }}</b></div>
-      {% localize off %}
-      <div class="fld2"><span>{% trans "Câmbio" %}</span>
-        <b class="m">{% if fx_rate %}1 ¥ = US$ {{ fx_rate }}{% else %}—{% endif %}</b></div>
-      {% endlocalize %}
-      {% if fx_locked_at %}
-      <div class="fgrp__n"><span class="why">{% blocktrans trimmed with d=fx_locked_at|date:"d/m/Y" %}
-        travado no fechamento em {{ d }}{% endblocktrans %}</span></div>
-      {% endif %}
-    </div>
-
-    <div class="fgrp{% if not so.shipped_at %} is-off{% endif %}">
-      <div class="fgrp__l"><i></i>{% trans "Envio" %}</div>
-      <div class="fld2"><span>{% trans "Transportadora" %}</span>
-        <b>{% if so.carrier %}{{ so.carrier }}{% else %}—{% endif %}</b></div>
-      <div class="fld2"><span>{% trans "Enviado em" %}</span>
-        <b class="m{% if not so.shipped_at %} off{% endif %}">{% if so.shipped_at %}{{ so.shipped_at|date:"d/m/Y" }}{% else %}—{% endif %}</b></div>
-      <div class="fld2"><span>{% trans "Recebimento" %}</span>
-        <b class="m{% if not so.received_at %} off{% endif %}">{% if so.received_at %}{{ so.received_at|date:"d/m/Y" }}{% else %}—{% endif %}</b></div>
-      {% if so.tracking %}
-      <div class="fgrp__n">
-        {% if tracking_url %}
-        <a class="fmini" href="{{ tracking_url }}" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M10 14L21 3M21 3h-6M21 3v6M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
-          {{ so.tracking }}</a>
-        {% else %}<span class="fmini">{{ so.tracking }}</span>{% endif %}
-      </div>
-      {% endif %}
-    </div>
-
-    <div class="fgrp{% if not invoice and not pode_acertar %} is-off{% endif %}">
-      <div class="fgrp__l"><i></i>{% trans "Resultado" %}</div>
-      <div class="fld2"><span>{% trans "Enviados" %}</span><b class="m">{{ total_qty }}</b></div>
-      <div class="fld2"><span>{% trans "Recusados" %}</span>
-        <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-rej">{% if invoice or pode_acertar %}0{% else %}—{% endif %}</b></div>
-      <div class="fld2"><span>{% trans "Aprovados" %}</span>
-        <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-ace">{% if invoice or pode_acertar %}{{ total_qty }}{% else %}—{% endif %}</b></div>
-      {% if so.unkeyed_units %}
-      <div class="fgrp__n"><span class="why">{% blocktrans trimmed with n=so.unkeyed_units %}
-        A caixa traz ainda {{ n }} unidade(s) sem preço na tabela — elas não
-        entram nesta conta.{% endblocktrans %}</span></div>
-      {% endif %}
-    </div>
-
-    {% localize off %}
-    <div class="fgrp{% if not invoice %} is-off{% endif %}">
-      <div class="fgrp__l"><i></i>{% trans "Pagamento" %}</div>
-      <div class="fld2"><span>{% trans "Fatura" %}</span>
-        <b class="m{% if not invoice %} off{% endif %}">{% if invoice %}US$ {{ invoice.total_usd }}{% else %}—{% endif %}</b></div>
-      <div class="fld2"><span>{% trans "Pago" %}</span>
-        <b class="m{% if not invoice %} off{% elif invoice.paid_usd %} good{% endif %}">{% if invoice %}US$ {{ invoice.paid_usd }}{% else %}—{% endif %}</b></div>
-      <div class="fld2"><span>{% trans "Falta" %}</span>
-        <b class="m{% if not invoice %} off{% elif invoice.balance_usd > 0 %} due{% else %} good{% endif %}">{% if invoice %}US$ {{ invoice.balance_usd }}{% else %}—{% endif %}</b></div>
-    </div>
-    {% endlocalize %}
-  </div>
 
   {% comment %} Avisos: só os que EXIGEM leitura, e sempre no mesmo lugar —
      entre os campos e as abas. {% endcomment %}

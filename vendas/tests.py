@@ -4287,16 +4287,22 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
         html = self.client.get(
             reverse('compras:detail', args=[self.so.pk])).content.decode()
         self.assertIn('wtc/patterns/ficha.css', html)
-        # ⚠ 2026-08-27: a primeira peça deixou de ser a `.fbar` de mão e
-        # passou a ser o `.rhead` do pacote — voltar · identidade · trilho ·
-        # ação · e os três números como faixa de largura inteira. A ORDEM que
-        # este teste segura é a mesma: cabeçalho · folha · grupos · abas.
-        for peca in ('class="rhead"', 'class="sheet"', 'class="fgrid"',
+        # ⚠ 2026-08-27, em duas passadas. A primeira peça deixou de ser a
+        # `.fbar` de mão e virou o `.rhead` do pacote. Depois as quatro caixas
+        # de etapa saíram do `.fgrid` (uma faixa própria abaixo do cabeçalho)
+        # e viraram um SEGUNDO `.rhead__mx` — outra fileira da MESMA faixa,
+        # logo abaixo dos três números, como no protótipo.
+        #
+        # A ORDEM que este teste segura continua sendo a mesma leitura:
+        # cabeçalho (identidade · números · etapas) · folha · abas.
+        for peca in ('class="rhead"', 'rhead__mx--g', 'class="sheet"',
                      'class="nb"', 'class="sst"'):
             self.assertIn(peca, html, peca)
-        self.assertLess(html.index('class="rhead"'), html.index('class="sheet"'))
-        self.assertLess(html.index('class="sheet"'), html.index('class="fgrid"'))
-        self.assertLess(html.index('class="fgrid"'), html.index('class="nb"'))
+        self.assertLess(html.index('class="rhead"'), html.index('rhead__mx--g'))
+        self.assertLess(html.index('rhead__mx--g'), html.index('class="sheet"'))
+        self.assertLess(html.index('class="sheet"'), html.index('class="nb"'))
+        # e as etapas dizem o ESTADO, não só o nome: a bolinha muda de forma
+        self.assertIn('rgrp rgrp--done', html)
         # a ação da vez é do cabeçalho: o botão está DENTRO da faixa
         barra = html[html.index('class="rhead"'):html.index('class="sheet"')]
         self.assertIn('form="f-resultado"', barra)

@@ -4135,3 +4135,7 @@ msgid "%(n)s un. · fechado em %(d)s"
 msgid_plural "%(n)s un. · fechado em %(d)s"
 msgstr[0] "%(n)s pc. · closed on %(d)s"
 msgstr[1] "%(n)s pcs. · closed on %(d)s"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "em curso"
+msgstr "in progress"
