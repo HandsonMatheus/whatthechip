@@ -1,0 +1,83 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
+# PN do debug (2026-08-27): K4B1G1646GBQK0 — NÃO submetido nesta rodada, ver
+# ⚠ AMBIGUIDADE no chat/handoff ao dono. Em vez disso, esta submissão
+# aproveita o achado de uma fonte MUITO mais forte pro G-die (1G×x16) que já
+# tinha 2 known_parts fracos (K4B1G1646G-BC/-BY, via Product Selection Guide
+# catalog, "fonte mais fraca" per notes de samsung_k4b2g0846d_2026-08-24.yaml).
+#
+# Achei o datasheet OFICIAL dedicado da Samsung (não mirror agregador):
+# "K4B1G1646G Rev. 1.0, Nov. 2010" (bdtic.com, hospeda o PDF original completo,
+# 92 páginas) — Table 1/2 "Ordering Information" / "1Gb DDR3 G-die Speed bins"
+# lista os 5 speed-grades REAIS e COMPLETOS da linha 1.5V (BC) desta célula
+# (organização "64Mx16", pacote 96FBGA):
+#   K4B1G1646G-BCF8 (DDR3-1066, 7-7-7)
+#   K4B1G1646G-BCH9 (DDR3-1333, 9-9-9)
+#   K4B1G1646G-BCK0 (DDR3-1600, 11-11-11)
+#   K4B1G1646G-BCMA (DDR3-1866, 13-13-13)
+#   K4B1G1646G-BCNB (DDR3-2133, 14-14-14)
+# Texto do datasheet: "The 1Gb DDR3 SDRAM G-die is organized as a 8Mbit x16
+# I/Os x8banks device" — confirma x16, 1Gbit÷8=128MB/die (mesma aritmética já
+# padronizada nesta família). Nenhum dos 5 estava confirmado no banco — gap
+# real, fonte Tier-1 direta (não mirror), tabela oficial completa e exaustiva
+# (não há mais speed-grades além destes 5 pra esta célula na linha BC).
+#
+# ⚠ AMBIGUIDADE (não resolvida sozinho, sinalizo ao dono): a tabela oficial
+# NÃO documenta nenhum sufixo "BQ" pra este PN (K4B1G1646G) — só "BC". Achei
+# "BQK0" como sufixo REAL na família, mas em OUTRO PN: "K4B2G1646E-BQK0"
+# (2Gb E-die, Amazon — listagem com 4 PNs Samsung DDR3, um deles exatamente
+# esse). Ou seja: "BQK0" existe na família, só não neste PN/densidade/die
+# específico. Pode ser (a) leitura errada da bancada — "C"↔"Q" é confusão
+# visual/OCR plausível (K4B1G1646G-BCK0 É um PN real, documentado, desta
+# MESMA célula), ou (b) um PN genuinamente diferente do que a lista de
+# fuzzy_suggestions sugere. Não decido sozinho (PN ambíguo) — não registrei
+# "K4B1G1646GBQK0" nesta submissão.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B1G1646G-BCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
+    notes: >
+      Datasheet oficial Samsung dedicado (Rev.1.0, Nov.2010, hospedado
+      bdtic.com — PDF original, não mirror agregador). Table 2 "1Gb DDR3
+      G-die Speed bins": DDR3-1066 (7-7-7), organização 64Mx16, pacote
+      96FBGA. 1Gbit÷8=128MB/die.
+
+  - part_number: "K4B1G1646G-BCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
+    notes: "DDR3-1333 (9-9-9), mesma tabela oficial do PN -BCF8 (ver notes lá)."
+
+  - part_number: "K4B1G1646G-BCK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
+    notes: "DDR3-1600 (11-11-11), mesma tabela oficial do PN -BCF8 (ver notes lá). Corroborado por múltiplos distribuidores (eBay, pcxco, Octopart)."
+
+  - part_number: "K4B1G1646G-BCMA"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
+    notes: "DDR3-1866 (13-13-13), mesma tabela oficial do PN -BCF8 (ver notes lá)."
+
+  - part_number: "K4B1G1646G-BCNB"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
+    notes: "DDR3-2133 (14-14-14), mesma tabela oficial do PN -BCF8 (ver notes lá)."
