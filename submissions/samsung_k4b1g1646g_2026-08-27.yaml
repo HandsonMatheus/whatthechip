@@ -1,7 +1,9 @@
 # Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone).
-# PN do debug (2026-08-27): K4B1G1646GBQK0 — NÃO submetido nesta rodada, ver
-# ⚠ AMBIGUIDADE no chat/handoff ao dono. Em vez disso, esta submissão
-# aproveita o achado de uma fonte MUITO mais forte pro G-die (1G×x16) que já
+# PN do debug (2026-08-27): K4B1G1646GBQK0 — ver ⚠ AMBIGUIDADE abaixo
+# (sinalizada ao dono) + resolução (dono autorizou registrar com as mesmas
+# specs da linha BC já confirmada nesta submissão — ver known_part no fim
+# do arquivo). Esta submissão também aproveita o achado de uma fonte MUITO
+# mais forte pro G-die (1G×x16) que já
 # tinha 2 known_parts fracos (K4B1G1646G-BC/-BY, via Product Selection Guide
 # catalog, "fonte mais fraca" per notes de samsung_k4b2g0846d_2026-08-24.yaml).
 #
@@ -29,8 +31,10 @@
 # específico. Pode ser (a) leitura errada da bancada — "C"↔"Q" é confusão
 # visual/OCR plausível (K4B1G1646G-BCK0 É um PN real, documentado, desta
 # MESMA célula), ou (b) um PN genuinamente diferente do que a lista de
-# fuzzy_suggestions sugere. Não decido sozinho (PN ambíguo) — não registrei
-# "K4B1G1646GBQK0" nesta submissão.
+# fuzzy_suggestions sugere. Não decidi sozinho (PN ambíguo) — sinalizei ao
+# dono, que autorizou registrar "K4B1G1646GBQK0" com as MESMAS specs da
+# célula (1Gb/x16/G-die/128MB) — decisão do dono, não pesquisa Tier-1
+# própria pra esse sufixo exato. Ver notes do known_part abaixo.
 brand: "Samsung"
 known_parts:
   - part_number: "K4B1G1646G-BCF8"
@@ -81,3 +85,21 @@ known_parts:
     confidence: confirmed
     source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
     notes: "DDR3-2133 (14-14-14), mesma tabela oficial do PN -BCF8 (ver notes lá)."
+
+  - part_number: "K4B1G1646GBQK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf"
+    notes: >
+      PN exato do debug (2026-08-27), forma como a bancada leu (sem hífen).
+      ⚠ Sufixo "BQK0" NÃO consta na tabela oficial de ordering info deste PN
+      (K4B1G1646G) — só "BC" (ver notes do -BCF8 acima). "BQK0" existe como
+      sufixo real na família, mas documentado em OUTRO PN (K4B2G1646E-BQK0,
+      2Gb E-die). Registrado com as MESMAS specs da célula (1Gb/x16/G-die,
+      128MB) por decisão EXPLÍCITA do dono (2026-08-27, "pode registrar o
+      mesmo com as mesmas specs na mesma submission") — não é confirmação
+      Tier-1 própria deste sufixo exato, é autorização do dono sobre um PN
+      que eu tinha sinalizado como ambíguo.
