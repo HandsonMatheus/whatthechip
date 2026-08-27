@@ -4,14 +4,8 @@
 
 {% comment %}
   A TELA DO CATÁLOGO (spec v2 §5.2) — o gerador do PDF que o comprador manda
-  aos clientes dele.
-
-  Realinhada ao protótipo em 2026-08-27 (`parceiro-catalogo.html`). A forma
-  agora é a do design: grade `.two` (seleção à esquerda, documento à direita),
-  a CAIXA PRETA `.cat` com os quatro campos em `.cat__f`, o recado de capa
-  como `.nts__new` separado da caixa, e o `.stamp` da taxa embaixo de tudo.
-  O que eu tinha era um painel `.catopt` escuro inventado, com o mesmo
-  conteúdo numa forma que não existe no sistema.
+  aos clientes dele. Duas colunas: a seleção de tipos à esquerda, as opções do
+  documento à direita.
 
   A regra que governa a tela inteira: **todo tipo entra no catálogo até o
   comprador dizer o contrário**. O estado é um mapa de EXCLUSÕES, não de
@@ -20,74 +14,47 @@
   ausência de `types` no POST significa TODOS.
 {% endcomment %}
 
-{% block extra_head %}
-<style>
-/* Local desta tela, como no protótipo: a caixa preta e a grade de duas
-   colunas não são padrão do sistema, são desta página. */
-.two{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:20px;align-items:start}
-.cat{background:var(--ink-100);color:#fff;padding:20px}
-.cat__l{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40)}
-.cat__t{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:9px;line-height:1.2}
-.cat__d{font-size:12px;color:var(--ink-30);margin-top:8px;line-height:1.5;text-wrap:pretty}
-.cat__f{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.cat__f label{display:block;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-40);margin-bottom:6px}
-.cat__f select,.cat__f input{width:100%;height:40px;padding:0 11px;border:0;background:#21272a;color:#fff;font-family:inherit;font-size:13px;font-weight:600}
-.cat__f select{padding-right:30px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a2a9b0' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
-.cat__f input{font-family:var(--mono);color-scheme:dark}
-.cat__f select:focus,.cat__f input:focus{outline:2px solid var(--blue-40);outline-offset:-2px}
-.cat__w{grid-column:1/-1}
-.cat .btn{margin-top:14px;width:100%;justify-content:space-between}
-.stamp{padding:14px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.55}
-.stamp b{color:var(--text)}
-/* zero tipos marcados: o rodapé passa a ser aviso, não contagem */
-.pgn__i.is-bad{color:var(--red-70);font-weight:600}
-.dtab .v span.miss{color:var(--amber-70);font-weight:600;font-family:var(--sans);letter-spacing:0}
-@media(max-width:1240px){.two{grid-template-columns:1fr}}
-</style>
-{% endblock %}
-
 {% block sidebar %}{% endblock %}
 
 {% block content %}
 <div class="phd">
   <div>
-    <h1>{% blocktrans trimmed %}Seu <b>catálogo de preços</b>{% endblocktrans %}</h1>
-    <p>{% blocktrans trimmed %}A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa do dia carimbada em cada página.{% endblocktrans %}</p>
-  </div>
-  <div class="seals">
-    <span class="seal seal--rmb"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>{% trans "Todos os preços em ¥ (RMB)" %}</span>
+    <h1>{% trans "Catálogo" %}</h1>
+    <p>{% blocktrans trimmed %}A sua tabela de preços num arquivo só, pronta para enviar aos seus clientes. Escolha o que entra, em que idioma e em que moeda — o PDF nasce do estado de agora, nunca de uma cópia guardada.{% endblocktrans %}</p>
   </div>
 </div>
 
 <form method="post" action="{% url 'pricing:partner_catalog' %}" id="wtc-cat">
 {% csrf_token %}
-<div class="two">
+<div class="cat">
 
   {% comment %} ── ESQUERDA: a seleção ─────────────────────────────── {% endcomment %}
   <section class="tile">
+  {% comment %} A `.tbar` do pacote — a mesma barra de filtro da lista de
+     compras. Um filtro que se parece com o filtro da outra tela é um filtro
+     que ele já sabe usar. {% endcomment %}
     <div class="tbar">
       <div class="tbar__search">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></svg>
-        <input type="search" id="cat-q" placeholder="{% trans 'Buscar tipo de chip…' %}"
-               autocomplete="off" aria-label="{% trans 'Buscar tipo por nome ou descrição' %}">
+        <input type="search" id="cat-q" placeholder="{% trans 'buscar tipo…' %}"
+               aria-label="{% trans 'Buscar tipo por nome ou descrição' %}">
       </div>
       <select id="cat-cov" class="tbar__sel"
               aria-label="{% trans 'Filtrar por cobertura' %}">
-        <option value="all">{% trans "Todos os tipos" %}</option>
-        <option value="full">{% trans "Só os completos" %}</option>
-        <option value="gap">{% trans "Só os com lacuna" %}</option>
+        <option value="all">{% trans "todas as tabelas" %}</option>
+        <option value="full">{% trans "só completas" %}</option>
+        <option value="gap">{% trans "só com lacuna" %}</option>
       </select>
-      <button type="button" id="cat-todos" class="btn btn--ghost btn--sm">{% trans "Desmarcar todos" %}
-        <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button type="button" id="cat-todos" class="tbar__sel">{% trans "Desmarcar todos" %}</button>
     </div>
     <div class="dtab__wrap"><table class="dtab dtab--static">
       <thead><tr>
-        <th class="cbx"><input type="checkbox" id="cat-mestre" checked
-              aria-label="{% trans 'Selecionar todos os tipos' %}"></th>
+        <th style="width:40px;"><input type="checkbox" id="cat-mestre" checked
+              aria-label="{% trans 'Marcar ou desmarcar todos' %}"></th>
         <th>{% trans "Tipo de chip" %}</th>
-        <th class="d">{% trans "Estrutura da tabela" %}</th>
-        <th class="num">{% trans "Linhas" %}</th>
-        <th class="num">{% trans "Cotadas" %}</th>
+        <th>{% trans "Estrutura" %}</th>
+        <th>{% trans "Linhas" %}</th>
+        <th>{% trans "Cotadas" %}</th>
       </tr></thead>
       <tbody id="cat-corpo">
         {% for t in tipos %}
@@ -95,14 +62,14 @@
             data-txt="{{ t.label|lower }} {{ t.desc|lower }}">
           <td class="cbx"><input type="checkbox" name="types" value="{{ t.key }}" checked
                      class="cat__c" aria-label="{{ t.label }}"></td>
-          <td class="c">{{ t.label }}
+          <td class="c" data-label="{% trans 'Tipo de chip' %}">{{ t.label }}
             <div style="font-family:var(--sans);font-weight:400;font-size:11.5px;color:var(--muted);margin-top:3px;">{{ t.desc }}</div></td>
           <td class="d" data-label="{% trans 'Estrutura' %}">{{ t.form }}</td>
-          <td class="n" data-label="{% trans 'Linhas' %}" data-suffix="{% trans 'linhas' %}" data-lines="{{ t.lines }}">{{ t.lines }}</td>
+          <td class="n hide-sm" data-label="{% trans 'Linhas' %}" data-lines="{{ t.lines }}">{{ t.lines }}</td>
           <td class="v key" data-label="{% trans 'Cotadas' %}" data-quoted="{{ t.quoted }}" data-miss="{{ t.miss }}">
             {{ t.quoted }}
-            {% if t.miss %}<span class="miss">{% blocktrans trimmed count n=t.miss %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
-            {% else %}<span class="got">{% trans "completa" %}</span>{% endif %}</td>
+            {% if t.miss %}<span class="tag tag--maybe" style="margin-left:6px;">{% blocktrans trimmed count n=t.miss %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
+            {% else %}<span class="tag tag--yes" style="margin-left:6px;">{% trans "completa" %}</span>{% endif %}</td>
         </tr>
         {% empty %}
         <tr><td colspan="5" class="pempty">{% trans "Nenhuma tabela ainda — fale com a equipe WhatTheChip." %}</td></tr>
@@ -111,73 +78,62 @@
     </table></div>
     {% comment %} O rodapé conta O QUE VAI SAIR, não o que existe: é a única
        leitura que responde "o que estou mandando?" sem abrir o PDF. {% endcomment %}
-    <div class="tfoot"><div class="pgn"><div class="pgn__i" id="cat-sum"
-         data-total="{{ tipos|length }}"></div></div></div>
+    <div class="cat__sum" id="cat-sum" data-total="{{ tipos|length }}"></div>
   </section>
 
-  {% comment %} ── DIREITA: o documento ────────────────────────────── {% endcomment %}
-  <section class="tile">
-    <div class="cat">
-      <div class="cat__l">{% trans "Catálogo" %}</div>
-      <div class="cat__t">{% trans "Catálogo de preços em PDF" %}</div>
-      <div class="cat__d">{% blocktrans trimmed %}Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor — o dado publicado é sempre o seu ¥.{% endblocktrans %}</div>
+  {% comment %} ── DIREITA: as opções do documento ─────────────────── {% endcomment %}
+  <div class="catopt">
+    <div class="catopt__l">{% trans "O documento" %}</div>
 
-      <div class="cat__f">
-        <div>
-          <label for="cat-lang">{% trans "Idioma" %}</label>
-          <select name="lang" id="cat-lang">
-            {% for code, nome in idiomas %}<option value="{{ code }}">{{ nome }}</option>{% endfor %}
-          </select>
-        </div>
+    <label class="catopt__r">{% trans "Idioma" %}
+      <select name="lang" class="catopt__in">
+        {% for code, nome in idiomas %}
+        <option value="{{ code }}">{{ nome }}</option>
+        {% endfor %}
+      </select>
+    </label>
 
-        {% comment %} Sob câmbio ausente a opção com US$ NÃO aparece (§5.2): um
-           select que oferece dólar e devolve um PDF sem dólar é pior que um
-           select com uma opção só. {% endcomment %}
-        <div>
-          <label for="cat-cur">{% trans "Moeda" %}</label>
-          <select name="currency" id="cat-cur">
-            <option value="rmb">¥ RMB</option>
-            {% if fx_info %}<option value="both" selected>¥ RMB + US$ ≈</option>{% endif %}
-          </select>
-        </div>
+    {% comment %} Sob câmbio ausente a opção com US$ NÃO aparece (§5.2): um
+       select que oferece dólar e devolve um PDF sem dólar é pior que um
+       select com uma opção só. {% endcomment %}
+    <label class="catopt__r">{% trans "Moeda" %}
+      <select name="currency" class="catopt__in">
+        <option value="rmb">¥ RMB</option>
+        {% if fx_info %}<option value="both" selected>¥ RMB + US$</option>{% endif %}
+      </select>
+    </label>
 
-        <div>
-          <label for="cat-vd">{% trans "Válido até" %}</label>
-          <input type="date" name="valid_until" id="cat-vd">
-        </div>
+    <label class="catopt__r">{% trans "Válido até" %}
+      <input type="date" name="valid_until" class="catopt__in">
+    </label>
 
-        {% comment %} ⚠ O protótipo oferece «Ocultar do PDF» ou «Publicar como
-           —». O `—` ficou FORA de propósito: neste mesmo documento ele já
-           significa NÃO FABRICADO. Publicar `—` para «sem cotação» faria o
-           vendedor ler duas coisas no mesmo símbolo. Divergência consciente,
-           registrada com o dono em 2026-08-27. {% endcomment %}
-        <div>
-          <label for="cat-gap">{% trans "Linhas sem cotação" %}</label>
-          <select name="gaps" id="cat-gap">
-            <option value="show">{% trans "Publicar em branco" %}</option>
-            <option value="hide">{% trans "Ocultar do PDF" %}</option>
-          </select>
-        </div>
-      </div>
+    <label class="catopt__r">{% trans "Linhas sem cotação" %}
+      <select name="gaps" class="catopt__in">
+        <option value="show">{% trans "publicar em branco" %}</option>
+        <option value="hide">{% trans "ocultar do catálogo" %}</option>
+      </select>
+    </label>
 
-      <button type="submit" class="btn btn--pri" id="cat-go">{% trans "Gerar PDF" %}
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg></button>
-    </div>
-
-    <div class="nts__new">
-      <div class="nts__l">{% trans "Observação na capa" %}</div>
-      <textarea class="nts__ta" name="cover_note" rows="3" maxlength="400"
-                placeholder="{% trans 'Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro por conta do vendedor.' %}"></textarea>
-      <div class="nts__f"><span class="nts__h">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h9l5 5v10h-14z"/><path d="M14 4.5v5h5"/></svg>
-        {% trans "Sai na primeira página, abaixo do seu nome." %}</span></div>
-    </div>
+    <label class="catopt__r">{% trans "Observação de capa" %}
+      <textarea name="cover_note" rows="3" maxlength="400" class="catopt__in"
+                placeholder="{% trans 'sai na primeira página, abaixo do seu nome' %}"></textarea>
+    </label>
 
     {% comment %} O carimbo de taxa na tela reflete o mesmo estado que vai
        para o rodapé de CADA página do PDF. {% endcomment %}
-    <div class="stamp">{% trans "A taxa vai carimbada no rodapé de cada página:" %}
-      <b class="mono">{% if fx_info %}{% if fx_info.state == 'market' %}{% trans "mid-market" %}{% elif fx_info.state == 'fallback' %}{% trans "última conhecida" %}{% else %}{% trans "contrato" %}{% endif %}{% if fx_info.date %} {{ fx_info.date|date:"d/m" }}{% endif %} · 1 ¥ ≈ US$ {{ fx_info.rate_disp }}{% else %}{% trans "sem taxa do dia" %}{% endif %}</b>.</div>
-  </section>
+    <div class="catopt__fx">
+      {% if fx_info %}
+        {% if fx_info.state == 'market' %}{% trans "mid-market" %}
+        {% elif fx_info.state == 'fallback' %}{% trans "última conhecida" %}
+        {% else %}{% trans "contrato" %}{% endif %}
+        {% if fx_info.date %}{{ fx_info.date|date:"d/m" }}{% endif %}
+        · 1 ¥ ≈ US$ {{ fx_info.rate_disp }}
+      {% else %}{% trans "sem taxa do dia" %}{% endif %}
+      <div class="catopt__fxs">{% trans "vai no rodapé de todas as páginas" %}</div>
+    </div>
+
+    <button type="submit" class="btn btn--pri catopt__go" id="cat-go">{% trans "Gerar PDF" %}</button>
+  </div>
 </div>
 </form>
 

@@ -60,6 +60,8 @@ USO
 import csv
 import re
 
+from chips.conventions import _RAM_GEN_RE
+
 from django.core.management.base import BaseCommand
 
 # ── formas aceitas ───────────────────────────────────────────────────────────
@@ -67,8 +69,20 @@ from django.core.management.base import BaseCommand
 # e 'GB' (gigabyte) são grandezas diferentes e confundi-las é o bug histórico da
 # casa (MICRON.md §4). O `?` no espaço aceita '4GB' e '4 GB'.
 _NUM = r"\d+(?:\.\d+)?"
+#: Vocabulário de geração de RAM — vem da FONTE ÚNICA do projeto
+#: (`chips/conventions.py::_RAM_GEN_RE`), não de uma lista repetida aqui.
+#: ⚠ Motivo (2026-08-26): a 1ª versão deste auditor exigia `^LPDDR\d+X?` e por
+#: isso marcava `emcp_ram='SDRAM 1GB'` como AMBÍGUO — o KMYFE0B0CA da Samsung,
+#: um eMCP de 2008 cuja RAM é SDRAM móvel PRÉ-LPDDR. O dado estava CERTO e a
+#: regra é que era estreita. Auditor que grita com dado bom treina o leitor a
+#: ignorar o auditor. Ler do vocabulário oficial também impede o auditor de
+#: divergir do resto do sistema quando uma geração nova entrar.
+#: (`mDDR` — nome antigo do LPDDR1 — NÃO está no vocabulário; se aparecer, é
+#: decisão de domínio do chat da marca, não conserto silencioso daqui.)
+_RAM_GEN_SRC = _RAM_GEN_RE.pattern
+
 _CANONICO = {
-    "emcp_ram":     re.compile(rf"^LPDDR\d+X?\s+{_NUM}\s?(GB|MB)$"),
+    "emcp_ram":     re.compile(rf"^{_RAM_GEN_SRC}\s+{_NUM}\s?(GB|MB)$"),
     "emcp_nand":    re.compile(rf"^{_NUM}\s?(GB|MB|TB)$"),
     "capacity":     re.compile(rf"^{_NUM}\s?(GB|MB|TB|G|M)$"),
     "density_gbit": re.compile(rf"^{_NUM}\s?Gb$"),

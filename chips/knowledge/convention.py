@@ -40,6 +40,89 @@ RX_DIE_MB = re.compile(r"^(\d+(?:\.\d+)?)\s*MB$")
 #: chave de preço enquanto a caixa mostrava 8G.
 RX_DIE_GB = re.compile(r"^(\d+(?:\.\d+)?)\s*GB$")
 
+#: ─────────────────────────────────────────────────────────────────────────
+#: FORMA DO CAMPO DE MEDIDA (2026-08-26). Endurece o portão que já existe
+#: (`KnownPart.clean()` + `KnownPartSpec`) — não é portão novo, é regra nova
+#: no mesmo, ao lado do `family_type_conflict`.
+#:
+#: O invariante NÃO é "casa com um gabarito". É: **o engine tem que extrair UMA
+#: medida, e na unidade certa**. Porque `_extract_gib` (engine) e `_extract_gb`
+#: (estoque) são `re.search` — pegam o PRIMEIRO que casar. Com duas medidas na
+#: string, quem decide a prateleira é a ORDEM DAS PALAVRAS. Medido no
+#: KMYFE0B0CA: a mesma informação escrita de três jeitos manda o chip pra
+#: EMCP1+1, EMCP8+1 e EMCP2+1 — três prateleiras.
+#:
+#: ⚠ ESTE REGEX ESPELHA `chips/engine.py::_CAP_RE` DE PROPÓSITO, `re.I`
+#: incluído. O portão tem que contar o que o LEITOR conta; se divergirem, o
+#: portão aprova o que o engine lê errado. `EspelhoDoLeitorTests` trava isso.
+RX_MEDIDA = re.compile(r"(\d+(?:\.\d+)?)\s*([TGMK])(B)", re.I)
+
+#: Campos que guardam BYTE de pacote/parcela. `density_gbit` fica FORA: lá a
+#: unidade é BIT por definição ('4Gb' é o valor CERTO).
+MEASURE_FIELDS = ("capacity", "emcp_ram", "emcp_nand", "density_gb")
+
+#: Só nestes dois a unidade de BIT é sempre erro. Em `capacity` não dá pra
+#: bloquear: '2G'/'2Gb' é a forma LEGÍTIMA da caixa que o `bless_base` grava
+#: em família DDR-kind (ver regra 4 acima e RX_DENSITY_BARE).
+BYTE_ONLY_FIELDS = ("emcp_ram", "emcp_nand")
+
+
+def measure_field_problem(field: str, value: str) -> str | None:
+    """Devolve mensagem ACIONÁVEL se o campo de medida for AMBÍGUO pro engine;
+    senão ``None``. Fonte única — usada pelo `clean()` do modelo, pelo portão
+    Pydantic e pelo `audit_campo_forma` (pra auditor e portão não divergirem).
+
+    BLOQUEIA duas coisas, as duas medidas em cima do dado real:
+
+    * **mais de uma medida** — em qualquer campo. É o que muda de prateleira
+      conforme a ordem das palavras. Custo medido no seed curado (596
+      registros): 4 reprovações, TODAS bug real (`K524G2GAC*` com
+      ``capacity='NAND 512MB + mDDR1 256MB'`` e ``emcp_*`` vazios — chip que
+      hoje sai com a etiqueta literal 'eMCP', sem número, sem prateleira).
+    * **unidade de BIT em `emcp_ram`/`emcp_nand`** — ali é sempre byte de
+      pacote, e `_CAP_RE` é `re.I`: '8Gb' entra como 8 GB, o erro de 8× da
+      casa entrando por um canal sem vigilância.
+
+    NÃO bloqueia campo preenchido SEM medida ('6', '2G'): em `capacity` essa é
+    a forma da caixa em DDR-kind e o `bless_base` depende dela. Isso o
+    `audit_campo_forma` reporta como aviso, não como barreira.
+
+    Prosa com UMA medida só ('SDRAM 1GB (pré-LPDDR — ver notes)') PASSA de
+    propósito: é feia, mas reescrever as palavras não muda o que o engine lê.
+    A regra mira a prosa PERIGOSA, não a bagunçada.
+    """
+    v = (value or "").strip()
+    if not v:
+        return None
+    achados = RX_MEDIDA.findall(v)
+    if len(achados) > 1:
+        lidas = ", ".join(f"{n}{u.upper()}{b}" for n, u, b in achados)
+        return (f"'{field}' tem {len(achados)} medidas ({lidas}) — o engine lê a "
+                f"PRIMEIRA (re.search), então a ordem das palavras decide a caixa. "
+                f"Deixe UMA medida no campo e mova o resto pra 'notes'/'tip'.")
+    if achados and field in BYTE_ONLY_FIELDS and achados[0][2] == "b":
+        n, u, _ = achados[0]
+        return (f"'{field}' está em {u.upper()}b (gigaBIT) — este campo é BYTE de "
+                f"pacote, e o leitor do engine é case-insensitive: '{n}{u}b' entra "
+                f"como {n} {u.upper()}B, 8× a mais. Converta pra byte "
+                f"(ex.: 8Gb = 1GB) ou use 'density_gbit', que é o campo de bit.")
+    return None
+
+
+def measure_problems(obj, only_fields=None) -> dict:
+    """Roda `measure_field_problem` nos campos de medida de um known_part
+    (modelo OU KnownPartSpec). `only_fields` limita ao subconjunto que MUDOU —
+    é o grandfather: legado fora da regra continua re-salvável, mas ninguém
+    consegue piorá-lo nem introduzir caso novo."""
+    campos = MEASURE_FIELDS if only_fields is None else tuple(only_fields)
+    fora = {}
+    for f in campos:
+        msg = measure_field_problem(f, getattr(obj, f, "") or "")
+        if msg:
+            fora[f] = msg
+    return fora
+
+
 #: kinds cuja capacidade comercial é DENSIDADE de die em Gb (CLAUDE.md §6:
 #: campo `density_gbit`) — DDR/GDDR/SDRAM/RDRAM. Consumido também pelo
 #: validate/normalize_convention.

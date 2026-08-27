@@ -554,6 +554,17 @@ os campos abaixo. **Alimente os campos certos; não mexa no gateway.** Modelo: `
 | LPDDR avulso | **a geração** `"LPDDR4"`/`"LPDDR4X"`/`"LPDDR5"`… | espelha o `chip_type` | `capacity` = pacote em GB | `"LPDDR4+4GB"` |
 
 **Regras absolutas de campo:**
+- **campo de medida guarda UMA medida** (`capacity`, `emcp_ram`, `emcp_nand`,
+  `density_gb`) — **portão bloqueia** desde 2026-08-26 (ver §7). Duas medidas
+  na mesma string fazem a ORDEM DAS PALAVRAS escolher a prateleira, porque o
+  `_extract_gib` é `re.search`. Contexto, ressalva e "não é LPDDR" vão em
+  `notes`/`tip`. Em `emcp_ram`/`emcp_nand` a unidade é **byte** (`GB`/`MB`);
+  bit (`Gb`) só em `density_gbit`, onde é o valor certo
+- o tipo de RAM em `emcp_ram` vem do vocabulário oficial
+  (`chips/conventions.py::_RAM_GEN_RE` — `LPDDR{n}[X]`, `DDR{n}`, `SDRAM`,
+  `GDDR{n}`, `RDRAM`), não só `LPDDR`: `'SDRAM 1GB'` é forma **válida** (eMCP
+  pré-LPDDR de 2008). Geração fora do vocabulário (ex.: `mDDR`) é decisão de
+  domínio do chat da marca, não conserto silencioso
 - `subtype` = **SOMENTE** célula (NAND) ou geração (RAM) — nunca densidade, bus width, voltagem, "Mobile", "Multi-Channel", "paralela industrial"
 - `interface` = bus width (`"x8"`, `"x16"`) para DDR/GDDR; vazio para LPDDR eMCP
 - `emcp_ram` = `"LPDDR{n} {cap}GB"` — tipo **antes** da capacidade (ex.: `"LPDDR3 1GB"`, nunca `"1GB LPDDR3"`)
@@ -847,8 +858,39 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   campo em CANÔNICO / ALTERNATIVO / AMBÍGUO / PROSA e mostra **o que o engine
   extrai e em que caixa o chip cai**. ⚠ `ALTERNATIVO` não é dívida: `emcp_nand =
   'eMMC 5.1 16GB'` aparece 55× no seed curado — é a convenção real sendo mais
-  larga que este §6. O `submit_known_parts` agora **AVISA** (não bloqueia, a
-  decisão de "ponto de dado" segue de pé). Trava: `CampoDeMedidaComProsaTests`.
+  larga que este §6.
+  **⚠ A DECISÃO FOI REVERTIDA EM 2026-08-26 — hoje o portão BLOQUEIA.** O que
+  mudou: o dono deixou o bug de pé de propósito por dois dias, "pra ver se
+  alguma marca ia submeter sujo". Foram várias. Deixar passar não era
+  neutralidade — era acumular dívida em silêncio, num campo que decide
+  prateleira. A regra endurecida NÃO é um gabarito de texto (gabarito rejeita
+  dado bom): o invariante é **UMA medida, na unidade certa**, medido contra o
+  que o leitor realmente lê. Bloqueia (a) **mais de uma medida** em qualquer
+  campo de medida — é o que faz a ordem das palavras escolher a caixa — e (b)
+  **unidade de BIT em `emcp_ram`/`emcp_nand`**, que são sempre byte de pacote
+  (o `_CAP_RE` é `re.I`, então '8Gb' entra como 8 GB: o erro de 8× por um canal
+  novo). NÃO bloqueia campo sem medida ('2G' é a forma legítima da caixa que o
+  `bless_base` grava em DDR-kind), nem prosa com UMA medida só (feia, mas
+  reescrever as palavras não muda o que o engine lê — a regra mira a prosa
+  PERIGOSA, não a bagunçada). Custo medido antes de ligar: **zero falso
+  positivo** nos 596 registros do seed curado; as 11 reprovações são bug real
+  (4 `K524G2GAC*` com `capacity='NAND 512MB + mDDR1 256MB'` e `emcp_*` vazios —
+  chip sem prateleira — e 7 `K3LK*` com `density_gb` pelado).
+  **GRANDFATHER POR MUDANÇA:** o `clean()` só valida o campo que MUDOU
+  (compara com o banco antes de gravar). Legado fora da regra continua
+  re-salvável — `resnapshot_lote`/`bless_base`/backfill não travam —, mas
+  ninguém consegue piorá-lo nem introduzir caso novo. Sem isso o portão viraria
+  bloqueio de OPERAÇÃO, não de qualidade.
+  Onde mora: `chips/knowledge/convention.py::measure_field_problem` (fonte
+  única), chamada pelo `KnownPart.clean()` (cobre admin/shell/importador) e
+  pelo `KnownPartSpec` (o chat de marca vê no dry-run, antes de escrever) —
+  não é portão novo, é regra nova no que já existia, ao lado do
+  `family_type_conflict`. ⚠ O `RX_MEDIDA` do portão ESPELHA o `_CAP_RE` do
+  engine de propósito (`re.I` incluído): portão que conta diferente do leitor
+  aprova string que o engine lê errado, e aí o selo de qualidade é pior que
+  não ter selo — `test_o_portao_conta_o_MESMO_que_o_engine_le` amarra os dois.
+  Travas: `CampoDeMedidaComProsaTests` (10 testes; as 5 garantias novas
+  passaram por mutação individual).
   **Regra:** campo de medida guarda UMA medida. Contexto, ressalva e "não é
   LPDDR" vão em `notes`/`tip` — que é para onde o operador olha quando quer
   entender, e que nenhum regex de capacidade lê.

@@ -290,8 +290,26 @@ class KnownPart(models.Model):
         boundary de submissão / na revisão in-DB, não aqui (não quebrar re-save de legado)."""
         from django.core.exceptions import ValidationError
         from chips.knowledge.convention import (
-            apply_kp_convention, family_type_conflict, CONFIDENCE_VOCAB)
+            apply_kp_convention, family_type_conflict, CONFIDENCE_VOCAB,
+            MEASURE_FIELDS, measure_problems)
         apply_kp_convention(self)
+        # FORMA do campo de medida (2026-08-26). Até aqui `capacity`/`emcp_*` eram
+        # str livre em TODO caminho de escrita — foi por onde entrou a prosa do
+        # KMYFE0B0CA, que faz o `_extract_gib` (re.search) devolver a PRIMEIRA
+        # medida e a ordem das palavras escolher a prateleira.
+        # GRANDFATHER POR MUDANÇA: valida só o que MUDOU. Registro legado fora da
+        # regra continua re-salvável (resnapshot, bless_base, backfill não travam),
+        # mas ninguém consegue piorá-lo nem introduzir caso novo. A query extra só
+        # acontece quando JÁ existe problema — no caminho feliz, custo zero.
+        problemas = measure_problems(self)
+        if problemas and self.pk:
+            antigo = (type(self).objects.filter(pk=self.pk)
+                      .values(*MEASURE_FIELDS).first())
+            if antigo:
+                problemas = {f: m for f, m in problemas.items()
+                             if (getattr(self, f, "") or "") != (antigo.get(f) or "")}
+        if problemas:
+            raise ValidationError(problemas)
         # Trava known_part × FAMÍLIA (eixo is_emcp) — fecha a brecha do SD5DH26A4G
         # (eMCP caindo numa família eMMC → o engine tira o tipo da família e perde a
         # capacidade eMCP). Cobre TODO caminho de escrita por rodar no clean().

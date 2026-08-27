@@ -352,18 +352,6 @@ def _detalhe(so):
         # se confere caixa que ainda não chegou.
         'pode_acertar': (so.status == STATUS_CONFIRMED and inv is None
                          and so.received_at is not None),
-        # ⚠ ACHADO DE 2026-08-27, e é um buraco antigo. `pode_acertar` responde
-        # "ele PODE digitar recusa agora?" e vira falso assim que a fatura
-        # nasce. O template usava só ele para decidir se as colunas do
-        # resultado existem — então, no instante em que o comprador fechava a
-        # conferência, ele PERDIA a vista do que tinha recusado. A informação
-        # continuava no banco e sumia da tela dele.
-        # `tem_resultado` responde outra pergunta — "a conferência já
-        # aconteceu?" — e é ela que decide se as colunas aparecem. A tela não
-        # muda de FORMA quando a etapa passa; muda só o que aceita toque.
-        # É a mesma distinção que a tela do cliente (`vendas/views.py`) já
-        # fazia desde 2026-08-18; a do comprador tinha ficado para trás.
-        'tem_resultado': inv is not None,
         # Todo chip do lote, PN a PN — a 2ª aba, onde ele confere detalhe
         # por detalhe (dono, 2026-08-18).
         'chips': services.lot_chips(so),

@@ -2979,6 +2979,12 @@ class CampoDeMedidaComProsaTests(TestCase):
         self.assertEqual(classifica("emcp_nand", "UFS 2.2 128GB"), "ALTERNATIVO")
         self.assertEqual(classifica("emcp_nand", "16GB"), "CANÔNICO")
         self.assertEqual(classifica("emcp_ram", "LPDDR3 1GB"), "CANÔNICO")
+        # ⚠ 2026-08-26: a 1ª versão exigia `^LPDDR\d+X?` e marcava isto como
+        # AMBÍGUO — mas é o KMYFE0B0CA real, eMCP de 2008 cuja RAM é SDRAM móvel
+        # PRÉ-LPDDR. O dado estava certo; a regra é que era estreita. Hoje o
+        # regex lê o vocabulário oficial (`conventions._RAM_GEN_RE`).
+        self.assertEqual(classifica("emcp_ram", "SDRAM 1GB"), "CANÔNICO")
+        self.assertEqual(classifica("emcp_ram", "DDR3 2GB"), "CANÔNICO")
         self.assertEqual(classifica("capacity", "512MB"), "CANÔNICO")
         # a dívida
         self.assertEqual(classifica("emcp_ram", self.RAM_PROSA), "PROSA")
@@ -3009,10 +3015,16 @@ class CampoDeMedidaComProsaTests(TestCase):
         from django.core.management import call_command
         from chips.models import Brand, KnownPart
         b = Brand.objects.create(name="Samsung", code="SAM")
+        # ⚠ A prosa TEM que entrar por `.update()`. Desde 2026-08-26 o `clean()`
+        # BLOQUEIA campo de medida ambíguo, então `create()` levantaria
+        # ValidationError — e é exatamente assim que o legado chegou ao banco de
+        # verdade: por caminhos que não passam pelo `save()`. O auditor existe
+        # para o que JÁ está lá; o portão, para o que tenta entrar agora.
         KnownPart.objects.create(
             brand=b, part_number="KMYFE0B0CA", chip_type="eMCP",
-            emcp_ram=self.RAM_PROSA, emcp_nand=self.NAND_PROSA,
             confidence="confirmed", review_status="submitted", notes="fixture")
+        KnownPart.objects.filter(part_number="KMYFE0B0CA").update(
+            emcp_ram=self.RAM_PROSA, emcp_nand=self.NAND_PROSA)
         KnownPart.objects.create(
             brand=b, part_number="KMQ310006A", chip_type="eMCP",
             emcp_ram="LPDDR3 1GB", emcp_nand="eMMC 5.1 16GB",
@@ -3035,10 +3047,12 @@ class CampoDeMedidaComProsaTests(TestCase):
         from django.core.management import call_command
         from chips.models import Brand, KnownPart
         b = Brand.objects.create(name="SK Hynix", code="HYX")
-        for pn, cap in (("AAA1", ""), ("BBB2", "64"), ("CCC3", "4GB + 512MB")):
+        for pn, cap in (("AAA1", ""), ("BBB2", "64"), ("CCC3", "")):
             KnownPart.objects.create(brand=b, part_number=pn, chip_type="eMCP",
                                      capacity=cap, confidence="confirmed",
                                      review_status="approved", notes="fixture")
+        # 'CCC3' é legado de duas medidas — mesmo motivo do `.update()` acima.
+        KnownPart.objects.filter(part_number="CCC3").update(capacity="4GB + 512MB")
         # ⚠ O 'None' TEM que entrar por `.update()`. Criar com `save()` não
         # reproduz: o `apply_kp_convention` limpa a string na hora, o balde NULO
         # fica vazio e o teste passa mesmo com o bug. Foi assim que a 1ª versão
@@ -3060,12 +3074,18 @@ class CampoDeMedidaComProsaTests(TestCase):
         call_command("audit_campo_forma", stdout=out)
         self.assertIn("ZERO known_parts", out.getvalue())
 
-    def test_submit_AVISA_forma_suspeita(self):
-        """O portão não bloqueia (known_part é ponto de dado, por decisão), mas
-        a prosa tem que APARECER — era invisível até 2026-08-24."""
+    def test_submit_BLOQUEIA_medida_ambigua(self):
+        """2026-08-26 — o portão passou a BARRAR, não só avisar.
+
+        Este teste congelava o CONTRÁRIO ("não bloqueia, known_part é ponto de
+        dado"). O dono reverteu a decisão depois de deixar o bug de pé dois dias
+        de propósito, "pra ver se alguma marca ia submeter sujo": submeteram.
+        Deixar passar não era neutralidade — era acumular dívida em silêncio num
+        campo que decide prateleira. O erro sai no DRY-RUN, antes de qualquer
+        escrita, e nomeia o campo e o conserto."""
         import tempfile, os
-        from io import StringIO
         from django.core.management import call_command
+        from django.core.management.base import CommandError
         from chips.models import Brand
         Brand.objects.create(name="Samsung", code="SAM")
         yml = ("brand: Samsung\nknown_parts:\n"
@@ -3079,14 +3099,110 @@ class CampoDeMedidaComProsaTests(TestCase):
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(yml)
         try:
-            out = StringIO()
-            call_command("submit_known_parts", path, stdout=out)
-            texto = out.getvalue()
+            with self.assertRaises(CommandError) as ctx:
+                call_command("submit_known_parts", path)
         finally:
             os.unlink(path)
-        self.assertIn("FORMA suspeita", texto,
-                      "o painel do submit não avisou sobre prosa em campo de medida")
-        self.assertIn("PROSA", texto)
+        msg = str(ctx.exception)
+        self.assertIn("emcp_nand", msg)
+        self.assertIn("3 medidas", msg, "não disse QUANTAS medidas nem quais")
+        self.assertIn("notes", msg, "não disse pra onde mover o texto")
+
+    def test_submit_ACEITA_as_formas_legitimas(self):
+        """Portão que grita com dado bom treina o autor a ignorar o portão.
+        Estas quatro formas são reais e TÊM que passar."""
+        import tempfile, os
+        from django.core.management import call_command
+        from chips.models import Brand
+        Brand.objects.create(name="Samsung", code="SAM")
+        linhas = "".join(
+            f"  - part_number: OK{i}\n    chip_type: eMCP\n"
+            f"    emcp_ram: '{ram}'\n    emcp_nand: '{nand}'\n"
+            f"    confidence: confirmed\n    notes: 'fonte de teste'\n"
+            for i, (ram, nand) in enumerate((
+                ("LPDDR2 512MB", "8GB"),                 # Kingston, RAM em MB
+                ("SDRAM 1GB", "2GB"),                    # Samsung 2008, RAM não-LPDDR
+                ("LPDDR3 1GB", "eMMC 5.1 16GB"),         # forma ALTERNATIVA, 55x no seed
+                ("LPDDR4X 6GB", "eMMC 4.5 / 5.0 16GB"),  # faixa de versão com barra
+            )))
+        fd, path = tempfile.mkstemp(suffix=".yaml")
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write("brand: Samsung\nknown_parts:\n" + linhas)
+        try:
+            call_command("submit_known_parts", path)     # não pode levantar
+        finally:
+            os.unlink(path)
+
+    def test_portao_no_MODELO_cobre_todo_caminho_de_escrita(self):
+        """O portão vive no `clean()` (CLAUDE.md 2b), não só no yaml — senão o
+        admin, o shell e os importadores continuam entrando por baixo."""
+        from django.core.exceptions import ValidationError
+        from chips.models import Brand, KnownPart
+        b = Brand.objects.create(name="Samsung", code="SAM")
+        with self.assertRaises(ValidationError) as ctx:
+            KnownPart.objects.create(
+                brand=b, part_number="ZZZ1", chip_type="eMCP",
+                emcp_nand=self.NAND_PROSA, confidence="confirmed", notes="x")
+        self.assertIn("emcp_nand", str(ctx.exception))
+        # unidade de BIT em campo de BYTE: o `_CAP_RE` é re.I, então '8Gb' entra
+        # como 8 GB — 8x a mais. É o erro de unidade da casa por um canal novo.
+        with self.assertRaises(ValidationError):
+            KnownPart.objects.create(
+                brand=b, part_number="ZZZ2", chip_type="eMCP",
+                emcp_ram="8Gb", confidence="confirmed", notes="x")
+        # ...mas em `capacity` o mesmo 'Gb' é LEGÍTIMO: é a forma da caixa que o
+        # `bless_base` grava em família DDR-kind (regra 4 do apply_kp_convention).
+        KnownPart.objects.create(brand=b, part_number="ZZZ3", chip_type="DDR3",
+                                 capacity="2Gb", confidence="confirmed", notes="x")
+
+    def test_grandfather_deixa_re_salvar_o_legado_mas_nao_piorar(self):
+        """Decisão do dono (2026-08-26): grandfather POR MUDANÇA. Sem isso, o
+        `resnapshot_lote`/`bless_base`/qualquer backfill travaria nos registros
+        com prosa que já estão em prod — e o portão viraria bloqueio de
+        OPERAÇÃO, não de qualidade."""
+        from django.core.exceptions import ValidationError
+        from chips.models import Brand, KnownPart
+        b = Brand.objects.create(name="Samsung", code="SAM")
+        kp = KnownPart.objects.create(brand=b, part_number="LEG1", chip_type="eMCP",
+                                      confidence="confirmed", notes="x")
+        KnownPart.objects.filter(pk=kp.pk).update(emcp_nand=self.NAND_PROSA)
+
+        kp.refresh_from_db()
+        kp.notes = "re-save de um backfill qualquer"
+        kp.save()                       # legado intacto → PASSA
+        kp.refresh_from_db()
+        self.assertEqual(kp.emcp_nand, self.NAND_PROSA, "o re-save comeu o legado")
+
+        kp.emcp_nand = "2GB + 1GB de outra coisa"   # MUDOU e continua ambíguo
+        with self.assertRaises(ValidationError):
+            kp.save()
+
+        kp.refresh_from_db()
+        kp.emcp_nand = "2GB"            # MUDOU pra forma boa → PASSA
+        kp.save()
+        kp.refresh_from_db()
+        self.assertEqual(kp.emcp_nand, "2GB")
+
+    def test_o_portao_conta_o_MESMO_que_o_engine_le(self):
+        """ANTI-DRIFT. O portão conta medidas com `RX_MEDIDA`; o engine lê com
+        `_CAP_RE`. Se os dois divergirem, o portão aprova string que o engine lê
+        errado — pior que não ter portão, porque passa a haver selo de qualidade
+        falso. Este teste amarra os dois num corpus."""
+        from chips.knowledge.convention import RX_MEDIDA
+        from chips.engine import _CAP_RE
+        corpus = [
+            "16GB", "1.5GB", "512MB", "8Gb", "2Gb", "2G", "eMMC 5.1 16GB",
+            "eMMC 4.5 / 5.0 16GB", "LPDDR2 512MB", "SDRAM 1GB", "4GB + 512MB",
+            "NAND 512MB + mDDR1 256MB", self.RAM_PROSA, self.NAND_PROSA, "", "6",
+        ]
+        for v in corpus:
+            achados = RX_MEDIDA.findall(v)
+            lido = _CAP_RE.search(v)
+            self.assertEqual(bool(achados), bool(lido),
+                             f"portão e engine discordam sobre existir medida em {v!r}")
+            if achados:
+                self.assertEqual(achados[0][0], lido.group(1),
+                                 f"a PRIMEIRA medida difere entre portão e engine em {v!r}")
 
 
 class LabelEmcpTruncadoTests(TestCase):

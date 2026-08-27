@@ -1008,44 +1008,6 @@ html img.lg-d{display:none}
   .nrow__meta{grid-column:2;flex-direction:row-reverse;justify-content:flex-end}
 }
 
-/* ============ DINHEIRO EM PÉ DE IGUALDADE (.mvd) ============
-   Segunda hierarquia, não substituta da primeira. .mval serve onde o dinheiro é CONSEQUÊNCIA
-   (estoque, triagem, painel): ¥ grande, US$ abaixo em cinza. .mvd serve o ciclo de venda, onde o
-   dinheiro é o ARGUMENTO da tela — o comprador fecha em ¥ e paga em US$, e pôr um dos dois em
-   corpo menor faria metade da negociação virar nota de rodapé.
-   As duas moedas têm o MESMO tamanho, o MESMO peso e a MESMA cor; o que as separa é o sinal de
-   igual, e ele é literal porque a afirmação é literal: à taxa travada, os dois valores são o
-   mesmo dinheiro. O ≈ é ESTIMATIVA (valor ainda re-resolvível), vem uma vez na frente do par e
-   nunca uma vez por moeda — dois tis dizem "duas incertezas" onde existe uma. */
-.mvd{display:inline-flex;align-items:baseline;gap:8px;min-width:0;flex-wrap:wrap;line-height:1.15}
-.mvd__a,.mvd__b{font-family:var(--mono);font-weight:600;letter-spacing:-.025em;white-space:nowrap;color:inherit}
-/* o igual é pontuação, não valor: um degrau abaixo no peso e na cor, sem competir com os números */
-.mvd__x{font-family:var(--mono);font-style:normal;font-weight:400;color:var(--ink-30);flex:0 0 auto}
-/* o til é irmão do NÚMERO dentro do valor, não do par: inline, com um respiro à direita */
-.mvd__e{font-style:normal;font-weight:500;color:var(--muted);margin-right:5px}
-.mvd--xs{gap:6px}.mvd--xs .mvd__a,.mvd--xs .mvd__b{font-size:13px}.mvd--xs .mvd__x,.mvd--xs .mvd__e{font-size:12px}
-.mvd--sm .mvd__a,.mvd--sm .mvd__b{font-size:15px}.mvd--sm .mvd__x,.mvd--sm .mvd__e{font-size:13px}
-.mvd--md .mvd__a,.mvd--md .mvd__b{font-size:19px}.mvd--md .mvd__x,.mvd--md .mvd__e{font-size:15px}
-/* no herói o par É EMPILHADO por definição. Em uma linha só, o "=" é exatamente onde a quebra cai
-   quando a coluna aperta — e um sinal de igual pendurado no fim da linha é pior que nenhum.
-   Empilhado, o par continua par pela adjacência e pelo corpo idêntico, que é o que a regra pede. */
-.mvd--kpi{flex-direction:column;align-items:flex-start;gap:2px}
-.mvd--kpi .mvd__x{display:none}
-.mvd--kpi .mvd__a,.mvd--kpi .mvd__b{font-size:24px;letter-spacing:-.035em}
-.mvd--kpi .mvd__e{font-size:17px}
-/* célula estreita (coluna de tabela, cartão no telefone): empilha e o igual sai — em duas linhas
-   ele viraria um traço solto no meio do nada. O par continua sendo par pela adjacência. */
-.mvd--stack{flex-direction:column;align-items:flex-end;gap:3px}
-.mvd--stack .mvd__x{display:none}
-
-.dtab .mvd--stack{align-items:flex-start}
-.dtab .mvd,.dtab .mvd--xs,.dtab .mvd--sm{gap:6px}
-.dtab .mvd .mvd__a,.dtab .mvd .mvd__b{font-size:14px;font-weight:600}
-.dtab .mvd .mvd__x,.dtab .mvd .mvd__e{font-size:12.5px}
-/* saldo em aberto e valor quitado: a cor mora no par, não em cada moeda */
-.mvd--due{color:var(--amber-70)}
-.mvd--ok{color:var(--green-70)}
-
 /* ============ CABEÇALHO DE REGISTRO ============
    Convenção das páginas internas (lote em triagem, venda, compra). Uma casca, três faixas:
    1. utilitários — de onde você veio, à esquerda; o que dá para fazer, à direita. Linha própria:

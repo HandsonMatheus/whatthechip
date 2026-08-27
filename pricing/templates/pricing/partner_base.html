@@ -61,12 +61,27 @@
     .papp--solo{grid-template-columns:minmax(0,1fr)}
     .pshell__brand{gap:11px}
 
-    /* ⚠ Aqui viviam ~14 linhas que faziam o wrapper `.pshell__me` se comportar
-       como gaveta. Morreram em 2026-08-27 junto com o wrapper: quem consolida
-       o perfil agora é o `static/wtc/shell.js` do pacote, e a gaveta que ele
-       monta já é a do `components.css`. Uma folha de mão imitando um
-       comportamento que o sistema tem é a definição de divergência. */
-    .me__pop form{display:contents}
+    /* A folha do pacote recolhe `.pshell__nav`, `.pshell__fx` e `.me` quando a
+       barra vira gaveta. O `.me` é o widget de perfil que o `shell.js` do
+       sistema MONTA — e o shell.js não vem no pacote. Aqui o perfil são três
+       células soltas (idioma · identidade · sair), então elas viajam juntas
+       dentro de `.pshell__me` e recebem o MESMO comportamento de gaveta. Sem
+       isto elas ficavam acima da marca no celular, fora de qualquer ordem. */
+    .pshell__me{display:flex;align-items:stretch;flex:none}
+    .pshell__me>form{margin:0;display:flex}
+    .pshell[data-shell] .pshell__me{display:none}
+    .pshell[data-shell].is-open .pshell__me{display:flex;order:6;flex:0 0 100%;
+      flex-direction:column;border-top:1px solid var(--line)}
+    .pshell[data-shell].is-open .pshell__me>*{border-left:0;
+      border-bottom:1px solid var(--line)}
+    .pshell[data-shell].is-open .pshell__me .shell__ico,
+    .pshell[data-shell].is-open .pshell__who{width:100%;height:var(--ctl-lg);
+      display:flex;align-items:center;justify-content:flex-start;padding:0 16px}
+    /* na barra o ícone fala sozinho (tem title e aria-label); na gaveta, onde
+       cada linha é uma frase, ele ganha a palavra. */
+    .pshell__lbl{display:none}
+    .pshell[data-shell].is-open .pshell__lbl{display:inline;margin-left:12px;
+      font-size:15px;font-weight:600}
 
     /* ══ O `ptn-*` MORREU em 2026-08-26 (Etapa 9) ══
        Eram ~60 linhas de CSS de mão que vestiam as telas de PREÇO
@@ -74,13 +89,6 @@
        folha saiu inteira — CSS legado que ninguém usa não é
        inofensivo: ele é copiado por quem chega depois. */
   </style>
-  {% comment %} O TEMA ANTES DA PRIMEIRA PINTURA. Tem de ser inline e tem de vir
-     ANTES do primeiro pixel: se o atributo só chegasse com o theme.js no fim do
-     body, a página abriria clara e piscaria para escura no primeiro frame. É a
-     única razão de existir script solto no <head> deste arquivo. {% endcomment %}
-  <script>(function(){try{var t=localStorage.getItem("wtc_theme");
-    document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");}
-    catch(e){document.documentElement.setAttribute("data-theme","light");}})();</script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -91,6 +99,8 @@
     <img class="lg-d" src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
     <span class="pshell__tag">{% trans "Comprador" %}</span>
   </a>
+
+  <span class="pshell__spacer"></span>
 
   {% comment %} Ordem do menu (dono, 2026-08-18): COMPRAS primeiro — é a tela
      que ele abre todo dia e a que tem trabalho pendente. A tabela de preços
@@ -125,12 +135,6 @@
     </a>
   </nav>
 
-  {% comment %} ⚠ O espaçador vem DEPOIS da nav, como no protótipo. Estava
-     antes, e o efeito era a nav começar no meio da barra em vez de encostar
-     na marca — a primeira coisa que se nota comparando as duas telas lado a
-     lado. {% endcomment %}
-  <span class="pshell__spacer"></span>
-
   {% comment %} Carimbo da taxa ¥→US$ — server-side (PLANO_FX). O ESTADO vem NOMEADO
      do engine (`fx_display.state`, spec v2 §2.7): market · fallback · bootstrap · none.
      Não re-derivar de is_market/is_fallback aqui: `fallback` lido como "mercado" faz a
@@ -153,22 +157,6 @@
   </div>
   {% endif %}
 
-  {% comment %} ══ AS PEÇAS DO PERFIL ═════════════════════════════════════
-     Daqui para baixo é MATÉRIA-PRIMA do `static/wtc/shell.js`, não layout
-     final: ele consolida usuário, idioma e sair num único botão com gaveta,
-     e deixa na barra só o que é ação de um toque (tema e sino).
-
-     ⚠ Isto substitui, em 2026-08-27, um cabeçalho de sete células soltas que
-     eu tinha montado à mão depois de concluir — errado — que o `shell.js`
-     "não vem no pacote". Vem: está no `front.zip`, em `dist/comprador/`. Só
-     o `design_system.zip` não o traz, porque ele é comportamento e não folha.
-     Sem JS as peças continuam todas na barra e todas funcionando; o que se
-     perde é a consolidação, não a função.
-
-     A ORDEM importa: o `shell.js` procura `.pshell__who` e o `.shell__ico--out`
-     dentro da barra, e insere o `.me` no fim.
-  {% endcomment %}
-
   {# 🔔 Notificações: decisões do WhatTheChip sobre os pedidos do comprador. #}
   <a href="{% url 'pricing:partner_notifications' %}" class="shell__ico"
      title="{% trans 'Notificações' %}" aria-label="{% trans 'Notificações' %}">
@@ -176,44 +164,36 @@
     {% if request.partner_unseen %}<span class="dot"></span>{% endif %}
   </a>
 
-  {% comment %} O tema FICA na barra — decisão do design, mantida: é ação de um
-     toque, usada a qualquer momento, e enterrá-la em dois toques dentro do
-     perfil custava mais do que valia. {% endcomment %}
-  <button type="button" class="shell__ico shell__ico--theme" id="theme-btn"
-          title="{% trans 'Alternar modo escuro' %}"
-          aria-label="{% trans 'Alternar modo escuro' %}" aria-pressed="false">
-    <svg class="sun" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
-    <svg class="moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
-  </button>
+  <div class="pshell__me">
+    {# Idioma — comprador escolhe (中文 p/ parceiro chinês); logado, persiste (I18N.md §3) #}
+    {% include "partials/lang_select.html" with variant='ds' %}
 
-  {# Idioma — o shell.js troca este <select> por quatro botões na gaveta. #}
-  {% include "partials/lang_select.html" with variant='ds' %}
+    <div class="pshell__who">
+      <span class="pshell__av">{{ buyer.name|slice:":2"|upper }}</span>
+      <span class="pshell__u">
+        <b>{{ buyer.name }}</b>
+        <span>{% trans "Comprador" %}</span>
+      </span>
+    </div>
 
-  <div class="pshell__who">
-    <span class="pshell__av">{{ buyer.name|slice:":2"|upper }}</span>
-    <span class="pshell__u">
-      <b>{{ buyer.name }}</b>
-      <span>{% trans "Comprador" %}</span>
-    </span>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="shell__ico shell__ico--out"
+              title="{% trans 'Sair' %}" aria-label="{% trans 'Sair' %}">
+        <svg viewBox="0 0 24 24"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg>
+        <span class="pshell__lbl">{% trans "Sair" %}</span>
+      </button>
+    </form>
   </div>
-
-  <form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" class="shell__ico shell__ico--out"
-            title="{% trans 'Sair' %}" aria-label="{% trans 'Sair' %}">
-      <svg viewBox="0 0 24 24"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg>
-      <span class="pshell__lbl">{% trans "Sair" %}</span>
-    </button>
-  </form>
 </header>
 
 <div class="papp {% block layout_class %}{% endblock %}">
   {% block sidebar %}
   <aside class="pside">
-    <div class="pside__l">{% trans "Tipos de chip" %}</div>
+    <div class="pside__l">{% trans "Preços por tipo de chip" %}</div>
     <div id="types">
       <a href="{% url 'pricing:partner_home' %}" class="ptype{% if not active_pk %} on{% endif %}">
-        <span><span class="ptype__t">{% trans "Resumo" %}</span><span class="ptype__d">{% trans "visão geral da grade" %}</span></span>
+        <span class="ptype__t">{% trans "Todos os preços" %}</span>
       </a>
       {% comment %} Navegação POR TIPO (dono 2026-07-27). Nomes de tipo são
          canônicos — nunca traduzem.
@@ -226,24 +206,14 @@
                       vendendo. Pode esperar.
          A vermelha vem ANTES da âmbar na linha, e é por isso que ela existe.
       {% endcomment %}
-      {% comment %} ⚠ 2026-08-27. O nome e a descrição vão dentro de UM <span>,
-         como no `parceiro-side.js`. O `.ptype` é uma grade `1fr auto`: sem o
-         invólucro, o nome e as marcas viram três filhos soltos e a segunda
-         marca cai numa linha própria ocupando a largura inteira. Com o
-         invólucro, nome+descrição ficam na coluna 1 e as marcas na 2. {% endcomment %}
-      {% for k, lbl, desc, pend, trav in kind_nav %}
+      {% for k, lbl, pend, trav in kind_nav %}
       <a href="{% url 'pricing:partner_kind' k %}" class="ptype{% if active_kind == k %} on{% endif %}">
-        <span><span class="ptype__t">{{ lbl }}</span><span class="ptype__d">{{ desc }}</span></span>
+        <span class="ptype__t">{{ lbl }}</span>
         {% if trav %}<span class="ptype__b ptype__b--block" title="{% blocktrans trimmed count n=trav %}{{ n }} pedido travado esperando esta tabela{% plural %}{{ n }} pedidos travados esperando esta tabela{% endblocktrans %}">{{ trav }}</span>{% endif %}
         {% if pend %}<span class="ptype__b">{{ pend }}</span>{% endif %}
       </a>
       {% endfor %}
     </div>
-    {% comment %} Rodapé da barra de tipos (protótipo, 2026-08-27). Existe por
-       causa de UMA pergunta que a barra provoca e não responde: o SSD aparece
-       na lista mas não tem grade como os outros. Dizer isso aqui custa uma
-       linha; deixar o comprador clicar para descobrir custa uma viagem. {% endcomment %}
-    <div class="pside__foot"><p>{% blocktrans trimmed %}<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça.{% endblocktrans %}</p></div>
   </aside>
   {% endblock %}
 
@@ -261,7 +231,34 @@
   </main>
 </div>
 
-<script src="{% static 'wtc/shell.js' %}"></script>
-<script src="{% static 'wtc/theme.js' %}"></script>
+<script>
+// Gaveta do cabeçalho (o `shell.js` do sistema não vem no pacote — isto é o
+// mínimo que a folha do parceiro espera): a barra marca [data-shell] por
+// largura e `.is-open` abre a lista. Sem JS a barra continua funcionando no
+// desktop; no celular ela só não recolhe.
+(function () {
+  var sh = document.getElementById('pshell');
+  if (!sh) return;
+  var burger = document.createElement('button');
+  burger.className = 'shell__ico shell__burger';
+  burger.type = 'button';
+  burger.setAttribute('aria-label', 'Menu');
+  burger.innerHTML = '<i></i><i></i><i></i>';
+  burger.setAttribute('aria-expanded', 'false');
+  burger.addEventListener('click', function () {
+    sh.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', sh.classList.contains('is-open'));
+  });
+  sh.appendChild(burger);
+  function medir() {
+    var w = window.innerWidth;
+    if (w <= 600) sh.dataset.shell = 'phone';
+    else if (w <= 1080) sh.dataset.shell = 'tablet';
+    else { delete sh.dataset.shell; sh.classList.remove('is-open'); }
+  }
+  medir();
+  window.addEventListener('resize', medir);
+})();
+</script>
 </body>
 </html>

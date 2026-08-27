@@ -202,8 +202,16 @@ class KnownPartSpec(BaseModel):
         (`chips/knowledge/convention.py::apply_kp_convention`), a mesma que o `clean()`
         do modelo usa. Assim o dado do YAML e o de qualquer outro caminho de escrita
         ficam normalizados igual. NÃO rejeita (known_part é ponto de dado)."""
-        from chips.knowledge.convention import apply_kp_convention
-        return apply_kp_convention(self)
+        from chips.knowledge.convention import apply_kp_convention, measure_problems
+        apply_kp_convention(self)
+        # FORMA do campo de medida (2026-08-26) — a MESMA regra do `clean()` do
+        # modelo, na mesma fonte única. Aqui NÃO há grandfather: submissão é
+        # conteúdo NOVO sendo proposto, então vale a regra inteira. Assim o chat
+        # de marca vê o erro no dry-run, antes de qualquer escrita.
+        problemas = measure_problems(self)
+        if problemas:
+            raise ValueError("; ".join(problemas.values()))
+        return self
 
 
 def _reject_duplicates(items, key, rotulo, raw=None):

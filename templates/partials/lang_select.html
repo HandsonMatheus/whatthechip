@@ -16,12 +16,7 @@
                fica invisível em alguns SOs).
     default  → contexto CLARO (login): discreto, cinza escuro.
 {% endcomment %}
-{% comment %} `data-lang-form` é o gancho do `static/wtc/shell.js` (painel do
-   comprador): ele move ESTE formulário para dentro da gaveta de perfil e troca
-   o <select> por quatro botões. Atributo inerte para quem não carrega aquele
-   arquivo — as outras variantes seguem intactas. {% endcomment %}
-<form action="{% url 'set_language' %}" method="post" data-lang-form
-      data-lang-label="{% trans 'Idioma' %}"
+<form action="{% url 'set_language' %}" method="post"
       style="margin:0;display:inline-flex;align-items:center;">
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ request.get_full_path }}">
