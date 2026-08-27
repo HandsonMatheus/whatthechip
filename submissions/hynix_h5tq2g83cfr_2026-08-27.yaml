@@ -1,0 +1,67 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3, JÁ MAPEADA). Gerado a partir da
+# investigação do PN lido na bancada "H5TQ2G163CFR" (2026-08-27).
+#
+# ⚠ INVESTIGAÇÃO DE LEITURA — RESOLVIDA (mesmo padrão já usado pro caso H8AC "O"/"0" nesta
+# sessão: quando a forma lida é um FANTASMA total e a forma corrigida é overwhelming, não
+# preciso perguntar ao dono — mas documento o raciocínio completo aqui):
+#
+#   O PN da bancada, "H5TQ2G163CFR" (12 caracteres), quebra a convenção posicional que
+#   TODOS os outros H5TQ desta sessão seguem (pn[4:6]=densidade + pn[6:8]=interface [83/63/
+#   43] + 1 letra de revisão + "FR", sempre 11 caracteres). Aqui sobra um dígito "1" extra
+#   entre a densidade "2G" e o que seria a interface — "163" não é nenhum código de
+#   interface válido (só 83/63/43 existem na família).
+#
+#   Testei as duas correções óbvias:
+#   (a) só tirar o "1" → "H5TQ2G63CFR" (x16, revisão C): BUSQUEI em 2 motores de busca
+#       separados — ZERO menção em qualquer fonte. Mais forte ainda: abri o datasheet
+#       oficial da revisão C (AllDataSheet id 1179042, corpo "Product details" lido NA
+#       ÍNTEGRA) e a frase de abertura diz EXPLICITAMENTE: "The H5TQ2G43CFR-xxC,
+#       H5TQ2G83CFR-xxC are a 2,147,483,648-bit CMOS DDR3..." — o documento que define
+#       oficialmente a revisão C só reconhece as organizações x4 e x8. x16 NÃO EXISTE
+#       pra esta revisão, confirmado pela fonte primária, não só ausência de busca.
+#   (b) tirar o "1" E ler "63"→"83" (6/8 trocado): → "H5TQ2G83CFR" (x8, revisão C) — É
+#       EXATAMENTE uma das duas organizações nomeadas na mesma frase do datasheet oficial
+#       acima, com página PRÓPRIA dedicada (id 1179042) + 5 variantes de grade de
+#       velocidade (G7C/H9C/PBC/RDC/TEC) cada uma com página própria + Scribd + AB
+#       Sunshine + Datasheets.com.
+#
+#   Conclusão: a forma (b) "H5TQ2G83CFR" é a identidade real — confirmada pela MESMA fonte
+#   primária que também PROVA que a forma (a) não existe. Não é uma escolha entre dois
+#   candidatos plausíveis (como o caso H8BE/BC/KE, que ficou sinalizado pro dono) — é um
+#   fantasma vs. um PN overwhelming documentado pela fonte que define a família.
+#
+# COBERTURA DE CLUSTER: a MESMA frase do datasheet oficial já nomeia as DUAS organizações
+# da revisão C (x4 e x8) — x4 (H5TQ2G43CFR) JÁ é known_part desta sessão
+# (hynix_h5tq2g_matriz_2026-08-26.yaml). Só falta a x8 (o PN corrigido desta rodada). A
+# fonte primária confirma que não há mais nada pra achar nesta revisão — cluster
+# genuinamente completo, não é preguiça de busca.
+#
+# ARITMÉTICA: 2Gb÷8=256MB — bate com o decode atual da gramática (debug já mostrava
+# "2Gb = 256MB por die [✓]" mesmo pro PN mal-lido, já que só pn[4:6] importa pro cálculo).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq2g83cfr_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq2g83cfr_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ2G83CFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1179042/HYNIX/H5TQ2G83CFR.html"
+    notes: >
+      Identidade corrigida do PN lido na bancada como "H5TQ2G163CFR" (2026-08-27) — ver
+      investigação completa no cabeçalho do arquivo: a forma lida tem um dígito extra que
+      não corresponde a nenhuma interface válida da família; a correção "H5TQ2G63CFR"
+      (x16) é um fantasma total (zero fontes, e o datasheet oficial da revisão C
+      explicitamente só nomeia x4/x8); a correção "H5TQ2G83CFR" (x8) é exatamente uma das
+      duas organizações nomeadas na abertura do datasheet oficial lido na ÍNTEGRA
+      (AllDataSheet id 1179042, corpo "Product details": "The H5TQ2G43CFR-xxC,
+      H5TQ2G83CFR-xxC are a 2,147,483,648-bit CMOS DDR3..."), com 5 variantes de grade de
+      velocidade cada uma com página própria. 2Gb÷8=256MB. confidence=confirmed (corpo
+      técnico oficial lido, não metadado). Par x4 (H5TQ2G43CFR) já é known_part desta
+      sessão.
