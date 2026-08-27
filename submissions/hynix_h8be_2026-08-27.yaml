@@ -49,9 +49,22 @@
 # veredito (chip_type="MCP" já é sempre NÃO RENTÁVEL, dono confirmou que
 # capacidade não importa aqui).
 #
-# POR QUE NÃO VIRA GRAMÁTICA (ChipFamily): 1 PN só, identidade do próprio prefixo
+# POR QUE NÃO VIRA GRAMÁTICA (ChipFamily): 2 PNs só, identidade do próprio prefixo
 # ainda incerta (BE/BC/KE) — construir uma ChipFamily em cima disso seria
 # gramática especulativa. Fica como known_parts-only (Trilha B), igual H8AC.
+#
+# CLUSTER — 2ª busca (pedido do dono, 2026-08-27: "pesquise mais... tem que
+# pesquisar o maximo possivel, nao so 1"): voltei à página do ic-components.com
+# (já usada pro alvo) e reli com cuidado a lista "produtos relacionados" (~30
+# PNs) — quase todos são H8BC (prefixo vizinho, fora de escopo aqui), mas 1
+# bate exatamente H8BE-S0-xx-0-MCR: "H8BES0UQ0MCR-46M-C" (só a 7ª posição
+# difere do alvo: Q em vez de U). Confirmado como PN real e distinto (não
+# artefato de busca) em 2ª fonte independente — página PRÓPRIA no
+# ic-icc.com/Hynix/H8BES0UQ0MCR.html (distribuidor chinês, cita
+# "Memory chips / BGA", campos de spec em branco). Tentei mais: categoria
+# BGA137 do Jotrin (só 1 Hynix nessa página, e era H8BC, não H8BE), busca
+# ic-components.com por site: e por URL de busca direta (bloqueado por
+# Cloudflare/bot-check — não contornado, por regra). Não achei um 3º.
 #
 # Uso:
 #   python manage.py submit_known_parts submissions/hynix_h8be_2026-08-27.yaml            # dry-run = portão
@@ -83,3 +96,22 @@ known_parts:
       RENTÁVEL independente disso (confirmado com o dono, 2026-08-27).
       confidence=manual (mesmo rigor Tier-3 já usado no precedente H8AC pra esta
       classe de chip muito antigo, sem datasheet oficial disponível).
+
+  - part_number: "H8BES0UQ0MCR"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND + Mobile DDR (split não confirmado)"
+    interface: ""
+    confidence: manual
+    source_url: "http://www.ic-icc.com/Hynix/H8BES0UQ0MCR.html"
+    notes: >
+      Irmão do alvo (mesmo prefixo H8BE + S0, só a 7ª posição difere: Q em vez
+      de U) — achado na 2ª busca (2026-08-27), igual ao padrão já visto na
+      família H8AC (letras de posição 6-7 variam sem mudar o "tipo" do chip).
+      Confirmado como PN real e distinto em 2 fontes independentes: listado
+      como "produto relacionado" na própria página do ic-components.com do
+      alvo, e com página PRÓPRIA e dedicada no ic-icc.com (distribuidor
+      chinês) — "H8BES0UQ0MCR-46M-C", categoria "Memory chips / BGA". Campos
+      de capacidade/spec dessa página vieram em branco — sem confirmação de
+      split NAND/RAM, mesma situação do alvo. Não afeta o veredito
+      (chip_type="MCP" = NÃO RENTÁVEL sempre, por tipo). confidence=manual
+      (Tier-3, mesmo rigor do alvo acima).
