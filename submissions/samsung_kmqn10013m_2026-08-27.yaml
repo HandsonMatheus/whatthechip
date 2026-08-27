@@ -1,0 +1,71 @@
+# Submissão de known_parts — Samsung, família KMQ (eMCP LPDDR3+eMMC 5.1).
+# PN alvo (debug 2026-08-27): KMQN10013M — grammar já decodifica certo hoje
+# (pn[3:5]='N1' via SAM_EMCP_CAP → NAND 8GB/RAM 1GB, grammar_complete=true),
+# mas o PN exato não estava confirmado no banco (known_exact=false,
+# pn_not_in_db=true no debug).
+#
+# Capacidade da chave "N1" já tem DUPLA confirmação física prévia no banco
+# (KMQN10006B no seed: "Chip físico confirmado na esteira (eMiner
+# 2026-05-13). N1 = 8GB eMMC 5.1 + 1GB LPDDR3. Segunda confirmação física" —
+# a primeira foi KMFN10012A-B214). KMQN10013M é um PN DIFERENTE (tail "0013M"
+# vs "0006B/A/M" dos irmãos já confirmados) — mesma chave de capacidade,
+# revisão/geração diferente. Confirmei que o PN exato "KMQN10013M-B318"
+# existe de verdade em múltiplas fontes independentes: Jotrin (página
+# dedicada), Kynix (irmão KMQE10013M-B318, mesmo padrão de tail), e
+# CONFIRMAÇÃO DE CAMPO — fóruns de reparo de celular (GSM-Forum,
+# GSMDevelopers) citam "Samsung Emmc KMQN10013M-B318" usado no aparelho real
+# "Samsung E700H" (técnicos de conserto citando o chip físico, não catálogo).
+#
+# CLUSTER (fuzzy_suggestions do debug + tail "10013M" recorrente na família):
+# KMQ310013M e KMQE10013M já estavam cobertos (seed/submissão anterior).
+# KMQX10013M (chave "X1") estava genuinamente faltando — pesquisei e achei:
+# Arrow.com (PDF oficial, "eMMC 32GB + LPDDR3 16Gb with 1600Mbps of eMMC
+# Based MCP") + Preduo (campo estruturado Density="32+16") + eBay ("32+2
+# EMCP", confirma 16Gb÷8=2GB de forma independente) + Xecor/Censtry/frbiz
+# (convergência). NAND=32GB, RAM=16Gb÷8=2GB.
+brand: "Samsung"
+known_parts:
+  - part_number: "KMQN10013M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "eMMC 5.1 8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KMQN10013M_B318"
+    notes: >
+      PN alvo (debug 2026-08-27), base sem sufixo. Capacidade da chave "N1"
+      já confirmada fisicamente 2× no banco (KMQN10006B, KMFN10012A-B214).
+      Existência do PN exato confirmada via Jotrin + fóruns de reparo
+      (GSM-Forum/GSMDevelopers citam o chip físico no Samsung E700H).
+
+  - part_number: "KMQN10013M-B318"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "eMMC 5.1 8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KMQN10013M_B318"
+    notes: "Forma completa com sufixo de revisão. Jotrin (página dedicada) + Kynix (irmão KMQE10013M-B318, mesmo padrão) + GSM-Forum/GSMDevelopers (uso real confirmado no Samsung E700H, ver notes do PN base)."
+
+  - part_number: "KMQX10013M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://static6.arrow.com/aropdfconversion/8f238291fd08e38cf65786e0f73ef973d9320cf4/pgurl_kmqx10013m-b419.pdf"
+    notes: >
+      Achado do cluster (fuzzy_suggestions do debug) — chave "X1", gap real,
+      não tinha nenhum known_part ainda. Arrow.com (PDF oficial): "eMMC 32GB
+      + LPDDR3 16Gb with 1600Mbps of eMMC Based MCP". Preduo (campo
+      estruturado Density="32+16") confirma. eBay ("32+2 EMCP") converte
+      16Gb÷8=2GB de forma independente — bate. NAND 32GB, RAM 2GB.
+
+  - part_number: "KMQX10013M-B419"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmqx10013m-b419"
+    notes: "Forma completa com sufixo. Preduo (fetch direto, campo estruturado Density='32+16') + Arrow (PDF oficial) + convergência de 5+ distribuidores (eBay, Xecor, Censtry, frbiz, cpuprocessorchip) — ver notes do PN base."
