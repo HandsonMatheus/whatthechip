@@ -1123,11 +1123,25 @@ def preview_chip(request, lot_pk):
     if result.get('is_emcp'):
         parts = [p for p in [result.get('emcp_nand', ''), result.get('emcp_ram', '')] if p]
         display_cap = ' / '.join(parts)
-    elif dest_cat == 'lpddr':
-        # Geração + densidade já estão no rótulo da caixa (ex.: D3+2G). A sub-linha
-        # fica só com a marca — sem capacidade em bytes (256MB), que confunde.
-        display_cap = ''
     else:
+        # ⚠ 2026-08-27: aqui existia um ramo `elif dest_cat == 'lpddr': display_cap = ''`
+        # que ESCONDIA a capacidade do LPDDR avulso. A justificativa era "geração e
+        # densidade já estão no rótulo, mostrar bytes confunde" — verdade para DDR
+        # DISCRETA, onde o rótulo traz a DENSIDADE do die em Gbit (`DDR3+8G`) e a
+        # `capacity` traz bytes POR DIE (`256MB`): dois números diferentes lado a
+        # lado realmente confundiriam.
+        #
+        # Mas em LPDDR é o contrário, e o próprio `_compute_destination` diz isso:
+        # "LPDDR (móvel) = pacote multi-die → CAPACIDADE do pacote em GB". LPDDR
+        # não tem densidade (`dram_density` vem None) — o rótulo `LPDDR3+1GB` é
+        # montado a PARTIR da `capacity`. A regra apagava o único número que o chip
+        # tem, alegando redundância com uma densidade que não existe. Resultado: o
+        # card se contradizia — a caixa dizia `LPDDR3+1GB` e a coluna dizia `—`
+        # (achado do dono no K4E8E304ED).
+        #
+        # Decisão do dono ao ver o diagnóstico: mostrar TODAS as capacidades. O
+        # motivo original de esconder (não poluir a tela do operador) perdeu força
+        # porque o cliente final não vê mais esses dados.
         display_cap = result.get('capacity') or result.get('dram_density') or ''
 
     try:

@@ -3042,3 +3042,80 @@ class OrigemRamTests(TestCase):
                     if c.name == 'lot_origin_vocab')
         self.assertEqual(set(cond.children[0][1]), set(dict(Lot.ORIGIN_CHOICES)),
                          'a constraint do banco e os choices do modelo divergiram')
+
+
+class CapacidadeNoCardTests(TestCase):
+    """A coluna CAPACIDADE do card de conferência (`display_cap`).
+
+    Achado do dono em 2026-08-27 com o K4E8E304ED (Samsung LPDDR3 1GB): o debug
+    mostrava `capacity='1GB'`, o rótulo da caixa saía `LPDDR3+1GB`, e a coluna
+    do card mostrava `—`. O card se contradizia.
+
+    Não era dado faltando: era supressão DELIBERADA em `preview_chip`
+    (`elif dest_cat == 'lpddr': display_cap = ''`), justificada por "geração e
+    densidade já estão no rótulo". Vale para DDR DISCRETA — lá o rótulo traz a
+    DENSIDADE do die (`DDR3+8G`) e a `capacity` traz bytes POR DIE (`256MB`),
+    grandezas diferentes. Em LPDDR não: não há densidade (`dram_density` é
+    None) e o rótulo é montado A PARTIR da `capacity`. A regra apagava o único
+    número que o chip tinha. Decisão do dono: mostrar TODAS as capacidades.
+
+    ⚠ Estes testes vão pela VIEW (`preview_chip`), não por uma reimplementação
+    da regra. A 1ª versão deles montava o `display_cap` na mão e passou numa
+    mutação que reintroduzia a supressão — testava o meu código, não o do
+    produto. É o mesmo erro que deixou o bug da origem `ram` passar."""
+
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        from tenancy.models import Company, Membership
+        from estoque.models import Lot
+        self.company = Company.objects.create(name="eMiner", slug="eminer")
+        self.user = get_user_model().objects.create_user("op", password="x")
+        Membership.objects.create(user=self.user, company=self.company, role="manager")
+        self.lot = Lot.open_for_company(self.company, self.user, origin="phone")
+        self.client.force_login(self.user)
+
+    def _preview(self, pn, resultado):
+        """Chama a VIEW de verdade, com o classify mockado."""
+        from unittest.mock import patch
+        from django.urls import reverse
+        base = {"pn": pn, "chip_type": "", "subtype": "", "capacity": "",
+                "dram_density": None, "emcp_nand": "", "emcp_ram": "",
+                "is_emcp": False, "interface": "", "known": True,
+                "known_exact": True, "confidence": "confirmed", "brand": "Samsung",
+                "profitable": "RENTÁVEL", "fuzzy_suggestions": []}
+        base.update(resultado)
+        with patch("estoque.views.classify", return_value=base):
+            r = self.client.get(
+                reverse("estoque:preview", args=[self.lot.pk]), {"pn": pn})
+        return r
+
+    def test_lpddr_avulso_mostra_a_capacidade(self):
+        """O caso do dono: a caixa diz LPDDR3+1GB, a coluna tem que dizer 1GB."""
+        r = self._preview("K4E8E304ED", {"chip_type": "LPDDR3", "subtype": "LPDDR3",
+                                         "capacity": "1GB"})
+        self.assertEqual(r.context["display_cap"], "1GB",
+                         "a coluna ficou vazia enquanto o rótulo da caixa traz a "
+                         "capacidade — o card se contradiz")
+        self.assertIn("1GB", r.context["destination"],
+                      "o rótulo da caixa perdeu a capacidade")
+
+    def test_ddr_discreta_continua_mostrando_o_que_tem(self):
+        r = self._preview("K4B2G0846D", {"chip_type": "DDR3", "subtype": "DDR3",
+                                         "capacity": "256MB",
+                                         "dram_density": "2Gb = 256MB por die"})
+        self.assertTrue(r.context["display_cap"])
+
+    def test_emcp_continua_com_nand_e_ram(self):
+        r = self._preview("KMQ310006A", {"chip_type": "eMCP", "subtype": "LPDDR3",
+                                         "is_emcp": True, "emcp_nand": "16GB",
+                                         "emcp_ram": "LPDDR3 2GB"})
+        self.assertEqual(r.context["display_cap"], "16GB / LPDDR3 2GB")
+
+    def test_nenhum_tipo_perde_a_capacidade_que_tem(self):
+        """A regressão que importa: se alguém reintroduzir supressão por tipo,
+        este teste diz QUAL tipo perdeu o número."""
+        for ct, cap in (("LPDDR4X", "6GB"), ("LPDDR3", "1GB"), ("LPDDR2", "512MB"),
+                        ("DDR4", "512MB"), ("eMMC", "16GB"), ("UFS", "128GB")):
+            r = self._preview("PN" + ct, {"chip_type": ct, "subtype": ct, "capacity": cap})
+            self.assertTrue(r.context["display_cap"],
+                            f"{ct} ficou com a coluna VAZIA tendo capacity={cap!r}")
