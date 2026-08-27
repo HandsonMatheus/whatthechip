@@ -1,0 +1,62 @@
+# Submissão de known_parts — SK Hynix, família H5TC (DDR3L standalone, JÁ MAPEADA).
+# Gerado a partir da investigação do PN H5TC1G63EFR (busca na bancada, 2026-08-27).
+#
+# ⚠ CONFIRMADO POR INSPEÇÃO FÍSICA DO DONO (2026-08-27) — NÃO por fonte Tier-1/Tier-2:
+# busquei extensivamente (LCSC, DigiKey, AllDataSheet, distribuidores) e NÃO achei
+# NENHUMA fonte pra "H5TC1G63EFR" nem pro miolo "H5TC1G6" em geral. Pior: uma investigação
+# ANTERIOR desta sessão (2026-07-13, ver hynix_h5tc_2026-07-13.yaml, nota do
+# H5TC1G83EFR) já tinha buscado especificamente "H5TC1G63xFR" e concluído "não achei
+# nenhuma variante x16 documentada para esta densidade — só x8/x4 parecem existir em 1Gb;
+# o x16 só aparece a partir de 2Gb". Ou seja: DUAS buscas independentes, meses de
+# diferença, mesma conclusão negativa — não é preguiça de busca desta rodada.
+#
+# Perguntei ao dono se o PN é leitura física real (mesmo protocolo já usado pro caso
+# H5AN8G6NCJ em 2026-08-20 e pro H5TQ2G163CFR mais cedo hoje) — resposta direta: "é
+# fisico, ele existe". Diferente do caso H5TQ2G163CFR (12 chars, forma malformada — leitura
+# corrigível), "H5TC1G63EFR" é uma string de 11 chars PERFEITAMENTE bem formada pela
+# gramática da família (H5TC + 1G=densidade + 63=organização x16 + E=revisão + FR=sufixo,
+# idêntica à estrutura de TODO known_part já confirmado desta família) — só que essa
+# combinação específica (x16 na densidade 1Gb) nunca apareceu documentada em nenhuma fonte
+# pública pesquisada. A confirmação física do dono é a fonte de maior peso disponível pra
+# este caso (é literalmente o chip que o operador vai ler na bancada).
+#
+# CORRIGE PREMISSA ANTERIOR: a nota do H5TC1G83EFR (07-13) — "x16 só aparece a partir de
+# 2Gb" — está EMPIRICAMENTE REFUTADA por este achado. Não editei aquela nota (registro já
+# submetido/histórico), mas fica registrado aqui pra quem ler os dois arquivos: a ausência
+# de fonte pública pra uma organização não prova que ela não existe, só que é rara/pouco
+# distribuída. Vale reabrir a busca por H5TC1G43EFR (x4, mesma densidade/revisão) se
+# aparecer na bancada — não incluí aqui por falta de qualquer evidência (nem fonte, nem
+# confirmação física) pra esse PN específico.
+#
+# confidence=manual (não confirmed): identidade vem de inspeção física direta do dono, não
+# de datasheet/distribuidor oficial. Organização (x16) inferida da gramática posicional já
+# estabelecida da família (pn[6:8]="63"→x16, mesmo código usado em TODOS os outros
+# known_parts x16 confirmados de H5TC/H5TQ/H5AN nesta sessão) — não é um valor inventado,
+# é a MESMA regra de decode já provada certa dezenas de vezes.
+#
+# ARITMÉTICA: 1Gb÷8=128MB — bate exato com o debug ("DRAM: 1Gb = 128MB por die [✓]").
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc1g63efr_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc1g63efr_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC1G63EFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: manual
+    notes: >
+      PN da bancada (2026-08-27). Confirmado FÍSICO pelo dono ("é fisico, ele existe") —
+      não achei nenhuma fonte Tier-1/Tier-2 (LCSC/DigiKey/AllDataSheet/distribuidores)
+      pra esta combinação, e uma investigação anterior desta sessão (2026-07-13, ver
+      hynix_h5tc_2026-07-13.yaml) já tinha buscado e concluído que x16 não parecia
+      existir na densidade 1Gb desta família — conclusão agora refutada pela inspeção
+      física direta. Organização (x16) vem do código de interface pn[6:8]="63", mesma
+      regra de decode já confirmada em todos os outros known_parts x16 de H5TC/H5TQ/H5AN
+      desta sessão — não é adivinhação, é a gramática já provada. 1Gb÷8=128MB.
+      confidence=manual (identidade por inspeção física do dono, não datasheet oficial).
+      Sem fonte pública pra citar em source_url.
