@@ -1,0 +1,85 @@
+# Submissão de known_parts — SK Hynix, prefixo H8BE (MCP legado — NAND raw + Mobile
+# DDR pré-eMCP). Gerado a partir da investigação do PN H8BES0UU0MCR (busca na
+# bancada, 2026-08-27). Mesmo tratamento já dado a H8AC nesta sessão
+# (submissions/hynix_h8ac_2026-07-10.yaml): known_parts-only, sem ChipFamily —
+# ver nota "POR QUE NÃO VIRA GRAMÁTICA" abaixo.
+#
+# ⚠ AMBIGUIDADE DE IDENTIDADE (sinalizada ao dono, não resolvida sozinho — ver
+# regra [[ask-before-deciding-pns]]): pesquisando "H8BES0UU0MCR" (forma exata da
+# bancada), encontrei repetição consistente dessa MESMA string em várias fontes
+# independentes (sierraic, eBay ×2, Kynix, ic-components, e uma FOTO de placa real
+# — Dell Streak, Wikimedia Commons — com o chip fisicamente fotografado). MAS: a
+# própria página do ic-components lista dezenas de "produtos relacionados" no
+# MESMO formato de PN, e a esmagadora maioria usa o prefixo "H8BC" (não H8BE) — só
+# 1 usa H8BE, e mesmo esse com a 6ª posição diferente (H8BES0UQ0MCR, "UQ" não
+# "UU"). Também apareceu um 3º candidato, "H8KES0UU0MCR" (K em vez de B/C), em
+# outras 3 fontes (Jotrin, Apogeeweb, Censtry). Ou seja: 3 grafias visualmente
+# parecidas (BE/BC/KE) circulando pra provavelmente o MESMO chip físico — clássico
+# padrão de erro de transcrição se espalhando entre revendas (mesmo fenômeno já
+# documentado no header do hynix_h8ac_2026-07-10.yaml: "H8ACSOPGOMBP" (O) vs
+# "H8ACS0PG0MBP" (0) — dezenas de fontes reproduzindo o mesmo erro de scraping/OCR
+# num catálogo de distribuidor). NENHUM datasheet oficial encontrado pra nenhuma
+# das 3 grafias — só distribuidor/revenda.
+#
+# DECISÃO (autorizada pelo dono, 2026-08-27, no chat: "se é ddr1 fodase a
+# capacidade, ele é descarte, entao pode colocar qualquer"): submeto SÓ a forma
+# exata lida na bancada (H8BES0UU0MCR) — é a leitura física do operador, a fonte
+# mais forte disponível (mesmo princípio do caso Kingston FH32B08UCT1: leitura
+# física > pesquisa web quando conflitam). NÃO submeto H8BCS0UU0MCR nem
+# H8KES0UU0MCR como "hedge" — seria criar registro duplicado pro mesmo chip físico
+# sob grafia não confirmada, o oposto de "excluir, não adivinhar". Se uma bancada
+# futura ler "H8BC..." ou "H8KE..." de verdade, é um known_part NOVO e separado, não
+# uma correção deste.
+#
+# CLASSIFICAÇÃO chip_type="MCP" (idêntico ao precedente H8AC): chips/chip_types.py
+# — "MCP": ChipTypeSpec("catalog","none","dead", commercial=False) → NÃO RENTÁVEL
+# SEMPRE, independente de capacidade (profit_family="dead", guard antes do bloco
+# eMCP em assess_profitability). Não é "eMCP" porque a RAM aqui é Mobile DDR (mDDR),
+# não LPDDR — não cabe no formato emcp_ram="LPDDR{n} {cap}GB". capacity/emcp_nand/
+# emcp_ram ficam VAZIOS de propósito (não se aplicam a este chip_type — mesmo
+# precedente do H8AC e do Micron "Raw MCP", micron_jw500_family_2026-07-09.yaml); a
+# composição NAND+RAM (quando confirmável) vai como texto no subtype.
+#
+# CAPACIDADE — não incluída no subtype (diferente do precedente H8AC, que tinha
+# split limpo tipo "512Mb NAND + 256Mb Mobile SDRAM" de fonte estruturada Jotrin):
+# as fontes desta rodada DIVERGEM — um título eBay diz "32bit 512MB" (citação
+# direta), um resumo sem citação direta sugeriu "4Gb NAND + 4Gb Mobile DDR" (=
+# 512MB+512MB=1GB, não bate com o "512MB" do eBay). Sem fonte estruturada
+# confiável pro split exato NAND/RAM — não inventei um número. Não afeta o
+# veredito (chip_type="MCP" já é sempre NÃO RENTÁVEL, dono confirmou que
+# capacidade não importa aqui).
+#
+# POR QUE NÃO VIRA GRAMÁTICA (ChipFamily): 1 PN só, identidade do próprio prefixo
+# ainda incerta (BE/BC/KE) — construir uma ChipFamily em cima disso seria
+# gramática especulativa. Fica como known_parts-only (Trilha B), igual H8AC.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h8be_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h8be_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H8BES0UU0MCR"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND + Mobile DDR (split não confirmado)"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.sierraic.com/H8BES0UU0MCR4EM"
+    notes: >
+      PN da bancada (2026-08-27), forma exata (bare, sem sufixo). Confirmado como
+      chip real (não invenção) por múltiplas fontes independentes usando a MESMA
+      grafia "H8BES0UU0MCR-4EM": sierraic, eBay (×2, uma delas com foto do chip),
+      Kynix, ic-components, e uma foto de placa real (Dell Streak, Wikimedia
+      Commons, arquivo "Hynix H8BES0UU0MCR-46M-0675.jpg" — chip fisicamente
+      fotografado num board, com sufixo de grade "-46M" em vez de "-4EM").
+      Descrito consistentemente como MCP (NAND + Mobile DDR no mesmo pacote),
+      FBGA137, usado em telefones ~2010 (HTC HD2 Europa, Dell Streak). ⚠
+      Ambiguidade de prefixo NÃO resolvida (ver nota no cabeçalho do arquivo:
+      candidatos alternativos H8BC.../H8KE... aparecem em outras fontes) — segui
+      a leitura física da bancada, que é a fonte mais forte disponível quando
+      revenda diverge. Capacidade: fontes divergem (eBay cita "512MB", outro
+      resumo sugere split 4Gb+4Gb=1GB) — não confirmado com segurança, por isso
+      capacity/emcp_nand/emcp_ram ficam vazios; chip_type="MCP" já garante NÃO
+      RENTÁVEL independente disso (confirmado com o dono, 2026-08-27).
+      confidence=manual (mesmo rigor Tier-3 já usado no precedente H8AC pra esta
+      classe de chip muito antigo, sem datasheet oficial disponível).
