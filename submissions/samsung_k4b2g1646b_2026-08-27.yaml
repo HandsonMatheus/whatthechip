@@ -1,0 +1,49 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3 discreta).
+# PN alvo (debug 2026-08-27): K4B2G1646B — grammar_complete=true, dram_density
+# "2Gb = 256MB por die [~]" já correto pela gramática (pn[3:5]='2G'), mas o PN
+# exato não estava confirmado no banco (known_exact=false, pn_not_in_db=true,
+# confidence=estimated). Cobertura local: 4 dos 5 fuzzy_suggestions do debug
+# já estavam no seed (K4B2G1646E/F/Q, K4B4G1646B) — só faltava o die "B".
+#
+# ⚠ ACHADO: die "B" usa prefixo de sufixo "H" (HC=DDR3 1.5V / HI/HP em
+# speed-grades específicos), NÃO "B" (BC/BY) como os outros dies desta mesma
+# família (E/F/Q, já confirmados no seed com BCK0/BYK0 etc.) — confirmado em
+# 2 fontes independentes (DigiPart/Win Source + Jotrin), e no irmão 4Gb
+# K4B4G1646B (mesma família, mesmo die "B": HCK0/HYK0/HCH9/HYH9/HCNB, também
+# só "H", nunca "B"). Provável motivo: evitar duplicar a letra do die ("B")
+# como prefixo do sufixo também. Registrar isso evita assumir BC/BY por
+# analogia com os outros dies da família (produziria sufixo inexistente).
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B2G1646B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.digipart.com/part/K4B2G1646B-HCK0"
+    notes: >
+      PN alvo do debug (2026-08-27), forma base sem sufixo. DigiPart/Win
+      Source (K4B2G1646B-HCK0): "DDR3-1600 128Mx16 (2Gb)" — 128M×16=2048Mbit=
+      2Gb; 2Gb÷8=256MB ✓ (bate com dram_density da gramática). Nenhum sufixo
+      DDR3L (HY) encontrado pra este die/densidade — só HC confirmado, por
+      isso chip_type=DDR3 (não DDR3L) na forma base. Ver cabeçalho do arquivo
+      pro achado do prefixo de sufixo "H" (não "B") deste die.
+
+  - part_number: "K4B2G1646B-HCK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.digipart.com/part/K4B2G1646B-HCK0"
+    notes: "Forma completa, speed grade DDR3-1600. DigiPart agrega Win Source + Shengyu + LIXINC + RX Electronics + Y-IC + Ariat + IC Components (9+ distribuidores convergentes) — descrição explícita 'DDR3-1600 128Mx16 (2Gb)'. HC = DDR3 1.5V (ver cabeçalho — este die usa prefixo H, não B)."
+
+  - part_number: "K4B2G1646B-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/K4B2G1646B_HCH9"
+    notes: "Forma completa, speed grade diferente (H9). Jotrin + DigiPart (agregador) confirmam existência — mesma família/densidade do HCK0 acima (mesmo die B, mesma capacidade 2Gb/256MB), só o grade de velocidade muda."
