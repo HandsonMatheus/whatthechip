@@ -60,13 +60,13 @@
         {% for t in tipos %}
         <tr data-k="{{ t.key }}" data-cov="{% if t.miss %}gap{% else %}full{% endif %}"
             data-txt="{{ t.label|lower }} {{ t.desc|lower }}">
-          <td><input type="checkbox" name="types" value="{{ t.key }}" checked
+          <td class="cbx"><input type="checkbox" name="types" value="{{ t.key }}" checked
                      class="cat__c" aria-label="{{ t.label }}"></td>
           <td class="c" data-label="{% trans 'Tipo de chip' %}">{{ t.label }}
             <div style="font-family:var(--sans);font-weight:400;font-size:11.5px;color:var(--muted);margin-top:3px;">{{ t.desc }}</div></td>
           <td class="d" data-label="{% trans 'Estrutura' %}">{{ t.form }}</td>
-          <td class="n" data-label="{% trans 'Linhas' %}" data-lines="{{ t.lines }}">{{ t.lines }}</td>
-          <td class="v" data-label="{% trans 'Cotadas' %}" data-quoted="{{ t.quoted }}" data-miss="{{ t.miss }}">
+          <td class="n hide-sm" data-label="{% trans 'Linhas' %}" data-lines="{{ t.lines }}">{{ t.lines }}</td>
+          <td class="v key" data-label="{% trans 'Cotadas' %}" data-quoted="{{ t.quoted }}" data-miss="{{ t.miss }}">
             {{ t.quoted }}
             {% if t.miss %}<span class="tag tag--maybe" style="margin-left:6px;">{% blocktrans trimmed count n=t.miss %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
             {% else %}<span class="tag tag--yes" style="margin-left:6px;">{% trans "completa" %}</span>{% endif %}</td>

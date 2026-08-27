@@ -54,6 +54,17 @@ PROTECTED_TERMS = [
     'eMCP', 'uMCP', 'eMMC', 'UFS', 'LPDDR', 'DDR', 'GDDR', 'NAND',
     'US$', 'USD', 'Octopart', 'datasheet', 'SK Hynix', 'Samsung', 'Micron',
     'Enter',
+    # Etapa 10 (spec v2 do comprador §9): a lista canônica da spec tinha nove
+    # termos que este glossário não conhecia — e o painel do comprador passou
+    # a usá-los todos. Sem eles, "SSD" podia virar "unidade de estado sólido"
+    # em espanhol e o comprador chinês procuraria na tela um nome que a
+    # bancada não fala.
+    # ⚠ `RMB` NÃO entra, e a tentativa foi minha: a lista canônica da spec é de
+    # termos de PRODUTO (tipo de chip, part number, fabricante) — não do nome
+    # da moeda. Em chinês, RMB é 人民币, e exigir a sigla ali obrigaria o
+    # comprador a ler o nome da própria moeda dele em estrangeiro. O símbolo
+    # ¥ é que atravessa os idiomas, e ele já está em todas as strings.
+    'SSD', 'K9', 'PCB', 'TLC', 'QLC', 'NVMe', 'SATA', 'M.2',
 ]
 
 _RX_NAMED = re.compile(r'%\([^)]+\)[sdif]')            # %(nome)s
@@ -68,9 +79,31 @@ def _protected_rx(term: str) -> re.Pattern:
     return re.compile(r'(?<![A-Za-z0-9])' + re.escape(term) + r'(?![A-Za-z0-9])')
 
 
+def _nova_entrada(lineno):
+    return {'msgid': '', 'msgid_plural': '', 'msgstr': '',
+            'plurais': {}, 'fuzzy': False, 'line': lineno}
+
+
 def parse_po(path: Path) -> list[dict]:
-    """Parser .po mínimo: [{'msgid', 'msgstr', 'fuzzy', 'line'}]. Ignora o
-    header (msgid ""). Suporta strings multilinha e escapes do formato .po."""
+    """Parser .po mínimo: [{'msgid', 'msgid_plural', 'msgstr', 'plurais',
+    'fuzzy', 'line'}]. Ignora o header (msgid ""). Suporta multilinha e os
+    escapes do formato .po.
+
+    ⚠ **PLURAIS (2026-08-26).** O parser não conhecia `msgid_plural` nem
+    `msgstr[N]`, e o estrago era silencioso e em dois sentidos:
+
+    · `msgid_plural "x"` não casava com nenhum ramo, o `state` continuava em
+      `msgid`, e a linha de continuação do plural era **somada ao msgid** —
+      uma entrada com dois `%(n)s` que nunca existiu.
+    · `msgstr[0]` e `msgstr[1]` casavam com `startswith('msgstr')` e eram
+      **concatenados no mesmo campo** — a tradução virava as duas formas
+      grudadas.
+
+    O resultado eram violações inventadas ("placeholders divergem") em toda
+    entrada plural, e o portão ficava vermelho por um defeito dele. As
+    primeiras entradas plurais do projeto nasceram no painel v2 do comprador;
+    até então o buraco não tinha o que morder.
+    """
     entries, cur, state = [], None, None
     def _unq(s):
         s = s[1:-1]
@@ -81,22 +114,33 @@ def parse_po(path: Path) -> list[dict]:
         line = raw.strip()
         if line.startswith('#'):
             if cur is None or cur.get('_done'):
-                cur = {'msgid': '', 'msgstr': '', 'fuzzy': False, 'line': lineno}
+                cur = _nova_entrada(lineno)
             if line.startswith('#,') and 'fuzzy' in line:
                 cur['fuzzy'] = True
             continue
-        if line.startswith('msgid '):
+        if line.startswith('msgid_plural '):
+            cur['msgid_plural'] += _unq(line[13:].strip())
+            state = 'msgid_plural'
+        elif line.startswith('msgid '):
             if cur is None or cur.get('_done'):
-                cur = {'msgid': '', 'msgstr': '', 'fuzzy': False, 'line': lineno}
+                cur = _nova_entrada(lineno)
             cur['line'] = lineno
             cur['msgid'] += _unq(line[6:].strip())
             state = 'msgid'
+        elif line.startswith('msgstr['):
+            n = int(line[7:line.index(']')])
+            cur['plurais'][n] = (cur['plurais'].get(n, '')
+                                 + _unq(line.split(' ', 1)[1].strip()))
+            state = ('plural', n)
         elif line.startswith('msgstr'):
             cur['msgstr'] += _unq(line.split(' ', 1)[1].strip())
             state = 'msgstr'
         elif line.startswith('"') and cur is not None and state:
-            cur[state] += _unq(line)
-        elif not line and cur is not None and state == 'msgstr':
+            if isinstance(state, tuple):
+                cur['plurais'][state[1]] += _unq(line)
+            else:
+                cur[state] += _unq(line)
+        elif not line and cur is not None and state:
             cur['_done'] = True
             if cur['msgid']:                      # pula o header
                 entries.append(cur)
@@ -107,14 +151,46 @@ def parse_po(path: Path) -> list[dict]:
 
 
 def check_entry(e: dict) -> list[str]:
-    """Regras 2–6 para UMA entrada. Devolve a lista de violações."""
+    """Regras 2–6 para UMA entrada. Devolve a lista de violações.
+
+    **Entrada PLURAL** (`msgid_plural` + `msgstr[N]`): cada forma é conferida
+    contra o msgid SINGULAR, e não contra a forma correspondente. Não é
+    descuido — em várias línguas a forma [1] é usada para n=1 (o russo usa
+    três formas com regras que não mapeiam em "singular/plural"), então a
+    única invariante que vale para TODAS é: toda forma carrega os mesmos
+    placeholders e as mesmas tags do original. Antes disso, confere-se que
+    singular e plural do ORIGINAL concordam entre si — se o português já
+    divergir, nenhuma tradução tem como acertar.
+    """
     problems = []
-    mid, mst = e['msgid'], e['msgstr']
+    mid = e['msgid']
+    plural = e.get('msgid_plural')
     if e['fuzzy']:
         problems.append('fuzzy (revisar e remover a flag)')
+    if plural:
+        if sorted(_RX_NAMED.findall(mid)) != sorted(_RX_NAMED.findall(plural)):
+            problems.append('o ORIGINAL diverge entre singular e plural: '
+                            f'{_RX_NAMED.findall(mid)} × '
+                            f'{_RX_NAMED.findall(plural)}')
+        formas = e.get('plurais') or {}
+        if not formas or not any(v for v in formas.values()):
+            problems.append('sem tradução (nenhuma forma plural preenchida)')
+            return problems
+        for n in sorted(formas):
+            for p in _confere(mid, formas[n]):
+                problems.append(f'forma [{n}]: {p}')
+        return problems
+    mst = e['msgstr']
     if not mst:
         problems.append('sem tradução (msgstr vazio)')
         return problems                            # sem msgstr, nada mais a checar
+    problems.extend(_confere(mid, mst))
+    return problems
+
+
+def _confere(mid: str, mst: str) -> list[str]:
+    """As regras 3–6 entre UM original e UMA tradução."""
+    problems = []
     # 3. placeholders
     if sorted(_RX_NAMED.findall(mid)) != sorted(_RX_NAMED.findall(mst)):
         problems.append(f'placeholders %(nome)s divergem: '

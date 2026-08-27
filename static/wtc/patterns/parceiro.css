@@ -535,3 +535,64 @@
 .faq details[open] summary::before{content:"\2013"}
 .faq p{margin:0;padding:0 16px 14px 34px;font-size:13px;color:var(--muted);line-height:1.65;text-wrap:pretty}
 .step4>div b{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--blue-60);margin-right:7px}
+
+/* ============ A GRADE DE PREÇO NO TELEFONE (≤600px) ============
+   Etapa 10. É o segundo lugar do sistema onde se DIGITA dentro de uma tabela
+   (o primeiro é a conferência do lote, `.dtab--conf` em ficha.css), e o
+   problema é o mesmo: a `.dtab` já vira cartão sozinha, mas o cartão não sabe
+   o PAPEL de cada célula — sem isso as cinco caem numa pilha indistinguível,
+   com o campo perdido no meio.
+
+   ⚠ A regra do sistema é "nenhum rótulo impresso": no cartão a hierarquia
+   substitui a legenda, e por isso a `.dtab` zera o `::before` do `data-label`.
+   Aqui ela precisa de exceção, e a exceção tem razão: numa linha com faixa há
+   DOIS campos de preço lado a lado, e sem rótulo nada distingue o mínimo do
+   máximo. Onde há ambiguidade, legenda não é ruído — é o dado.
+
+   Especificidade de propósito (`.dtab.dtab--grade`, 0-4-1): a regra que zera
+   o `::before` é `.dtab tbody td[data-label]` (0-3-1). Empatar e depender da
+   ordem dos arquivos é como esta correção some no dia em que alguém trocar a
+   ordem dos <link>.
+
+   A ordem do cartão é a ordem da decisão: que linha é · como ela está ·
+   quanto vale. A data da última atualização SAI — é referência, e referência
+   não se lê com o dedo ocupado. */
+@media (max-width:600px){
+  .dtab--grade tbody tr{gap:6px 12px;padding:13px 16px}
+  /* 1ª fileira: a linha do grid, e o estado encostado à direita */
+  .dtab--grade .g-lin{flex:1 1 auto;font-size:15px;font-weight:700;color:var(--text)}
+  .dtab--grade .g-st{margin-left:auto;flex:0 0 auto}
+  /* o campo abre fileira e tem altura de TOQUE: 48px, acima do mínimo de 44 */
+  .dtab--grade .g-p,.dtab--grade .g-pmax,.dtab--grade .g-brand{flex:1 0 100%;order:6}
+  .dtab--grade .g-p .cell,.dtab--grade .g-pmax .cell,.dtab--grade .g-brand .cell{
+    width:100%;max-width:none;height:48px;font-size:18px;padding:0 12px}
+  .dtab.dtab--grade tbody td[data-label]::before{
+    content:attr(data-label);display:block;margin:0 0 5px;font-size:9.5px;
+    font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--amber-70);font-family:var(--sans)}
+  /* …menos onde o próprio valor já é o rótulo: o estado é uma pastilha que se
+     lê sozinha, e "STATUS" acima dela é uma palavra a mais para rolar. */
+  .dtab.dtab--grade tbody td.g-st[data-label]::before{content:none}
+  /* referência não se lê com o dedo ocupado */
+  .dtab--grade .g-upd{display:none}
+  /* a faixa de geração continua faixa: é ela que diz em que pilha o dedo está */
+  .dtab--grade tbody tr.g{gap:0;padding:7px 16px;background:var(--ink-10)}
+  .dtab--grade tbody tr.g td{font-size:11px;font-weight:800;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-70)}
+  .dtab--grade tbody tr.g td[data-label]::before{content:none}
+  /* a capacidade calculada do SSD não é campo: fica na fileira, à direita */
+  .dtab--grade .wtc-calc{justify-content:flex-end}
+
+  /* A FAIXA DA FILA vira pilha: quatro células de 200px lado a lado viravam
+     quatro tiras de uma palavra cada. */
+  .blk__l{flex-direction:column}
+  .blk__i{flex:1 1 auto}
+  /* Os três números: dois por fileira em vez de três tiras finas. */
+  .pkpi__r{flex:1 1 45%}
+  .pkpi__r b{font-size:22px}
+  /* A porta do catálogo: o chevron desce em vez de espremer o título. */
+  .pdoor{align-items:flex-start;flex-direction:column;gap:10px}
+  /* O painel de opções do catálogo já vai para o fim em 900px; aqui ele
+     também perde o `sticky`, que numa tela curta cobriria a seleção. */
+  .catopt{position:static}
+}

@@ -3852,3 +3852,214 @@ class TelaDoCatalogoTests(TestCase):
         resp = self.client.get('/partner/catalogo/')
         self.assertEqual(resp.status_code, 302)
         self.assertIn('/login/', resp['Location'])
+
+
+class CelularEQuatroIdiomasTests(TestCase):
+    """Etapa 10 — a grade no telefone (≤600px) e os quatro idiomas.
+
+    **Por que testar CSS pela marcação.** Um teste não abre navegador nem mede
+    pixel. Mas o cartão do telefone só consegue rotular o que a MARCAÇÃO
+    carrega: a `.dtab` vira cartão sozinha, e é o `data-label` + a classe de
+    papel que dizem ao cartão o que é rótulo, o que é campo e o que sai. Sem
+    isso o campo de máximo e o de mínimo ficam idênticos — dois retângulos
+    vazios em cima do outro. Então o portão é sobre a marcação, e a folha é
+    conferida no disco.
+
+    **A exceção que a grade precisa.** A regra do sistema é "nenhum rótulo
+    impresso" — no cartão a hierarquia substitui a legenda. A grade é o
+    segundo lugar do produto onde se DIGITA dentro da tabela, e ali a
+    ambiguidade é real: onde há dois campos na mesma linha, legenda não é
+    ruído, é o dado.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'Cel Co', 'cel-co')
+        cls.generica = _setup_wuquan.generica
+        # eMCP: o tipo com FAIXA — dois campos na mesma linha, o caso duro
+        Price.all_companies.create(
+            price_list=cls.generica, kind='emcp', gen='',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('90'), price_max=Decimal('100'))
+        # DDR: a matriz, com duas colunas de marca
+        for lst in (cls.lista, cls.generica):
+            Price.all_companies.create(
+                price_list=lst, kind='ddr', gen='DDR4',
+                tier_value=Decimal('8'), tier_unit='Gb',
+                status=STATUS_UNQUOTED)
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('cel_p')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        from tenancy.scope import set_current_company
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        self.client.force_login(self.parceiro)
+
+    def _tds_do_corpo(self, html):
+        """Os `<td>` de dentro de `<tbody>` das tabelas `.dtab--grade`."""
+        import re
+        out = []
+        for tabela in re.findall(
+                r'<table class="dtab dtab--static dtab--grade">(.*?)</table>',
+                html, re.S):
+            corpo = re.search(r'<tbody>(.*?)</tbody>', tabela, re.S)
+            if not corpo:
+                continue
+            for linha in re.findall(r'<tr(.*?)</tr>', corpo.group(1), re.S):
+                if 'class="g"' in linha:
+                    continue          # faixa de geração: uma célula de título
+                out += re.findall(r'<td\b([^>]*)>', linha)
+        return out
+
+    # ── a marcação que o cartão precisa ─────────────────────────────────────
+
+    def test_interface_toda_celula_da_grade_diz_o_que_e(self):
+        """PORTÃO. No telefone o cabeçalho da tabela some. Célula sem
+        `data-label` nem classe de papel vira um valor órfão no cartão — e a
+        primeira a doer é o campo de máximo, idêntico ao de mínimo."""
+        for rota in ('/partner/tipo/emcp/', '/partner/tipo/ddr/',
+                     '/partner/tipo/ssd/', '/partner/tipo/k9/'):
+            html = self.client.get(rota).content.decode()
+            tds = self._tds_do_corpo(html)
+            self.assertTrue(tds, rota)
+            for attrs in tds:
+                self.assertTrue(
+                    'data-label=' in attrs or 'g-lin' in attrs,
+                    f'{rota}: <td{attrs}> não diz o que é')
+
+    def test_interface_a_faixa_rotula_minimo_e_maximo_separadamente(self):
+        """O caso que motiva a exceção do rótulo: dois campos na mesma linha.
+        Rótulos iguais seriam pior que rótulo nenhum."""
+        html = self.client.get('/partner/tipo/emcp/').content.decode()
+        self.assertIn('data-label="Preço ¥ — mínimo"', html)
+        self.assertIn('data-label="Preço ¥ — máximo"', html)
+        self.assertIn('class="g-p"', html)
+        self.assertIn('class="g-pmax"', html)
+
+    def test_interface_a_matriz_rotula_cada_celula_com_a_MARCA(self):
+        """No cartão as colunas viram fileiras: sem o nome da marca em cada
+        uma, três campos de preço empilhados não dizem de quem é cada preço."""
+        html = self.client.get('/partner/tipo/ddr/').content.decode()
+        self.assertIn(f'data-label="{self.samsung.name}"', html)
+        self.assertIn('data-label="Outras"', html)
+        self.assertIn('class="g-brand"', html)
+
+    def test_interface_as_tabelas_da_grade_pedem_o_cartao_de_grade(self):
+        for rota in ('/partner/tipo/emcp/', '/partner/tipo/ddr/',
+                     '/partner/tipo/ssd/'):
+            self.assertIn('dtab--grade',
+                          self.client.get(rota).content.decode(), rota)
+
+    # ── a folha ─────────────────────────────────────────────────────────────
+
+    def _css(self):
+        from pathlib import Path
+        from django.conf import settings
+        return (Path(settings.BASE_DIR) / 'static' / 'wtc' / 'patterns'
+                / 'parceiro.css').read_text(encoding='utf-8')
+
+    def test_script_a_folha_tem_o_bloco_de_600px_da_grade(self):
+        css = self._css()
+        self.assertIn('@media (max-width:600px)', css)
+        bloco = css[css.index('.dtab--grade tbody tr{'):]
+        for papel in ('.dtab--grade .g-lin', '.dtab--grade .g-st',
+                      '.dtab--grade .g-upd'):
+            self.assertIn(papel, bloco, papel)
+
+    def test_script_o_campo_do_telefone_tem_altura_de_TOQUE(self):
+        """48px, acima do mínimo de 44 — é o dedo, não o cursor."""
+        css = self._css()
+        i = css.index('.dtab--grade .g-p .cell')
+        self.assertIn('height:48px', css[i:i + 260])
+
+    def test_script_o_rotulo_do_cartao_vence_a_regra_que_o_apaga(self):
+        """A `.dtab` zera o `::before` do `data-label` (0-3-1). A exceção da
+        grade precisa de MAIS especificidade, não da ordem dos arquivos —
+        empatar e depender do <link> é como esta correção some um dia."""
+        css = self._css()
+        self.assertIn('.dtab.dtab--grade tbody td[data-label]::before', css)
+        i = css.index('.dtab.dtab--grade tbody td[data-label]::before')
+        self.assertIn('content:attr(data-label)', css[i:i + 120])
+
+    def test_script_o_estado_nao_ganha_rotulo_no_cartao(self):
+        """A pastilha se lê sozinha; "STATUS" em cima dela é uma palavra a
+        mais para rolar num telefone."""
+        css = self._css()
+        self.assertIn('.dtab.dtab--grade tbody td.g-st[data-label]::before', css)
+        i = css.index('.dtab.dtab--grade tbody td.g-st[data-label]::before')
+        self.assertIn('content:none', css[i:i + 80])
+
+    # ── os quatro idiomas ───────────────────────────────────────────────────
+
+    def test_script_o_portao_dos_catalogos_esta_verde(self):
+        """PORTÃO. `check_translations` cobre completude, placeholders, tags
+        HTML, glossário protegido, frescor do `.mo` e PT cru em template. Ele
+        é o mesmo que `chips.tests_i18n` roda — aqui ele guarda especificamente
+        que o painel do comprador não deixou string para trás."""
+        from io import StringIO
+        from django.core.management import call_command
+        saida = StringIO()
+        call_command('check_translations', stdout=saida, stderr=saida)
+        self.assertIn('publicáveis', saida.getvalue())
+
+    def test_script_os_tokens_canonicos_da_spec_estao_no_glossario(self):
+        """Spec §9: `eMMC · eMCP · uMCP · LPDDR · UFS · DDR · SSD · K9 · PCB ·
+        TLC · QLC · NVMe · SATA · M.2` não traduzem em idioma nenhum. Faltavam
+        nove no glossário até a Etapa 10 — e o painel passou a usar todos."""
+        from chips.management.commands.check_translations import (
+            PROTECTED_TERMS)
+        for token in ('eMMC', 'eMCP', 'uMCP', 'LPDDR', 'UFS', 'DDR', 'SSD',
+                      'K9', 'PCB', 'TLC', 'QLC', 'NVMe', 'SATA', 'M.2'):
+            self.assertIn(token, PROTECTED_TERMS, token)
+
+    def test_script_a_tela_do_comprador_fala_os_quatro_idiomas(self):
+        """Uma string de cada etapa nova, presente nos três catálogos
+        COMPILADOS. Se um `.mo` deixar de ser gerado, isto fica vermelho antes
+        de a tela sair em português para o comprador chinês.
+
+        ⚠ A pergunta é se o msgid ESTÁ no catálogo, não se a tradução é
+        diferente: em espanhol «Catálogo» traduz para «Catálogo», e um
+        `assertNotEqual` chamaria isso de falta de tradução. O `gettext()`
+        devolve o próprio msgid nos dois casos — ausente e idêntico —, então
+        ele não serve de prova. O catálogo compilado, sim.
+        """
+        import gettext
+        from pathlib import Path
+        from django.conf import settings
+        amostra = ['Catálogo', 'Gerar PDF', 'mínimo por peça',
+                   'Válido até', 'Como funciona', 'Notificações']
+        for loc in ('en', 'es', 'zh_Hans'):
+            caminho = (Path(settings.BASE_DIR) / 'locale' / loc /
+                       'LC_MESSAGES' / 'django.mo')
+            with open(caminho, 'rb') as fh:
+                t = gettext.GNUTranslations(fh)
+            for msgid in amostra:
+                self.assertIn(msgid, t._catalog,
+                              f'{loc}: «{msgid}» não está no .mo compilado')
+            # …e pelo menos uma delas TEM de mudar de forma, senão o teste
+            # passaria com um catálogo que só copia o português.
+            self.assertNotEqual(t.gettext('Como funciona'), 'Como funciona',
+                                loc)
+
+    def test_script_o_plural_resolve_nas_tres_linguas(self):
+        """As entradas plurais nasceram no painel v2 e são a única forma que
+        o parser do portão não conhecia. O chinês tem UMA forma; o teste
+        confere que ela responde às duas contagens."""
+        import gettext
+        from pathlib import Path
+        from django.conf import settings
+        sing = 'travando %(n)s pedido'
+        plur = 'travando %(n)s pedidos'
+        for loc in ('en', 'es', 'zh_Hans'):
+            caminho = (Path(settings.BASE_DIR) / 'locale' / loc /
+                       'LC_MESSAGES' / 'django.mo')
+            with open(caminho, 'rb') as fh:
+                t = gettext.GNUTranslations(fh)
+            um = t.ngettext(sing, plur, 1) % {'n': 1}
+            varios = t.ngettext(sing, plur, 3) % {'n': 3}
+            self.assertNotIn('travando', um, loc)
+            self.assertIn('1', um, loc)
+            self.assertIn('3', varios, loc)

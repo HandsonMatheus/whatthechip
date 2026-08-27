@@ -243,6 +243,12 @@ class I18nChoicesDeclarationTests(TestCase):
         # ── Rótulo = DADO técnico, idêntico em qualquer idioma (glossário):
         'pricing.Price.kind',            # eMMC / UFS / eMCP…
         'pricing.Price.tier_unit',       # GB (pacote) / Gb (die) — admin-only
+        # SSD / K9 — os dois tipos SEM grade, cujo preço é taxa de contrato
+        # (Etapa 7). Os rótulos são os próprios tokens canônicos da spec §9:
+        # não traduzem em idioma nenhum, e envolvê-los em _lazy convidaria
+        # alguém a traduzir "SSD" um dia. O `review_status` do mesmo modelo
+        # ESTÁ em _lazy — ali o rótulo é palavra, não dado.
+        'pricing.RateChangeRequest.kind',
     }
     APPS_DO_PROJETO = {'chips', 'estoque', 'pages', 'tenancy', 'pricing'}
 

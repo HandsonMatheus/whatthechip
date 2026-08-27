@@ -102,11 +102,11 @@
           {% if k.unified %}{% trans "unificada — uma coluna de preço" %}
           {% elif k.dual %}{% trans "celular × PCB — duas tabelas" %}
           {% else %}{% trans "por marca — matriz" %}{% endif %}</td>
-        <td class="n" data-label="{% trans 'Cotados' %}">{% if k.quoted %}{{ k.quoted }}{% else %}—{% endif %}</td>
+        <td class="n hide-sm" data-label="{% trans 'Cotados' %}">{% if k.quoted %}{{ k.quoted }}{% else %}—{% endif %}</td>
         {% comment %} §3.5: `travando N pedidos` NO LUGAR de `N sem cotação`
            quando as duas coisas são verdade. As duas são — mas só uma explica
            a urgência, e a contagem exata está a um clique, na grade. {% endcomment %}
-        <td class="v" data-label="{% trans 'Sem cotação' %}">
+        <td class="v key" data-label="{% trans 'Sem cotação' %}">
           {% if k.travados %}<span class="tag tag--no"><span class="dot"></span>{% blocktrans trimmed count n=k.travados %}travando {{ n }} pedido{% plural %}travando {{ n }} pedidos{% endblocktrans %}</span>
           {% elif k.pending %}<span class="tag tag--maybe"><span class="dot"></span>{% blocktrans trimmed count n=k.pending %}{{ n }} sem cotação{% plural %}{{ n }} sem cotação{% endblocktrans %}</span>
           {% else %}<span class="tag tag--yes"><span class="dot"></span>{% trans "completa" %}</span>{% endif %}</td>

@@ -290,7 +290,7 @@ Cada etapa fecha sozinha, com teste, e não deixa a tela pela metade.
 | **7** ✅ | SSD + K9 nas telas de preço, piso do SSD | C3 |
 | **8** ✅ | Catálogo parametrizado | 7 |
 | **9** ✅ | Aplicar o design v2 em todos os templates do comprador | 1–8 |
-| **10** | Celular (≤600px) + 4 idiomas das strings novas | 9 |
+| **10** ✅ | Celular (≤600px) + 4 idiomas das strings novas | 9 |
 
 ---
 
@@ -897,6 +897,78 @@ máquina no meio da etapa, e estourou a janela de 45s do shell. Contornei com um
 FORA do repo apontando o banco de TESTE para arquivo, o que permite `--keepdb`. **Depois de qualquer
 migração nova é obrigatório apagar o arquivo** — senão os testes rodam contra um esquema velho, que é a
 única maneira de esse atalho mentir.
+
+### ✅ Etapa 10 — a grade no telefone, e os quatro idiomas de verdade (2026-08-26)
+
+#### O celular (≤600px)
+
+A `.dtab` já vira cartão sozinha. O que faltava era o cartão **saber o papel de cada célula** — sem isso
+as cinco caem numa pilha indistinguível, com o campo perdido no meio. É o mesmo problema que a
+conferência do lote resolveu com `.dtab--conf`; a grade de preço é o **segundo** lugar do produto onde se
+digita dentro de uma tabela.
+
+| O quê | Como |
+|---|---|
+| Papéis de célula | `.g-lin` · `.g-st` · `.g-p` · `.g-pmax` · `.g-brand` · `.g-upd` |
+| Modificador | `.dtab--grade` nas quatro tabelas da tela do tipo |
+| Ordem do cartão | que linha é · como ela está · **quanto vale** |
+| Campo | fileira inteira, **48px** de altura — acima do mínimo de 44 |
+| Sai do cartão | a data da última atualização: referência não se lê com o dedo ocupado |
+
+**A exceção do rótulo, e por que ela é exceção.** A regra do sistema é *"nenhum rótulo impresso"* — no
+cartão a hierarquia substitui a legenda, e a `.dtab` zera o `::before` do `data-label` justamente para
+isso. A grade precisa quebrar essa regra num ponto: numa linha com **faixa** há dois campos de preço, e
+sem rótulo nada distingue o mínimo do máximo. Onde há ambiguidade real, legenda não é ruído — é o dado. O
+estado continua sem rótulo: a pastilha se lê sozinha.
+
+**Especificidade, não ordem de arquivo.** A exceção usa `.dtab.dtab--grade …` (0-4-1) contra o
+`.dtab tbody td[data-label]` (0-3-1) que a apaga. Empatar em 0-3-1 e depender da ordem dos `<link>` é
+como esta correção some no dia em que alguém reordenar o `<head>` — e some **calada**.
+
+Fora da grade: a faixa da fila vira pilha, os três números viram dois por fileira, a porta do catálogo
+desce o chevron, e o painel de opções do catálogo perde o `sticky` (numa tela curta ele cobriria a
+seleção).
+
+#### Os quatro idiomas
+
+**🔴 Eu nunca tinha rodado o portão.** O projeto tem um `check_translations` que é o análogo i18n do
+`validate_convention` — completude, placeholders, tags HTML, glossário protegido, frescor do `.mo` e PT
+cru em template. A rotina da casa manda rodá-lo **depois de toda atualização de catálogo**. Eu adicionei
+~120 msgids em cinco etapas e só o executei agora. Ele acusou **23 problemas**.
+
+**22 eram um defeito DELE, que o meu trabalho fez aparecer.** O parser não conhecia `msgid_plural` nem
+`msgstr[N]`, e o estrago era silencioso nos dois sentidos: a linha de continuação do plural era somada ao
+**msgid** (uma entrada com dois `%(n)s` que nunca existiu), e `msgstr[0]`/`msgstr[1]` eram **concatenados
+no mesmo campo**. As primeiras entradas plurais do projeto nasceram no painel v2 — até então o buraco não
+tinha o que morder. Agora o parser lê plural, e `check_entry` confere **cada forma** contra o msgid, além
+de exigir que singular e plural do ORIGINAL concordem entre si (se o português já divergir, nenhuma
+tradução tem como acertar).
+
+**1 era meu, e era de verdade:** em chinês eu tinha traduzido **Samsung** para 三星, no rótulo do K9.
+Fabricante é token canônico — não traduz em idioma nenhum.
+
+**Nove tokens da spec §9 faltavam no glossário:** `SSD · K9 · PCB · TLC · QLC · NVMe · SATA · M.2` (e o
+`RMB`, que eu adicionei e **tirei de volta** — a lista canônica é de termos de PRODUTO, não do nome da
+moeda; em chinês RMB é 人民币, e exigir a sigla obrigaria o comprador a ler o nome da própria moeda dele
+em estrangeiro. O símbolo `¥` é que atravessa os idiomas, e já está em todas as strings).
+
+**E o portão de `choices` pegou o modelo novo:** `RateChangeRequest.kind` tinha rótulos crus. Entrou na
+lista de declarados como *rótulo = dado* — `SSD`/`K9` são os próprios tokens canônicos, e envolvê-los em
+`_lazy` convidaria alguém a traduzir "SSD" um dia. O `review_status` do mesmo modelo **está** em `_lazy`:
+ali o rótulo é palavra, não dado.
+
+Resultado: **`Catálogos publicáveis ✓`** nos três idiomas, 936 entradas cada.
+
+12 testes (7 script + 5 interface), entre eles o portão que crava que **toda célula da grade diz o que
+é** — porque no telefone o cabeçalho some, e célula sem `data-label` nem classe de papel vira um valor
+órfão no cartão.
+
+⚠ **Uma asserção que não provava nada, de novo — e desta vez o defeito era o inverso.**
+`assertNotEqual(t.gettext(msgid), msgid)` chamaria de "sem tradução" toda palavra que é igual nas duas
+línguas (em espanhol *Catálogo* é *Catálogo*). E o `gettext()` devolve o próprio msgid **nos dois casos**
+— ausente e idêntico —, então ele não serve de prova. O teste passou a perguntar se o msgid está no
+catálogo COMPILADO, e guarda separado uma string que tem de mudar de forma, senão ele passaria com um
+catálogo que só copia o português.
 
 ### 🧪 Regra permanente — teste em SCRIPT e em INTERFACE (dono, 2026-08-26)
 

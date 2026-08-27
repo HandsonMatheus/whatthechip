@@ -3644,7 +3644,7 @@ msgid "N1 de N2 tipos no catálogo · N3 linhas cotadas · N4 sem cotação"
 msgstr "价目表含 N1/N2 个类型 · 已报价 N3 行 · 未报价 N4 行"
 
 msgid "NAND Samsung avulsa — preço único por unidade"
-msgstr "三星散装 NAND——每颗统一价"
+msgstr "Samsung 散装 NAND——每颗统一价"
 
 msgid "Nenhum tipo selecionado — o catálogo sairia em branco."
 msgstr "未选择任何类型——价目表将是空的。"
