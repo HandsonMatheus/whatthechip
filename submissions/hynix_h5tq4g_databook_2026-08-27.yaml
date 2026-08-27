@@ -1,0 +1,171 @@
+# Submissão de known_parts — SK Hynix, famílias H5TQ (DDR3, 1.5V) e H5TC (DDR3L, 1.35V) —
+# densidade 4Gb. Gerado a partir da investigação do PN H5TQ4G83BFR (busca na bancada,
+# 2026-08-27). Mesmo padrão "die-revision-letter" já visto várias vezes nesta família
+# (H5TQ/H5TC): dentro da MESMA densidade+interface, uma letra final diferente é uma
+# REVISÃO/DOCUMENTO de datasheet distinto, não muda capacidade. Gramática já decodifica
+# certo (pn[4:6]="4G"→dram_density="4Gb = 512MB por die [✓]", grammar_complete=true) —
+# é known_parts-only (Trilha B).
+#
+# ACHADO PRINCIPAL DESTA RODADA — DATABOOK OFICIAL COMPLETO (upgrade de fonte): achei e li
+# NA ÍNTEGRA um PDF de databook OFICIAL da SK Hynix ("Q3'2013 DATABOOK", hospedado em
+# datasheet.iiic.cc — mesmo domínio Tier-1 já usado nesta sessão pra um datasheet
+# individual confirmado) cobrindo TODA a linha DDR3/DDR3L/DDR2/GDDR5/LPDDR da empresa em
+# tabelas estruturadas (densidade/organização/velocidade/PN/package/disponibilidade). É
+# documento oficial do fabricante — corpo técnico real lido, não metadado — mesmo padrão
+# de rigor que já uso para confidence=confirmed nesta sessão (ex.: H27UCG8T2ATR,
+# H5TQ2G83DFR). Confirma de uma vez 5 PNs desta densidade (alvo + 4 irmãos) MAIS resolve
+# uma lacuna antiga: H5TC4G83BFR estava marcado como "GAP CONHECIDO, não confirmado" no
+# hynix_h5tc4g_rev_a_c_2026-08-20.yaml (viewer JS não abria o corpo na época) — o databook
+# agora confirma esse PN explicitamente (linha "H5TC4G83BFR-PBA ... Q1'14").
+#
+# COBERTURA DE CLUSTER (pedido do dono, 2026-08-26/27: "pesquise mais... tem que
+# pesquisar o maximo possivel, nao so 1"): ANTES de pesquisar, CHEQUEI submissions/*.yaml
+# já commitadas — nenhum destes 7 PNs tinha sido submetido ainda (H5TQ4G83EFR/CFR já
+# eram; não repetidos).
+#   NOVOS nesta rodada: H5TQ4G83BFR (ALVO), H5TQ4G83AFR, H5TQ4G83MFR (achado só no
+#   databook — não apareceu nas buscas web isoladas), H5TQ4G63AFR, H5TQ4G63MFR (idem,
+#   só no databook), H5TC4G83BFR (resolve gap antigo), H5TQ4G43BFR (achado por busca
+#   web isolada — censtry/digchip/datasheets360/AB Sunshine — NÃO aparece no databook,
+#   mas fonte de distribuidor estruturada já é suficiente pra manual).
+#   TENTADO e NÃO achado em NENHUMA fonte, incl. o databook completo (excluir, não
+#   adivinhar): H5TQ4G63BFR (par x16 do alvo) — o databook lista x16/4Gb só nas
+#   revisões A e M, nunca B; duas buscas web independentes também não acharam nada.
+#   Ausência consistente em 3 fontes diferentes = exclusão confiante, não lacuna de busca.
+#
+# ARITMÉTICA (4Gb÷8=512MB, mesma densidade total independente da largura de barramento —
+# padrão já confirmado nesta sessão pro par x8/x16): x8 "512Mx8" = 512M×8=4096Mbit=4Gb.
+# x16 "256Mx16" = 256M×16=4096Mbit=4Gb. x4 (H5TQ4G43BFR, não no databook, só distribuidor)
+# seguindo a mesma convenção: 1024M×4=4096Mbit=4Gb.
+#
+# FONTES:
+#   H5TQ4G83BFR (ALVO), H5TQ4G83AFR, H5TQ4G83MFR, H5TQ4G63AFR, H5TQ4G63MFR, H5TC4G83BFR:
+#   SK Hynix "Q3'2013 DATABOOK" (datasheet.iiic.cc), seção "Computing Memory / DDR3 SDRAM
+#   Solder-Down" (1.5V=H5TQ, pg.2) e "DDR3L SDRAM Solder-Down" (1.35V=H5TC, pg.2-3) — corpo
+#   lido na íntegra via fetch direto, tabela estruturada DENSITY/ORG/SPEED/PART
+#   NUMBER/PKG/AVAIL. H5TQ4G83BFR-RDC/PBC/H9C e H5TC4G83BFR-PBA/H9A aparecem com
+#   disponibilidade "Q1'14" (era o revision mais novo no momento do databook — Q3'2013 —,
+#   plenamente em produção desde então). H5TQ4G83AFR/MFR e H5TQ4G63AFR/MFR aparecem "Now".
+#   Corroborado cruzado por AllDataSheet (H5TQ4G83AFR-PBC, id 533433, "4Gb DDR3 SDRAM",
+#   Direct Link=skhynix.com — "Similar Part No." da própria página cita H5TQ4G83AMR, mesma
+#   família de revisões) e Octopart/datasheets.com/AB Sunshine/eBay pra AFR especificamente.
+#   confidence=confirmed (corpo técnico oficial do fabricante lido, não metadado).
+#
+#   H5TQ4G43BFR: censtry.com (página própria "H5TQ4G43BFR-RDC", "DDR3-1866MHz 4Gx4"),
+#   corroborado por digchip.com ("H5TQ4G43BFR datasheet - DDR3 SDRAM Memory"),
+#   datasheets360.com e AB Sunshine — não aparece no databook lido (que só mostrava x8/x16
+#   pra esta densidade nas seções que abri), mas 4 fontes de distribuidor independentes e
+#   estruturadas convergem. ⚠ DESCARTEI prodisknetwork.com como fonte (mesmo padrão de
+#   conteúdo gerado em massa já identificado e descartado nesta sessão — rodada
+#   H5TQ1G83AFP — "workload fit: Hyper-V/Kubernetes" pra um chip DDR3 de 2013 é o mesmo
+#   tipo de texto reciclado sem valor probatório). confidence=manual.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq4g_databook_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq4g_databook_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ4G83BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.iiic.cc/datasheets-0/sk_hynix/H5TC4G83BFR-PBA.pdf"
+    notes: >
+      PN ALVO da bancada (2026-08-27). SK Hynix "Q3'2013 DATABOOK" (datasheet.iiic.cc),
+      lido na íntegra: tabela "DDR3 SDRAM Solder-Down" (1.5V), linha "4Gb 512Mx8":
+      "H5TQ4G83BFR-RDC/PBC/H9C FBGA(78ball) 8Bank, 1.5V ... Q1'14". 512M×8=4096Mbit=4Gb÷8=
+      512MB — bate exato com o decode atual da gramática. confidence=confirmed (corpo
+      técnico oficial do fabricante lido, não metadado).
+
+  - part_number: "H5TQ4G83AFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533433/HYNIX/H5TQ4G83AFR-PBC.html"
+    notes: >
+      Irmão de revisão do alvo (cluster) — presente no mesmo databook oficial ("Now",
+      revisão anterior à B). Corroborado por AllDataSheet: página própria e dedicada
+      (id 533433, 458KB/35P, "4Gb DDR3 SDRAM", Direct Link=skhynix.com oficial) + Octopart
+      + datasheets.com + AB Sunshine + eBay (peça física). confidence=confirmed (databook
+      oficial lido na íntegra).
+
+  - part_number: "H5TQ4G83MFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.iiic.cc/datasheets-0/sk_hynix/H5TC4G83BFR-PBA.pdf"
+    notes: >
+      3ª revisão do cluster (letra M) — achada só no databook, não apareceu em nenhuma
+      busca web isolada desta rodada (por isso vale registrar: o databook cobre PNs que
+      buscas pontuais não acham). Mesma tabela do alvo: "H5TQ4G83MFR-PBC/H9C ... Now".
+      confidence=confirmed (databook oficial lido na íntegra).
+
+  - part_number: "H5TQ4G63AFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.iiic.cc/datasheets-0/sk_hynix/H5TC4G83BFR-PBA.pdf"
+    notes: >
+      Par x16 da revisão A (cluster) — mesmo databook, tabela "4Gb 256Mx16":
+      "H5TQ4G63AFR-RDC/PBC/H9C ... Now". 256M×16=4096Mbit=4Gb÷8=512MB — mesma densidade
+      total do par x8, largura diferente. confidence=confirmed (databook oficial lido na
+      íntegra).
+
+  - part_number: "H5TQ4G63MFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.iiic.cc/datasheets-0/sk_hynix/H5TC4G83BFR-PBA.pdf"
+    notes: >
+      Par x16 da revisão M (cluster) — achada só no databook, mesma tabela do PN acima:
+      "H5TQ4G63MFR-PBC/H9C ... Now". confidence=confirmed (databook oficial lido na
+      íntegra).
+
+  - part_number: "H5TC4G83BFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.iiic.cc/datasheets-0/sk_hynix/H5TC4G83BFR-PBA.pdf"
+    notes: >
+      Irmão DDR3L (1.35V, família H5TC — não H5TQ) na mesma densidade/organização do
+      alvo. ⚠ RESOLVE GAP ANTIGO: estava listado como "GAP CONHECIDO, não confirmado" no
+      hynix_h5tc4g_rev_a_c_2026-08-20.yaml (só um PDF com viewer JS sem corpo extraível na
+      época). O databook agora confirma explicitamente: tabela "DDR3L SDRAM Solder-Down"
+      (1.35V), "4Gb 512Mx8": "H5TC4G83BFR-PBA/H9A FBGA(78ball) 8Bank, 1.35V ... Q1'14".
+      confidence=confirmed (databook oficial lido na íntegra — é o mesmo arquivo PDF cujo
+      nome de arquivo é literalmente "H5TC4G83BFR-PBA.pdf").
+
+  - part_number: "H5TQ4G43BFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x4"
+    confidence: manual
+    source_url: "https://www.censtry.com/product/hynix/h5tq4g43bfr-rdc.html"
+    notes: >
+      Par x4 da revisão B (cluster) — NÃO aparece no databook lido (que só mostrava x8/x16
+      pra esta densidade nas seções cobertas), mas censtry.com tem página própria e
+      dedicada ("H5TQ4G43BFR-RDC"), corroborado por digchip.com ("H5TQ4G43BFR datasheet -
+      DDR3 SDRAM Memory") e datasheets360.com + AB Sunshine. ⚠ Descartei prodisknetwork.com
+      como fonte (mesmo padrão de conteúdo gerado em massa já identificado nesta sessão).
+      1024M×4=4096Mbit=4Gb÷8=512MB. confidence=manual (distribuidor estruturado, corpo do
+      databook oficial não cobre esta organização).
