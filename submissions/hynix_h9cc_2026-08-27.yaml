@@ -1,0 +1,129 @@
+# Submissão de known_parts — SK Hynix, família H9CC (LPDDR3 standalone, x32). Gerado a
+# partir da investigação do PN H9CCNNN8KTML (busca na bancada, 2026-08-27). Família
+# H9CC é IRMÃ da H9CK (mesmo mapa compartilhado HYX_LPDDR3_CAP, densidade por pn[7];
+# H9CC=x32, H9CK=x64 — ver hynix_h9ck_2026-07-13.yaml) e JÁ estava com grammar_complete
+# desde aquela rodada (código 'A' foi adicionado ao mapa compartilhado ali). Mas H9CC
+# tinha ZERO known_parts commitados até agora — só H9CK tinha sido trabalhada em
+# Trilha B. Objetivo é o BANCO, não a gramática já decodificar certo (correção do dono,
+# 2026-08-24 — ver [[wtc-objetivo-banco-nao-gramatica]]).
+#
+# COBERTURA DE CLUSTER (pedido do dono, 2026-08-27: "pesquise mais... tem que
+# pesquisar o maximo possivel, nao so 1"): os 4 fuzzy_suggestions do debug
+# (H9CCNNN8JTML, H9CCNNNBJTML, H9CCNNNBLTML, H9CCNNNCLTML) cobrem 2 códigos de
+# densidade diferentes do alvo (8=1GB confirmado 2×, B=2GB, C=4GB=teto da família) —
+# pesquisei os 4, todos confirmados como PNs reais e distintos (nenhum é erro de
+# leitura do alvo). ANTES de pesquisar, CHEQUEI submissions/*.yaml já commitadas —
+# nenhum known_part H9CC tinha sido submetido ainda (só H9CK, família irmã).
+#
+# GAP CONHECIDO, NÃO PERSEGUIDO (excluir, não adivinhar): uma listagem AliExpress/imall
+# revelou um par de sufixo "TAL" vs "TML" na posição 10 (ex.: "H9CCNNN8KTAL" ao lado de
+# "H9CCNNN8KTML" no mesmo anúncio) — recorrente em pelo menos 2 códigos de densidade
+# (8K e BL), sugerindo outra dimensão real de variante (grade/die?), mas só vi isso
+# numa fonte agregadora de revenda (baixa confiança sozinha) — não incluí nenhum PN
+# "...TAL" nesta leva; fica registrado para uma rodada futura confirmar.
+#
+# ARITMÉTICA (mapa HYX_LPDDR3_CAP, compartilhado com H9CK, já documentado no tip da
+# família): 8=1GB · B=16Gb÷8=2GB · C=4GB (teto confirmado da família, já estabelecido
+# na pesquisa H9CK anterior). Todos batem com "capacity" que o debug já retornava.
+#
+# FONTES:
+#   H9CCNNN8KTML (ALVO): página PRÓPRIA no Jotrin Electronics (title "H9CCNNN8KTML
+#     SKHYNIX Memory") + listagem imall.com/AliExpress com order-code completo e
+#     descrição estruturada "H9CCNNN8KTMLBR-NTM ... BGA253 LPDDR3 1G" (1Gb=128MB×8=
+#     1GB — bate) + rede ampla de distribuidores (netcomponents, DigiPart). Nenhuma
+#     fonte contradiz o tipo/fabricante. confidence=manual.
+#   H9CCNNN8JTML: mesma densidade do alvo (8), posição 8 diferente (J em vez de K) —
+#     página PRÓPRIA no HKinventory ("HYNIX PRICE,STOCK,DISTRIBUTORS") + DigiPart +
+#     AliExpress (stencil de retrabalho, evidência de peça física real). confidence=manual.
+#   H9CCNNNBJTML (via order-code H9CCNNNBJTMLAR-NUD): WinSource (via DigiPart, fetch
+#     direto) descreve "LPDDR3-1866 x32 (16Gb)" — campo estruturado do distribuidor,
+#     MESMO padrão que motivou a descoberta do código 'A' na família irmã H9CK.
+#     16Gb÷8=2GB — bate exato com o código 'B' do mapa. ⚠ 1 revendedor (allchip-electronic)
+#     rotulou errado como fabricante "SAMSUNG" — descartado (mesmo padrão de erro isolado
+#     já visto e documentado na rodada H9CK; 10+ outros distribuidores confirmam SKHYNIX).
+#     confidence=manual.
+#   H9CCNNNBLTML: mesma densidade 'B' do PN acima, posição 8 diferente (L em vez de J) —
+#     página PRÓPRIA no Jotrin Electronics ("H9CCNNNBLTML SKHYNIX Memory") + DigiPart.
+#     confidence=manual.
+#   H9CCNNNCLTML (via order-code H9CCNNNCLTMLAR-NUD): código 'C' = teto de densidade já
+#     confirmado da família (4GB, ver tip). DigiPart: 6+ distribuidores independentes
+#     (TIST, GreenTree, Conevo, Hongte, Atosn, New Strength, Green Light) estocando o
+#     mesmo order-code, todos atribuindo fabricante SKHYNIX/Hynix sem divergência.
+#     confidence=manual.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9cc_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9cc_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9CCNNN8KTML"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.jotrin.com/product/parts/H9CCNNN8KTML"
+    notes: >
+      PN ALVO da bancada (2026-08-27). Página própria no Jotrin Electronics
+      ("H9CCNNN8KTML SKHYNIX Memory"). Corroborado por listagem imall.com/AliExpress
+      com order-code completo e descrição estruturada: "H9CCNNN8KTMLBR-NTM ... BGA253
+      LPDDR3 1G" — código de densidade pn[7]='8'=1GB, já documentado no tip da família
+      (mapa HYX_LPDDR3_CAP compartilhado com H9CK). Ampla rede de distribuidores
+      corrobora (netcomponents, DigiPart) sem divergência de fabricante/tipo.
+      confidence=manual (mesmo rigor Tier-2 já usado nesta família — a descoberta do
+      código 'A' na família irmã H9CK usou a mesma classe de fonte estruturada de
+      distribuidor).
+
+  - part_number: "H9CCNNN8JTML"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.hkinventory.com/p/d/H9CCNNN8JTML.htm"
+    notes: >
+      Irmão do alvo (cluster, mesma densidade '8'=1GB, posição 8 diferente: J em vez
+      de K). Página própria no HKinventory (agregador de distribuidores, fabricante
+      HYNIX). Corroborado por DigiPart (múltiplos distribuidores) e AliExpress
+      (stencil de retrabalho para esta peça — evidência de uso físico real, não só
+      listagem de catálogo). confidence=manual.
+
+  - part_number: "H9CCNNNBJTML"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9ccnnnbjtmlar-nud.html"
+    notes: >
+      Irmão do alvo (cluster, densidade 'B'=2GB — código diferente do alvo). WinSource
+      (via DigiPart, fetch direto do order-code completo H9CCNNNBJTMLAR-NUD): "LPDDR3-1866
+      x32 (16Gb)" — campo ESTRUTURADO do distribuidor, mesma fonte/lógica que motivou a
+      descoberta do código 'A' na família irmã H9CK (ver hynix_h9ck_2026-07-13.yaml).
+      16Gb÷8=2GB — bate exato com o código 'B' do mapa HYX_LPDDR3_CAP. ⚠ 1 revendedor
+      (allchip-electronic.com) rotulou fabricante errado como "SAMSUNG" — descartado (10+
+      outros distribuidores independentes confirmam SKHYNIX/SK Hynix/Hynix Semiconductor
+      sem divergência; mesmo padrão de erro isolado já documentado na rodada H9CK).
+      confidence=manual.
+
+  - part_number: "H9CCNNNBLTML"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.jotrin.com/product/parts/H9CCNNNBLTML"
+    notes: >
+      Irmão do alvo (cluster, mesma densidade 'B'=2GB do PN acima, posição 8 diferente:
+      L em vez de J). Página própria no Jotrin Electronics ("H9CCNNNBLTML SKHYNIX
+      Memory"). Corroborado por DigiPart (rede de distribuidores). confidence=manual.
+
+  - part_number: "H9CCNNNCLTML"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9CCNNNCLTML"
+    notes: >
+      Irmão do alvo (cluster, densidade 'C' — o TETO confirmado da família, já
+      documentado no tip: "Teto confirmado: C=4GB"). DigiPart: order-code completo
+      H9CCNNNCLTMLAR-NUD estocado por 6+ distribuidores independentes (TIST, GreenTree,
+      Conevo, Hongte, Atosn, New Strength, Green Light), todos atribuindo fabricante
+      SKHYNIX/Hynix sem divergência. confidence=manual.
