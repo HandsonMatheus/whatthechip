@@ -4040,16 +4040,65 @@ class CelularEQuatroIdiomasTests(TestCase):
         rótulo, são dois retângulos vazios idênticos, e o comprador digita
         dinheiro em um deles sem saber qual.
 
-        Este teste NÃO aprova o comportamento. Ele crava o estado real do
-        pacote para que a decisão do dono (2026-08-27: alinhar ao design)
-        fique registrada com o preço que ela tem, e para que o dia em que o
-        pacote passar a imprimir o rótulo este teste QUEBRE e nos avise."""
+        O dono decidiu em 2026-08-27 abrir UMA exceção, e ela está no teste
+        seguinte. Este aqui guarda o estado do PACOTE: no dia em que ele
+        passar a imprimir o rótulo sozinho, este teste quebra e avisa que a
+        nossa exceção virou redundante."""
         css = self._css('components.css')
         self.assertIn('.dtab tbody td[data-label]::before{content:none}', css)
         self.assertNotIn('content:attr(data-label)', css)
-        self.assertNotIn('content:attr(data-label)', self._css())
         # o que o pacote de fato imprime é o sufixo, e só ele
         self.assertIn('content:attr(data-suffix)', css)
+
+    def test_script_a_excecao_da_grade_imprime_o_rotulo_e_vence_o_pacote(self):
+        """A exceção é escrita pela CONDIÇÃO, não por um modificador: a
+        tabela que tem campo é a tabela onde a ambiguidade existe. Isso evita
+        a segunda invenção — a marcação segue idêntica à do protótipo, e o
+        que muda é só a folha.
+
+        Dois portões aqui, e os dois já falharam em versões anteriores desta
+        tela: a regra precisa VENCER POR PESO (o pacote é (0,3,2), esta é
+        (0,4,2) porque o `:has()` herda de `input.cell`), e precisa existir
+        no `@media` E no `@container` — o pacote mata o rótulo nos dois, e
+        ressuscitar em só um deixa a tela certa fora do frame e errada
+        dentro dele."""
+        import re
+        css = self._css()
+        regra = '.dtab:has(input.cell) tbody td[data-label]::before'
+        self.assertEqual(css.count(regra), 2, 'falta o par @media/@container')
+
+        # ⚠ Não basta procurar o texto do at-rule e olhar os N caracteres
+        # seguintes: a folha tem VÁRIOS blocos de 600px, e o primeiro não é o
+        # nosso. Para cada ocorrência da regra, andamos para TRÁS até o
+        # at-rule que a contém — é o único jeito de afirmar onde ela mora.
+        envolventes = []
+        for m in re.finditer(re.escape(regra), css):
+            antes = css[:m.start()]
+            aberturas = re.findall(r'@(?:media|container)[^{]*\{', antes)
+            self.assertTrue(aberturas, 'a regra está fora de qualquer at-rule')
+            envolventes.append(aberturas[-1].strip())
+        self.assertEqual(len(envolventes), 2)
+        self.assertTrue(any('@media' in e and '600px' in e for e in envolventes),
+                        f'nenhuma no @media: {envolventes}')
+        self.assertTrue(any('@container' in e and '600px' in e for e in envolventes),
+                        f'nenhuma no @container: {envolventes}')
+        i = css.index(regra)
+        self.assertIn('content:attr(data-label)', css[i:i + 120])
+
+    def test_interface_so_a_tabela_COM_CAMPO_ganha_rotulo(self):
+        """A condição da exceção tem de ser verdadeira na tela, não só no
+        CSS: as tabelas da grade têm `input.cell`; a de capacidade calculada
+        do SSD não tem, e não precisa de rótulo — uma coluna de valor não se
+        confunde com nada."""
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        # a grade da taxa: tem campo E tem rótulo
+        grade = html[html.index('name="rate"'):]
+        self.assertIn('input class="cell', html[:html.index('name="rate"')]
+                      + grade[:200])
+        # a tabela calculada: nenhum input entre as suas tags
+        calc = html[html.index('Preço por peça, calculado'):]
+        calc = calc[:calc.index('</table>')]
+        self.assertNotIn('<input', calc)
 
     def test_script_a_folha_do_parceiro_NAO_tem_mais_o_mecanismo_paralelo(self):
         """A outra metade do portão de regressão: a marcação saiu dos
