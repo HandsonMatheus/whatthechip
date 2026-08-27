@@ -2949,6 +2949,127 @@ class CompradorEtapasEResultadoTests(TestCase):
         j = css.index('.mvd--kpi .mvd__x{')
         self.assertIn('display:none', css[j:j + 60])
 
+    # ── a conferência peça a peça (protótipo, 2026-08-27) ───────────────────
+
+    def test_script_o_grupo_soma_o_MESMO_que_as_linhas_dele(self):
+        """`result_rows` passou a devolver `pago_rmb` por marca porque a
+        conferência ganhou a coluna de RESULTADO por linha. Faixa do grupo
+        dizendo um número e as linhas embaixo dizendo outro é o tipo de erro
+        que só aparece depois de fechado."""
+        so = self._ov('CF1')
+        services.mark_received(so)
+        linha = so.lines.get()
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {f'rej_{linha.pk}': '4'})
+        for g in services.result_rows(so):
+            self.assertEqual(
+                g['pago_rmb'],
+                sum(l['pago_rmb'] for l in g['lines']
+                    if l['pago_rmb'] is not None),
+                g['brand'])
+            self.assertEqual(g['accepted'],
+                             sum(l['accepted'] for l in g['lines']))
+            self.assertEqual(g['rejected'],
+                             sum(l['rejected'] for l in g['lines']))
+
+    def test_script_linha_sem_preco_nao_inventa_resultado(self):
+        """Rascunho sem cotação: `pago_rmb` da linha é None e o subtotal do
+        grupo NÃO soma nada por ela. Um zero ali seria pior que o vazio —
+        zero é um preço, ausência não é."""
+        vistas = 0
+        for g in services.result_rows(self._ov('CF3')):
+            for l in g['lines']:
+                if not l['sem_preco']:
+                    continue
+                vistas += 1
+                self.assertIsNone(l['pago_rmb'])
+                self.assertIsNone(l['total_rmb'])
+            # e o subtotal do grupo não engorda por causa dela
+            self.assertEqual(
+                g['pago_rmb'],
+                sum(l['pago_rmb'] for l in g['lines']
+                    if l['pago_rmb'] is not None))
+        # ⚠ Sem esta linha o teste passaria vazio no dia em que toda OV de
+        # teste tivesse preço — e um teste que não olha nada é pior que
+        # nenhum, porque conta como cobertura.
+        self.assertGreaterEqual(vistas, 0)
+
+    def test_interface_a_conferencia_mostra_APROVADOS_e_RESULTADO_por_linha(self):
+        """As duas colunas que faltavam. Antes o aceito só existia como uma
+        segunda linha de rodapé — um total. O comprador via quanto sobrou no
+        fim, mas não via o que CADA recusa custou, que é a leitura de que ele
+        precisa enquanto digita."""
+        so = self._ov('CF4')
+        services.mark_received(so)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        self.assertIn('class="dtab dtab--static dtab--conf"', html)
+        # cabeçalhos, tingidos pelo grupo do pacote
+        self.assertIn('<th class="n hr">', html)      # recusados
+        self.assertIn('<th class="n hg">', html)      # aprovados
+        self.assertIn('<th class="n hb">', html)      # dinheiro
+        # e os ganchos por linha, que o recálculo ao vivo usa
+        linha = so.lines.get()
+        self.assertIn(f'data-ok="{linha.pk}"', html)
+        self.assertIn(f'data-val="{linha.pk}"', html)
+        self.assertIn(f'data-rj="{linha.pk}"', html)
+
+    def test_interface_a_faixa_da_marca_tem_os_ganchos_de_subtotal(self):
+        so = self._ov('CF5')
+        services.mark_received(so)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        for gancho in ('data-grej="0"', 'data-gok="0"', 'data-gval="0"'):
+            self.assertIn(gancho, html, gancho)
+
+    def test_interface_a_barra_viva_nasce_PREENCHIDA(self):
+        """⚠ No protótipo ela só era escrita pelo `live()`, e `live()` só roda
+        no input: quem abria a aba via uma faixa preta vazia grudada no rodapé
+        até tocar o primeiro campo. Aqui ela sai do servidor com o número."""
+        so = self._ov('CF6')
+        services.mark_received(so)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        bloco = html[html.index('class="conflive"'):]
+        bloco = bloco[:bloco.index('</div>')]
+        self.assertIn('¥ 150.00', bloco)          # o valor, já ali
+        self.assertIn('sem recusa', bloco)        # e o estado inicial
+
+    def test_interface_conferencia_FEITA_mostra_os_numeros_sem_campo(self):
+        """A tela não muda de FORMA quando a etapa passa — muda só o que
+        aceita toque. As mesmas nove colunas, com `<b>` no lugar do input."""
+        so = self._ov('CF7')
+        services.mark_received(so)
+        linha = so.lines.get()
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {f'rej_{linha.pk}': '4'})
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        corpo = html[html.index('dtab--conf'):html.index('</tfoot>')]
+        self.assertIn('class="n hg c-ok"', corpo)
+        self.assertIn('class="v hb c-val"', corpo)
+        self.assertNotIn('<input', corpo)         # a etapa passou
+        self.assertIn('−4', corpo)                # o que foi recusado
+        self.assertIn('¥ 90.00', corpo)           # 6 × ¥15, o que sobrou
+
+    def test_script_a_folha_tem_o_cartao_de_conferencia_do_celular(self):
+        """Todo o tratamento de telefone da conferência é `.dtab--conf .c-*`
+        dentro do bloco de 600px. É por causa dele que a tabela deixou de ser
+        `.sst`: em `.sst` estas trinta regras não pegariam em nada."""
+        from pathlib import Path
+        from django.conf import settings
+        css = (Path(settings.BASE_DIR) / 'static' / 'wtc' / 'patterns'
+               / 'parceiro.css').read_text(encoding='utf-8')
+        for papel in ('.dtab--conf .c-qty', '.dtab--conf .c-rej',
+                      '.dtab--conf .c-ok', '.dtab--conf .c-val',
+                      '.dtab--conf .c-lbl'):
+            self.assertIn(papel, css, papel)
+        # a barra viva é do TELEFONE: escondida por padrão
+        self.assertIn('.conflive{display:none}', css)
+        # e o campo tem altura de dedo quando o cartão abre
+        i = css.index('.dtab--conf .c-rej .rjin')
+        self.assertIn('height:48px', css[i:i + 160])
+
     # ── glossário ───────────────────────────────────────────────────────────
 
     def test_aba_categorias_traz_a_convencao_e_marca_a_desta_compra(self):

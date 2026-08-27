@@ -4232,3 +4232,33 @@ msgstr "¥ minimum/piece"
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
 msgid "¥ por GB"
 msgstr "¥ per GB"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "enviados"
+msgstr "sent"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "aprovados"
+msgstr "approved"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "recusadas"
+msgstr "rejected"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "sem recusa"
+msgstr "no rejections"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "¥ resultado"
+msgstr "¥ result"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "Recusados %(marca)s %(tipo)s %(cap)s"
+msgstr "Rejected %(marca)s %(tipo)s %(cap)s"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "Total · %(n)s marca"
+msgid_plural "Total · %(n)s marcas"
+msgstr[0] "Total · %(n)s brand"
+msgstr[1] "Total · %(n)s brands"

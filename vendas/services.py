@@ -1469,7 +1469,14 @@ def result_rows(so):
         g = grupos.setdefault(line.brand or '—',
                               {'brand': line.brand or '—', 'lines': [],
                                'qty': 0, 'rmb': Decimal('0.00'),
-                               'sem_preco': 0, 'rejected': 0, 'accepted': 0})
+                               'sem_preco': 0, 'rejected': 0, 'accepted': 0,
+                               # ¥ do que sobrou de pé no grupo. Existe desde
+                               # 2026-08-27, quando a conferência ganhou a
+                               # coluna de RESULTADO por linha: o subtotal da
+                               # marca precisa somar a mesma coisa que as
+                               # linhas dela, senão a faixa do grupo diz um
+                               # número e as linhas embaixo dizem outro.
+                               'pago_rmb': Decimal('0.00')})
         if so.status == STATUS_DRAFT:
             unit, unit_usd, estimado = (vivo.get(line.pk),
                                         vivo_usd.get(line.pk), True)
@@ -1507,6 +1514,7 @@ def result_rows(so):
         g['accepted'] += ace
         if total is not None:
             g['rmb'] += total
+            g['pago_rmb'] += (unit * ace)
         else:
             g['sem_preco'] += line.quantity
     for g in grupos.values():
