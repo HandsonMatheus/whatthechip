@@ -1163,13 +1163,52 @@ foram realinhados, cada um com o comentário do que mudou e por que a **regra**
 não mudou. Três portões de regressão novos: o mecanismo paralelo não volta (na
 marcação nem na folha), e a exceção do rótulo tem de existir nos dois at-rules.
 
-### O que fica para a próxima sessão
+### A conferência do lote — feita em 2026-08-27
 
-**A conferência do lote** — a única funcionalidade inteira que falta. Mora nos
-54 KB do `parceiro-lote.js`: a barra viva (`.conflive`), as células de
-conferência peça a peça (`.c-*`), as divergências (`.dif`, `.is-dif`) e a ação
-`.act--check`. O CSS **já está no repositório** — veio junto quando o
-`parceiro.css` do pacote virou a base.
+A tabela passou de `.sst` para `.dtab dtab--conf`, e não por gosto: **todo** o
+tratamento de celular que veio no pacote está escrito como `.dtab--conf .c-*`,
+dentro do bloco de 600px. Com a tabela em `.sst` aquelas trinta regras não
+pegariam em nada.
+
+**Duas colunas novas, e são o motivo da passada:** «Aprovados» e «¥ resultado»,
+por **linha**. Antes o aceito só existia como uma segunda linha de rodapé — um
+total. O comprador via quanto sobrou no fim, mas não via o que **cada** recusa
+custou, que é a leitura de que ele precisa enquanto digita. As três colunas do
+resultado são tingidas pelo grupo do pacote: `.hr` a recusa, `.hg` o aprovado,
+`.hb` o dinheiro. A faixa de cada marca ganhou subtotal nas três, e
+`services.result_rows` ganhou `pago_rmb` por grupo para isso.
+
+**A barra viva (`.conflive`)** só existe no telefone. Nasce preenchida pelo
+servidor — no protótipo ela só era escrita pelo `live()`, e `live()` só roda no
+input, então quem abria a aba via uma faixa preta vazia até tocar o primeiro
+campo.
+
+#### ⚠ Buraco antigo, achado por um teste novo
+
+O template decidia a existência das colunas de resultado só por
+`pode_acertar`, que responde *"ele pode digitar recusa agora?"* e vira falso
+assim que a fatura nasce. Consequência: **no instante em que o comprador
+fechava a conferência, ele perdia a vista do que tinha recusado.** A informação
+continuava no banco e sumia da tela dele.
+
+Quem decide isso agora é `tem_resultado` — *"a conferência já aconteceu?"*. A
+tela não muda de **forma** quando a etapa passa; muda só o que aceita toque. É
+a mesma distinção que a tela do cliente (`vendas/views.py`) já fazia desde
+2026-08-18; a do comprador tinha ficado para trás.
+
+### O que fica para depois
+
+**A folha do resultado** — `.pr--dif` e a família
+`.pr__ad/__adk/__cust/__custd/__custn/__sign/__tot/__two`, com os estados
+`EM CONFERÊNCIA` / `CONFERIDO`. Fora por decisão do dono (2026-08-27): o
+comentário do próprio design a descreve como "o documento que o comprador gera
+e o **cliente** recebe" — nasce no comprador e encosta no cliente, e a regra
+desta empreitada é não tocar no cliente. O CSS dela **não** foi trazido; sai do
+pacote pronto no dia em que ele liberar.
+
+**A altura de toque de 48px** nos campos da grade de preço (a da conferência já
+tem, veio no pacote). Era da Etapa 10, não entrou na decisão de realinhamento,
+e vale perguntar antes.
 
 **Fora de escopo por decisão do dono (2026-08-27):** a folha do resultado
 (`.pr__ad/__cust/__custd/__custn/__sign/__two`, estados `EM CONFERÊNCIA` /
