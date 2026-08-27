@@ -1,0 +1,52 @@
+# Submissão de known_parts — Samsung, família KLM (eMMC), linha
+# "High-Performance eMMC-Pro". PN alvo (debug 2026-08-27): KLM4G1YE4C.
+#
+# Base "KLM4G1YE" (8 primeiros chars) é IDÊNTICA ao known_part já confirmado
+# KLM4G1YEMD (submissions/samsung_k4b1g_klm_2026-08-24.yaml, fonte: brochura
+# oficial Samsung eMMC 2013, "Samsung eMMC Part Number Matrix" — tabela
+# "High-Performance eMMC-Pro": 4GB · Flash 32Gb×1 · MMC Class 5.0 · Seq
+# R/W 200MB/s · pacote 11.5x13x0.8mm). Refetchei a MESMA brochura oficial
+# hoje (download.semiconductor.samsung.com/resources/brochure/
+# Samsung_eMMC_2013-0.pdf) pra conferir — ela NÃO lista "KLM4G1YE4C"
+# especificamente (só "KLM4G1YEMD-C031" na linha 4GB eMMC-Pro), então o
+# alvo é uma revisão/sufixo posterior não coberta por aquele documento.
+#
+# Confirmado via Octopart (listagem real, 2 distribuidores — Worldway
+# Electronics, North Star Micro — SKU "KLM4G1YE4C-B001000"). Capacidade
+# 4GB seguindo: (a) o mesmo pn[3]='4' que a gramática já decodifica pra
+# TODA a família KLM (regra já validada em dezenas de PNs desta família
+# nesta sessão), (b) a base de 8 chars idêntica ao sibling Tier-1
+# confirmado KLM4G1YEMD — sufixo não muda capacidade (mesma lógica já
+# estabelecida pra K3QF/KMD/K4F/KLM nesta sessão).
+#
+# NÃO expandido pra cluster maior (8/16/32GB da mesma linha "E4C"): busquei
+# mas não achei fonte fetchável primária pros PNs irmãos (datasheetbank
+# retornou vazio, um lead "KLMAG2WE4A" não confirmado) — não invento PN
+# sem fonte. Registrado só o alvo + forma sufixada confirmada.
+brand: "Samsung"
+known_parts:
+  - part_number: "KLM4G1YE4C"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/KLM4G1YE4C-B001000"
+    notes: >
+      PN alvo, forma BARE (sem sufixo) — igual a bancada leu. Base "KLM4G1YE"
+      idêntica ao sibling já confirmado KLM4G1YEMD (mesma linha eMMC-Pro,
+      brochura oficial Samsung 2013, 4GB/eMMC 5.0). Distribuidor real
+      confirma o PN completo (Octopart, "KLM4G1YE4C-B001000", 2 fontes).
+      Ver notes do KLM4G1YEMD pra fonte primária completa da linha.
+
+  - part_number: "KLM4G1YE4C-B001000"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/KLM4G1YE4C-B001000"
+    notes: >
+      Forma completa com sufixo, exatamente como listada no Octopart
+      (2 distribuidores: Worldway Electronics, North Star Micro). Mesmas
+      specs do PN bare acima.
