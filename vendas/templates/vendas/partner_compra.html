@@ -42,7 +42,6 @@
 {% block title %}{{ so.lot.code }}{% endblock %}
 {% block sidebar %}{% endblock %}
 
-{% block content %}
 {% comment %} ── 1. BARRA DE AÇÃO ───────────────────────────────────────────
    Voltar · onde o registro está · o que dá para fazer AGORA. A ação da vez é
    uma só e mora sempre aqui — não desce para o meio da página conforme a
@@ -50,97 +49,146 @@
    documento: formulário dentro de formulário é inválido, e a alternativa
    (espalhar os botões junto de cada form) é exatamente o que desmontava a
    página. {% endcomment %}
-<div class="fbar">
-  <a class="fbar__back" href="{% url 'compras:list' %}">
-    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>{% trans "Compras" %}
-  </a>
-  <span class="fbar__sp"></span>
+{% block prehead %}
+{% comment %} ══ 1+2. O CABEÇALHO DO REGISTRO ═══════════════════════════════
+   Realinhado ao protótipo em 2026-08-27, olhando as duas telas lado a lado.
 
-  <div id="stat">
-    <div class="stat">
-      {% for p in steps %}
-      <span class="stat__s{% if p.state == 'done' %} is-done{% elif p.state == 'current' %} is-now{% else %} is-next{% endif %}">
-        {% if p.state == 'done' %}<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>{% else %}<i></i>{% endif %}
-        {% if p.key == 'fechado' %}{% trans "Fechado" %}
-        {% elif p.key == 'enviado' %}{% trans "Enviado" %}
-        {% elif p.key == 'recebido' %}{% trans "Recebimento" %}
-        {% elif p.key == 'resultado' %}{% trans "Resultado" %}
-        {% else %}{% trans "Pagamento" %}{% endif %}
-        {% if p.date and p.state == 'current' %}<small>{{ p.date|date:"d/m" }}</small>{% endif %}
-      </span>
-      {% endfor %}
+   Era: uma faixa `.fbar` solta com o trilho de etapas, e logo abaixo um
+   `.sheet__hd` que espremia identidade à esquerda e os três números numa
+   CAIXINHA no canto direito. O protótipo usa `.rhead`, que é outra coisa:
+   uma faixa de largura inteira em quatro fileiras — voltar · identidade +
+   trilho + ação · descrição · e os três números OCUPANDO A LARGURA TODA,
+   sangrando até as bordas (`.rhead__mx` tem `margin:0 -32px`).
+
+   Por isso ela vive no `{% templatetag openblock %} block prehead {% templatetag closeblock %}`, fora do `.papp`: dentro da
+   coluna do app a sangria cortaria no lugar errado.
+
+   Os números deixaram de ser `.kpi` e viraram `.rmx--hero`. `.kpi` é a
+   fileira compacta de rótulo→valor do painel lateral; `.rmx--hero` é o
+   número que ABRE a tela, com corpo de 29px e uma SUB-LINHA embaixo. É a
+   sub-linha que faltava e que carrega o que o comprador quer saber sem
+   contar: quantas unidades, quando fechou, e quanto o resultado ficou
+   abaixo do esperado.
+{% endcomment %}
+<div class="rhead">
+  <div class="wrap">
+
+    <div class="rhead__u">
+      <a class="rhead__back" href="{% url 'compras:list' %}">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>{% trans "Compras" %}
+      </a>
+      <span class="rhead__sp"></span>
     </div>
-  </div>
 
-  <span class="fbar__sp"></span>
-  <div class="fbar__act">
-    {% if invoice %}
-    <a class="btn btn--ghost" id="pdf-link" href="{% url 'compras:resultado_pdf' so.pk %}"
-       target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 22h8v-8H8z"/></svg>
-      {% trans "Imprimir resultado (PDF)" %}
-    </a>
-    {% endif %}
-    {% if so.shipped_at and not so.received_at %}
-    <button type="submit" form="f-recebi" class="btn btn--pri">
-      {% trans "Marcar como recebido" %}
-    </button>
-    {% elif pode_acertar %}
-    <button type="submit" form="f-resultado" class="btn btn--pri">
-      {% trans "Fechar resultado" %}
-    </button>
-    {% elif invoice and invoice.balance_usd > 0 %}
-    <button type="button" class="btn btn--pri" data-abre="m-pagar">
-      {% trans "Registrar pagamento" %}
-    </button>
-    {% endif %}
-  </div>
-</div>
-
-<div class="sheet">
-  {% comment %} ── 2. IDENTIDADE + OS TRÊS NÚMEROS ─────────────────────────
-     ESPERADO é o preço fechado com o cliente: IMUTÁVEL, é o número que ele
-     tinha na mão quando a caixa saiu. RESULTADO é o que a conferência
-     produziu — move-se enquanto o comprador digita e congela na fatura.
-     SALDO é o que falta pagar. Um número só, mudando, apagaria a
-     referência: a DIFERENÇA entre eles é a informação da tela.
-     ¥ e US$ do mesmo tamanho: ele fecha em ¥ e paga em US$ — nenhum dos dois
-     é nota de rodapé do outro (dono, 2026-08-18). {% endcomment %}
-  <div class="sheet__hd">
-    <div class="sheet__id">
-      <div class="sheet__t">
-        <h1>{{ so.lot.code }}</h1>
+    <div class="rhead__bar">
+      <div class="rhead__idl">
+        <span class="rhead__code">{{ so.lot.code }}</span>
         {% if estimado %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Falta preço seu" %}</span>
         {% elif pode_acertar %}<span class="tag tag--info"><i class="dot"></i>{% trans "A conferir" %}</span>
         {% elif invoice and invoice.balance_usd > 0 %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
         {% elif invoice %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>
         {% else %}<span class="tag tag--mute"><i class="dot"></i>{% trans "Recebimento" %}</span>{% endif %}
       </div>
-      <p class="sheet__s">{% blocktrans trimmed with cliente=so.company.name %}
-        de <b>{{ cliente }}</b>{% endblocktrans %} · <span class="mono">{{ so.code }}</span></p>
+
+      {% comment %} O trilho vai NO MEIO da mesma fileira do código, não numa
+         faixa própria acima: o `#stat.rhead__stat` do pacote é
+         `justify-content:center` e existe exatamente para isto. {% endcomment %}
+      <div id="stat" class="rhead__stat">
+        <div class="stat">
+          {% for p in steps %}
+          <span class="stat__s{% if p.state == 'done' %} is-done{% elif p.state == 'current' %} is-now{% else %} is-next{% endif %}">
+            {% if p.state == 'done' %}<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>{% else %}<i></i>{% endif %}
+            {% if p.key == 'fechado' %}{% trans "Fechado" %}
+            {% elif p.key == 'enviado' %}{% trans "Enviado" %}
+            {% elif p.key == 'recebido' %}{% trans "Recebido" %}
+            {% elif p.key == 'resultado' %}{% trans "Resultado" %}
+            {% else %}{% trans "Pagamento" %}{% endif %}
+            {% if p.date and p.state == 'current' %}<small>{{ p.date|date:"d/m" }}</small>{% endif %}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="rhead__act">
+        {% if invoice %}
+        <a class="btn btn--ghost" id="pdf-link" href="{% url 'compras:resultado_pdf' so.pk %}"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 22h8v-8H8z"/></svg>
+          {% trans "Imprimir resultado" %}
+        </a>
+        {% endif %}
+        {% if so.shipped_at and not so.received_at %}
+        <button type="submit" form="f-recebi" class="btn btn--pri">
+          {% trans "Marcar como recebido" %}
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+        {% elif pode_acertar %}
+        <button type="submit" form="f-resultado" class="btn btn--pri">
+          {% trans "Fechar resultado" %}
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+        {% elif invoice and invoice.balance_usd > 0 %}
+        <button type="button" class="btn btn--pri" data-abre="m-pagar">
+          {% trans "Registrar pagamento" %}</button>
+        {% endif %}
+      </div>
     </div>
 
+    <div class="rhead__desc">
+      <p>{% blocktrans trimmed with cliente=so.company.name %}de <b>{{ cliente }}</b>{% endblocktrans %} · <span class="mono">{{ so.code }}</span></p>
+    </div>
+
+    {% comment %} ── OS TRÊS NÚMEROS ────────────────────────────────────────
+       ESPERADO é o preço fechado com o cliente: IMUTÁVEL, é o número que ele
+       tinha na mão quando a caixa saiu. RESULTADO é o que a conferência
+       produziu — move-se enquanto o comprador digita e congela na fatura.
+       SALDO é o que falta pagar. Um número só, mudando, apagaria a
+       referência: a DIFERENÇA entre eles é a informação da tela.
+
+       ¥ e US$ do mesmo tamanho, no par `.mvd`: ele fecha em ¥ e paga em US$
+       — nenhum dos dois é nota de rodapé do outro (dono, 2026-08-18).
+    {% endcomment %}
     {% localize off %}
-    <div class="kpis">
-      <div class="kpi kpi--base">
-        <div class="kpi__l">{% if estimado %}{% trans "Resultado esperado (estimado)" %}{% else %}{% trans "Resultado esperado" %}{% endif %}</div>
-        <div class="kpi__v">{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</div>
-        <div class="kpi__v">{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</div>
+    <div class="rhead__mx">
+      <div class="rmx rmx--hero rmx--est">
+        <div class="rmx__l">{% if estimado %}{% trans "Resultado esperado (estimado)" %}{% else %}{% trans "Resultado esperado" %}{% endif %}</div>
+        <div class="rmx__v">
+          <span class="mvd mvd--kpi">
+            <b class="mvd__a">{% if estimado and esperado_rmb %}<i class="mvd__e">≈</i>{% endif %}{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</b>
+            <i class="mvd__x">=</i>
+            <b class="mvd__b">{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</b>
+          </span>
+        </div>
+        <div class="rmx__d">{% blocktrans trimmed count n=total_qty with d=so.lot.closed_at|date:"d/m" %}{{ n }} un. · fechado em {{ d }}{% plural %}{{ n }} un. · fechado em {{ d }}{% endblocktrans %}</div>
       </div>
-      <div class="kpi {% if final_rmb or pode_acertar %}kpi--res{% else %}kpi--off{% endif %}">
-        <div class="kpi__l">{% trans "Resultado final" %}</div>
-        <div class="kpi__v" id="k-rmb">{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</div>
-        <div class="kpi__v" id="k-usd">{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</div>
-        <div class="kpi__d" id="k-exp"{% if not final_rmb %} hidden{% endif %}>{% if final_rmb and esperado_rmb %}{% if final_rmb < esperado_rmb %}−¥ {{ delta_abs }}{% elif final_rmb > esperado_rmb %}+¥ {{ delta_abs }}{% else %}{% trans "sem acerto" %}{% endif %}{% endif %}</div>
+
+      <div class="rmx rmx--hero {% if final_rmb or pode_acertar %}rmx--res{% else %}rmx--off{% endif %}">
+        <div class="rmx__l">{% trans "Resultado final" %}</div>
+        {% comment %} Os ids seguem nos `<b>`: o recálculo ao vivo escreve
+           `textContent` neles, e aqui não há `≈` para o textContent apagar —
+           o resultado final é número conferido, nunca estimativa. {% endcomment %}
+        <div class="rmx__v">
+          <span class="mvd mvd--kpi">
+            <b class="mvd__a" id="k-rmb">{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</b>
+            <i class="mvd__x">=</i>
+            <b class="mvd__b" id="k-usd">{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</b>
+          </span>
+        </div>
+        <div class="rmx__d" id="k-exp">{% if final_rmb or pode_acertar %}{% if delta_abs %}<b class="dif dif--neg">−¥ {{ delta_abs }}</b> {% trans "contra o esperado" %}{% else %}<b class="dif dif--ok">{% trans "sem diferença" %}</b> · {% trans "lote inteiro aprovado" %}{% endif %}{% else %}{% trans "depois do recebimento" %}{% endif %}</div>
       </div>
-      <div class="kpi {% if not invoice %}kpi--off{% elif invoice.balance_usd > 0 %}kpi--due{% else %}kpi--ok{% endif %}">
-        <div class="kpi__l">{% if invoice and invoice.balance_usd <= 0 %}{% trans "Fatura quitada" %}{% else %}{% trans "Saldo a pagar" %}{% endif %}</div>
-        <div class="kpi__v">{% if invoice %}US$ {{ invoice.balance_usd }}{% else %}—{% endif %}</div>
+
+      <div class="rmx rmx--hero {% if not invoice %}rmx--off{% elif invoice.balance_usd > 0 %}rmx--due{% else %}rmx--ok{% endif %}">
+        <div class="rmx__l">{% if invoice and invoice.balance_usd <= 0 %}{% trans "Quitado" %}{% else %}{% trans "Saldo a pagar" %}{% endif %}</div>
+        <div class="rmx__v">{% if invoice %}<span class="m">US$ {{ invoice.balance_usd }}</span>{% else %}<span class="m">—</span>{% endif %}</div>
+        <div class="rmx__d">{% if invoice %}{% if invoice.balance_usd > 0 %}{% blocktrans trimmed with v=invoice.paid_usd %}pago US$ {{ v }}{% endblocktrans %}{% else %}{% trans "nada em aberto" %}{% endif %}{% else %}{% trans "depois do resultado" %}{% endif %}</div>
       </div>
     </div>
     {% endlocalize %}
-  </div>
 
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="sheet">
   {% comment %} ── 3. CAMPOS EM GRUPOS, UM POR ETAPA ───────────────────────
      O gabarito é SEMPRE o mesmo; a etapa que ainda não aconteceu fica em
      `.is-off` — a caixa promete sem mentir. É isto que faz a tela parar de
@@ -241,27 +289,58 @@
      e um title dizendo quando acende (spec v2 §6.3). Não some: o comprador
      precisa saber que ela existe, senão procura o histórico de pagamento numa
      tela onde ele nunca esteve. {% endcomment %}
+  {% comment %} ══ AS ABAS ═══════════════════════════════════════════════
+     Realinhadas ao protótipo em 2026-08-27.
+
+     Três coisas que faltavam e que não são enfeite:
+
+     1. ÍCONE por aba. Um desenho por conteúdo — resultado, peças, caixas,
+        dinheiro, papel. No telefone, onde a barra rola de lado, o ícone é o
+        que se reconhece antes de ler.
+     2. FILTRO inline. A conferência de um lote grande tem dezenas de linhas;
+        achar "a DDR4 de 8GB da Micron" rolando é o que faz o comprador
+        desistir e conferir no papel.
+     3. Os dois botões como BOTÕES (`.xbtn`), não um ícone solto de download.
+        "Imprimir resultado" e "Exportar" são ações nomeadas; um ícone sem
+        rótulo obriga a passar o mouse para descobrir o que faz.
+  {% endcomment %}
   <div class="nb">
-    <button type="button"{% if aba_inicial == 'resumo' %} class="on"{% endif %} data-aba="resumo">{% trans "Resumo" %}</button>
-    <button type="button"{% if aba_inicial == 'chips' %} class="on"{% endif %} data-aba="chips">{% trans "Chips" %} <em>{{ chips.qty }}</em></button>
-    <button type="button"{% if aba_inicial == 'categorias' %} class="on"{% endif %} data-aba="categorias">{% trans "Categorias" %}</button>
+    <button type="button"{% if aba_inicial == 'resumo' %} class="on"{% endif %} data-aba="resumo">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9M4 12h9M4 19h9"/><path d="M16.5 6.5l1.8 1.8 3.2-3.6M16.5 13.5l1.8 1.8 3.2-3.6"/></svg>{% trans "Resumo" %}</button>
+    <button type="button"{% if aba_inicial == 'chips' %} class="on"{% endif %} data-aba="chips">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10"/><path d="M10 3.5V7M14 3.5V7M10 17v3.5M14 17v3.5M3.5 10H7M3.5 14H7M17 10h3.5M17 14h3.5"/></svg>{% trans "Chips" %} <em>{{ chips.qty }}</em></button>
+    <button type="button"{% if aba_inicial == 'categorias' %} class="on"{% endif %} data-aba="categorias">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5h7v7h-7zM13.5 6.5h7v7h-7zM3.5 16.5h7v4h-7zM13.5 16.5h7v4h-7z"/></svg>{% trans "Categorias" %}</button>
     {% if invoice %}
-    <button type="button"{% if aba_inicial == 'pagamentos' %} class="on"{% endif %} data-aba="pagamentos">{% trans "Pagamentos" %} <em>{{ pagamentos|length }}</em></button>
+    <button type="button"{% if aba_inicial == 'pagamentos' %} class="on"{% endif %} data-aba="pagamentos">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v11h-17z"/><path d="M3.5 11h17M6.5 15h4"/></svg>{% trans "Pagamentos" %} <em>{{ pagamentos|length }}</em></button>
     {% else %}
     <button type="button" disabled data-aba="pagamentos"
-            title="{% trans 'Disponível quando o resultado fechar.' %}">{% trans "Pagamentos" %} <em>—</em></button>
+            title="{% trans 'Disponível quando o resultado fechar.' %}">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v11h-17z"/><path d="M3.5 11h17M6.5 15h4"/></svg>{% trans "Pagamentos" %} <em>—</em></button>
     {% endif %}
-    <button type="button"{% if aba_inicial == 'observacoes' %} class="on"{% endif %} data-aba="observacoes">{% trans "Observações" %} <em>{{ observacoes|length }}</em></button>
+    <button type="button"{% if aba_inicial == 'observacoes' %} class="on"{% endif %} data-aba="observacoes">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h14v17H5z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>{% trans "Observações" %} <em>{{ observacoes|length }}</em></button>
+
+    {% comment %} O filtro só existe onde há o que filtrar: ele age sobre as
+       linhas da conferência, na aba Resumo. {% endcomment %}
+    <span class="nb__tool">
+      <input class="flt" id="flt" type="text" autocomplete="off"
+             placeholder="{% trans 'Filtrar marca, tipo, capacidade ou C-…' %}"
+             aria-label="{% trans 'Filtrar linhas da conferência' %}">
+    </span>
     <span class="nb__sp"></span>
-    {% comment %} Exporta A ABA ABERTA (spec v2 §6.10). Um link só, com o href
-       trocado pelo JS ao mudar de aba — e já servido apontando para a aba
-       inicial, para funcionar sem JS também. {% endcomment %}
-    <a class="tbar__ico nb__exp" id="exp-aba"
-       href="{% url 'compras:aba_csv' so.pk aba_inicial %}"
-       title="{% trans 'Exportar esta aba em CSV' %}"
-       aria-label="{% trans 'Exportar esta aba em CSV' %}">
-      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>
-    </a>
+    <span class="nb__tool">
+      {% if invoice %}
+      <a class="xbtn" href="{% url 'compras:resultado_pdf' so.pk %}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3.5h10V9"/><path d="M4 9h16v7h-3M7 16H4V9"/><path d="M7 14h10v6.5H7z"/></svg>{% trans "Imprimir resultado" %}</a>
+      {% endif %}
+      {% comment %} Exporta A ABA ABERTA (spec v2 §6.10). O href é trocado pelo
+         JS ao mudar de aba — e já sai servido apontando para a aba inicial,
+         para funcionar sem JS também. {% endcomment %}
+      <a class="xbtn" id="exp-aba" href="{% url 'compras:aba_csv' so.pk aba_inicial %}">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4 16v4.5h16V16"/></svg>{% trans "Exportar" %}</a>
+    </span>
   </div>
 
   {% if pode_acertar %}
@@ -282,17 +361,39 @@
         data-esperado="{% localize off %}{{ so.total_rmb|default:0|unlocalize }}{% endlocalize %}">
     {% csrf_token %}
     <div class="sst__w" id="pane-resumo">
-      <div class="sst__sc">
-        <table class="sst" id="tab-resumo">
+      {% comment %} ══ A CONFERÊNCIA ══════════════════════════════════════
+         Realinhada ao protótipo em 2026-08-27 (`parceiro-lote.js`).
+
+         A tabela passou de `.sst` para `.dtab dtab--conf`, e não por gosto:
+         TODO o tratamento de celular da conferência que veio no pacote está
+         escrito como `.dtab--conf .c-*`, dentro do bloco de 600px. Com a
+         tabela em `.sst` aquelas trinta regras não pegariam em nada.
+
+         DUAS COLUNAS NOVAS, e são o motivo desta passada: «Aprovados» e
+         «¥ resultado», por LINHA. Antes o aceito só existia como uma segunda
+         linha de rodapé — um total. O comprador via quanto sobrou no fim, mas
+         não via o que CADA recusa custou, que é a leitura que ele precisa
+         enquanto digita. Agora cada linha mostra o que sobrou de pé e quanto
+         dela virou dinheiro, com a perda em `.dl2` do lado.
+
+         As três colunas do resultado são tingidas pelo grupo do pacote:
+         `.hr` a recusa, `.hg` o aprovado, `.hb` o dinheiro.
+      {% endcomment %}
+      <div class="dtab__wrap"><div class="dtab__sc dtab__sc--conf">
+        <table class="dtab dtab--static dtab--conf" id="tab-resumo">
           <thead>
             <tr>
               <th>{% trans "Tipo" %}</th>
               <th>{% trans "Capacidade" %}</th>
               <th>{% trans "Caixa WTC" %}</th>
               <th class="n">{% trans "Enviados" %}</th>
-              <th class="n">{% trans "¥ unit." %}</th>
+              <th class="n hide-lg">{% trans "¥ unit." %}</th>
               <th class="n">{% trans "¥ esperado" %}</th>
-              {% if pode_acertar %}<th class="n hr">{% trans "Recusados" %}<i class="pen"></i></th>{% endif %}
+              {% if pode_acertar or tem_resultado %}
+              <th class="n hr">{% trans "Recusados" %}{% if pode_acertar %}<i class="pen"></i>{% endif %}</th>
+              <th class="n hg">{% trans "Aprovados" %}</th>
+              <th class="n hb">{% trans "¥ resultado" %}</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -300,26 +401,48 @@
             <tr class="g">
               <td colspan="3"><span class="g__n">{{ g.brand }}
                 {% if g.sem_preco %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
-              <td class="n">{{ g.qty }}</td>
-              <td></td>
+              <td class="n" data-gq="{{ forloop.counter0 }}">{{ g.qty }}</td>
+              <td class="n hide-lg"></td>
               <td class="n">{% localize off %}¥ {{ g.rmb }}{% endlocalize %}</td>
-              {% if pode_acertar %}<td class="hr"></td>{% endif %}
+              {% if pode_acertar or tem_resultado %}
+              <td class="n hr" data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</td>
+              <td class="n hg" data-gok="{{ forloop.counter0 }}">{{ g.accepted }}</td>
+              <td class="n hb" data-gval="{{ forloop.counter0 }}">{% localize off %}¥ {{ g.pago_rmb }}{% endlocalize %}</td>
+              {% endif %}
             </tr>
             {% for l in g.lines %}
-            <tr>
-              <td>{{ l.type }}</td>
-              <td class="cap">{{ l.capacity }}</td>
-              <td><span class="wtc">{{ l.wtc }}</span></td>
-              <td class="n">{{ l.qty }}</td>
-              <td class="n{% if l.sem_preco %} dim{% endif %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
-              <td class="n">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+            <tr data-g="{{ forloop.parentloop.counter0 }}">
+              <td class="c-t">{{ l.type }}</td>
+              <td class="cap c-cap">{{ l.capacity }}</td>
+              <td class="c-box"><span class="wtc">{{ l.wtc }}</span></td>
+              {% comment %} O `.c-lbl` é o rótulo que só existe no cartão do
+                 telefone — o pacote o esconde no desktop, onde o cabeçalho
+                 da coluna já disse a mesma coisa. {% endcomment %}
+              <td class="n c-qty"><i class="c-lbl">{% trans "enviados" %}</i>{{ l.qty }}</td>
+              <td class="n hide-lg c-unit{% if l.sem_preco %} dim{% endif %}" data-label="{% trans '¥ unit.' %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+              <td class="v c-exp" data-label="{% trans '¥ esperado' %}">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar %}
-              <td class="n hr">
+              <td class="n hr c-rej">
+                <i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
                 <input type="number" name="rej_{{ l.pk }}" min="0" max="{{ l.qty }}"
                        placeholder="0" class="rjin" inputmode="numeric"
+                       value="{% if l.rejected %}{{ l.rejected|unlocalize }}{% endif %}"
+                       data-rj="{{ l.pk }}"
+                       aria-label="{% blocktrans trimmed with marca=g.brand tipo=l.type cap=l.capacity %}Recusados {{ marca }} {{ tipo }} {{ cap }}{% endblocktrans %}"
                        data-qty="{{ l.qty|unlocalize }}"
                        data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}">
               </td>
+              <td class="n hg c-ok" data-ok="{{ l.pk }}">
+                <i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
+              <td class="v hb c-val" data-label="{% trans '¥ resultado' %}" data-val="{{ l.pk }}">{% localize off %}{% if l.pago_rmb is not None %}¥ {{ l.pago_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              {% elif tem_resultado %}
+              {% comment %} Conferência JÁ FEITA: os mesmos números, sem campo.
+                 A tela não muda de forma quando a etapa passa — muda só o que
+                 aceita toque. {% endcomment %}
+              <td class="n hr c-rej"><i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
+                <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b></td>
+              <td class="n hg c-ok"><i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
+              <td class="v hb c-val" data-label="{% trans '¥ resultado' %}">{% localize off %}{% if l.pago_rmb is not None %}¥ {{ l.pago_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               {% endif %}
             </tr>
             {% endfor %}
@@ -327,24 +450,39 @@
           </tbody>
           <tfoot>
             <tr>
-              <td class="lbl" colspan="3">{% trans "Total" %}</td>
-              <td>{{ total_qty }}</td>
-              <td></td>
-              <td>{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
-              {% if pode_acertar %}<td class="hr" id="t-rej">0</td>{% endif %}
+              <td class="lbl" colspan="3">{% blocktrans trimmed count n=grupos|length with tipos=total_qty %}Total · {{ n }} marca{% plural %}Total · {{ n }} marcas{% endblocktrans %}</td>
+              <td class="n"><small>{% trans "Enviados" %}</small>{{ total_qty }}</td>
+              <td class="n hide-lg"></td>
+              <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              {% if pode_acertar or tem_resultado %}
+              <td class="n hr" id="t-rej"><small>{% trans "Recusados" %}</small>0</td>
+              <td class="n hg" id="t-ace"><small>{% trans "Aprovados" %}</small>{{ total_qty }}</td>
+              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</td>
+              {% endif %}
             </tr>
-            {% if pode_acertar %}
-            <tr>
-              <td class="lbl hb" colspan="3">{% trans "A pagar (aceitos)" %}</td>
-              <td class="hb" id="t-ace">{{ total_qty }}</td>
-              <td class="hb"></td>
-              <td class="hb" id="t-pagar">{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</td>
-              <td class="hb"></td>
-            </tr>
-            {% endif %}
           </tfoot>
         </table>
+      </div></div>
+
+      {% comment %} ══ A BARRA VIVA ═══════════════════════════════════════
+         Só existe no telefone — o pacote a esconde acima de 600px.
+
+         O motivo é de tela pequena, não de gosto: o briefing pede o resultado
+         visível enquanto ele digita, e no telefone o topo já rolou. Os heróis
+         estão a mil pixels de distância e o rodapé de soma está no fim de uma
+         lista longa. Então o número que se move desce e acompanha o dedo.
+
+         ⚠ Nasce PREENCHIDA. No protótipo ela só era escrita pelo `live()`, e
+         `live()` só roda no input — quem abria a aba via uma faixa preta
+         vazia grudada no rodapé até tocar o primeiro campo.
+      {% endcomment %}
+      {% if pode_acertar %}
+      <div class="conflive" id="conflive">
+        <span class="conflive__l">{% trans "Resultado final" %}</span>
+        <b class="conflive__v" id="cl-v">{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</b>
+        <span class="conflive__d" id="cl-d">{% trans "sem recusa" %}</span>
       </div>
+      {% endif %}
     </div>
   </form>
 
@@ -898,8 +1036,31 @@
   var fAce = document.getElementById('f-ace');
   var estado = {rej: 0, aceitos: 0, enviados: 0, pagar: 0};
 
+  // Escreve o número SEM matar o rótulo. As células do rodapé são
+  // `<small>Recusados</small>0`: um `textContent =` levaria o <small> junto,
+  // e o rodapé ficaria sem legenda no primeiro toque de tecla.
+  function escreverNumero(el, txt) {
+    if (!el) return;
+    var ultimo = el.lastChild;
+    if (ultimo && ultimo.nodeType === 3) ultimo.nodeValue = txt;
+    else el.appendChild(document.createTextNode(txt));
+  }
+
+  var esperadoLote = parseFloat(form.dataset.esperado) || 0;
+  var clV = document.getElementById('cl-v');
+  var clD = document.getElementById('cl-d');
+  var T_SEM = '{% trans "sem recusa"|escapejs %}';
+  var T_REC = '{% trans "recusadas"|escapejs %}';
+  var T_CONTRA = '{% trans "contra o esperado"|escapejs %}';
+  var T_SEMDIF = '{% trans "sem diferença"|escapejs %}';
+  var T_TUDOOK = '{% trans "lote inteiro aprovado"|escapejs %}';
+
   function recalcular() {
     var rej = 0, aceitos = 0, enviados = 0, pagar = 0;
+    // Subtotais POR MARCA. A faixa do grupo tem de somar exatamente as linhas
+    // dela — faixa dizendo um número e linhas dizendo outro é o tipo de erro
+    // que só aparece depois de fechado.
+    var porGrupo = {};
     campos.forEach(function (i) {
       var qtd = parseInt(i.dataset.qty, 10) || 0;
       var unit = parseFloat(i.dataset.unit) || 0;
@@ -908,26 +1069,105 @@
       if (r > qtd) r = qtd;
       var tr = i.closest('tr');
       if (tr) tr.classList.toggle('on', r > 0);
-      rej += r; enviados += qtd; aceitos += (qtd - r); pagar += (qtd - r) * unit;
+      var ok = qtd - r, val = ok * unit;
+      rej += r; enviados += qtd; aceitos += ok; pagar += val;
+
+      // ── a LINHA: o que sobrou de pé e quanto dela virou dinheiro ──
+      var pk = i.dataset.rj;
+      var cOk = document.querySelector('[data-ok="' + pk + '"] b');
+      if (cOk) cOk.textContent = ok;
+      var cVal = document.querySelector('[data-val="' + pk + '"]');
+      if (cVal) {
+        // A PERDA ao lado do valor, e só quando existe: `.dl2` é o risco do
+        // pacote. Sem ela o comprador vê o resultado cair sem ver o quanto.
+        cVal.innerHTML = '¥ ' + val.toFixed(2)
+          + (r && unit ? ' <span class="dl2">−¥ ' + (r * unit).toFixed(2)
+             + '</span>' : '');
+      }
+      // ── o GRUPO ──
+      var gi = tr && tr.getAttribute('data-g');
+      if (gi !== null && gi !== undefined) {
+        var g = porGrupo[gi] || (porGrupo[gi] = {rej: 0, ok: 0, val: 0});
+        g.rej += r; g.ok += ok; g.val += val;
+      }
+    });
+    Object.keys(porGrupo).forEach(function (gi) {
+      var g = porGrupo[gi];
+      var eRej = document.querySelector('[data-grej="' + gi + '"]');
+      var eOk = document.querySelector('[data-gok="' + gi + '"]');
+      var eVal = document.querySelector('[data-gval="' + gi + '"]');
+      if (eRej) eRej.textContent = g.rej ? '−' + g.rej : '0';
+      if (eOk) eOk.textContent = g.ok;
+      if (eVal) eVal.textContent = '¥ ' + g.val.toFixed(2);
     });
     estado = {rej: rej, aceitos: aceitos, enviados: enviados, pagar: pagar};
-    if (elRej) elRej.textContent = rej;
-    if (elAce) elAce.textContent = aceitos;
-    elPagar.textContent = '¥ ' + pagar.toFixed(2);
+    // ⚠ `textContent` apagaria o <small> do rótulo que o rodapé carrega desde
+    // 2026-08-27. Escreve-se no ÚLTIMO nó de texto, que é o número.
+    escreverNumero(elRej, rej ? '−' + rej : '0');
+    escreverNumero(elAce, aceitos);
+    escreverNumero(elPagar, '¥ ' + pagar.toFixed(2));
     // Só o RESULTADO se move — o ESPERADO é o preço fechado com o cliente e
     // fica parado, senão a referência se perde (dono, 2026-08-18).
     if (kRmb) kRmb.textContent = '¥ ' + pagar.toFixed(2);
     if (kUsd && fx) kUsd.textContent = 'US$ ' + (pagar * fx).toFixed(2);
     if (kExp) {
+      // ⚠ 2026-08-27. Antes esta linha era o `.kpi__d`, que SÓ existia quando
+      // havia diferença — daí o `hidden`. Agora é o `.rmx__d`, a sub-linha do
+      // herói, e ela nunca fica vazia: quando não há diferença, a ausência de
+      // diferença É a informação, e é ela que o comprador quer ler antes de
+      // fechar. Manter o `hidden` deixava um buraco embaixo do número.
       var d = pagar - esperado;
       var difere = esperado && Math.abs(d) >= 0.005;
-      kExp.hidden = !difere;
-      if (difere) kExp.textContent = (d < 0 ? '−' : '+') + '¥ ' + Math.abs(d).toFixed(2);
+      kExp.hidden = false;
+      kExp.innerHTML = difere
+        ? '<b class="dif dif--neg">' + (d < 0 ? '−' : '+') + '¥ '
+          + Math.abs(d).toFixed(2) + '</b> ' + T_CONTRA
+        : '<b class="dif dif--ok">' + T_SEMDIF + '</b> · ' + T_TUDOOK;
     }
     if (fRej) { fRej.textContent = rej; fRej.classList.toggle('bad', rej > 0); }
     if (fAce) fAce.textContent = aceitos;
+
+    // ── a BARRA VIVA do telefone ──
+    // O `.is-dif` é o que a pinta de divergente. A diferença é contra o
+    // ESPERADO do lote, não contra o total das linhas: é o esperado que o
+    // cliente fechou, e é dele que a recusa desconta.
+    if (clV) clV.textContent = '¥ ' + pagar.toFixed(2);
+    if (clD) {
+      var dif = esperadoLote - pagar;
+      var difere = esperadoLote && Math.abs(dif) >= 0.005;
+      clD.classList.toggle('is-dif', !!difere);
+      clD.textContent = difere
+        ? '−¥ ' + Math.abs(dif).toFixed(2) + ' · ' + rej + ' ' + T_REC
+        : T_SEM;
+    }
   }
   campos.forEach(function (i) { i.addEventListener('input', recalcular); });
+
+  // ── FILTRO da conferência ────────────────────────────────────────────────
+  // Um lote grande tem dezenas de linhas; achar "a DDR4 de 8GB da Micron"
+  // rolando é o que faz o comprador desistir e conferir no papel.
+  // A faixa da MARCA some junto quando nenhuma linha dela sobrevive — faixa
+  // de grupo sozinha, sem linhas embaixo, é pior que nenhuma: parece que a
+  // marca não tem itens.
+  var flt = document.getElementById('flt');
+  if (flt) {
+    var corpo = document.querySelector('#tab-resumo tbody');
+    flt.addEventListener('input', function () {
+      var q = flt.value.trim().toLowerCase();
+      var vivos = {};
+      corpo.querySelectorAll('tr[data-g]').forEach(function (tr) {
+        var txt = tr.textContent.toLowerCase();
+        var on = !q || txt.indexOf(q) >= 0;
+        tr.hidden = !on;
+        if (on) vivos[tr.getAttribute('data-g')] = true;
+      });
+      var gi = -1;
+      corpo.querySelectorAll('tr.g').forEach(function (tr) {
+        gi += 1;
+        tr.hidden = !!q && !vivos[String(gi)];
+      });
+    });
+  }
   var zerar = document.getElementById('zerar');
   if (zerar) {
     zerar.addEventListener('click', function () {

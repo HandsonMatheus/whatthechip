@@ -417,3 +417,36 @@
 .fpay__q{display:flex;gap:8px;margin:-4px 0 12px;flex-wrap:wrap}
 .fpay__q .btn{height:32px;padding:0 14px;font-size:12.5px}
 .fpay .dim{display:block;margin-top:5px;font-size:12px;color:var(--muted)}
+
+/* ============ AVISO DE ESPERA ============
+   Veio no pacote de 2026-08-27. Ocupa o lugar da ação da vez quando a bola é do outro lado do
+   balcão: mesmo lugar, mesma altura, sem convidar a clicar. E DIZ o que está sendo esperado — um
+   espaço vazio ali só informaria que não há botão, o que o usuário já viu. */
+.wait{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:6px 12px;background:var(--surface);border:1px solid var(--line-2);font-size:12px;font-weight:600;color:var(--muted);text-wrap:pretty}
+.wait svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--amber-60);stroke-width:2}
+
+/* ⚠ O pacote de 2026-08-27 traz também `.pr--dif` e a família `.pr__ad/__adk/__cust/__custd/
+   __custn/__sign/__tot/__two`: são a FOLHA DO RESULTADO, o documento que o comprador gera e o
+   CLIENTE recebe. Ficaram DE FORA de propósito — o dono adiou esse item para não cruzar a
+   fronteira do cliente (decisão de 2026-08-27). Quando ele liberar, o CSS sai do pacote pronto. */
+
+/* ============ A DIFERENÇA, NA SUB-LINHA DO HERÓI ============
+   Veio junto do `.rhead__mx` em 2026-08-27. O pacote traz `.rmx__d` (a
+   sub-linha) mas não o `.dif` que mora dentro dela — no kit ele está no
+   `wtc-carbon.css`, que é a folha do protótipo e não o pacote distribuído.
+   São três linhas, e sem elas a frase que responde "quanto isto custou
+   contra o esperado" sai sem cor e sem peso, que é justamente o oposto do
+   papel dela: ela existe para ser lida antes do número. */
+.rmx__d .dif{font-weight:700;color:var(--text)}
+.rmx__d .dif--neg{color:var(--amber-70)}
+.rmx__d .dif--ok{color:var(--green-70)}
+
+/* O campo de filtro da barra de abas. O pacote só o descreve no telefone
+   (`.nb .flt{height:44px}` nos dois blocos de 600px); no desktop ele ficava
+   com a forma padrão do navegador, destoando dos `.xbtn` que dividem a mesma
+   `.nb__tool`. Aqui ele recebe a MESMA caixa dos vizinhos — é a folha do
+   sistema que decide a forma, não o sistema operacional de quem olha. */
+.nb .flt{height:30px;min-width:250px;padding:0 11px;border:1px solid var(--line-2);
+  background:var(--surface);font-family:inherit;font-size:12px;color:var(--text)}
+.nb .flt::placeholder{color:var(--faint)}
+.nb .flt:focus{outline:2px solid var(--blue-40);outline-offset:-2px}

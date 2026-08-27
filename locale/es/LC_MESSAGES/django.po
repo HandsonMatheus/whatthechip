@@ -4184,3 +4184,167 @@ msgstr ""
 #~ msgstr ""
 #~ "Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a "
 #~ "US$. Cambia solo cuando cambie el contrato."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça."
+msgstr "<b>El SSD no tiene tabla</b> — el precio es lineal en ¥/GB, con mínimo por pieza."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa do dia carimbada em cada página."
+msgstr "Su tabla completa, tal como la ve el vendedor. Generada al momento, con la tasa del día sellada en cada página."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "A taxa vai carimbada no rodapé de cada página:"
+msgstr "La tasa va sellada al pie de cada página:"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Alternar modo escuro"
+msgstr "Alternar modo oscuro"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Buscar tipo de chip…"
+msgstr "Buscar tipo de chip…"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Catálogo de preços em PDF"
+msgstr "Catálogo de precios en PDF"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro por conta do vendedor."
+msgstr "Ej.: precios válidos para lotes de más de 500 piezas por línea. Flete y seguro por cuenta del vendedor."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Observação na capa"
+msgstr "Nota en la portada"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Ocultar do PDF"
+msgstr "Ocultar del PDF"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Publicar em branco"
+msgstr "Publicar en blanco"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Sai na primeira página, abaixo do seu nome."
+msgstr "Sale en la primera página, debajo de su nombre."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Selecionar todos os tipos"
+msgstr "Seleccionar todos los tipos"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Seu <b>catálogo de preços</b>"
+msgstr "Su <b>catálogo de precios</b>"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Só os com lacuna"
+msgstr "Solo los que tienen huecos"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Só os completos"
+msgstr "Solo los completos"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Todos os tipos"
+msgstr "Todos los tipos"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor — o dado publicado é sempre o seu ¥."
+msgstr "Usted cotiza en ¥ (RMB). La conversión a US$ entra solo como lectura del vendedor — el dato publicado es siempre su ¥."
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "linhas"
+msgstr "líneas"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "¥ mínimo/peça"
+msgstr "¥ mínimo/pieza"
+
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid "¥ por GB"
+msgstr "¥ por GB"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "enviados"
+msgstr "enviados"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "aprovados"
+msgstr "aprobados"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "recusadas"
+msgstr "rechazadas"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "sem recusa"
+msgstr "sin rechazos"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "¥ resultado"
+msgstr "¥ resultado"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "Recusados %(marca)s %(tipo)s %(cap)s"
+msgstr "Rechazados %(marca)s %(tipo)s %(cap)s"
+
+#: conferência do lote — realinhamento ao Claude Design (2026-08-27)
+msgid "Total · %(n)s marca"
+msgid_plural "Total · %(n)s marcas"
+msgstr[0] "Total · %(n)s marca"
+msgstr[1] "Total · %(n)s marcas"
+
+#: barra de tipos — realinhamento ao Claude Design (2026-08-27)
+msgid "Tipos de chip"
+msgstr "Tipos de chip"
+
+#: barra de tipos — realinhamento ao Claude Design (2026-08-27)
+msgid "visão geral da grade"
+msgstr "visión general de la tabla"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "Filtrar linhas da conferência"
+msgstr "Filtrar líneas de la verificación"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "Filtrar marca, tipo, capacidade ou C-…"
+msgstr "Filtrar marca, tipo, capacidad o C-…"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "Imprimir resultado"
+msgstr "Imprimir resultado"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "contra o esperado"
+msgstr "frente a lo esperado"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "depois do recebimento"
+msgstr "después de la recepción"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "depois do resultado"
+msgstr "después del resultado"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "lote inteiro aprovado"
+msgstr "lote entero aprobado"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "nada em aberto"
+msgstr "nada pendiente"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "pago US$ %(v)s"
+msgstr "pagado US$ %(v)s"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "sem diferença"
+msgstr "sin diferencia"
+
+#: ficha da compra — realinhamento ao Claude Design (2026-08-27)
+msgid "%(n)s un. · fechado em %(d)s"
+msgid_plural "%(n)s un. · fechado em %(d)s"
+msgstr[0] "%(n)s un. · cerrado el %(d)s"
+msgstr[1] "%(n)s un. · cerrado el %(d)s"
