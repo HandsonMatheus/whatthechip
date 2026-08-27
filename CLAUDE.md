@@ -932,6 +932,36 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   gravada e as outras 11 marcas não. Corrigido: nome começando com `_` **não
   é marca** (trava: `DeployCatalogDescobertaTests`). Use `_` para qualquer
   arquivo de fixture/rascunho que precise morar em `chips/knowledge/`.
+- **DOIS COMANDOS COM DEFINIÇÕES DIFERENTES DE "CONFLITO" TRAVAM O REGISTRO
+  PARA SEMPRE (2026-08-27):** o `submit_known_parts --fill-empty` parou de
+  completar 6 eMCP Micron (MT29TZZZ7D7 / JZ050 e irmãos) que tinham
+  `emcp_nand`/`emcp_ram` **vazios** desde a importação FBGA. Sequência
+  reproduzida: (1) `submit --fill-empty` → CONFLITO só em `source_url`, zero
+  preenchido; (2) `resolve_conflicts` → não sobrescreve a url (é UMA só, juntar
+  quebraria o link) e escreve um marcador dentro de `notes`; (3) `submit` de
+  novo → CONFLITO agora em `notes` **E** `source_url`. **Não era empate, era
+  catraca:** cada rodada do passo 2 ADICIONAVA um conflito, então o par se
+  afastava da solução. **Raiz:** o `resolve_conflicts` tem política POR CLASSE
+  de campo (`notes`=merge, `source_url`=nunca sobrescreve) e o `submit`
+  comparava os 13 campos por igualdade de string — então todo campo cuja
+  política é *acumular* era, por construção, **conflito permanente**; os dois
+  comandos eram insatisfazíveis juntos e nenhuma sequência fechava o laço.
+  **Duas correções:** (a) proveniência (`notes`/`source_url`) deixa de contar
+  como conflito no `submit`, importada da FONTE ÚNICA — os próprios conjuntos
+  `_MERGE`/`_FONTE_NO_NOTES` do `resolve_conflicts` —, para os dois nunca mais
+  divergirem sobre o que é conflito; (b) **os baldes deixam de ser
+  excludentes**: era `if muda: … elif preencher:`, e um campo em conflito vetava
+  o PN inteiro — mas `muda` e `preencher` são conjuntos **DISJUNTOS por
+  construção** (o `if _vazio(atual)` separa), então nunca houve razão de
+  correção para um vetar o outro. Um PN agora pode estar em COMPLEMENTO **e** em
+  CONFLITO, e o painel diz quais. ⚠ Conflito de DADO continua intocável por
+  comando (só o admin decide) — afrouxar proveniência não afrouxou valor.
+  ⚠ Lição de método: a mutação que removia (a) **não mordeu** — (b) sozinha já
+  preenchia os campos. (a) serve ao RELATO: sem ela o registro é reportado como
+  CONFLITO para sempre e gera `.conflitos.yaml` a cada rodada — um alarme que
+  nunca apaga e que o dono aprende a ignorar, o que é caro justamente porque
+  CONFLITO é onde mora o conflito de verdade. Travas:
+  `DeadlockSubmitResolveTests` (5 testes; 4 mutações mordem).
 - **Categoria de caixa só nasce do que ENTRA no estoque (2026-08-18):** o
   `_masked_category` cunhava no RENDER do card de conferência — bipar um DDR2
   já gastava um número, mesmo o chip indo pro R-00 refino. Hoje a cunhagem
