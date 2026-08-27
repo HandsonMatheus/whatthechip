@@ -1377,11 +1377,6 @@ msgstr "the brand makes it, but you do not buy this item."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Bom saber"
-msgstr "Good to know"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
 msgid ""
 "Os preços de “Outras marcas” valem para todo chip de marca que não tem "
 "tabela própria."
@@ -1404,64 +1399,12 @@ msgstr "Prices are per chip (unit price)."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Perguntas frequentes"
-msgstr "Frequently asked questions"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid "Em que moeda eu preencho os preços?"
-msgstr "In which currency do I enter prices?"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
 msgid ""
 "Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas"
 " uma referência."
 msgstr ""
 "Always in USD (US dollars), per chip. The exchange rate shown at the top is "
 "only a reference."
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid "Meu preço vale na hora?"
-msgstr "Does my price take effect immediately?"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid ""
-"Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de "
-"aprovada, vale na hora — e você recebe uma notificação."
-msgstr ""
-"No. Every change first goes through WhatTheChip review. Once approved, it "
-"takes effect immediately — and you get a notification."
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid "O que significa “em revisão”?"
-msgstr "What does “under review” mean?"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid ""
-"Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua"
-" valendo."
-msgstr ""
-"Your change was submitted and awaits approval. Until then, the previous "
-"value remains in effect."
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid "Errei um preço. Posso corrigir?"
-msgstr "I entered a wrong price. Can I fix it?"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid ""
-"Sim. Envie o valor certo na mesma linha — o novo pedido substitui o "
-"anterior."
-msgstr ""
-"Yes. Submit the correct value on the same row — the new request replaces the"
-" previous one."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1490,18 +1433,6 @@ msgid ""
 msgstr ""
 "It is your general table. Those prices apply to chips from any brand that "
 "has no table of its own."
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid "Está faltando um chip na minha tabela?"
-msgstr "Is a chip missing from my table?"
-
-#. Como funciona (partner_how) — 2026-07-09
-#: pricing/templates/pricing/partner_how.html
-msgid ""
-"Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você "
-"cotar."
-msgstr "Contact WhatTheChip — we add the row and it appears for you to quote."
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
 #: pricing/pdf.py pricing/templates/pricing/partner_home.html
@@ -4031,120 +3962,8 @@ msgstr "no floor"
 msgid "(vazio)"
 msgstr "(empty)"
 
-msgid ""
-"<b>SSD</b> e <b>K9</b> não têm grade: o preço é uma taxa de contrato — ¥/GB "
-"com piso por peça, e ¥ por unidade."
-msgstr ""
-"<b>SSD</b> and <b>K9</b> have no grid: the price is a contract rate — ¥/GB "
-"with a floor per piece, and ¥ per unit."
-
-msgid ""
-"A taxa no topo (1 ¥ → US$) é a <b>mid-market do dia</b>, usada só para o "
-"vendedor ler o valor em dólar. Os seus preços em ¥ nunca mudam junto. Cada "
-"lote guarda a taxa do dia em que foi fechado."
-msgstr ""
-"The rate at the top (1 ¥ → US$) is the <b>day’s mid-market</b>, used only so"
-" the seller can read the dollar value. Your ¥ prices never move with it. "
-"Each lot keeps the rate of the day it was closed."
-
-msgid "Abra um tipo de chip na barra à esquerda."
-msgstr "Open a chip type in the left bar."
-
-msgid "Aprovado, passa a valer na hora. A decisão chega nas notificações."
-msgstr ""
-"Once approved, it takes effect immediately. The decision arrives in "
-"notifications."
-
-msgid ""
-"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
-"sempre em <b>¥ (RMB)</b>, sempre atualizada, sem planilhas."
-msgstr ""
-"Here you keep your buying price table for memory chips — always in <b>¥ "
-"(RMB)</b>, always current, no spreadsheets."
-
-msgid "Digite o preço em ¥ (RMB) na linha que quiser mudar."
-msgstr "Type the price in ¥ (RMB) on the row you want to change."
-
-msgid "E se a taxa de câmbio mudar?"
-msgstr "What if the exchange rate changes?"
-
-msgid "Envie no fim da página — só as linhas alteradas viram pedido."
-msgstr "Submit at the end of the page — only changed rows become a request."
-
-msgid "O preço é <b>por chip</b> (unitário)."
-msgstr "The price is <b>per chip</b> (unit)."
-
-msgid "O que você digita na célula"
-msgstr "What you type in the cell"
-
-msgid "O que é “travando N pedidos”?"
-msgstr "What does “blocking N orders” mean?"
-
-msgid ""
-"Os preços de <b>«Outras»</b> valem para todo chip de marca que não tem "
-"coluna própria."
-msgstr ""
-"The <b>«Other»</b> prices apply to every branded chip with no column of its "
-"own."
-
-msgid ""
-"Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula "
-"a partir deles — e o lote já fechado guarda a taxa do dia do fechamento, que"
-" não se mexe mais."
-msgstr ""
-"Your ¥ prices do not change. Only the US$ value the system derives from them"
-" does — and a lot already closed keeps the rate of its closing day, which "
-"never moves again."
-
-msgid "Quatro passos"
-msgstr "Four steps"
-
-msgid ""
-"Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado "
-"— a conversão para US$ é feita pelo sistema."
-msgstr ""
-"Always in ¥ (RMB), per chip. The number you type is what gets stored — the "
-"US$ conversion is done by the system."
-
 msgid "Significa"
 msgstr "Means"
-
-msgid "Um campo só. O que você escreve nele decide o estado da linha."
-msgstr "One field only. What you write in it decides the row’s status."
-
-msgid ""
-"Um selo <b>vermelho</b> na barra de tipos conta <b>pedidos travados</b>: "
-"lote já fechado que a plataforma não consegue precificar sem o seu preço. O "
-"âmbar conta lacuna, que pode esperar."
-msgstr ""
-"A <b>red</b> badge on the type bar counts <b>blocked orders</b>: a lot "
-"already closed that the platform cannot price without you. The amber one "
-"counts gaps, which can wait."
-
-msgid "Você escreve"
-msgstr "You type"
-
-msgid "ainda não decidiu. É a sua lista de tarefas."
-msgstr "not decided yet. This is your to-do list."
-
-msgid "compro a este preço, em ¥ por chip."
-msgstr "I buy at this price, in ¥ per chip."
-
-msgid "decisão ativa: este item existe e você não quer."
-msgstr "active decision: this item exists and you do not want it."
-
-msgid "não existe no mundo. Não tem campo, e não conta como lacuna."
-msgstr ""
-"does not exist in the world. It has no field, and does not count as a gap."
-
-msgid ""
-"É um lote já fechado esperando o seu preço para virar ordem. Enquanto a "
-"linha estiver sem cotação, a compra não congela nem fatura — por isso ela "
-"vem em vermelho, antes das lacunas comuns."
-msgstr ""
-"It is a lot already closed, waiting for your price to become an order. While"
-" the row has no quote, the purchase neither freezes nor invoices — that is "
-"why it comes in red, ahead of ordinary gaps."
 
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"

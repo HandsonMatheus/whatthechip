@@ -1071,25 +1071,14 @@ class PartnerDashboardTests(TestCase):
         # /partner/ agora é a lista de compras.
         resp = self.client.get('/partner/precos/')
         self.assertContains(resp, 'Wuquan P6')
-        self.assertContains(resp, 'Chips sem cotação')
+        # ⚠ 2026-08-27: era 'Chips sem cotação', da tira de três números que
+        # saiu no realinhamento ao protótipo. A REGRA deste teste é o gate —
+        # trocado por algo que a tela do design tem: a coluna da tabela.
+        self.assertContains(resp, 'Cotadas')
         # ⚠ ATUALIZADO na Etapa 9: o Resumo trocou "Bem-vindo, X" por "Suas
         # TABELAS DE PREÇO, X" — o título diz onde ele está, não olá. A REGRA
         # deste teste é o gate, e ela não mudou: o parceiro ENTRA.
         self.assertContains(resp, 'tabelas de preço')
-
-    def test_como_funciona(self):
-        # F6.2: guia curto do comprador — acessível só ao parceiro, com FAQ.
-        # F10: a página foi REESCRITA em ¥ (RMB) — nada de "preço em USD".
-        self.client.force_login(self.partner)
-        resp = self.client.get('/partner/how/')
-        self.assertContains(resp, 'Como funciona')
-        self.assertContains(resp, 'Perguntas frequentes')
-        self.assertContains(resp, 'RMB')
-        self.assertContains(resp, 'taxa do')             # taxa do contrato
-        self.assertNotContains(resp, 'preço em USD')
-        self.client.logout()
-        self.client.force_login(self.operator)
-        self.assertEqual(self.client.get('/partner/how/').status_code, 403)
 
     def test_header_mostra_taxa_vigente(self):
         # PLANO_FX (2026-08-01): o header mostra a taxa VIGENTE — mercado
@@ -2906,12 +2895,18 @@ class FilaDeCotacaoTravadaNaTelaTests(TestCase):
         pedido. As duas são verdade — a que aparece é a que explica a
         urgência; a contagem exata está a um clique, na grade."""
         semfila = self.client.get('/partner/precos/').content.decode()
-        self.assertIn('tag--maybe', semfila)            # lacuna, sozinha (v2)
+        # ⚠ 2026-08-27: a coluna deixou de ser pastilha (`.tag--maybe` /
+        # `.tag--no`) e passou a ser o NÚMERO de cotadas mais um aviso ao
+        # lado — `.miss` quando falta, `.got` quando está completa. É a forma
+        # do protótipo, e ela mostra o denominador. A REGRA não mudou: o que
+        # trava toma o lugar do que só falta.
+        self.assertIn('sem cotação</span>', semfila)
+        self.assertIn('class="miss"', semfila)
         self.assertNotIn('travando', semfila)
         self._ddr('C1')
         html = self.client.get('/partner/precos/').content.decode()
         self.assertIn('travando 1 pedido', html)
-        self.assertIn('tag--no', html)           # v2: o selo vermelho do pacote
+        self.assertIn('class="miss"', html)
 
     # ── 3ª parada: a barra de tipos e o topo da grade ───────────────────────
 
@@ -3248,7 +3243,8 @@ class TaxaDeContratoNaTelaDoCompradorTests(TestCase):
         sobrescrever."""
         self._taxa(ssd=Decimal('0.100'))
         html = self.client.get('/partner/tipo/ssd/').content.decode()
-        corpo = html[html.index('wtc-calc'):]
+        # ⚠ 2026-08-27: `.wtc-calc` era invenção nossa; o pacote tem `.calc`.
+        corpo = html[html.index('class="calc'):]
         self.assertNotIn('<input', corpo[:corpo.index('</table>')])
         # dois campos na página inteira, e são a taxa e o piso.
         # ⚠ prefixo, não igualdade: a célula PREENCHIDA leva `cell has`.
@@ -3813,8 +3809,12 @@ class TelaDoCatalogoTests(TestCase):
 
     def test_interface_o_carimbo_de_taxa_aparece_e_diz_onde_vai_sair(self):
         html = self.client.get('/partner/catalogo/').content.decode()
-        self.assertIn('catopt__fx', html)
-        self.assertIn('rodapé de todas as páginas', html)
+        # ⚠ 2026-08-27: o painel `.catopt` que eu tinha inventado virou o
+        # `.cat` (caixa preta) do protótipo, e o carimbo saiu de dentro dele
+        # para o `.stamp`, embaixo — no design a taxa é nota de rodapé da
+        # tela, não mais um campo do formulário.
+        self.assertIn('class="stamp"', html)
+        self.assertIn('rodapé de cada página', html)
 
     def test_interface_sem_taxa_a_opcao_com_dolar_NAO_e_oferecida(self):
         """§5.2: sob câmbio `none` a opção "¥ + US$" não pode gerar coluna de
@@ -3829,8 +3829,12 @@ class TelaDoCatalogoTests(TestCase):
         self.assertNotIn('value="both"', bloco)
 
     def test_interface_o_catalogo_e_item_de_nav_em_toda_tela_do_parceiro(self):
+        # ⚠ 2026-08-27: era '/partner/how/'; a tela foi apagada a pedido do
+        # dono. A rota que a substitui aqui é a de notificações — o que o
+        # teste segura é que o item de nav aparece em TODA tela do parceiro,
+        # e para isso serve qualquer uma que não seja a própria.
         for rota in ('/partner/precos/', '/partner/catalogo/',
-                     '/partner/how/'):
+                     '/partner/notifications/'):
             html = self.client.get(rota).content.decode()
             self.assertIn('href="/partner/catalogo/"', html, rota)
 
@@ -3899,11 +3903,17 @@ class CelularEQuatroIdiomasTests(TestCase):
         self.client.force_login(self.parceiro)
 
     def _tds_do_corpo(self, html):
-        """Os `<td>` de dentro de `<tbody>` das tabelas `.dtab--grade`."""
+        """Os `<td>` de dentro de `<tbody>` das tabelas da grade, linha a
+        linha — cada item é a LISTA de atributos dos `<td>` daquela linha.
+
+        ⚠ 2026-08-27: as tabelas perderam o modificador `.dtab--grade`. O
+        protótipo (`parceiro-grid.js`) resolve o cartão do telefone com a
+        `.dtab` base e só `data-label`, então o seletor aqui casa a tabela
+        estática pura."""
         import re
         out = []
         for tabela in re.findall(
-                r'<table class="dtab dtab--static dtab--grade">(.*?)</table>',
+                r'<table class="dtab dtab--static">(.*?)</table>',
                 html, re.S):
             corpo = re.search(r'<tbody>(.*?)</tbody>', tabela, re.S)
             if not corpo:
@@ -3911,7 +3921,9 @@ class CelularEQuatroIdiomasTests(TestCase):
             for linha in re.findall(r'<tr(.*?)</tr>', corpo.group(1), re.S):
                 if 'class="g"' in linha:
                     continue          # faixa de geração: uma célula de título
-                out += re.findall(r'<td\b([^>]*)>', linha)
+                tds = re.findall(r'<td\b([^>]*)>', linha)
+                if tds:
+                    out.append(tds)
         return out
 
     # ── a marcação que o cartão precisa ─────────────────────────────────────
@@ -3923,21 +3935,24 @@ class CelularEQuatroIdiomasTests(TestCase):
         for rota in ('/partner/tipo/emcp/', '/partner/tipo/ddr/',
                      '/partner/tipo/ssd/', '/partner/tipo/k9/'):
             html = self.client.get(rota).content.decode()
-            tds = self._tds_do_corpo(html)
-            self.assertTrue(tds, rota)
-            for attrs in tds:
-                self.assertTrue(
-                    'data-label=' in attrs or 'g-lin' in attrs,
-                    f'{rota}: <td{attrs}> não diz o que é')
+            linhas = self._tds_do_corpo(html)
+            self.assertTrue(linhas, rota)
+            for tds in linhas:
+                # A PRIMEIRA célula é o identificador da linha e NÃO leva
+                # rótulo: ela é o título do cartão, e rotular um título é
+                # dizer duas vezes. É o que o `parceiro-grid.js` faz.
+                for attrs in tds[1:]:
+                    self.assertIn(
+                        'data-label=', attrs,
+                        f'{rota}: <td{attrs}> não diz de que coluna veio')
 
     def test_interface_a_faixa_rotula_minimo_e_maximo_separadamente(self):
         """O caso que motiva a exceção do rótulo: dois campos na mesma linha.
-        Rótulos iguais seriam pior que rótulo nenhum."""
+        Rótulos iguais seriam pior que rótulo nenhum. Os TEXTOS são os do
+        protótipo — o cartão do design e o nosso dizem a mesma coisa."""
         html = self.client.get('/partner/tipo/emcp/').content.decode()
         self.assertIn('data-label="Preço ¥ — mínimo"', html)
         self.assertIn('data-label="Preço ¥ — máximo"', html)
-        self.assertIn('class="g-p"', html)
-        self.assertIn('class="g-pmax"', html)
 
     def test_interface_a_matriz_rotula_cada_celula_com_a_MARCA(self):
         """No cartão as colunas viram fileiras: sem o nome da marca em cada
@@ -3945,52 +3960,156 @@ class CelularEQuatroIdiomasTests(TestCase):
         html = self.client.get('/partner/tipo/ddr/').content.decode()
         self.assertIn(f'data-label="{self.samsung.name}"', html)
         self.assertIn('data-label="Outras"', html)
-        self.assertIn('class="g-brand"', html)
 
-    def test_interface_as_tabelas_da_grade_pedem_o_cartao_de_grade(self):
+    def test_interface_o_ESTADO_tambem_leva_rotulo(self):
+        """⚠ REVERSÃO de 2026-08-27. A Etapa 10 tinha escrito uma regra de CSS
+        de propósito para APAGAR o rótulo do estado, argumentando que a
+        pastilha se lê sozinha. O `parceiro-grid.js` emite
+        `data-label="Status"` como em qualquer outra célula, e ele está certo:
+        no cartão a pastilha se lê sozinha como PASTILHA, não como coluna —
+        o que o rótulo responde é «de onde veio isto», e a forma da pastilha
+        não responde essa pergunta."""
         for rota in ('/partner/tipo/emcp/', '/partner/tipo/ddr/',
                      '/partner/tipo/ssd/'):
-            self.assertIn('dtab--grade',
-                          self.client.get(rota).content.decode(), rota)
+            html = self.client.get(rota).content.decode()
+            self.assertIn('data-label="Status"', html, rota)
+
+    def test_interface_os_rotulos_do_SSD_dizem_a_UNIDADE(self):
+        """`¥ (RMB)` não distingue a taxa por GB do piso por peça — os dois
+        são ¥. O protótipo escreve a unidade em cada um, e é ela que faz o
+        cartão fazer sentido quando os dois campos empilham."""
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        self.assertIn('data-label="¥ por GB"', html)
+        self.assertIn('data-label="¥ mínimo/peça"', html)
+        self.assertNotIn('data-label="¥ (RMB)"', html)
+
+    def test_interface_a_grade_NAO_reintroduz_o_mecanismo_paralelo(self):
+        """PORTÃO DE REGRESSÃO. `dtab--grade` e as seis classes de papel
+        (`g-lin`, `g-st`, `g-p`, `g-pmax`, `g-brand`, `g-upd`) foram um
+        mecanismo nosso para o mesmo problema que a `.dtab` base já resolve.
+        Saíram em 2026-08-27. Se voltarem, voltam junto com um segundo jeito
+        de fazer a mesma coisa — que é como um sistema de design racha."""
+        for rota in ('/partner/tipo/emcp/', '/partner/tipo/ddr/',
+                     '/partner/tipo/ssd/', '/partner/tipo/k9/'):
+            html = self.client.get(rota).content.decode()
+            self.assertNotIn('dtab--grade', html, rota)
+            for papel in ('g-lin', 'g-st', 'g-pmax', 'g-brand', 'g-upd'):
+                self.assertNotIn(f'class="{papel}"', html, f'{rota}/{papel}')
 
     # ── a folha ─────────────────────────────────────────────────────────────
 
-    def _css(self):
+    def _css(self, nome='patterns/parceiro.css'):
         from pathlib import Path
         from django.conf import settings
-        return (Path(settings.BASE_DIR) / 'static' / 'wtc' / 'patterns'
-                / 'parceiro.css').read_text(encoding='utf-8')
+        return (Path(settings.BASE_DIR) / 'static' / 'wtc'
+                / nome).read_text(encoding='utf-8')
 
-    def test_script_a_folha_tem_o_bloco_de_600px_da_grade(self):
-        css = self._css()
-        self.assertIn('@media (max-width:600px)', css)
-        bloco = css[css.index('.dtab--grade tbody tr{'):]
-        for papel in ('.dtab--grade .g-lin', '.dtab--grade .g-st',
-                      '.dtab--grade .g-upd'):
-            self.assertIn(papel, bloco, papel)
+    def test_script_a_dtab_base_vira_cartao_no_telefone(self):
+        """É o pacote que colapsa a tabela, não a nossa folha: abaixo de 600px
+        o `thead` some e a `tr` vira `flex`. Se este bloco sair do
+        `components.css`, TODA tabela do comprador vira uma grade ilegível no
+        telefone — e nenhum teste de marcação pegaria isso."""
+        css = self._css('components.css')
+        i = css.index('.dtab thead{display:none}')
+        janela = css[max(0, i - 2000):i]
+        self.assertIn('@media(max-width:600px)', janela)
+        self.assertIn('.dtab tbody tr{display:flex', css)
 
-    def test_script_o_campo_do_telefone_tem_altura_de_TOQUE(self):
-        """48px, acima do mínimo de 44 — é o dedo, não o cursor."""
-        css = self._css()
-        i = css.index('.dtab--grade .g-p .cell')
-        self.assertIn('height:48px', css[i:i + 260])
+    def test_script_o_pacote_NAO_imprime_o_data_label_e_isso_e_um_buraco(self):
+        """⚠ ACHADO DE 2026-08-27, cravado aqui para não se perder.
 
-    def test_script_o_rotulo_do_cartao_vence_a_regra_que_o_apaga(self):
-        """A `.dtab` zera o `::before` do `data-label` (0-3-1). A exceção da
-        grade precisa de MAIS especificidade, não da ordem dos arquivos —
-        empatar e depender do <link> é como esta correção some um dia."""
+        O `parceiro-grid.js` do protótipo emite `data-label` em toda célula da
+        grade, com um comentário dizendo que abaixo de 600px a `.dtab` esconde
+        o cabeçalho e a linha vira cartão. Mas NENHUMA folha do pacote imprime
+        esse atributo: o que existe é o contrário —
+        `.dtab tbody td[data-label]::before{content:none}` — e o único
+        `attr()` renderizado é o do `data-suffix`.
+
+        A consequência é real e é onde dói mais: na grade de eMCP, a linha tem
+        um campo de MÍNIMO e um de MÁXIMO. Empilhados sem cabeçalho e sem
+        rótulo, são dois retângulos vazios idênticos, e o comprador digita
+        dinheiro em um deles sem saber qual.
+
+        O dono decidiu em 2026-08-27 abrir UMA exceção, e ela está no teste
+        seguinte. Este aqui guarda o estado do PACOTE: no dia em que ele
+        passar a imprimir o rótulo sozinho, este teste quebra e avisa que a
+        nossa exceção virou redundante."""
+        css = self._css('components.css')
+        self.assertIn('.dtab tbody td[data-label]::before{content:none}', css)
+        self.assertNotIn('content:attr(data-label)', css)
+        # o que o pacote de fato imprime é o sufixo, e só ele
+        self.assertIn('content:attr(data-suffix)', css)
+
+    def test_script_a_excecao_da_grade_imprime_o_rotulo_e_vence_o_pacote(self):
+        """A exceção é escrita pela CONDIÇÃO, não por um modificador: a
+        tabela que tem campo é a tabela onde a ambiguidade existe. Isso evita
+        a segunda invenção — a marcação segue idêntica à do protótipo, e o
+        que muda é só a folha.
+
+        Dois portões aqui, e os dois já falharam em versões anteriores desta
+        tela: a regra precisa VENCER POR PESO (o pacote é (0,3,2), esta é
+        (0,4,2) porque o `:has()` herda de `input.cell`), e precisa existir
+        no `@media` E no `@container` — o pacote mata o rótulo nos dois, e
+        ressuscitar em só um deixa a tela certa fora do frame e errada
+        dentro dele."""
+        import re
         css = self._css()
-        self.assertIn('.dtab.dtab--grade tbody td[data-label]::before', css)
-        i = css.index('.dtab.dtab--grade tbody td[data-label]::before')
+        regra = '.dtab:has(input.cell) tbody td[data-label]::before'
+        self.assertEqual(css.count(regra), 2, 'falta o par @media/@container')
+
+        # ⚠ Não basta procurar o texto do at-rule e olhar os N caracteres
+        # seguintes: a folha tem VÁRIOS blocos de 600px, e o primeiro não é o
+        # nosso. Para cada ocorrência da regra, andamos para TRÁS até o
+        # at-rule que a contém — é o único jeito de afirmar onde ela mora.
+        envolventes = []
+        for m in re.finditer(re.escape(regra), css):
+            antes = css[:m.start()]
+            aberturas = re.findall(r'@(?:media|container)[^{]*\{', antes)
+            self.assertTrue(aberturas, 'a regra está fora de qualquer at-rule')
+            envolventes.append(aberturas[-1].strip())
+        self.assertEqual(len(envolventes), 2)
+        self.assertTrue(any('@media' in e and '600px' in e for e in envolventes),
+                        f'nenhuma no @media: {envolventes}')
+        self.assertTrue(any('@container' in e and '600px' in e for e in envolventes),
+                        f'nenhuma no @container: {envolventes}')
+        i = css.index(regra)
         self.assertIn('content:attr(data-label)', css[i:i + 120])
 
-    def test_script_o_estado_nao_ganha_rotulo_no_cartao(self):
-        """A pastilha se lê sozinha; "STATUS" em cima dela é uma palavra a
-        mais para rolar num telefone."""
+    def test_interface_so_a_tabela_COM_CAMPO_ganha_rotulo(self):
+        """A condição da exceção tem de ser verdadeira na tela, não só no
+        CSS: as tabelas da grade têm `input.cell`; a de capacidade calculada
+        do SSD não tem, e não precisa de rótulo — uma coluna de valor não se
+        confunde com nada."""
+        html = self.client.get('/partner/tipo/ssd/').content.decode()
+        # a grade da taxa: tem campo E tem rótulo
+        grade = html[html.index('name="rate"'):]
+        self.assertIn('input class="cell', html[:html.index('name="rate"')]
+                      + grade[:200])
+        # a tabela calculada: nenhum input entre as suas tags
+        calc = html[html.index('Preço por peça, calculado'):]
+        calc = calc[:calc.index('</table>')]
+        self.assertNotIn('<input', calc)
+
+    def test_script_a_folha_do_parceiro_NAO_tem_mais_o_mecanismo_paralelo(self):
+        """A outra metade do portão de regressão: a marcação saiu dos
+        templates, e o CSS que a servia saiu da folha."""
         css = self._css()
-        self.assertIn('.dtab.dtab--grade tbody td.g-st[data-label]::before', css)
-        i = css.index('.dtab.dtab--grade tbody td.g-st[data-label]::before')
-        self.assertIn('content:none', css[i:i + 80])
+        for morto in ('dtab--grade', '.g-lin', '.g-st', '.g-p ', '.g-pmax',
+                      '.g-brand', '.g-upd'):
+            self.assertNotIn(morto, css, morto)
+
+    def test_script_a_folha_do_parceiro_e_a_do_pacote_mais_o_nosso_rodape(self):
+        """A folha passou a ser a do design system com um rodapé marcado. A
+        marca existe para a próxima versão do pacote entrar por cima sem
+        levar o que é nosso junto."""
+        css = self._css()
+        self.assertIn('O QUE É DO WHATTHECHIP E NÃO DO PACOTE', css)
+        # o que veio do pacote e nós não tínhamos: a conferência do lote
+        self.assertIn('.conflive', css)
+        # o que é nosso e sobreviveu
+        i = css.index('O QUE É DO WHATTHECHIP E NÃO DO PACOTE')
+        self.assertIn('.blk{', css[i:])
+        self.assertIn('.tfoot__sum{', css[i:])
 
     # ── os quatro idiomas ───────────────────────────────────────────────────
 
@@ -4030,7 +4149,7 @@ class CelularEQuatroIdiomasTests(TestCase):
         from pathlib import Path
         from django.conf import settings
         amostra = ['Catálogo', 'Gerar PDF', 'mínimo por peça',
-                   'Válido até', 'Como funciona', 'Notificações']
+                   'Válido até', 'Notificações']
         for loc in ('en', 'es', 'zh_Hans'):
             caminho = (Path(settings.BASE_DIR) / 'locale' / loc /
                        'LC_MESSAGES' / 'django.mo')
@@ -4041,8 +4160,13 @@ class CelularEQuatroIdiomasTests(TestCase):
                               f'{loc}: «{msgid}» não está no .mo compilado')
             # …e pelo menos uma delas TEM de mudar de forma, senão o teste
             # passaria com um catálogo que só copia o português.
-            self.assertNotEqual(t.gettext('Como funciona'), 'Como funciona',
-                                loc)
+            # ⚠ A prova era feita com «Como funciona», tela apagada em
+            # 2026-08-27. Passou a ser «Notificações», que muda de forma nos
+            # três idiomas — em espanhol «Catálogo» é idêntico ao português,
+            # e um par idêntico não prova nada.
+            self.assertNotEqual(
+                t.gettext('Notificações'), 'Notificações',
+                f'{loc}: o catálogo parece uma cópia do português')
 
     def test_script_o_plural_resolve_nas_tres_linguas(self):
         """As entradas plurais nasceram no painel v2 e são a única forma que

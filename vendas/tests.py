@@ -2075,9 +2075,10 @@ class CompradorComprasTests(TestCase):
         """O badge vive no cabeçalho, e o cabeçalho é o mesmo em todas."""
         self._compra(self.emp_a, 'BI1')
         self.client.force_login(self.parceiro)
+        # ⚠ 2026-08-27: era `partner_how`, tela apagada a pedido do dono.
         for rota in (reverse('compras:list'),
                      reverse('pricing:partner_home'),
-                     reverse('pricing:partner_how')):
+                     reverse('pricing:partner_notifications')):
             self.assertEqual(self._badge(rota), '1', rota)
 
     def test_interface_badge_zero_sai_VAZIO_e_nunca_escreve_zero(self):
@@ -2732,9 +2733,11 @@ class PartnerRaizTests(TestCase):
     """A raiz /partner/ é a lista de COMPRAS (dono, 2026-08-18): é o que ele
     abre todo dia. A tabela de preços virou a segunda tela, /partner/precos/.
 
-    ⚠ Os dois includes moram no MESMO prefixo. O teste do /partner/how/ existe
-    para cravar o fall-through do resolvedor: se o Django parasse no primeiro
-    include, metade da área do parceiro viraria 404."""
+    ⚠ Os dois includes moram no MESMO prefixo. O teste de uma rota que mora
+    no SEGUNDO include existe para cravar o fall-through do resolvedor: se o
+    Django parasse no primeiro, metade da área do parceiro viraria 404.
+    A rota usada era `/partner/how/`; virou `/partner/notifications/` quando
+    aquela tela foi apagada, em 2026-08-27."""
 
     @classmethod
     def setUpTestData(cls):
@@ -2760,7 +2763,8 @@ class PartnerRaizTests(TestCase):
     def test_precos_continua_servido_no_segundo_include(self):
         self.assertEqual(reverse('pricing:partner_home'), '/partner/precos/')
         self.assertEqual(self.client.get('/partner/precos/').status_code, 200)
-        self.assertEqual(self.client.get('/partner/how/').status_code, 200)
+        self.assertEqual(
+            self.client.get('/partner/notifications/').status_code, 200)
 
 
 class CompradorEtapasEResultadoTests(TestCase):
@@ -4388,7 +4392,7 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
                  # comentários novos, e é a tela onde a fila de cotação
                  # travada aparece.
                  reverse('pricing:partner_kind', args=['emcp']),
-                 reverse('pricing:partner_how'))
+                 reverse('pricing:partner_notifications'))
         for rota in rotas:
             resp = self.client.get(rota)
             self.assertEqual(resp.status_code, 200, rota)

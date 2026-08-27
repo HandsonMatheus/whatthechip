@@ -20,7 +20,6 @@ urlpatterns = [
     path('tipo/<str:kind>/enviar/', views.partner_kind_save, name='partner_kind_save'),
     path('notifications/',        views.partner_notifications,
          name='partner_notifications'),
-    path('how/',                  views.partner_how, name='partner_how'),
     # A TELA do catálogo (spec v2 §5.2). O `.pdf` abaixo continua sendo quem
     # gera — a tela só monta o pedido.
     path('catalogo/',             views.partner_catalog,
