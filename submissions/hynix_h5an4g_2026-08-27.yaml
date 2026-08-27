@@ -1,0 +1,140 @@
+# Submissão de known_parts — SK Hynix, família H5AN (DDR4 standalone, JÁ MAPEADA e
+# GRANDFATHERED). Gerado a partir da investigação do PN H5AN4G6NBJR (busca na bancada,
+# 2026-08-27). Densidade 4Gb (pn[4:6]="4G") — família já tinha known_parts só na densidade
+# 8Gb (hynix_h5an8g_organizacoes_2026-08-20.yaml); esta é a 1ª leva na densidade 4Gb.
+#
+# ACHADO: um ÚNICO datasheet oficial (DigiKey, PDF completo, lido NA ÍNTEGRA) já nomeia o
+# ALVO da bancada + o 1º fuzzy_suggestion do debug na MESMA frase de abertura — mesmo padrão
+# "datasheet cobre o cluster inteiro" já visto pro H5TQ4G/H5AN8G nesta sessão:
+#   "H5AN4GxNBJR Series", Rev.1.7/Mar.2018 — media.digikey.com (fonte: Netlist Inc, mas o
+#   PDF É o datasheet oficial SK hynix, cabeçalho/rodapé/features idênticos aos outros lidos
+#   nesta sessão — distribuidor só hospeda o PDF do fabricante, não é fonte própria).
+#   Título nomeia 5 PNs: H5AN4G4NBJR-xxC, H5AN4G8NBJR-xxC, H5AN4G6NBJR-xxC (temp. comercial,
+#   0~95°C), H5AN4G8NBJR-xxI, H5AN4G6NBJR-xxI (temp. industrial, -40~95°C — MESMO PN base,
+#   só o sufixo de grade muda; não vira known_part separado, mesmo padrão já usado pro
+#   sufixo de velocidade *xx em toda a sessão).
+#   Ordering Information (tabela "Part No. / Configuration / Package"):
+#     H5AN4G4NBJR-*xxC → 1G x 4    → 78ball FBGA
+#     H5AN4G8NBJR-*xxC → 512M x 8  → 78ball FBGA   (+ variante -*xxI, mesmo PN base)
+#     H5AN4G6NBJR-*xxC → 256M x 16 → 96ball FBGA   (+ variante -*xxI, mesmo PN base)
+#   H5AN4G6NBJR é EXATAMENTE o PN lido na bancada — sem correção/leitura duvidosa desta vez
+#   (ao contrário do caso H5TQ2G163CFR desta mesma sessão). H5AN4G8NBJR é o 1º
+#   fuzzy_suggestion do debug — mesmo cluster, mesma revisão B, só organização diferente.
+#
+# CLUSTER AMPLIADO (revisão A, mesma densidade 4Gb): busca adicional achou o par de
+# revisão-de-die anterior, mesmo padrão "die-revision-letter" já visto em H5TC/H5TQ/H5AN8G
+# nesta sessão — AllDataSheet, corpo "Product details" lido na íntegra (mesmo texto conta
+# como confirmed nesta sessão, ex. H5TQ2G83CFR): "The H5AN4G4NAFR-xxC, H5AN4G8NAFR-xxC and
+# H5AN4G6NAFR-xxC are a 4Gb CMOS Double Data Rate IV (DDR4) Synchronous DRAM..." — MESMAS 3
+# organizações (x4/x8/x16), revisão A em vez de B. Fontes:
+#   H5AN4G8NAFR: https://www.alldatasheet.com/datasheet-pdf/pdf/1425028/HYNIX/H5AN4G8NAFR.html
+#   H5AN4G4NAFR: https://www.alldatasheet.com/datasheet-pdf/pdf/1425027/HYNIX/H5AN4G4NAFR.html
+#   H5AN4G6NAFR: https://www.alldatasheet.com/datasheet-pdf/pdf/1425045/HYNIX/H5AN4G6NAFR-UHC.html
+#
+# GAP CONHECIDO (buscado e NÃO achado, não é preguiça): revisões C e D também existem pra
+# esta família na densidade 8Gb (ver hynix_h5an8g_organizacoes_2026-08-20.yaml) — busquei
+# "H5AN4G6NCJR"/"H5AN4G8NCJR" e "H5AN4G6NDJR"/"H5AN4G8NDJR" explicitamente e NÃO achei
+# nenhuma fonte pra revisão C ou D na densidade 4Gb. Ao que tudo indica, o die de 4Gb só
+# teve revisões A e B lançadas (o de 8Gb, posterior/maior, ganhou mais revisões — plausível
+# dada a diferença de datas: rev A 4Gb no mesmo ano da rev A 8Gb, mas rev B 4Gb já é
+# Mar.2018 enquanto 8Gb ainda tinha rev C só em Mar.2019). Não incluí C/D — excluir, não
+# adivinhar.
+#
+# FORMA CURTA (10 chars, sem "R" final): a família TEM esse padrão confirmado pelo dono em
+# 2026-08-20 (foto do H5AN8G6NCJ físico + "brother os dois existem! com e sem a letra!") —
+# mas aquela confirmação foi especificamente sobre a densidade 8Gb. Decidi NÃO extrapolar
+# pra densidade 4Gb sem evidência própria (nem foto, nem listagem com a forma curta desta
+# densidade apareceu na pesquisa) — mesmo raciocínio de "excluir, não adivinhar" aplicado à
+# EXISTÊNCIA da forma, não só à spec. Se o dono confirmar que o padrão vale pra família
+# inteira (não só pra 8Gb), volto e adiciono as 6 formas curtas correspondentes.
+#
+# ARITMÉTICA (bate com o debug — "DRAM: 4Gb = 512MB por die [✓]"): 4Gb÷8=512MB. Organização
+# não muda a densidade total: 1Gx4=4Gbit, 512Mx8=4Gbit, 256Mx16=4Gbit — todas 512MB.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5an4g_2026-08-27.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5an4g_2026-08-27.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5AN4G6NBJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H5AN4GxNBJR%20Series.pdf"
+    notes: >
+      PN ALVO da bancada (2026-08-27), EXATAMENTE como lido — sem correção necessária.
+      Datasheet oficial SK hynix "4Gb DDR4 SDRAM" Rev.1.7/Mar.2018 (PDF completo lido NA
+      ÍNTEGRA via DigiKey). Ordering Information: "H5AN4G6NBJR-*xxC 256M x 16, 96ball
+      FBGA" (+ variante -*xxI, temp. industrial, mesmo PN base). 4Gb÷8=512MB — bate exato
+      com o decode atual da gramática. confidence=confirmed (corpo técnico oficial lido,
+      não metadado).
+
+  - part_number: "H5AN4G8NBJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H5AN4GxNBJR%20Series.pdf"
+    notes: >
+      1º fuzzy_suggestion do debug do PN alvo H5AN4G6NBJR — mesmo datasheet oficial,
+      mesma revisão B, irmão de organização (x8 em vez de x16). Ordering Information:
+      "H5AN4G8NBJR-*xxC 512M x 8, 78ball FBGA" (+ variante -*xxI). 4Gb÷8=512MB.
+      confidence=confirmed (corpo técnico completo lido).
+
+  - part_number: "H5AN4G4NBJR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H5AN4GxNBJR%20Series.pdf"
+    notes: >
+      3º PN nomeado no MESMO datasheet oficial do alvo H5AN4G6NBJR (revisão B) — irmão de
+      organização (x4). Ordering Information: "H5AN4G4NBJR-*xxC 1G x 4, 78ball FBGA".
+      4Gb÷8=512MB. confidence=confirmed (corpo técnico completo lido).
+
+  - part_number: "H5AN4G6NAFR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425045/HYNIX/H5AN4G6NAFR-UHC.html"
+    notes: >
+      Revisão A (die-revision-letter anterior à B do alvo) — mesma organização x16, mesma
+      densidade 4Gb. AllDataSheet "Product details" (corpo lido na íntegra, mesmo padrão
+      já usado nesta sessão p/ H5TQ2G83CFR): "The H5AN4G4NAFR-xxC, H5AN4G8NAFR-xxC and
+      H5AN4G6NAFR-xxC are a 4Gb CMOS Double Data Rate IV (DDR4) Synchronous DRAM...".
+      4Gb÷8=512MB. confidence=confirmed.
+
+  - part_number: "H5AN4G8NAFR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425028/HYNIX/H5AN4G8NAFR.html"
+    notes: >
+      Irmão de organização (x8) da revisão A — mesmo datasheet/mesma frase do
+      H5AN4G6NAFR. 4Gb÷8=512MB. confidence=confirmed (corpo técnico completo lido).
+
+  - part_number: "H5AN4G4NAFR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425027/HYNIX/H5AN4G4NAFR.html"
+    notes: >
+      Irmão de organização (x4) da revisão A — mesmo datasheet/mesma frase do
+      H5AN4G6NAFR. 4Gb÷8=512MB. confidence=confirmed (corpo técnico completo lido).
