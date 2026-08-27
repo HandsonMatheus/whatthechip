@@ -1,0 +1,62 @@
+# Submissão de known_parts — Samsung, famílias NOVAS KFM e KFW (OneNAND).
+# PN alvo (debug 2026-08-27): KFM4G16Q4B — totalmente desconhecido
+# ("known": false, nenhuma família casava, in_review_queue: true).
+#
+# ⚠ FAMÍLIAS NOVAS (Trilha A, já aplicado em samsung.yaml + golden em
+# tests.py): KFM e KFW são a 3ª e 4ª convenção de nomenclatura OneNAND desta
+# marca (depois de K5D e KFG, já no catálogo). Confirmado via Elnec
+# (fabricante de programadores universais de chip — precisa da spec elétrica
+# exata pra funcionar): a letra após "KF" é "Small Classification"
+# (arquitetura de mux/die-stack), NÃO densidade — M=Muxed, W=De-Muxed 4 die
+# stack w/dual nCE (G=De-Muxed, H=De-Muxed 2 die stack, já documentados na
+# família KFG). A densidade mora nos 2 chars seguintes (12/28/56/1G/2G/4G/8G),
+# estável entre letras — mas a gramática permanece identity-only (igual KFG),
+# não decodifico capacidade posicionalmente aqui — ver reasoning completo no
+# samsung.yaml pra essa decisão e o achado sinalizado ao dono.
+brand: "Samsung"
+known_parts:
+  - part_number: "KFM4G16Q4B"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    confidence: confirmed
+    source_url: "https://www.elnec.com/en/device/Samsung/KFM4G16Q4B%20[FBGA63]/"
+    notes: >
+      PN alvo do debug (2026-08-27), forma base sem sufixo. Elnec (device
+      database de programador universal de chip): FBGA63, decode oficial
+      posição-a-posição — M=Muxed, 4G=4Gbit, 1=SLC, 6=x16, Q=Vcc 1.8V,
+      4=modo página 4K, B=3ª geração. Existência do PN corroborada por 3
+      distribuidores independentes do sufixo -BEB1 (ver entrada abaixo).
+
+  - part_number: "KFM4G16Q4B-BEB1"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    confidence: confirmed
+    source_url: "https://www.ic-components.com/products/Samsung-Semiconductor/KFM4G16Q4B-BEB1.jsp"
+    notes: "Forma completa com sufixo. Confirmado em 3 distribuidores convergentes: IC-Components, Y-IC Electronics, Worldway Electronics — mesmo PN, mesma descrição (Samsung OneNAND). Ver notes do PN base para o decode Elnec."
+
+  - part_number: "KFW4G16Q2M"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/116138/SAMSUNG/KFW4G16Q2M.html"
+    notes: >
+      Achado do cluster ao pesquisar KFM4G16Q4B (mesmo escopo original desta
+      família: OneNAND KFG/KFW/KFM). Alldatasheet: página dedicada (id
+      116138), "FLASH MEMORY(66MHz)", 125 páginas, datasheet oficial Samsung
+      (Direct Link samsung.com). Elnec: W=De-Muxed 4 die stack w/dual nCE,
+      2=modo página 2K, M=1ª geração — mesma densidade "4G" do PN alvo,
+      classificação diferente (confirma letra≠densidade).
+
+  - part_number: "KFW4G16Q2M-DEB5"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/106578/SAMSUNG/KFW4G16Q2M-DEB5.html"
+    notes: "Forma completa com sufixo de revisão/pacote. Alldatasheet: página dedicada própria (id 106578), '1Mb / 125P FLASH MEMORY(54MHz)', datasheet oficial Samsung. Ver notes do PN base."
+
+  - part_number: "KFW4G16Q2M-DEB6"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/106690/SAMSUNG/KFW4G16Q2M-DEB6.html"
+    notes: "Forma completa com sufixo de revisão/pacote. Alldatasheet: página dedicada própria (id 106690), '1Mb / 125P FLASH MEMORY(54MHz)', datasheet oficial Samsung. Ver notes do PN base."

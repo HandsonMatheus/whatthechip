@@ -1416,7 +1416,43 @@ families:
   decode_density_type: ''
   suffix_rules: ''
   tip: 'OneNAND Samsung — mesma tecnologia da familia K5D (NAND Flash com interface NOR-compativel, chip monolitico, NAO separar componentes). KFG e uma 2a convencao de nomenclatura Samsung pra OneNAND (prefixo "KF" + letra + digitos, em vez de "K5D"), vista em datasheets de 2005-2010. Prefixo "KF" (2 chars) ja existe INATIVO na Kingston (DDR, chip_type diferente) — este prefixo e "KFG" (3 chars), mais especifico, sem colisao. Densidade NAO decodificada pela gramatica (identity-only, igual KF9): o codigo de 4 digitos apos o prefixo varia entre convencao numerica ("1216"=512Mb) e literal ("1G16"=1Gb) conforme a geracao — sem regra posicional confiavel o suficiente pra generalizar sem arriscar erro. Destino comercial fixo (chip_types.py, 2026-07-14): sem liquidez B2B, sucata/moagem, independente de capacidade.'
-  reasoning: 'Samsung OneNAND Ver. 1.4 (datasheet oficial, jun/2005) — tabela "OneNAND SPECIFICATION" mostra o prefixo "KFG" usado pro tier 512Mb (KFG1216Q2M-DEB) e "KFH" pro tier 1Gb (KFH1G16Q2M-DEB) NAQUELA geracao — ou seja, a letra apos "KF" nao e um indicador de densidade estavel entre geracoes. PN alvo do debug (KFG1G16U2C, prefixo "KFG" MAS codigo "1G16") confirmado via multiplos distribuidores convergentes (Arrow, Datasheets.com, Datasheets360, catalog.gaw.ru) como 1Gb (64Mx16) — a geracao posterior aparentemente unificou tudo sob "KFG", com a densidade indicada só pelo código numérico/literal, não mais pela letra. Por isso nenhum decode_cap foi declarado (evidência insuficiente pra regra posicional confiável).'
+  reasoning: 'Samsung OneNAND Ver. 1.4 (datasheet oficial, jun/2005) — tabela "OneNAND SPECIFICATION" mostra o prefixo "KFG" usado pro tier 512Mb (KFG1216Q2M-DEB) e "KFH" pro tier 1Gb (KFH1G16Q2M-DEB) NAQUELA geracao — ou seja, a letra apos "KF" nao e um indicador de densidade estavel entre geracoes. PN alvo do debug (KFG1G16U2C, prefixo "KFG" MAS codigo "1G16") confirmado via multiplos distribuidores convergentes (Arrow, Datasheets.com, Datasheets360, catalog.gaw.ru) como 1Gb (64Mx16) — a geracao posterior aparentemente unificou tudo sob "KFG", com a densidade indicada só pelo código numérico/literal, não mais pela letra. Por isso nenhum decode_cap foi declarado (evidência insuficiente pra regra posicional confiável). ⚠ ACHADO 2026-08-27 (achado ao pesquisar KFM, ver reasoning de KFM abaixo): a Elnec (fabricante de programadores universais de chip) publica a tabela COMPLETA de part-numbering OneNAND da Samsung — a letra após "KF" é "Small Classification" (De-Muxed/Muxed/die-stack/RDY), NÃO densidade; a densidade mora nos 2 chars seguintes (12/28/56/1G/2G/4G/8G), estável e cruzando TODAS as letras de classificação. Isto sugere que decode_cap_pos SERIA possível pra esta família (e suas irmãs) com uma regra posicional própria — não apliquei aqui pra não reabrir uma decisão já tomada pelo dono sem autorização; fica sinalizado pro dono decidir se quer revisitar.'
+- prefix: KFM
+  chip_type: OneNAND
+  subtype: Samsung OneNAND Flash
+  interface: NOR (async)
+  is_emcp: false
+  active: true
+  priority: 70
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'OneNAND Samsung — mesma tecnologia das famílias K5D/KFG (NAND Flash com interface NOR-compatível, chip monolítico, NÃO separar componentes). KFM é a variante "Muxed" da nomenclatura OneNAND (prefixo "KF" + letra de classificação + densidade), vista em datasheets 2005-2010 lado a lado com KFG/KFH/KFW etc. Densidade NÃO decodificada pela gramática (identity-only, igual KFG/K5D): mesmo havendo um código posicional plausível (ver reasoning), a família-irmã KFG já optou por identity-only e não é papel deste chat mudar essa decisão sozinho. Destino comercial fixo (chip_types.py): sem liquidez B2B, sucata/moagem, independente de capacidade.'
+  reasoning: 'Debug KFM4G16Q4B (2026-08-27, "known": false, nenhuma família casava). Confirmado real: Elnec (fabricante de programadores de chip — precisa da spec elétrica exata pra funcionar, fonte técnica confiável) publica a tabela oficial de part-numbering OneNAND da Samsung: pos3 "M" = Small Classification "Muxed"; pos4-5 "4G" = Densidade 4Gb; pos6 "1" = Tecnologia SLC; pos7 "6" = Organização x16; pos8 "Q" = Vcc 1.8V; pos9 "4" = Modo página 4K; pos10 "B" = 3ª geração. Existência do PN base + sufixo "-BEB1" confirmada em 3 distribuidores convergentes (IC-Components, Y-IC, Worldway). Sibling KFM1216Q2M (densidade "12"=512Mb, mesma letra "M", geração/vcc diferentes) confirmado via Alldatasheet (id 111608) — prova que "M" não é amarrado a uma densidade específica, consistente com a tabela Elnec.'
+- prefix: KFW
+  chip_type: OneNAND
+  subtype: Samsung OneNAND Flash
+  interface: NOR (async)
+  is_emcp: false
+  active: true
+  priority: 70
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'OneNAND Samsung — mesma tecnologia das famílias K5D/KFG/KFM (NAND Flash com interface NOR-compatível, chip monolítico, NÃO separar componentes). KFW é a variante "De-Muxed 4 die stack w/dual nCE" da nomenclatura OneNAND. Densidade NÃO decodificada pela gramática (identity-only, mesmo critério de KFG/KFM — ver reasoning de KFG). Destino comercial fixo (chip_types.py): sem liquidez B2B, sucata/moagem, independente de capacidade.'
+  reasoning: 'Achado no cluster ao pesquisar KFM4G16Q4B (2026-08-27) — mesmo escopo original desta investigação de família (OneNAND KFG/KFW/KFM). Confirmado real: Alldatasheet tem página dedicada pro PN base KFW4G16Q2M (id 116138, "FLASH MEMORY(66MHz)", 125 páginas, datasheet oficial Samsung, Direct Link samsung.com) + 5 sufixos de revisão/pacote confirmados na mesma página (DEB5/DEB6/DED5/DED6/DIB5). Elnec: pos3 "W" = Small Classification "De-Muxed 4 die stack w/dual nCE" (ver reasoning de KFM pra tabela completa). Mesma densidade "4G" do PN alvo KFM4G16Q4B, letra de classificação diferente — confirma que letra ≠ densidade.'
 - prefix: KLM
   chip_type: eMMC
   subtype: ''
