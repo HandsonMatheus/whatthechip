@@ -1,0 +1,198 @@
+# Submissão de known_parts — Micron, FBGA D9MPK + família MT41K64M16 (2026-08-27)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9MPK
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9MPK → MT41K64M16JT-15E:G. Organização "64M16" = 64 Meg x 16 =
+# 1024Mbit = 1Gb — confirmado por 3 fontes independentes: (1) part-name
+# direto da API Micron ("DDR3 1G X16 FBGA"); (2) título do datasheet
+# oficial Micron (via DigiKey) "1Gb: x4, x8, x16 DDR3L SDRAM Addendum",
+# que cobre MT41K256M4/128M8/64M16 juntos; (3) aritmética 64M×16=1024Mb=1Gb.
+#
+# ⚠ chip_type = DDR3L, NÃO "DDR3" (achado importante, não decidido por
+# analogia). O part-name da API Micron abrevia pra "DDR3 1G X16 FBGA" (sem
+# "L"), mas o datasheet oficial (addendum "1.35V DDR3L SDRAM", MT41K_
+# 256M4,128M8,64M16.pdf, Rev. F) é inequívoco: "DDR3L SDRAM (1.35V) is a
+# low voltage version of the DDR3 SDRAM (1.5V)." Confirma também a marcação
+# de pacote: "JT" = 96-ball FBGA x16 Rev G (linha obsoleta, sub-category
+# obsolete-ddr3-sdram no catálogo Micron). Package "TW" (irmãos abaixo) não
+# está neste addendum específico — provavelmente pacote mais novo/fino,
+# sub-category "ddr3-sdram" (linha ATIVA/não-obsoleta no catálogo Micron) —
+# não decodificado em campo próprio, não muda specs.
+#
+# CROSS-CHECK com submissão anterior: MT41K64M16TW-125:J (fbga D9SKC) já
+# está em submissions/micron_d9sxc_family_2026-07-09.yaml (2026-07-09),
+# resolvido de forma TOTALMENTE independente via Octopart ("DDR3L SDRAM
+# 1G-Bit") com o MESMO resultado (DDR3L/x16/1Gb) — 2ª fonte Tier-1
+# concordando com o achado de hoje. EXCLUÍDO desta submissão (já existe).
+#
+# Forward-lookup no PREFIXO DE PN "MT41K64M16" (2026-08-27, delegado — WAF
+# do micron.com bloqueado nesta sessão) devolveu 23 PNs. Filtro ES (regex
+# de token "ES" delimitado no PRÓPRIO texto de cada entrada) excluiu 6,
+# todos Z9-prefixados. Dos 17 restantes, 1 (D9SKC) já submetido antes (ver
+# acima). Sobraram 16 (incl. o alvo) — 7 com part-name direto da Micron
+# ("DDR3 1G X16 FBGA"/"DDR3 1G X16 TFBGA"), 9 formula-extendidos (mesma
+# organização "64M16" no próprio texto do PN, sem trap de die-code — regra
+# de extensão segura pra DDR discreta puro, diferente do caso LPDDR2 do
+# D9RJV).
+#
+# Sufixos de velocidade (-125=DDR3-1600 CL11, -15E=DDR3-1333 CL9,
+# -187E=DDR3-1066 CL7 backward-compat — todos confirmados na Table 1 do
+# addendum) e de temperatura/qualificação (IT/AAT/AIT/XIT/AUT, die-rev
+# G/J) NÃO entram em campo modelado — vão implícitos no PN completo
+# (identidade), sem campo próprio.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml — só o D9SKC já citado, excluído).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9mpk_family_2026-08-27.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9mpk_family_2026-08-27.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT41K64M16JT-15E:G'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9MPK
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k64m16jt-15e-g'
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-27, delegado por bloqueio WAF): D9MPK → MT41K64M16JT-15E:G. Part-name direto da API: "DDR3 1G X16 FBGA" (sub-category obsolete-ddr3-sdram). chip_type=DDR3L (não "DDR3", que é só o texto abreviado do part-name) confirmado pelo datasheet oficial Micron/DigiKey "1.35V DDR3L SDRAM Addendum — MT41K64M16 – 8 Meg x 16 x 8 banks" (media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf), que também confirma marcação de pacote "JT" = 96-ball FBGA x16 Rev G. Aritmética: 64M×16bit=1024Mbit=1Gb (1024÷1024=1), bate com o "1G" do part-name e com o título "1Gb" do datasheet.'
+- part_number: 'MT41K64M16JT-187E:G'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9MPZ
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — capacidade/interface/chip_type formula-extendidos (ver notas do alvo D9MPK, mesma organização "64M16" no próprio texto do PN). Sufixo -187E = DDR3-1066 (backward-compat CL7, Table 1 do addendum). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-125:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDG
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). Sufixo -125 = DDR3-1600 CL11 (Table 1 do addendum). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-107:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDL
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-107G:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDN
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-125 IT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDT
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). "IT" = grau industrial de temperatura. 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-125 AAT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDW
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-125 AIT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDX
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-125 XIT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RDZ
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16JT-125:G'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9RLM
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/PDF/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT41K_256M4,128M8,64M16.pdf'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MPK). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16TW-107:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9SFT
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-j'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27). Part-name direto da API Micron: "DDR3 1G X16 TFBGA" (sub-category ddr3-sdram — linha ATIVA, não-obsoleta, diferente do pacote "JT" do alvo). chip_type=DDR3L confirmado pelo mesmo datasheet addendum do alvo D9MPK (mesma organização "64M16"). 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16TW-107 IT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9SFZ
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-it-j'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27). Part-name direto da API Micron: "DDR3 1G X16 TFBGA". "IT" = grau industrial de temperatura. 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16TW-107 AAT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9SGH
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-aat-j'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27). Part-name direto da API Micron: "DDR3 1G X16 TFBGA". 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16TW-107 AIT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9SGJ
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-ait-j'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27). Part-name direto da API Micron: "DDR3 1G X16 TFBGA". 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16TW-107 XIT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9SGK
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-xit-j'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27). Part-name direto da API Micron: "DDR3 1G X16 TFBGA". 64M×16=1024Mbit=1Gb.'
+- part_number: 'MT41K64M16TW-107 AUT:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x16
+  density_gbit: 1Gb
+  fbga_code: D9TCG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-aut-j'
+  notes: 'Irmão de família (forward-lookup MT41K64M16, 2026-08-27). Part-name direto da API Micron: "DDR3 1G X16 TFBGA". "AUT" = grau automotivo. 64M×16=1024Mbit=1Gb.'

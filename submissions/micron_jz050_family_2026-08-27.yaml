@@ -1,0 +1,116 @@
+# Submissão de known_parts — Micron, FBGA JZ050 + irmãos "7D7" MT29TZZZ (2026-08-27)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JZ050
+# (identidade já reconhecida no banco/gramática, capacidade NÃO mapeada —
+# chave "7D7" ausente de MIC_MCP_CAP, chips/knowledge/micron.yaml).
+#
+# ACHADO: JZ050 → MT29TZZZ7D7DKLAH-107 W.9B7. Família MT29TZZZ, Gen A
+# (pn[8]='7', dígito → LPDDR3 per MIC_TZZZ_GEN, já correto na gramática).
+# Chave de capacidade pn[8:11]="7D7" SEM entrada em MIC_MCP_CAP — por
+# isso o motor mostra "⚠ cap. não mapeada" mesmo com known_exact=true.
+# NÃO toquei na gramática (yaml) — só known_part, por instrução do dono.
+#
+# CAPACIDADE — via Octopart (fabricante, 2ª posição na hierarquia de
+# fontes), não via API FBGA (part-name veio vazio pra todo mundo desta
+# leva) nem via datasheet-PDF dedicado (procurei, não achei um específico
+# pra "7D7" — só pro "8D5", ver KMYFE0B0CA... digo, ver family tip). O
+# irmão MT29TZZZ7D7EKKBT-107 W.97V (mesma chave "7D7", JZ013) tem
+# descrição de fabricante no Octopart: "Combo Mem 32Gx8 MLC NAND eMMC +
+# 768Mx32 Mobile LPDDR3 SDRAM 3.3V 221-Pin TFBGA". Notação idêntica à
+# usada pela própria Micron nos datasheets oficiais desta família (ex.:
+# "8D5" = "MT29TZZZ8D5JKEZB-107 W.95Q", datasheet 221ball_j95q_50_v01m.pdf,
+# título "8GB: eMMC and 8Gb: 1 x 8Gb, Single-Channel LPDDR3 MCP" — mesma
+# convenção terse "NNGxWW" = densidade em Gb, não GB já convertido).
+# Aritmética:
+#   NAND (eMMC): 32Gb ÷ 8 = 4GB
+#   RAM (LPDDR3): 768M × 32 = 24576Mbit = 24Gb; 24Gb ÷ 8 = 3GB
+# ⚠ CUIDADO Gb×GB: um resumo automático de busca preliminar leu "32Gx8"
+# como "32GB" direto (sem dividir por 8) — descartado, é o erro clássico
+# de unidade Micron (regra de ouro / MICRON.md). Refeito na mão.
+# eMMC versão "5.0": confirmada 3x independente pra esta família — (1) tip
+# já existente na gramática MT29TZZZ, (2) meu próprio achado anterior
+# JZ047/AD8 (mesma família, outra chave, submissions/micron_jz067_family_
+# 2026-07-08.yaml), (3) datasheet oficial do "8D5" (JEDEC/MMC 5.0-compliant).
+# Convenção de campo desta família (mesma do arquivo acima): emcp_nand =
+# só número+unidade; interface = "eMMC 5.0"; emcp_ram = tipo+capacidade.
+#
+# Forward-lookup no PREFIXO "MT29TZZZ7D7" (2026-08-27, delegado — WAF do
+# micron.com bloqueado nesta sessão) devolveu 8 PNs. Filtro ES excluiu 2
+# (JY945, JZ051 — ambos "W ES."). Sobraram 6, incl. o alvo — NENHUM com
+# part-name próprio na API (todos vazios); capacidade estendida pela
+# MESMA CHAVE "7D7" (não pela organização solta — mesmo cuidado do lote
+# D9RJV desta sessão: aqui não há o mesmo risco de ambiguidade observado
+# lá, porque "7D7" é a chave INTEIRA de capacidade da família, não uma
+# organização de 3 blocos livres).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm (checado programaticamente, ver check_jz050.py). Sem
+# sobreposição com nenhuma submissão anterior — incl. micron_jz067_family_
+# 2026-07-08.yaml (mesma família MT29TZZZ, chave de capacidade DIFERENTE
+# "AD8"/outras, zero overlap de FBGA/PN).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jz050_family_2026-08-27.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_jz050_family_2026-08-27.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT29TZZZ7D7DKLAH-107 W.9B7'
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: 'eMMC 5.0'
+  emcp_nand: 4GB
+  emcp_ram: 'LPDDR3 3GB'
+  fbga_code: JZ050
+  confidence: confirmed
+  source_url: 'https://octopart.com/search?q=MT29TZZZ7D7'
+  notes: 'ALVO da investigação (JZ050 já known_exact=true no banco/gramática, capacidade não mapeada — chave "7D7" ausente de MIC_MCP_CAP). Identidade via API FBGA oficial (reverse lookup, 2026-08-27, delegado por bloqueio WAF): JZ050 → MT29TZZZ7D7DKLAH-107 W.9B7. Capacidade via Octopart, irmão MT29TZZZ7D7EKKBT-107 W.97V (mesma chave "7D7", JZ013): "Combo Mem 32Gx8 MLC NAND eMMC + 768Mx32 Mobile LPDDR3 SDRAM". 32Gb÷8=4GB NAND; 768M×32=24576Mbit=24Gb÷8=3GB RAM. eMMC 5.0 confirmado 3x independente pra família (tip da gramática + JZ047/AD8 desta mesma família + datasheet oficial do "8D5").'
+- part_number: 'MT29TZZZ7D7YKNCT-107 W.97P'
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: 'eMMC 5.0'
+  emcp_nand: 4GB
+  emcp_ram: 'LPDDR3 3GB'
+  fbga_code: JY933
+  confidence: confirmed
+  source_url: 'https://octopart.com/search?q=MT29TZZZ7D7'
+  notes: 'Irmão de família (forward-lookup MT29TZZZ7D7, 2026-08-27), sem part-name próprio na API — capacidade pela MESMA CHAVE "7D7" (ver notas do alvo JZ050, irmão confirmado JZ013/EKKBT). 32Gb÷8=4GB NAND; 24Gb÷8=3GB RAM.'
+- part_number: 'MT29TZZZ7D7JKKBT-107 W.97V'
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: 'eMMC 5.0'
+  emcp_nand: 4GB
+  emcp_ram: 'LPDDR3 3GB'
+  fbga_code: JZ004
+  confidence: confirmed
+  source_url: 'https://octopart.com/search?q=MT29TZZZ7D7'
+  notes: 'Irmão de família (forward-lookup MT29TZZZ7D7, 2026-08-27), sem part-name próprio na API — capacidade pela MESMA CHAVE "7D7" (ver notas do alvo JZ050, irmão confirmado JZ013/EKKBT). 32Gb÷8=4GB NAND; 24Gb÷8=3GB RAM.'
+- part_number: 'MT29TZZZ7D7EKKBT-107 W.97V'
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: 'eMMC 5.0'
+  emcp_nand: 4GB
+  emcp_ram: 'LPDDR3 3GB'
+  fbga_code: JZ013
+  confidence: confirmed
+  source_url: 'https://octopart.com/search?q=MT29TZZZ7D7'
+  notes: 'Fonte da capacidade do lote inteiro: descrição de fabricante no Octopart (2026-08-27) — "Combo Mem 32Gx8 MLC NAND eMMC + 768Mx32 Mobile LPDDR3 SDRAM 3.3V 221-Pin TFBGA". 32Gb÷8=4GB NAND; 768M×32=24576Mbit=24Gb÷8=3GB RAM. Part-name da API FBGA veio vazio; identidade via forward-lookup MT29TZZZ7D7.'
+- part_number: 'MT29TZZZ7D7JKKBT-107 WH.97V'
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: 'eMMC 5.0'
+  emcp_nand: 4GB
+  emcp_ram: 'LPDDR3 3GB'
+  fbga_code: JZ034
+  confidence: confirmed
+  source_url: 'https://octopart.com/search?q=MT29TZZZ7D7'
+  notes: 'Irmão de família (forward-lookup MT29TZZZ7D7, 2026-08-27), sem part-name próprio na API — capacidade pela MESMA CHAVE "7D7" (ver notas do alvo JZ050, irmão confirmado JZ013/EKKBT). Sufixo "WH" (não "W ES") — não é engineering sample. 32Gb÷8=4GB NAND; 24Gb÷8=3GB RAM.'
+- part_number: 'MT29TZZZ7D7EKKBT-107 WH.97V'
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: 'eMMC 5.0'
+  emcp_nand: 4GB
+  emcp_ram: 'LPDDR3 3GB'
+  fbga_code: JZ035
+  confidence: confirmed
+  source_url: 'https://octopart.com/search?q=MT29TZZZ7D7'
+  notes: 'Irmão de família (forward-lookup MT29TZZZ7D7, 2026-08-27), sem part-name próprio na API — capacidade pela MESMA CHAVE "7D7" (ver notas do alvo JZ050, irmão confirmado JZ013/EKKBT). Sufixo "WH" (não "W ES") — não é engineering sample. 32Gb÷8=4GB NAND; 24Gb÷8=3GB RAM.'

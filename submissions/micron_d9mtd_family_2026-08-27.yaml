@@ -1,0 +1,246 @@
+# Submissão de known_parts — Micron, FBGA D9MTD + família MT47H128M16 (2026-08-27)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9MTD
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9MTD → MT47H128M16RT-25E:C. Prefixo MT47H = DDR2 (já confirmado
+# nesta sessão, investigações D9GKW/D9JWH). Organização "128M16" = 128 Meg
+# x 16 = 2048Mbit = 2Gb — confirmado por 3 fontes: (1) part-name direto da
+# API Micron ("DDR2 2G X16 FBGA"); (2) datasheet oficial Micron/DigiKey
+# "2Gb: x8, x16 Automotive DDR2 SDRAM" (MT47H256M8_MT47H128M16_RevF_2018.pdf,
+# "2gbddr2_ait_aat.pdf"), que lista "128 Meg x 16 (16 Meg x 16 x 8 banks)"
+# marcado "128M16" e dá "MT47H128M16RT-25E:C" como exemplo textual de PN;
+# (3) aritmética 128M×16=2048Mb=2Gb. DDR2 não tem variante "L" de baixa
+# tensão amplamente adotada (ao contrário do DDR3/DDR3L do caso D9MPK) —
+# datasheet confirma VDD=VDDQ=1.8V padrão, sem ambiguidade de chip_type.
+#
+# ⚠ Datasheet usado é o ADDENDUM industrial/automotivo (marcação de
+# temperatura só lista AIT/AAT) — mas o "Example Part Number" do próprio
+# documento é "MT47H128M16RT-25E:C" (SEM sufixo de grau), e a tabela de
+# Opções trata "Configuration" (128M16) e "Package/grau" como eixos
+# INDEPENDENTES — por isso a densidade/organização vale pra família toda,
+# grau à parte. Citado como fonte também para os PNs sem sufixo AIT/AAT.
+#
+# ⚠ Pacote "HG" (6 PNs abaixo) NÃO aparece na tabela de pacotes deste
+# addendum específico (só lista EB/RT/PK) — provável revisão/pacote mais
+# antigo não coberto por ESTE documento. Organização "128M16" ainda assim
+# extensível (config. é independente de pacote na convenção Micron, ver
+# acima) — reportado explicitamente pra auditoria, não é fonte direta pro
+# pacote HG em si.
+#
+# Forward-lookup no PREFIXO DE PN "MT47H128M16" (2026-08-27, delegado — WAF
+# do micron.com bloqueado nesta sessão) devolveu 29 PNs. Filtro ES (regex
+# de token "ES" delimitado no PRÓPRIO texto de cada entrada) excluiu 8,
+# todos Z9-prefixados. 2 sobrevivem ao filtro com "MS" em vez de "ES"
+# (Z9JXC, Z9NKT) — mesmo padrão de anomalia já visto em Z9GMV (D9JWH,
+# 2026-08-26) e Z9BWN (D9GCK, 2026-08-26): "MS" não é "ES", reportado
+# exatamente como veio da API, specs iguais ao resto da família (nenhuma
+# fonte sugere que "MS" mude organização/densidade). Sobraram 21 (incl. o
+# alvo) — 7 com part-name direto da Micron ("DDR2 2G X16 FBGA"), 14
+# formula-extendidos (mesma organização "128M16" no próprio texto do PN).
+#
+# Sufixos de velocidade (-25E=DDR2-800 CL5, -25=DDR2-667 CL5, -3=DDR2-667
+# CL5 mais lento, -187E=variante -25E mais lenta) e de temperatura/
+# qualificação (IT/AAT/AIT/XIT/P-AIT, die-rev A/C) NÃO entram em campo
+# modelado — vão implícitos no PN completo (identidade), sem campo
+# próprio.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9mtd_family_2026-08-27.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9mtd_family_2026-08-27.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT47H128M16RT-25E:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MTD
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h128m16rt-25e-c'
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-27, delegado por bloqueio WAF): D9MTD → MT47H128M16RT-25E:C. Part-name direto da API: "DDR2 2G X16 FBGA" (sub-category ddr2-sdram). Confirmado pelo datasheet oficial Micron/DigiKey "2Gb: x8, x16 Automotive DDR2 SDRAM" (media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf), que usa exatamente este PN como "Example Part Number" e confirma pacote "RT" = 84-ball FBGA Pb-free x16. Aritmética: 128M×16bit=2048Mbit=2Gb (2048÷1024=2), bate com o "2G" do part-name.'
+- part_number: 'MT47H128M16RT-25E IT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MTJ
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h128m16rt-25e-it-c'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27). Part-name direto da API Micron: "DDR2 2G X16 FBGA". "IT" = grau industrial de temperatura. 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-25E AAT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MTK
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m16rt-25e-aat-c'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27). Part-name direto da API Micron: "DDR2 2G X16 FBGA". "AAT" = grau automotivo. 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-187E:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MVD
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m16rt-187e-c'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27). Part-name direto da API Micron: "DDR2 2G X16 FBGA". 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-25E AIT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9NBZ
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h128m16rt-25e-ait-c'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27). Part-name direto da API Micron: "DDR2 2G X16 FBGA". 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16PK-25E IT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9NXG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m16pk-25e-it-c'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27). Part-name direto da API Micron: "DDR2 2G X16 FBGA". Pacote "PK" = 84-ball FBGA lead-solder x16 (addendum). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-25E XIT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9QNG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m16rt-25e-xit-c'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27). Part-name direto da API Micron: "DDR2 2G X16 FBGA". 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-37E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9HPX
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "HG" não listado neste addendum específico (ver observação no cabeçalho do arquivo); organização "128M16" extensível mesmo assim (config. independente de pacote na convenção Micron). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-5E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9HPZ
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "HG" não listado neste addendum específico (ver cabeçalho). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-3:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9JJB
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "HG" não listado neste addendum específico (ver cabeçalho). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-3 IT:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9JQM
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "HG" não listado neste addendum específico (ver cabeçalho). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-25:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9LDR
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "HG" não listado neste addendum específico (ver cabeçalho). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-25:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MJM
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-3:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MJP
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-25E:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MMS
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "HG" não listado neste addendum específico (ver cabeçalho). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-3 IT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9MVL
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16PK-25E:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9NBV
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "PK" = 84-ball FBGA lead-solder x16 (addendum). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16PK-25E AIT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9NBW
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "PK" (addendum). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16PK-25E P-AIT:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: D9NBX
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'Irmão de família (forward-lookup MT47H128M16, 2026-08-27), sem part-name próprio na API — formula-extendido (ver notas do alvo D9MTD). Pacote "PK" (addendum); "P-AIT" variante de grau não decodificada em campo próprio. 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16HG-0 MS:A'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: Z9JXC
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'ANOMALIA: sobrevive ao filtro ES por ter "MS" em vez de "ES" no PN — mesmo padrão de Z9GMV (D9JWH, 2026-08-26) e Z9BWN (D9GCK, 2026-08-26). Reportado exatamente como veio da API; specs formula-extendidas, nenhuma fonte sugere que "MS" mude organização/densidade. Pacote "HG" não listado no addendum (ver cabeçalho). 128M×16=2048Mbit=2Gb.'
+- part_number: 'MT47H128M16RT-25E MS:C'
+  chip_type: DDR2
+  subtype: DDR2
+  interface: x16
+  density_gbit: 2Gb
+  fbga_code: Z9NKT
+  confidence: confirmed
+  source_url: 'https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/MT47H256M8_MT47H128M16_RevF_2018.pdf'
+  notes: 'ANOMALIA: sobrevive ao filtro ES por ter "MS" em vez de "ES" no PN — mesmo padrão de Z9GMV (D9JWH, 2026-08-26) e Z9BWN (D9GCK, 2026-08-26). Reportado exatamente como veio da API; specs formula-extendidas, nenhuma fonte sugere que "MS" mude organização/densidade. 128M×16=2048Mbit=2Gb.'

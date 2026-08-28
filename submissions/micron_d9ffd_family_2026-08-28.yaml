@@ -1,0 +1,719 @@
+# Submissão de known_parts — Micron, FBGA D9FFD + família MT48LC4M32 (2026-08-28)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9FFD
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9FFD → MT48LC4M32B2B5-7:G. Prefixo MT48LC = SDRAM clássica
+# (single data rate, pré-DDR), já confirmado nesta marca (família
+# MT48LC16M16/D9DHW, 2026-08-05). Organização "4M32" = 4 Meg x 32 =
+# 128Mbit — confirmado por 2 fontes independentes: (1) página de produto
+# DigiKey do irmão de MESMA revisão ":G" MT48LC4M32B2F5-6:G (fetch direto,
+# 2026-08-28): "Technology: SDRAM", "Memory Size: 128Mbit", "Memory
+# Organization: 4M x 32"; (2) 11 irmãos da família com part-name direto da
+# API Micron ("SDRAM 128M X32 VFBGA"/"TSOP", revisão ":L", sub-category
+# sdram/obsolete-sdram). Aritmética: 4M×32bit=128Mbit=0,125Gb (fracionário,
+# abaixo de 1Gb — 128÷1024=0,125). density_gb=16MB (128Mbit÷8) também
+# preenchido pra deixar dram_density legível.
+#
+# ⚠ D9NRT (MT48LC4M32B2P-6A AIT:L) tem part-name com anomalia da própria
+# API Micron: "SDRAM 0 X32 TSOP" (deveria ser "128M", não "0" — erro de
+# dado da Micron, os outros 10 irmãos da mesma leva dizem "128M"
+# corretamente). Reportado como veio; specs usam a organização do PN
+# ("4M32") + os 10 irmãos corretos, não o "0" da API.
+#
+# Forward-lookup no PREFIXO DE PN "MT48LC4M32" (2026-08-28, delegado — WAF
+# do micron.com bloqueado nesta sessão) devolveu 94 PNs. Filtro ES (regex
+# de token "ES" delimitado no PRÓPRIO texto de cada entrada) excluiu 27.
+# 3 sobrevivem com "MS" em vez de "ES" (D9CGX, DZFGM, Z9BWM) — mesmo
+# padrão de anomalia já visto em Z9GMV/Z9BWN/Z9JXC/Z9NKT nesta sessão,
+# reportado como veio, specs iguais ao resto (nenhuma fonte sugere que
+# "MS" mude organização/densidade). Sobraram 67 (incl. o alvo) — 11 com
+# part-name direto da Micron, 56 formula-extendidos (mesma organização
+# "4M32" no próprio texto do PN).
+#
+# Sufixos de velocidade (-6/-6A/-7/-8/-10/-75M) e de temperatura/
+# qualificação (IT/AT/AAT/AIT/XIT, die-rev G/L) NÃO entram em campo
+# modelado — vão implícitos no PN completo (identidade), sem campo
+# próprio. Pacotes B5/F5/P/TG/BC/FC (BGA/TSOP, variações de encapsulamento)
+# também não decodificados em campo — não afetam organização/densidade.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9ffd_family_2026-08-28.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9ffd_family_2026-08-28.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT48LC4M32LFBC-8'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BBW
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFBC-10'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BBX
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2FC-7'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BCM
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFBC-10 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BDK
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFBC-8 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BDL
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFFC-10 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BDM
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFFC-8 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BDN
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2BC-6'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BRD
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2BC-7'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BRF
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-7 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BVC
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-10'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BVS
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-10 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BVV
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-8'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BVX
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-8 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BVZ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-7'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BWQ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9BWS
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2FC-7 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CDG
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-6'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CDZ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-8 XT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CFG
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-7 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CFK
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-8 XT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CFP
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-7'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CGS
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-0 MS'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CGX
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'ANOMALIA: sobrevive ao filtro ES por ter "MS" em vez de "ES" no PN -- mesmo padrao de Z9GMV/Z9BWN/Z9JXC/Z9NKT ja visto nesta sessao. Reportado exatamente como veio da API; specs formula-extendidas (ver notas do alvo D9FFD), nenhuma fonte sugere que "MS" mude organizacao/densidade. 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-8'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CJZ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-8 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CKB
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-10'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CKC
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-10 IT'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9CKD
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-75M'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9DBG
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-75M'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9DJH
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-75M:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9DJJ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFB
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-7 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFC
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-7:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFD
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-28, delegado por bloqueio WAF): D9FFD -> MT48LC4M32B2B5-7:G. Sem part-name proprio na API (identity-only). Organizacao "4M32" confirmada via pagina de produto DigiKey do irmao de MESMA revisao ":G" MT48LC4M32B2F5-6:G (fetch direto, 2026-08-28): "Technology: SDRAM", "Memory Size: 128Mbit", "Memory Organization: 4M x 32" -- e via 11 irmaos com part-name direto da API Micron ("SDRAM 128M X32 VFBGA/TSOP"). Aritmetica: 4M x 32bit = 128Mbit = 0,125Gb (128/1024=0,125).'
+- part_number: 'MT48LC4M32B2B5-8 XT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFF
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-6:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFG
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-7 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFH
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-7:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFJ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-75M:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FFL
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-10:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGN
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-10 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGP
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-8:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGQ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-8 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGR
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-10:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGS
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-10 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGT
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-8:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGV
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFF5-8 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9FGW
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6 IT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9JMS
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-7 AT:G'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9KJS
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6A AAT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQP
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/sdram/part-catalog/part-detail/mt48lc4m32b2b5-6a-aat-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6A IT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQQ
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2b5-6a-it-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6A:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQR
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2b5-6a-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-6A IT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQS
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2f5-6a-it-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2F5-6A:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQT
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2f5-6a-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2P-6A IT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQW
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2p-6a-it-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 TSOP" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2P-6A:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQX
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2p-6a-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 TSOP" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2TG-6A IT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NQZ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2TG-6A:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NRB
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2tg-6a-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 TSOP" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2TG-6A AIT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NRL
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2P-6A AIT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NRT
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2p-6a-ait-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron tem ANOMALIA: "SDRAM 0 X32 TSOP" (deveria ser "128M" -- erro de dado da propria Micron; os outros 10 irmaos da mesma leva "-6A" dizem "128M" corretamente). Specs usam a organizacao do proprio PN ("4M32") + os 10 irmaos corretos, nao o "0" da API. 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2P-6A AAT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NRV
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6A AIT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9NSG
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc4m32b2b5-6a-ait-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category obsolete-sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2B5-6A XIT:L'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: D9QGL
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/memory/dram-components/sdram/part-catalog/part-detail/mt48lc4m32b2b5-6a-xit-l'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28). Part-name direto da API Micron: "SDRAM 128M X32 VFBGA" (sub-category sdram). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32B2FC-6'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: DXFGJ
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFFC-10'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: DZFGB
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFFC-8'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: DZFGC
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'Irmao de familia (forward-lookup MT48LC4M32, 2026-08-28), sem part-name proprio na API -- formula-extendido (ver notas do alvo D9FFD, mesma organizacao "4M32" no proprio texto do PN). 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFFC-0 MS'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: DZFGM
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'ANOMALIA: sobrevive ao filtro ES por ter "MS" em vez de "ES" no PN -- mesmo padrao de Z9GMV/Z9BWN/Z9JXC/Z9NKT ja visto nesta sessao. Reportado exatamente como veio da API; specs formula-extendidas (ver notas do alvo D9FFD), nenhuma fonte sugere que "MS" mude organizacao/densidade. 4M x 32 = 128Mbit = 0,125Gb.'
+- part_number: 'MT48LC4M32LFB5-0 MS'
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: x32
+  density_gbit: 0.125Gb
+  density_gb: 16MB
+  fbga_code: Z9BWM
+  confidence: confirmed
+  source_url: 'https://www.digikey.com/en/products/detail/micron-technology-inc/MT48LC4M32B2F5-6-G/973365'
+  notes: 'ANOMALIA: sobrevive ao filtro ES por ter "MS" em vez de "ES" no PN -- mesmo padrao de Z9GMV/Z9BWN/Z9JXC/Z9NKT ja visto nesta sessao. Reportado exatamente como veio da API; specs formula-extendidas (ver notas do alvo D9FFD), nenhuma fonte sugere que "MS" mude organizacao/densidade. 4M x 32 = 128Mbit = 0,125Gb.'
