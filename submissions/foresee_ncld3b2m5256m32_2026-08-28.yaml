@@ -1,0 +1,46 @@
+# Submissão known_parts — Foresee (Longsys), `NCLD3B2M5256M32` (LPDDR3, cluster legado `NCLD3B*`)
+# — 2026-08-28. Origem: PN de bancada "NCLD3B2M5256M32" — variante COM código de die/vendor de 2
+# chars ("M5"), já antecipada como gap no FORESEE.md §5 item 6 desde 2026-07-16 ("Variantes com
+# código de die/vendor de 2 chars — NCLD3B1M7256M32 etc. — vistas mas não submetidas... lote extra
+# se pedido"). Hoje apareceu de verdade na bancada — é o "lote extra".
+#
+# ⭐ ESTRUTURA já decifrada e MULTIPLAMENTE validada nesta família (datasheet oficial Longsys
+#   "NCLD4CXMAXXXM32" Rev B2 2017): NC+LD+<geração>+<pacote>+<CS 1/2>[+2 chars die/vendor
+#   OPCIONAL]+<profundidade>M<largura> — o código de die/vendor (visto como "MA"/"MG"/"MC"/"ME"/
+#   "MF"/"MJ" na subfamília LPDDR4/4X, 7 comparações já confirmadas em known_parts aprovados) NÃO
+#   afeta capacidade — só profundidade×largura÷8 afeta. `NCLD3B2M5256M32` = mesmo CS("2") e mesmo
+#   sufixo("256M32") do irmão JÁ CONFIRMADO `NCLD3B2256M32` (manual, aprovado, capacity=1GB) — só
+#   com o código "M5" no meio. Pela regra já validada: MESMA capacidade, 1GB.
+# ⭐ "M5" É código de die/vendor REAL e em circulação nesta sub-família — achei `NCLD3B1M5128M32`
+#   com página própria no DigiPart (1 distribuidor, Green Light Electronics, fabricante "FORE",
+#   1787un, "OEM/CM ONLY") — confirma que "M5" não é invenção, é código genuíno já visto
+#   combinado com OUTRO CS/sufixo (CS=1, sufixo=128M32) nesta mesma família.
+# ⚠ SEM listagem direta pra ESTA combinação exata (CS=2 + M5 + 256M32) — DigiPart, netComponents
+#   e 114ic.com não têm página própria pra "NCLD3B2M5256M32" (busquei os três, "no result"/vazio/
+#   JS-bloqueado). A capacidade vem SÓ da fórmula já validada + a mesma combinação CS/sufixo já
+#   confirmada no irmão limpo — não de uma fonte que leia esta string exata. Mesmo padrão já usado
+#   e aceito nesta família pro NCLD3B2512M32 (submissão 2026-07-16, "capacidade vem só da fórmula
+#   validada, não de fonte lida diretamente"). confidence=manual (mesma classe dos outros
+#   known_parts "M-coded" desta família).
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncld3b2m5256m32_2026-08-28.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncld3b2m5256m32_2026-08-28.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCLD3B2M5256M32"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    notes: >
+      PN de bancada. Variante com código de die/vendor "M5" (2 chars) do já confirmado
+      NCLD3B2256M32 (manual, capacity=1GB) — mesmo CS("2") e mesmo sufixo de profundidade×largura
+      ("256M32"), só com "M5" inserido no meio. Pela estrutura já decifrada e validada 7x nesta
+      família (datasheet oficial NCLD4CXMAXXXM32 Rev B2 2017), o código de die/vendor não afeta
+      capacidade — só o sufixo profundidade×largura afeta (256M×32bit÷8=1024MB=1GB). "M5" é código
+      real desta sub-família: confirmado combinado com outro CS/sufixo em NCLD3B1M5128M32 (DigiPart,
+      1 distribuidor Green Light Electronics, fabricante FORE, 1787un). SEM listagem direta pra
+      esta combinação exata (CS=2+M5+256M32) — DigiPart/netComponents/114ic sem página própria.
+      Capacidade vem da fórmula validada + mesma combinação CS/sufixo do irmão limpo, não de fonte
+      que leia esta string exata — mesmo padrão já usado nesta família pro NCLD3B2512M32.
+    source_url: "https://www.digipart.com/part/NCLD3B1M5128M32"

@@ -1,0 +1,40 @@
+# Submissão known_parts — Foresee (Longsys), `NCEMAM6G-08G` (eMMC, raiz legada `NC*`) — 2026-08-27.
+# Origem: PN de bancada "NCEMAM6G08G" — vendor-code já citado de passagem numa rodada anterior
+# (26/08, ao investigar NCEMAD6B: um resumo de busca tinha confundido "NCEMAD6B-08G" com este
+# código real "NCEMAM6G-08G" — na hora descartei por estar fora de escopo daquela submissão; hoje
+# é o PN pedido de verdade na bancada).
+#
+# ⭐ EVIDÊNCIA: 7 distribuidores independentes no DigiPart (YIC International, Ariat Technology,
+#   Besen Technology, Sense Electronic, New Strength Electronic, IC Components, Green Light
+#   Electronics), todos fabricante FORESEE. Besen Technology tem campo estruturado "TFBGA153"
+#   (pacote 153-ball, mesma família física do NCEMASLD/NCEMAD9D/NCEMAD6B). Alibaba tem 3 listagens
+#   independentes, uma com título "NCEMAM6G-08G EMMC5.1 8GB Memory Chip" (texto de listagem
+#   indexado, não resumo de IA) — capacidade 8GB confirmada por convergência; versão eMMC 5.1
+#   aparece só no título de uma revenda (página bloqueada por JS, não abri o conteúdo) — não é
+#   confiança suficiente pra preencher `interface`, fica em branco (mesma disciplina já aplicada
+#   a NCEMAD7B/NCEMAD6B hoje mais cedo).
+# ⚠ Checei o Rockchip EMMC Approved Vendor List (v1.63, tabela completa desta vez, não truncada) —
+#   `NCEMAM6G` NÃO aparece nem na tabela viva nem no histórico de revisão. Não é contraindicação
+#   (nem todo produto real passa por lá), só não é mais uma fonte de corroboração pra este código.
+# ⚠ SIBLINGS: procurei -16G/-32G/-04G do mesmo vendor-code (regra "nunca 1 só") em DigiPart,
+#   Alibaba e Rockchip — nada encontrado em nenhuma fonte. Só -08G parece existir/catalogado.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncemam6g_2026-08-27.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncemam6g_2026-08-27.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMAM6G-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEMAM6G08G" (sem hífen). Existência + capacidade confirmadas por 7
+      distribuidores independentes no DigiPart (YIC International, Ariat Technology, Besen
+      Technology, Sense Electronic, New Strength Electronic, IC Components, Green Light
+      Electronics), todos fabricante FORESEE — Besen Technology declara pacote "TFBGA153"
+      (153-ball, mesma família física do NCEMASLD/NCEMAD9D/NCEMAD6B). Corroborado por 3 listagens
+      Alibaba independentes. Versão eMMC (5.1, mencionada só em título de uma revenda, página não
+      aberta) não confirmada o suficiente — interface deixada em branco. Não achado no Rockchip
+      EMMC Approved Vendor List (nem tabela viva nem histórico) — não é contraindicação, só
+      ausência de mais uma fonte. Procurei siblings -16G/-32G/-04G, nenhum encontrado.
+    source_url: "https://www.digipart.com/part/NCEMAM6G-08G"

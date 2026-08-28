@@ -310,7 +310,17 @@ com known_parts confirmados) + ePOP · NAND raw · nMCP (dead-by-type, só gram�
    Tier-1 (4C=LPDDR4, XC=LPDDR4X, 3B=LPDDR3) — caso mais forte do que quando o gap #1 original foi escrito.
    Não propus a família sozinho (decisão arquitetural do dono); sinalizo a possibilidade caso mais PNs
    `NCLD*` apareçam na bancada. Variantes com código de die/vendor de 2 chars (`NCLD3B1M7256M32` etc.) vistas
-   mas não submetidas — mesma capacidade das versões "limpas", lote extra se pedido.
+   mas não submetidas — mesma capacidade das versões "limpas". **1ª do "lote extra" pedida e submetida
+   2026-08-28** (`NCLD3B2M5256M32`, PN de bancada real — ver `submissions/foresee_ncld3b2m5256m32_2026-08-28.yaml`
+   e histórico). **Restam `NCLD3B1M7256M32`/`NCLD3B2M7512M32`** — busca dedicada 2026-08-28 (DigiPart
+   ×2, netComponents ×2 — JS-bloqueado pro fetch, mesmo problema técnico de sempre —, WebSearch ×5,
+   Upverter ×2, Preduo index 178ball LPDDR3 — 82 resultados, Foresee não apareceu nas primeiras 24)
+   NÃO achou nada re-verificável hoje além da nota antiga deste próprio arquivo (16/07, "vistas no
+   netComponents", não reproduzível agora). Diferente do M5-256M32 (que teve um irmão M5 REAL
+   confirmado hoje), estes dois ficam sem confirmação fresca — não submetidos, por decisão de manter
+   o padrão "sem capacidade/existência confirmada não submete". Bônus do lado: achado datasheet
+   oficial real (`linux-sunxi.org`, mirror Longsys) pras versões LIMPAS `NCLD3B1256M32`/`NCLD3B2512M32`
+   — já `confirmed`/`manual` no banco, não precisa reabrir.
 7. **`FL4C*` — só 1GB confirmado.** Achada 2026-08-19 (PN de bancada `FL4C2001GD9`), irmã LPDDR4-padrão da
    `FLXC*` (LPDDR4X). Tentei `FL4C2002G`/`FL4C2004G` (sem sufixo) no DigiPart, sem resultado — o agregador
    parece exigir o sufixo completo (`-D9` etc.), que não dá pra adivinhar sem PN-âncora real. A tabela
@@ -521,6 +531,27 @@ IA sem verificação. Sempre conferir a unidade antes de gravar: `Xbit ÷ 8 = YB
   busca) alega um número específico, a resposta certa não é aceitar nem rejeitar de cara — é ir
   atrás da fonte real por trás da alegação; às vezes ela existe e é melhor que a IA soube achar,
   só errou em como justificou.
+
+- **2026-08-27 — `NCEMAM6G-08G` (eMMC, raiz legada `NC*`), fill-empty com CONFLITO ensinou uma
+  regra nova do comando: reenviar submissão corrigida com `notes`/`source_url` DIFERENTES do que
+  já está aprovado trava o registro INTEIRO (nem os campos vazios de verdade são preenchidos) —
+  ver `submissions/foresee_ncep_emcp_2026-08-26.yaml` (3ª versão, revertida pra bater com o banco).
+  Também descoberto: o gateway de triagem do estoque (`_is_confirmed`) só aceita `confidence` ∈
+  {confirmed, manual, distributor} — `estimated` cai na fila mesmo com capacidade real e
+  `profitable` calculado certo, e o badge mostra "Indeterminado" (default de `profitable=''`, não
+  um veredito real). `NCEMAM6G-08G`: 7 distribuidores DigiPart + pacote TFBGA153 (Besen) + 3
+  listagens Alibaba, `manual`. Sem siblings encontrados (só -08G). Ver
+  `submissions/foresee_ncemam6g_2026-08-27.yaml`.
+
+- **2026-08-28 — `NCLD3B2M5256M32`, 1ª peça do "lote extra" de variantes com código de die/vendor
+  (gap §5 item 6, antecipado 2026-07-16).** PN de bancada real. Sem listagem direta pra esta
+  combinação exata (CS=2+M5+256M32) em DigiPart/netComponents/114ic — mas capacidade confirmada por
+  DOIS pontos de dado independentes já validados nesta família: (a) mesmo CS("2")+sufixo("256M32")
+  do irmão já aprovado `NCLD3B2256M32` (1GB) — o código de die/vendor não afeta capacidade, regra
+  vinda do datasheet oficial `NCLD4CXMAXXXM32` e já confirmada 7x nesta família; (b) "M5" é código
+  real em circulação nesta sub-família, achado combinado com outro CS/sufixo em
+  `NCLD3B1M5128M32` (DigiPart, Green Light Electronics). `confidence=manual`, mesmo padrão já usado
+  nesta família pro `NCLD3B2512M32` (capacidade só por fórmula, sem fonte que leia a string exata).
 
 > Inventário de famílias/mapas → **`foresee.yaml`** (Trilha A). known_parts confirmados (proveniência Tier-1 na
 > `notes`) → **banco** (Opção 2), via `submit_known_parts`. Cross-marca (comandos/convenção/rentabilidade) → **`CLAUDE.md`**.

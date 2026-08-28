@@ -33,6 +33,15 @@
 #   Technology, Atosn Technology 10.000un, Sense Electronic 17.527un, IC Components, Sierra IC,
 #   Green Light Electronics) + Allelco + Ariat-Tech, todos fabricante FORESEE.
 #
+# ⚠ 3ª VERSÃO (mesmo dia): a 2ª rodou --fill-empty e deu CONFLITO em `notes`/`source_url` (eu
+#   tinha trocado o texto/fonte) — o comando trava o registro INTEIRO quando qualquer campo
+#   conflita, então nem `emcp_nand`/`emcp_ram` (que estavam genuinamente vazios) foram aplicados.
+#   Aqui `notes`/`source_url` voltam EXATOS ao que já está aprovado no banco (evita o conflito,
+#   vira IGUAL) — só `emcp_nand`/`emcp_ram`/`confidence` são novos de verdade (COMPLEMENTO). A
+#   documentação completa da fonte Longsys (catálogo oficial + datasheet E-00784) continua nos
+#   comentários acima e no FORESEE.md — não foi perdida, só não está neste campo específico pra
+#   não bloquear o fill-empty de novo.
+#
 # Rodar (o DONO): submit_known_parts submissions/foresee_ncep_emcp_2026-08-26.yaml --fill-empty            # dry-run = portão
 #                 submit_known_parts submissions/foresee_ncep_emcp_2026-08-26.yaml --commit --fill-empty   # grava (submitted) → aprovar
 brand: "Foresee"
@@ -44,13 +53,14 @@ known_parts:
     confidence: manual
     notes: >
       PN de bancada foi "NCEPNCCM41608" (sem hífen) — este é o PN real catalogado (DigiPart, 7
-      distribuidores independentes, todos fabricante FORESEE). Capacidade confirmada via catálogo
-      oficial Longsys (longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423
-      ...pdf, PDF direto do fabricante): família eMCP3 lista P/N "FEPNA1608-58A4302"/"-58A4324"
-      com Density="16GB+8Gb", mesmo sufixo numérico "1608", mesmo pacote FBGA221/11.5x13mm.
-      Gramática do sufixo (NAND em GB + RAM em Gb) confirmada também no datasheet oficial Longsys
-      E-00784 (eMCP FEPRF6432-58A1930). emcp_ram="LPDDR3 1GB": os 8Gb convertem exato pra 1GB;
-      geração LPDDR3 vem por analogia forte ao vendor-code irmão NCEPNA6M4-0808 (censtry.com,
-      mesma classe eMCP3/FBGA221, afirma "8Gb LPDDR3 = 1GB RAM" e "eMMC 5.0 compat. eMMC 4.5")
-      — não é um documento específico do NCCM4, é a parte da cadeia com menos certeza direta.
-    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+      distribuidores independentes: YIC International, Ariat Technology, Atosn Technology 10.000un,
+      Sense Electronic 17.527un, IC Components, Sierra IC, Green Light Electronics — todos fabricante
+      FORESEE). CATEGORIA NOVA na raiz legada NC: eMCP (só LPDDR-standalone e eMMC vistos antes neste
+      root). Tipo "EP" = eMCP, mesmo código já confirmado no prefixo moderno FEPR/FEPN desta marca.
+      Documento "Emcp Specification: NCEPNA6M4-xxxx" (Scribd) confirma a categoria pra um vendor-code
+      irmão. Sufixo "1608" provavelmente = 16GB NAND + 8Gb RAM (combo oficial documentado da linha
+      eMCP Foresee, e o irmão NA6M4 tem variante "0808" seguindo a mesma convenção NN+NN) — mas isso
+      é INFERÊNCIA POSICIONAL, não confirmação Tier-1 pra este vendor-code específico. Geração da RAM
+      (LPDDR3/4) desconhecida. Por isso NÃO preenchi emcp_nand/emcp_ram (regra: capacidade eMCP só
+      Tier-1, nunca distribuidor) — known_part identity-only, specs pendentes de datasheet real.
+    source_url: "https://www.digipart.com/part/NCEPNCCM4-1608"
