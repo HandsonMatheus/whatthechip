@@ -1,0 +1,116 @@
+# Submissão known_parts — Kingston, eMMC standalone (§0.2 regra 14), gerações de sufixo "TA28" + "TC26"
+# Chat de marca Kingston, 2026-08-28. Disparado pelo PN físico do debug de estoque `EMMC32GTC26`
+# (known:false, TUDO vazio — nem fallback bateu, mesma forma dos casos anteriores desta família).
+#
+# DIAGNÓSTICO: mais uma geração de sufixo paralela na família eMMC standalone (já confirmado que
+# MUITAS coexistem pra mesma capacidade — ver KINGSTON.md §5/§7: TB28/TB29/TA29/TX29/TY29/S100/
+# M627/MK27/ML36/MT32/CT32/MV28/MW28/TS0A/TB9F/WT32/WV28/WW28/IY29/AR0A, agora +TA28/+TC26).
+#
+# "TC26" — busquei EXAUSTIVAMENTE (flyer comercial oficial Kingston fetchado direto — tabela
+# completa, sem TC26; TrustedParts.com/manufacturers/kingston/EMMC fetchado direto — sem TC26;
+# accio.com "Kingston eMMC Code List" fetchado — sem TC26; buscas dedicadas em censtry, win-source,
+# ariat-tech, elnec, jotrin, datasheets360, kynix, alibaba; buscas combinando "TC26" com termos de
+# spec/lifecycle) — ZERO fontes independentes, em lugar nenhum. Sinalizei isso ao dono via
+# AskUserQuestion (achado adjacente real e bem documentado, "TA28", estruturalmente parecido — C↔A,
+# 6↔8 — como possível leitura alternativa). Dono respondeu: **"está escrito TC26, estou com o chip
+# aqui, pode cadastrar ambas famílias e tratar com as mesmas specs"** — confirmação FÍSICA direta
+# (chip em mãos), não leitura de OCR/debug ambígua. Registro **TC26 com `confidence: manual`**, não
+# `confirmed` — segue o precedente [[wtc-override-tier1-fontes-comunidade]] 2º caso (SDIN4E232G,
+# 2026-08-20: dono pediu equivalência de specs com PN irmão já confirmado, sem trazer evidência nova
+# pro PN em si → confidence:manual, não confirmed, porque "confirmar" em fala corrida não é o enum
+# literal). Aqui há uma camada a mais (evidência física real do dono, não só instrução de
+# equivalência), mas ainda ausência TOTAL de fonte terceira — mesma lógica se aplica.
+#
+# "TA28" — ao contrário de TC26, tem corroboração normal, densa, tier-inferior (6 fontes
+# independentes concordando, nenhuma divergindo): Elnec (programador, specs físicas: FBGA153,
+# variantes S/E/W = Standard/Elite/Industrial-temp — mesmo padrão M/W já visto no resto da família),
+# Preduo (categoriza explicitamente em "/emmc-5-1/" — eMMC 5.1), DigiPart, Censtry, Win-source,
+# smh-tech. NÃO está no flyer comercial vigente (mesma situação de TB28/TB29/TA29/TX29/S100 — todas
+# gerações fora do flyer atual, mas fisicamente reais). `confidence: confirmed`, seguindo a mesma
+# régua já usada pras outras gerações desta família.
+#
+# ESCOPO DA SUBMISSÃO — só o que tem base real, sem inventar cluster:
+#   - EMMC32G-TA28 + EMMC64G-TA28: as 2 capacidades achadas com fonte real (busquei 04G/08G/16G/
+#     128G/256G-TA28 explicitamente — nenhuma fonte, mesmo padrão de outras gerações desta família
+#     que também não cobrem o espectro inteiro, ex. TB9F só tem 64G).
+#   - EMMC32G-TC26: SÓ a capacidade que o dono tem o chip físico na mão (32G, igual ao PN do debug).
+#     NÃO inventei EMMC64G-TC26/outras capacidades por analogia à TA28 — o dono autorizou tratar O
+#     PN QUE ELE TEM com as specs da TA28 equivalente, não autorizou inventar irmãs de capacidade que
+#     ninguém confirmou nem fisicamente nem por fonte nenhuma. Se aparecer outro PN físico "TC26" de
+#     capacidade diferente no debug de estoque, é caso novo.
+#
+# Campos: chip_type="eMMC", subtype="" (vazio, convenção da família — ver EMMC16G-TB28 no arquivo
+# standalone), capacity=GB literal (sem conta Gb, diferente de DRAM), interface=versão eMMC.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emmc_ta28_tc26_2026-08-28.yaml
+
+brand: Kingston
+
+known_parts:
+
+  - part_number: EMMC32G-TA28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Geração de sufixo "TA28" da família eMMC standalone — achada pesquisando irmãs/gerações
+      vizinhas depois do PN físico do debug `EMMC32GTC26` (ver EMMC32G-TC26 abaixo). Capacidade 32GB
+      literal, pacote FBGA153 (Elnec: "EMMC32G-TA28-A20 [FBGA153]"; DigiPart: "153ball"), eMMC 5.1
+      explícito (Preduo categoriza em "/product/emmc/emmc-5-1/emmc32g-ta28"). Variantes S/E/W
+      (Standard/Elite/Industrial-temp) mencionadas no Elnec — mesmo padrão M/W já usado no resto da
+      família (comercial vs industrial). NÃO está no flyer comercial vigente (emmc_flyer_us.pdf,
+      tabela completa conferida, sem "TA28") nem no TrustedParts.com/manufacturers/kingston/EMMC
+      (listagem completa conferida) — mesma situação de TB28/TB29/TA29/TX29/S100, geração real fora
+      do catálogo atual. Corroborado por 6 fontes independentes concordando (Elnec, Preduo, DigiPart,
+      Censtry, Win-source, smh-tech), nenhuma divergindo. NAND type e voltagem não confirmados por
+      nenhuma fonte — deixados de fora (excluído, não adivinhado). Busquei irmãs de outra capacidade
+      (04G/08G/16G/128G/256G-TA28) e não achei nenhuma.
+    source_url: https://www.elnec.com/en/device/Kingston+Solutions/EMMC32G-TA28-A20+%5BFBGA153%5D/
+
+  - part_number: EMMC64G-TA28
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC32G-TA28 acima, mesma geração de sufixo. Pacote FBGA153 confirmado
+      direto (Elnec: "EMMC64G-TA28-A01 [FBGA153]"). Interface "eMMC 5.1" inferida por analogia direta
+      à irmã 32G (mesma geração/sufixo/pacote, variantes S/E/W idênticas no Elnec) — não achei fonte
+      citando "5.1" literal pra ESTA capacidade específica (diferente da 32G, onde Preduo confirma
+      explícito); sinalizando como inferência de família, não confirmação própria desta capacidade.
+      Corroborado (fabricante Kingston + pacote) em Elnec; mesma geração que a 32G, tratada com o
+      mesmo nível de confiança por ser par direto documentado na mesma fonte.
+    source_url: https://www.elnec.com/en/device/Kingston+Solutions/EMMC64G-TA28-A01+%5BFBGA153%5D/
+
+  - part_number: EMMC32G-TC26
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: manual
+    notes: >
+      PN físico do debug de estoque do dono, 28/08/2026, known:false (tudo vazio). Busquei
+      EXAUSTIVAMENTE ("TC26" sozinho, com "Kingston", com "eMMC", com "32G", em censtry/win-source/
+      ariat-tech/elnec/jotrin/datasheets360/kynix/alibaba, no flyer comercial oficial Kingston
+      fetchado direto, no TrustedParts.com/manufacturers/kingston/EMMC fetchado direto, no
+      accio.com "Kingston eMMC Code List" fetchado direto) — ZERO fontes independentes confirmam
+      "TC26" como código real. Achei uma geração adjacente REAL e bem documentada, "TA28"
+      (C↔A, 6↔8 — estruturalmente parecida), e sinalizei ao dono via AskUserQuestion perguntando se
+      TC26 seria possível erro de leitura. Dono respondeu com o chip físico em mãos: **"está escrito
+      TC26, estou com o chip aqui, pode cadastrar ambas famílias e tratar com as mesmas specs"** —
+      confirmação de posse física direta, não leitura ambígua de OCR/debug. `confidence: manual`
+      (não `confirmed`) porque a evidência real é a palavra do dono + posse física do chip, SEM
+      nenhuma fonte terceira (distribuidor/datasheet/programador) corroborando — mesmo padrão do
+      precedente [[wtc-override-tier1-fontes-comunidade]] (caso SDIN4E232G: instrução de equivalência
+      de specs com PN irmão, sem evidência nova pro PN em si, tratado como manual não confirmed).
+      Specs (32GB, eMMC 5.1) copiadas da EMMC32G-TA28 acima por instrução EXPLÍCITA do dono
+      ("tratar com as mesmas specs") — não são independentes pra esta PN. Registrei só a capacidade
+      32G que o dono tem fisicamente — não inventei EMMC64G-TC26 nem outras capacidades por analogia
+      à TA28, isso extrapolaria além do que foi autorizado (dono autorizou o PN que ele tem em mãos,
+      não um cluster inteiro inventado).
+    source_url: ''
+    # ^ propositalmente vazio (campo é blank=True no model) — NÃO aponto pra URL da TA28 aqui, seria
+    # citar fonte que não fala desta PN. A fonte real é a confirmação física do dono, sem URL.

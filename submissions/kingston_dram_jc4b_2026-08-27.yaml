@@ -1,0 +1,87 @@
+# Submissão known_parts — Kingston, DRAM discreta embarcada (§0.2 regra 9), família legada "JC4B"
+# Chat de marca Kingston, 2026-08-27. Disparado pelo PN físico do debug de estoque `D2516JC4BXGJD`
+# (known:false, TUDO vazio — nem fallback genérico bateu, igual ao padrão MCAB/EC4B/EETB/KE4/FH32B08UCT1).
+#
+# DIAGNÓSTICO: mesmo padrão JÁ CONFIRMADO 3× antes (MCAB 17/08, EC4B 19/08, EETB 26/08) — 4º caso agora.
+# Prefixo de densidade/organização "2516" = 256Mx16 = 4Gb, já confirmado em Tier-1 pra família atual
+# "ECMD" (D2516ECMDXGJD — grep direto no batch1, linha 83: "4Gb DDR3L, 256Mx16, FBGA 96-ball
+# 7.5x13.5x1.2mm, 1866Mbps, 1.35V") e pra família legada "EC4B" (D2516EC4BXGGB, submissão 19/08,
+# mesma densidade/organização/pacote/voltagem, só velocidade mais baixa). "JC4B" não aparece em
+# nenhum dos 3 flyers oficiais vigentes (mesma checagem já feita nas rodadas EC4B/EETB — só "ECMD"
+# nesse prefixo) — mesma assinatura de família legada.
+#
+# DIFERENÇA IMPORTANTE deste caso pros 3 anteriores (honestidade de fonte): MCAB/EC4B/EETB tinham
+# listagem PRÓPRIA no Octopart (dado estruturado: density/org/voltage/speed/package/lifecycle).
+# Pra "D2516JC4BXGJD" o Octopart NÃO tem listagem nenhuma ("We don't have any listings for this
+# part... may not exist or may have been discontinued") — corroboração aqui é mais fina: só 3
+# distribuidores menores concordando em fabricante + 1 confirmando pacote:
+#   - win-source.net: "Manufacturer: Kingston" (sem specs adicionais extraídas)
+#   - censtry.com: "Manufacturer: Kingston", "Package/Case: FBGA96" — BATE EXATO com "FBGA 96-ball"
+#     já confirmado em Tier-1 pra ECMD/EC4B no mesmo prefixo "2516" — corrobora que a organização/
+#     pacote seguem a mesma convenção, não é reaproveitamento coincidente do prefixo numérico.
+#   - ariat-tech.com + listagem Jotrin: confirmam fabricante Kingston, sem specs extras.
+# Nenhuma fonte contradiz fabricante ou pacote. confidence:confirmed aqui cobre os campos
+# estruturados (chip_type/subtype/interface/density_gbit), apoiados na convenção de código numérico
+# já validada 2× no mesmo prefixo exato "2516" + no cross-check de pacote — NÃO cobre velocidade
+# (Mbps) nem lifecycle, que ficam de fora por falta de fonte própria pra esta PN (excluído, não
+# adivinhado; ver abaixo).
+#
+# Tentei e NÃO achei (excluído, não adivinhado):
+#   - Speed grade (Mbps/CL) — nenhuma fonte cita pra esta PN específica (diferente de EC4B/EETB, onde
+#     Octopart tinha campo "Speed Grade" estruturado). NÃO assumi 1600Mbps por analogia — fica de fora.
+#   - Lifecycle/status (Obsolete etc.) — nenhuma fonte declara pra esta PN específica. Plausível pelo
+#     padrão (3/3 famílias legadas anteriores eram Obsolete), mas não vou AFIRMAR sem fonte própria.
+#   - Variante "-CK" (achada só em listagem Jotrin, `D2516JC4BXGJD-CK`, página não renderizou conteúdo
+#     pro fetch em 2 tentativas) — ambíguo se é sufixo Kingston real (tipo "-U"/"-I" já vistos noutras
+#     famílias) ou código interno do distribuidor Jotrin. Busquei "CK" como marcação/sufixo Kingston
+#     em geral — só achei resultados de "CK" como código de marcação de OUTROS componentes (SMD diode/
+#     transistor), nada específico de Kingston DRAM — reforça a hipótese de código interno Jotrin, não
+#     sufixo Kingston oficial. Sem confirmação independente, excluído.
+#   - Variante "-U" (tray) e "I" industrial (D2516JC4BXGJDI) — buscadas explicitamente, não achadas.
+#   - Irmãs de outra densidade/organização — buscadas em 2 rodadas: 1ª rodada com query combinada
+#     (D1216/D2568/D5128/B5116 JC4B num só OR), 2ª rodada (pedido do dono "pesquise mais") repetiu
+#     CADA código individualmente ("D1216JC4B" Kingston, "D2568JC4B" Kingston, "D5128JC4B" Kingston,
+#     "B5116JC4B" Kingston) + tentou distribuidores adicionais não usados na 1ª rodada (Kynix, Alibaba,
+#     made-in-china, TrustedParts, Sourcengine, Icsource, Xecor — Xecor tem D2516EC4BXGGB mas devolveu
+#     404/403 pra D2516JC4BXGJD, ou seja nem o PN base único está lá, confirmando cobertura mais fina
+#     que EC4B). NENHUMA rodada achou irmã de outra densidade. Cluster desta família é mesmo só 1 PN.
+#   - Precedente pra cluster de 1 PN só: "MCAB" (`D1216MCABXGGBS`, 17/08) também é, até hoje, só 1 PN
+#     confirmado depois de busca extensa — não é a primeira vez que esse padrão específico (família
+#     legada) fecha em 1 PN; 2 dos 4 casos (MCAB e JC4B) fecharam assim, EC4B e EETB tiveram 2 cada.
+#
+# Convenção de campos: idêntica ao batch1/EC4B/EETB (KINGSTON.md §1) — chip_type="DDR3L" (subtype
+# espelha chip_type), interface=largura de barramento ("x16"), density_gbit=die em Gb (nunca GB).
+# Conta Gb: 256M×16bit = 4.294.967.296 bit = 4Gbit — density_gbit=4Gb.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_dram_jc4b_2026-08-27.yaml
+
+brand: Kingston
+
+known_parts:
+
+  - part_number: D2516JC4BXGJD
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 27/08/2026, known:false (tudo vazio). Família legada
+      "JC4B" — mesmo código de densidade/organização "2516" (256Mx16 = 4Gb) das famílias já
+      confirmadas no mesmo prefixo: "ECMD" atual (D2516ECMDXGJD, Tier-1, FBGA 96-ball, 1.35V) e
+      "EC4B" legada (D2516EC4BXGGB, submissão 19/08). "JC4B" não está em nenhum flyer vigente —
+      4º caso do padrão "família legada fora dos flyers vigentes, mesmo código de densidade estável"
+      (depois de MCAB 17/08, EC4B 19/08, EETB 26/08). Diferente dos 3 casos anteriores, esta PN NÃO
+      tem listagem própria no Octopart ("no listings... may not exist or may have been discontinued")
+      — corroboração vem de 3 distribuidores menores (win-source.net, censtry.com, ariat-tech.com/
+      Jotrin) concordando em fabricante Kingston, nenhum divergindo; censtry.com confirma pacote
+      "FBGA96", batendo exato com o pacote já confirmado em Tier-1 pra ECMD/EC4B no mesmo prefixo —
+      corrobora a organização/densidade, não é coincidência de prefixo. Velocidade (Mbps) e lifecycle
+      NÃO confirmados pra esta PN específica (sem fonte própria) — deixados de fora, não adivinhados.
+      Busquei variantes -U/-I/-CK e irmãs de outra densidade (D1216/D2568/D5128/B5116 JC4B) em 2
+      rodadas — 1ª combinada, 2ª (a pedido do dono) por código individual + distribuidores extras
+      (Kynix/Alibaba/made-in-china/TrustedParts/Sourcengine/Xecor) — nenhuma irmã encontrada em
+      nenhuma rodada; cluster desta família é mesmo só 1 PN (mesmo desfecho do caso "MCAB" de 17/08,
+      que também fechou em 1 PN só após busca extensa — 2 dos 4 casos de família legada fecham assim).
+      Conta: 256M×16bit=4.294.967.296 bit=4Gbit — density_gbit=4Gb.
+    source_url: https://www.censtry.com/product/kingston/d2516jc4bxgjd.html

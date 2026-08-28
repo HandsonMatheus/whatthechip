@@ -299,6 +299,11 @@ capacidade sempre chega em MB/GB nas duas pontas — nunca deixe um código Gbit
   known_parts (04G/08G/16G/32G, total 35).** Geração BEM mais antiga que as outras (Obsolete desde
   ~2016/2017) — não está em nenhum dos 2 flyers já usados neste arquivo. eMMC 5.0 confirmado direto
   só na irmã de 32GB, resto por inferência de família. 64G/128G tentados e não achados — ver §7.
+  **5ª expansão 2026-08-28 — gerações "TA28" (2 PN, confirmed) + "TC26" (1 PN, `confidence: manual`
+  — exceção autorizada pelo dono, chip físico em mãos, ZERO fonte terceira, ver §7), total 38.**
+  Primeira vez nesta família que uma PN entra sem nenhuma corroboração de distribuidor/datasheet —
+  só a palavra do dono + posse física do chip, mesmo padrão de override caso-a-caso já usado noutras
+  marcas deste sistema (dono aceita fonte abaixo do patamar normal, decisão dele, documentado).
 - **NAND Flash cru Kingston (chip_type "NAND Flash", categoria `nand_raw`) — ABERTO 2026-08-19,
   2 known_parts (`FH32B08UCT1`/`FH64B08UCT1`, ver §7).** Kingston empacota/marca NAND cru de
   terceiros (célula Toshiba confirmada nos 2 achados) sob a própria marca — `profit_family="dead"`
@@ -339,13 +344,15 @@ capacidade sempre chega em MB/GB nas duas pontas — nunca deixe um código Gbit
 - **DRAM discreta embarcada (§0.2 regra 9) — submissão inicial de 2026-08-17 cobriu os 4 flyers
   oficiais atuais (~30 PN: DDR3L/DDR4/LPDDR4/LPDDR4x); 2ª rodada 2026-08-19 somou a família legada
   `EC4B` (2 PN, DDR3L 4Gb x16, obsoleta); 3ª rodada 2026-08-26 somou a família legada `EETB` (2 PN,
-  DDR3L 4Gb x8, obsoleta, mesmo código de densidade "5128" do `ECMD` atual — ver §7).** Ainda por
-  pesquisar: (a) família "MCAB" do caso `D1216MCABXGGBS` — só esse PN confirmado, pode ter irmãs
-  (outras capacidades/pacotes) que nenhum flyer atual lista, prováveis legado pré-"ECMD"; (b) ~~linha
-  eMMC standalone embarcada~~ RESOLVIDO 2026-08-19 — ver entradas acima, 31 known_parts; (c) o padrão
-  de família legada obsoleta (visto 3× agora em DDR3L: `MCAB`, `EC4B` e `EETB`) pode se repetir em
-  DDR4/LPDDR4/LPDDR4x também — só aparece quando um PN físico novo dispara a busca, não dá pra
-  antecipar sem gatilho real.
+  DDR3L 4Gb x8, obsoleta, mesmo código de densidade "5128" do `ECMD` atual); 4ª rodada 2026-08-27
+  somou a família legada `JC4B` (1 PN, DDR3L 4Gb x16, mesmo código "2516" do `ECMD`/`EC4B` — mas
+  SEM listagem própria no Octopart, corroboração mais fina que os 3 casos anteriores — ver §7).**
+  Ainda por pesquisar: (a) família "MCAB" do caso `D1216MCABXGGBS` — só esse PN confirmado, pode ter
+  irmãs (outras capacidades/pacotes) que nenhum flyer atual lista, prováveis legado pré-"ECMD"; (b)
+  ~~linha eMMC standalone embarcada~~ RESOLVIDO 2026-08-19 — ver entradas acima, 31 known_parts; (c)
+  o padrão de família legada obsoleta (visto 4× agora em DDR3L: `MCAB`, `EC4B`, `EETB` e `JC4B`) pode
+  se repetir em DDR4/LPDDR4/LPDDR4x também — só aparece quando um PN físico novo dispara a busca, não
+  dá pra antecipar sem gatilho real.
 
 ---
 
@@ -571,6 +578,32 @@ espelhado.
   parece ser só essas 2 PN, mesmo padrão do `EC4B`. **Padrão confirmado agora 3×** (`MCAB` 17/08,
   `EC4B` 19/08, `EETB` 26/08): quando Tier-1 vigente não bate mas o código de densidade/organização
   sim, é forte indício de família legada — não de marca errada.
+- **2026-08-27 — quarto caso do padrão "família legada": DRAM discreta, PN `D2516JC4BXGJD`.**
+  Disparado por PN físico direto do estoque (`known: false`, tudo vazio). Mesmo código de
+  densidade/organização `2516` (256Mx16 = 4Gb) já confirmado em Tier-1 pro `ECMD` atual
+  (`D2516ECMDXGJD`, FBGA 96-ball, 1.35V, 1866Mbps) e pro legado `EC4B` (`D2516EC4BXGGB`, mesmo
+  prefixo) — `JC4B` não aparece em nenhum flyer vigente. **Diferença importante deste caso pros 3
+  anteriores:** esta PN NÃO tem listagem própria no Octopart ("no listings... may not exist or may
+  have been discontinued") — corroboração vem de 3 distribuidores menores (win-source.net,
+  censtry.com, ariat-tech.com/Jotrin) concordando em fabricante Kingston; censtry.com confirma pacote
+  `FBGA96`, batendo exato com o já confirmado pro `ECMD`/`EC4B` no mesmo prefixo. Por isso
+  `confidence: confirmed` cobre só os campos estruturados (chip_type/subtype/interface/density_gbit)
+  — velocidade (Mbps) e lifecycle ficaram de fora por falta de fonte própria pra esta PN (excluído,
+  não adivinhado, diferente de `EC4B`/`EETB` onde Octopart tinha os dois campos estruturados).
+  Busquei variantes `-U`/`-I`/`-CK` (achei só `D2516JC4BXGJD-CK` numa listagem Jotrin, sem
+  confirmação independente do que o sufixo significa — excluído) e irmãs de outra densidade
+  (`D1216`/`D2568`/`D5128`/`B5116` `JC4B`) — nenhuma achada; cluster desta família é só 1 PN. **Dono
+  pediu pra pesquisar mais antes de fechar em 1 PN** — 2ª rodada repetiu cada código de densidade
+  individualmente (não só query combinada) + tentou distribuidores extras (Kynix, Alibaba,
+  made-in-china, TrustedParts, Sourcengine, Xecor — este último tem `D2516EC4BXGGB` mas devolve
+  404/403 pra `D2516JC4BXGJD`, cobertura ainda mais fina que `EC4B`) e investigou o sufixo `-CK`
+  (busca por "CK" como marcação Kingston só achou marcação de OUTROS componentes — reforça que é
+  código interno Jotrin, não sufixo Kingston). Mesmo resultado: cluster realmente é 1 PN só —
+  **precedente já existia** (`MCAB` também fechou em 1 PN só após busca extensa; 2 dos 4 casos de
+  família legada fecham assim, `EC4B`/`EETB` tiveram 2 cada). **Padrão confirmado agora 4×** (`MCAB`
+  17/08, `EC4B` 19/08, `EETB` 26/08, `JC4B` 27/08): quando Tier-1 vigente não bate mas o código de
+  densidade/organização sim, é forte indício de família legada — não de marca errada, mesmo quando
+  (como aqui) a corroboração tier-inferior é mais fina que o normal ou o cluster fecha em 1 PN só.
 - **2026-08-20 (mesmo dia, 4ª rodada) — `08EMCP08EL3CV100`: mesma família AV100/CV100, mas desta vez
   o subtype da gramática JÁ estava certo por coincidência.** PN físico veio com
   `classification_source:"gramática"`, `grammar_complete:true`, subtype mostrado "LPDDR3" — só que
@@ -607,6 +640,31 @@ espelhado.
   16G; `-A08U`/`-B08U`/`-E08U`/`-G08U` no 04G) — não persegui nenhuma, registrei só a forma BASE (a
   mesma que disparou a rodada), mesmo padrão de escopo das entradas anteriores deste arquivo. +4
   known_parts, arquivo vai de 31 pra 35.
+- **2026-08-28 — eMMC standalone ganha duas gerações novas, uma delas SEM fonte terceira nenhuma:
+  "TA28" (confirmed) e "TC26" (manual, override do dono).** PN físico do debug `EMMC32GTC26` veio
+  100% vazio. Busquei "TC26" exaustivamente — flyer comercial oficial (tabela completa fetchada,
+  sem TC26), TrustedParts.com/manufacturers/kingston/EMMC (fetchado direto, sem TC26), accio.com
+  "Kingston eMMC Code List" (fetchado, sem TC26), censtry/win-source/ariat-tech/elnec/jotrin/
+  datasheets360/kynix/alibaba — **zero fontes em lugar nenhum.** Achei uma geração adjacente REAL e
+  bem documentada, `EMMC32G-TA28`/`EMMC64G-TA28` (6 fontes independentes: Elnec, Preduo — que
+  categoriza explícito "eMMC 5.1" —, DigiPart, Censtry, Win-source, smh-tech; pacote FBGA153),
+  estruturalmente parecida (`TC26` vs `TA28`: C↔A, 6↔8). Sinalizei a divergência ao dono via
+  AskUserQuestion, com "reconferir a marcação física"/"excluir por agora" como alternativas.
+  **Dono respondeu com o chip físico em mãos: "está escrito TC26, estou com o chip aqui, pode
+  cadastrar ambas famílias e tratar com as mesmas specs".** Registrei `EMMC32G-TC26` com
+  `confidence: manual` (não `confirmed` — segue o precedente já usado noutras marcas quando o dono
+  autoriza por instrução de equivalência/posse física, sem fonte terceira: sinalizar o tier escolhido
+  em vez de presumir o enum literal) e `source_url` vazio de propósito (a fonte real é a palavra do
+  dono, não uma página). Registrei SÓ a capacidade 32G que o dono tem fisicamente — não inventei
+  `EMMC64G-TC26` nem outras por analogia à TA28; isso extrapolaria além do que foi autorizado.
+  Busquei irmãs de capacidade da TA28 (04G/08G/16G/128G/256G) e não achei nenhuma — cluster real é
+  só 32G+64G, mesmo padrão de outras gerações desta família que não cobrem o espectro inteiro
+  (ex. TB9F só tem 64G, S100 para em 32G). +3 known_parts, arquivo vai de 35 pra 38. **Primeira vez
+  nesta família (eMMC standalone) que um known_part entra sem NENHUMA corroboração de
+  distribuidor/datasheet/programador** — precedente pra próxima vez que isso acontecer: sempre
+  sinalizar a ausência de fonte terceira explicitamente antes de aceitar, com AskUserQuestion quando
+  der, e usar `confidence: manual` (nunca `confirmed`) salvo instrução EXPLÍCITA e literal do dono
+  em contrário.
 - **2026-08-26 (mesmo dia, depois) — linha `KE4` ganha um 3º formato de PN E resolve uma ambiguidade
   antiga de 2026-08-20 (`KE4CN5B6A`).** PN físico do debug `KE44B26BN8GB` veio 100% vazio. Achei a
   forma com separadores, `KE44B-26BN/8GB`, confirmada Kingston via RS Components (Tier-1) + Octopart
