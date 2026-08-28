@@ -553,5 +553,17 @@ IA sem verificação. Sempre conferir a unidade antes de gravar: `Xbit ÷ 8 = YB
   `NCLD3B1M5128M32` (DigiPart, Green Light Electronics). `confidence=manual`, mesmo padrão já usado
   nesta família pro `NCLD3B2512M32` (capacidade só por fórmula, sem fonte que leia a string exata).
 
+- **2026-08-28 (2ª busca, mesmo dia) — `NCEMAM8B-16G`, evidência Tier-1 perfeita (datasheet oficial
+  completo, não resumo de busca).** PN de bancada `NCEMAM8B16G`. WebSearch apontou um datasheet
+  oficial Longsys (E-00517 Rev. 1.0, 2018) hospedado no Pine64 — mesmo padrão de mirror confiável já
+  usado com sucesso pro `NCEMBSF9`; abri e li o PDF na íntegra (23 páginas, não só o resumo da
+  busca) antes de confiar nele, disciplina reforçada nesta marca desde o caso `NCEPNCCM4-1608`. A
+  tabela "Product List" confirma Density=16GB, NAND=128Gb×1, pacote 153FBGA 11.5x13x1.0mm; o título
+  e a seção Features confirmam "JEDEC eMMC 5.0" — primeiro known_part Foresee desta sessão com
+  `interface` preenchido por confirmação direta de datasheet (não distribuidor/inferência).
+  `confidence=manual`. Siblings: `-32G` não encontrado em nenhuma fonte; `-08G` tem página própria
+  no DigiPart mas só 1 distribuidor sem confirmação de fabricante no texto — evidência abaixo do
+  padrão desta marca, NÃO submetido, fica como gap. Ver `submissions/foresee_ncemam8b_2026-08-28.yaml`.
+
 > Inventário de famílias/mapas → **`foresee.yaml`** (Trilha A). known_parts confirmados (proveniência Tier-1 na
 > `notes`) → **banco** (Opção 2), via `submit_known_parts`. Cross-marca (comandos/convenção/rentabilidade) → **`CLAUDE.md`**.

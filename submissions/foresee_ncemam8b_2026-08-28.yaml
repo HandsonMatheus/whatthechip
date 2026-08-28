@@ -1,0 +1,47 @@
+# Submissão known_parts — Foresee (Longsys), `NCEMAM8B-16G` (eMMC, raiz legada `NC*`) — 2026-08-28.
+# Origem: PN de bancada "NCEMAM8B16G".
+#
+# ⭐ EVIDÊNCIA MÁXIMA: datasheet OFICIAL Longsys completo (E-00517, Rev. 1.0, 2018/02/07), 23
+#   páginas, mirror confiável Pine64 (mesmo padrão já usado com sucesso pro NCEMBSF9 nesta marca):
+#   https://files.pine64.org/doc/datasheet/pine64/E-00517%20FORESEE_eMMC_NCEMAM8B-16G%20SPEC.pdf
+#   PDF ABERTO E LIDO NA ÍNTEGRA (não só resumo de busca) — tabela "2. Product List":
+#     Density=16GB | NCEMAM8B-16G | NAND Flash Type=128Gb x1 | Capacity(User Density 90%)=14.4GB |
+#     Package Size=11.5x13x1.0mm | Package Type=153FBGA
+#   `capacity` gravado como a densidade NOMINAL do pacote (16GB, coluna "Density" — é o valor que dá
+#   nome ao PN e o padrão já usado em todo known_part eMMC desta marca), não os 14.4GB de área útil
+#   (90%, informação de fabricação, não capacidade comercial).
+#   `interface`="eMMC 5.0": título do documento diz literalmente "(JEDEC eMMC 5.0)" e a seção
+#   3-Features confirma "eMMC5.0 specification compatibility (Backward compatible to eMMC4.41/4.51)"
+#   — confirmação direta Tier-1, não inferência (vocabulário fechado do campo, ver nota do dono
+#   2026-08-27: versão confirmada entra como "eMMC <ver>").
+#
+# ⚠ SIBLINGS (regra "nunca 1 só"): procurei -08G e -32G do mesmo vendor-code "NCEMAM8B".
+#   -32G: ZERO resultado em DigiPart ("no result") e zero em WebSearch — não encontrado em
+#   nenhuma fonte, não parece existir/catalogado.
+#   -08G: TEM página própria no DigiPart, mas com evidência FRACA — só 1 distribuidor (Green Light
+#   Electronics), campo fabricante aparece como "Request The Manufacturer" (não confirma "FORESEE"
+#   no texto, ao contrário do -16G que teve datasheet 100% oficial), e a página do distribuidor não
+#   abriu conteúdo (bloqueada/vazia). WebSearch dedicado não achou datasheet nem confirmação
+#   adicional. Abaixo do padrão que venho exigindo nesta marca (7 distribuidores convergentes pro
+#   NCEMAM6G-08G, datasheet oficial pro -16G) — pela regra do dono (nunca submeter sem capacidade
+#   CONFIRMADA), NÃO submeto -08G nesta rodada. Fica como gap pesquisado e descartado por ora — se
+#   aparecer na bancada, vale nova rodada de pesquisa (ex.: tentar netComponents/JLCPCB direto).
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncemam8b_2026-08-28.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncemam8b_2026-08-28.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMAM8B-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    interface: "eMMC 5.0"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEMAM8B16G" (sem hífen). Datasheet OFICIAL Longsys completo (E-00517
+      Rev. 1.0, 2018/02/07, 23 páginas), lido na íntegra via mirror Pine64 — tabela "Product List"
+      confirma Density=16GB, NAND=128Gb x1, Capacity(User Density 90%)=14.4GB, Package=153FBGA
+      11.5x13x1.0mm. Capacity gravado como densidade nominal do pacote (16GB), não a área útil de
+      90%. Interface="eMMC 5.0" confirmada no título/features do próprio datasheet (JEDEC eMMC 5.0,
+      backward compatible 4.41/4.51). Siblings -08G (evidência fraca, 1 distribuidor sem confirmação
+      de fabricante) e -32G (não encontrado) pesquisados e descartados nesta rodada — ver header.
+    source_url: "https://files.pine64.org/doc/datasheet/pine64/E-00517%20FORESEE_eMMC_NCEMAM8B-16G%20SPEC.pdf"
