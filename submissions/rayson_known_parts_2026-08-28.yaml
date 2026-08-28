@@ -1,0 +1,28 @@
+brand: Rayson
+known_parts:
+  - part_number: RS512M32LO4
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    capacity: 2GB
+    confidence: confirmed
+    source_url: "https://www.szrayson.com/static/upload/file/20240719/1721368155932183.pdf"
+    notes: >
+      Rayson HI-TECH. Known_part pre-existente no banco (de antes desta sessao de chat -- sem
+      source_url/notes documentados, so "KnownPart em prod" cru na anotacao interna -- mesma
+      situacao que RS512M32LZ4 tinha antes de eu documentar em 2026-08-26, ver
+      rayson_known_parts_2026-08-26.yaml). Fonte TIER-1 direta ja levantada na rodada 3 desta
+      sessao (2026-08-20) pro irmao de forma completa RS512M32LO4D1BDS-53BT (esse ja e
+      known_part separado, confirmed, submetido junto no lote de 17 PNs): datasheet oficial
+      szrayson.com (capa "LPDDR4/4X Datasheet RS512M32LO4D1BDS-53BT 200-ball"). Capacidade
+      declarada DIRETO no datasheet: "Total Capacity: 2GB (16 gigabits per package)" -- confere
+      com a formula 512M x 32 / 8 = 2GB. Chart de part number do mesmo datasheet: "LO4 =
+      LPDDR4X/LPDDR4"; "VDDQ = 0.57-0.65V; 0.60V nominal Ou VDDQ = 1.06-1.17V; 1.10V nominal" --
+      peca unificada, mesma convencao ja usada em toda a familia RS512M32L nesta sessao
+      (chip_type=LPDDR4, nao 4X). Marcacao bare "RS512M32LO4" (sem sufixo D1BDS-53BT)
+      provavelmente e a mesma peca com marcacao fisica truncada -- mesmo padrao ja visto em
+      RS512M32LZ4 (rodada 9) e no RS128M32LD3D1LMZ-125BT (rodada 7) -- mas aqui ja existe
+      registro SEPARADO com a forma completa (RS512M32LO4D1BDS-53BT, rodada 3, ja confirmed);
+      este fill-empty so documenta o registro BARE pre-existente com a mesma fonte, nao cria
+      um terceiro registro nem afirma serem tecnicamente a mesma linha de producao -- so a
+      mesma familia/especificacao. Nao incluo sufixo de velocidade nem device especifico aqui
+      porque o registro bare nao tem essa granularidade na marcacao.
