@@ -1034,6 +1034,12 @@ table.est-table td { padding: var(--s5) var(--s5); }
 .badge .dot{width:7px;height:7px;border-radius:50%}
 .badge--open{background:#e6f7ec;color:#0e6027}.badge--open .dot{background:#24a148}
 .badge--closed{background:#e0e0e0;color:#525252}.badge--closed .dot{background:#8d8d8d}
+/* Origem do lote — UMA classe por valor de Lot.ORIGIN_CHOICES. O template não
+   escolhe cor por comparação (bug 2026-08-28: a 3ª origem caía no ramo "senão"
+   e o lote de RAM virava "celular"). Origem nova = 1 linha aqui. */
+.badge--origem-phone{background:#f2f4f8;color:#4d5358}
+.badge--origem-pcb{background:#e8f4ff;color:#00539a}
+.badge--origem-ram{background:#f6f2ff;color:#6929c4}
 .smart{display:flex;flex-direction:column;gap:2px;padding:7px 16px;border:1px solid #c1c7cd;border-radius:12px;background:#fff;text-decoration:none;transition:background .12s}
 .smart:hover{background:#f2f4f8;text-decoration:none}
 .smart__k{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#697077}
@@ -1127,12 +1133,14 @@ table.est-table td { padding: var(--s5) var(--s5); }
       <span class="badge badge--open"><span class="dot"></span>{% trans "Aberto" %}</span>
     {% endif %}
     {% comment %} Origem (2026-08-01): a promessa comercial do lote — decide a
-       tabela do eMMC (celular unificado × PCB por marca). {% endcomment %}
-    {% if lot.origin == 'pcb' %}
-      <span class="badge" style="background:#e8f4ff;color:#00539a;">🔌 {% trans "Origem: PCB" %}</span>
-    {% else %}
-      <span class="badge" style="background:#f2f4f8;color:#4d5358;">📱 {% trans "Origem: celular" %}</span>
-    {% endif %}
+       tabela do eMMC (celular unificado × PCB por marca).
+       ⚠ 2026-08-28: era um `{% if lot.origin == 'pcb' %}` de DOIS caminhos e a 3ª
+       origem (módulo de memória) caía no `else`, virando "📱 Origem: celular" —
+       o badge mentindo sobre a procedência do lote. Rótulo e ícone vêm do MODELO
+       (`get_origin_display` + `origin_icon`, fonte única ao lado do
+       ORIGIN_CHOICES); origem nova não precisa tocar em template nenhum.
+       Trava: `BadgeDeOrigemTests`. {% endcomment %}
+    <span class="badge badge--origem-{{ lot.origin }}">{{ lot.origin_icon }} {% blocktrans with o=lot.get_origin_display %}Origem: {{ o }}{% endblocktrans %}</span>
     {% comment %} PLANO_FX Fase C: a TRAVA de câmbio do fechamento — imutável,
        auditável, a taxa que rege os pagamentos das duas pontas. {% endcomment %}
     {% if lot.fx_rate %}

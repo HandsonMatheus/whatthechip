@@ -6,6 +6,12 @@
 
 {% block extra_head %}
 <style>
+/* Origem do lote — UMA classe por valor de Lot.ORIGIN_CHOICES (bug 2026-08-28:
+   o teste de dois caminhos contra 'pcb' fazia a 3ª origem virar "celular").
+   Origem nova = 1 linha aqui, zero comparação no template. */
+.badge--origem-phone{background:#f2f4f8;color:#4d5358}
+.badge--origem-pcb{background:#e8f4ff;color:#00539a}
+.badge--origem-ram{background:#f6f2ff;color:#6929c4}
 /* ═══ Estoque / Lotes — LAYOUT do protótipo screens/estoque.html (ledger). ═══
    Cores literais; sem dependência de vars externas. */
 .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:20px}
@@ -105,7 +111,8 @@
     <div class="olot__row">
       <div>
         <div class="olot__code">{{ lot.code }}</div>
-        <div style="margin:2px 0 4px;"><span class="badge" style="background:{% if lot.origin == 'pcb' %}#e8f4ff;color:#00539a{% else %}#f2f4f8;color:#4d5358{% endif %};">{% if lot.origin == 'pcb' %}🔌 PCB{% else %}📱 {% trans "Celular" %}{% endif %}</span></div>
+        {# Rótulo e ícone vêm do MODELO — ver o comentário em estoque.html (bug 2026-08-28). #}
+        <div style="margin:2px 0 4px;"><span class="badge badge--origem-{{ lot.origin }}">{{ lot.origin_icon }} {{ lot.get_origin_display }}</span></div>
         {% if lot.description %}<div class="olot__desc">{{ lot.description }}</div>{% else %}<div class="olot__desc olot__desc--empty">{% trans "Sem descrição" %}</div>{% endif %}
       </div>
       <span class="badge badge--open"><span class="dot"></span>{% trans "Aberto" %}</span>

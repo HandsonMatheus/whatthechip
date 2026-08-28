@@ -36,6 +36,21 @@ class Lot(models.Model):
         (ORIGIN_RAM,   _lazy('Módulo de memória')),
     ]
 
+    #: Ícone da origem — mora AQUI, colado no ORIGIN_CHOICES, e não no template.
+    #: Bug de prod 2026-08-28: o badge do lote era um `{% if lot.origin == 'pcb' %}`
+    #: de DOIS caminhos em dois templates; a 3ª origem caía no `else` e o lote de
+    #: MÓDULO DE MEMÓRIA aparecia como "📱 Origem: celular" — o sistema mentindo
+    #: sobre a procedência declarada do material. É a 3ª vez que uma lista de
+    #: origens escrita à mão fora do modelo quebra (antes: a tupla do `lot_create`
+    #: e o `choices=` do `replicate_lot_xlsx`). Rótulo vem de
+    #: `get_origin_display()` (já traduzido pelos `_lazy` acima); ícone, daqui.
+    #: Origem nova = UMA linha aqui, e nenhum template muda.
+    ORIGIN_ICONS = {
+        ORIGIN_PHONE: '📱',
+        ORIGIN_PCB:   '🔌',
+        ORIGIN_RAM:   '💾',
+    }
+
     STATUS_OPEN   = 'open'
     STATUS_CLOSED = 'closed'
     STATUS_CHOICES = [
@@ -70,6 +85,13 @@ class Lot(models.Model):
                                              'saíram (celular × PCB) — define a '
                                              'tabela de preço do eMMC.')
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_OPEN, verbose_name='Status')
+
+    @property
+    def origin_icon(self) -> str:
+        """Ícone da origem, da FONTE ÚNICA (`ORIGIN_ICONS`). Origem fora do
+        vocabulário devolve um marcador NEUTRO — nunca o ícone de outra origem:
+        badge que erra em silêncio é pior que badge sem ícone."""
+        return self.ORIGIN_ICONS.get(self.origin, '📦')
     # ── Trava de câmbio (PLANO_FX Fase C, 2026-08-01): capturada ATOMICAMENTE
     #    no fechamento; imutável até reabertura (só superuser), quando volta
     #    ao vivo e o RE-fechamento captura taxa nova — o pghistory loga as

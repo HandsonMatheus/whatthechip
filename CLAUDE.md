@@ -327,8 +327,9 @@ python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da rai
 python manage.py import_samsung_psg --all                   # CSVs em data/psg/
 python manage.py link_doc_pages / sync_index_page
 python manage.py validate_convention       # read-only: aponta registros fora da convenção (chip_types.py)
-python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)
+python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica + as 2 EXCEÇÕES de campo-fora-do-lugar: densidade (2026-07-11) e GERAÇÃO de eMCP indo p/ o subtype (2026-08-28). Fill-only, reversível via JSON.
 python manage.py check_translations        # read-only: PORTÃO dos catálogos i18n (locale/*.po) — placeholders, HTML, glossário protegido, fuzzy/vazio, .mo fresco. Roda após TODA atualização de tradução (inclusive por IA) e na suíte. Ver I18N.md §7.
+python manage.py characterize_baseline --out antes.json   # READ-ONLY (roda em transação revertida — seguro contra PROD). Congela, por PN, AS TRÊS COLUNAS que o negócio enxerga: DESTINO (dest_label/category), RENTABILIDADE (profitable/is_dead) e PREÇO. Depois da mudança: `--diff antes.json` (+ `--summary`). ⚠ PREÇO em 2 camadas: `price_key` (kind|gen|tier|unidade) é função PURA do classify — se mudar, a culpa é NOSSA; `price_<comprador>` é cotação e muda com câmbio/lista. O veredito separa as duas.
 python manage.py guard_catalog             # TRIPWIRE: roda DEPOIS de todo deploy — falha com alarme se o nº de known_parts despencar (>10% do high-water). Read-only exceto o bump do high-water. `--reset` só após queda legítima e revisada. Ver regra de ouro §2.1b.
 python manage.py restore_known_parts <dump>.json   # RECUPERAÇÃO: gap-fill de known_parts a partir de um dump/backup (cria só os que faltam, mapeia marca, religa família por prefixo; --commit). É o procedimento pós-incidente de perda.
 python manage.py bootstrap_tenancy --company eMiner --admin <u> --manager <u> --operator <u>…   # backfill T1 (multi-empresa): cria a Company, dá papéis nominais, seeda o contador de lote, restringe o Django admin à plataforma (tira is_staff de não-super) e derruba sessões. Dry-run padrão; --commit grava (backup antes). Ver PLANO_MULTITENANT.md §16.
@@ -710,6 +711,96 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   NÃO RENTÁVEL por geração → verificar geração ANTES de `_extract_gib` no bloco —
   e limiares de CAPACIDADE nunca podem ficar atrás de um bail por dado ausente
   de que eles não precisam.
+- **A RÉGUA de toda adaptação são TRÊS COLUNAS, e o baseline tem que cobrir as
+  três (dono, 2026-08-28):** *"o sistema não falha hoje em dar DESTINO,
+  RENTABILIDADE e PREÇO — a modificação não pode mudar nenhum dos três para
+  nenhum chip"*. O método é o único que prova isso: **congelar o banco inteiro
+  ANTES** (`characterize_baseline --out`), adaptar, **rodar de novo depois**
+  (`--diff`) e exigir zero. Amostra não serve, raciocínio não serve — foi
+  medindo 596 do seed, depois 537 filtrados, depois 733, que este projeto errou
+  o tamanho do estrago três vezes seguidas. ⚠ O comando cobria DESTINO e
+  RENTABILIDADE mas **não o PREÇO** — dizia "refactor seguro" sobre uma coluna
+  que não olhava. Hoje cobre, em duas camadas que não podem ser misturadas:
+  `price_key` = `(kind, gen, tier, unidade)`, **função pura do `classify()`**
+  (sem comprador, sem lista, sem câmbio) — mudou, a culpa é nossa; e
+  `price_<comprador>` = a cotação, que muda legitimamente com câmbio e lista.
+  Juntar as duas faria o alarme disparar sozinho, e alarme que dispara sozinho
+  é alarme que se aprende a ignorar. ⚠ Ler preço num comando exige
+  `platform_scope()` (as linhas são de PLATAFORMA sob RLS): sem o GUC o banco
+  devolve ZERO em silêncio e o baseline "sem diferença" seria medido sobre nada
+  — o mesmo veneno do `audit_category_codes`. Travas:
+  `BaselineTresColunasTests` (6 testes; 4 mutações mordem). ⚠ Lição de método,
+  3ª vez: a mutação que tirava `price_key` do conjunto "culpa nossa" **não
+  mordeu** na 1ª rodada — o caso de teste mexia no `emcp_nand`, que move a
+  etiqueta E a chave juntas, e o registro entrava na conta pela etiqueta. Trava
+  de coluna nova só vale se o caso isolar aquela coluna e mais nenhuma.
+- **A GERAÇÃO morava SÓ dentro do campo de MEDIDA — e por isso ARRUMAR o dado
+  reprovaria o chip (2026-08-28):** `emcp_ram` guarda hoje duas coisas
+  (`"LPDDR3 2GB"` = geração + medida) e `assess_profitability` só sabia ler a
+  geração DALI; o fallback pelo `subtype` (FIX 2026-06-26) só rodava com o campo
+  **vazio**. Medido no banco real (537 eMCP com RAM e NAND): escrever
+  `emcp_ram="2GB"` — a forma CERTA pela regra "campo de medida guarda UMA medida"
+  (§6) — jogaria **451 chips de RENTÁVEL para INDETERMINADO** e 5 de NÃO RENTÁVEL
+  para INDETERMINADO. Ou seja, limpar o dado seria uma **mudança de prateleira
+  física** disfarçada de arrumação. **Ordem obrigatória, e não é negociável: o
+  motor aprende a ler a geração de onde ela pertence (`subtype`) ANTES de o dado
+  se mudar pra lá** — nunca o inverso. Corrigido em `chips/engine.py` (bloco
+  eMCP): quando o `emcp_ram` não traz geração, o `subtype` responde; quando traz,
+  o `emcp_ram` vence (dado do próprio registro é mais específico que o da família).
+  **⚠ E o `subtype` se lê pelo VOCABULÁRIO, nunca por `search`.** A 1ª versão
+  deste fix usava `_lpddr_generation(combined)`, que é `search`: o subtype da
+  família KM6E é a FRASE `"embedded Multi-Chip Package (LPDDR + eMMC)"`, o
+  `search` pescou o `LPDDR` solto de dentro dela → geração 1 → **o chip virou
+  sucata por uma palavra numa descrição**. Hoje o valor passa por
+  `chips/conventions.py::is_ram_generation` (fullmatch contra a lista fechada — a
+  MESMA função do portão do `load_brands`), que exige token PURO e COM DÍGITO:
+  `"LPDDR"` pelado não é geração, é "tem LPDDR dentro", e chutar 1 aí condena o
+  chip por ignorância nossa. Quem pegou foi o golden `KM6E3S4AM0` — a prova de
+  que âncora de família não é burocracia. **É a 3ª vez neste projeto que um regex
+  `search`/fail-open aprova o que não devia** (as outras: `canonical_gen` usado
+  como teste de subtype; `_CAP_RE` lendo prosa em campo de medida). **Regra: para
+  DECIDIR se uma string é um token de vocabulário, `fullmatch` contra a lista
+  fechada; `search` só serve para EXTRAIR de string já validada.**
+  Travas: `EmcpGeracaoNoSubtypeTests` (8 testes; 4 mutações mordem, incluindo a
+  que devolve o `search` ingênuo). ⚠ O mesmo buraco de `search` **continua** no
+  bloco de `emcp_ram` VAZIO (FIX 2026-06-26): não foi mexido aqui porque mudá-lo
+  altera veredito de dado VIVO — o `_to_delete/roteiros_2026-08-28/medir_fix_geracao.py`
+  (BLOCO 4, read-only) conta quantos registros dependem dele antes de o dono decidir.
+  **A MIGRAÇÃO (parte 2) mora no `normalize_convention`, não num comando novo** —
+  é a 2ª exceção "campo fora do lugar", gêmea da densidade de 2026-07-11: MOVE
+  dado já confirmado de dentro do mesmo registro (a geração sai do `emcp_ram`
+  para o `subtype`), **fill-only** (nunca sobrescreve subtype já canônico) e
+  **deny by default** — `canonical_gen` PROPÕE (é fail-open) e
+  `is_ram_generation` DISPÕE (fullmatch, lista fechada). Só `KnownPart`: família
+  pode ser multi-geração de propósito. **Não toca no `emcp_ram`** — limpar o
+  campo de medida é a parte 3, decisão separada. Medido no banco em 2026-08-28:
+  o fix do motor mudou **0 vereditos** (puramente aditivo) e derrubou o raio da
+  limpeza de **456 para 107**; faltam **115 registros** com a geração só dentro
+  do `emcp_ram` (Samsung 59 · Micron 29 · SK Hynix 16 · Toshiba-Kioxia 7 ·
+  Kingston 2 · Foresee 1 · SanDisk 1), que é justamente o que esta migração
+  preenche. ⚠ Achado de tabela: `_multi_gen` só via a forma com prefixo repetido
+  (`"LPDDR2/LPDDR3"`) e **não** a abreviada `"LPDDR4X/5X"` — que é o exemplo
+  citado no próprio docstring do `_plan` como a razão de nunca migrar subtype.
+  Sem o conserto, a migração escolheria a 4X e apagaria a 5X. Travas:
+  `NormalizeGeracaoNoLugarCertoTests` (10 testes; 5 mutações mordem). ⚠ Lição de
+  método, 2ª vez: **duas mutações não morderam na 1ª rodada** porque o efeito de
+  remover a garantia era uma reescrita NO-OP (mesmo valor) — dano zero no dado,
+  entrada falsa no relatório e no JSON de reversão. A trava certa olha o PLANO
+  ("KnownParts a migrar: 0"), não só o valor final; e o caso que morde de
+  verdade é `subtype` VAZIO + `emcp_ram` em prosa, não o inverso.
+  ⚠⚠ **E foi o DRY-RUN contra o banco real que pegou o pior erro — nenhum teste
+  pegou, porque eu só tinha imaginado subtype de uma informação só.** 43
+  registros têm `subtype = "LPDDR4X + UFS 2.1"` / `"LPDDR3 + eMMC 5.1"`: DUAS
+  informações no mesmo campo. Canonizar para `"LPDDR4X"` e parar aí **apagaria a
+  versão do protocolo**, que é informação COMERCIAL (dono, 2026-08-27: *"a versão
+  do eMMC vale dinheiro"*) e cujo lugar é o campo `interface`. Hoje a migração a
+  **MUDA DE CAMPO** em vez de deixá-la evaporar; se a `interface` já disser outra
+  coisa, o comando **desiste do registro inteiro** — limpar só o subtype seria
+  pior que não fazer nada (perderia o dado para ficar com um campo bonito).
+  **Regra geral: migração que "canoniza" um campo tem que provar o que faz com o
+  que NÃO cabe na forma canônica.** Sobra sem destino = dado apagado em silêncio.
+  E o dry-run contra o banco de verdade é parte da entrega, não conferência do
+  dono: é lá que aparecem as formas que ninguém imaginou.
 - **`_CAP_RE` não suportava capacidades decimais → RENTÁVEL falso (2026-06-27):**
   `_CAP_RE = re.compile(r"(\d+)\s*([TGMK])B")` — `\d+` sem `(?:\.\d+)?`. Para
   `"1.5GB"`: re.search encontra `"5GB"` na posição 2 (o "." não é dígito, a engine
@@ -962,6 +1053,33 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   nunca apaga e que o dono aprende a ignorar, o que é caro justamente porque
   CONFLITO é onde mora o conflito de verdade. Travas:
   `DeadlockSubmitResolveTests` (5 testes; 4 mutações mordem).
+- **VOCABULÁRIO ESCRITO FORA DO MODELO — 3 quebras do MESMO campo em 4 dias
+  (2026-08-28):** a 3ª origem de lote (`ram`, módulo de memória) entrou em
+  `Lot.ORIGIN_CHOICES` + `open_for_company()` + `CheckConstraint` em 2026-08-24,
+  e mesmo assim quebrou **três vezes**, sempre por uma lista escrita à mão em
+  outro lugar: **(1)** a tupla `(ORIGIN_PHONE, ORIGIN_PCB)` no `lot_create` —
+  o gerente levava "escolha celular ou PCB" ao abrir o lote (prod, 2026-08-27);
+  **(2)** o `choices=['phone','pcb']` do `replicate_lot_xlsx`; **(3)** o BADGE,
+  um `{if lot.origin == 'pcb'} … {else}` de DOIS caminhos em **dois** templates
+  (`estoque.html` e `lotes.html`) — a 3ª origem caía no `else` e o lote de RAM
+  aparecia como **"📱 ORIGEM: CELULAR"**, o sistema mentindo sobre a procedência
+  declarada do material (prod, LOT/050/08/26). ⚠ Nos três o DADO estava certo:
+  quem mentia era o código que não perguntou ao modelo. **Regra: vocabulário
+  fechado tem UM dono — o modelo. Rótulo sai de `get_FOO_display()`, ícone de um
+  mapa colado no `_CHOICES` (`Lot.ORIGIN_ICONS` + `origin_icon`), cor de uma
+  CLASSE por valor (`badge--origem-{{ lot.origin }}`) — nunca de comparação.**
+  Valor novo = 1 linha no modelo + 1 no CSS, e nenhum `if` muda.
+  Travas em `OrigemRamTests`: 3 testes pela VIEW+TEMPLATE de verdade (testar o
+  modelo de novo não pegaria nada — ele sempre esteve certo), 1 que lê o
+  `choices=` do comando a partir do `ORIGIN_CHOICES`, e um **scanner** que varre
+  `estoque/templates/**/*.html` e falha se qualquer template comparar `origin`
+  com literal. 3 mutações mordem. ⚠ Armadilha de tabela: `{%` dentro de
+  comentário **CSS** (`/* … */`) num template Django É PARSEADO — escrever a tag
+  do bug na explicação derrubou a página inteira com `TemplateSyntaxError`. Em
+  comentário `{% comment %}` é seguro; em `/* */` e `<!-- -->`, não.
+  ⚠ Preço NÃO foi afetado: `pricing::_row_origin` só usa origem no **eMMC** e
+  manda qualquer valor fora de phone/pcb para o fallback conservador `'phone'` —
+  documentado no modelo e coberto por teste desde 2026-08-24.
 - **Categoria de caixa só nasce do que ENTRA no estoque (2026-08-18):** o
   `_masked_category` cunhava no RENDER do card de conferência — bipar um DDR2
   já gastava um número, mesmo o chip indo pro R-00 refino. Hoje a cunhagem

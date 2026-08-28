@@ -3996,20 +3996,20 @@ msgstr "(vacío)"
 msgid "Significa"
 msgstr "Significa"
 
-#~ msgid ""
-#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
-#~ " em US$. Muda só quando o contrato mudar."
-#~ msgstr ""
-#~ "Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a "
-#~ "US$. Cambia solo cuando cambie el contrato."
+#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
+msgid ""
+"<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça."
+msgstr ""
+"<b>El SSD no tiene tabla</b> — el precio es lineal en ¥/GB, con mínimo por "
+"pieza."
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça."
-msgstr "<b>El SSD no tiene tabla</b> — el precio es lineal en ¥/GB, con mínimo por pieza."
-
-#: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa do dia carimbada em cada página."
-msgstr "Su tabla completa, tal como la ve el vendedor. Generada al momento, con la tasa del día sellada en cada página."
+msgid ""
+"A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa"
+" do dia carimbada em cada página."
+msgstr ""
+"Su tabla completa, tal como la ve el vendedor. Generada al momento, con la "
+"tasa del día sellada en cada página."
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
 msgid "A taxa vai carimbada no rodapé de cada página:"
@@ -4028,8 +4028,12 @@ msgid "Catálogo de preços em PDF"
 msgstr "Catálogo de precios en PDF"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro por conta do vendedor."
-msgstr "Ej.: precios válidos para lotes de más de 500 piezas por línea. Flete y seguro por cuenta del vendedor."
+msgid ""
+"Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro "
+"por conta do vendedor."
+msgstr ""
+"Ej.: precios válidos para lotes de más de 500 piezas por línea. Flete y "
+"seguro por cuenta del vendedor."
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
 msgid "Observação na capa"
@@ -4068,8 +4072,12 @@ msgid "Todos os tipos"
 msgstr "Todos los tipos"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor — o dado publicado é sempre o seu ¥."
-msgstr "Usted cotiza en ¥ (RMB). La conversión a US$ entra solo como lectura del vendedor — el dato publicado es siempre su ¥."
+msgid ""
+"Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor"
+" — o dado publicado é sempre o seu ¥."
+msgstr ""
+"Usted cotiza en ¥ (RMB). La conversión a US$ entra solo como lectura del "
+"vendedor — el dato publicado es siempre su ¥."
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
 msgid "linhas"
@@ -4176,3 +4184,17 @@ msgid "%(n)s linha"
 msgid_plural "%(n)s linhas"
 msgstr[0] "%(n)s línea"
 msgstr[1] "%(n)s líneas"
+
+msgid "Escolha a ORIGEM do lote — obrigatória, sem padrão."
+msgstr "Elija el ORIGEN del lote — obligatorio, sin valor por defecto."
+
+#: estoque/templates/estoque/estoque.html:1143
+msgid "Origem: %(o)s"
+msgstr "Origen: %(o)s"
+
+#~ msgid ""
+#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+#~ " em US$. Muda só quando o contrato mudar."
+#~ msgstr ""
+#~ "Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a "
+#~ "US$. Cambia solo cuando cambie el contrato."

@@ -42,7 +42,13 @@ class Command(SafeWriteCommand):
                             help='Slug da empresa (obrigatório se houver 2+ ativas).')
         parser.add_argument('--operator', default='',
                             help='Username do operador do lote (default: 1º superuser).')
-        parser.add_argument('--origin', required=True, choices=['phone', 'pcb'],
+        # ⚠ LÊ DO MODELO, nunca de uma lista escrita aqui (mesmo bug do
+        # `lot_create`, 2026-08-27, e do badge de origem, 2026-08-28): a 3ª
+        # origem ('ram') existe no ORIGIN_CHOICES desde 2026-08-24 e este
+        # `choices=` na mão a recusava. Origem nova = zero mudança aqui.
+        from estoque.models import Lot as _Lot
+        parser.add_argument('--origin', required=True,
+                            choices=[c for c, _rot in _Lot.ORIGIN_CHOICES],
                             help='Origem do lote replicado (acordo 2026-08-01).')
         parser.add_argument('--commit', action='store_true',
                             help='Cria o lote de verdade (sem isto: dry-run).')

@@ -3746,17 +3746,15 @@ msgstr "（留空）"
 msgid "Significa"
 msgstr "含义"
 
-#~ msgid ""
-#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
-#~ " em US$. Muda só quando o contrato mudar."
-#~ msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"
-
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça."
+msgid ""
+"<b>SSD não tem grade</b> — o preço é linear em ¥/GB, com piso por peça."
 msgstr "<b>SSD 没有价格表</b> —— 价格按 ¥/GB 线性计算，并设单片最低价。"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa do dia carimbada em cada página."
+msgid ""
+"A sua grade completa, do jeito que o vendedor vê. Gerado na hora, com a taxa"
+" do dia carimbada em cada página."
 msgstr "您的完整价格表，与卖方所见一致。即时生成，每页均加盖当日汇率。"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
@@ -3776,7 +3774,9 @@ msgid "Catálogo de preços em PDF"
 msgstr "PDF 价格目录"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro por conta do vendedor."
+msgid ""
+"Ex.: preços válidos para lotes acima de 500 peças por linha. Frete e seguro "
+"por conta do vendedor."
 msgstr "例：每行 500 片以上批量适用价格。运费和保险由卖方承担。"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
@@ -3816,7 +3816,9 @@ msgid "Todos os tipos"
 msgstr "所有类型"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
-msgid "Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor — o dado publicado é sempre o seu ¥."
+msgid ""
+"Você cota em ¥ (RMB). A conversão para US$ entra só como leitura do vendedor"
+" — o dado publicado é sempre o seu ¥."
 msgstr "您以 ¥ (RMB) 报价。折算为 US$ 仅供卖方参考 —— 发布的数据始终是您的 ¥。"
 
 #: painel do comprador — realinhamento ao Claude Design (2026-08-27)
@@ -3921,3 +3923,15 @@ msgstr "进行中"
 msgid "%(n)s linha"
 msgid_plural "%(n)s linhas"
 msgstr[0] "%(n)s 行"
+
+msgid "Escolha a ORIGEM do lote — obrigatória, sem padrão."
+msgstr "请选择批次来源 —— 必填，无默认值。"
+
+#: estoque/templates/estoque/estoque.html:1143
+msgid "Origem: %(o)s"
+msgstr "来源：%(o)s"
+
+#~ msgid ""
+#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+#~ " em US$. Muda só quando o contrato mudar."
+#~ msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"

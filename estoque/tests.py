@@ -2947,6 +2947,98 @@ class OrigemRamTests(TestCase):
         self.assertEqual(lot.origin, 'ram')
         self.assertEqual(lot.get_origin_display(), 'Módulo de memória')
 
+    # ── O BADGE (bug de prod 2026-08-28) ────────────────────────────────
+    #
+    # O lote LOT/050/08/26 foi aberto com origem `ram` — e o cabeçalho mostrou
+    # "📱 ORIGEM: CELULAR". O DADO estava certo; quem mentia era a TELA: dois
+    # templates decidiam o rótulo com `{% if lot.origin == 'pcb' %}…{% else %}`,
+    # de dois caminhos, e a 3ª origem caía no `else`. É a 3ª vez que uma lista
+    # de origens escrita fora do modelo quebra (antes: a tupla do `lot_create`,
+    # 2026-08-27, e o `choices=` do `replicate_lot_xlsx`). Por isso os testes
+    # abaixo passam pela VIEW e pelo TEMPLATE de verdade — testar o modelo de
+    # novo não pegaria nada: o modelo sempre esteve certo.
+
+    def _abre(self, origem, descricao=''):
+        from estoque.models import Lot
+        return Lot.open_for_company(self.company, self.user,
+                                    description=descricao, origin=origem)
+
+    def test_o_cabecalho_do_lote_NAO_mente_sobre_a_origem(self):
+        from django.urls import reverse
+        from estoque.models import Lot
+        self.client.force_login(self.user)
+        for origem, rotulo in Lot.ORIGIN_CHOICES:
+            lot = self._abre(origem)
+            with self.subTest(origem):
+                html = self.client.get(
+                    reverse('estoque:lot_detail', args=[lot.pk])
+                ).content.decode()
+                self.assertIn(str(rotulo), html,
+                              f'o cabeçalho não mostra {rotulo!r} para origem {origem!r}')
+                self.assertIn(Lot.ORIGIN_ICONS[origem], html,
+                              f'ícone errado para origem {origem!r}')
+
+    def test_o_cabecalho_de_RAM_nao_pode_dizer_CELULAR(self):
+        """A asserção que descreve o bug exatamente como o dono o viu."""
+        from django.urls import reverse
+        from estoque.models import Lot
+        self.client.force_login(self.user)
+        lot = self._abre(Lot.ORIGIN_RAM)
+        html = self.client.get(
+            reverse('estoque:lot_detail', args=[lot.pk])).content.decode()
+        self.assertNotIn('Celular', html, 'lote de RAM anunciado como celular')
+        self.assertNotIn('📱', html, 'lote de RAM com o ícone de celular')
+        self.assertIn('Módulo de memória', html)
+
+    def test_a_LISTA_de_lotes_NAO_mente_sobre_a_origem(self):
+        from django.urls import reverse
+        from estoque.models import Lot
+        self.client.force_login(self.user)
+        for origem, _rot in Lot.ORIGIN_CHOICES:
+            self._abre(origem)
+        html = self.client.get(reverse('estoque:index')).content.decode()
+        for origem, rotulo in Lot.ORIGIN_CHOICES:
+            with self.subTest(origem):
+                self.assertIn(str(rotulo), html)
+
+    def test_nenhum_template_decide_ORIGEM_por_comparacao(self):
+        """A trava de CLASSE, não de instância. Enquanto um template comparar
+        `lot.origin` com um literal, a próxima origem volta a cair no `else` de
+        alguém — foi assim três vezes. Rótulo/ícone/cor vêm do modelo
+        (`get_origin_display`, `origin_icon`, `badge--origem-{{ lot.origin }}`)."""
+        import os
+        import re
+        raiz = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            'estoque', 'templates')
+        # comentários explicam o bug e CITAM o padrão — não são código.
+        sem_comentario = re.compile(
+            r'\{%\s*comment\s*%\}.*?\{%\s*endcomment\s*%\}|\{#.*?#\}', re.S)
+        culpados = []
+        for pasta, _dirs, arquivos in os.walk(raiz):
+            for nome in arquivos:
+                if not nome.endswith('.html'):
+                    continue
+                caminho = os.path.join(pasta, nome)
+                with open(caminho, encoding='utf-8') as fh:
+                    corpo = sem_comentario.sub('', fh.read())
+                for m in re.finditer(r"\.origin\s*[=!]=\s*['\"]", corpo):
+                    culpados.append(f"{nome}: …{corpo[max(0, m.start()-40):m.end()+20]}…")
+        self.assertEqual(
+            culpados, [],
+            'template comparando `origin` com literal — use '
+            '`get_origin_display`/`origin_icon`/`badge--origem-{{ lot.origin }}`:\n'
+            + '\n'.join(culpados))
+
+    def test_replicate_lot_xlsx_aceita_as_TRES_origens(self):
+        """O `choices=` do comando também era uma lista na mão."""
+        from django.core.management import load_command_class
+        from estoque.models import Lot
+        cmd = load_command_class('estoque', 'replicate_lot_xlsx')
+        parser = cmd.create_parser('manage.py', 'replicate_lot_xlsx')
+        acao = next(a for a in parser._actions if '--origin' in a.option_strings)
+        self.assertEqual(sorted(acao.choices),
+                         sorted(c for c, _r in Lot.ORIGIN_CHOICES))
+
     def test_origem_invalida_continua_recusada(self):
         """A origem segue OBRIGATÓRIA e fechada — abrir o vocabulário não pode
         virar 'aceita qualquer coisa'."""
