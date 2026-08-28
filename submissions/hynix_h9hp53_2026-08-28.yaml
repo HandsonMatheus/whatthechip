@@ -1,0 +1,67 @@
+# Submissão de known_parts — SK Hynix, família H9HP (eMCP LPDDR4X, JÁ MAPEADA,
+# já com known_parts de 2026-07-09). Gerado a partir da investigação do PN H9HP53ACPMMD
+# (busca na bancada, 2026-08-28). Grammar_complete=true, decode já correto
+# (pn[4:6]='53'→64GB, pn[6:8]='AC'→4GB) — não motivou fix de gramática, só known_part.
+#
+# CLUSTER: o próprio fuzzy_suggestions do debug já apontou o irmão H9HP52ACPMMD (mesmo
+# RAM 'AC', NAND '52' em vez de '53' — o tip já documenta que 52 E 53 mapeiam pra 64GB,
+# "dois ou três códigos NAND pra mesma capacidade são normais: organização interna
+# diferente"). Pesquisei os dois juntos.
+#
+# FORMA DO part_number: submeti a forma BASE (12 chars, sem sufixo de order code
+# "AR-KMM") — é a que bate com a leitura da bancada (known_exact precisa de string
+# EXATA, não casa com sufixo). Mesmo padrão já usado no h9hp_2026-07-09.yaml (nota do
+# H9HP16ACPMMD: "PN original buscado na bancada... base sem sufixo de order code —
+# mesmo decode"). A forma completa (com sufixo) é a que aparece nas páginas-fonte, citada
+# no source_url e nas notes.
+#
+# FONTES (Puris + Preduo — tier-1 pra broker estruturado neste projeto, fetch direto,
+# não snippet de busca):
+#   H9HP53ACPMMD: Puris (archives/7403, página dedicada): "型号：H9HP53ACPMMDAR-KMM /
+#     品牌：Skhynix / 规格：64+32 eMCP / 封装：254ball_eMMC+LPD4x". Corroborado por
+#     indasina.com, skynetteam360.com e AliExpress ("64GB eMMC Storage with 4GB RAM") —
+#     todos convergindo em 64+32 (64GB eMMC + 32Gb÷8=4GB LPDDR4X).
+#   H9HP52ACPMMD: Preduo (página dedicada, tabela estruturada) E Puris (archives/7295,
+#     página dedicada) — as DUAS fontes independentes deste projeto concordam: "64+32".
+#     Preduo: "Part Number: H9HP52ACPMMDAR-KMM | Type: eMCP | Sub-Type: eMMC+LPDDR4x |
+#     Density: 64+32".
+#
+# ARITMÉTICA: NAND já em GB (64GB direto). RAM em Gb bruto: 32Gb÷8=4GB — bate exato com
+# pn[6:8]='AC'→4GB, já documentado no tip da família.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hp53_2026-08-28.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hp53_2026-08-28.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HP53ACPMMD"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7403"
+    notes: >
+      PN ALVO da bancada (2026-08-28), forma base (12 chars, sem sufixo de order code).
+      Puris (página dedicada, fetch direto): "H9HP53ACPMMDAR-KMM 64+32 eMCP" = 64GB
+      eMMC + 32Gb(÷8)=4GB LPDDR4X. Corroborado por indasina.com, skynetteam360.com e
+      AliExpress. Bate com pn[4:6]='53'→64GB e pn[6:8]='AC'→4GB, já no tip da família
+      ('52'/'53' ambos mapeiam 64GB — organização NAND interna diferente).
+      confidence=manual (broker estruturado, mesmo padrão do resto da família).
+
+  - part_number: "H9HP52ACPMMD"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/254ball_emmc-lpd4x/h9hp52acpmmdar-kmm"
+    notes: >
+      Irmão do alvo (1º fuzzy_suggestion do debug) — mesmo RAM 'AC'=4GB, NAND '52' em
+      vez de '53' (mesma capacidade 64GB, código interno diferente). Preduo (tabela
+      estruturada, fetch direto: "Density: 64+32") E Puris (archives/7295, fetch direto:
+      "规格：64+32 eMMC+LPD4x") — duas fontes independentes concordam. 32Gb÷8=4GB.
+      confidence=manual.
