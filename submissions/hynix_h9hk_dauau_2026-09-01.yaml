@@ -1,0 +1,51 @@
+# Submissão de known_parts — SK Hynix, família H9HK (LPDDR4X standalone dual-channel,
+# JÁ MAPEADA). Gerado a partir da investigação do PN H9HKNNNDAUAU (busca na bancada,
+# 2026-09-01). Forma SEM SUFIXO (12 chars) — mesmo padrão já estabelecido pra família em
+# hynix_h9hk_bare_2026-08-24.yaml (objetivo é o PN que a bancada realmente lê, gramática
+# já decodificar certo não dispensa o known_part — correção do dono, 2026-08-24).
+#
+# DECODE: pn[7]='D' → 3GB, código JÁ confirmado na família (H9HKNNNDGUMUBR-NLH/NMH,
+# H9HKNNNDBUMUBR-NMH, H9HKNNNDGUMUAR-NLH — 3 known_parts anteriores). Esta rodada não é
+# descoberta de código novo, é cobertura de mais um PN real no código já mapeado.
+#
+# FONTE: DigiPart — linha própria de estoque para "H9HKNNNDAUAU" (não é prefixo de
+# busca): distribuidor ITD company limited, DC:2018-2020, BGA, 5467 unidades em estoque,
+# link de pedido ativo (Order_online.html). Mesmo padrão evidencial já usado pro
+# precedente da família (H9HKNNNCTUMU, hynix_h9hk_bare_2026-08-24.yaml — 1 distribuidor
+# forte via DigiPart, PN real orderável). A página lista "See Also: H9HKNNNBTUMU,
+# H9HKNNNEBMAVAR" — os dois já são known_parts confirmados desta família (códigos B e E),
+# reforçando que o agregador trata H9HKNNNDAUAU como parte do mesmo cluster real.
+#
+# ⚠ Manufacturer no DigiPart aparece truncado como "SKY" (não "SKHYNIX" por extenso) —
+# não é contradição de marca (não existe fabricante de memória chamado "SKY"; é
+# abreviação/truncamento do próprio feed do distribuidor, mesmo tipo de ruído já visto
+# noutras rodadas). O prefixo "H9HK" é proprietário da Hynix por construção (nomenclatura
+# "H-number", nenhum outro fabricante nomeia peças assim) — sem marca concorrente sendo
+# alegada de fato.
+#
+# SPECS: herdadas do código 'D' já multiplamente confirmado na família — LPDDR4X 3GB. O
+# sufixo de grade/temperatura (ausente na forma bare) não muda a identidade elétrica.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hk_dauau_2026-09-01.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hk_dauau_2026-09-01.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HKNNNDAUAU"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNNDAUAU"
+    notes: >
+      PN da bancada (2026-09-01), forma SEM SUFIXO (12 chars) — mesmo padrão já
+      estabelecido pra esta família (hynix_h9hk_bare_2026-08-24.yaml). DigiPart lista
+      como linha própria de estoque (não prefixo de busca): distribuidor ITD company
+      limited, DC:2018-2020, BGA, 5467un, link de pedido ativo. Manufacturer aparece
+      truncado como "SKY" no feed do distribuidor — não é marca concorrente (prefixo
+      H9HK é proprietário Hynix por construção). pn[7]='D'→3GB, código já confirmado 3x
+      nesta família (H9HKNNNDGUMUBR-NLH/NMH, H9HKNNNDBUMUBR-NMH, H9HKNNNDGUMUAR-NLH).
+      Página relacionada lista H9HKNNNBTUMU e H9HKNNNEBMAVAR, ambos já known_parts
+      confirmados (códigos B/E) — mesmo cluster real. confidence=manual.
