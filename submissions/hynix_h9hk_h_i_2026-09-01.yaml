@@ -1,0 +1,108 @@
+# Submissão de known_parts — SK Hynix, família H9HK (LPDDR4X standalone x64, JÁ MAPEADA).
+# Rodada de EXPANSÃO DE CLUSTER pedida explicitamente pelo dono ("NUNCA pode pesquisar
+# somente 1 pn! Pode pesquisar outras variacoes!") após a submissão anterior
+# (hynix_h9hk_dauau_2026-09-01.yaml, commit 99d9fb5) ter ficado com 1 PN só — o
+# fuzzy_suggestions do engine estava vazio, mas isso NÃO autoriza parar de pesquisar.
+#
+# TÉCNICA NOVA desta rodada: fetch do índice-mestre do Puris (puris.net/lpddrlist, ~588
+# linhas) — grande demais pra ler direto, mas o web_fetch salva o conteúdo completo num
+# arquivo, e o Grep contra esse arquivo local extraiu ~25 PNs H9HK ainda não cobertos.
+# Cruzando esses candidatos contra um PDF OFICIAL SK Hynix ("DRAM LPDDR Products list",
+# copyright SK hynix Inc., atualizado Feb/2021, mirror em szlcsc — fonte fabricante direta,
+# achada via WebSearch) veio a confirmação mais forte da rodada: 2 PNs com fonte tier-1
+# do próprio fabricante, incluindo um CÓDIGO DE DENSIDADE NUNCA VISTO na família ('H'=12GB,
+# adicionado ao HYX_LPDDR4_H9HC_CAP nesta mesma entrega — ver chips/knowledge/hynix.yaml).
+#
+# GRÁFICO DE DECISÃO da rodada (todos os candidatos considerados, não só os incluídos):
+#   - H9HKNNNHCMMUDR-NEH — NOVO, código 'H' nunca visto → incluído, confirmed (PDF oficial).
+#   - H9HKNNNFBMMVAR-NEH — NOVO PN, código 'F' já bem estabelecido → incluído, confirmed
+#     (PDF oficial, mesma tabela).
+#   - H9HKNNNIAMMVAR-NEH — NOVO, código 'I' nunca visto → incluído, MANUAL (só Puris,
+#     conflito histórico com Alibaba não resolvido — ver nota própria abaixo).
+#   - H9HKNNNCRMAVAR-NEH, H9HKNNNFBMAVAR-NEH — apareciam na mesma tabela do PDF oficial,
+#     MAS já são known_parts confirmados desde 2026-07-10 (hynix_h9hk_2026-07-10.yaml,
+#     linhas 94/108) — checado antes de escrever este arquivo, NÃO duplicado aqui.
+#   - H9HKNNNCRMAUDR-NEH, H9HKNNNFBMAUDR-NEH, H9HKNNNFBMBUDR-NEH, H9HKNNNEBMAVAR-NEH — idem,
+#     já confirmados em hynix_h9hk_2026-07-09.yaml — não duplicados.
+#   - H9HKNNNEBMBUDR-NEH — reapareceu no PDF oficial com a MESMA dupla contraditória
+#     ("64Gb"/"(6GB)") já vista no Puris em 2026-07-09/10 (2 rodadas anteriores já
+#     excluíram por identidade incerta na capacidade, apesar de TechInsights confirmar a
+#     existência física do PN). O PDF oficial não é 2ª fonte independente pra essa dúvida
+#     específica (mesmo padrão de inconsistência, possivelmente a mesma origem de dado)
+#     — mantido EXCLUÍDO, sem novidade que justifique reverter a decisão anterior.
+#   - ~20 variantes de sufixo de grade/temperatura (só do índice Puris, ex.:
+#     H9HKNNNDGUMUAR-NLE, H9HKNNNCTUMUAR-NLH, H9HKNNNFBMMUER-NMN etc.) — aparecem no
+#     índice-mestre mas eu NÃO abri a página dedicada de cada uma pra confirmar
+#     capacidade/existência individualmente nesta rodada. Excluídas por disciplina
+#     ("excluir, não adivinhar") — ficam como candidatas pra uma rodada futura dedicada
+#     a esgotar o índice do Puris (mesmo prefixo de código já mapeado, risco baixo, mas
+#     não confirmado ainda).
+#
+# ARITMÉTICA (toda em Gbit bruto do fabricante ÷8 = GB):
+#   H9HKNNNHCMMUDR-NEH: 96Gb ÷ 8 = 12GB
+#   H9HKNNNFBMMVAR-NEH: 64Gb ÷ 8 = 8GB
+#   H9HKNNNIAMMVAR-NEH: 80Gbit ÷ 8 = 10GB
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hk_h_i_2026-09-01.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hk_h_i_2026-09-01.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HKNNNHCMMUDR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "12GB"
+    confidence: confirmed
+    source_url: "https://atta.szlcsc.com/upload/public/pdf/source/20231116/D92B33AE61674A6C958A29DF0AE19494.pdf"
+    notes: >
+      Achado via índice-mestre do Puris (puris.net/lpddrlist, minerado via Grep contra o
+      arquivo salvo pelo web_fetch — página grande demais pra ler direto). Confirmado em
+      fonte TIER-1: PDF OFICIAL SK Hynix "DRAM LPDDR Products list" (copyright SK hynix
+      Inc., atualizado Feb/2021, seção "LPDDR4X for Mobile"), listando explicitamente:
+      "H9HKNNNHCMMUDR-NEH 96Gb (12GB) 1.8V/1.1V/0.6V 4266Mbps 376Ball MP". 96Gb÷8=12GB.
+      CÓDIGO DE DENSIDADE NOVO — pn[7]='H' nunca tinha known_part nem entrada no mapa
+      HYX_LPDDR4_H9HC_CAP antes desta rodada; adicionado ao mapa nesta mesma entrega
+      (maior densidade já confirmada na família H9HK). confidence=confirmed (fonte
+      fabricante direta, mesmo tier do databook oficial usado na família H5AN4G hoje).
+
+  - part_number: "H9HKNNNFBMMVAR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://atta.szlcsc.com/upload/public/pdf/source/20231116/D92B33AE61674A6C958A29DF0AE19494.pdf"
+    notes: >
+      Mesma tabela do PDF oficial SK Hynix do achado acima: "H9HKNNNFBMMVAR-NEH 64Gb (8GB)
+      1.8V/1.1V/0.6V 4266Mbps 556Ball MP". 64Gb÷8=8GB. Código 'F'=8GB já bem estabelecido
+      na família (múltiplas confirmações prévias); este é um PN novo (package 556ball_4x,
+      sufixo "MMVAR" — diferente de FBMAVAR/FBMAUDR/FBMBUDR já confirmados, checado contra
+      hynix_h9hk_2026-07-09.yaml e hynix_h9hk_2026-07-10.yaml, não é duplicata).
+      confidence=confirmed (mesma fonte fabricante direta do PN acima).
+
+  - part_number: "H9HKNNNIAMMVAR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "10GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/6036"
+    notes: >
+      CÓDIGO DE DENSIDADE NOVO — pn[7]='I', nunca visto na família antes. Achado original
+      em 2026-07-10 (hynix_h9hk_2026-07-10.yaml, "ACHADO PARALELO... NÃO adicionado à
+      gramática... fica para o dono decidir"): Puris (archives/6036, fetch direto) mostrava
+      "规格：80Gbit LPD4x" (÷8=10GB), mas um TÍTULO de listagem Alibaba (não confirmado como
+      página de produto real, nunca aberto de fato) dizia "LPDDR4X 16GB" — conflito não
+      resolvido, deixado em aberto. Nesta rodada (2026-09-01): refeito o fetch direto do
+      Puris — MESMA leitura, "80Gbit LPD4x", reproduzível numa 2ª visita independente à
+      mesma página estruturada. Tentei reabrir a listagem Alibaba para checar o "16GB" de
+      novo — voltou página vazia (conteúdo JS-rendered, o fetch não executa JS), então não
+      consegui nem corroborar nem refutar aquele número desta vez. ⚠ PARA O DONO: o Puris é
+      uma fonte estruturada (campo dedicado "规格", não um título de marketing) e bate 2x
+      seguidas; o "16GB" nunca passou de um título de listagem não verificado. Submetido em
+      confidence=manual (não confirmed) exatamente por essa divergência histórica não
+      totalmente fechada — se o dono tiver como checar um datasheet/distribuidor que resolva
+      10GB vs 16GB definitivamente, o registro pode subir pra confirmed ou ser corrigido na
+      aprovação. NÃO adicionado ao mapa HYX_LPDDR4_H9HC_CAP (só este known_part, exato).
