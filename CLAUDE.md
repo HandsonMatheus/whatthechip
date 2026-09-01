@@ -1088,6 +1088,42 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   viva. **Qualquer chamada nova a `CategoryCode.label_for_key(..., create=True)`
   precisa provar antes que o chip vai pra prateleira.** Diagnóstico:
   `audit_category_codes`.
+- **PROPERTY QUE CONSULTA BANCO NÃO ATRAVESSA `company_scope` — e o que ela
+  devolve fora dele não é erro, é ZERO (bug de prod, 2026-09-01):** a lista de
+  compras do comprador mostrava `PAGO` e `falta US$ 6.251,00` **na mesma
+  linha**, nas seis vendas recém-reconciliadas. Os dois números saem do MESMO
+  objeto `Invoice`, e é aí que mora a lição: o selo vem de `invoice.status`,
+  uma **coluna já carregada**; o "falta" vem de `Invoice.balance_usd`, uma
+  **property** que dispara `payments.aggregate(...)` no instante em que alguém
+  LÊ. Quem lê é o template — já fora do `with company_scope(comp)` que o
+  `services.orders_for_buyer()` abre empresa por empresa e **fecha antes de
+  devolver a lista**. Sem escopo não há GUC, a policy `tenant_isolation`
+  avalia NULL, o RLS devolve zero pagamento em silêncio, e o saldo vira o
+  total inteiro.
+  **Por que era impossível pegar antes:** (a) a suíte roda em **SQLite**, que
+  não tem RLS — lá o bug é invisível por construção; (b) o Postgres **local
+  conecta como superusuário**, que ignora RLS mesmo com FORCE (armadilha já
+  registrada acima); (c) até 01/09 produção não tinha **nenhum** `Payment`, e
+  `paid_usd = 0` era a resposta certa pelo motivo errado. Havia exatamente um
+  lugar no mundo onde dava para ver, e só depois do primeiro pagamento real.
+  **O código já sabia a regra e a aplicava ao lado:** `services.buyer_order()`
+  é context manager DE PROPÓSITO, e o docstring dele diz — *"ler as linhas,
+  calcular e acertar têm que acontecer TODOS sob o mesmo `company_scope`; fora
+  dele o RLS devolve zero linhas em silêncio"*. Por isso o detalhe da compra e
+  o `compra_pagar` estavam certos. O `orders_for_buyer` não, porque **devolve
+  objetos que sobrevivem ao escopo**. ⚠ E o `compra_pagar` escapou por sorte
+  de arquitetura, não por cuidado: ele valida `if inv.balance_usd <= 0` antes
+  de aceitar dinheiro — rodando fora de escopo, essa guarda leria "não pagou
+  nada" e **aceitaria um segundo pagamento numa fatura quitada**.
+  **Corrigido** materializando dentro do `with`: `so.fatura_pago` /
+  `so.fatura_saldo` no `orders_for_buyer`, lidos pelo template da lista e pelo
+  CSV do comprador. **Regra: dentro de `company_scope`, materialize tudo que a
+  tela vai ler — property que consulta banco não atravessa escopo.**
+  Travas: `vendas/tests_saldo_comprador.py` (9 testes). ⚠ Eles **não tentam**
+  reproduzir o RLS: seria mentira em SQLite. Travam a propriedade que torna o
+  valor imune a escopo — depois que `orders_for_buyer` devolve, ler o saldo faz
+  **zero consulta** (`assertNumQueries(0)`), e ler a property do modelo faz
+  uma; o teste documenta a diferença, que é exatamente a que o bug explorava.
 
 ---
 
