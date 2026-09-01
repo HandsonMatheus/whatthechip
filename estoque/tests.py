@@ -3059,17 +3059,37 @@ class OrigemRamTests(TestCase):
         POST, que é o caminho do usuário.
 
         Trava contra a REGRESSÃO REAL: qualquer origem futura tem que funcionar
-        pela view sem ninguém lembrar de editar uma segunda lista."""
+        pela view sem ninguém lembrar de editar uma segunda lista.
+
+        ⚠ Percorre `origin_choices_novas()`, não `ORIGIN_CHOICES` (2026-09-01):
+        o vocabulário passou a ter origens LEGADAS (MIXED, K9) que existem só
+        para rotular lote importado do controle antigo e que a view recusa de
+        propósito — ver `test_a_view_recusa_origem_legada` logo abaixo."""
         from django.urls import reverse
         from estoque.models import Lot
         self.client.force_login(self.user)
-        for origem, _rot in Lot.ORIGIN_CHOICES:
+        for origem, _rot in Lot.origin_choices_novas():
             r = self.client.post(reverse('estoque:lot_create'),
                                  {'origin': origem, 'description': f'lote {origem}'})
             self.assertEqual(r.status_code, 302)
             lote = Lot.all_companies.order_by('-pk').first()
             self.assertEqual(lote.origin, origem,
                              f"a view recusou a origem {origem!r} que o modelo aceita")
+
+    def test_a_view_recusa_origem_legada(self):
+        """O outro lado da moeda (dono, 2026-09-01): MIXED e K9 estão no
+        vocabulário para a TELA saber rotular o lote antigo, mas ninguém pode
+        abrir lote novo com eles. Se um dia caírem no formulário, este quebra."""
+        from django.urls import reverse
+        from estoque.models import Lot
+        self.client.force_login(self.user)
+        antes = Lot.all_companies.count()
+        for legada in sorted(Lot.ORIGIN_LEGACY):
+            r = self.client.post(reverse('estoque:lot_create'),
+                                 {'origin': legada, 'description': f'x {legada}'})
+            self.assertEqual(r.status_code, 302)
+        self.assertEqual(Lot.all_companies.count(), antes,
+                         'a view deixou abrir lote novo com origem legada')
 
     def test_view_continua_recusando_origem_invalida(self):
         """Ler do modelo não pode virar 'aceita qualquer coisa'."""
@@ -3101,8 +3121,12 @@ class OrigemRamTests(TestCase):
         self.assertNotIn('celular', msg.group(1).lower(),
                          'a mensagem voltou a enumerar as origens — texto que '
                          'envelhece junto com a lista e vira mentira na tela')
-        self.assertIn('dict(Lot.ORIGIN_CHOICES)', codigo,
-                      'a view voltou a ter lista própria em vez de ler do modelo')
+        # A intenção é "lê do MODELO", não um nome específico: em 2026-09-01 a
+        # fonte virou `origin_choices_novas()`, que é ORIGIN_CHOICES menos as
+        # legadas. Qualquer uma das duas serve; lista escrita na mão, não.
+        self.assertRegex(
+            codigo, r'Lot\.(ORIGIN_CHOICES|origin_choices_novas\(\))',
+            'a view voltou a ter lista própria em vez de ler do modelo')
 
     def test_ram_NAO_muda_o_preco_do_emmc(self):
         """O eMMC de um lote RAM é cotado como CELULAR (fallback conservador).
@@ -3211,3 +3235,97 @@ class CapacidadeNoCardTests(TestCase):
             r = self._preview("PN" + ct, {"chip_type": ct, "subtype": ct, "capacity": cap})
             self.assertTrue(r.context["display_cap"],
                             f"{ct} ficou com a coluna VAZIA tendo capacity={cap!r}")
+
+
+class OrigensLegadasTests(TestCase):
+    """MIXED e K9 — as origens do controle antigo (dono, 2026-09-01).
+
+    Entraram no vocabulário porque a reconciliação traz para dentro do sistema
+    lotes que a planilha classificava assim, e o dono quer o tipo REAL na tela.
+    Traduzir MIXED para 'celular' seria o sistema inventar procedência.
+    """
+
+    def test_estao_no_vocabulario_com_o_rotulo_da_planilha(self):
+        from estoque.models import Lot
+        d = dict(Lot.ORIGIN_CHOICES)
+        self.assertEqual(d['mixed'], 'MIXED')
+        self.assertEqual(d['k9'], 'K9')
+
+    def test_o_rotulo_delas_NAO_traduz(self):
+        """MIXED e K9 são token canônico, como 'PCB' — texto puro, sem _lazy."""
+        from django.utils.functional import Promise
+        from estoque.models import Lot
+        for v, rot in Lot.ORIGIN_CHOICES:
+            if v in Lot.ORIGIN_LEGACY:
+                self.assertNotIsInstance(rot, Promise,
+                                         f'{v}: rótulo canônico não traduz')
+
+    def test_tem_icone_como_toda_origem(self):
+        """Origem sem ícone cai no 📦 genérico — o bug de 2026-08-28 de novo."""
+        from estoque.models import Lot
+        for v, _rot in Lot.ORIGIN_CHOICES:
+            self.assertIn(v, Lot.ORIGIN_ICONS, f'{v} sem ícone')
+        self.assertNotEqual(Lot.ORIGIN_ICONS['mixed'], Lot.ORIGIN_ICONS['k9'])
+
+    def test_NAO_sao_oferecidas_para_lote_novo(self):
+        from estoque.models import Lot
+        novas = dict(Lot.origin_choices_novas())
+        self.assertNotIn('mixed', novas)
+        self.assertNotIn('k9', novas)
+        self.assertEqual(set(novas), {'phone', 'pcb', 'ram'})
+
+    def test_a_view_de_criar_recusa_origem_legada(self):
+        """A porta é o POST, não o modelo — foi assim que o 'ram' escapou em
+        2026-08-27: o teste exercitava open_for_company() e não a view."""
+        import re
+        import pathlib
+        from django.conf import settings
+        src = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'views.py').read_text()
+        bloco = re.search(r"origin = \(request\.POST.*?redirect\('estoque:index'\)",
+                          src, re.S)
+        self.assertIsNotNone(bloco, 'não achei a validação de origem na view')
+        self.assertIn('origin_choices_novas()', bloco.group(0),
+                      'a view voltou a validar contra o vocabulário INTEIRO — '
+                      'com isso o gerente consegue abrir lote novo como MIXED')
+
+    def test_o_template_oferece_todas_as_NAO_legadas(self):
+        import pathlib
+        from django.conf import settings
+        from estoque.models import Lot
+        html = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates'
+                / 'estoque' / 'lotes.html').read_text(encoding='utf-8')
+        for v, _rot in Lot.origin_choices_novas():
+            self.assertIn(f'value="{v}"', html, f'sem cartão para {v!r}')
+        for v in Lot.ORIGIN_LEGACY:
+            self.assertNotIn(f'name="origin" value="{v}"', html,
+                             f'{v!r} é legada e não pode ter cartão de criação')
+
+    def test_os_dois_templates_tem_cor_para_elas(self):
+        """Badge sem classe fica sem cor — e o lote legado se confunde com um
+        aberto hoje. Uma classe por valor, nos dois templates."""
+        import pathlib
+        from django.conf import settings
+        from estoque.models import Lot
+        base = pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates' / 'estoque'
+        for arq in ('lotes.html', 'estoque.html'):
+            css = (base / arq).read_text(encoding='utf-8')
+            for v, _rot in Lot.ORIGIN_CHOICES:
+                self.assertIn(f'.badge--origem-{v}{{', css,
+                              f'{arq}: sem cor para a origem {v!r}')
+
+    def test_nao_mudam_o_preco_do_emmc(self):
+        """Como o 'ram': fora de phone/pcb, o eMMC cai no fallback conservador.
+        Origem legada é PROCEDÊNCIA declarada, não tabela de preço."""
+        from pricing.engine import _row_origin
+        self.assertEqual(_row_origin('emmc', 'mixed'), 'phone')
+        self.assertEqual(_row_origin('emmc', 'k9'), 'phone')
+        for kind in ('ddr', 'lpddr', 'emcp', 'ufs'):
+            self.assertEqual(_row_origin(kind, 'mixed'), '')
+
+    def test_a_constraint_do_banco_conhece_as_duas(self):
+        """A CheckConstraint é SQL congelado na migration — se alguém somar
+        origem no modelo e esquecer a migration, o INSERT estoura só em prod."""
+        from estoque.models import Lot
+        cond = next(c.condition for c in Lot._meta.constraints
+                    if c.name == 'lot_origin_vocab')
+        self.assertEqual(set(cond.children[0][1]), set(dict(Lot.ORIGIN_CHOICES)))

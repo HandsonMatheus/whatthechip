@@ -87,7 +87,14 @@
           </td>
           {% endif %}
           {% endlocalize %}
-          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% elif so.received_at %}<span class="so-badge so-badge--ok">{% trans "recebida" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
+          {% comment %} ⚠ RECEBIDA vem ANTES de "despacho pendente" (bug de
+             2026-09-01, achado pelo dono na lista): chegar implica ter saído.
+             A ordem antiga perguntava "tem shipped_at?" primeiro, então um
+             envio ENTREGUE cujo despacho ninguém registrou — todo registro
+             legado é assim, e o LOT/002 é o caso — aparecia como "despacho
+             pendente" tendo sido recebido e pago meses antes. Esta coluna é
+             LOGÍSTICA, não dinheiro: pagamento vive em "A receber". {% endcomment %}
+          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif so.received_at %}<span class="so-badge so-badge--ok">{% trans "recebida" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
         </tr>
         {% empty %}
         <tr><td colspan="{% if ver_valor %}7{% else %}4{% endif %}" class="vd-empty">{% trans "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação." %}</td></tr>

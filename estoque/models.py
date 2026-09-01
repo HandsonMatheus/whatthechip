@@ -30,11 +30,29 @@ class Lot(models.Model):
     #: lote de RAM é cotado como celular, de propósito. Aqui a origem é
     #: PROCEDÊNCIA declarada, não tabela.
     ORIGIN_RAM    = 'ram'
+    #: ── ORIGENS LEGADAS (dono, 2026-09-01) ────────────────────────────────
+    #: MIXED e K9 são como o controle antigo em planilha classificava os
+    #: envios, antes de o sistema existir. Entram no vocabulário porque a
+    #: reconciliação traz esses lotes para dentro e o dono quer que a tela
+    #: mostre o tipo REAL deles — traduzir MIXED para 'celular' seria o sistema
+    #: inventando uma procedência que ninguém declarou.
+    #: ⚠ Não são oferecidas para lote NOVO: ver ORIGIN_CHOICES_NOVAS.
+    #: Rótulo é token canônico (como 'PCB'): nunca traduz.
+    ORIGIN_MIXED  = 'mixed'
+    ORIGIN_K9     = 'k9'
     ORIGIN_CHOICES = [
         (ORIGIN_PHONE, _lazy('Celular')),
         (ORIGIN_PCB,   'PCB'),
         (ORIGIN_RAM,   _lazy('Módulo de memória')),
+        (ORIGIN_MIXED, 'MIXED'),
+        (ORIGIN_K9,    'K9'),
     ]
+
+    #: Origens que só existem no PASSADO — importadas do controle antigo.
+    #: Ficam em ORIGIN_CHOICES (senão a tela não sabe rotular o lote legado),
+    #: mas fora do formulário de abrir lote.
+    ORIGIN_LEGACY = frozenset({ORIGIN_MIXED, ORIGIN_K9})
+
 
     #: Ícone da origem — mora AQUI, colado no ORIGIN_CHOICES, e não no template.
     #: Bug de prod 2026-08-28: o badge do lote era um `{% if lot.origin == 'pcb' %}`
@@ -49,6 +67,8 @@ class Lot(models.Model):
         ORIGIN_PHONE: '📱',
         ORIGIN_PCB:   '🔌',
         ORIGIN_RAM:   '💾',
+        ORIGIN_MIXED: '🧩',
+        ORIGIN_K9:    '🧱',
     }
 
     STATUS_OPEN   = 'open'
@@ -85,6 +105,19 @@ class Lot(models.Model):
                                              'saíram (celular × PCB) — define a '
                                              'tabela de preço do eMMC.')
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_OPEN, verbose_name='Status')
+
+    @classmethod
+    def origin_choices_novas(cls):
+        """O que o gerente pode escolher ao abrir um lote HOJE: ORIGIN_CHOICES
+        menos as legadas. É isto que a view de criação consome — nunca
+        ORIGIN_CHOICES, que inclui MIXED e K9 só para rotular o passado.
+
+        Método, e não constante de classe, porque comprehension no corpo da
+        classe não enxerga ORIGIN_LEGACY (escopo de classe não entra no escopo
+        da comprehension). Constante exigiria repetir os valores à mão, que é
+        exatamente o tipo de lista duplicada que já quebrou aqui 3 vezes."""
+        return [(v, r) for v, r in cls.ORIGIN_CHOICES
+                if v not in cls.ORIGIN_LEGACY]
 
     @property
     def origin_icon(self) -> str:
@@ -177,7 +210,8 @@ class Lot(models.Model):
                 # Lista LITERAL de propósito: constraint de banco não pode
                 # depender de constante Python (migração congela o SQL). Ao
                 # somar origem nova, some aqui E gere migration.
-                condition=models.Q(origin__in=['phone', 'pcb', 'ram'])),
+                condition=models.Q(origin__in=['phone', 'pcb', 'ram',
+                                               'mixed', 'k9'])),
         ]
         indexes = [
             # Toda consulta do app começa por company (§5.2).

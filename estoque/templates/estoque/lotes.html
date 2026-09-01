@@ -12,6 +12,10 @@
 .badge--origem-phone{background:#f2f4f8;color:#4d5358}
 .badge--origem-pcb{background:#e8f4ff;color:#00539a}
 .badge--origem-ram{background:#f6f2ff;color:#6929c4}
+/* Legadas (importadas do controle antigo) — cinza-terra, para o olho separar
+   de um lote aberto hoje sem precisar ler o rótulo. */
+.badge--origem-mixed{background:#f4f1ed;color:#6f5c3e}
+.badge--origem-k9{background:#eef0ee;color:#4a5a4a}
 /* ═══ Estoque / Lotes — LAYOUT do protótipo screens/estoque.html (ledger). ═══
    Cores literais; sem dependência de vars externas. */
 .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:20px}
@@ -206,7 +210,15 @@
     <tbody id="lot-rows">
       {% for lot in lots %}
       <tr class="{% if lot.status == 'closed' %}is-closed{% endif %}"
-          data-status="{{ lot.status }}" data-n="{{ lot.pk }}" data-units="{{ lot.total_qty }}"
+          {% comment %} data-n é o NÚMERO do lote, não a pk (bug 2026-09-01).
+             A ordenação "Mais recentes" é por data de ABERTURA, e o número do
+             lote é justamente a sequência de abertura — o `Meta.ordering` do
+             modelo já diz `-number`. Enquanto pk e número andaram juntos
+             ninguém viu; os três lotes legados, criados hoje com número 1, 2 e
+             4, nasceram com a pk mais alta da tabela e pularam para o topo da
+             lista. Ordenar por pk é ordenar por "quando a LINHA nasceu no
+             banco", que não é o que a coluna promete. {% endcomment %}
+          data-status="{{ lot.status }}" data-n="{{ lot.number }}" data-units="{{ lot.total_qty }}"
           data-search="{{ lot.code|lower }} {{ lot.description|lower }}"
           onclick="location.href='{% url 'estoque:lot_detail' lot.pk %}'">
         <td><div class="c-lot"><span class="c-lot__n">{{ lot.code }}</span>{% if lot.description %}<span class="c-lot__d">{{ lot.description }}</span>{% else %}<span class="c-lot__d c-lot__d--empty">{% trans "Sem descrição" %}</span>{% endif %}</div></td>

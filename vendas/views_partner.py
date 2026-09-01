@@ -364,6 +364,31 @@ def _detalhe(so):
         # É a mesma distinção que a tela do cliente (`vendas/views.py`) já
         # fazia desde 2026-08-18; a do comprador tinha ficado para trás.
         'tem_resultado': inv is not None,
+        # ── REGISTRO LEGADO (dono, 2026-09-01) ───────────────────────────
+        # Venda anterior ao sistema, trazida para dentro na reconciliação: o
+        # valor está congelado no CABEÇALHO da ordem e as linhas não têm ¥,
+        # porque a quebra por categoria nunca existiu (preço repactuado, ou
+        # fatura com o part number na forma curta).
+        #
+        # Sem isto a tela imprimia "sem preço" em TODAS as 88 linhas e ¥ 0,00
+        # em cada marca, ao lado de um cabeçalho dizendo US$ 23.224 pago. Para
+        # o comprador parecia dado corrompido; era só informação que mora em
+        # outro lugar. Uma frase no lugar de 88 repetições.
+        #
+        # A condição é estreita de propósito — ordem CONFIRMADA, com total
+        # congelado, e NENHUMA linha com preço. Ordem em rascunho, ou com
+        # preço em algumas linhas e não em outras, continua mostrando
+        # "sem preço" linha a linha, que ali é a informação certa.
+        'registro_legado': (so.status == STATUS_CONFIRMED
+                            and so.total_rmb is not None
+                            # Sem `bool(grupos)`: ordem com total congelado e
+                            # NENHUMA linha (o CHIP-EXP022026, cujas entradas
+                            # não têm chave de preço) é o caso mais legado de
+                            # todos — a tabela sai vazia ao lado de um
+                            # cabeçalho com valor, e é aí que a frase mais
+                            # falta.
+                            and not any(l['unit_rmb'] for g in grupos
+                                        for l in g['lines'])),
         # Todo chip do lote, PN a PN — a 2ª aba, onde ele confere detalhe
         # por detalhe (dono, 2026-08-18).
         'chips': services.lot_chips(so),

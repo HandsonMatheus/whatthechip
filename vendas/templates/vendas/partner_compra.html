@@ -320,6 +320,27 @@
   </div>
   {% endif %}
 
+  {% comment %} REGISTRO LEGADO (dono, 2026-09-01).
+     Compra anterior ao sistema, trazida para dentro na reconciliação. O valor
+     está congelado no cabeçalho da ordem e as linhas não têm ¥ — a quebra por
+     categoria nunca existiu, porque o preço foi repactuado depois da cotação
+     ou a fatura trazia o part number na forma curta.
+
+     Sem este aviso a tabela imprimia "sem preço" em cada uma das 88 linhas e
+     ¥ 0,00 em cada marca, do lado de um cabeçalho dizendo US$ 23.224 PAGO.
+     Para o comprador parecia dado corrompido; era só informação que mora em
+     outro lugar. Uma frase no lugar de 88 repetições. {% endcomment %}
+  {% if registro_legado %}
+  <div class="gnote">
+    <svg viewBox="0 0 24 24"><path d="M12 8v4M12 16h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+    <span>{% blocktrans trimmed %}
+      <b>Compra anterior ao sistema.</b> O valor dela está fechado no total
+      acima, e não repartido por categoria — por isso a coluna de ¥ da tabela
+      aparece vazia. As quantidades são as de verdade; o dinheiro é o do
+      topo.{% endblocktrans %}</span>
+  </div>
+  {% endif %}
+
   {% comment %} ── 4. ABAS + PLANILHA ──────────────────────────────────────
      RESUMO é onde ele dá o resultado (a categoria é que tem preço); CHIPS é a
      conferência PN a PN; CATEGORIAS é o dicionário da convenção WTC;
@@ -451,14 +472,14 @@
               <td colspan="3"><span class="g__n">
                 <i style="background:{% cycle 'var(--blue-60)' 'var(--ink-80)' 'var(--green-50)' 'var(--amber-40)' 'var(--blue-40)' 'var(--ink-40)' %}"></i>{{ g.brand }}
                 <em>{% blocktrans trimmed count n=g.lines|length %}{{ n }} linha{% plural %}{{ n }} linhas{% endblocktrans %}</em>
-                {% if g.sem_preco %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
+                {% if g.sem_preco and not registro_legado %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
               <td class="n" data-gq="{{ forloop.counter0 }}">{{ g.qty }}</td>
               <td class="n hide-lg"></td>
-              <td class="n">{% localize off %}¥ {{ g.rmb }}{% endlocalize %}</td>
+              <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}¥ {{ g.rmb }}{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
               <td class="n hr" data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</td>
               <td class="n hg" data-gok="{{ forloop.counter0 }}">{{ g.accepted }}</td>
-              <td class="n hb" data-gval="{{ forloop.counter0 }}">{% localize off %}¥ {{ g.pago_rmb }}{% endlocalize %}</td>
+              <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}¥ {{ g.pago_rmb }}{% endif %}{% endlocalize %}</td>
               {% endif %}
             </tr>
             {% for l in g.lines %}
@@ -470,7 +491,7 @@
                  telefone — o pacote o esconde no desktop, onde o cabeçalho
                  da coluna já disse a mesma coisa. {% endcomment %}
               <td class="n c-qty"><i class="c-lbl">{% trans "enviados" %}</i>{{ l.qty }}</td>
-              <td class="n hide-lg c-unit{% if l.sem_preco %} dim{% endif %}" data-label="{% trans '¥ unit.' %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans '¥ unit.' %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
               <td class="v c-exp" data-label="{% trans '¥ esperado' %}">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar %}
               <td class="n hr c-rej">
@@ -564,7 +585,7 @@
             <td class="spec">{{ c.spec }}</td>
             <td><span class="wtc">{{ c.wtc }}</span></td>
             <td class="n">{{ c.qty }}</td>
-            <td class="n{% if not c.unit_rmb %} dim{% endif %}">{% localize off %}{% if c.unit_rmb %}¥ {{ c.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+            <td class="n{% if not c.unit_rmb %} dim{% endif %}">{% localize off %}{% if c.unit_rmb %}¥ {{ c.unit_rmb }}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
             <td class="n">{% localize off %}{% if c.total_rmb %}¥ {{ c.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
           </tr>
         {% empty %}
@@ -576,7 +597,7 @@
             <td class="lbl" colspan="5">{% trans "Total" %}</td>
             <td>{{ chips.qty }}</td>
             <td></td>
-            <td>{% localize off %}¥ {{ chips.rmb }}{% endlocalize %}</td>
+            <td{% if registro_legado %} class="dim"{% endif %}>{% localize off %}{% if registro_legado %}—{% else %}¥ {{ chips.rmb }}{% endif %}{% endlocalize %}</td>
           </tr>
         </tfoot>
       </table>
@@ -946,6 +967,9 @@
   // As chaves saem dos PRÓPRIOS botões: a lista cravada à mão já ficou para
   // trás uma vez — a aba Observações nasceu e o painel dela nunca escondia os
   // outros, porque o array não sabia que ela existia.
+  // Compra anterior ao sistema: valor no cabeçalho, linhas sem ¥.
+  var REGISTRO_LEGADO = {{ registro_legado|yesno:"true,false" }};
+
   var abas = document.querySelectorAll('.nb button[data-aba]');
   var chaves = Array.prototype.map.call(abas, function (b) { return b.dataset.aba; });
   var exp = document.getElementById('exp-aba');
@@ -1149,7 +1173,12 @@
       var eVal = document.querySelector('[data-gval="' + gi + '"]');
       if (eRej) eRej.textContent = g.rej ? '−' + g.rej : '0';
       if (eOk) eOk.textContent = g.ok;
-      if (eVal) eVal.textContent = '¥ ' + g.val.toFixed(2);
+      // Registro legado: as linhas não têm ¥, então recalcular escreveria
+      // "¥ 0.00" por cima do "—" que o servidor mandou — a mesma mentira que o
+      // aviso do topo acabou de desmentir. Este laço só roda quando o
+      // comprador está digitando recusa, o que não acontece numa compra já
+      // faturada; a guarda é para o dia em que passar a rodar.
+      if (eVal && !REGISTRO_LEGADO) eVal.textContent = '¥ ' + g.val.toFixed(2);
     });
     estado = {rej: rej, aceitos: aceitos, enviados: enviados, pagar: pagar};
     // ⚠ `textContent` apagaria o <small> do rótulo que o rodapé carrega desde

@@ -492,6 +492,30 @@ def declared_value_usd(so) -> int:
     return SHIPMENT_VALUE_MIN + int(semente[:8], 16) % faixa
 
 
+def order_units(so) -> int:
+    """Chips DA COMPRA — os precificados MAIS os sem chave de preço.
+
+    Bug de 2026-09-01, achado pelo dono no LOT/002: a coluna "Chips" das duas
+    listas (a do comprador e a do cliente) somava só as LINHAS, e linha só
+    existe onde há chave de preço. Num registro legado — envio importado do
+    controle antigo, sem detalhe por part number — NENHUMA unidade tem chave:
+    o total inteiro mora em ``unkeyed_units``. Resultado: uma compra de 12.892
+    chips aparecia como **0**.
+
+    Nos lotes normais o erro era pequeno e por isso pior, porque ninguém
+    desconfia: o 039 mostrava 10.556 de 10.645, o 041 mostrava 4.595 de 4.663.
+
+    Linhas + sem-chave é a mesma conta que ``manager_document`` já faz para o
+    packing list, e é a que bate com ``Lot.total_qty`` (conferido nas oito
+    ordens de produção: sem_chave + em_linhas == no_lote em todas). A LISTA
+    responde "quantos chips tem nesta compra"; o DETALHE continua separando
+    quais viraram dinheiro — a nota "a caixa traz ainda N unidade(s) sem preço
+    na tabela" segue lá, e agora ela explica uma diferença que o leitor
+    consegue ver, em vez de esconder a diferença inteira.
+    """
+    return sum(l.quantity for l in so.lines.all()) + (so.unkeyed_units or 0)
+
+
 def manager_document(so, with_prices=False):
     """Tudo que o documento de DESPACHO desenha, pronto — sem uma linha de
     dinheiro de mercadoria.
@@ -505,7 +529,8 @@ def manager_document(so, with_prices=False):
     recebem o mesmo papel, e nada de tipo/capacidade sobra nele.
 
     ``unkeyed`` (chips do lote fora do grid de preço) entra como linha própria:
-    sem ele o total não fecha com o lote físico.
+    sem ele o total não fecha com o lote físico. Mesma conta de
+    ``order_units()`` — ver lá por que a lista também tem de fazê-la.
     """
     lines = annotate_labels(list(so.lines.all()), False)
     money = line_money(so) if with_prices else None
@@ -1044,10 +1069,7 @@ def orders_for_buyer(buyer):
                 else:
                     so.est_rmb = so.est_usd = None
                     so.stage = order_stage(so)
-                # Unidades DA ORDEM (o que ele paga). As sem chave de preço
-                # viajam na caixa mas não entram no comércio — aparecem à
-                # parte na tela da compra, para o total bater com o lote.
-                so.units = sum(l.quantity for l in so.lines.all())
+                so.units = order_units(so)
                 # A fatura ATIVA (cancelada não conta): é o RESULTADO da
                 # conferência — o que ele vai pagar de verdade depois de
                 # recusar o que não prestava, e o saldo que falta (dono,
@@ -1055,7 +1077,10 @@ def orders_for_buyer(buyer):
                 so.fatura = next((i for i in so.invoices.all()
                                   if i.status != 'cancelled'), None)
                 out.append(so)
-    out.sort(key=lambda s: s.created_at, reverse=True)
+    # Mesma régua do `sort=n` da tela (2026-09-01): a lista do comprador nasce
+    # na ordem do DESPACHO. Sem isto, quem consome `orders_for_buyer` direto
+    # (export, testes) veria uma ordem e a tela outra.
+    out.sort(key=_PURCHASE_KEY['n'], reverse=True)
     return out
 
 
@@ -1271,12 +1296,45 @@ def _result_usd(so):
     return so.fatura.total_usd if so.fatura else Decimal('-1')
 
 
-# `n` = "o lote mais novo primeiro". NÃO ordena por `lot.number`: a numeração
-# é POR EMPRESA (unique together company+number), então dois clientes têm o
-# lote 41 e o número não forma ordem global. A criação da ordem é o instante
-# em que o lote fechou — é ela que significa "mais novo".
+def data_de_despacho(so):
+    """A data que ordena a lista do comprador. NUNCA devolve None.
+
+    Sem despacho registrado, cai na data da ORDEM. Não é chute de embarque —
+    é o único instante conhecido que ancora a linha no tempo, e ancorar é
+    tudo o que a ordenação precisa.
+
+    ⚠ A primeira versão disto (2026-09-01, manhã) mandava toda ordem sem
+    despacho para o TOPO, com o raciocínio "não é caixa velha, é caixa que
+    ainda não saiu". Está errado, e o dono viu na hora: *"é impossível que o
+    primeiro lote de todos tenha sido o antipenúltimo a despachar"*. O
+    sistema não sabe distinguir "ainda não saiu" de "não se sabe quando
+    saiu", e tratar os dois como o primeiro caso põe o envio mais antigo da
+    operação — LOT/001, de abril — no alto de uma lista ordenada por
+    embarque. A data da ordem separa os dois casos sozinha, sem regra
+    especial: lote fechado hoje e não despachado fica no topo porque a ordem
+    é de hoje; registro legado de abril fica no fim porque a ordem é de
+    abril. Uma regra, os dois comportamentos certos.
+
+    A CÉLULA continua mostrando travessão quando não há despacho — o
+    fallback ordena, não vira data na tela.
+    """
+    if so.shipped_at:
+        return so.shipped_at
+    return timezone.localtime(so.created_at).date()
+
+
+# `n` = "o mais novo primeiro", e desde 2026-09-01 isso quer dizer DESPACHO,
+# não criação (dono: *"o adequado é a ordem que mostra lá seja a ordem de
+# ENVIO"*). Para quem COMPRA, a linha do tempo é a da caixa: o que saiu por
+# último está a caminho, o que saiu primeiro já chegou. A data de criação da
+# ordem é o instante em que o LOTE FECHOU — um fato do vendedor, que pode
+# estar meses longe do embarque.
+#
+# NÃO ordena por `lot.number`: a numeração é POR EMPRESA (unique together
+# company+number), então dois clientes têm o lote 41 e o número não forma
+# ordem global.
 _PURCHASE_KEY = {
-    'n':      lambda s: (s.created_at, s.pk),
+    'n':      lambda s: (data_de_despacho(s), s.created_at, s.pk),
     'seller': lambda s: ((s.company.name.lower() if s.company_id else ''), s.pk),
     'so':     lambda s: (s.number, s.pk),
     'units':  lambda s: (s.units, s.pk),
@@ -1373,7 +1431,7 @@ def annotate_sales(orders):
     """
     ctxs = {}
     for so in orders:
-        so.units = sum(l.quantity for l in so.lines.all())
+        so.units = order_units(so)
         so.est_rmb = so.est_usd = None
         if so.status == STATUS_DRAFT:
             ctx = ctxs.get(so.buyer_id)

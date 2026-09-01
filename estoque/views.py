@@ -790,7 +790,11 @@ def lot_create(request):
     # mão, `(ORIGIN_PHONE, ORIGIN_PCB)`, e o gerente levava "escolha celular ou
     # PCB" ao tentar abrir o lote novo. O teste da entrega passava porque
     # exercitava `open_for_company()`, não o POST — testei o modelo, não a porta.
-    if origin not in dict(Lot.ORIGIN_CHOICES):
+    # ⚠ ORIGIN_CHOICES_NOVAS, não ORIGIN_CHOICES: o vocabulário inteiro inclui
+    # as origens LEGADAS (MIXED, K9), que existem só para rotular lote
+    # importado do controle antigo. Oferecê-las aqui deixaria o gerente abrir
+    # um lote novo com um tipo que não se usa mais.
+    if origin not in dict(Lot.origin_choices_novas()):
         messages.error(request, _('Escolha a ORIGEM do lote — obrigatória, sem padrão.'))
         return redirect('estoque:index')
     # T2: numeração atômica por empresa (lock no contador da Company) — elimina

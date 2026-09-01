@@ -148,7 +148,14 @@
              ⚠ E a coluna PERDEU o `.d`: aquela classe some abaixo de 1100px, e
              o protótipo mantém a Ordem visível. Quem cede espaço ali são
              Chips e Total US$, que já levam `.hide-lg`. {% endcomment %}
-          <td class="c">{{ o.code }} <span class="when">{{ o.created_at|date:"d/m" }}</span></td>
+          {% comment %} A data é a do DESPACHO, não a da criação da ordem (dono,
+             2026-09-01). Quem compra lê a linha do tempo da CAIXA; `created_at`
+             é o instante em que o lote fechou do lado do vendedor, e os dois
+             podem estar meses distantes — o LOT/003 fechou em maio, foi cotado
+             em agosto e pago em julho. Mostrar a data de criação numa lista
+             ordenada por embarque faria a tela parecer fora de ordem. Sem
+             despacho registrado: travessão, e a linha vai para o topo. {% endcomment %}
+          <td class="c">{{ o.code }} <span class="when">{% if o.shipped_at %}{{ o.shipped_at|date:"d/m" }}{% else %}—{% endif %}</span></td>
           <td class="n hide-lg" data-suffix="{% trans 'Chips' %}">{{ o.units }}</td>
           {% localize off %}
           {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
