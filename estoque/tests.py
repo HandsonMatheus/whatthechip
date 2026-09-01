@@ -3005,16 +3005,35 @@ class OrigemRamTests(TestCase):
         """A trava de CLASSE, não de instância. Enquanto um template comparar
         `lot.origin` com um literal, a próxima origem volta a cair no `else` de
         alguém — foi assim três vezes. Rótulo/ícone/cor vêm do modelo
-        (`get_origin_display`, `origin_icon`, `badge--origem-{{ lot.origin }}`)."""
+        (`get_origin_display`, `origin_icon`, `badge--origem-{{ lot.origin }}`).
+
+        ⚠ **A varredura era só de `estoque/templates/` — e por isso não pegou a
+        QUARTA quebra** (2026-09-01): a lista de compras do COMPRADOR e o
+        detalhe da venda do CLIENTE, os dois em `vendas/templates/`, tinham o
+        mesmo `if origin == …` de dois caminhos. Na tela do comprador o rótulo
+        estava DIGITADO no template, então nem traduzia: o comprador chinês
+        lia "CELULAR" em português. E lote de RAM/MIXED/K9 ficava sem selo num
+        caso e era chamado de "Celular" no outro.
+
+        Hoje varre **todos** os `*/templates/` do projeto. A lição é a do
+        alcance: uma trava escrita no app onde o bug aconteceu protege aquele
+        app, não a CLASSE do erro — e a classe deste erro é "template decide
+        vocabulário", que pode acontecer em qualquer template."""
         import os
         import re
-        raiz = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                            'estoque', 'templates')
+        raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         # comentários explicam o bug e CITAM o padrão — não são código.
         sem_comentario = re.compile(
             r'\{%\s*comment\s*%\}.*?\{%\s*endcomment\s*%\}|\{#.*?#\}', re.S)
         culpados = []
         for pasta, _dirs, arquivos in os.walk(raiz):
+            # só as pastas de template dos apps — `venv`, `staticfiles` e
+            # `node_modules` têm HTML de terceiro que não é nosso vocabulário.
+            if os.sep + 'templates' + os.sep not in pasta + os.sep:
+                continue
+            if any(x in pasta for x in ('venv', 'site-packages', 'staticfiles',
+                                        'node_modules', '_to_delete')):
+                continue
             for nome in arquivos:
                 if not nome.endswith('.html'):
                     continue
@@ -3022,7 +3041,9 @@ class OrigemRamTests(TestCase):
                 with open(caminho, encoding='utf-8') as fh:
                     corpo = sem_comentario.sub('', fh.read())
                 for m in re.finditer(r"\.origin\s*[=!]=\s*['\"]", corpo):
-                    culpados.append(f"{nome}: …{corpo[max(0, m.start()-40):m.end()+20]}…")
+                    rel = os.path.relpath(caminho, raiz)
+                    culpados.append(
+                        f"{rel}: …{corpo[max(0, m.start()-40):m.end()+20]}…")
         self.assertEqual(
             culpados, [],
             'template comparando `origin` com literal — use '

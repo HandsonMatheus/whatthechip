@@ -132,13 +132,31 @@
       {% for o in ordens %}
         <tr data-href="{% url 'compras:detail' o.pk %}">
           {% comment %} O selo de ORIGEM (2026-08-27): o protótipo marca cada
-             lote como CELULAR ou PCB ao lado do código, e não é enfeite — é o
-             que diz de que bancada aquela caixa veio e, portanto, que tipo de
-             chip esperar dentro. Sem ele o comprador abre para descobrir.
-             Valor canônico (`phone`/`pcb`): não traduz. {% endcomment %}
+             lote ao lado do código, e não é enfeite — é o que diz de que
+             bancada aquela caixa veio e, portanto, que tipo de chip esperar
+             dentro. Sem ele o comprador abre para descobrir.
+
+             ⚠ REESCRITO EM 2026-09-01, e é a QUARTA vez que este campo quebra
+             pelo mesmo motivo. Aqui havia um "if origin == 'phone' / elif
+             'pcb'" com o rótulo DIGITADO no template e um SVG por caminho.
+             Dois estragos: (a) "Celular" digitado à mão não passa por
+             tradução nenhuma — o comprador chinês lia CELULAR em português,
+             que foi como o dono achou; (b) a chave só tinha dois caminhos, e
+             as outras três origens (ram, mixed, k9) caíam fora do if e
+             ficavam SEM selo — visível na mesma tela, no LOT/004.
+
+             O comentário antigo dizia "valor canônico: não traduz" e
+             confundia as duas coisas: o VALOR (`phone`) nunca traduz, o
+             RÓTULO ('Celular' → 手机) sempre. Quem sabe a diferença é o
+             modelo. Hoje rótulo, ícone e cor saem dele
+             (`get_origin_display`, `origin_icon`, `otag--{{ '{{' }} origin }}`)
+             — origem nova aparece aqui sozinha, e traduzida.
+
+             O par de SVGs saiu junto: mantê-los exigia de volta o if por
+             valor. Se voltarem, o lugar é o CSS, uma regra por origem.
+          {% endcomment %}
           <td class="c"><span class="lotc">{{ o.lot.code }}
-            {% if o.lot.origin == 'phone' %}<span class="otag otag--phone otag--sm"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19"/><path d="M10.5 18.6h3"/></svg>Celular</span>
-            {% elif o.lot.origin == 'pcb' %}<span class="otag otag--pcb otag--sm"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="9" y="9" width="6" height="6"/><path d="M9 3.5v2M15 3.5v2M9 18.5v2M15 18.5v2M3.5 9h2M3.5 15h2M18.5 9h2M18.5 15h2"/></svg>PCB</span>{% endif %}</span></td>
+            <span class="otag otag--{{ o.lot.origin }} otag--sm">{{ o.lot.origin_icon }} {{ o.lot.get_origin_display }}</span></span></td>
           <td>{{ o.company.name }}</td>
           {% comment %} A data em `d/m`, e não `d/m/Y`, como no protótipo: o ano
              é o mesmo em toda a lista e repeti-lo em cada linha rouba quatro

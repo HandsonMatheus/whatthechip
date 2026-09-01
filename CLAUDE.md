@@ -1072,8 +1072,28 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   Travas em `OrigemRamTests`: 3 testes pela VIEW+TEMPLATE de verdade (testar o
   modelo de novo não pegaria nada — ele sempre esteve certo), 1 que lê o
   `choices=` do comando a partir do `ORIGIN_CHOICES`, e um **scanner** que varre
-  `estoque/templates/**/*.html` e falha se qualquer template comparar `origin`
-  com literal. 3 mutações mordem. ⚠ Armadilha de tabela: `{%` dentro de
+  os templates e falha se qualquer um comparar `origin` com literal.
+  3 mutações mordem.
+  **⚠ QUARTA QUEBRA, 2026-09-01 — e o culpado foi o ALCANCE DA TRAVA.** O
+  scanner varria só `estoque/templates/`, o app onde o bug tinha acontecido.
+  Em `vendas/templates/` o mesmo `if origin == …` seguia vivo em DOIS lugares:
+  a lista de compras do COMPRADOR (`partner_compras.html`) e o detalhe da venda
+  do CLIENTE (`so_detail.html`). Dois estragos novos: **(a)** na lista o rótulo
+  estava DIGITADO no template ("Celular"), e texto digitado em template não
+  passa por tradução nenhuma — o comprador chinês lia **CELULAR** em português,
+  que foi como o dono achou; **(b)** os dois eram chaves de dois caminhos, então
+  lote de RAM/MIXED/K9 ficava **sem selo** na lista e era chamado de **"Celular"**
+  no detalhe. O comentário do template ainda dizia *"valor canônico: não
+  traduz"*, confundindo as duas coisas: o VALOR (`phone`) nunca traduz, o RÓTULO
+  (`Celular` → 手机) sempre — e quem sabe a diferença é o modelo, que declara
+  `_lazy('Celular')` e deixa `PCB`/`MIXED`/`K9` como token cru de propósito.
+  Corrigido para `get_origin_display` + `origin_icon` + `otag--{{ origin }}` (uma
+  regra de cor por origem no `components.css`), e o **scanner passou a varrer
+  todos os `*/templates/` do projeto**. **Regra: trava escrita no app onde o bug
+  apareceu protege aquele app, não a CLASSE do erro — e a classe deste erro é
+  "template decide vocabulário", que cabe em qualquer template.** Travas novas:
+  `vendas/tests_origem_do_lote.py` (8 testes pelas duas telas, um deles em
+  chinês; 4 mutações mordem, inclusive a que devolve o `if` a `vendas/`). ⚠ Armadilha de tabela: `{%` dentro de
   comentário **CSS** (`/* … */`) num template Django É PARSEADO — escrever a tag
   do bug na explicação derrubou a página inteira com `TemplateSyntaxError`. Em
   comentário `{% comment %}` é seguro; em `/* */` e `<!-- -->`, não.

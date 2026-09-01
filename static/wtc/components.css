@@ -910,6 +910,14 @@ html img.lg-d{display:none}
 .otag svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;flex:none}
 .otag--phone{background:var(--blue-70);color:var(--white)}
 .otag--pcb{background:var(--ink-100);color:var(--white)}
+/* Uma regra por ORIGEM, e é assim de propósito: a cor sai da CLASSE
+   `otag--{origin}`, nunca de um if no template (CLAUDE.md §7 — o campo já
+   quebrou quatro vezes por listas escritas fora do modelo). Origem nova =
+   mais uma linha aqui, e nenhum template muda. Espelham a paleta dos badges
+   do estoque para o mesmo material ter a mesma cor nas duas superfícies. */
+.otag--ram{background:#6929c4;color:var(--white)}
+.otag--mixed{background:#6f5c3e;color:var(--white)}
+.otag--k9{background:#4a5a4a;color:var(--white)}
 .otag--ghost{background:var(--ink-10);color:var(--ink-80)}
 .otag--sm{font-size:10px;padding:2px 7px 2px 5px}.otag--sm svg{width:11px;height:11px}
 
