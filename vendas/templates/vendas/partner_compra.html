@@ -661,11 +661,26 @@
                 data-feito="{% trans 'Copiado' %}"
                 title="{% trans 'Copiar endereço' %}">{% trans "Copiar" %}</button>
       </div>
+      {% comment %} DUAS frases, e a diferença não é estilo (dono, 2026-09-01).
+         Na carteira da PLATAFORMA o aviso "nunca o vendedor direto" é
+         anti-golpe: é assim que se desvia uma transferência. Na carteira do
+         CLIENTE pagar o vendedor direto é justamente o combinado — repetir
+         ali a frase da plataforma ensinaria o comprador a desconfiar do
+         endereço certo. Quem escolhe é `Wallet.is_platform`, nunca uma
+         comparação com o nome do titular. {% endcomment %}
+      {% if carteira.is_platform %}
       <p class="wal__warn">{% blocktrans trimmed with titular=carteira.owner %}
         Você paga o {{ titular }}, nunca o vendedor direto. Confira os seis
         primeiros e os seis últimos caracteres antes de enviar: transferência
         em blockchain não volta.
       {% endblocktrans %}</p>
+      {% else %}
+      <p class="wal__warn">{% blocktrans trimmed with titular=carteira.owner %}
+        Nesta compra você paga o {{ titular }} direto, sem passar pelo
+        WhatTheChip. Confira os seis primeiros e os seis últimos caracteres
+        antes de enviar: transferência em blockchain não volta.
+      {% endblocktrans %}</p>
+      {% endif %}
       {% if carteira.memo %}<p class="wal__memo">{{ carteira.memo }}</p>{% endif %}
     </div>
     {% else %}

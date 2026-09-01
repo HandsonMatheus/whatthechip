@@ -3931,6 +3931,21 @@ msgstr "请选择批次来源 —— 必填，无默认值。"
 msgid "Origem: %(o)s"
 msgstr "来源：%(o)s"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"<b>Compra anterior ao sistema.</b> O valor dela está fechado no total acima,"
+" e não repartido por categoria — por isso a coluna de ¥ da tabela aparece "
+"vazia. As quantidades são as de verdade; o dinheiro é o do topo."
+msgstr ""
+"<b>本系统之前的采购。</b> 其金额已锁定在上方的总计中，未按类别拆分——因此表格中的 ¥ 列为空。数量是真实的；金额以上方的总计为准。"
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Nesta compra você paga o %(titular)s direto, sem passar pelo WhatTheChip. "
+"Confira os seis primeiros e os seis últimos caracteres antes de enviar: "
+"transferência em blockchain não volta."
+msgstr "本次采购您直接支付给 %(titular)s，不经过 WhatTheChip。发送前请核对前六位和后六位字符：区块链转账无法撤回。"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

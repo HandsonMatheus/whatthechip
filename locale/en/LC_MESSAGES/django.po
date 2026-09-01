@@ -4161,6 +4161,26 @@ msgstr "Choose the lot's ORIGIN — required, no default."
 msgid "Origem: %(o)s"
 msgstr "Origin: %(o)s"
 
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"<b>Compra anterior ao sistema.</b> O valor dela está fechado no total acima,"
+" e não repartido por categoria — por isso a coluna de ¥ da tabela aparece "
+"vazia. As quantidades são as de verdade; o dinheiro é o do topo."
+msgstr ""
+"<b>Purchase from before the system.</b> Its value is locked into the total "
+"above, and not split by category — that is why the ¥ column in the table is "
+"empty. The quantities are the real ones; the money is the one at the top."
+
+#: vendas/templates/vendas/partner_compra.html:1
+msgid ""
+"Nesta compra você paga o %(titular)s direto, sem passar pelo WhatTheChip. "
+"Confira os seis primeiros e os seis últimos caracteres antes de enviar: "
+"transferência em blockchain não volta."
+msgstr ""
+"In this purchase you pay %(titular)s directly, without going through "
+"WhatTheChip. Check the first six and the last six characters before sending:"
+" a blockchain transfer does not come back."
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

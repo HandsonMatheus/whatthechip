@@ -437,10 +437,19 @@ def _detalhe(so):
         # Observações da conferência (spec §6.9) — lista, com autor e data.
         'observacoes': services.order_notes(so),
         # ── Bloco de PAGAMENTO (spec §6.7 e §6.8) ────────────────────────
-        # A carteira é do WhatTheChip, não do vendedor. Sem carteira
-        # cadastrada a tela DIZ que não há — nunca desenha endereço em
-        # branco, que é convite a colar o errado.
-        'carteira': Wallet.current(),
+        # QUAL carteira depende do arranjo desta empresa (dono, 2026-09-01):
+        # com `payout_on_payment` ligado o comprador paga direto ao CLIENTE e
+        # o endereço é o dele; desligado, paga o WhatTheChip. Ver
+        # `Wallet.for_company` — ela nunca cai de uma para a outra.
+        #
+        # ⚠ Roda dentro do `buyer_order`, que abre o `company_scope` — a
+        # leitura da linha de plataforma passa pelo RLS (vendas/0020). Fora
+        # do escopo isto voltaria vazio EM SILÊNCIO e a tela diria "carteira
+        # não cadastrada" para uma carteira que existe (CLAUDE.md §7).
+        #
+        # Sem carteira cadastrada a tela DIZ que não há — nunca desenha
+        # endereço em branco, que é convite a colar o errado.
+        'carteira': Wallet.for_company(so.company),
         # O par ¥ = US$ do saldo. O DEVIDO nasce em ¥ e vira US$ pela taxa
         # travada; o PAGO nasce em US$. O ¥ do pago e do saldo é leitura
         # conciliável, DERIVADA — nunca base de comparação (§2.4).

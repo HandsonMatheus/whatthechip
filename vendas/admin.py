@@ -54,18 +54,24 @@ class DocSequenceAdmin(PlatformScopedAdmin):
 
 
 @admin.register(Wallet)
-class WalletAdmin(admin.ModelAdmin):
+class WalletAdmin(PlatformScopedAdmin):
     """A carteira de recebimento (spec v2 §3.12) — só a PLATAFORMA edita.
 
-    ⚠ Não herda o `PlatformScopedAdmin`: aquele escopa por empresa, e esta
-    tabela não tem empresa nenhuma (é UM endereço, da plataforma). O gate é
-    o próprio admin.
+    ⚠ Herda o `PlatformScopedAdmin` desde 2026-09-01: a tabela ganhou
+    `company` (carteira da plataforma × carteira do cliente) e o manager
+    padrão do modelo virou o cru, como no resto de `vendas`.
 
     ⚠ Trocar o endereço muda para onde vai dinheiro de verdade. `active`
     existe para APOSENTAR uma carteira em vez de sobrescrever a linha: o
     histórico de para onde se mandou tem de sobreviver à troca.
+
+    ⚠ `company` VAZIO é a carteira do WhatTheChip. Preenchê-la só faz efeito
+    para o cliente cuja empresa tenha "Comprador paga direto ao cliente"
+    ligado — os dois são o mesmo arranjo comercial, e ligar um sem o outro
+    deixa a tela do comprador sem endereço (de propósito: melhor sem
+    endereço que com o errado).
     """
 
-    list_display = ('owner', 'net', 'addr', 'active', 'updated_at')
-    list_filter = ('active', 'net')
+    list_display = ('owner', 'company', 'net', 'addr', 'active', 'updated_at')
+    list_filter = ('active', 'net', 'company')
     search_fields = ('owner', 'addr')

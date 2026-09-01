@@ -36,7 +36,7 @@ from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.db.models import Q
 
-from tenancy.scope import CompanyScopedManager
+from tenancy.scope import CompanyScopedManager, PlatformSharedManager
 
 STATUS_DRAFT, STATUS_CONFIRMED, STATUS_CANCELLED = 'draft', 'confirmed', 'cancelled'
 STATUS_CHOICES = [
@@ -719,22 +719,43 @@ class OrderNote(models.Model):
 class Wallet(models.Model):
     """A carteira que RECEBE o pagamento do comprador (spec v2 §3.12).
 
-    **É a carteira do WhatTheChip, nunca a do vendedor.** Todo pagamento de
-    toda compra vai para este endereço — é a perna 1 do dinheiro
-    (comprador → WTC), e o cliente recebe a dele pela perna 2, já deduzida a
-    taxa de serviço. Mandar o comprador pagar o vendedor direto pularia a
-    plataforma e quebraria as duas pernas de uma vez.
+    **Duas possibilidades, e é a EMPRESA que diz qual** (dono, 2026-09-01:
+    *"deve existir ambas possibilidades, do comprador pagar direto ao cliente
+    e também direto a WTC"*):
 
-    ⚠ **Sem `company` e sem RLS, de propósito**, e é a mesma razão do
-    ``FxRate``: não há dado por-empresa aqui. É UM endereço, da plataforma,
-    que todo comprador lê. Uma coluna de empresa criaria a pergunta "a
-    carteira de quem?", que não existe.
+    · ``company`` VAZIO → a carteira da PLATAFORMA. O comprador paga o
+      WhatTheChip, que depois repassa ao cliente o líquido. Arranjo padrão.
+    · ``company`` PREENCHIDO → a carteira daquele CLIENTE. O comprador paga
+      direto a ele; o WTC nunca toca no dinheiro, só cobra a taxa por fora.
+      É o arranjo da eMiner (BINANCE HANDSON, TRONLINK).
 
-    Model e não `settings` porque endereço de carteira muda sem deploy —
-    mesma decisão do `Buyer.ship_to`. Nasce VAZIO: inventar um endereço
+    Quem escolhe entre as duas não é esta tabela: é a
+    ``Company.payout_on_payment`` — o MESMO interruptor que decide se o
+    repasse é lançado sozinho. **Um interruptor, duas consequências, de
+    propósito.** Dois permitiriam a combinação incoerente "o comprador paga o
+    WhatTheChip e mesmo assim o sistema declara o cliente pago".
+
+    ⚠ **Era GLOBAL até 2026-09-01** — uma linha só, e a tela dizia a TODO
+    comprador *"Você paga o WhatTheChip, nunca o vendedor direto"*. Essa
+    frase contradizia a operação real da eMiner, onde o Wu Quan deposita nas
+    carteiras dela. Com um cliente só a linha global estava certa por
+    acidente; no segundo, o comprador dele veria o endereço do primeiro — e
+    endereço errado nesta tela é dinheiro que não volta. Foi o
+    ``TenancyDeclarationTests`` que apontou, e era alarme com causa.
+
+    Model e não ``settings`` porque endereço de carteira muda sem deploy —
+    mesma decisão do ``Buyer.ship_to``. Nasce VAZIO: inventar um endereço
     padrão seria pôr dinheiro de verdade a caminho de um lugar imaginário.
     """
 
+    # VAZIO = carteira da plataforma, legível por toda empresa (leitura ampla
+    # no RLS, como o Buyer de plataforma — vendas/0020).
+    company = models.ForeignKey(
+        'tenancy.Company', on_delete=models.PROTECT, null=True, blank=True,
+        related_name='wallets', verbose_name='Empresa',
+        help_text='VAZIO = carteira do WhatTheChip (o comprador paga a '
+                  'plataforma). PREENCHIDO = carteira deste cliente, para '
+                  'quando o comprador paga direto a ele.')
     owner = models.CharField(max_length=120, default='WhatTheChip Ltd.',
                              verbose_name='Titular')
     net = models.CharField(max_length=60, default='USDT · TRC-20',
@@ -751,20 +772,48 @@ class Wallet(models.Model):
     updated_at = models.DateTimeField(auto_now=True,
                                       verbose_name='Atualizada em')
 
+    objects       = PlatformSharedManager()
+    all_companies = models.Manager()
+
     class Meta:
         verbose_name = 'Carteira de recebimento'
         verbose_name_plural = 'Carteiras de recebimento'
         ordering = ['-updated_at']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
 
     def __str__(self):
-        return f'{self.owner} · {self.net}'
+        dono = self.company.name if self.company_id else 'plataforma'
+        return f'{self.owner} · {self.net} ({dono})'
+
+    @property
+    def is_platform(self) -> bool:
+        """True = carteira do WhatTheChip. A tela usa isto para escolher a
+        frase: "você paga o WTC, nunca o vendedor" só vale aqui."""
+        return self.company_id is None
 
     @classmethod
-    def current(cls):
-        """A carteira vigente, ou ``None``. Sem carteira a tela DIZ que não
-        há — nunca desenha um endereço em branco, que é convite a colar o
-        errado."""
-        return cls.objects.filter(active=True).first()
+    def for_company(cls, company):
+        """O endereço que o comprador desta venda tem de pagar, ou ``None``.
+
+        ⚠ **Nunca cai da carteira do cliente para a da plataforma.** Um
+        fallback aqui mandaria dinheiro para a parte errada em silêncio, que é
+        o pior defeito possível nesta tela. Sem endereço cadastrado a tela DIZ
+        que não há e manda falar com o WhatTheChip: é lento, e é certo.
+
+        ⚠ Lê com ``all_companies`` + filtro EXPLÍCITO em vez do manager
+        compartilhado: o `PlatformSharedManager` devolveria as duas (a do
+        cliente E a da plataforma) e a escolha viraria "a primeira que vier".
+        Aqui a pergunta é qual das duas, e a resposta não pode depender de
+        ordenação. (No Postgres o RLS ainda se aplica — a leitura da linha de
+        plataforma é liberada em vendas/0020.)
+        """
+        if company is None:
+            return None
+        vivas = cls.all_companies.filter(active=True)
+        if company.payout_on_payment:
+            return vivas.filter(company=company).first()
+        return vivas.filter(company__isnull=True).first()
 
 
 class Payout(models.Model):

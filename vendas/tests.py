@@ -2355,13 +2355,25 @@ class CompradorComprasTests(TestCase):
         self.assertEqual(meio(endereco, 'xx'), meio(endereco, 16))
 
     def test_script_carteira_vigente_e_a_ativa(self):
+        """A carteira da PLATAFORMA — o arranjo padrão, com
+        `payout_on_payment` desligado.
+
+        ⚠ Era `Wallet.current()`. O método saiu em 2026-09-01, quando a tabela
+        passou a ter dois sabores (plataforma × cliente): "qual é a carteira
+        vigente?" deixou de ser pergunta com UMA resposta, e um método que
+        respondia sem saber de quem é a compra só podia acertar por sorte.
+        Hoje é `for_company(empresa)`. O resto do comportamento é o mesmo, e é
+        o que este teste continua guardando.
+        """
         from .models import Wallet
-        self.assertIsNone(Wallet.current())          # nasce VAZIA
+        self.assertIsNone(Wallet.for_company(self.emp_a))   # nasce VAZIA
         antiga = self._carteira()
-        self.assertEqual(Wallet.current(), antiga)
+        self.assertEqual(Wallet.for_company(self.emp_a), antiga)
         antiga.active = False
         antiga.save(update_fields=['active'])
-        self.assertIsNone(Wallet.current())          # aposentada, não apagada
+        # aposentada, não apagada: o histórico de para onde se mandou dinheiro
+        # tem de sobreviver à troca de endereço.
+        self.assertIsNone(Wallet.for_company(self.emp_a))
         self.assertTrue(Wallet.objects.filter(pk=antiga.pk).exists())
 
     def test_interface_carteira_aparece_cortada_com_o_inteiro_no_title(self):
