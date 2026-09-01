@@ -234,7 +234,12 @@ def compras_csv(request):
             # Resultado sai VAZIO enquanto não houver fatura (§5.3) — zero
             # seria dizer que a conferência deu zero.
             _csv_num(fatura.total_rmb if fatura else None),
-            _csv_num(fatura.balance_usd if fatura else None),
+            # ⚠ `so.fatura_saldo`, não `fatura.balance_usd`: o saldo é
+            # materializado dentro do `company_scope` pelo `orders_for_buyer`.
+            # Ler a property aqui dispararia o aggregate FORA do escopo e o
+            # RLS devolveria zero pagamento em silêncio — o mesmo bug que a
+            # lista teve em produção (2026-09-01).
+            _csv_num(so.fatura_saldo if fatura else None),
             str(rotulos.get(so.stage, so.stage)),
         ])
     resp = HttpResponse('\ufeff' + buf.getvalue(),

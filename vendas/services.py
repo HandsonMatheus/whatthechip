@@ -1076,6 +1076,21 @@ def orders_for_buyer(buyer):
                 # 2026-08-19). Mesma coluna existe na lista do cliente.
                 so.fatura = next((i for i in so.invoices.all()
                                   if i.status != 'cancelled'), None)
+                # ⚠ PAGO e SALDO calculados AQUI DENTRO, e anexados na
+                # instância (bug de produção, 2026-09-01). `Invoice.paid_usd`
+                # é property: o `aggregate` dispara no momento em que ALGUÉM
+                # LÊ, e quem lê é o template — já fora deste `with`. Sem
+                # escopo não há GUC, o RLS devolve ZERO pagamento em silêncio,
+                # e o saldo vira o total inteiro: a tela mostrava "PAGO" e
+                # "falta US$ 6.251,00" na mesma linha, porque o status é
+                # COLUNA já carregada e o saldo era CONSULTA preguiçosa.
+                # Ficou dez meses invisível porque produção não tinha nenhum
+                # pagamento — zero era a resposta certa pelo motivo errado.
+                # Regra: dentro de `company_scope`, materialize tudo que a
+                # tela vai ler. Property que consulta banco não atravessa
+                # escopo.
+                so.fatura_pago = so.fatura.paid_usd if so.fatura else None
+                so.fatura_saldo = so.fatura.balance_usd if so.fatura else None
                 out.append(so)
     # Mesma régua do `sort=n` da tela (2026-09-01): a lista do comprador nasce
     # na ordem do DESPACHO. Sem isto, quem consome `orders_for_buyer` direto

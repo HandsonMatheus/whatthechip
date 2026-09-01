@@ -164,7 +164,7 @@
           <td class="v">{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}≈ ¥ {{ o.est_rmb }}{% else %}<span class="none">—</span>{% endif %}</td>
           <td class="v hide-lg">{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}≈ US$ {{ o.est_usd }}{% else %}<span class="none">—</span>{% endif %}</td>
           <td class="v key">
-            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="due">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% else %}<span class="got">{% trans "quitado" %}</span>{% endif %}
+            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura_saldo %}<span class="due">{% trans "falta" %} US$ {{ o.fatura_saldo }}</span>{% else %}<span class="got">{% trans "quitado" %}</span>{% endif %}
             {% else %}<span class="none">—</span>{% endif %}
           </td>
           {% endlocalize %}
