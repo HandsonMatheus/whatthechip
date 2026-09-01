@@ -98,7 +98,7 @@ class ListaDoCompradorTests(_Base):
         """A chave de dois caminhos deixava o lote de RAM SEM selo nenhum."""
         self._venda('ram')
         html = self._lista_do_comprador(HTTP_ACCEPT_LANGUAGE='pt-br')
-        self.assertIn('otag--ram', html)
+        self.assertIn('otag--origem', html)
         self.assertIn('Módulo de memória', html)
 
     def test_lote_LEGADO_ganha_selo_com_o_proprio_nome(self):
@@ -106,9 +106,29 @@ class ListaDoCompradorTests(_Base):
         o que é aquela caixa; com o selo errado, sabe errado."""
         self._venda('mixed')
         html = self._lista_do_comprador(HTTP_ACCEPT_LANGUAGE='pt-br')
-        self.assertIn('otag--mixed', html)
+        self.assertIn('otag--origem', html)
         self.assertIn('MIXED', html)
         self.assertNotIn('Celular', html)
+
+    def test_k9_tambem(self):
+        """A outra origem legada. Duas linhas de teste porque MIXED e K9 são
+        rótulos DIFERENTES vindos do mesmo lugar — se alguém reintroduzir um
+        mapa no template, é comum acertar um e esquecer o outro."""
+        self._venda('k9')
+        self.assertIn('K9', self._lista_do_comprador(HTTP_ACCEPT_LANGUAGE='pt-br'))
+
+    def test_selo_NAO_tem_icone_nem_cor_por_origem(self):
+        """Pedido do dono: um selo, uma cor, sem ícone. Trava porque a
+        tentação de "melhorar" com emoji ou cor por valor já apareceu uma vez
+        — e recria o mapa por origem que este campo não pode ter."""
+        self._venda('phone')
+        html = self._lista_do_comprador(HTTP_ACCEPT_LANGUAGE='pt-br')
+        self.assertIn('otag--origem', html)
+        for classe in ('otag--phone', 'otag--pcb', 'otag--ram',
+                       'otag--mixed', 'otag--k9'):
+            self.assertNotIn(classe, html)
+        for emoji in ('📱', '🔌', '💾', '🧩', '🧱'):
+            self.assertNotIn(emoji, html)
 
 
 class DetalheDoClienteTests(_Base):

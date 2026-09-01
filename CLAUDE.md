@@ -1087,13 +1087,21 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   traduz"*, confundindo as duas coisas: o VALOR (`phone`) nunca traduz, o RÓTULO
   (`Celular` → 手机) sempre — e quem sabe a diferença é o modelo, que declara
   `_lazy('Celular')` e deixa `PCB`/`MIXED`/`K9` como token cru de propósito.
-  Corrigido para `get_origin_display` + `origin_icon` + `otag--{{ origin }}` (uma
-  regra de cor por origem no `components.css`), e o **scanner passou a varrer
-  todos os `*/templates/` do projeto**. **Regra: trava escrita no app onde o bug
+  Corrigido para `get_origin_display` — **um selo, uma cor, sem ícone** (dono,
+  2026-09-01: *"não terá distinção, todos os bullets de tipo com fundo preto
+  mesmo"*): `.otag--origem`, uma regra só no `components.css`. A 1ª versão do
+  conserto ainda trazia ícone do modelo e uma cor por origem — o dono recusou
+  as duas, e tinha razão em mais de um sentido: **sem mapa por valor no
+  template NEM no CSS, a classe de bug perde a superfície onde nasce.** Origem
+  nova não tem mais onde ser esquecida. ⚠ E os dois SVGs originais eu troquei
+  por emoji **sem ele pedir**, avisando só depois — mudança de aparência em
+  tela alheia não se faz de passagem, mesmo quando a alternativa técnica é
+  pior. O scanner passou a varrer **todos os `*/templates/` do projeto**. **Regra: trava escrita no app onde o bug
   apareceu protege aquele app, não a CLASSE do erro — e a classe deste erro é
   "template decide vocabulário", que cabe em qualquer template.** Travas novas:
-  `vendas/tests_origem_do_lote.py` (8 testes pelas duas telas, um deles em
-  chinês; 4 mutações mordem, inclusive a que devolve o `if` a `vendas/`). ⚠ Armadilha de tabela: `{%` dentro de
+  `vendas/tests_origem_do_lote.py` (10 testes pelas duas telas, um deles em
+  chinês; 8 mutações mordem — inclusive a que devolve o `if` a `vendas/`, a
+  que reintroduz emoji e a que reintroduz cor por valor). ⚠ Armadilha de tabela: `{%` dentro de
   comentário **CSS** (`/* … */`) num template Django É PARSEADO — escrever a tag
   do bug na explicação derrubou a página inteira com `TemplateSyntaxError`. Em
   comentário `{% comment %}` é seguro; em `/* */` e `<!-- -->`, não.

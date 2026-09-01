@@ -148,15 +148,22 @@
              O comentário antigo dizia "valor canônico: não traduz" e
              confundia as duas coisas: o VALOR (`phone`) nunca traduz, o
              RÓTULO ('Celular' → 手机) sempre. Quem sabe a diferença é o
-             modelo. Hoje rótulo, ícone e cor saem dele
-             (`get_origin_display`, `origin_icon`, `otag--{{ '{{' }} origin }}`)
-             — origem nova aparece aqui sozinha, e traduzida.
+             modelo, e é de lá que o rótulo sai — origem nova aparece aqui
+             sozinha, e traduzida.
 
-             O par de SVGs saiu junto: mantê-los exigia de volta o if por
-             valor. Se voltarem, o lugar é o CSS, uma regra por origem.
+             SEM ÍCONE E SEM COR POR VALOR (dono, 2026-09-01): "não terá
+             distinção, todos os bullets de tipo com fundo preto mesmo". Um
+             selo, uma cor, e o texto é que diz o quê. Isso encerra de vez a
+             classe de bug deste campo: não sobra nenhum mapa por origem no
+             template nem no CSS para alguém esquecer de atualizar.
+
+             ⚠ Os dois SVGs que existiam aqui (celular e PCB) saíram antes
+             disto, numa troca por emoji que o dono NÃO pediu e desfez. Se um
+             dia voltar ícone, ele vem do modelo ou do CSS — nunca de um `if`
+             por valor no template.
           {% endcomment %}
           <td class="c"><span class="lotc">{{ o.lot.code }}
-            <span class="otag otag--{{ o.lot.origin }} otag--sm">{{ o.lot.origin_icon }} {{ o.lot.get_origin_display }}</span></span></td>
+            <span class="otag otag--origem otag--sm">{{ o.lot.get_origin_display }}</span></span></td>
           <td>{{ o.company.name }}</td>
           {% comment %} A data em `d/m`, e não `d/m/Y`, como no protótipo: o ano
              é o mesmo em toda a lista e repeti-lo em cada linha rouba quatro
