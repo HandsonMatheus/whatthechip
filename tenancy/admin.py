@@ -64,9 +64,13 @@ class CompanyAdminForm(forms.ModelForm):
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     form = CompanyAdminForm
-    list_display  = ('name', 'code', 'slug', 'service_fee_pct', 'active', 'ui_v2',
+    list_display  = ('name', 'code', 'slug', 'service_fee_pct',
+                     'payout_on_payment', 'active', 'ui_v2',
                      'last_lot_number', 'created_at')
-    list_filter   = ('active', 'ui_v2')
+    # `payout_on_payment` na lista E no filtro de propósito: é a chave que
+    # decide se a tela do cliente promete dinheiro sozinha. Quem audita
+    # precisa ver quais empresas estão ligadas sem abrir uma por uma.
+    list_filter   = ('active', 'ui_v2', 'payout_on_payment')
     search_fields = ('name', 'slug', 'code')
     readonly_fields = ('created_at', 'logo_preview')
     prepopulated_fields = {'slug': ('name',)}

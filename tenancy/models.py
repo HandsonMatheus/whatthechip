@@ -221,6 +221,33 @@ class Company(models.Model):
         help_text='Percentual que o WhatTheChip retém do resultado de cada '
                   'venda desta empresa. Vale para venda NOVA — o que já foi '
                   'faturado guarda a taxa da época.')
+    # ── QUEM RECEBE O DINHEIRO DO COMPRADOR (dono, 2026-09-01) ───────────
+    # O modelo padrão da plataforma tem TRÊS passos: o comprador paga o WTC, o
+    # WTC confere, o WTC transfere o líquido ao cliente. Cada passo é um
+    # registro, e o `Payout` existe porque a tela do cliente não pode prometer
+    # dinheiro que ainda não saiu da conta do WhatTheChip.
+    #
+    # Só que há arranjo comercial em que esses três passos são UM. Na eMiner o
+    # comprador deposita direto nas carteiras DELA (BINANCE HANDSON, TRONLINK):
+    # o WTC nunca toca no dinheiro, só cobra a taxa por fora. Ali "o comprador
+    # pagou" e "o cliente recebeu" não são dois eventos — é o mesmo evento
+    # visto de dois lados, e exigir um segundo registro manual só cria a janela
+    # em que a tela do cliente diz "a receber" sobre dinheiro que já está na
+    # conta dele. Foi exatamente o que aconteceu com as seis vendas
+    # reconciliadas em 01/09, corrigidas depois por comando.
+    #
+    # ⚠ Por que é campo da EMPRESA e não constante: é cláusula de contrato,
+    # não regra do produto. Cliente novo em que o WTC realmente segura o
+    # dinheiro nasce com isto DESLIGADO — e tem que nascer assim, porque o
+    # padrão errado aqui declara pago o que ninguém pagou. Ligar é decisão
+    # explícita de quem conhece o arranjo.
+    payout_on_payment = models.BooleanField(
+        default=False, verbose_name='Comprador paga direto ao cliente',
+        help_text='Ligue APENAS quando o comprador deposita nas contas desta '
+                  'empresa, sem passar pelo WhatTheChip. Aí a quitação da '
+                  'fatura registra sozinha o repasse do líquido. Desligado '
+                  '(padrão), o repasse é lançado à mão quando o WTC '
+                  'transferir.')
     logo_updated_at = models.DateTimeField(
         null=True, blank=True, editable=False,
         verbose_name='Logo atualizado em',

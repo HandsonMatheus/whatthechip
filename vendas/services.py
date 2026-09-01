@@ -762,6 +762,9 @@ def register_payment(invoice, amount_usd, paid_at, user, reference='',
     ⚠ Não capture o IntegrityError aqui: ele invalida a transação corrente, e
     quem abriu o ``atomic()`` (a view, junto com o comprovante) é que sabe
     até onde desfazer.
+
+    ⚠ Pode criar um ``Payout`` junto — ver ``_repassar_automatico``. Só para
+    empresa com ``payout_on_payment`` ligado, e só na parcela que QUITA.
     """
     from .models import INV_OPEN, INV_PAID, Payment
     if invoice.status != INV_OPEN:
@@ -780,7 +783,68 @@ def register_payment(invoice, amount_usd, paid_at, user, reference='',
         if invoice.balance_usd <= 0:
             invoice.status = INV_PAID
             invoice.save()
+            _repassar_automatico(invoice, p)
     return p
+
+
+#: Marca que distingue, no extrato do cliente, o repasse que NINGUÉM digitou.
+MARCA_REPASSE_AUTOMATICO = 'repasse automático'
+#: Teto de `Payout.reference`. A referência do pagamento vem na FRENTE porque é
+#: ela que casa com o extrato bancário; o corte, se houver, come a marca.
+_REF_MAX = 120
+
+
+def _repassar_automatico(invoice, pagamento):
+    """Registra o repasse sozinho quando o comprador paga DIRETO ao cliente.
+
+    Existe por causa de ``Company.payout_on_payment`` (dono, 2026-09-01): há
+    arranjo em que o comprador deposita nas contas do próprio cliente e o WTC
+    nunca toca no dinheiro. Ali "comprador pagou" e "cliente recebeu" são o
+    MESMO evento, e obrigar um segundo lançamento manual só abre a janela em
+    que a tela do cliente diz "a receber" sobre dinheiro que já está na conta
+    dele — foi o buraco que as seis vendas de 01/09 caíram, consertado depois
+    por comando avulso.
+
+    **Só na parcela que QUITA, e pelo LÍQUIDO inteiro.** Parcial não dispara
+    nada: metade do bruto não é metade do líquido (a taxa não é proporcional a
+    prestação nenhuma), e chutar um rateio seria inventar um número que
+    ninguém combinou. As parcelas se acumulam e o repasse sai de uma vez, com
+    a data da ÚLTIMA — a data em que a conta fechou.
+
+    **É o SALDO a repassar, não o líquido cru.** Se alguém já lançou repasse à
+    mão nesta fatura, aqui sai só o que falta; se já está tudo repassado, não
+    sai nada. Sem isso, ligar a chave numa empresa com histórico dobraria o
+    que o cliente vê como recebido.
+
+    **Sem `created_by`.** O `Payout` é o WTC declarando o que pagou, e este
+    aqui não foi declarado por pessoa alguma: ele DECORRE do pagamento. Pôr o
+    usuário do comprador no campo faria o extrato dizer que a contraparte
+    declarou o repasse do WhatTheChip. Quem pagou está no `Payment`, que é
+    onde essa pergunta se responde.
+
+    ⚠ **Mesma transação do pagamento, e sem `try/except`.** Nesse arranjo as
+    duas pernas são o mesmo fato: registrar uma sem a outra é justamente a
+    incoerência que isto veio matar. Engolir o erro devolveria o sistema ao
+    estado que estamos consertando, só que em silêncio. Na prática nada aqui
+    levanta ``ValidationError`` — a fatura acabou de ser aceita (não está
+    cancelada) e o valor é o próprio saldo, sempre positivo por causa da
+    guarda — então o que sobra é falha de banco, que já derrubaria a
+    transação de qualquer jeito.
+
+    ⚠ Herda o escopo de quem chamou: a escrita passa pelo RLS como qualquer
+    outra em `vendas`. Comando que chame `register_payment` fora de
+    `company_scope` já falhava antes de existir repasse; isto não muda.
+    """
+    if not invoice.company.payout_on_payment:
+        return None
+    resto = invoice.payout_balance_usd
+    if resto <= 0:                      # já repassado à mão — nada a fazer
+        return None
+    ref = (pagamento.reference or '').strip()
+    ref = f'{ref} · {MARCA_REPASSE_AUTOMATICO}' if ref \
+        else MARCA_REPASSE_AUTOMATICO
+    return register_payout(invoice, resto, pagamento.paid_at, user=None,
+                           reference=ref[:_REF_MAX])
 
 
 def register_payout(invoice, amount_usd, paid_at, user, reference=''):
