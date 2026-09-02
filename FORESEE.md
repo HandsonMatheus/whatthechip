@@ -553,32 +553,5 @@ IA sem verificação. Sempre conferir a unidade antes de gravar: `Xbit ÷ 8 = YB
   `NCLD3B1M5128M32` (DigiPart, Green Light Electronics). `confidence=manual`, mesmo padrão já usado
   nesta família pro `NCLD3B2512M32` (capacidade só por fórmula, sem fonte que leia a string exata).
 
-- **2026-08-28 (2ª busca, mesmo dia) — `NCEMAM8B-16G`, evidência Tier-1 perfeita (datasheet oficial
-  completo, não resumo de busca).** PN de bancada `NCEMAM8B16G`. WebSearch apontou um datasheet
-  oficial Longsys (E-00517 Rev. 1.0, 2018) hospedado no Pine64 — mesmo padrão de mirror confiável já
-  usado com sucesso pro `NCEMBSF9`; abri e li o PDF na íntegra (23 páginas, não só o resumo da
-  busca) antes de confiar nele, disciplina reforçada nesta marca desde o caso `NCEPNCCM4-1608`. A
-  tabela "Product List" confirma Density=16GB, NAND=128Gb×1, pacote 153FBGA 11.5x13x1.0mm; o título
-  e a seção Features confirmam "JEDEC eMMC 5.0" — primeiro known_part Foresee desta sessão com
-  `interface` preenchido por confirmação direta de datasheet (não distribuidor/inferência).
-  `confidence=manual`. Siblings: `-32G` não encontrado em nenhuma fonte; `-08G` tem página própria
-  no DigiPart mas só 1 distribuidor sem confirmação de fabricante no texto — evidência abaixo do
-  padrão desta marca, NÃO submetido, fica como gap. Ver `submissions/foresee_ncemam8b_2026-08-28.yaml`.
-
-- **2026-09-01 — `NCEMASD9-08G`/`-16G`, e reforço da regra "nunca 1 só" (dono cobrou de novo depois
-  da entrega solo do `NCEMAM8B-16G`).** PN de bancada `NCEMASD908G`. Datasheet OFICIAL Longsys
-  completo (Rev A0, 2015, 22 páginas) achado no mesmo mirror confiável já usado nesta marca
-  (fabricante de SBC, desta vez "Lindenis" via lindeni.org) — Product List confirma Density=8GB,
-  NAND=64Gb×1, User Density=7.2GB, 153FBGA, eMMC 5.0. Corroborado por um 2º documento independente
-  do MESMO fabricante SBC (brief de módulo). Depois de entregar só o `-08G` mais cedo hoje no
-  `NCEMAM8B`, o dono cobrou de novo ("pesquise mais, nunca só 1") — desta vez busquei ativamente
-  ANTES de fechar a submissão: achei `NCEMASD9-16G` com 1 distribuidor no DigiPart, mas com o campo
-  "Manufacturer"="FORESEE" explícito (evidência mais forte que o `NCEMAM8B-08G` descartado, que só
-  tinha "Request The Manufacturer") — incluído como `manual`. `-04G`/`-32G` buscados e não
-  encontrados em nenhuma fonte. **Achado incidental:** o datasheet do `-08G` reaproveita um template
-  que cita "Longsys eMMC (NCEMAH59-xxG)" na seção de FFU — confirma que o vendor-code `NCEMAH59`
-  (já um lead não confirmado no gap §5) é real, mas não dá capacidade/specs dele. Ver
-  `submissions/foresee_ncemasd9_2026-09-01.yaml`.
-
 > Inventário de famílias/mapas → **`foresee.yaml`** (Trilha A). known_parts confirmados (proveniência Tier-1 na
 > `notes`) → **banco** (Opção 2), via `submit_known_parts`. Cross-marca (comandos/convenção/rentabilidade) → **`CLAUDE.md`**.
