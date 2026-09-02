@@ -287,10 +287,19 @@ com known_parts confirmados) + ePOP · NAND raw · nMCP (dead-by-type, só gram�
    ASLD/ASD9/AD9D/AD6B); `-16G` (o PN de bancada) 1 distribuidor + yoycart + kit AliExpress; `-32G`
    2 distribuidores. As 3 capacidades manual. DigiPart revelou via "See Also" um sub-cluster `NCEF*`
    AINDA maior: `NCEFES78-08G`, `NCEFES88-04G`, `NCEFESA8-08G`, `NCEFESE8-04G`, `NCEFES86-04G`,
-   `NCEFES76-08G` — não pesquisados, registrados como lead.
+   `NCEFES76-08G`.
+   ~~Sub-cluster `NCEFES*`~~ — **RESOLVIDO 2026-09-01 (5ª rodada)**: os 6 tinham evidência maciça
+   esperando (6/16/14/8/3/12 distribuidores — `NCEFES78-08G` com 16 é o NOVO recorde da marca).
+   Checagem extra de capacidade (16G/32G) revelou que `NCEFES76` tem 2ª capacidade `-16G` (2
+   distribuidores); os outros 5 ficam mono-capacidade confirmados. 7 known_parts manual, ver
+   `submissions/foresee_ncefes_cluster_2026-09-01.yaml` e histórico.
+   ~~`NCEMAH59-16G`/`NCEMASKG-16G`/`NCEMAHBD-08G`/`NCEMAM59-08G`~~ — **RESOLVIDOS 2026-09-01**:
+   DigiPart tinha evidência forte esperando (8/15/4/4 distribuidores, todos FORESEE explícito —
+   `NCEMASKG-16G` com 15 é o recorde da marca) nunca de fato consultada. 4 known_parts manual, ver
+   `submissions/foresee_ncem_cluster_2026-09-01.yaml` e histórico. Cada um com exatamente 1
+   capacidade catalogada (siblings tentados, "no result").
    Outros vendor-codes ainda só no histórico Rockchip, sem linha viva nem distribuidor pesquisado a
-   fundo: `NCEMAH59-16G`, `NCEFBS98-16G`, `NCEMBS41-04G/08G`, `NCEMBS61-08G/16G`, `NCEMBD39-16G`.
-   `NCEMAHBD*`/`NCEMASKG*`/`NCEMAM59*` do gap original ainda não confirmados em nenhuma fonte nova.
+   fundo: `NCEFBS98-16G`, `NCEMBS41-04G/08G`, `NCEMBS61-08G/16G`, `NCEMBD39-16G`.
    Cluster grande demais pra uma rodada só — próxima sessão se o dono quiser esgotar via o mesmo
    documento Rockchip + DigiPart "See Also".
    `FSEIASLD*` (o "elo intermediário" pré-`FEMD*`) segue não
@@ -330,15 +339,17 @@ com known_parts confirmados) + ePOP · NAND raw · nMCP (dead-by-type, só gram�
    (8/6/4GB) via portfólio estruturado RESTAR FRAMOS + DigiKey. Ver §2. Capacidades ainda não vistas:
    2GB (`FL5P2002G`, tentei sem sufixo no DigiPart, sem resultado) e 3GB — mesma limitação do item 7
    (agregador exige sufixo completo). Gap residual pequeno, próxima rodada se aparecer PN novo.
-9. **`FL3B1001G` — existência confirmada pelo dono, specs SEM fonte externa.** PN de bancada
-   2026-08-19; buscas em DigiPart/netComponents/RESTAR FRAMOS/web geral não acharam nenhuma fonte
-   confiável (só páginas suspeitas de alucinação de busca, descartadas). O dono confirmou por
-   observação física direta que o PN existe. Decode estrutural via gramática já validada do root
-   `FL` (pn[2]='3'→LPDDR3 por analogia a `4`/`X`/`5`; pn[3]='B'→pacote, mesma combinação "3B" já
-   provada LPDDR3 no root legado `NCLD3B*`; pn[7]='1'→1GB) dá LPDDR3 1GB — mas SEM datasheet/
-   distribuidor independente. Submetido como `estimated` (não `manual`) em
-   `submissions/foresee_fl3b_lpddr3_2026-08-19.yaml`, oculto até revisão manual. Se aparecer PN
-   irmão (`FL3B*` outra capacidade) ou fonte documental, promover.
+9. **`FL3B1001G` → `FL3B1001G-39`, PN COMPLETADO 2026-09-01 (não é PN novo).** Existência
+   confirmada pelo dono 2026-08-19 por observação física direta, mas a leitura da bancada estava
+   incompleta (sem sufixo). Hoje a bancada capturou o PN completo, "FL3B1001G39" — toda a família
+   `FL*` tem sufixo de 1-2 chars após o "G" (`FLXC2004G-30`, `FL4C2001GD9`, `FL5P4008G-60`), então a
+   forma sem sufixo submetida em 08-19 **nunca vai casar** com o PN físico real (match é por string
+   exata). Busca repetida (DigiPart, WebSearch) — mesmo resultado de antes, zero fonte documental
+   nova. Novo known_part `FL3B1001G-39` criado com o PN completo, mesmo decode estrutural (LPDDR3
+   1GB, gramática do root `FL` já validada) e mesma `confidence=estimated` (não é dado novo, é
+   correção do PN). Ver `submissions/foresee_fl3b1001g39_2026-09-01.yaml`. **Pendente:** dono avaliar
+   se desativa o known_part antigo `FL3B1001G` (sem sufixo) no admin — ele não corresponde a nenhum
+   PN físico real e só fica "morto" no banco.
 
 ---
 
@@ -552,6 +563,110 @@ IA sem verificação. Sempre conferir a unidade antes de gravar: `Xbit ÷ 8 = YB
   real em circulação nesta sub-família, achado combinado com outro CS/sufixo em
   `NCLD3B1M5128M32` (DigiPart, Green Light Electronics). `confidence=manual`, mesmo padrão já usado
   nesta família pro `NCLD3B2512M32` (capacidade só por fórmula, sem fonte que leia a string exata).
+
+- **2026-08-28 (2ª busca, mesmo dia) — `NCEMAM8B-16G`, evidência Tier-1 perfeita (datasheet oficial
+  completo, não resumo de busca).** PN de bancada `NCEMAM8B16G`. WebSearch apontou um datasheet
+  oficial Longsys (E-00517 Rev. 1.0, 2018) hospedado no Pine64 — mesmo padrão de mirror confiável já
+  usado com sucesso pro `NCEMBSF9`; abri e li o PDF na íntegra (23 páginas, não só o resumo da
+  busca) antes de confiar nele, disciplina reforçada nesta marca desde o caso `NCEPNCCM4-1608`. A
+  tabela "Product List" confirma Density=16GB, NAND=128Gb×1, pacote 153FBGA 11.5x13x1.0mm; o título
+  e a seção Features confirmam "JEDEC eMMC 5.0" — primeiro known_part Foresee desta sessão com
+  `interface` preenchido por confirmação direta de datasheet (não distribuidor/inferência).
+  `confidence=manual`. Siblings: `-32G` não encontrado em nenhuma fonte; `-08G` tem página própria
+  no DigiPart mas só 1 distribuidor sem confirmação de fabricante no texto — evidência abaixo do
+  padrão desta marca, NÃO submetido, fica como gap. Ver `submissions/foresee_ncemam8b_2026-08-28.yaml`.
+
+- **2026-09-01 — `NCEMASD9-08G`/`-16G`, e reforço da regra "nunca 1 só" (dono cobrou de novo depois
+  da entrega solo do `NCEMAM8B-16G`).** PN de bancada `NCEMASD908G`. Datasheet OFICIAL Longsys
+  completo (Rev A0, 2015, 22 páginas) achado no mesmo mirror confiável já usado nesta marca
+  (fabricante de SBC, desta vez "Lindenis" via lindeni.org) — Product List confirma Density=8GB,
+  NAND=64Gb×1, User Density=7.2GB, 153FBGA, eMMC 5.0. Corroborado por um 2º documento independente
+  do MESMO fabricante SBC (brief de módulo). Depois de entregar só o `-08G` mais cedo hoje no
+  `NCEMAM8B`, o dono cobrou de novo ("pesquise mais, nunca só 1") — desta vez busquei ativamente
+  ANTES de fechar a submissão: achei `NCEMASD9-16G` com 1 distribuidor no DigiPart, mas com o campo
+  "Manufacturer"="FORESEE" explícito (evidência mais forte que o `NCEMAM8B-08G` descartado, que só
+  tinha "Request The Manufacturer") — incluído como `manual`. `-04G`/`-32G` buscados e não
+  encontrados em nenhuma fonte. **Achado incidental:** o datasheet do `-08G` reaproveita um template
+  que cita "Longsys eMMC (NCEMAH59-xxG)" na seção de FFU — confirma que o vendor-code `NCEMAH59`
+  (já um lead não confirmado no gap §5) é real, mas não dá capacidade/specs dele. Ver
+  `submissions/foresee_ncemasd9_2026-09-01.yaml`.
+
+- **2026-09-01 (2ª rodada, mesmo dia) — cluster `NCEMAH59`/`NCEMASKG`/`NCEMAHBD`/`NCEMAM59`, dono
+  cobrou de novo ("só tem 1? não senhor, sempre procure mais").** Em vez de insistir em capacidades
+  inexistentes do `NCEMASD9` (já esgotado — tentei `-04G`/`-32G`/`-64G`, todos "no result"), fui
+  atrás dos 4 vendor-codes que o PRÓPRIO gap deste arquivo já apontava como leads desde 2026-08-26
+  mas nunca foram de fato buscados no DigiPart. Resultado forte: `NCEMASKG-16G` com **15
+  distribuidores independentes** (recorde da marca, supera os 8 do `NCEFEH58`), `NCEMAH59-16G` com
+  8, `NCEMAHBD-08G`/`NCEMAM59-08G` com 4 cada — todos "Manufacturer"=FORESEE/FORE explícito no
+  campo estruturado do DigiPart (não resumo de busca). Tentei siblings de capacidade pros 4
+  (-08G/-32G/-16G conforme o caso) — todos "no result", cada vendor-code desta linha tem exatamente
+  1 capacidade catalogada. 4 known_parts manual. **Lição do dia:** a regra "nunca 1 só" não é só
+  "ache mais capacidades do PN que motivou a busca" — é também "esgote os leads que VOCÊ MESMO já
+  registrou no gap antes de aceitar a resposta 'não encontrado' de uma busca rasa". Os 4 vendor-
+  codes estavam documentados neste arquivo desde 2026-08-26 como "ainda não confirmados" — a
+  pesquisa nunca tinha de fato ido ao DigiPart verificar. Ver
+  `submissions/foresee_ncem_cluster_2026-09-01.yaml`.
+
+- **2026-09-01 (3ª rodada, mesmo dia) — `NCEMASDB-08G`, vendor-code irmão do `NCEMASD9-08G`
+  REFUTANDO a suspeita de transcrição (mesmo padrão do `NCEMBS99`, 2026-08-26).** PN de bancada
+  `NCEMASDB08G`, 1 char do `NCEMASD9-08G` confirmado horas antes ("B" vs "9"). Tier-1 (DigiPart) e
+  Tier-2 (Octopart, autorizado pelo dono) checados — zero resultado para "NCEMASDB" em qualquer
+  forma. Sinalizei a suspeita de erro de leitura, protocolo padrão desta marca; o dono confirmou
+  fisicamente que NÃO é transcrição — é vendor-code real e distinto — e autorizou explicitamente
+  atribuir as mesmas specs do irmão `NCEMASD9-08G` (chip_type, interface="eMMC 5.0"), decisão
+  pontual do dono, não analogia por conta própria. Capacidade "8GB" segue sustentada
+  independentemente pela convenção literal do sufixo. Adicionado ao mesmo arquivo
+  `submissions/foresee_ncemasd9_2026-09-01.yaml` (3º known_part). **Padrão que se repete:** 2ª vez
+  nesta marca que uma suspeita de transcrição de 1-char é refutada pelo dono — reforça que é sempre
+  um PONTO DE PARTIDA pra perguntar, nunca uma conclusão a assumir sozinho.
+
+- **2026-09-01 (4ª rodada, mesmo dia) — `FL3B1001G-39`, o PN completo do `FL3B1001G` deixado sem
+  sufixo em 2026-08-19; e CORREÇÃO DE REGRA sobre `confidence` (achado o mais importante do dia).**
+  PN de bancada hoje veio "FL3B1001G39" — 2 chars a mais que a leitura de 08-19 ("FL3B1001G", sem
+  sufixo). Achado técnico: como o match de known_part é por STRING EXATA, o registro antigo sem
+  sufixo NUNCA vai casar com o PN físico real (toda a família `FL*` tem sufixo de 1-2 chars após o
+  "G"). Busca ampliada (variação de capacidade E sufixo, mais 1 datasheet aberto na íntegra que se
+  revelou ser da nomenclatura legada `NCLD3B`, não `FL3B`) não achou fonte nova. Criado known_part
+  com o PN completo — 1ª versão manteve `confidence=estimated`, **ERRADO**: já existia regra
+  registrada (de outra marca) dizendo que confirmação FÍSICA do dono é barra suficiente pra
+  `manual`, não aplicada aqui. Sintoma que expôs o erro: mesmo aprovado no admin, o chip nunca saía
+  de "Indeterminado" no front — `estimated` é o único `confidence` excluído do gateway de estoque
+  (`_is_confirmed()`). Dono: **"se eu mandei confirmar, é confirmado"**. Corrigido para
+  `confidence=manual`. **Regra agora universal nesta marca: confirmação física verbal do dono =
+  manual na hora, nunca estimated.** Ver `submissions/foresee_fl3b1001g39_2026-09-01.yaml`.
+  Pendente: dono avaliar desativar o registro antigo sem sufixo.
+
+- **2026-09-01 (5ª rodada, mesmo dia) — sub-cluster `NCEFES*` inteiro, MESMO padrão do `NCEM*`
+  (3ª rodada): lead registrado no gap desde 2026-08-26, nunca perseguido.** PN de bancada
+  `NCEFES7608G`. Os 6 vendor-codes do sub-cluster (`NCEFES76/78/88/A8/E8/86`) já estavam
+  documentados no gap como "não pesquisados, registrados como lead" — bastou consultar o DigiPart
+  pra achar evidência maciça: `NCEFES78-08G` com **16 distribuidores** (novo recorde da marca,
+  supera os 15 do `NCEMASKG-16G` de mais cedo hoje), `NCEFES88-04G` com 14, `NCEFES86-04G` com 12,
+  `NCEFESA8-08G` com 8, `NCEFES76-08G` (o PN de bancada) com 6, `NCEFESE8-04G` com 3 (o mais fraco,
+  ainda assim todos FORESEE explícito). 6 known_parts manual numa rodada só. Ver
+  `submissions/foresee_ncefes_cluster_2026-09-01.yaml`. **Confirma o padrão do dia:** todo lead
+  anotado num gap é dívida de busca em aberto — 10 known_parts (4 do `NCEM*` + 6 do `NCEFES*`)
+  vieram só de finalmente consultar leads já escritos neste próprio arquivo.
+
+- **2026-09-01 (5ª rodada, checagem extra) — pergunta do dono "essa família só tem em 04GB e
+  08GB?" revelou 2ª capacidade num dos 6 vendor-codes.** Testei 16G/32G pros 6 (+04G extra pro
+  NCEFES76). Resultado: `NCEFES76` tem **DUAS** capacidades — `-08G` (já submetido) **e `-16G`**
+  (2 distribuidores: New Strength Electronic e Chipsea, ambos FORESEE explícito, Chipsea confirma
+  BGA153). Os outros 5 (`NCEFES78/88/A8/E8/86`) testaram negativo pra qualquer capacidade além da
+  já encontrada — ficam confirmados como mono-capacidade. 7º known_part manual adicionado ao mesmo
+  arquivo (`foresee_ncefes_cluster_2026-09-01.yaml`). **Lição:** capacidade por vendor-code não é
+  uniforme dentro da família — "achei 1 capacidade" não é licença pra não testar as outras, mesmo
+  quando o resto do cluster sugere um padrão (aqui, mono-capacidade era a norma, mas não a regra).
+
+- **2026-09-02 — `NCEFBS98`, vendor-code NOVO (raiz `NCEFBS`, nunca vista nesta marca).** PN de
+  bancada `NCEFBS9816G`. Testei -08G/-04G (zero) e tentei replicar o padrão de sufixos do cluster
+  `NCEFES*` sob `NCEFBS` (76/88/A8/86, capacidades prováveis) — todos "no result"; busca do prefixo
+  pelado e WebSearch também zero. Não é um sub-cluster maior, é um vendor-code isolado com 2
+  capacidades: `NCEFBS98-16G` (3 distribuidores, Haode+Green Light com Manufacturer=FORESEE/FORE
+  explícito → manual) e `NCEFBS98-32G` (1 distribuidor só, campo Manufacturer veio lixo "1", não
+  confirma fabricante → `confidence: distributor`, não manual — primeira vez nesta marca que uso o
+  tier `distributor` em vez de excluir ou forçar manual; fica visível mas não autoritativo até 2ª
+  fonte aparecer). Ver `submissions/foresee_ncefbs98_2026-09-02.yaml`.
 
 > Inventário de famílias/mapas → **`foresee.yaml`** (Trilha A). known_parts confirmados (proveniência Tier-1 na
 > `notes`) → **banco** (Opção 2), via `submit_known_parts`. Cross-marca (comandos/convenção/rentabilidade) → **`CLAUDE.md`**.

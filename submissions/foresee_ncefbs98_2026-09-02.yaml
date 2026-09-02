@@ -1,0 +1,53 @@
+# Submissão known_parts — Foresee (Longsys), `NCEFBS98` (root "NC", raiz eMMC "NCEF...", 2026-09-02).
+# Origem: PN de bancada "NCEFBS9816G" → `NCEFBS98-16G`. Vendor-code NOVO (nunca visto nesta marca —
+# raízes já mapeadas no `NCEF*` eram `NCEFEH`/`NCEFES`; esta é `NCEFBS`).
+#
+# ⭐ EVIDÊNCIA:
+#   - NCEFBS98-16G: 3 distribuidores no DigiPart — Haode Technology (Manufacturer=FORESEE explícito,
+#     "BGA ; DC:2016+"), Green Light Electronics (Manufacturer=FORE, "OEM/CM ONLY"), Chipsea
+#     (campo Manufacturer em branco, mas descrição "BGA" consistente e Chipsea já confirmou FORESEE
+#     explícito em vários outros PNs desta marca nesta mesma sessão — NCEFES76/86/E8/A8). confidence=manual.
+#   - NCEFBS98-32G: só 1 distribuidor (Chipsea), e o campo Manufacturer veio LIXO ("1", não em branco
+#     nem "FORESEE") — mais fraco que qualquer registro aceito como manual nesta marca até hoje (o piso
+#     anterior era NCEMASD9-16G: 1 distribuidor mas com Manufacturer=FORESEE explícito). PN casa exato
+#     na busca, descrição "DC:17+" segue o mesmo padrão de campo de data-code do -16G — não é invenção,
+#     é uma listagem real, só mais fraca. Optei por `confidence: distributor` (não `manual`): fica
+#     visível/reconhecido (specs reais), mas não vence gramática nem conta como confirmado por humano.
+#     Se aparecer 2ª fonte com Manufacturer explícito, promover a manual.
+#
+# ⚠ Busca de irmãos (mesma disciplina de hoje, "nunca 1 só"): testei NCEFBS98 em -08G/-04G (zero) e
+#   tentei replicar o padrão de sufixos do cluster NCEFES já resolvido (76/78/88/A8/E8/86 sob `NCEFBS`,
+#   nas capacidades mais prováveis) — todos "no result". Busca direta por "NCEFBS" (prefixo pelado) no
+#   DigiPart também zero, e WebSearch não achou nenhuma outra menção a "NCEFBS". Não há sinal de que
+#   `NCEFBS98` faça parte de um sub-cluster maior como o `NCEFES*` — parece ser um vendor-code isolado
+#   com 2 capacidades (16GB confirmado forte, 32GB fraco).
+#
+# ⚠ Interface (versão eMMC) não confirmada — nenhum datasheet próprio aberto, só convergência de
+#   distribuidor (mesmo padrão de todo o cluster NC* desta marca). Em branco.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncefbs98_2026-09-02.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncefbs98_2026-09-02.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEFBS98-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEFBS9816G" (sem hífen). Vendor-code novo nesta marca (raiz NCEFBS,
+      diferente de NCEFEH/NCEFES já mapeadas). 3 distribuidores independentes no DigiPart — Haode
+      Technology (Manufacturer=FORESEE explícito, "BGA ; DC:2016+"), Green Light Electronics
+      (Manufacturer=FORE, "OEM/CM ONLY"), Chipsea (campo manufacturer em branco mas descrição "BGA"
+      consistente; Chipsea já confirmou FORESEE explícito em outros PNs desta marca hoje).
+    source_url: "https://www.digipart.com/part/NCEFBS98-16G"
+  - part_number: "NCEFBS98-32G"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: distributor
+    notes: >
+      2ª capacidade do mesmo vendor-code NCEFBS98. Só 1 distribuidor (Chipsea) e o campo Manufacturer
+      veio "1" (lixo de scraping, não confirma FORESEE nem está em branco) — evidência mais fraca que
+      o piso já aceito como manual nesta marca. PN casa exato, descrição "DC:17+" segue o mesmo padrão
+      de data-code do -16G confirmado. confidence=distributor (visível/reconhecido, não autoritativo)
+      até aparecer 2ª fonte com manufacturer explícito.
+    source_url: "https://www.digipart.com/part/NCEFBS98-32G"
