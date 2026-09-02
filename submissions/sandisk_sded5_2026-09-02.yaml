@@ -1,0 +1,134 @@
+# Submissão known_parts — SanDisk, família NOVA "SDED" (mDOC H3 / DiskOnChip embarcado)
+# Origem: debug do estoque, PN SDED5001G, 02/09/2026 13:43:34 (prefixo desconhecido, known=false,
+# zero fuzzy_suggestions — nenhuma família batia). Ver INVESTIGACAO_sandisk_sded5_2026-09-02.md.
+#
+# 6 PNs confidence=confirmed — datasheet oficial SanDisk lido (86 páginas, mirror alldatasheet.com):
+# "mDOC H3 EFD Featuring Embedded TrueFFS", doc 92-DS-1205-10 Rev.1.3, Data Sheet maio/2008,
+# © 2007 SanDisk Corporation (pág.1). Pág.2 confirma densidade (1Gb/128MB – 64Gb/8GB) e pacote
+# (115-ball FBGA, 9x12mm ou 10x14mm conforme densidade). Capacidade da SDED5001G corroborada
+# também por distribuidor (Jotrin/veswin: "IC FLASH 8GBIT 115BGA", 1.65-1.95V, -25~85°C).
+#
+# ⚠ mDOC NÃO é protocolo MMC — é interface paralela/memory-mapped proprietária (TrueFFS embarcado
+# no controlador). Classificado chip_type=eMMC só por ser a categoria mais próxima do vocabulário
+# fechado do sistema (mesma decisão já tomada pra SDIN2xx). Ver tip da família no yaml.
+#
+# ⚠ RODAR O PRECHECK ABAIXO ANTES DO --commit:
+#
+#   python manage.py shell <<'EOF'
+#   from chips.normalize import normalize_pn
+#   from chips.models import KnownPart
+#   pns = ["SDED5001G","SDED5002G","SDED5004G","SDED5008G","SDED5512M","SDED5256M"]
+#   for pn in pns:
+#       norm = normalize_pn(pn)
+#       existing = KnownPart.objects.filter(part_number_norm=norm)
+#       if existing.exists():
+#           for e in existing:
+#               print(f"COLISÃO {pn} (norm={norm}) -> já existe id={e.id} part_number={e.part_number!r} "
+#                     f"review_status={e.review_status} confidence={e.confidence}")
+#       else:
+#           print(f"livre    {pn}")
+#   EOF
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sded5_2026-09-02.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sded5_2026-09-02.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# ⚠ Família NOVA: grammar SDED entra via `load_brands --brand sandisk --commit` (rodar ANTES
+# deste submit, senão o portão não reconhece o prefixo). Golden test: SDED5001G já é âncora de
+# INDETERMINADO em chips/tests.py::_SD_GOLDEN (não testado contra a suíte real — sandbox sem venv
+# utilizável; se a tupla não bater, é ajuste de 1 linha).
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDED5001G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "1GB"
+    interface: "proprietária mDOC (paralela/memory-mapped — NÃO é MMC)"
+    device: "115-ball FBGA 9x12mm — mDOC H3, TrueFFS embarcado, 1.8V ou 3.3V core/IO (auto-detect)"
+    confidence: confirmed
+    notes: >
+      PN do caso original (debug do estoque 02/09/2026). Datasheet oficial SanDisk 92-DS-1205-10
+      Rev.1.3 ("mDOC H3 EFD Featuring Embedded TrueFFS", maio/2008, 86 págs, © 2007 SanDisk
+      Corporation) lido via mirror alldatasheet.com — pág.1 confirma o produto/geração, pág.2
+      confirma "1Gb (128MB) – 64Gb (8GB) data storage capacity" e pacote "mDOC H3 1Gb/2Gb - 115-ball
+      FBGA 9x12mm". 1Gb=128MB na escala de densidade do datasheet; "001G" no sufixo do PN é
+      CAPACIDADE EM BYTE (1GB = 8Gbit), confirmado independentemente por distribuidor (Jotrin/
+      veswin, listagem "SDED5-001G-NA(T/Y)": "IC FLASH 8GBIT 115BGA", 1.65V~1.95V, -25°C~85°C —
+      8Gbit = 1GB, bate). ⚠ NÃO é MMC — mDOC usa interface paralela/memory-mapped (Demux ou
+      Multiplexed, datasheet cap.9) com TrueFFS rodando como firmware no controlador; não confunde
+      com eMMC serial. Sufixo completo real é "SDED5-001G-NAT"/"-NAY" (T=tape&reel, Y=tray,
+      confirmado por distribuidor — packaging, não spec); submetido sem o sufixo de embalagem,
+      igual ao resto da marca. Datasheet atribuído a "Sanken electric" no índice do alldatasheet.com
+      (metadado errado do agregador) — o conteúdo do documento é inequivocamente SanDisk.
+    source_url: "https://www.alldatasheet.com/html-pdf/520032/SANKEN/SDED5-001G-NAT/452/2/SDED5-001G-NAT.html"
+
+  - part_number: "SDED5002G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "2GB"
+    interface: "proprietária mDOC (paralela/memory-mapped — NÃO é MMC)"
+    device: "115-ball FBGA 9x12mm — mDOC H3, TrueFFS embarcado, 1.8V ou 3.3V core/IO (auto-detect)"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDED5001G (ver notas lá pra metodologia completa e citação do datasheet).
+      Capacidade 2GB dentro da faixa de densidade confirmada no datasheet (1Gb-64Gb/128MB-8GB).
+      Sufixo real visto em catálogo de distribuidor com DOIS códigos diferentes antes do T/Y:
+      "SDED5-002G-AC(Y)" e "SDED5-002G-NC(T/Y)" — significado do código de 2 letras (tensão?
+      tecnologia SLC/MLC?) NÃO decodificado, não é ordering table lida na íntegra pra esse detalhe;
+      capacidade e pacote continuam confirmados pelo datasheet independente do código.
+    source_url: "https://www.alldatasheet.com/html-pdf/520032/SANKEN/SDED5-001G-NAT/452/2/SDED5-001G-NAT.html"
+
+  - part_number: "SDED5004G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "proprietária mDOC (paralela/memory-mapped — NÃO é MMC)"
+    device: "115-ball FBGA 10x14mm — mDOC H3, TrueFFS embarcado, 1.8V ou 3.3V core/IO (auto-detect)"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDED5001G (ver notas lá). Capacidade 4GB dentro da faixa confirmada;
+      pacote muda pra 10x14mm nesta densidade (datasheet pág.2: "mDOC H3 4Gb/8Gb - 115-ball FBGA
+      10x14mm"). Sufixo de catálogo "SDED5-004G-NCY"/"SDED5-004GNCT".
+    source_url: "https://www.alldatasheet.com/html-pdf/520032/SANKEN/SDED5-001G-NAT/452/2/SDED5-001G-NAT.html"
+
+  - part_number: "SDED5008G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "proprietária mDOC (paralela/memory-mapped — NÃO é MMC)"
+    device: "115-ball FBGA 10x14mm — mDOC H3, TrueFFS embarcado, 1.8V ou 3.3V core/IO (auto-detect)"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDED5001G (ver notas lá). 8GB é a densidade MÁXIMA declarada no datasheet
+      pra um único die ("64Gb (8GB)"); acima disso o produto cascateia dies até 128Gb/16GB, não
+      visto em catálogo como PN próprio ainda. Sufixo de catálogo "SDED5-008G-NCY".
+    source_url: "https://www.alldatasheet.com/html-pdf/520032/SANKEN/SDED5-001G-NAT/452/2/SDED5-001G-NAT.html"
+
+  - part_number: "SDED5512M"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "512MB"
+    interface: "proprietária mDOC (paralela/memory-mapped — NÃO é MMC)"
+    device: "115-ball FBGA 9x12mm — mDOC H3, TrueFFS embarcado, 1.8V ou 3.3V core/IO (auto-detect)"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDED5001G (ver notas lá). 512MB dentro da faixa de densidade confirmada
+      (abaixo de 1GB/8Gb — datasheet cobre "1Gb(128MB)-64Gb(8GB)" mas o catálogo de distribuidor
+      lista este PN explicitamente: "SDED5-512M-N9T"/"-N9Y"). Capacidade abaixo de 1GB, quase
+      certamente NÃO RENTÁVEL por tamanho mesmo antes de aplicar limiares — sinalizado pro dono
+      avaliar no `assess_profitability`, não decidido aqui.
+    source_url: "https://www.alldatasheet.com/html-pdf/520032/SANKEN/SDED5-001G-NAT/452/2/SDED5-001G-NAT.html"
+
+  - part_number: "SDED5256M"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "256MB"
+    interface: "proprietária mDOC (paralela/memory-mapped — NÃO é MMC)"
+    device: "115-ball FBGA 9x12mm — mDOC H3, TrueFFS embarcado, 1.8V ou 3.3V core/IO (auto-detect)"
+    confidence: confirmed
+    notes: >
+      Mesmo cluster de SDED5001G (ver notas lá). 256MB — menor capacidade vista em catálogo de
+      distribuidor pra este sub-prefixo ("SDED5256MN9T" — forma sem hífen no catálogo original,
+      normalizada aqui igual ao resto da marca). Mesma ressalva de rentabilidade do SDED5512M.
+    source_url: "https://www.alldatasheet.com/html-pdf/520032/SANKEN/SDED5-001G-NAT/452/2/SDED5-001G-NAT.html"

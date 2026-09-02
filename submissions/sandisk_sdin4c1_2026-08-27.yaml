@@ -1,0 +1,48 @@
+# Submissão known_parts — SanDisk, SDIN4C18G (override do dono, mesmas specs do irmão SDIN4C2)
+# Origem: debug do estoque, PN SDIN4C18G, recorrente em 26/08 (17:39:02) e 27/08/2026 (13:49:42).
+# Ver INVESTIGACAO_sandisk_sdin4c1_2026-08-27.md.
+#
+# 1 PN confidence=manual — SEM fonte pública própria para o die-code "4C1" (2 rodadas de busca,
+# 26/08 e 27/08, incluindo teste da hipótese "4C1=X3/TLC irmão do 4C2=X2/MLC", mesmo padrão
+# confirmado por datasheet oficial pro cluster SDIN5D1/5D2/5C1/5C2 dois dias antes — zero resultado
+# real nas duas rodadas). Autorização do dono (27/08/2026, em chat): marcação "SDIN4C18G" conferida
+# fisicamente (não é leitura de bancada/OCR), encapsulamento (169FBGA, anel de bolinhas douradas +
+# grade prateada com quadrado oco no centro) comparado por foto contra o irmão já confirmado
+# SDIN4C28G/SDIN4C2-8G-U (mesma geração "4Cx", mesma capacidade 8GB) — dono autorizou registrar
+# com as MESMAS specs do irmão. Sem datasheet/distribuidor confirmando o die-code "4C1" em si.
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdin4c1_2026-08-27.yaml
+#   python manage.py submit_known_parts submissions/sandisk_sdin4c1_2026-08-27.yaml --commit
+#
+# Sem golden test afetado — família SDIN (fallback genérico) já tem âncora em _SD_GOLDEN.
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDIN4C18G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "eMMC (geração não confirmada, ~2008-2009 — herdado do irmão SDIN4C2, mesma geração)"
+    device: "169-ball FBGA (specs herdadas do irmão confirmado SDIN4C28G/SDIN4C2-8G-U — ver notes)"
+    confidence: manual
+    notes: >
+      PN recorrente na bancada (26/08 e 27/08/2026), zero fonte pública própria em duas rodadas de
+      busca dedicadas — incluindo teste específico da hipótese "SDIN4C1 é o irmão X3(TLC) do
+      SDIN4C2 X2(MLC)", mesmo padrão de nomenclatura confirmado por datasheet oficial (doc
+      80-36-03462, Table 9) para o cluster SDIN5D1/SDIN5D2/SDIN5C1/SDIN5C2 dois dias antes — nenhum
+      resultado real (uma busca chegou a sugerir "SDIN4C1-4G/-8G" no resumo gerado, mas os links de
+      origem citados eram todos SDIN5C1/SDIN5C2 — confusão da ferramenta de busca, descartado como
+      evidência). Dono confirmou fisicamente (27/08/2026, em chat, não é leitura OCR de bancada):
+      marcação exata "SDIN4C18G" e encapsulamento — anel de bolinhas douradas na borda + grade de
+      bolinhas prateadas com quadrado oco no centro — comparado via foto contra o irmão já
+      confirmado SDIN4C28G (submissions 2026-07-14, confidence=manual, "169-ball FBGA", fonte:
+      convergência de distribuidor) e a imagem de referência do SDIN4C2-8G-U (SanDisk, TAIWAN,
+      169FBGA, EMMC, 8GB). Dono autorizou registrar SDIN4C18G com as MESMAS specs do irmão
+      (capacidade e pacote), aceitando o risco de ser variante não documentada publicamente (mesmo
+      padrão já usado em SD5DH26A4G/SDIN4E2-32G). Contagem manual de bolinhas feita pelo dono no
+      chip físico (~346, em anéis concêntricos: 88 douradas grandes + 10 douradas pequenas + 16
+      prateadas em arco + 36 prateadas no quadrado interno + ~196 prateadas no quadrado externo) não
+      bate com as 169 do irmão confirmado — provável erro de contagem a olho nu, sinalizado mas não
+      resolvido; não é dado de datasheet, não muda o confidence combinado com o dono.
+    source_url: ""
