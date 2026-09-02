@@ -1,0 +1,49 @@
+# Submissão de known_parts — Samsung, família KLM (eMMC).
+# PN alvo (debug 2026-08-28): KLM8G2YE4C — grammar_complete=true, capacity=8GB
+# via pn[3]='8' (regra já validada), mas PN não confirmado no banco.
+#
+# ⚠ NÃO é a mesma linha que registrei ontem (26/08, "cluster E4x" completo em
+# samsung_klm4g1ye4c_2026-08-27.yaml): aquele cluster tem tail "E4A" nas
+# capacidades ≥8GB (KLM8G1WE4A, KLMAG2WE4A...), pos5='1'. Este PN tem
+# pos5='2' e mantém o tail "E4C" (igual ao alvo 4GB de ontem) — string
+# genuinamente diferente, confirmei que EXISTE como produto próprio (não é
+# o mesmo SKU com padding/formatação diferente):
+#   - Jotrin: página dedicada "KLM8G2YE4C-C001" (existência confirmada).
+#   - flash-extractor.com (fórum de reparo): thread de dump "[9 GB] eMMC
+#     KLM8G2YE4C" — uso real em aparelho físico, não só catálogo.
+#   - Distribuidores adicionais: Sierra IC, Martview, Alibaba (convergência
+#     de existência, 4+ fontes independentes).
+#
+# ⚠ GERAÇÃO/INTERFACE — mesmo critério de ontem, aplicado de novo: pn[6]='Y'
+# NÃO está na tabela de geração do tip (F/E/W/J/K). Jotrin (resumo da
+# própria busca) chama a variante "-C001" de "eMMC 5.1", mas é fonte única,
+# prosa de distribuidor (não campo estruturado) — sem Preduo, sem Octopart,
+# sem página oficial Samsung pra confirmar (testei ambas categorias
+# emmc-4-41 e emmc-5-1 no Preduo — nenhuma existe pra este PN). Não é
+# evidência forte o bastante pra sobrepor a ausência na tabela validada da
+# família — deixo interface em branco, mesma decisão já tomada pro alvo de
+# ontem (KLM4G1YE4C) com o mesmo pn[6]='Y'. Sinalizado, não fechado.
+brand: "Samsung"
+known_parts:
+  - part_number: "KLM8G2YE4C"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: ""
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KLM8G2YE4C_C001"
+    notes: >
+      PN alvo do debug (2026-08-28), forma bare. Existência + capacidade 8GB
+      confirmadas (Jotrin + fórum flash-extractor.com, uso real). pn[6]='Y'
+      fora da tabela de geração do tip — ver cabeçalho do arquivo pra
+      discussão completa (mesmo critério já aplicado ontem ao PN irmão
+      KLM4G1YE4C, mesma letra).
+
+  - part_number: "KLM8G2YE4C-C001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: ""
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KLM8G2YE4C_C001"
+    notes: "Forma completa com sufixo. Jotrin (página dedicada) + dump real de firmware em fórum de reparo (flash-extractor.com, '[9 GB] eMMC KLM8G2YE4C — dump for new layout') — uso comprovado em aparelho físico. Geração não confirmada com fonte forte o bastante (ver notes do PN base)."
