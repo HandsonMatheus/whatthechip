@@ -1,0 +1,86 @@
+# Submissão de known_parts — SK Hynix, família H9CC (LPDDR3 standalone, x32, JÁ MAPEADA).
+# Gerado a partir do debug de bancada que leu "H9HCNNN8KTAL" (família H9HCN/LPDDR4X) —
+# essa string NÃO existe em nenhum distribuidor/agregador pesquisado. "H9CCNNN8KTAL"
+# (1 letra diferente na posição 2: C em vez de H — família H9CC/LPDDR3, já mapeada) é
+# um PN real e muito bem confirmado (10+ distribuidores, 30000un em vários, DC:15-25+).
+# CONFIRMADO PELO DONO via pergunta direta (2026-09-02): "H9CC (LPDDR3)".
+#
+# FECHA UM GAP JÁ CONHECIDO: a submissão anterior desta família (hynix_h9cc_2026-08-27.yaml)
+# já tinha visto o padrão de sufixo "TAL" (ao lado do já confirmado "TML") numa listagem
+# AliExpress/imall, mas deixou de fora por "só vi isso numa fonte agregadora de revenda
+# (baixa confiança sozinha) — fica registrado para uma rodada futura confirmar". Esta
+# rodada é essa confirmação: 3 PNs "...TAL..." com descrição ESTRUTURADA própria da
+# Win-Source (fetch direto de cada página de produto, não resumo de busca), cobrindo os
+# 3 códigos de densidade já estabelecidos na família (8/B/C).
+#
+# FONTES (Win-Source, fetch direto de cada página de produto — mesma classe de fonte que
+# já motivou a descoberta do código 'A' na família irmã H9CK):
+#   H9CCNNN8KTALBR-NTM: "LPDDR3-1600 x32 (8Gb)"   — 8Gb÷8=1GB  (código '8', já confirmado 2x na família via padrão TML)
+#   H9CCNNNBPTALBR-NTM: "LPDDR3-1600 x32 (16Gb)"  — 16Gb÷8=2GB (código 'B', já confirmado na família via padrão TML)
+#   H9CCNNNCPTALBR-NUD: "LPDDR3-1866 x32 (32Gb)"  — 32Gb÷8=4GB (código 'C', TETO já confirmado da família)
+# Todos batem exatamente com o mapa HYX_LPDDR3_CAP já existente (compartilhado com H9CK) —
+# nenhuma mudança de gramática necessária, só known_parts novos.
+#
+# Existência ampla confirmada via DigiPart (10-17+ distribuidores cada, DC:14-25+,
+# estoques de até 50000un) para as 3 formas completas + a forma BARE (H9CCNNN8KTAL,
+# a correção do PN de bancada) — a própria página agregadora do DigiPart pro termo
+# "H9CCNNN8KTAL" já lista 5 variantes de sufixo diretamente.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9cc_tal_2026-09-02.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9cc_tal_2026-09-02.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9CCNNN8KTAL"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9ccnnn8ktalbr-ntm.html"
+    notes: >
+      PN da bancada (2026-09-02) — leitura original "H9HCNNN8KTAL" (família H9HCN/
+      LPDDR4X) não existe em nenhuma fonte pesquisada; "H9CCNNN8KTAL" (H9CC/LPDDR3,
+      1 letra diferente na posição 2) é PN real bem confirmado. Identidade CONFIRMADA
+      PELO DONO via pergunta direta (H com C na posição 2 — ambiguidade de leitura).
+      Forma completa H9CCNNN8KTALBR-NTM descrita pela Win-Source (fetch direto):
+      "LPDDR3-1600 x32 (8Gb)" — 8Gb÷8=1GB. Bate com pn[7]='8'→1GB, já confirmado 2x
+      na família via padrão de sufixo irmão "TML" (hynix_h9cc_2026-08-27.yaml).
+
+  - part_number: "H9CCNNN8KTALBR-NTM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9ccnnn8ktalbr-ntm.html"
+    notes: >
+      Forma completa (com sufixo de order code "BR-NTM"). Win-Source (fetch direto):
+      "LPDDR3-1600 x32 (8Gb)" — 8Gb÷8=1GB. Fecha o gap "TAL" deixado em aberto na
+      rodada anterior (hynix_h9cc_2026-08-27.yaml, "GAP CONHECIDO, NÃO PERSEGUIDO").
+      10+ distribuidores confirmam via DigiPart (Anyway 30000un, Conevo, Ariat, YIC,
+      Semicon 50000un, Chipsea...), DC:24-25+.
+
+  - part_number: "H9CCNNNBPTALBR-NTM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9ccnnnbptalbr-ntm.html"
+    notes: >
+      Irmão do alvo no padrão "TAL" — código 'B' (2GB), já confirmado na família via
+      padrão irmão "TML" (H9CCNNNBJTML/H9CCNNNBLTML, hynix_h9cc_2026-08-27.yaml).
+      Win-Source (fetch direto): "LPDDR3-1600 x32 (16Gb)" — 16Gb÷8=2GB. 15+
+      distribuidores via DigiPart, DC:14-1528+.
+
+  - part_number: "H9CCNNNCPTALBR-NUD"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9ccnnncptalbr-nud.html"
+    notes: >
+      Irmão do alvo no padrão "TAL" — código 'C', o TETO confirmado da família (já
+      documentado no tip: "Teto confirmado: C=4GB"), mesma capacidade já vista via
+      padrão irmão "TML" (H9CCNNNCLTML, hynix_h9cc_2026-08-27.yaml). Win-Source
+      (fetch direto): "LPDDR3-1866 x32 (32Gb)" — 32Gb÷8=4GB. 14+ distribuidores via
+      DigiPart, DC:18-24+.
