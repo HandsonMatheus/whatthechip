@@ -84,6 +84,38 @@
 # projeto), não um precedente que eu tenha copiado de known_part Kingston anterior. Confira o
 # dry-run antes do --commit.
 #
+# ⚠ ADENDO 2026-09-02 (8ª expansão) — PN físico `EMMC16GT527` no debug de estoque (known:false,
+# fuzzy_suggestions vazio, tudo em branco). Geração de sufixo NOVA "T527" — não está em nenhum dos
+# 2 flyers oficiais já usados neste arquivo, nem nos datasheets TB29/TA29/TX29/S100/TA28/TC26/V100/
+# E100 já cobertos. Prefixo "T" bate com o padrão já confirmado 7x nesta linha (TB28/TB29/TA29/TX29/
+# TA28/TS0A/TY29 = sempre TLC) — mesma leitura aplicada aqui por analogia, não confirmada PN a PN
+# (nenhuma fonte deste PN cita NAND type explícito).
+#
+# EMMC32G-T527: bem corroborado — Puris (puris.net, fonte de confiança elevada neste projeto, ver
+# wtc-puris-emcplist-indice-mestre) cita direto "32GB eMMC 5.1"; Preduo confirma em tabela própria
+# (Type eMMC / Sub-Type eMMC 5.1 / Package BGA / Density 32GB); Arrow.com lista a peça (página
+# individual retornou 404 no fetch, mas existência e título confirmados via busca); Win-Source,
+# Censtry, Worldway Elec também listam. Pacote 153-ball BGA via Puris. Achado bônus: arquivo de
+# OUTRA marca deste repo (submissions/foresee_ncemad6b_2026-08-26.yaml) cita um kit de reballing que
+# agrupa "EMMC32G-M525 EMMC32G-T527 EMMC32G-S100" como mesmo footprint BGA — corrobora pacote
+# compatível com o já confirmado EMMC32G-S100 (153-ball), não é fonte de spec por si só (reballing
+# agrupa por footprint, não por tecnologia — mesma ressalva já registrada no caso Kingston KSL).
+#
+# EMMC16G-T527: capacidade 16GB bem corroborada (Censtry, Alibaba, alldatasheet, ariat-tech,
+# win-source todos confirmam existência+16GB), mas versão eMMC e pacote vêm de UMA fonte só, mais
+# fraca (título de anúncio Alibaba: "EMMC16G-T527 EMMC5.0 16GB 153FBGA" — página em si não abriu
+# no fetch, JS-gated). Note a ASSIMETRIA vs. a irmã 32G: aqui é eMMC 5.0, não 5.1 — não uniformizei
+# por inferência de família porque essa família JÁ mostrou noutras gerações (TB28 vs TB29) que
+# capacidades vizinhas podem ter versão eMMC diferente mesmo dentro do mesmo sufixo-base. Sem
+# achado em Octopart (que resolveu o caso S100 com boa fonte) — busquei especificamente e não achei
+# listagem lá pra T527 em nenhuma capacidade. Mesmo padrão de transparência de "assimetria de
+# evidência dentro do cluster" já usado no round V100/E100 (32G-V100/32G-E100 mais fracas que as
+# irmãs).
+#
+# Busquei irmãs de outras capacidades (04G/08G/64G/128/256-T527) — nenhuma fonte em lugar nenhum,
+# mesmo padrão de gerações "pequenas" já visto (S100 para em 32G, V100 vai até 32G, TA28/TC26 só
+# 32G/64G) — T527 parece ser só 16G/32G mesmo, não amostragem incompleta.
+#
 # brand: é TEXTO PURO (Brand.objects.filter(name=<valor>) direto) — nunca o bloco name/code/notes
 # do schema da GRAMÁTICA. Confirmado via AUTORIA.md §4 + commit dcad9ae, 2026-08-19 (mordeu 2x antes).
 #
@@ -600,3 +632,47 @@ known_parts:
       irmãs), 2.7-3.6V (nominal 3.3V), 13x11.5x1mm. Lifecycle "Obsolete", LTD 2017-01-22. Corroborado
       em Elnec, Octopart (2 listagens: PN base e variante -AB9U).
     source_url: https://octopart.com/emmc32g-s100-kingston-47231978
+
+  - part_number: EMMC16G-T527
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 02/09/2026 (lido sem hífen: "EMMC16GT527"),
+      known:false, fuzzy_suggestions vazio. Geração de sufixo NOVA "T527" nesta linha — não bate
+      com nenhum flyer/datasheet já usado neste arquivo (TB28/TB29/TA29/TX29/S100/TA28/TC26/V100/
+      E100). Capacidade 16GB literal (código "16G"), bem corroborada em existência (Censtry,
+      Alibaba, alldatasheet, ariat-tech, win-source). Versão eMMC "5.0" e pacote "153-FBGA" vêm de
+      UMA fonte só (título de anúncio Alibaba, JS-gated — página em si não abriu no fetch) — mais
+      fraca que a irmã 32G desta mesma geração (ver EMMC32G-T527 abaixo). NÃO uniformizei por
+      inferência de família porque esta linha já mostrou noutras gerações (TB28 vs TB29) que
+      capacidades vizinhas do mesmo sufixo-base podem ter versão eMMC diferente. Sem listagem em
+      Octopart (checado especificamente, zero resultado). NAND type não confirmado PN a PN —
+      prefixo "T" bate com o padrão já confirmado 7x nesta linha (TLC), aplicado aqui só como
+      leitura de contexto, não como fonte direta.
+    source_url: https://www.censtry.com/product/kingston/emmc16g-t527.html
+
+  - part_number: EMMC32G-T527
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.1
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC16G-T527 acima, mesma geração de sufixo "T527". Capacidade 32GB
+      literal (código "32G"). Bem corroborada: Puris (puris.net, fonte de confiança elevada neste
+      projeto) cita direto "32GB eMMC 5.1"; Preduo confirma em tabela própria (Type eMMC / Sub-Type
+      eMMC 5.1 / Package BGA / Density 32GB) — 2 fontes independentes concordando na versão eMMC,
+      mais forte que a irmã 16G (que ficou em eMMC 5.0 por fonte única mais fraca — ver nota acima,
+      não uniformizei as duas). Pacote 153-ball BGA via Puris. Também listada em Arrow.com
+      (existência confirmada via busca, página 404 no fetch direto), Win-Source, Censtry, Worldway
+      Elec. Achado bônus: arquivo de OUTRA marca deste repo
+      (submissions/foresee_ncemad6b_2026-08-26.yaml) cita kit de reballing agrupando "EMMC32G-M525
+      EMMC32G-T527 EMMC32G-S100" como mesmo footprint BGA — corrobora pacote compatível com o já
+      confirmado EMMC32G-S100 (153-ball), não decide tecnologia sozinho (reballing agrupa por
+      footprint, mesma ressalva do caso Kingston KSL). Busquei irmãs de outra capacidade
+      (04G/08G/64G/128/256-T527) — nenhuma fonte, geração parece parar em 16G/32G mesmo (mesmo
+      padrão de gerações "pequenas" já visto em S100/V100/TA28-TC26 nesta linha).
+    source_url: https://www.puris.net/archives/3819

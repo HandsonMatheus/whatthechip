@@ -1,0 +1,139 @@
+# Submissão known_parts — Kingston, família eMCP "04EMCP" (4GB eMMC 5.0), geração de sufixo "AS100"
+# Chat de marca Kingston, 2026-09-01. Disparado pelo PN físico do debug de estoque `04EMCP04EL2AS100`
+# (known_exact:false, classification_source:"gramática", subtype default LPDDR3 — mesmo bug já
+# documentado em wtc-kingston-emcp-nl2-grammar-default.md e KINGSTON.md §0.2 regra 5).
+#
+# DIAGNÓSTICO: família `04EMCP` já tem gramática completa — decodifica pn[0:2]="04"→4GB NAND e
+# pn[6:8]="04"→4Gbit÷8=512MB RAM certo. O próprio fallback genérico do yaml (chips/knowledge/
+# kingston.yaml, tip da família "EMCP" genérica) já cita "04EMCP04-NL2AS100" como exemplo ilustrativo
+# do decode — a geração "AS100" não é achado novo desta rodada, já era PN-âncora conhecido pelo
+# motor, só faltava known_part próprio pra resolver known_exact:false. O sufixo (após o "-") não é
+# decodificado por design — os 2 primeiros chars dizem a geração real da RAM, e é exatamente esse
+# token que está em disputa nesta rodada (ver bloco de ambiguidade abaixo).
+#
+# ⚠ AMBIGUIDADE NÃO RESOLVIDA — token "EL2" × "NL2": o PN físico do debug leu "EL2AS100", mas TODA a
+# corroboração de mercado forte (Octopart com 2 variantes — base e "-S08" —, Jotrin, ChipHK, MAIS a
+# citação pré-existente no tip da própria gramática) aponta pra "NL2AS100" (LPDDR2/162-ball). Só achei
+# a string literal "EL2AS100" numa única fonte de baixo nível (shrak.com.ua, sem specs abertos).
+# Diferente do caso já resolvido CV100 (onde EL3 e NL2 coexistem como irmãs REAIS, cada uma confirmada
+# em fonte própria — ver wtc-kingston-emcp-nl2-grammar-default.md 2º caso), aqui não consegui
+# confirmar "EL2" como token real e distinto via nenhuma fonte forte pra ESTA geração (AS100). Por
+# outro lado, o token "EL2" (não EL3) reapareceu numa 2ª geração de sufixo diferente —
+# "08EMCP08-EL2BV100" (Worldway, página própria com ID de produto 2749503 — já sinalizado como
+# "achado lateral não perseguido" desde a rodada AV100 de 20-26/08) — o que enfraquece a hipótese de
+# "erro de digitação isolado" (mesmo token "EL2" aparecendo 2× em gerações/fontes diferentes). Não
+# decidi sozinho — pergunta feita ao dono nesta rodada (ver chat). Registrei aqui SÓ o cluster "NL2"
+# bem confirmado; "04EMCP04-EL2AS100" e "08EMCP08-EL2BV100" ficam de fora até confirmação — mesma
+# regra já usada nos casos excluídos da entrega AV100 (excluir, não adivinhar).
+#
+# CLUSTER encontrado e CONFIRMADO (Octopart ×2, Jotrin, ChipHK, cross-referenciados, 2026-09-01):
+#   NL2 (LPDDR2), 04EMCP04 (4GB NAND + 512MB RAM): AS100 (sem revisão) e AS100-S08 (variante "-S08")
+#
+# Tentado e NÃO achei (excluído, não adivinhado):
+#   - Irmã LPDDR3 (NL3AS100 ou EL3AS100) — nenhuma fonte em nenhuma busca (diferente de AV100/CV100,
+#     que têm irmã LPDDR3 confirmada; AS100 parece ser LPDDR2-only).
+#   - Irmãs de capacidade (08EMCP08-AS100, 08EMCP04-AS100, 04EMCP08-AS100) — nenhuma fonte.
+#   - Outros códigos de revisão além de "-S08" (tentei por analogia às revisões "-C##" da família
+#     AV100) — nenhuma fonte cita outra variante de revisão pra AS100.
+#   - Cobertura tier-manufacturer: o flyer oficial ATUAL da Kingston (eMCP_us.pdf, via
+#     media.kingston.com e espelho DigiKey/MKF_961) NÃO lista "AS100" — nomenclatura atual usa outro
+#     padrão (N3G/N3H/M4x por capacidade), geração AS100 é provavelmente legada/descontinuada (mesmo
+#     padrão DM627/DT227/AV100/CV100, todas fora dos flyers atuais). O catálogo histórico "Embedded
+#     Memory" mar/2014 (já usado pra V100/E100, ver kingston_emmc_v100_e100_2026-08-28.yaml) também
+#     NÃO cobre eMCP — só eMMC standalone e MCP genérico não-Kingston. O índice mestre Puris.net/
+#     emcplist (fonte original de boa parte da gramática eMCP Kingston — DM627/DT227/DTB28/GTB29/
+#     JTB29/HTA29/JTA29 —, ver wtc-puris-emcplist-indice-mestre.md) NÃO lista marca Kingston nesta
+#     página atualmente — não deu pra usar como confirmação adicional desta vez.
+#
+# Convenção de campos: idêntica às entregas AV100/CV100 (KINGSTON.md §1) — chip_type="eMCP",
+# subtype=geração da RAM (LPDDR2/LPDDR3), interface="eMMC 5.0" (família 04EMCP — kingston.yaml tip
+# linha 37, "eMCP Kingston 4GB eMMC 5.0"), emcp_nand=GB direto, emcp_ram="LPDDR{n} <cap>"
+# (cap=Gbit÷8: código RAM "04"→4Gbit÷8=512MB). device vazio (eMCP não usa esse campo).
+#
+# ── ATUALIZAÇÃO 2026-09-02 (dia seguinte) — token "EL2" CONFIRMADO real via posse física do dono ──
+# Perguntei ao dono via AskUserQuestion (ambiguidade EL2×NL2 não resolvida só com pesquisa — ver
+# bloco acima) — resposta: "É EL2 de verdade. Tenho o chip físico aqui e confirmo: a marcação é
+# 'EL2', não 'NL2'." Confirmação física do dono sobrepõe ausência de fonte Tier-1/distribuidor forte
+# (mesmo padrão já usado no caso TC26/TA28 do eMMC standalone — ver
+# wtc-confirmacao-fisica-dono-sobrepoe-ausencia-tier1.md e wtc-override-tier1-fontes-comunidade.md).
+# Registrado como known_part NOVO, confidence="manual" (não "confirmed" — não achei fonte terceira
+# própria pra "EL2AS100", é autorização direta do dono por posse física). NÃO mudei nada da
+# gramática/yaml — mesma regra de sempre (correção é sempre known_part pontual).
+#
+# Implicação pro achado lateral `08EMCP08-EL2BV100` (mesmo token "EL2", geração diferente, nunca
+# resolvido desde 20-26/08): a confirmação de hoje prova que "EL2" É um token real que a Kingston
+# usa (não é só erro de leitura) — mas o dono confirmou especificamente o chip AS100 que tem em
+# mãos, não o BV100. NÃO registrei EL2BV100 aqui (PN diferente, dono não confirmou posse física
+# DESSE chip) — mas a barra de ceticismo baixou bastante; fica sinalizado no KINGSTON.md/memória
+# como forte candidato pra registrar se/quando aparecer como PN físico de debug de novo, ou se o
+# dono confirmar que também tem esse chip.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emcp_as100_2026-09-01.yaml --fill-empty
+
+brand: Kingston
+
+known_parts:
+
+  # ── PN físico do debug de estoque (known_exact:false, token de sufixo NL2 confirmado, não EL2) ──
+  - part_number: 04EMCP04-NL2AS100
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 4GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      Geração de sufixo "AS100", família 04EMCP04 (4GB NAND + 512MB RAM, LPDDR2/162-ball). Disparado
+      pelo PN físico do debug de estoque do dono, 01/09/2026, lido como "04EMCP04EL2AS100"
+      (known_exact:false) — mas o token de sufixo confirmado em múltiplas fontes independentes é
+      "NL2", não "EL2" (ver bloco de ambiguidade no cabeçalho do arquivo; "EL2AS100" NÃO incluído
+      aqui, pendente confirmação do dono — pergunta feita no chat). Forma "NL2AS100" já é citada como
+      exemplo ilustrativo no próprio decode da gramática (chips/knowledge/kingston.yaml, tip da
+      família genérica "EMCP") — não é achado novo desta rodada, só faltava known_part próprio.
+      Confirmado em 4 fontes: Octopart (2 listagens, base e "-S08"), Jotrin, ChipHK — convergência
+      entre fontes independentes + citação pré-existente na gramática do próprio motor é a mesma
+      barra de evidência já usada nas entregas AV100/CV100 (nenhuma abriu specs profundos além de
+      manufacturer=Kingston + PN, mas a barra dessas entregas anteriores também foi existência
+      distribuidor multi-fonte, não datasheet Tier-1).
+    source_url: https://www.jotrin.com/product/parts/04EMCP04-NL2AS100
+
+  # ── irmã de revisão, mesma geração/specs ──
+  - part_number: 04EMCP04-NL2AS100-S08
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 4GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      Irmã de revisão da 04EMCP04-NL2AS100 acima — sufixo de revisão "-S08" (achado como listagem
+      própria no Octopart, mesmo padrão dos códigos "-C##" já vistos na família AV100: revisão não
+      muda NAND/RAM/geração, só o código de fabricação/lote). Mesmas specs (4GB NAND + 512MB RAM,
+      LPDDR2, eMMC 5.0).
+    source_url: https://octopart.com/04emcp04-nl2as100-s08-kingston-84940030
+
+  # ── irmã LPDDR2 "EL2" — token distinto de NL2, confirmado por posse física do dono 2026-09-02 ──
+  - part_number: 04EMCP04-EL2AS100
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 4GB
+    emcp_ram: LPDDR2 512MB
+    confidence: manual
+    notes: >
+      PN físico do debug de estoque do dono, 01/09/2026, lido como "04EMCP04EL2AS100"
+      (known_exact:false). Pesquisa NÃO achou fonte terceira forte pro token "EL2" nesta geração
+      (só 1 fonte fraca, shrak.com.ua, sem specs) — a ambiguidade EL2×NL2 foi levada ao dono via
+      AskUserQuestion em vez de decidir sozinho. Dono confirmou em 02/09/2026, posse física do
+      chip: "É EL2 de verdade. Tenho o chip físico aqui e confirmo: a marcação é 'EL2', não
+      'NL2'." confidence="manual" (não "confirmed") — autorização direta do dono por posse
+      física, sem fonte terceira própria, mesmo vocabulário/critério já usado no caso TC26/TA28
+      (ver wtc-confirmacao-fisica-dono-sobrepoe-ausencia-tier1.md). Specs (NAND/RAM/eMMC)
+      idênticas à irmã NL2AS100 acima — só o token de sufixo difere; mesma família 04EMCP04
+      (4GB NAND + 512MB RAM), mesma geração de sufixo "AS100". Confirma que o token "EL2" (visto
+      também, sem resolver, em 08EMCP08-EL2BV100) é real e não erro de leitura/OCR — mas isso NÃO
+      foi estendido automaticamente pro BV100 (PN diferente, dono não confirmou posse física
+      desse chip especificamente).
+    source_url: ''
+    # ^ propositalmente vazio (campo é blank=True no model) — a fonte real é a confirmação física
+    # do dono, sem URL de terceiro (mesma convenção já usada no caso TC26).

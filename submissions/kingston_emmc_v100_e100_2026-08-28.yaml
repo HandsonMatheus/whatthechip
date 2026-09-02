@@ -1,0 +1,174 @@
+# Submissão known_parts — Kingston, eMMC standalone (§0.2 regra 14), gerações "V100" (Value) +
+# "E100" (Elite), achada por research da 6ª rodada desta linha.
+# Chat de marca Kingston, 2026-08-28. Disparado pelo PN físico do debug de estoque `EMMC16G-V100`
+# (known:false, TUDO vazio — mesma forma dos casos anteriores; fuzzy_sugest. apontou "EMMC16G-S100",
+# mas V100 é confirmado como geração REAL e DISTINTA de S100, não erro de leitura — ver abaixo).
+#
+# DIAGNÓSTICO: mais duas gerações de sufixo paralelas na família eMMC standalone (já confirmado que
+# MUITAS coexistem pra mesma capacidade — ver KINGSTON.md §5/§7: TB28/TB29/TA29/TX29/S100/TA28/TC26,
+# agora +V100/+E100 — 6ª e 7ª geração documentadas nesta linha).
+#
+# FONTE PRINCIPAL — catálogo histórico Kingston "Embedded Memory" (mar/2014), espelhado pela Arrow
+# (static6.arrow.com/aropdfconversion/.../kingstonembeddedmemorymar14.pdf). Tratado como fonte
+# TIER-MANUFACTURER (mesmo padrão já usado pra datasheets Kingston espelhados via DigiKey/Future
+# Electronics noutras entradas desta linha) — não é texto autoral da Arrow, é catálogo Kingston
+# original só hospedado lá. Confiança elevada no documento por VALIDAÇÃO CRUZADA interna: a MESMA
+# tabela lista a família "KE4CN..." com specs IDÊNTICAS ao que já está confirmado e submetido em
+# `kingston_emmc_ke4_2026-08-20.yaml` (KE4CN2H5A=4GB, KE4CN3H5A=8GB, KE4CN4A5A=16GB, KE4CN5B6A=32GB,
+# todos eMMC 4.5/153B ou 169B — bate exato) e a família "S100" com specs idênticas ao já confirmado
+# em `kingston_emmc_standalone_2026-08-19.yaml` (4-32GB, eMMC 5.0) — documento genuíno, não achado
+# de baixa qualidade/possível alucinação de extração.
+#
+# "V100" (linha "Value", TLC, eMMC 4.41 — JEDEC JESD84-A441, geração ANTERIOR ao 4.5 do KE4/5.0 do
+# S100): catálogo lista EMMC08G-V100/EMMC16G-V100/EMMC32G-V100, todas 153-ball BGA 11.5x13x1.0mm.
+#   - EMMC08G-V100 e EMMC16G-V100: além do catálogo, corroboração DENSA em distribuidor real (8+
+#     fontes independentes concordando em fabricante Kingston + pacote BGA, nenhuma divergindo):
+#     Avnet (distribuidor autorizado), Alldatasheet (3 variantes de revisão: base/-C06/-C30),
+#     Ciiva, OEMsTrade, Censtry, Ariat-Tech, Worldway, Win-Source, AliExpress (BGA153 confirmado
+#     independente numa peça física de reparo), Allelco.
+#   - EMMC32G-V100: SÓ no catálogo — busquei ativamente em Censtry/Win-Source/Ariat-Tech/Jotrin/
+#     DigiPart (mesmo conjunto de fontes que confirmou 08G/16G) e NENHUMA tem listagem pra 32G-V100
+#     (Censtry devolve 404 pra essa PN especificamente). Registrado mesmo assim por vir de fonte
+#     tier-manufacturer direta (não é extrapolação minha), mas sinalizado aqui com honestidade: ao
+#     contrário das irmãs 08G/16G, não achei confirmação de mercado vivo pra esta capacidade.
+#
+# "E100" (linha "Elite", MLC, eMMC 5.0 HS400 — achado INCIDENTAL pesquisando V100 no mesmo catálogo;
+# perseguido na mesma rodada por já ter dado completo e por já ter achado corroboração de mercado
+# real pra 2 das 3 capacidades, seguindo a regra de esgotar fonte sistemática na mesma rodada):
+# catálogo lista EMMC16G-E100/EMMC32G-E100/EMMC64G-E100, 153-ball BGA (16G/32G 11.5x13x1.0mm, 64G
+# 11.5x13x1.2mm).
+#   - EMMC16G-E100 e EMMC64G-E100: confirmadas em distribuidor real (Censtry, listagem própria pra
+#     cada uma, fabricante Kingston + pacote BGA153 batendo exato com o catálogo).
+#   - EMMC32G-E100: SÓ no catálogo — Censtry 404 pra esta capacidade especificamente (mesmo padrão
+#     do 32G-V100). Achei só um sinal fraco (página de comparação "EMMC32G-E100 vs
+#     EMMC32G-IX29-8AC01" no ovaga.com, conteúdo não recuperável, mas o título por si indica que a
+#     PN está indexada em algum catálogo de distribuidor) — não conta como confirmação própria,
+#     só como indício adicional de que não é invenção do catálogo de 2014.
+#
+# Busquei explicitamente 04G/64G/128G/256G-V100 e 04G/08G/128G/256G-E100 (completar o espectro) —
+# nenhuma fonte, nem no catálogo de 2014 (que já lista as faixas completas por linha: Value=8/16/32,
+# Elite=16/32/64 — não parece truncamento de extração, é o range real de cada linha de produto).
+# NÃO inventei capacidades fora do que o catálogo lista.
+#
+# Achados laterais NÃO perseguidos nesta rodada (mesmo padrão de "sinalizar pra rodada futura" já
+# usado noutras famílias desta linha): "W100" (achado incidental via Avnet, EMMC04G-W100-E08U),
+# "W325"/"W525"/"M325"/"M525" (achados incidentais via busca cruzada, eMMC 5.0, aparecem em
+# datasheets Arrow/Octopart mas fora do escopo do gatilho de hoje) — ficam pra quando aparecerem
+# como PN físico no debug, mesmo tratamento dado a BT227/BS100/CU100/DT527/EL2BV100 no eMCP.
+#
+# Campos: chip_type="eMMC", subtype="" (vazio, convenção da família), capacity=GB literal (sem
+# conta Gb), interface=versão eMMC ("eMMC 4.41" pro Value, "eMMC 5.0" pro Elite — campo é TextField
+# livre, sem choices/regex no models.py, confirmado por grep; "HS400"/"HS200" ficam só na prosa das
+# notes, não entram no valor do campo, mesmo padrão já usado pro S100/eMMC 5.0(HS200)).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emmc_v100_e100_2026-08-28.yaml
+
+brand: Kingston
+
+known_parts:
+
+  - part_number: EMMC08G-V100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 8GB
+    interface: eMMC 4.41
+    confidence: confirmed
+    notes: >
+      Geração "V100" (linha "Value" da Kingston, TLC, eMMC 4.41/JESD84-A441) — achada pesquisando
+      irmãs/gerações vizinhas depois do PN físico do debug `EMMC16G-V100` (ver EMMC16G-V100 abaixo).
+      Capacidade 8GB literal, pacote 153-ball BGA 11.5x13x1.0mm — confirmado no catálogo histórico
+      Kingston "Embedded Memory" (mar/2014, espelhado via Arrow) E corroborado em mercado vivo por
+      8+ fontes independentes concordando em fabricante Kingston + pacote BGA, nenhuma divergindo:
+      Avnet (distribuidor autorizado), Alldatasheet, Ciiva, OEMsTrade, Censtry, Ariat-Tech (com PDF
+      de datasheet próprio hospedado), Worldway, AliExpress (BGA153 confirmado numa peça física de
+      reparo), Allelco. Variantes de revisão "-C06"/outras vistas em algumas fontes — registrado só
+      a forma BASE, mesmo padrão já usado noutras gerações desta linha (TA28, S100 etc.).
+    source_url: https://www.censtry.com/product/kingston/emmc08g-v100-c06.html
+
+  - part_number: EMMC16G-V100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 4.41
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 28/08/2026, known:false (tudo vazio; fuzzy_sugest. do
+      próprio motor apontou "EMMC16G-S100" como parecido, mas confirmei que "V100" é geração REAL e
+      DISTINTA de S100 — mesmo catálogo de origem lista as duas em tabelas separadas com specs
+      diferentes: V100=TLC/eMMC 4.41/linha "Value", S100=MLC/eMMC 5.0/linha "Value A19nm" — não é
+      erro de leitura). Pacote 153-ball BGA 11.5x13x1.0mm — confirmado no catálogo histórico Kingston
+      "Embedded Memory" (mar/2014, espelhado via Arrow, validado por bater exato com specs já
+      confirmadas independentemente pras famílias KE4/S100 na MESMA tabela) E corroborado em mercado
+      vivo por 7+ fontes independentes: Avnet (distribuidor autorizado, PN exata do debug), Win-Source
+      (listagem própria confirmada), Alldatasheet (3 variantes: base/-C06/-C30), Ciiva, OEMsTrade,
+      Censtry, Ariat-Tech. Nenhuma fonte diverge em fabricante/pacote/capacidade.
+    source_url: https://www.avnet.com/shop/us/products/kingston-technology/emmc16g-v100-3074457345626906430/
+
+  - part_number: EMMC32G-V100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 4.41
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade das EMMC08G-V100/EMMC16G-V100 acima, mesma geração "V100"/linha "Value".
+      Fonte: catálogo histórico Kingston "Embedded Memory" (mar/2014, espelhado via Arrow) — tabela
+      lista explicitamente "eMMC32G-V100, 32GB, Embedded MMC 4.41, 153B, 11.5x13x1.0, Value", mesma
+      estrutura de linha das irmãs 08G/16G já confirmadas em mercado vivo. **Honestidade de fonte:**
+      diferente das irmãs 08G/16G, busquei ativamente em Censtry/Win-Source/Ariat-Tech/Jotrin/
+      DigiPart e NÃO achei listagem de distribuidor pra esta capacidade específica (Censtry devolve
+      404 pra "emmc32g-v100"). Registrado mesmo assim por vir de fonte tier-manufacturer direta (o
+      mesmo catálogo já provou bater exato com dados independentemente confirmados pras famílias
+      KE4/S100) — mas sinalizando que não achei confirmação de mercado vivo pra ESTA capacidade,
+      ao contrário das outras duas.
+    source_url: https://static6.arrow.com/aropdfconversion/7f35dfdaa9b2a32dcb060428816217b9bddf90d1/kingstonembeddedmemorymar14.pdf
+
+  - part_number: EMMC16G-E100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 16GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Geração "E100" (linha "Elite" da Kingston, MLC, eMMC 5.0 modo HS400) — achado INCIDENTAL no
+      mesmo catálogo histórico Kingston "Embedded Memory" (mar/2014, espelhado via Arrow) enquanto
+      pesquisava a geração "V100" (gatilho do PN físico do debug de hoje). Perseguida na mesma
+      rodada (não só sinalizada pra depois) porque o catálogo já deu specs completos pras 3
+      capacidades da linha E100 e porque achei confirmação de mercado vivo pra esta capacidade
+      específica: Censtry tem listagem própria (fabricante Kingston, pacote BGA, 16GB — batendo
+      exato com "153-ball BGA 11.5x13x1.0mm" do catálogo). "HS400" é o modo de barramento, não entra
+      no valor do campo `interface` (mesmo padrão do S100/HS200) — fica só documentado aqui na nota.
+    source_url: https://www.censtry.com/product/kingston/emmc16g-e100.html
+
+  - part_number: EMMC32G-E100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 32GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade das EMMC16G-E100/EMMC64G-E100 (ver notas), mesma geração "E100"/linha
+      "Elite". Fonte: catálogo histórico Kingston "Embedded Memory" (mar/2014, espelhado via Arrow)
+      — tabela lista "EMMC32G-E100, 32GB, eMMC 5.0(HS400), 153B, 11.5x13x1.0, Elite". **Honestidade
+      de fonte:** mesmo padrão do EMMC32G-V100 acima — busquei em Censtry/Win-Source/Ariat-Tech e
+      NÃO achei listagem de distribuidor pra esta capacidade (Censtry 404). Achei só um indício
+      fraco (página de comparação "EMMC32G-E100 vs EMMC32G-IX29-8AC01" no ovaga.com — o conteúdo da
+      página não carregou, mas o título por si só indica que a PN está indexada em algum catálogo de
+      distribuidor, não é invenção isolada do catálogo de 2014). Registrado com base na fonte
+      tier-manufacturer, sinalizando a ausência de confirmação de mercado vivo direta.
+    source_url: https://static6.arrow.com/aropdfconversion/7f35dfdaa9b2a32dcb060428816217b9bddf90d1/kingstonembeddedmemorymar14.pdf
+
+  - part_number: EMMC64G-E100
+    chip_type: eMMC
+    subtype: ''
+    capacity: 64GB
+    interface: eMMC 5.0
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade da EMMC16G-E100 acima, mesma geração "E100"/linha "Elite" — pacote maior
+      nesta capacidade (153-ball BGA 11.5x13x1.2mm, contra 1.0mm das irmãs menores, mesmo padrão de
+      variação de espessura já visto noutras famílias desta linha, ex. S100/TX29). Fonte: catálogo
+      histórico Kingston "Embedded Memory" (mar/2014, espelhado via Arrow) + confirmação de mercado
+      vivo em Censtry (listagem própria: fabricante Kingston, pacote "BGA153", 64GB — batendo exato
+      com o catálogo). "HS400" é o modo de barramento, não entra no valor do campo `interface`.
+    source_url: https://www.censtry.com/product/kingston/emmc64g-e100.html

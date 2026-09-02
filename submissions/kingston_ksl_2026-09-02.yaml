@@ -1,0 +1,95 @@
+# Submissão known_parts — Kingston, linha NOVA "KSL" (prefixo nunca visto antes nesta chat)
+# Chat de marca Kingston, 2026-09-02. Disparado pelo PN físico do debug de estoque `KSLCCBL2GA2H2A`
+# (02/09/2026 11:39:29, known:false, fuzzy_suggestions VAZIO — 1ª vez nesta sessão que o motor não
+# sugere NENHUM vizinho, ou seja, o próprio fuzzy-match não reconhece nada parecido no banco).
+#
+# ⚠ GATILHO DA REGRA K-PREFIX-SAMSUNG: o padrão "KSL..." não bate com nenhuma família Kingston já
+# confirmada nesta chat (nem `NNEMCP` eMCP, nem `KVR`/`KF`/`ACR` DIMM, nem `KE4` eMMC) — ver
+# wtc-kingston-prefixo-k-samsung-misread.md ("PN sem padrão Kingston nenhum, achado na fila Kingston
+# → NÃO decida sozinho via pesquisa web. Pergunte ao dono se o PACOTE FÍSICO está marcado Kingston").
+#
+# PESQUISA WEB (antes de perguntar ao dono): achei o PN + 15 IRMÃOS reais do mesmo prefixo `KSL` numa
+# fonte sistemática (findcomponents.net/catalog/cat/KSL, 4 sub-famílias: KSLCB/KSLCC/KSLCG/KSLCM) —
+# manufacturer="Kingston" confirmado independentemente em Octopart, Allelco, Censtry e OMO Electronic
+# pra vários deles. MAS nenhuma fonte (site oficial Kingston, Octopart, TrustedParts, Puris.net, e
+# mais de 5 distribuidores individuais testados) mostra capacidade ou tecnologia (eMMC×eMCP) pra
+# NENHUM dos 16 — só existência+marca. Beco sem-saída de spec em Tier-1/2/3, mesmo padrão do caso
+# KMDL6001DA.
+#
+# CONFIRMAÇÃO FÍSICA (a mais forte possível — ver hierarquia §0.3 item 4): dono mandou 2 fotos
+# tiradas em microscópio USB do chip físico. Legível: "Kingston" (logo+wordmark) + marcação completa
+# "KSLCCBL2GA2H2A" + códigos de data/lote "2400153-001.A00G" / "1401" / "141N04710-04". Resolve
+# identidade+marca ALÉM de qualquer dúvida — mas a marcação do pacote NÃO imprime capacidade (normal
+# em BGA de memória, capacidade só vive no PN/banco de dados, nunca no chip físico).
+#
+# CAPACIDADE — inferência estrutural, NÃO confirmação direta (1ª vez nesta chat usando essa base):
+#   1) Estêncil de reballing (2 anúncios eBay independentes) agrupa `KSLCCBL2GA2H2A` +
+#      `KSLCCBL2RA2H2A` com `KE4CN2L2SA5H2A` (já confirmado, 8GB, 2 dies de 4GB, Toshiba, 162-Ball
+#      FBGA) E com `KMK5X000VM-B314` (Samsung eMCP, 4GB NAND+1GB LPDDR2) — um anúncio cita
+#      `MPN: FBGA162` explícito. Pacote=162-ball FBGA fica bem sustentado, mas o grupo mistura eMMC
+#      puro com eMCP — estêncil agrupa por PACOTE físico, não por tecnologia, então isso sozinho NÃO
+#      decide eMMC×eMCP.
+#   2) Entre os 15 irmãos KSL não-confirmados, `KSLCGBL2SA5H2A` termina EXATAMENTE igual ao
+#      `KE4CN2L2SA5H2A` confirmado — mesma cauda "SA5H2A" caractere por caractere — e ambos têm o
+#      dígito "2" na mesma posição estrutural (mesma posição que, na família KE4CN, codifica
+#      capacidade-por-die). MAS o PN físico confirmado aqui termina "GA2H2A" (letra "G", não "S") —
+#      não é o mesmo PN do eco, só um primo próximo.
+# Levei isso ao dono via AskUserQuestion, explicando a diferença de 1 letra na cauda e que isso seria
+# a 1ª vez usando pura analogia estrutural sem nenhum número de 3ª fonte. Resposta: **"Usar a
+# estimativa por analogia (8GB)"** — autoriza registrar `capacity: 8GB`/`chip_type: eMMC` (caminho da
+# analogia com SA5H2A, eMMC puro — não o caminho eMCP do vizinho Samsung do estêncil, que tinha
+# números totalmente diferentes 4GB+1GB e não foi o que o dono escolheu).
+#
+# ESCOPO DESTA RODADA — só o PN fisicamente confirmado, NÃO os outros 15:
+# Registrado: `KSLCCBL2GA2H2A` (confidence=manual, capacidade por analogia autorizada pelo dono).
+# NÃO registrado (sem confirmação física própria nem fonte de capacidade) — ficam sinalizados pra
+# rodada futura, mesmo critério já usado pro EL2BV100 (ver wtc-kingston-emcp-nl2-grammar-default.md):
+#   KSLCBBL1FB2G3A, KSLCBBL1FB4G3A, KSLCCBL1FB2G3A, KSLCCBL1FB4A3A, KSLCCBL1FB4G3A, KSLCCBL2HA5H2A,
+#   KSLCCBL2RA2H2A, KSLCGBL2RA2H2A, KSLCGBL2SA5H2A (⚠ candidato mais forte — cauda idêntica ao
+#   SA5H2A), KSLCMAL2RA2M2A, KSLCMAL2TA0M2A, KSLCMBL2BA2M2CU, KSLCMBL2RA2M2A, KSLCMBL2VA2M2A,
+#   KSLCMBL2VA2M2CR.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_ksl_2026-09-02.yaml --fill-empty
+
+brand: Kingston
+
+known_parts:
+
+  # ── PN físico do debug de estoque, identidade confirmada por foto de microscópio do dono ──
+  - part_number: KSLCCBL2GA2H2A
+    chip_type: eMMC
+    subtype: ''
+    interface: eMMC 4.5
+    capacity: 8GB
+    device: 162-Ball FBGA
+    confidence: manual
+    notes: >
+      PN físico do debug de estoque do dono, 02/09/2026 (known:false, fuzzy_suggestions vazio — 1ª
+      vez na sessão sem nenhum vizinho sugerido pelo motor). Prefixo "KSL" nunca visto antes nesta
+      chat, não bate com nenhuma família Kingston já confirmada (NNEMCP/KVR-KF-ACR/KE4) — ativou a
+      regra do arquivo K-prefix-Samsung (PN sem padrão conhecido exige confirmação de marcação
+      física antes de aceitar, não decidir só por pesquisa web). Pesquisa achou o PN + 15 irmãos
+      reais do mesmo prefixo (KSLCB/KSLCC/KSLCG/KSLCM) numa fonte sistemática
+      (findcomponents.net/catalog/cat/KSL), com manufacturer="Kingston" confirmado independente em
+      Octopart/Allelco/Censtry/OMO Electronic — mas ZERO fonte (Kingston oficial, Octopart,
+      TrustedParts, Puris.net, 5+ distribuidores) mostrou capacidade ou tecnologia pra nenhum dos 16.
+      Dono confirmou identidade por FOTO DE MICROSCÓPIO USB (evidência mais forte possível): legível
+      "Kingston" + marcação completa "KSLCCBL2GA2H2A" + códigos de data/lote "2400153-001.A00G" /
+      "1401" / "141N04710-04" — mas marcação de pacote BGA não imprime capacidade, então a foto
+      resolveu identidade, não o número. Capacidade "8GB"/chip_type "eMMC" vêm de INFERÊNCIA
+      ESTRUTURAL, não de fonte direta (1ª vez nesta chat usando essa base): (1) 2 anúncios de
+      estêncil de reballing no eBay agrupam este PN + irmão KSLCCBL2RA2H2A com o já-confirmado
+      KE4CN2L2SA5H2A (8GB, 2 dies de 4GB, Toshiba, 162-Ball FBGA — um anúncio cita "MPN: FBGA162"
+      explícito) e com o eMCP Samsung KMK5X000VM-B314 (4GB NAND+1GB LPDDR2) — confirma pacote
+      162-ball FBGA, mas mistura eMMC/eMCP no mesmo estêncil (agrupamento é por PACOTE físico, não
+      por tecnologia); (2) o irmão KSLCGBL2SA5H2A (não confirmado) termina EXATAMENTE igual ao
+      KE4CN2L2SA5H2A confirmado — mesma cauda "SA5H2A" — e tem o mesmo dígito "2" na posição que,
+      na família KE4CN, codifica capacidade-por-die; este PN específico termina "GA2H2A" (letra
+      diferente, "G" não "S"), então é primo próximo do eco, não o mesmo PN. Levado ao dono via
+      AskUserQuestion com a ressalva explícita da diferença de 1 letra — resposta: "Usar a
+      estimativa por analogia (8GB)", autorizando o caminho eMMC/8GB (não o caminho eMCP do vizinho
+      Samsung do estêncil, que tinha números diferentes 4GB+1GB). confidence="manual": identidade
+      por posse física + capacidade por autorização explícita do dono sobre inferência estrutural,
+      sem confirmação de 3ª fonte pro número em si. Outros 15 irmãos KSL achados mas NÃO registrados
+      nesta rodada (sem confirmação física própria) — ver cabeçalho do arquivo e KINGSTON.md §5/§7.
+    source_url: https://www.omo-ic.com/chip/108/kslccbl2ga2h2a-1190.html

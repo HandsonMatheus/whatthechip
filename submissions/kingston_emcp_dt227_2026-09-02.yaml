@@ -1,0 +1,140 @@
+# Submissão known_parts — Kingston, família eMCP "08EMCP" (8GB eMMC 5.0), geração de sufixo "DT227"
+# Chat de marca Kingston, 2026-09-02. Disparado pelo PN físico do debug de estoque `08EMCP04NL2DT227`
+# (14:19, known_exact:false, pn_not_in_db:true, classification_source:"gramática" — mesmo padrão
+# "gramática decodifica mas falta known_part" já visto em rodadas anteriores).
+#
+# DIAGNÓSTICO: este gap já estava SINALIZADO no KINGSTON.md §5 há semanas — "eMCP `08EMCP04`/
+# `08EMCP08`... além de DT227/DM327/AS100/DM627 já cobertos por gramática" — ou seja, alguém (onboarding
+# original do Kingston, commit 8946fe5) já tinha escrito um tip de gramática pra esta família citando
+# "PNs confirmados: 08EMCP04-NL2DT227 · 08EMCP08-NL2DT227 (LPDDR2) · 08EMCP04-NL3DT227 ·
+# 08EMCP08-NL3DT227 (LPDDR3)" (fonte original citada no `reasoning` do yaml: "Puris.net B2B") — mas
+# NENHUM dos 4 nunca virou known_part de fato (pn_not_in_db:true confirma). Mesma lição já reforçada
+# 4x neste chat (wtc-objetivo-banco-nao-gramatica.md): gramática completa NUNCA é motivo pra pesquisar/
+# submeter menos — o tip antigo é só um PONTO DE PARTIDA, não dispensa reverificação própria.
+#
+# ⚠ BUG JÁ DOCUMENTADO (wtc-kingston-emcp-nl2-grammar-default.md) — a gramática desta família SEMPRE
+# retorna subtype/RAM="LPDDR3" no JSON computado, mesmo quando o PN literal diz "NL2" (LPDDR2). O
+# próprio tip avisa: "O mapa padrão retorna LPDDR3 — verificar sufixo NL2/NL3 visualmente." O PN físico
+# do debug já É essa verificação visual (leitura direta da bancada) — contém "NL2" literal, não "NL3".
+# Confirmado independentemente (não só confiando no tip): Octopart extrai "RAM Generation: LPDDR2 x32
+# 1066" explícito pra 08EMCP04-NL2DT227. Mesmo padrão de correção já usado nas rodadas AV100/CV100.
+#
+# PESQUISA (reverificação independente, não só o tip antigo):
+#   - `08EMCP04-NL2DT227` (PN exato do debug): Octopart com specs completos ("8GB TLC NAND" +
+#     "RAM: 4Gb, LPDDR2 x32 1066" + "162-ball FBGA") + TrustedParts/Avnet (existência, distribuidor
+#     autorizado). Fonte mais forte do cluster.
+#   - `08EMCP08-NL3DT227-A01` + `08EMCP04-NL3DT227-A01`: DATASHEET OFICIAL Kingston (PDF completo,
+#     espelhado num anexo de fórum NXP — community.nxp.com, mesmo padrão de fonte já validado no caso
+#     TB28 — "eMMC - Page 102" de um documento maior compilando várias famílias eMCP/eMMC). Specs
+#     completos: eMMC 5.0 (compat. 4.4/4.41/4.5), LPDDR3 1600Mbps x32/8-bancos, **221-ball FBGA**,
+#     11.5×13.0×0.9mm, VCC 3.3V/VCCQ 1.8-3.3V/VDD1 1.8V/VDD2,VDDQ 1.2V, -25~+85°C op/-55~+125°C
+#     armazenamento. O próprio datasheet declara a regra de escala RAM: "08EMCP04: 4Gb (1 chip
+#     select); 08EMCP08: 8Gb (2 chip selects)" — mesma regra pn[6:8] já conhecida pela gramática.
+#     Confirma o pacote 221-ball que o tip original já citava pra NL3 (uma fonte mais fraca,
+#     Datasheet.Live, tinha extraído "162-ball" por engano pra esse mesmo PN — descartado a favor do
+#     datasheet oficial).
+#   - `08EMCP08-NL2DT227` (irmã de RAM=1GB da NL2 confirmada): existência confirmada em 2 fontes
+#     (Avnet, Datasheets.com — página bloqueada por robots.txt, só o título/listing) mas SEM specs
+#     abertos direto. Specs aplicados por: (a) mesmo pacote/geração da irmã 04-NL2 confirmada acima
+#     (162-ball, LPDDR2), (b) regra de escala RAM EXPLICITAMENTE declarada no datasheet oficial da
+#     NL3 (mesma família, código RAM "08"=8Gb=1GB, 2 chip selects) — não é analogia solta, é a MESMA
+#     regra pn[6:8] que a gramática já usa, aplicada ao lado LPDDR2. Fonte mais fraca do cluster,
+#     sinalizado.
+#
+# ACHADO LATERAL NÃO PERSEGUIDO (mesmo critério já usado pra BT227/BS100/CU100/DT527/EL2BV100): existe
+# um 3º token de sufixo pra esta geração, `EL3DT227` (não citado no tip original, que só menciona
+# NL2/NL3) — `08EMCP08-EL3DT227` achado em Octopart+Censtry, specs "8GB eMMC TLC + 8Gb LPDDR3 x32
+# 1600, 221-ball FBGA" (mesmas specs da NL3-08, só token de sufixo diferente — paralelo exato ao caso
+# já resolvido EL2×NL2 do AS100). Fica pra rodada futura (não é o que o debug de hoje pediu).
+#
+# Convenção de campos: idêntica às entregas AV100/CV100/AS100 (KINGSTON.md §1) — chip_type="eMCP",
+# subtype=geração da RAM (LPDDR2/LPDDR3), interface="eMMC 5.0", emcp_nand=GB direto, emcp_ram=
+# "LPDDR{n} <cap>" (cap=Gbit÷8: código RAM "04"→4Gbit÷8=512MB, "08"→8Gbit÷8=1GB). device vazio (eMCP
+# não usa esse campo).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emcp_dt227_2026-09-02.yaml --fill-empty
+
+brand: Kingston
+
+known_parts:
+
+  # ── PN físico exato do debug de estoque (known_exact:false → agora resolvido) ──
+  - part_number: 08EMCP04-NL2DT227
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      PN físico exato do debug de estoque do dono, 02/09/2026 14:19 (known_exact:false,
+      pn_not_in_db:true, classification_source:"gramática" — grammar já decodifica a família
+      08EMCP mas faltava known_part). Geração de sufixo "DT227", já citada como "PN confirmado" no
+      próprio tip da gramática (chips/knowledge/kingston.yaml, fonte original Puris.net) mas nunca
+      promovida a known_part — reverificado de forma independente nesta rodada. Confirmado via
+      Octopart com specs completos: "8GB TLC NAND" + RAM "4Gb, LPDDR2 x32 1066" (4Gbit÷8=512MB,
+      código pn[6:8]="04") + pacote "162-ball FBGA" — bate exato com o pacote que o tip da
+      gramática já previa pra NL2 ("162ball"). Também confirmado via TrustedParts/Avnet
+      (distribuidor autorizado). O JSON computado da gramática mostra RAM="LPDDR3" por causa do
+      bug de default já documentado (wtc-kingston-emcp-nl2-grammar-default.md) — o PN físico
+      literal contém "NL2", não "NL3", e a fonte confirma LPDDR2 explicitamente; este known_part
+      corrige o known_exact pra este PN específico (mesmo padrão de correção já usado em
+      AV100/CV100/AS100), sem tocar a gramática.
+    source_url: https://octopart.com/08emcp04-nl2dt227-kingston-95995461
+
+  # ── irmã de RAM (1GB em vez de 512MB), mesma geração/token LPDDR2 ──
+  - part_number: 08EMCP08-NL2DT227
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 1GB
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade RAM da 08EMCP04-NL2DT227 acima — código RAM "08"=8Gbit÷8=1GB (em vez de
+      "04"=512MB), mesma geração de sufixo "DT227", mesmo token "NL2"/LPDDR2. Existência confirmada
+      em 2 fontes (Avnet — distribuidor autorizado — e Datasheets.com, cujo texto completo ficou
+      bloqueado por robots.txt no fetch, só o título/listagem) — mais fraca que a irmã acima, sem
+      specs abertos diretos. Pacote (162-ball) e geração (LPDDR2) aplicados por vir da MESMA irmã
+      04-NL2 confirmada com specs completos; capacidade RAM (1GB) aplicada pela regra de escala
+      pn[6:8] que o datasheet oficial da geração irmã NL3 desta mesma família declara explicitamente
+      ("08EMCP08: 8Gb, 2 chip selects" vs "08EMCP04: 4Gb, 1 chip select") — não é analogia solta,
+      é a mesma regra de decodificação que a própria gramática já usa pra este prefixo.
+    source_url: https://www.avnet.com/shop/us/products/kingston-technology/08emcp08-nl2dt227-3074457345639452266/
+
+  # ── irmã LPDDR3, RAM=512MB — datasheet oficial Kingston (fonte mais forte do cluster) ──
+  - part_number: 08EMCP04-NL3DT227
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 512MB
+    confidence: confirmed
+    notes: >
+      Geração "DT227", token de sufixo "NL3" (LPDDR3, distinto de NL2/LPDDR2 acima) — código RAM
+      "04"=4Gbit÷8=512MB. Fonte mais forte do cluster inteiro: DATASHEET OFICIAL Kingston completo
+      (PDF, espelhado num anexo de fórum NXP — community.nxp.com, "eMMC - Page 102" de um documento
+      maior cobrindo várias famílias eMCP/eMMC, mesmo padrão de fonte já validado no caso TB28 do
+      eMMC standalone). Specs do datasheet: eMMC 5.0 (compatível 4.4/4.41/4.5), até 400MB/s DDR,
+      LPDDR3 ×32 8 bancos 1600Mbps @RL=12, **221-ball FBGA** 11.5×13.0×0.9mm, VCC(NAND) 3.3V,
+      VCCQ 1.8V/3.3V, VDD1(DRAM core) 1.8V, VDD2/VDDQ(DRAM I/O) 1.2V, operação -25~+85°C /
+      armazenamento -55~+125°C. Pacote 221-ball bate com o que o tip original da gramática já
+      previa pra NL3 ("221ball") — uma fonte mais fraca (Datasheet.Live) tinha extraído "162-ball"
+      por engano pra este PN, descartado a favor do datasheet oficial.
+    source_url: https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/113200/2/08EMCP08-NL3DT227-A01(eMMC%20-%20Page%20102).pdf
+
+  # ── irmã LPDDR3, RAM=1GB — mesma fonte oficial acima ──
+  - part_number: 08EMCP08-NL3DT227
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 1GB
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade RAM da 08EMCP04-NL3DT227 acima — código RAM "08"=8Gbit÷8=1GB, mesmo token
+      "NL3"/LPDDR3, mesmo datasheet oficial Kingston (community.nxp.com, ver PN irmã acima pros
+      specs completos — este PN é citado explicitamente NO MESMO documento, "08EMCP08: 8Gb, 2 chip
+      selects"). 221-ball FBGA, eMMC 5.0, LPDDR3 1600Mbps. Também corroborado em Avnet, Octopart,
+      IC-Components, Win-Source, DigiPart — o mais corroborado dos 4 PNs deste cluster.
+    source_url: https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/113200/2/08EMCP08-NL3DT227-A01(eMMC%20-%20Page%20102).pdf

@@ -100,7 +100,61 @@
 # CLUSTER adicional (irmã de pacote/capacidade, achada nesta rodada varrendo a mesma família KE4BT):
 #   KE4BT5D6A → 32GB, 169-Pin FBGA — irmã de capacidade da KE4BT4B6A (16GB) já confirmada acima.
 #
-# validar: python manage.py submit_known_parts submissions/kingston_emmc_ke4_2026-08-20.yaml
+#
+# ── ATUALIZAÇÃO 2026-09-02 (4ª rodada) — SUB-FAMÍLIA eMCP dentro do prefixo "KE4CN2L2" ──
+# Disparada por PN físico do debug de estoque `KE4CN2L2HA5A2A` (01/09/2026 21:18, known:false,
+# tudo vazio; fuzzy_sugest. apontou pro irmão já confirmado `KE4CN2L2SA5H2A` acima). Por
+# wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar, não pesquisei o fuzzy_sugest. em si — só o PN
+# literal do debug.
+#
+# DESCOBERTA: `KE4CN2L2HA5A2A` é PN REAL e distinto — achado em 4 fontes independentes (Jotrin,
+# Prom.ua, Techmaster, HKinventory — esta última já lista uma variante de revisão `-A58A`). NÃO é
+# erro de leitura do irmão `SA5H2A` (mesmo prefixo de 8 chars "KE4CN2L2", mas família à parte).
+#
+# Mas: o padrão "H" nesse mesmo prefixo parece ser uma SUB-LINHA DIFERENTE — não eMMC puro como
+# `SA5H2A` (que é só NAND, 1 fabricante — Toshiba — nos 2 dies empilhados). Octopart/Win Source
+# (mesma fonte já usada pro SA5H2A) descreve:
+#   `KE4CN2L2HA5A2A`  → "eMCP 32GB + 4GB" (rótulo eMCP explícito = combo NAND+RAM)
+#   `KE4CN2L2HA8A2A`  → "4GB + 8GB, 162 Ball Fbga Tsb 19NM Nanya 30NM" (acha um SEGUNDO
+#                        fabricante de die — Nanya, historicamente só DRAM — ao lado de Tsb/
+#                        Toshiba, batendo com a hipótese eMCP; achado varrendo o mesmo prefixo,
+#                        não veio do fuzzy_sugest.)
+# Números de capacidade não fecham limpo entre os dois PNs (32+4 vs 4+8) e nenhuma fonte
+# Tier-1/Kingston oficial cobre PN dessa era (flyer oficial eMCP_en.pdf da Kingston não lista
+# nada com prefixo "KE4" — só a linha moderna "[cap]EM[cap]-[suffix]"). Levei a ambiguidade
+# categoria+capacidade ao dono via AskUserQuestion em vez de adivinhar — ver
+# wtc-confirmacao-fisica-dono-sobrepoe-ausencia-tier1. Resposta: **"Tenho o chip, é eMCP de
+# verdade"** — confirma por posse física que É combo NAND+RAM (pacote/dies visíveis bate), sem
+# fornecer números próprios — autorizou usar os do Octopart quando não soubesse os exatos.
+#
+# Registrei os 3 PNs abaixo como eMCP com os números LITERAIS do Octopart (maior número = NAND,
+# menor = RAM — inferência de ordem, não confirmada campo-a-campo; documentada, não escondida).
+# `subtype` (geração LPDDR) fica VAZIO — nenhuma fonte confirmou LPDDR2/3/4/etc, dono confirmou só
+# a CATEGORIA (é eMCP) via posse física, não a geração de RAM especificamente; campo é blank=True
+# no model, não adivinhei. `interface` = "eMMC 4.5" por herança do resto da família KE4CN2L2/KE4CN/
+# KE4BT (mesmo prefixo/era, nenhuma fonte sugeriu versão diferente para o sub-grupo "H") — inferência
+# de família, não confirmada PN a PN (mesma convenção já usada pros 6 PNs da forma curta acima).
+# confidence="manual" nos 3 (categoria por posse física do dono, números de capacidade só Tier-2 sem
+# cross-check limpo — mesmo critério de wtc-manual-nao-e-quase-confirmado: autoritativo, não "quase").
+#
+# CLUSTER eMCP (Octopart/Win Source, mesma fonte já confiável pro SA5H2A):
+#   KE4CN2L2HA5A2A        → eMCP, NAND 32GB + RAM 4GB
+#   KE4CN2L2HA5A2A-A58A   → irmã de revisão da HA5A2A (specs herdadas, achada via HKinventory)
+#   KE4CN2L2HA8A2A        → eMCP, NAND 8GB + RAM 4GB (RAM só em notes, ver correção abaixo)
+#
+# ── CORREÇÃO 2026-09-02 (mesmo dia, depois) — emcp_ram AMBÍGUO no audit_campo_forma ──
+# Dono rodou o dry-run e `audit_campo_forma` marcou os 3 `emcp_ram: 4GB` acima como AMBÍGUO: a
+# forma canônica do campo exige prefixo de geração de RAM (LPDDR2/3/4[X]/GDDR.../DDR.../SDRAM/
+# RDRAM — vocabulário fechado em `chips/conventions.py::_RAM_GEN_RE`), e eu só tinha o número (4GB)
+# sem geração confirmada (dono confirmou a CATEGORIA eMCP, não a geração da RAM; nenhuma fonte deu
+# isso tampouco). Não existe token "geração desconhecida" no vocabulário — não dava pra corrigir a
+# FORMA sem inventar um LPDDRx que eu não confirmei. Deixei `emcp_ram` VAZIO nos 3 (mesmo
+# tratamento já dado ao `subtype`) e mantive o número "4GB" só no `notes` — resolve o AMBÍGUO sem
+# adivinhar. Consequência documentada: sem `emcp_ram` preenchido, a precificação/caixa (F12) só lê
+# o lado NAND desses 3 known_parts até a geração da RAM ser confirmada (fica pra rodada futura, ou
+# se o dono conferir a marcação do lado da RAM no chip físico).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emmc_ke4_2026-08-20.yaml --fill-empty
 
 brand: Kingston
 
@@ -304,3 +358,77 @@ known_parts:
       errada), não spec real diferente. Conta: se fosse Gbit literal seria 32Gbit÷8=4GB, mas a fonte
       independente confirma GByte mesmo — 32GB é o valor correto.
     source_url: https://octopart.com/ke4cn5b6a-kingston-24840774
+
+  # ── 4ª rodada, 2026-09-02: sub-família eMCP dentro do prefixo "KE4CN2L2" (dono confirmou por posse física) ──
+  - part_number: KE4CN2L2HA5A2A
+    chip_type: eMCP
+    subtype: ''
+    interface: eMMC 4.5
+    emcp_nand: 32GB
+    emcp_ram: ''
+    confidence: manual
+    notes: >
+      PN físico do debug de estoque do dono, 01/09/2026 21:18 (known_exact:false, tudo vazio;
+      fuzzy_sugest. apontou pro irmão já confirmado KE4CN2L2SA5H2A acima — não pesquisado, ver
+      wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar). Achado em 4 fontes independentes (Jotrin,
+      Prom.ua, Techmaster, HKinventory) — PN real, distinto de SA5H2A (mesmo prefixo de 8 chars
+      "KE4CN2L2", família à parte). Win Source/Octopart (re-fetch cuidadoso, pedindo explicitamente
+      pra desambiguar de PNs vizinhos na página de busca) descreve como "eMCP 32GB + 4GB" — rótulo
+      eMCP explícito, diferente do irmão SA5H2A (eMMC puro, só NAND). Ambiguidade categoria+capacidade
+      levada ao dono via AskUserQuestion (nenhuma fonte Tier-1/Kingston oficial cobre PN dessa era).
+      Resposta do dono: "Tenho o chip, é eMCP de verdade" — confirma por posse física, autorizou usar
+      os números do Octopart já que não tinha os exatos de cabeça. NAND=32GB confirmado no campo
+      emcp_nand (maior número do par "32GB + 4GB", por inferência de ordem — não confirmado campo-
+      a-campo pelo distribuidor). RAM=4GB (Octopart) NÃO entra no campo emcp_ram: audit_campo_forma
+      marcou AMBÍGUO porque a forma canônica exige prefixo de geração (LPDDR2/3/4/etc — vocabulário
+      fechado em _RAM_GEN_RE) que nenhuma fonte confirmou; deixei emcp_ram vazio (mesmo tratamento
+      já dado ao subtype) em vez de inventar geração — o número "4GB" fica registrado só aqui como
+      contexto. ⚠ Consequência: sem emcp_ram preenchido, a precificação/caixa (F12) só lê o lado
+      NAND deste known_part até a geração ser confirmada. subtype (geração LPDDR) igualmente vazio
+      — dono confirmou categoria, não geração específica; não adivinhei. interface="eMMC 4.5"
+      herdado do resto da família KE4CN2L2/KE4CN/KE4BT (mesmo prefixo/era), não confirmado PN a PN.
+    source_url: https://octopart.com/search?q=KE4CN2L2HA5A2A
+
+  # ── irmã de revisão da HA5A2A acima, achada via HKinventory — specs herdadas (mesma família/sufixo base) ──
+  - part_number: KE4CN2L2HA5A2A-A58A
+    chip_type: eMCP
+    subtype: ''
+    interface: eMMC 4.5
+    emcp_nand: 32GB
+    emcp_ram: ''
+    confidence: manual
+    notes: >
+      Variante de revisão da KE4CN2L2HA5A2A acima (sufixo "-A58A", mesmo padrão de revisão já visto
+      na forma curta desta família — ex. KE4CN2H5A-A58, sinalizado mas não perseguido na 1ª rodada).
+      Achada via HKinventory (listagem própria, PN completo com sufixo) — a página não expôs specs
+      estruturados pro fetch (conteúdo dinâmico/JS), então specs herdados da base HA5A2A (mesma
+      lógica já usada pra NL2AS100-S08 no arquivo eMCP AS100: revisão de PN raramente muda
+      capacidade/categoria, só processo de fabricação/qualificação). confidence="manual" — mesmo
+      critério da base (categoria eMCP confirmada por posse física do dono, capacidade não
+      cross-checada Tier-1). emcp_ram vazio pelo mesmo motivo da base — forma canônica exige
+      geração LPDDR que não foi confirmada (audit_campo_forma marcou AMBÍGUO); RAM=4GB fica só
+      documentado aqui, herdado da HA5A2A.
+    source_url: https://www.hkinventory.com/p/d/KE4CN2L2HA5A2AA58A.htm
+
+  # ── 2ª PN da sub-família eMCP "H", capacidade de NAND diferente (achada varrendo o mesmo prefixo) ──
+  - part_number: KE4CN2L2HA8A2A
+    chip_type: eMCP
+    subtype: ''
+    interface: eMMC 4.5
+    emcp_nand: 8GB
+    emcp_ram: ''
+    confidence: manual
+    notes: >
+      Irmã de capacidade da KE4CN2L2HA5A2A acima — achada varrendo o mesmo prefixo "KE4CN2L2H..."
+      (veswin.com + thepartsdirect.com listam o PN; specs vieram do Octopart/Win Source, re-fetch
+      desambiguado). Descrição: "4GB + 8GB, 162 Ball Fbga Tsb 19NM Nanya 30NM" — diferente da irmã
+      SA5H2A (só "Tsb", 1 fabricante), aqui aparecem DOIS fabricantes de die: Tsb=Toshiba (NAND,
+      mesmo padrão do resto da família) e Nanya=fabricante historicamente só de DRAM — corrobora a
+      categoria eMCP (NAND+RAM combo) confirmada pelo dono por posse física na HA5A2A irmã. NAND=8GB
+      confirmado no campo emcp_nand (maior número do par "4GB + 8GB" — não confirmado campo-a-campo
+      pelo distribuidor). RAM=4GB (Octopart) igual à HA5A2A — reaproveitamento plausível do mesmo
+      chip LPDDR numa família de NAND variável, mas não confirmado campo-a-campo — NÃO entra no
+      campo emcp_ram pelo mesmo motivo da base (forma canônica exige geração LPDDR que
+      audit_campo_forma não aceita sem prefixo; ver nota da HA5A2A acima). subtype/interface mesma
+      lógica/ressalvas da HA5A2A (subtype vazio, interface herdado por família).
+    source_url: https://octopart.com/search?q=KE4CN2L2HA8A2A
