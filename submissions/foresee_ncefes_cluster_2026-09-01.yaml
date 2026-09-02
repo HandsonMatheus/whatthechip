@@ -1,0 +1,100 @@
+# Submissão known_parts — Foresee (Longsys), cluster `NCEFES*` — 2026-09-01 (5ª rodada do dia).
+# Origem: PN de bancada "NCEFES7608G" → `NCEFES76-08G`. Esse cluster já era um LEAD conhecido —
+# achado via "See Also" do DigiPart em 2026-08-26 (`NCEFEH58`) e registrado no gap deste arquivo
+# como "não pesquisados": NCEFES78-08G, NCEFES88-04G, NCEFESA8-08G, NCEFESE8-04G, NCEFES86-04G,
+# NCEFES76-08G. Aplicando a lição de hoje ("esgote os leads que você mesmo já registrou"), busquei
+# TODOS os 6 de uma vez, não só o PN que motivou a bancada.
+#
+# ⭐ EVIDÊNCIA (todos DigiPart, múltiplos distribuidores, "Manufacturer"=FORESEE/FORE explícito):
+#   - NCEFES78-08G: 16 distribuidores independentes — NOVO RECORDE da marca (supera os 15 do
+#     NCEMASKG-16G de hoje mais cedo).
+#   - NCEFES88-04G: 14 distribuidores, Allchip confirma pacote "BGA153" no campo estruturado.
+#   - NCEFES86-04G: 12 distribuidores.
+#   - NCEFESA8-08G: 8 distribuidores.
+#   - NCEFES76-08G (o PN de bancada): 6 distribuidores, Chipsea confirma "BGA153".
+#   - NCEFESE8-04G: 3 distribuidores (o mais fraco do lote, mas ainda acima do mínimo já aceito
+#     nesta marca — todos FORESEE explícito, sem nenhum "Request The Manufacturer" ambíguo).
+#   Capacidade em todos: literal do sufixo "-08G"/"-04G" (mesma convenção 100% confirmada em toda a
+#   família NCEM*/NCEF* por datasheet — NCEMASD9/NCEMAM8B/NCEMBSF9 já submetidos).
+#
+# ⚠ Interface (versão eMMC) não confirmada em nenhum dos 7 — nenhum datasheet próprio aberto, só
+#   convergência de distribuidor (mesmo padrão do cluster NCEM* resolvido hoje mais cedo). Em branco.
+#
+# ⭐ ATUALIZAÇÃO (2ª checagem, mesma rodada): o dono perguntou "essa família só tem em 04GB e 08GB?"
+#   — testei 16G/32G pra todos os 6 e 04G extra pro NCEFES76. Resultado: NÃO, a família NÃO é só
+#   04/08GB. `NCEFES76` tem DUAS capacidades confirmadas — -08G E -16G (2 distribuidores pra -16G:
+#   New Strength Electronic e Chipsea, ambos FORESEE explícito, Chipsea confirma BGA153). Os outros
+#   5 vendor-codes testaram negativo pra capacidade adicional (NCEFES78-32G, NCEFES88-16G,
+#   NCEFESA8-32G, NCEFES86-16G: todos "no result") — ficam com a única capacidade já confirmada.
+#   NCEFESE8 não foi retestado nesta 2ª checagem (permanece só -04G, com -08G já negativo da 1ª
+#   rodada). 32G não foi testado pro NCEFES76 além do -04G/-16G/-32G já cobertos (32G negativo).
+#   Lição: capacidade por vendor-code NÃO é uniforme dentro da família — precisa checar cada um.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncefes_cluster_2026-09-01.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncefes_cluster_2026-09-01.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEFES76-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      PN de bancada foi "NCEFES7608G" (sem hífen). Vendor-code já citado como lead no gap deste
+      arquivo desde 2026-08-26. 6 distribuidores independentes no DigiPart (GlobalTek, Cytech,
+      Sierra, Atosn, Green Light, Chipsea — Chipsea confirma pacote BGA153 no campo estruturado),
+      maioria FORESEE/FORE explícito.
+    source_url: "https://www.digipart.com/part/NCEFES76-08G"
+  - part_number: "NCEFES78-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26. 16 distribuidores
+      independentes no DigiPart — recorde da marca (supera os 15 do NCEMASKG-16G, mesmo dia) —
+      quase todos FORESEE explícito.
+    source_url: "https://www.digipart.com/part/NCEFES78-08G"
+  - part_number: "NCEFES88-04G"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26. 14 distribuidores
+      independentes no DigiPart, quase todos FORESEE explícito; Allchip Electronic confirma pacote
+      BGA153 no campo estruturado.
+    source_url: "https://www.digipart.com/part/NCEFES88-04G"
+  - part_number: "NCEFESA8-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26. 8 distribuidores
+      independentes no DigiPart, todos FORESEE/FORE.
+    source_url: "https://www.digipart.com/part/NCEFESA8-08G"
+  - part_number: "NCEFESE8-04G"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26. 3 distribuidores
+      independentes no DigiPart (Kepictronics, SILITECH, Chipsea), todos FORESEE explícito.
+    source_url: "https://www.digipart.com/part/NCEFESE8-04G"
+  - part_number: "NCEFES86-04G"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26. 12 distribuidores
+      independentes no DigiPart, quase todos FORESEE explícito.
+    source_url: "https://www.digipart.com/part/NCEFES86-04G"
+  - part_number: "NCEFES76-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      2ª capacidade do mesmo vendor-code NCEFES76 (irmão do NCEFES76-08G desta mesma submissão,
+      o PN de bancada original). Achado ao testar variação de capacidade em resposta à pergunta do
+      dono "essa família só tem em 04GB e 08GB?". 2 distribuidores independentes no DigiPart — New
+      Strength Electronic (Manufacturer: FORESEE, "DC:15+ ; BGA") e Chipsea Electronics
+      (Manufacturer: FORESEE, "BGA153 ; DC:13+", confirma pacote). Único dos 6 vendor-codes deste
+      cluster com mais de uma capacidade confirmada (os outros 5 testaram negativo pra 16G/32G).
+    source_url: "https://www.digipart.com/part/NCEFES76-16G"

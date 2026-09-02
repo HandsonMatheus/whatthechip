@@ -1,0 +1,65 @@
+# Submissão known_parts — Foresee (Longsys), `FL3B1001G-39` (LPDDR3 standalone, root "FL") —
+# 2026-09-01. CORREÇÃO/COMPLEMENTO do known_part `FL3B1001G` (sem sufixo) já submetido em
+# `submissions/foresee_fl3b_lpddr3_2026-08-19.yaml`.
+#
+# ⚠ O QUE MUDOU (PN): o PN de bancada hoje veio completo — "FL3B1001G39" — com o sufixo "-39" que
+#   a leitura de 2026-08-19 não tinha capturado ("FL3B1001G", 9 chars, sem sufixo). Toda a família
+#   `FL*` desta marca (FLXC/FL4C/FL5P) sempre tem sufixo de 1-2 chars após o "G"
+#   (FLXC2004G-30, FL4C2001GD9, FL5P4008G-60) — a forma sem sufixo era quase certamente uma leitura
+#   incompleta, não o PN físico completo. **Isso importa tecnicamente:** o match de known_part é por
+#   STRING EXATA (sem tirar sufixo, regra já estabelecida nesta marca) — o registro antigo
+#   `FL3B1001G` (9 chars) NUNCA vai casar com o PN real de 11 chars que o operador lê na bancada.
+#   Este arquivo cria o known_part com o PN COMPLETO; o antigo fica órfão (recomendo ao dono avaliar
+#   se desativa/remove `FL3B1001G` no admin, já que não corresponde a nenhum PN físico real).
+#
+# ⚠ O QUE MUDOU (CONFIDENCE, 2026-09-01, correção de regra): a 1ª versão deste arquivo manteve
+#   `confidence=estimated` "porque não é dado novo, é o PN completo do mesmo registro já aceito" —
+#   ERRADO. Já existia regra registrada (memória `wtc-confirmacao-fisica-dono-sobrepoe-ausencia-tier1`,
+#   de outra marca) dizendo que confirmação FÍSICA do dono ("existe sim, estou vendo ele na minha
+#   frente", 2026-08-19) já é barra suficiente pra `manual`, não `estimated` — eu não tinha aplicado
+#   essa regra neste chat. Consequência prática que expôs o erro: `estimated` é o único
+#   `confidence` excluído do gateway de triagem do estoque (`_is_confirmed()`,
+#   `estoque/views.py`), então o chip nunca saía de "Indeterminado" mesmo aprovado no admin. O dono:
+#   "se eu mandei confirmar, é confirmado". **Corrigido para `confidence: manual`** nesta versão.
+#
+# ⚠ EVIDÊNCIA (specs, inalterada): nenhuma fonte documental/distribuidor achada em nenhuma das 3
+#   buscas (19/08, 01/09, busca ampliada 01/09 — DigiPart com/sem hífen, WebSearch, 1 datasheet
+#   aberto na íntegra que se revelou ser sobre a nomenclatura legada NCLD3B, não FL3B). Specs vêm de
+#   decodificação ESTRUTURAL pela gramática já validada do root "FL" (ver notes do known_part
+#   abaixo) + a confirmação FÍSICA do dono sobre a EXISTÊNCIA — que agora é reconhecida como barra
+#   suficiente pra `manual` (dono confirma → é confirmado), não mais tratada como "sem fonte =
+#   estimated".
+#
+# ⚠ ESTE PN JÁ ESTÁ NO BANCO como `estimated` (dono já rodou --commit e aprovou antes desta
+#   correção). Mudar um campo já preenchido (estimated→manual) é CONFLITO DE DADO para o
+#   `submit_known_parts` comum (compara por igualdade de string) — o caminho certo é
+#   `resolve_conflicts` (ver `wtc-interface-vocabulario-fechado-emmc-ufs.md`, mesma mecânica já usada
+#   pra upgrade de campo aprovado). Se `resolve_conflicts` não tratar `confidence` (é um ENUM, não
+#   string "mais específico vence" como `interface`), a alternativa é o dono editar o campo
+#   diretamente no admin do Django (KnownPart → FL3B1001G-39 → confidence → manual) — é edição do
+#   próprio dono, não escrita de agente por fora do portão.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_fl3b1001g39_2026-09-01.yaml            # dry-run = portão (pode acusar conflito no confidence)
+#                 python manage.py resolve_conflicts <args de sempre>                             # caminho pra aplicar upgrade em campo já aprovado
+#                 OU: editar confidence=manual direto no admin (KnownPart FL3B1001G-39)
+brand: "Foresee"
+known_parts:
+  - part_number: "FL3B1001G-39"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    notes: >
+      PN de bancada veio completo hoje: "FL3B1001G39" (sem hífen). CORRIGE/COMPLEMENTA o known_part
+      "FL3B1001G" (sem sufixo, submetido 2026-08-19) — mesmo chip físico já confirmado pelo dono por
+      observação direta, agora com o sufixo "-39" capturado (toda a família FL* tem sufixo de 1-2
+      chars após o G; a forma sem sufixo era leitura incompleta). Specs decodificadas
+      ESTRUTURALMENTE pela gramática já validada do root "FL": pn[2]='3'=LPDDR3 (mesmo padrão de
+      '4'=LPDDR4 no FL4C, 'X'=LPDDR4X no FLXC, '5'=LPDDR5 no FL5P); pn[3]='B'=pacote, combinação
+      "3B" já confirmada = LPDDR3+pacote-B no root legado NCLD (NCLD3B*, datasheet D-00151);
+      pn[7]='1' (dígito antes do G)=1GB, mesma regra posicional já usada em FL4C/FLXC/FL5P.
+      confidence=manual (corrigido de estimated 2026-09-01): confirmação FÍSICA direta do dono na
+      bancada é barra suficiente, não precisa de fonte documental terceira quando o dono já tem o
+      chip na mão. Recomendo ao dono avaliar desativar o known_part antigo "FL3B1001G" (sem
+      sufixo) no admin, já que ele nunca vai casar com o PN físico real de 11 caracteres.
+    source_url: ""

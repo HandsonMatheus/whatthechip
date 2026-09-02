@@ -1,0 +1,88 @@
+# Submissão known_parts — Foresee (Longsys), cluster `NCEM*` — 2026-09-01 (2ª rodada do dia).
+# Origem: dono cobrou "só tem 1? não senhor, sempre procure mais" depois da entrega solo do
+# NCEMASD9. Em vez de insistir em capacidades inexistentes do NCEMASD9 (já esgotado —
+# -04G/-32G/-64G todos "no result"), fui atrás dos vendor-codes do PRÓPRIO gap deste arquivo
+# (FORESEE.md §5 item 5: "NCEMAHBD*/NCEMASKG*/NCEMAM59* do gap original ainda não confirmados em
+# nenhuma fonte nova" + "NCEMAH59-16G... só no histórico Rockchip, sem linha viva nem distribuidor
+# pesquisado a fundo") — leads já identificados em rodadas anteriores desta marca (2026-08-26) mas
+# nunca de fato buscados no DigiPart. Resultado: os 4 têm evidência FORTE, nunca perseguida.
+#
+# ⭐ EVIDÊNCIA (todos DigiPart, múltiplos distribuidores, "Manufacturer"=FORESEE/FORE explícito no
+#   campo estruturado — não resumo de busca):
+#   - NCEMAH59-16G: 8 distribuidores independentes (Ariat, YIC International, Besen, Sense
+#     Electronic, New Strength, IC Components, Atosn, Green Light) — TODOS "FORESEE"/"FORE". YIC
+#     confirma pacote "153FBGA" direto no campo estruturado (mesma família física 153-ball já
+#     confirmada em ASLD/ASD9/AD9D/AD6B/SD9 desta marca). Achado incidental de peso: o datasheet
+#     oficial do NCEMASD9-08G (mesma rodada, ver `foresee_ncemasd9_2026-09-01.yaml`) reaproveita um
+#     template que cita literalmente "Longsys eMMC (NCEMAH59-xxG) Field F/W update flow" na seção
+#     7.13 — confirma que NCEMAH59 é código real da MESMA geração de template/produto.
+#   - NCEMASKG-16G: 15 distribuidores independentes (Conevo, Zeano, Ariat, YIC, MountainView,
+#     Semicon, Besen, GlobalTek, Kepictronics, Sense Electronic, Shengyu, New Strength, IC
+#     Components, Sierra, SILITECH, Atosn, Green Light, Chipsea) — a convergência mais forte já
+#     vista nesta marca para um vendor-code sem datasheet próprio, superando até o NCEFEH58 (8
+#     distribuidores, recorde anterior, 2026-08-26).
+#   - NCEMAHBD-08G: 4 distribuidores (Besen, Sense Electronic, Atosn, Green Light), todos
+#     FORESEE/FORE. Besen confirma pacote "FBGA153" no campo estruturado.
+#   - NCEMAM59-08G: 4 distribuidores (Besen, Sense Electronic, Atosn, Green Light), todos
+#     FORESEE/FORE.
+#   Capacidade em todos os 4: literal do sufixo "-16G"/"-08G" (mesma convenção já 100% confirmada
+#   em toda a família NCEM* por datasheet — ver NCEMASD9/NCEMAM8B/NCEMBSF9 já submetidos).
+#
+# ⚠ SIBLINGS (regra "nunca 1 só", busca ativa): tentei -08G/-32G pro NCEMAH59, -08G/-32G pro
+#   NCEMASKG, -16G pro NCEMAHBD, -16G pro NCEMAM59 — TODOS "no result" no DigiPart. Cada vendor-code
+#   desta linha parece ter exatamente 1 capacidade catalogada (padrão já visto noutros vendor-codes
+#   `NCEM*` desta marca, ex. NCEMBS99 só -16G/-32G, NCEFEH58 com 3). Não é busca incompleta — é o
+#   cluster esgotado para estes 4 códigos.
+# ⚠ Interface (versão eMMC) não confirmada em nenhum dos 4 — nenhum datasheet próprio aberto, só
+#   convergência de distribuidor. Deixado em branco, não presumido.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncem_cluster_2026-09-01.yaml --fill-empty            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncem_cluster_2026-09-01.yaml --commit --fill-empty   # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCEMAH59-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26 (histórico Rockchip,
+      nunca pesquisado a fundo). 8 distribuidores independentes no DigiPart confirmam FORESEE/FORE
+      (Ariat, YIC International — que também confirma pacote 153FBGA no campo estruturado —, Besen,
+      Sense Electronic, New Strength, IC Components, Atosn, Green Light). Achado incidental: o
+      datasheet oficial do NCEMASD9-08G (mesma rodada) cita "Longsys eMMC (NCEMAH59-xxG)" na seção
+      de firmware update — confirma o código como real, mesma geração de produto/template. Sem
+      siblings de capacidade (-08G/-32G tentados, "no result"). Sem confirmação de versão eMMC,
+      interface em branco.
+    source_url: "https://www.digipart.com/part/NCEMAH59-16G"
+  - part_number: "NCEMASKG-16G"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26 ("ainda não confirmado
+      em nenhuma fonte nova"). 15 distribuidores independentes no DigiPart — a convergência mais
+      forte já vista nesta marca (supera o recorde anterior de 8, NCEFEH58) — quase todos
+      confirmando FORESEE explícito. Sem siblings de capacidade (-08G/-32G tentados, "no result").
+      Sem confirmação de versão eMMC, interface em branco.
+    source_url: "https://www.digipart.com/part/NCEMASKG-16G"
+  - part_number: "NCEMAHBD-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26 ("ainda não confirmado
+      em nenhuma fonte nova"). 4 distribuidores independentes no DigiPart confirmam FORESEE/FORE
+      (Besen — que também confirma pacote FBGA153 no campo estruturado —, Sense Electronic, Atosn,
+      Green Light). Sem siblings de capacidade (-16G tentado, "no result"). Sem confirmação de
+      versão eMMC, interface em branco.
+    source_url: "https://www.digipart.com/part/NCEMAHBD-08G"
+  - part_number: "NCEMAM59-08G"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: manual
+    notes: >
+      Vendor-code já citado como lead no gap deste arquivo desde 2026-08-26 ("ainda não confirmado
+      em nenhuma fonte nova"). 4 distribuidores independentes no DigiPart confirmam FORESEE/FORE
+      (Besen, Sense Electronic, Atosn, Green Light). Sem siblings de capacidade (-16G tentado, "no
+      result"). Sem confirmação de versão eMMC, interface em branco.
+    source_url: "https://www.digipart.com/part/NCEMAM59-08G"
