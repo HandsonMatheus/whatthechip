@@ -1849,6 +1849,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H9HP27ABUMMDAR-KEM": ("eMCP", "", "eMMC 5.1 32GB", "LPDDR4X 2GB", "", "RENTÁVEL"),  # chave RAM 'AB' nova no mapa compartilhado H9HP/H9HQ (2026-07-09) — Preduo + Puris concordam
     "H9HQ22AECMMDAR-KEM": ("uMCP", "", "UFS 2.1 256GB", "LPDDR4X 6GB", "", "RENTÁVEL"),  # chave NAND '22' nova no mapa (2026-07-09) — Preduo + distribuidor concordam, mesmo padrão de pares 15/16 e 53/54
     "H9TKNNN8JDAP":      ("LPDDR2", "1GB", "", "", "", "NÃO RENTÁVEL"),
+    "H9TCNNN8JDMM":      ("LPDDR2", "1GB", "", "", "", "NÃO RENTÁVEL"),  # prefixo NOVO (2026-09-02), irmã do H9TK — Win-Source + OMO Electronic confirmam 256Mx32/8Gb=1GB
     "H9TQ64A8GTCC":      ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1GB", "", "RENTÁVEL"),
     "H9TQ64AAETMCUR-KUM": ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1.5GB", "", "RENTÁVEL"),  # AA=1.5GB (12Gb) ≠ AB=2GB — WinSource 2026-07-06, ver hynix.yaml
     "H9TQ18ABJTMCUR-KTM": ("eMCP", "", "eMMC 5.x 16GB", "LPDDR3 2GB", "", "RENTÁVEL"),  # chave NAND '18' nova no mapa (2026-07-09) — Preduo + Puris concordam, mesmo padrão de trio 16/17/18
@@ -3313,3 +3314,496 @@ class LabelEmcpTruncadoTests(TestCase):
         self.assertEqual(_format_cap("LPDDR3 512MB"), "512MB")
         self.assertEqual(_extract_gb("LPDDR3 512MB"), "",
                          "_extract_gb não lê MB — é essa a causa")
+
+
+class AuditoriaModoPortaoTests(TestCase):
+    """`audit_campo_forma --portao` — a LISTA DE TRABALHO do banco sujo.
+
+    Existe porque a classificação do auditor é mais LARGA que o portão de
+    propósito (ela aponta o que está feio; ele barra só o que é ambíguo PARA O
+    ENGINE). Sem este modo, "o banco está sujo" não vira trabalho atribuível:
+    o dono não sabe quais linhas precisam de conserto de verdade, nem de quem
+    é cada uma. Fonte única — usa o MESMO `measure_field_problem` do `clean()`,
+    para o relatório nunca prometer o que o portão não cumpre."""
+
+    def _kp(self, marca, pn, **campos):
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name=marca, defaults={"code": marca[:3].upper()})
+        kp = KnownPart.objects.create(brand=b, part_number=pn, chip_type="eMCP",
+                                      confidence="confirmed", notes="fixture")
+        if campos:                       # legado entra por .update() — sem clean()
+            KnownPart.objects.filter(pk=kp.pk).update(**campos)
+        return kp
+
+    def test_lista_so_o_que_o_portao_barraria_e_agrupa_por_marca(self):
+        from io import StringIO
+        from django.core.management import call_command
+        self._kp("Samsung", "SUJO1", emcp_nand="moviNAND 1GB + OneNAND 1GB")
+        self._kp("SK Hynix", "SUJO2", emcp_ram="8Gb")
+        # FEIO mas o engine lê sem ambiguidade → NÃO é trabalho do portão
+        self._kp("Samsung", "FEIO1", emcp_ram="SDRAM 1GB (pré-LPDDR — ver notes)")
+        # limpo
+        self._kp("Kingston", "LIMPO1", emcp_ram="LPDDR2 512MB", emcp_nand="8GB")
+        out = StringIO()
+        call_command("audit_campo_forma", "--portao", stdout=out)
+        t = out.getvalue()
+        self.assertIn("SUJO1", t)
+        self.assertIn("SUJO2", t)
+        self.assertNotIn("LIMPO1", t, "apontou registro limpo")
+        self.assertNotIn("FEIO1", t,
+                         "apontou prosa que o engine lê sem ambiguidade — o modo --portao "
+                         "é a lista do que NÃO ENTRARIA, não a lista do que está feio")
+        self.assertIn("Samsung", t); self.assertIn("SK Hynix", t)
+        # ⚠ Asserção FRACA na 1ª versão: `assertIn("resolve_conflicts", t)` passava
+        # mesmo com o roteiro mutilado, porque a palavra sobrevivia na linha do
+        # `--revert`. O rodapé é a parte ÚTIL deste modo — sem ele, o dono tem uma
+        # lista e nenhum caminho —, então a trava tem que exigir os 3 passos.
+        for passo in ("submit_known_parts", "resolve_conflicts --brand", "--revert"):
+            self.assertIn(passo, t, f"o roteiro de conserto perdeu o passo '{passo}'")
+        self.assertIn("PESQUISA", t,
+                      "não avisou que o conserto é pesquisa da marca, não regex")
+
+    def test_banco_limpo_diz_que_esta_limpo_sem_prometer_demais(self):
+        from io import StringIO
+        from django.core.management import call_command
+        self._kp("Kingston", "LIMPO1", emcp_ram="LPDDR2 512MB", emcp_nand="8GB")
+        out = StringIO()
+        call_command("audit_campo_forma", "--portao", stdout=out)
+        t = out.getvalue()
+        self.assertIn("NENHUM", t)
+        self.assertIn("NÃO quer dizer catálogo perfeito", t,
+                      "prometeu 'catálogo limpo' quando só olhou a régua do portão")
+
+    def test_zero_registros_continua_gritando(self):
+        """Mesma lição do audit_category_codes: zero silencioso numa auditoria
+        é indistinguível de 'está tudo limpo' (CLAUDE.md §7)."""
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command("audit_campo_forma", "--portao", stdout=out)
+        self.assertIn("ZERO known_parts", out.getvalue())
+
+
+class EmcpGeracaoNoSubtypeTests(TestCase):
+    """FIX 2026-08-28 — a geração LPDDR também vale quando vem do `subtype`.
+
+    **Porquê (e por que isto vem ANTES de tocar em qualquer dado).** O campo
+    `emcp_ram` guarda hoje DUAS informações — `"LPDDR3 2GB"` é geração + medida —
+    e `assess_profitability` só sabia ler a geração DALI. Mas a convenção (§6)
+    manda campo de medida guardar UMA medida: a forma certa é `emcp_ram="2GB"`,
+    com a geração no `subtype`. Enquanto o motor não lesse o subtype, **escrever
+    certo REPROVARIA o chip**: medido no banco real (537 eMCP com RAM e NAND),
+    451 viravam INDETERMINADO e 5 mudavam de NÃO RENTÁVEL para INDETERMINADO —
+    ou seja, limpar o dado mudaria a PRATELEIRA FÍSICA de 84% dos eMCP.
+
+    O motor é a fonte única da rentabilidade (regra de ouro #11), então a ordem
+    é esta e não a inversa: **primeiro o motor aprende a ler a geração de onde
+    ela pertence, depois o dado se muda para lá.**
+    """
+
+    #: (rótulo, forma ATUAL — geração dentro do campo de medida,
+    #:           forma LIMPA  — campo de medida com UMA medida só)
+    _PARES = [
+        ("LPDDR4X 16+4", ("LPDDR4X 4GB", "LPDDR4X"), ("4GB", "LPDDR4X"), "16GB"),
+        ("LPDDR3 16+2",  ("LPDDR3 2GB",  "LPDDR3"),  ("2GB",  "LPDDR3"),  "16GB"),
+        ("LPDDR2 8+1",   ("LPDDR2 1GB",  "LPDDR2"),  ("1GB",  "LPDDR2"),  "8GB"),
+        ("LPDDR5 128+8", ("LPDDR5 8GB",  "LPDDR5"),  ("8GB",  "LPDDR5"),  "128GB"),
+        # RAM abaixo do mínimo: reprova pela CAPACIDADE nos dois lados
+        ("LPDDR4 16+0.5", ("LPDDR4 512MB", "LPDDR4"), ("512MB", "LPDDR4"), "16GB"),
+    ]
+
+    @staticmethod
+    def _r(ram, subtype, nand):
+        return {'chip_type': 'eMCP', 'subtype': subtype, 'is_emcp': True,
+                'emcp_ram': ram, 'emcp_nand': nand, 'capacity': ''}
+
+    def test_forma_limpa_e_forma_atual_dao_o_MESMO_veredito(self):
+        """A promessa central: arrumar o campo NÃO move a prateleira."""
+        from chips.engine import assess_profitability
+        for rotulo, (ram_at, sub_at), (ram_li, sub_li), nand in self._PARES:
+            with self.subTest(rotulo):
+                atual = assess_profitability(self._r(ram_at, sub_at, nand))
+                limpo = assess_profitability(self._r(ram_li, sub_li, nand))
+                self.assertEqual(
+                    atual, limpo,
+                    f"{rotulo}: limpar o campo de medida mudou o veredito "
+                    f"({atual} → {limpo}) — a migração de dado seria uma mudança "
+                    f"de prateleira disfarçada de arrumação")
+
+    def test_geracao_so_no_subtype_reprova_por_geracao(self):
+        """LPDDR2 declarado só no subtype continua sendo sucata por geração."""
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability(self._r("1GB", "LPDDR2", "16GB")),
+            'NÃO RENTÁVEL')
+
+    def test_geracao_so_no_subtype_aprova_quando_passa(self):
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability(self._r("4GB", "LPDDR4X", "16GB")),
+            'RENTÁVEL')
+
+    def test_o_emcp_ram_VENCE_o_subtype_quando_os_dois_declaram(self):
+        """O subtype só COMPLEMENTA. O dado do próprio registro é mais
+        específico que o da família — se `emcp_ram` diz LPDDR2, é LPDDR2,
+        mesmo que o subtype (herdado da família) anuncie LPDDR4X."""
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability(self._r("LPDDR2 2GB", "LPDDR4X", "16GB")),
+            'NÃO RENTÁVEL',
+            "o subtype sobrescreveu a geração declarada no próprio registro")
+
+    def test_sem_geracao_em_lugar_NENHUM_segue_indeterminado(self):
+        """Fail-closed preservado: sem saber a geração não se APROVA.
+        (É a garantia do `EmcpGeracaoDesconhecidaTests`, vista do outro lado.)"""
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability(self._r("4GB", "", "16GB")),
+            'INDETERMINADO')
+        self.assertEqual(
+            assess_profitability(self._r("4GB", "Mobile DDR", "16GB")),
+            'INDETERMINADO')
+
+    def test_subtype_que_e_FRASE_nao_vira_geracao(self):
+        """A trava que este fix quase não teve. A 1ª versão lia o subtype com
+        `search`; a família KM6E (Samsung) tem subtype = a FRASE "embedded
+        Multi-Chip Package (LPDDR + eMMC)", e o `search` pescou o "LPDDR" solto
+        de dentro dela → geração 1 → NÃO RENTÁVEL. Um chip vira sucata por uma
+        palavra numa descrição. Hoje o subtype passa pelo VOCABULÁRIO
+        (`is_ram_generation`, fullmatch — o mesmo portão do `load_brands`)."""
+        from chips.engine import assess_profitability
+        frase = "embedded Multi-Chip Package (LPDDR + eMMC)"
+        self.assertEqual(
+            assess_profitability(self._r("4GB", frase, "16GB")), 'INDETERMINADO',
+            "leu geração de dentro de uma FRASE — é search, não vocabulário")
+
+    def test_LPDDR_pelado_nao_vira_LPDDR1(self):
+        """"LPDDR" sem dígito não é uma geração: é "tem LPDDR dentro".
+        Chutar 1 aí condena o chip por ignorância nossa, não por dado dele."""
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability(self._r("4GB", "LPDDR", "16GB")), 'INDETERMINADO')
+
+    def test_capacidade_continua_reprovando_antes_da_geracao_desconhecida(self):
+        """FIX 2026-07-09 intacto: sem geração em lugar nenhum, a capacidade
+        abaixo do mínimo ainda reprova sozinha (não vira INDETERMINADO)."""
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability(self._r("512MB", "", "16GB")),
+            'NÃO RENTÁVEL')
+        self.assertEqual(
+            assess_profitability(self._r("4GB", "", "4GB")),
+            'NÃO RENTÁVEL')
+
+
+class NormalizeGeracaoNoLugarCertoTests(TestCase):
+    """`normalize_convention` — 2ª exceção: A GERAÇÃO NO LUGAR CERTO (2026-08-28).
+
+    Gêmea da exceção de DENSIDADE (2026-07-11): o dado está no campo errado, e a
+    migração o MOVE — não inventa nada, tira de dentro do mesmo registro já
+    confirmado. Aqui a geração da RAM mora dentro do `emcp_ram` (`"LPDDR3 2GB"`),
+    que é campo de MEDIDA e deve guardar UMA medida (§6). Enquanto ela não estiver
+    no `subtype`, limpar o `emcp_ram` derruba **105 chips de RENTÁVEL para
+    INDETERMINADO** (medido no banco real).
+
+    ⚠ Este comando não tinha NENHUM teste. Estas travas cobrem a regra nova e,
+    de quebra, o encanamento (planejar → gravar → reverter).
+    """
+
+    def _kp(self, pn, **campos):
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name="Samsung", defaults={"code": "SAM"})
+        kp = KnownPart.objects.create(brand=b, part_number=pn, chip_type="eMCP",
+                                      confidence="confirmed", review_status="approved",
+                                      emcp_nand="16GB", notes="fixture")
+        if campos:          # legado entra por .update() — sem clean()/convenção
+            KnownPart.objects.filter(pk=kp.pk).update(**campos)
+        return kp
+
+    def _roda(self, commit=False):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command("normalize_convention", *(["--commit"] if commit else []), stdout=out)
+        return out.getvalue()
+
+    def _sub(self, pn):
+        from chips.models import KnownPart
+        return KnownPart.objects.get(part_number=pn).subtype
+
+    def test_geracao_sai_do_emcp_ram_para_o_subtype(self):
+        self._kp("MIGRA1", emcp_ram="LPDDR3 2GB", subtype="")
+        self.assertIn("LPDDR3", self._roda())          # dry-run anuncia
+        self.assertEqual(self._sub("MIGRA1"), "", "dry-run GRAVOU")
+        self._roda(commit=True)
+        self.assertEqual(self._sub("MIGRA1"), "LPDDR3")
+
+    def test_subtype_com_qualificador_e_canonicalizado(self):
+        self._kp("MIGRA2", emcp_ram="", subtype="eMCP LPDDR3")
+        self._kp("MIGRA3", emcp_ram="", subtype="LPDDR3 Mobile")
+        self._roda(commit=True)
+        self.assertEqual(self._sub("MIGRA2"), "LPDDR3")
+        self.assertEqual(self._sub("MIGRA3"), "LPDDR3")
+
+    def test_subtype_ja_CANONICO_nao_entra_nem_no_PLANO(self):
+        """FILL-ONLY. O `emcp_ram` diz LPDDR3 e o subtype diz LPDDR4X — a migração
+        NÃO arbitra: contradição de dado é decisão humana, não de comando.
+
+        ⚠ A asserção é sobre o PLANO, não sobre o valor final. Na 1ª versão eu
+        checava só o valor, e a mutação que removia o fill-only NÃO mordia: sem a
+        guarda o comando reescreve 'LPDDR4X' por 'LPDDR4X' — no-op no dado, mas
+        entrada falsa no relatório e no JSON de reversão. É a mesma lição do
+        deadlock submit×resolve: a garantia serve ao RELATO, então a trava tem que
+        olhar o relato. Registro que não muda não pode aparecer como mudança."""
+        self._kp("MIGRA4", emcp_ram="LPDDR3 2GB", subtype="LPDDR4X")
+        saida = self._roda()
+        self.assertIn("KnownParts a migrar:      0", saida,
+                      "planejou mexer num registro que já está canônico")
+        self._roda(commit=True)
+        self.assertEqual(self._sub("MIGRA4"), "LPDDR4X",
+                         "sobrescreveu subtype canônico — deixou de ser fill-only")
+
+    def test_FRASE_nunca_vira_subtype(self):
+        """Deny by default. `canonical_gen` é fail-open (devolve a frase intacta
+        quando não reconhece); quem DECIDE é `is_ram_generation` (fullmatch).
+
+        ⚠ O `emcp_ram` aqui também é prosa, e não por capricho: com o subtype
+        sozinho, tirar o `is_ram_generation` só produzia uma reescrita no-op
+        (frase → mesma frase) e a mutação não mordia. É pelo SEGUNDO candidato
+        que o estrago aparece — sem a lista fechada, a prosa do `emcp_ram` (um
+        campo notoriamente sujo, §7) é copiada para dentro do `subtype`."""
+        frase = "embedded Multi-Chip Package (LPDDR + eMMC)"
+        prosa_ram = "moviNAND ~1GB (NAND MLC 8Gb + controlador) + OneNAND"
+        self._kp("MIGRA5", emcp_ram=prosa_ram, subtype=frase)
+        # ⚠ E o caso que REALMENTE morde: subtype VAZIO + `emcp_ram` em prosa.
+        # Com o subtype preenchido, o 1º candidato já resolve (frase → frase) e
+        # a mutação passa despercebida. É o KMYFE0B0CA do §7, real e no banco.
+        self._kp("MIGRA9", emcp_ram=prosa_ram, subtype="")
+        self._roda(commit=True)
+        self.assertEqual(self._sub("MIGRA5"), frase,
+                         "copiou prosa do emcp_ram para o subtype")
+        self.assertEqual(self._sub("MIGRA9"), "",
+                         "prosa do emcp_ram virou subtype num registro sem subtype")
+
+    def test_multi_geracao_nao_e_forcada_a_uma_so(self):
+        """Família/registro que declara duas gerações não vira uma — escolher
+        apagaria informação. É a razão documentada de o subtype nunca ter sido
+        migrado antes; a regra nova respeita o mesmo limite."""
+        self._kp("MIGRA6", emcp_ram="", subtype="LPDDR4X/5X")
+        self._roda(commit=True)
+        self.assertEqual(self._sub("MIGRA6"), "LPDDR4X/5X")
+
+    def test_nao_toca_no_emcp_ram(self):
+        """Mover a geração para o subtype e LIMPAR o `emcp_ram` são decisões
+        separadas. Esta migração faz só a primeira."""
+        from chips.models import KnownPart
+        self._kp("MIGRA7", emcp_ram="LPDDR4X 4GB", subtype="")
+        self._roda(commit=True)
+        self.assertEqual(KnownPart.objects.get(part_number="MIGRA7").emcp_ram,
+                         "LPDDR4X 4GB")
+
+    def test_o_VEREDITO_nao_muda_com_a_migracao(self):
+        """A prova de que a migração é segura: ela move a geração, e o motor
+        continua lendo o `emcp_ram` primeiro. Nenhuma prateleira se mexe."""
+        from chips.engine import assess_profitability
+        from chips.models import KnownPart
+        for pn, ram in (("VER1", "LPDDR3 2GB"), ("VER2", "LPDDR2 1GB"),
+                        ("VER3", "LPDDR4X 4GB")):
+            self._kp(pn, emcp_ram=ram, subtype="")
+        def veredito(kp):
+            return assess_profitability({"is_emcp": True, "chip_type": kp.chip_type,
+                                         "subtype": kp.subtype, "emcp_ram": kp.emcp_ram,
+                                         "emcp_nand": kp.emcp_nand, "capacity": ""})
+        antes = {kp.part_number: veredito(kp)
+                 for kp in KnownPart.objects.filter(part_number__startswith="VER")}
+        self._roda(commit=True)
+        depois = {kp.part_number: veredito(kp)
+                  for kp in KnownPart.objects.filter(part_number__startswith="VER")}
+        self.assertEqual(antes, depois)
+
+    def test_multi_geracao_ABREVIADA_tambem_conta(self):
+        """`_multi_gen` só via "LPDDR2/LPDDR3" (prefixo repetido). A forma
+        abreviada "LPDDR4X/5X" — o exemplo citado no docstring do `_plan` como a
+        RAZÃO de não migrar subtype — passava como geração única. Trava direta na
+        função, porque é ela que decide se a informação é apagada."""
+        from chips.management.commands.normalize_convention import _multi_gen
+        self.assertTrue(_multi_gen("LPDDR4X/5X"), "abreviada não foi detectada")
+        self.assertTrue(_multi_gen("LPDDR2/LPDDR3"))
+        self.assertFalse(_multi_gen("DDR3/DDR3L"), "mesma geração, variante L")
+        self.assertFalse(_multi_gen("LPDDR4/4X"), "mesma geração, variante X")
+        self.assertFalse(_multi_gen("LPDDR4X"))
+        self.assertFalse(_multi_gen(""))
+
+    def test_a_VERSAO_do_protocolo_muda_de_campo_e_nao_evapora(self):
+        """`subtype='LPDDR4X + UFS 2.1'` carrega DUAS coisas: a geração da RAM e
+        a versão do protocolo de armazenamento. Canonizar o subtype para
+        'LPDDR4X' e parar aí **apaga a versão** — que é informação comercial
+        ("a versão do eMMC vale dinheiro", dono 2026-08-27) e cujo lugar é o
+        campo `interface` (§6).
+
+        Pego pelo DRY-RUN contra o banco real: a 1ª versão desta migração ia
+        apagar a versão de **43 registros** em silêncio (UFS 2.1/2.2/3.1 e
+        eMMC 5.1). Nenhum teste tinha pegado, porque eu só tinha imaginado
+        subtypes de uma informação só."""
+        from chips.models import KnownPart
+        self._kp("PROTO1", emcp_ram="", subtype="LPDDR4X + UFS 2.1", interface="")
+        self._kp("PROTO2", emcp_ram="", subtype="LPDDR3 + eMMC 5.1", interface="")
+        self._roda(commit=True)
+        for pn, gen, proto in (("PROTO1", "LPDDR4X", "UFS 2.1"),
+                               ("PROTO2", "LPDDR3", "eMMC 5.1")):
+            kp = KnownPart.objects.get(part_number=pn)
+            self.assertEqual(kp.subtype, gen)
+            self.assertEqual(kp.interface, proto,
+                             f"a versão do protocolo de {pn} EVAPOROU")
+
+    def test_interface_ja_ocupada_e_DIFERENTE_faz_o_comando_desistir(self):
+        """Contradição é decisão humana. E limpar só o subtype seria pior que
+        não fazer nada: perderia a versão para ficar com um campo bonito."""
+        from chips.models import KnownPart
+        self._kp("PROTO3", emcp_ram="", subtype="LPDDR3 + eMMC 5.1", interface="x16")
+        self._roda(commit=True)
+        kp = KnownPart.objects.get(part_number="PROTO3")
+        self.assertEqual(kp.subtype, "LPDDR3 + eMMC 5.1",
+                         "limpou o subtype e jogou fora a versão do protocolo")
+        self.assertEqual(kp.interface, "x16", "sobrescreveu a interface")
+
+    def test_interface_ja_diz_o_MESMO_so_limpa_o_subtype(self):
+        from chips.models import KnownPart
+        self._kp("PROTO4", emcp_ram="", subtype="LPDDR3 + eMMC 5.1",
+                 interface="eMMC 5.1")
+        self._roda(commit=True)
+        kp = KnownPart.objects.get(part_number="PROTO4")
+        self.assertEqual(kp.subtype, "LPDDR3")
+        self.assertEqual(kp.interface, "eMMC 5.1")
+
+    def test_e_reversivel(self):
+        import os
+        self._kp("MIGRA8", emcp_ram="LPDDR3 2GB", subtype="")
+        self._roda(commit=True)
+        self.assertEqual(self._sub("MIGRA8"), "LPDDR3")
+        from django.core.management import call_command
+        from io import StringIO
+        call_command("normalize_convention", "--revert",
+                     "normalize_convention_revert.json", stdout=StringIO())
+        self.assertEqual(self._sub("MIGRA8"), "")
+        if os.path.exists("normalize_convention_revert.json"):
+            os.remove("normalize_convention_revert.json")
+
+
+class BaselineTresColunasTests(TestCase):
+    """`characterize_baseline` — a rede que prova que uma mudança NÃO mexeu no
+    que o negócio enxerga.
+
+    O dono (2026-08-28) nomeou as três colunas que o sistema acerta hoje e que
+    nenhuma adaptação pode alterar: **DESTINO**, **RENTABILIDADE** e **PREÇO**.
+    O comando já cobria as duas primeiras; o preço faltava — e sem ele a rede
+    dizia "refactor seguro" sobre uma coluna que não olhava.
+
+    O preço entra em DUAS camadas de propósito:
+      · `price_key` = (kind, gen, tier, unidade) — função PURA do classify().
+        Não depende de comprador, lista nem câmbio: se mudar, a culpa é nossa.
+      · `price_<comprador>` = a cotação, que muda legitimamente com o mercado.
+    Misturar as duas produziria um alarme que dispara sozinho — e alarme que
+    dispara sozinho é alarme que se aprende a ignorar (lição do CONFLITO
+    permanente no submit×resolve).
+    """
+
+    def setUp(self):
+        import tempfile
+        from chips.models import Brand, ChipFamily, KnownPart
+        self.dir = tempfile.mkdtemp()
+        b, _ = Brand.objects.get_or_create(name="Samsung", defaults={"code": "SAM"})
+        self.fam = ChipFamily.objects.create(brand=b, prefix="KMQ", chip_type="eMCP",
+                                             subtype="LPDDR3", is_emcp=True,
+                                             active=True, priority=10)
+        kp = KnownPart.objects.create(brand=b, part_number="KMQTESTE1",
+                                      chip_type="eMCP", confidence="confirmed",
+                                      review_status="approved", notes="fix",
+                                      family=self.fam)
+        KnownPart.objects.filter(pk=kp.pk).update(subtype="LPDDR3",
+                                                  emcp_ram="LPDDR3 2GB",
+                                                  emcp_nand="16GB")
+        KnownPart.objects.create(brand=b, part_number="KMQSEMCAP", chip_type="eMCP",
+                                 confidence="confirmed", review_status="approved",
+                                 notes="fix", family=self.fam)
+
+    def _snapshot(self, nome="base.json"):
+        import json, os
+        from io import StringIO
+        from django.core.management import call_command
+        caminho = os.path.join(self.dir, nome)
+        call_command("characterize_baseline", out=caminho, stdout=StringIO())
+        with open(caminho, encoding="utf-8") as fh:
+            return caminho, json.load(fh)
+
+    def _diff(self, caminho):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command("characterize_baseline", diff=caminho, stdout=out)
+        return out.getvalue()
+
+    def test_captura_as_TRES_colunas(self):
+        _, j = self._snapshot()
+        r = j["KMQTESTE1"]
+        self.assertEqual(r["dest_label"], "EMCP16+2", "coluna DESTINO")
+        self.assertEqual(r["profitable"], "RENTÁVEL", "coluna RENTABILIDADE")
+        self.assertEqual(r["price_key"], "emcp||16.0|GB", "coluna PREÇO (a chave)")
+
+    def test_sem_chave_de_preco_grava_o_MOTIVO(self):
+        """Ausência de chave não pode virar string vazia indistinguível de erro:
+        o baseline tem que congelar TAMBÉM o porquê de o chip não ter preço."""
+        _, j = self._snapshot()
+        r = j["KMQSEMCAP"]
+        self.assertEqual(r["price_key"], "")
+        self.assertIn("NAND (GB) indisponível", r["price_no_key_reason"])
+
+    def test_diff_sem_mudanca_nenhuma_diz_IDENTICO(self):
+        caminho, _ = self._snapshot()
+        self.assertIn("IDÊNTICO", self._diff(caminho))
+
+    def test_mudanca_SO_na_CHAVE_de_preco_conta_como_NOSSA(self):
+        """A prova de que a coluna nova é de fato vigiada — ISOLADA.
+
+        ⚠ A 1ª versão mexia no `emcp_nand` do banco, o que move a chave de preço
+        E a etiqueta juntas: o registro entrava em 'NOSSAS' pela etiqueta e a
+        mutação que tirava `price_key` do conjunto passava batida. Aqui o
+        baseline é editado à mão para que o ÚNICO delta seja a chave — é a
+        única forma de a asserção falar da chave e de mais nada."""
+        import json
+        caminho, j = self._snapshot()
+        j["KMQTESTE1"]["price_key"] = "emcp||8.0|GB"        # só isto difere
+        with open(caminho, "w", encoding="utf-8") as fh:
+            json.dump(j, fh, ensure_ascii=False)
+        texto = self._diff(caminho)
+        self.assertIn("price_key", texto, "a mudança de chave de preço não apareceu")
+        self.assertIn("CHAVE DE PREÇO alterados em: 1", texto,
+                      "chave de preço não foi contada como NOSSA — foi tratada "
+                      "como oscilação de mercado, e aí o alarme certo nunca toca")
+        self.assertNotIn("IDÊNTICO", texto)
+
+    def test_mudanca_real_no_banco_derruba_o_IDENTICO(self):
+        """Contraparte realista: mexer no dado move etiqueta E chave."""
+        from chips.models import KnownPart
+        caminho, _ = self._snapshot()
+        KnownPart.objects.filter(part_number="KMQTESTE1").update(emcp_nand="32GB")
+        texto = self._diff(caminho)
+        self.assertNotIn("IDÊNTICO", texto)
+        self.assertIn("EMCP16+2", texto)
+        self.assertIn("emcp||16.0|GB", texto)
+
+    def test_baseline_ANTIGO_nao_vira_falso_positivo(self):
+        """Baseline gravado antes de a coluna existir não pode acusar 8 mil
+        'mudanças'. Campo ausente no baseline é COLUNA NOVA, não regressão —
+        o diff avisa uma vez e ignora."""
+        import json, os
+        caminho, j = self._snapshot()
+        antigo = {pn: {k: v for k, v in campos.items() if not k.startswith("price")}
+                  for pn, campos in j.items()}
+        p_antigo = os.path.join(self.dir, "antigo.json")
+        with open(p_antigo, "w", encoding="utf-8") as fh:
+            json.dump(antigo, fh)
+        texto = self._diff(p_antigo)
+        self.assertIn("colunas AUSENTES no baseline", texto)
+        self.assertIn("IDÊNTICO", texto,
+                      "baseline antigo virou falso positivo em massa")

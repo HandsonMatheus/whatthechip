@@ -676,6 +676,29 @@ families:
   suffix_rules: ''
   tip: 'LPDDR2 standalone SK Hynix (H9TK). DRAM móvel puro — sem flash acoplado. pn[7] = densidade: 1=128MB · 2=256MB · 4=512MB · 8=1GB · A/B=2GB por chip. ⚠ Preenchimento pn[4:7] pode ser ''NNN'' ou ''MMM'' — ambos válidos, decode idêntico. ⚠ Não confundir com H9TQ (eMCP LPDDR3) ou H9TP (eMCP LPDDR2) — esses têm flash. ⚠ Teto confirmado: B=2GB. Leitura acima disso → triagem manual. Origem: wearables pioneiros, smartphones intermediários 2010-2014, tablets legados. Destino: triagem LPDDR2 — verificar demanda do mercado antes de encaminhar.'
   reasoning: ''
+- prefix: H9TC
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR2_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR2 standalone SK Hynix (H9TC), prefixo NOVO (2026-09-02) — irmã do H9TK, mesma estrutura e mesmo mapa de densidade (pn[7] via HYX_LPDDR2_CAP: 1=128MB · 2=256MB · 4=512MB · 8=1GB · A/B=2GB por chip). ⚠ Diferença exata entre H9TC/H9TK não confirmada (provável variante de bus width/pacote da mesma geração LPDDR2 — specs elétricas idênticas nos PNs vistos); tratar como família irmã, não fundir prefixos. ⚠ Preenchimento pn[4:7] = ''NNN'' (filler, igual H9TK). Código ''8''=1GB CONFIRMADO nesta rodada por 2 fontes independentes (Win-Source + OMO Electronic, ambas descrevendo o PN H9TCNNN8JDMMPR-NGM como ''LPDDR2 256Mx32 1066MHz (8Gb)'' / ''LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V 134-Pin F-BGA'' — mesma arquitetura 256M×32, pacote 134-FBGA, batendo exatamente). 8Gb÷8=1GB. Demais códigos (1/2/4/A/B) do mapa HERDADOS do H9TK já verificado — não reconfirmados individualmente para H9TC nesta rodada (decode via gramática; sem known_part próprio pros PNs H9TCNNNBLDMMPR-NGM/H9TCNNN4KDBMUR-NGM vistos no cluster, existência confirmada em múltiplos distribuidores mas sem descrição estruturada de capacidade própria — não adivinhado). Origem: smartphones/tablets intermediários-legados 2010-2014. Destino: triagem LPDDR2 — verificar demanda do mercado antes de encaminhar.'
+  reasoning: '[
+    "Achado a partir do debug de bancada H9TCNNN8JDMM (2026-09-02) — prefixo H9TC nunca visto no yaml. DigiPart confirma existencia real via 5 distribuidores (YST/Anyway/Conevo/Sunether/Dechoele) do PN completo H9TCNNN8JDMMPR-NGM, DC:13-25+ (mercado maduro).",
+    "Capacidade CONFIRMADA por 2 fontes estruturadas independentes: Win-Source (fetch direto, pagina de produto): Description = LPDDR2 256Mx32 1066MHz (8Gb). OMO Electronic (fetch direto, pagina de produto): DRAM Chip LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V 134-Pin F-BGA. Arquitetura, densidade e pacote batem exatamente entre as duas. 8Gb (die) / 8 = 1GB.",
+    "Estrutura do PN (H9TC + NNN filler + digito de densidade em pn[7] + 4 chars finais) e IDENTICA ao H9TK ja mapeado (mesmo decode_cap_pos=7, mesmo mapa HYX_LPDDR2_CAP) -- reuso do mapa existente, nao criacao as cegas: o codigo 8=1GB que a pesquisa confirmou para H9TC bate exatamente com o que o mapa ja tinha pra H9TK, reforcando que os dois prefixos compartilham o mesmo codebook interno da SK Hynix.",
+    "Cluster maior encontrado no See Also do DigiPart mas NAO submetido como known_part por falta de fonte estruturada propria: H9TCNNNBLDMMPR-NGM (codigo B, mapa preve 2GB), H9TCNNN4KDBMUR-NGM e H9TCNNN4KDCMUR-NDMR (codigo 4, mapa preve 512MB), H9TCNNN8LDMMPR-NDM/-NYM e H9TCNNN4GDMLCR-NGMR (posicao 8 = L/G em vez de J -- fora do que decode_cap_pos decodifica, significado nao confirmado). Todos decodificam CORRETAMENTE via gramatica (mapa ja correto), so nao tem known_part database-level ainda -- excluir/nao adivinhar aplicado a FONTE, nao ao decode."
+  ]'
 - prefix: H9TQ
   chip_type: eMCP
   subtype: LPDDR3

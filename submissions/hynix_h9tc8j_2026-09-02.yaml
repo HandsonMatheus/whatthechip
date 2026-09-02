@@ -1,0 +1,91 @@
+# Submissão de known_parts — SK Hynix, família H9TC (LPDDR2 standalone, PREFIXO NOVO,
+# 2026-09-02). Gerado a partir do debug de bancada H9TCNNN8JDMM. Prefixo nunca visto no
+# yaml — família adicionada nesta mesma entrega (Trilha A, ver chips/knowledge/hynix.yaml),
+# irmã do H9TK já mapeado (mesma estrutura, mesmo mapa HYX_LPDDR2_CAP).
+#
+# IDENTIDADE: H9TCNNN8JDMM (12 chars, forma BARE = leitura direta da bancada) é fragmento/
+# raiz do PN completo H9TCNNN8JDMMPR-NGM (e variantes de sufixo -NDM, sem dash "PR"),
+# atestado em 5+ distribuidores via DigiPart (YST Electronic, Anyway Electronics 30000un,
+# Conevo Electronics, Sunether, Dechoele — DC:13-25+, mercado maduro/estabelecido).
+#
+# CAPACIDADE: confirmada por 2 fontes ESTRUTURADAS independentes, fetch direto (não
+# resumo de busca):
+#   Win-Source (página de produto): "LPDDR2 256Mx32 1066MHz (8Gb)"
+#   OMO Electronic (página de produto): "DRAM Chip LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V
+#     134-Pin F-BGA"
+# As duas concordam exatamente: arquitetura 256M×32, densidade 8Gb, pacote 134-FBGA.
+# ARITMÉTICA: 8Gb (die) ÷ 8 = 1GB. Bate com pn[7]='8'→1GB no mapa HYX_LPDDR2_CAP (mesmo
+# mapa já usado pelo H9TK — reconfirma que os dois prefixos compartilham o codebook).
+#
+# CLUSTER pesquisado mas NÃO incluído nesta submissão (existência confirmada em múltiplos
+# distribuidores DigiPart, mas SEM fonte estruturada própria de capacidade — "excluir, não
+# adivinhar"; todos decodificam corretamente via gramática mesmo sem known_part):
+#   H9TCNNNBLDMMPR-NGM (código B, mapa prevê 2GB) · H9TCNNN4KDBMUR-NGM e
+#   H9TCNNN4KDCMUR-NDMR (código 4, mapa prevê 512MB) · H9TCNNN8LDMMPR-NDM/-NYM e
+#   H9TCNNN4GDMLCR-NGMR (posição 8 = L/G em vez de J — fora do que decode_cap_pos lê,
+#   significado não confirmado, não afeta a capacidade decodificada).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9tc8j_2026-09-02.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9tc8j_2026-09-02.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9TCNNN8JDMM"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9tcnnn8jdmmpr-ngm.html"
+    notes: >
+      PN da bancada (2026-09-02), forma BARE (12 chars, sem sufixo de order code).
+      Confirmado via Win-Source + OMO Electronic (2 fontes estruturadas, fetch direto,
+      ambas descrevendo o PN completo H9TCNNN8JDMMPR-NGM): "LPDDR2 256Mx32 1066MHz (8Gb)"
+      / "LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V 134-Pin F-BGA". 8Gb÷8=1GB. Prefixo H9TC
+      novo nesta rodada — família irmã do H9TK (mesmo mapa HYX_LPDDR2_CAP), adicionada
+      ao hynix.yaml na mesma entrega. Existência do PN completo atestada em 5+
+      distribuidores via DigiPart (DC:13-25+).
+
+  - part_number: "H9TCNNN8JDMMPR-NGM"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9tcnnn8jdmmpr-ngm.html"
+    notes: >
+      Forma completa (com sufixo de order code "-NGM") — é o PN exato descrito pelas 2
+      fontes estruturadas (Win-Source + OMO Electronic, fetch direto de cada página de
+      produto): "LPDDR2 256Mx32 1066MHz (8Gb)" / "LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V
+      134-Pin F-BGA". 8Gb÷8=1GB. confidence=confirmed (2 fontes estruturadas
+      independentes concordando exatamente).
+
+  - part_number: "H9TCNNN8JDMMPR"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    interface: ""
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9TCNNN8JDMMPR"
+    notes: >
+      Variante sem sufixo de grade/temperatura do PN já confirmado acima (mesma raiz
+      "H9TCNNN8JDMMPR", sufixo "-NGM"/"-NDM" omitido) — Anyway Electronics via DigiPart,
+      30000un em estoque, SKHYNIX. Specs herdadas do irmão com sufixo já confirmado
+      (mesma raiz, sufixo de grade/temperatura não muda a identidade elétrica/capacidade,
+      mesmo padrão já usado nesta família SK Hynix este mês). confidence=manual (herdado,
+      sem descrição estruturada própria).
+
+  - part_number: "H9TCNNN8JDMMPR-NDM"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    interface: ""
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9TCNNN8JDMMPR-NDM"
+    notes: >
+      Variante de sufixo de grade "-NDM" (em vez de "-NGM") do mesmo PN raiz — Conevo
+      Electronics via DigiPart, 11647un em estoque, SKHYNIX/FBGA. Specs herdadas do
+      irmão "-NGM" já confirmado (mesma raiz, sufixo de grade/temperatura não muda a
+      identidade elétrica/capacidade). confidence=manual (herdado, sem descrição
+      estruturada própria).
