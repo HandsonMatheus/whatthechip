@@ -144,6 +144,60 @@ confirmação deixou de existir sem nenhum sinal. Há um teste só para isso
 
 ---
 
+## 9 · O trilho depois do recebimento
+
+- **Marque uma compra como recebida.** O passo seguinte tem de acender
+  `CONFERÊNCIA`, não `RESULTADO`. É o que está acontecendo: você abre a caixa,
+  confere os chips e lança as recusas.
+- **Feche o resultado.** Só então esse passo passa a dizer `RESULTADO`, com o
+  check verde.
+
+## 10 · O export da ficha vira planilha
+
+O botão **Exportar** não segue mais a aba aberta: ele entrega a compra
+inteira, num `.xlsx` com duas abas.
+
+- **Clique em Exportar de qualquer aba.** Sempre o mesmo arquivo. O nome leva
+  o código da **ordem** (`EMIN-SO-2026-0008.xlsx`), não o do lote — dois
+  clientes com o lote 7 dariam o mesmo nome na pasta de Downloads.
+- **Abra o arquivo.** Duas abas: `Resumo` e `Chips`.
+- **Compare coluna por coluna com a tela.** Têm de bater na ordem e no nome.
+  A aba Chips agora traz `Tipo`, que o CSV antigo esquecia.
+- **Clique numa célula de dinheiro.** Tem de ser **número**, com formato `¥`
+  — não texto. Selecione uma coluna inteira e veja se o Excel soma no rodapé.
+  Se não somar, virou texto e a planilha perdeu a razão de existir.
+- **Numa compra ainda em rascunho:** o total do Resumo aparece como
+  `≈ ¥ ...`. O `≈` está no formato da célula, então o número continua somando.
+- **Numa linha sem preço:** a célula diz `sem preço`, igual à tela. Não pode
+  ficar vazia — vazio se lê como zero, e zero é um preço.
+- **A primeira linha de cada aba** identifica a compra (ordem · cliente ·
+  lote). O arquivo vira anexo de e-mail; sem isso, dois downloads são
+  indistinguíveis.
+
+---
+
+## 11 · O idioma da planilha
+
+- **Troque o idioma no seletor** (topo da tela) e exporte de novo. Os nomes
+  das **abas** e os **títulos das colunas** têm de vir no idioma novo.
+- **Os números não mudam.** Quantidade e dinheiro são os mesmos em qualquer
+  idioma — se algum aparecer traduzido ou reformatado, alguém formatou no
+  Python em vez de deixar no formato da célula.
+- Em **中文**, a aba do Resumo se chama `汇总` e a de chips `芯片`.
+
+## 12 · O cabeçalho das tabelas
+
+- **Olhe a fileira de títulos da aba Resumo da ficha.** `TIPO`, `CAPACIDADE`,
+  `CAIXA WTC`, `ENVIADOS`, `¥ UNIT.` … todos com **o mesmo corpo e a mesma
+  fonte**. Antes, os numéricos saíam bem maiores que os de texto.
+- **Confira as cores:** `RECUSADOS` vermelho, `APROVADOS` verde,
+  `¥ RESULTADO` azul continuam — a cor é intencional, só o tamanho estava
+  errado.
+- **Passe pelas outras tabelas** (Estoque, Catálogo, Painel, lista de ordens):
+  o mesmo cabeçalho, mesmo corpo, em todas.
+
+---
+
 ## Por fim, o que este roteiro NÃO cobre
 
 - **Telas 2 e 3** (gaveta de preços e catálogo) continuam quebradas no

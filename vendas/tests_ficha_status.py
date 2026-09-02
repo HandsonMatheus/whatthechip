@@ -121,10 +121,20 @@ class SeloDoTopoTests(_Ficha):
 
     def test_o_trilho_continua_no_lugar(self):
         """A remoção do selo não pode levar o trilho junto: ele é a fonte que
-        FICOU, e sem ele a ficha não diz mais em que pé está a compra."""
+        FICOU, e sem ele a ficha não diz mais em que pé está a compra.
+
+        ⚠ Só os passos de nome FIXO entram aqui. `recebido` e `resultado`
+        trocam de rótulo conforme o estado — este teste checa a presença do
+        trilho, não o que eles dizem, que é assunto das classes abaixo.
+        Escrito com "Resultado" cravado, ele quebrou no dia em que o passo
+        passou a dizer "Conferência" enquanto pendente: o teste estava certo
+        sobre o trilho e errado sobre o rótulo.
+        """
         trilho = self._trilho(self._html())
-        for passo in ('Fechado', 'Enviado', 'Resultado', 'Pagamento'):
+        for passo in ('Fechado', 'Enviado', 'Pagamento'):
             self.assertIn(passo, trilho)
+        self.assertEqual(trilho.count('class="stat__s'), 5,
+                         'o trilho tem cinco etapas')
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -215,3 +225,65 @@ class VocabularioTests(TestCase):
         for p in (FICHA, LISTA):
             self.assertIn('Em trânsito', _ler(p),
                           '%s não usa a palavra nova' % os.path.basename(p))
+
+
+class PassoResultadoTests(_Ficha):
+    """O mesmo defeito do `recebido`, um passo adiante (dono, 2026-09-02).
+
+    Marcado o recebimento, `resultado` vira o passo CORRENTE — e acendia
+    escrito "Resultado" sem haver resultado nenhum. O que acontece nesse
+    intervalo é a CONFERÊNCIA: ele abre a caixa, confere os chips e lança as
+    recusas. "Resultado" é o que SAI disso, e só depois.
+    """
+
+    def test_depois_de_receber_o_passo_diz_conferencia(self):
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        trilho = self._trilho(self._html())
+        passos = {p['key']: p for p in services.order_steps(self.so)}
+        self.assertEqual(passos[services.STEP_RESULTADO]['state'], 'current')
+        self.assertIn('Conferência', trilho)
+
+    def test_antes_de_receber_tambem_nao_diz_resultado(self):
+        """O passo ainda está à frente. "Resultado" ali seria o mesmo rótulo
+        no passado sobre um passo que não aconteceu."""
+        self.assertNotIn('Resultado', self._trilho(self._html()))
+
+    def test_a_chave_do_passo_continua_canonica(self):
+        self.assertEqual(services.STEP_RESULTADO, 'resultado')
+        self.assertIn("p.key == 'resultado'", _ler(FICHA))
+
+    @staticmethod
+    def _ramo(chave):
+        """O ramo do `{% elif %}` daquele passo, e SÓ ele.
+
+        Uma janela de N caracteres não serve: os ramos são linhas vizinhas, e
+        a janela do `enviado` alcançaria o `p.state` do `recebido` logo
+        abaixo — o teste passaria lendo a regra do passo errado.
+        """
+        ficha = _ler(FICHA)
+        i = ficha.find('p.key == %s' % chave)
+        assert i != -1, 'ramo %s não existe mais no trilho' % chave
+        fim = min(x for x in (ficha.find('{% elif', i + 1),
+                              ficha.find('{% else', i + 1)) if x != -1)
+        return ficha[i:fim]
+
+    def test_os_dois_passos_seguem_a_mesma_regra(self):
+        """`recebido` e `resultado` são o mesmo caso e têm de ser tratados do
+        mesmo jeito — inclusive na borda `pulado`. Se um dia só um deles for
+        ajustado, a ficha volta a ter dois critérios para a mesma pergunta,
+        que é o defeito que originou este arquivo."""
+        for chave in ("'recebido'", "'resultado'"):
+            self.assertIn("p.state == 'done' or p.state == 'pulado'",
+                          self._ramo(chave),
+                          'o passo %s não segue a regra de estado' % chave)
+
+    def test_enviado_ainda_nao_segue_a_regra(self):
+        """DOCUMENTA uma pendência, não uma garantia. O passo `enviado` tem o
+        mesmo defeito um passo antes: enquanto a compra não foi despachada, o
+        trilho já escreve "Enviado" num passo cinza. Não foi mexido porque não
+        foi pedido. Quando for, este teste é o lugar de virar o de cima."""
+        self.assertNotIn("p.state ==", self._ramo("'enviado'"),
+                         'o passo `enviado` ganhou estado — mova-o para o '
+                         'test_os_dois_passos_seguem_a_mesma_regra e apague '
+                         'este teste')

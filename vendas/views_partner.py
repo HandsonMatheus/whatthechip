@@ -570,6 +570,29 @@ def compra_aba_csv(request, pk, aba):
 
 
 @partner_required
+def compra_planilha(request, pk):
+    """A compra inteira em planilha: Resumo e Chips, uma aba cada.
+
+    Substitui o CSV por aba no botão Exportar (dono, 2026-09-02). O `aba_csv`
+    continua roteado — quem tiver um link salvo não fica sem —, mas nenhuma
+    tela aponta mais para ele.
+
+    Passa o `_detalhe(so)` adiante de propósito: é o MESMO dicionário que
+    renderiza a ficha. Recalcular dentro do exportador criaria uma segunda
+    conta para o mesmo fato, e a primeira divergência entre as duas daria ao
+    comprador uma planilha que discorda da tela sem nada que diga qual está
+    certa.
+    """
+    from django.http import HttpResponse
+    from .planilha import XLSX, compra_em_planilha
+    with services.buyer_order(request.buyer, pk) as so:
+        dados, nome = compra_em_planilha(so, _detalhe(so))
+        resp = HttpResponse(dados, content_type=XLSX)
+        resp['Content-Disposition'] = f'attachment; filename="{nome}"'
+        return resp
+
+
+@partner_required
 @require_POST
 def compra_recebido(request, pk):
     """"Recebi a caixa" — a etapa que o card precisa (dono, 2026-08-18).

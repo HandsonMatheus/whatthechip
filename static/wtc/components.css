@@ -298,6 +298,24 @@ html img.lg-d{display:none}
 .dtab .c{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
 .dtab .n{font-family:var(--mono);font-size:14px;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
 .dtab .v{font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* O CABEÇALHO NÃO É CÉLULA — e o seletor acima não sabe disso.
+   `.dtab .n` vale 0,2,0 e `.dtab th` vale 0,1,1: classe ganha de elemento,
+   então todo `<th class="n">` saía com 14px de corpo de célula em vez dos
+   10,5px de título de coluna. Numa mesma fileira de cabeçalho, "TIPO" ficava
+   pequeno e "ENVIADOS" grande — a inconsistência que o dono viu no
+   2026-09-02 ("a fonte e o tamanho da fonte de todos os títulos da tabela").
+
+   ⚠ O protótipo do Claude Design NUNCA teve o defeito, e não por sorte: lá o
+   `<th>` numérico leva `num`, que não tem estilo nenhum. Quem marcou os
+   nossos com `n` reusou a classe da CÉLULA no título. Renomear tudo para
+   `num` seria o conserto na raiz, mas `th.n` é convenção viva em outras
+   tabelas (`.ptab`, `.sst`, `.rt--dense`, `.pr__t` usam para alinhar à
+   direita) — o rename teria de ser tabela a tabela. Esta regra devolve o
+   tipo do título e não encosta em nenhuma das outras.
+
+   Os valores são os do `.dtab th` do design, repetidos: quem mudar um tem de
+   mudar o outro, e há teste comparando os dois. */
+.dtab th.n,.dtab th.v,.dtab th.c{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em}
 /* sub-linha (≈ US$, taxa) — o marcador ao vivo .wtc-pop também é um span solto aqui e tem
    estilo próprio, então fica de fora: esta regra o sobrescreveria e o apagaria contra o verde */
 .dtab .v span:not(.wtc-pop),.dtab .n span:not(.wtc-pop){display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);margin-top:3px;letter-spacing:-.01em}

@@ -106,7 +106,7 @@
             {% if p.key == 'fechado' %}{% trans "Fechado" %}
             {% elif p.key == 'enviado' %}{% trans "Enviado" %}
             {% elif p.key == 'recebido' %}{% if p.state == 'done' or p.state == 'pulado' %}{% trans "Recebido" %}{% else %}{% trans "Em trânsito" %}{% endif %}
-            {% elif p.key == 'resultado' %}{% trans "Resultado" %}
+            {% elif p.key == 'resultado' %}{% if p.state == 'done' or p.state == 'pulado' %}{% trans "Resultado" %}{% else %}{% trans "Conferência" %}{% endif %}
             {% else %}{% trans "Pagamento" %}{% endif %}
             {% if p.date and p.state == 'current' %}<small>{{ p.date|date:"d/m" }}</small>{% endif %}
           </span>
@@ -401,10 +401,20 @@
       <a class="xbtn" href="{% url 'compras:resultado_pdf' so.pk %}" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3.5h10V9"/><path d="M4 9h16v7h-3M7 16H4V9"/><path d="M7 14h10v6.5H7z"/></svg>{% trans "Imprimir resultado" %}</a>
       {% endif %}
-      {% comment %} Exporta A ABA ABERTA (spec v2 §6.10). O href é trocado pelo
-         JS ao mudar de aba — e já sai servido apontando para a aba inicial,
-         para funcionar sem JS também. {% endcomment %}
-      <a class="xbtn" id="exp-aba" href="{% url 'compras:aba_csv' so.pk aba_inicial %}">
+      {% comment %} Exporta A COMPRA, não a aba aberta (dono, 2026-09-02).
+
+         Antes seguia a aba, e o href era reescrito pelo JS a cada troca. Duas
+         coisas estavam erradas nisso. A primeira é que quem exporta uma
+         compra quer a compra, não o recorte em que o cursor parou — e o que
+         saía era um CSV de chips, "que não serve ao comprador". A segunda é
+         que CSV não tem abas: Resumo e Chips viravam dois downloads que
+         ninguém junta depois.
+
+         Agora é um href fixo para a planilha, com as duas abas dentro. Some
+         junto a reescrita do href no JS — sem destino variável não há o que
+         reescrever, e era ela que podia entregar o arquivo da aba anterior
+         com o nome da atual. {% endcomment %}
+      <a class="xbtn" href="{% url 'compras:planilha' so.pk %}">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4 16v4.5h16V16"/></svg>{% trans "Exportar" %}</a>
     </span>
   </div>
@@ -1046,16 +1056,12 @@
 
   var abas = document.querySelectorAll('.nb button[data-aba]');
   var chaves = Array.prototype.map.call(abas, function (b) { return b.dataset.aba; });
-  var exp = document.getElementById('exp-aba');
   function mostrar(k) {
     abas.forEach(function (o) { o.classList.toggle('on', o.dataset.aba === k); });
     chaves.forEach(function (c) {
       var p = document.getElementById('pane-' + c);
       if (p) p.hidden = (c !== k);
     });
-    // O export segue a aba: exportar "a aba aberta" com o href da anterior
-    // entregaria o arquivo errado com o nome certo, que é o pior dos dois.
-    if (exp) exp.href = exp.href.replace(/[^/]+\.csv$/, k + '.csv');
   }
   abas.forEach(function (b) {
     b.addEventListener('click', function () { mostrar(b.dataset.aba); });

@@ -33,6 +33,10 @@ urlpatterns = [
          name='resultado_pdf'),
     # A aba aberta em CSV (spec v2 §6.10). Uma rota POR ABA, não `?aba=`: o
     # nome do arquivo faz parte da entrega.
+    # A planilha vem ANTES do `<slug:aba>.csv` por clareza de leitura, não
+    # por precedência: as duas rotas não colidem (extensões diferentes).
+    path('compras/<int:pk>/planilha.xlsx', views.compra_planilha,
+         name='planilha'),
     path('compras/<int:pk>/<slug:aba>.csv', views.compra_aba_csv,
          name='aba_csv'),
     path('compras/<int:pk>/pagar/', views.compra_pagar, name='pagar'),
