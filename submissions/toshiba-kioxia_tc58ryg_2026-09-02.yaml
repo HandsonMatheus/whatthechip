@@ -1,0 +1,59 @@
+# Submissão de known_parts — Toshiba-Kioxia, família NOVA TC58RYG (NAND com controlador,
+# provável PBA-NAND — prefixo "R" nunca visto antes nesta marca)
+#
+# PN da bancada: TC58RYG188EBAIA — string NÃO existe em nenhuma fonte (busca exaustiva:
+# WebSearch, Octopart, distribuidores, catálogo oficial Toshiba). Posição 9 ("8") bate no
+# padrão de erro de leitura já documentado nesta marca: só "S"/"H" são válidos ali (campo
+# Cell Level), nunca dígito — mesma confusão visual 8↔S. PN real, confirmado em 6+
+# distribuidores (Jotrin, Heisener, IC-Components, DigiPart, Y-IC, Ariat-Tech):
+# TC58RYG1S8EBAIA. CONFIRMADO FISICAMENTE pelo dono (2026-09-02): foto da marcação a laser
+# do chip mostra "TC58RYG1S8EBA1A" + linha 2 "1050KFE" (data/lote) — identidade não depende
+# só de distribuidor.
+#
+# ⚠ TIER ALCANÇADO PRA CAPACIDADE: NÃO é Tier-1/2/3 direto — é INFERÊNCIA ESTRUTURAL,
+# mesma disciplina já usada no THGBM 6D4/7D4 desta marca (ver chips/knowledge/toshiba-kioxia.yaml,
+# reasoning da família). Nenhum datasheet público existe pra nenhum PN "TC58RYG*" (busca
+# exaustiva: Octopart, KIOXIA, Toshiba, catálogo oficial "SEMICONDUCTOR & STORAGE PRODUCTS"
+# mar/2016 — 19 páginas lidas na íntegra). A família TC58RYG compartilha o MESMO formato
+# posicional da TC58NVG já confirmada nesta gramática (prefixo 7 chars terminado em "G" +
+# posição 7 = 1 char do símbolo de densidade oficial "G0"-"GF", tabela MFOPR-916): posição7
+# "1" → G1 = 2Gbit = 256MB. Corroborado por: (a) busca em 5 datasheets KIOXIA oficiais de
+# Serial Interface NAND (TC58CVG0S3H=1Gb/1S3H=2Gb/2S0H=4Gb/TH58CYG3S0H=8Gb) — nenhuma
+# família-irmã usa "S8" como código de densidade em nenhuma capacidade documentada, reforça
+# que posições 8-9 ("S8") são campo célula+organização, não chave de capacidade; (b) foto do
+# encapsulamento BGA do próprio chip (dono, 2026-09-02) — ~63 esferas (4 clusters de canto +
+# bloco central), bate com o pacote "63/67 Ball BGA" que o catálogo oficial 2016 usa pra
+# família NAND crua (NVG) em 1-8Gbit, muito menor que os 132-169 esferas da linha gerenciada
+# de alta capacidade (THGBM) — contradiz fisicamente qualquer leitura de alta capacidade.
+# Decisão do dono (2026-09-02, após ver a foto e o raciocínio completo): registrar como
+# "256MB, estimated".
+#
+# ============================================================================================
+# TC58RYG1S8EBAIA (PN real, confirmado fisicamente pelo dono) — confidence=estimated
+# ============================================================================================
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tc58ryg_2026-09-02.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tc58ryg_2026-09-02.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TC58RYG1S8EBAIA"
+    chip_type: "NAND Flash"
+    capacity: "256MB"
+    confidence: estimated
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/FlashMemory_Mar31,2016_Cat.pdf"
+    notes: >
+      PN da bancada digitado "TC58RYG188EBAIA", corrigido com o dono (posição 9, 8→S) e
+      CONFIRMADO por foto da marcação física do chip (2026-09-02): "TC58RYG1S8EBA1A" +
+      linha 2 "1050KFE". Capacidade NÃO tem datasheet Tier-1 direto (família nunca
+      catalogada publicamente) — vem de inferência estrutural: mesmo formato posicional
+      da TC58NVG (já confirmada nesta gramática), posição7="1"→G1=2Gbit=256MB (tabela
+      oficial MFOPR-916, mesma usada em TC58NVG). Corroborado por busca em 5 datasheets
+      KIOXIA oficiais (Serial Interface NAND, famílias-irmãs CVG/CYG — confirma que "S8"
+      nunca é código de densidade em nenhuma capacidade documentada) e por foto do
+      encapsulamento BGA do próprio chip (~63 esferas — classe de pacote das famílias NAND
+      cruas de baixa densidade, não das gerenciadas de alta capacidade). Ver reasoning
+      completo em chips/knowledge/toshiba-kioxia.yaml (família TC58RYG). Dono decidiu
+      registrar como estimated (não confirmed/manual) dado que a capacidade não tem fonte
+      documental direta — mesma disciplina do THGBM 6D4/7D4.

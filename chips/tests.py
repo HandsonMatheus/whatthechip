@@ -1821,6 +1821,17 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
     "TC58NVG1S3ETA00": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # variante design rule 43nm (posição10="E") — mesma capacidade, prova que design rule não afeta a chave
     "TC58NVG2S3ETA00": ("NAND Flash", "512MB", "", "", "", "NÃO RENTÁVEL"),  # variante 43nm
     "TC58NVG1S3HTAI0": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # sufixo de pacote/modo "I0" diferente — mesma capacidade
+    # TC58RYG (2026-09-02, família NOVA — NAND com controlador, provável PBA-NAND; prefixo "R"
+    # nunca visto antes nesta marca). MESMO formato posicional da TC58NVG (decode_cap_map
+    # REAPROVEITA TC58NVG_CAP — mesma tabela oficial "G0"-"GF" do MFOPR-916, mesma marca).
+    # PN da bancada TC58RYG188EBAIA (posição 9, "8"↔"S" — mesma confusão visual já vista nesta
+    # marca) → PN real TC58RYG1S8EBAIA, CONFIRMADO fisicamente pelo dono (foto da marcação a
+    # laser). Capacidade (256MB) é inferência estrutural (posição7="1"→G1=2Gbit=256MB),
+    # corroborada por foto do encapsulamento BGA (~63 esferas, classe de pacote NAND-crua-baixa-
+    # densidade) — sem datasheet Tier-1 direto pra este PN, known_part entra confidence=estimated.
+    # NÃO RENTÁVEL é por TIPO (NAND raw/com controlador simples, sem eMMC/UFS padrão), igual
+    # TC58NVG/THGBX — independente de capacidade. Validado no sandbox: classify() confirma.
+    "TC58RYG1S8EBAIA": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # PN real (dono confirmou fisicamente); bancada digitou TC58RYG188EBAIA
 }
 _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). Cobre DDR1-5, LPDDR2-4X, eMMC, eMCP, UFS.
     "H26M74002HMR":      ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
