@@ -1,0 +1,70 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBM (cluster "1G6D4", chave nova 6D4=8GB)
+#
+# PN da bancada digitado: THGBM1G6DAEBA1D — string NÃO existe em nenhuma fonte (busca
+# exaustiva: WebSearch, findcomponents.net, hkinventory, veswin, censtry, Octopart, Jotrin).
+# Duas posições batem no padrão de erro de leitura já documentado nesta família: pn[9]="A"
+# (posição de dies, só dígito 1/2/4/8 em toda a família até hoje) e pn[13]="1" (posição de
+# voltagem, só I/U — MESMA confusão 1↔I já resolvida antes no irmão THGBMBG7D4KBAIR/W,
+# 2026-07-10). Perguntado ao dono qual candidato seguir; confirmado THGBM1G6D4EBAID.
+#
+# ⚠ TIER ALCANÇADO: NÃO é Tier-1/2. Busca dirigida nos dois documentos oficiais já
+# comprovadamente confiáveis desta família (Toshiba/TAEC "Card Interface : e-MMC",
+# media.digikey.com, ago/2012 — cobre só a linha "4G"/pn[5]="4"; e o catálogo
+# "FAB_eMMC_1405" — cobre só as linhas "BG"/"AG") NÃO trouxe nenhuma menção à linha "1G"
+# (pn[5]="1"). O PDF do Octopart citado para THGBM1G8D8EBAI2 (mesma linha "1G", press
+# release Toshiba 2008 "largest density embedded NAND flash") está QUEBRADO — página em
+# branco, não foi possível extrair texto. Nenhum resultado em Digikey/Mouser/LCSC/Octopart
+# para o PN exato. A linha "1G" desta família parece genuinamente pouco documentada em
+# fontes de alto tier (mesmo padrão já visto: pn[5]="1"/"2"/"3" seguem sem fonte de geração
+# há várias rodadas).
+#
+# ============================================================================================
+# THGBM1G6D4EBAI4 (irmã de sufixo, fonte real encontrada) — confidence=distributor
+# ============================================================================================
+# Fonte: jotrin.com/product/parts/THGBM1G6D4EBAI4 — distribuidor real (60 unidades em
+# estoque, "Active production", não é página-modelo genérica). Descrição estruturada:
+# "Managed NAND Flash Serial e-MMC 3.3V 64G-bit 64G/16G/8G x 1/4-bit/8-bit 169-Pin FBGA".
+# "64G-bit" = 64Gb = 8GB — BATE EXATO com a previsão estrutural (dígito de densidade
+# pn[7]="6" já confirmado 8GB em 4 combinações Tier-1 diferentes: 6A2/6C1/6D1/6D2; dies
+# pn[9] não multiplica). Pacote 169-Pin FBGA também bate com o cluster já visto no catálogo
+# findcomponents.net (THGBM1G6D4EBA14/EBAI4/EBAI4DGH/EBAI4E10/EBAI4YCJ/EBAI4YDJ/EBAID — só
+# variam sufixo final, mesmo PN-base). Geração (pn[5]="1") SEM fonte — mesmo gap já
+# documentado (THGBM1G8D8EBAI2).
+#
+# ============================================================================================
+# THGBM1G6D4EBAID (PN da bancada, mesma base — sufixo final diferente) — confidence=distributor
+# ============================================================================================
+# Mesmo PN-base do THGBM1G6D4EBAI4 acima (mesmo cluster de sufixo no catálogo
+# findcomponents.net), só troca o último caractere (4→D) — padrão de variante
+# comercial/revisão já visto em toda a família (sufixo final não muda capacidade).
+# Capacidade herdada do irmão de sufixo confirmado acima + mesma regra estrutural.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_1g6d4_2026-09-01.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_1g6d4_2026-09-01.yaml --commit
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBM1G6D4EBAI4"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: distributor
+    source_url: "https://www.jotrin.com/product/parts/THGBM1G6D4EBAI4"
+    notes: >
+      Distribuidor real (Jotrin, 60 PCS em estoque, Active production) — não é Tier-1/2,
+      busca dirigida nos 2 documentos oficiais confiáveis desta família (DigiKey "Card
+      Interface e-MMC" ago/2012, catálogo FAB_eMMC_1405) não cobre a linha "1G" (pn[5]="1").
+      Descrição do distribuidor: "64G-bit 64G/16G/8G x 1/4-bit/8-bit 169-Pin FBGA" — 64G-bit
+      = 8GB, bate exato com a regra estrutural já provada (dígito pn[7]="6"=8GB, confirmado
+      em 6A2/6C1/6D1/6D2). Geração (pn[5]="1") sem fonte, mesmo gap do THGBM1G8D8EBAI2.
+  - part_number: "THGBM1G6D4EBAID"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/THGBM1G6D4EBAID"
+    notes: >
+      PN da bancada (digitado THGBM1G6DAEBA1D, corrigido com o dono — pn[9] A→4, pn[13]
+      1→I, mesma confusão já vista no THGBMBG7D4KBAIR/W). Mesmo PN-base do
+      THGBM1G6D4EBAI4 (ver known_part irmão acima) — só sufixo final diferente (4 vs D),
+      mesmo cluster no catálogo findcomponents.net. Capacidade herdada do irmão + regra
+      estrutural do dígito pn[7]="6"=8GB. Geração sem fonte, mesmo gap documentado.
