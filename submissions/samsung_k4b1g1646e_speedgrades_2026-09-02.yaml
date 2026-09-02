@@ -1,0 +1,94 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3), die E, GRADES DE
+# VELOCIDADE irmãs de HCH9 (1Gb, x16, 96-FBGA).
+#
+# Motivo: rodada anterior (samsung_k4b1g1646ehch9_2026-09-02.yaml) entregou
+# SÓ o sufixo exato do debug (HCH9), mesmo já citando no cabeçalho que die D
+# tem HCF7/HCF8/HCH9 e die G tem 5 grades BC completas — ou seja, a pista
+# pros outros sufixos de die E já estava na MINHA PRÓPRIA nota e eu não fui
+# atrás. Dono: "SEMPRE pesquise mais, nunca só 1". Esta submissão fecha essa
+# lacuna: busquei TODAS as grades de velocidade "HC*" plausíveis pra die E
+# (paralelo às grades já confirmadas em die D/die G).
+#
+# CONFIRMADOS (3 novos, todos com fonte independente — Octopart campo
+# estruturado e/ou múltiplos distribuidores):
+#   - K4B1G1646E-HCF7: Jotrin (página dedicada, estoque 1665, FBGA96,
+#     confirmado ao vivo via browser — Specifications tab).
+#     https://www.jotrin.com/product/parts/K4B1G1646E_HCF7
+#   - K4B1G1646E-HCF8: Octopart (campo estruturado): "DDR3 Dram, 64MX16,
+#     0.15NS, Cmos, PBGA96" · 1.5V · 5 distribuidores independentes (YIC
+#     International, ICPartonline, Hi-Tech Circuit Group, GreenTree,
+#     TIST). https://octopart.com/k4b1g1646e-hcf8-samsung-28559440
+#   - K4B1G1646E-HCK0: Octopart (busca com resultado único, não ambíguo):
+#     5 distribuidores independentes (Win Source, Worldway Electronics,
+#     ICPartonline, Hi-Tech Circuit Group, TIST).
+#     https://octopart.com/search?q=K4B1G1646E-HCK0
+#
+# NÃO encontrados / EXCLUÍDOS (busca ativa, sem fonte — não invento):
+#   - K4B1G1646E-HCMA, K4B1G1646E-HCNB (grades 1866/2133 — existem pra die
+#     G mas busca dedicada não achou nenhuma ocorrência pra die E; mesmo
+#     padrão do die D, que também para em HCH9/1333 e não vai até MA/NB).
+#   - K4B1G1646E-BCH9: apareceu no "related products" do Jotrin (página do
+#     HCF7), mas busca dedicada só retornou resultados de K4B1G1646G-BCH9
+#     (die G, JÁ diferente) — nenhuma fonte independente confirma um
+#     "E-BCH9" distinto do "E-HCH9" já registrado. Tratado como erro de
+#     catalogação do distribuidor (die trocada), não como PN novo.
+#   - K4B1G1646D-HPF8: mesmo related-products do Jotrin; busca só retorna
+#     o já conhecido K4B1G1646D-HCF8 (HC, não HP) — provável erro de OCR/
+#     digitação do distribuidor (H-C↔H-P), não PN novo.
+#   - K4B1G1646D-HYH9 / K4B1G1646E-HYH9 (par DDR3L, tensão 1.35V): um
+#     resultado de busca sugeriu um link "datasheets.com" dedicado pro
+#     D-die, mas abri a página ao vivo (browser, não só o resumo da busca)
+#     e o resultado real da busca do PRÓPRIO site retorna só o já
+#     conhecido K4B1G1646E-HCH9 — o link/título da 1ª busca era um
+#     artefato (confirma [[wtc-verificar-citacoes-resposta-ia-terceiros]]
+#     de novo). Mantém a exclusão já registrada na submissão de
+#     2026-08-27 pro die D: sem par DDR3L confirmado pra esta
+#     densidade+largura+die.
+#
+# capacity="128MB" (1Gbit÷8), mesmo formato desta família (ver submissões
+# 2026-08-27/2026-09-02 já commitadas).
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B1G1646E-HCF7"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/K4B1G1646E_HCF7"
+    notes: >
+      Grade de velocidade irmã de K4B1G1646E-HCH9 (já no banco). Jotrin
+      (página dedicada, conferida ao vivo via browser): estoque 1665,
+      FBGA96, "Lead free/RoHS Compliant". Mesmo padrão HC=DDR3 1.5V já
+      confirmado nos irmãos desta família (die D e die E-HCH9/HCF8/HCK0).
+
+  - part_number: "K4B1G1646E-HCF8"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/k4b1g1646e-hcf8-samsung-28559440"
+    notes: >
+      Grade de velocidade irmã de K4B1G1646E-HCH9. Octopart (campo
+      estruturado): "DDR3 Dram, 64MX16, 0.15NS, Cmos, PBGA96",
+      Nominal Supply Voltage 1.5V, FBGA96/96 terminais. 5 distribuidores
+      independentes com estoque (YIC International, ICPartonline,
+      Hi-Tech Circuit Group, GreenTree Electronics, TIST Technology).
+
+  - part_number: "K4B1G1646E-HCK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=K4B1G1646E-HCK0"
+    notes: >
+      Grade de velocidade irmã de K4B1G1646E-HCH9 (DDR3-1600, mesma
+      numeração de grade "K0" já vista no irmão K4B1G1646G-BCK0). Busca
+      Octopart com resultado único (não ambíguo): 5 distribuidores
+      independentes com estoque (Win Source, Worldway Electronics,
+      ICPartonline, Hi-Tech Circuit Group, TIST Technology). ⚠ Grade
+      NOVA pra esta família — die D só tinha F7/F8/H9 confirmados até
+      agora (nunca teve K0 achado); die E aparenta ter cobertura mais
+      ampla de grades que die D.
