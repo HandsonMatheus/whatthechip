@@ -15,7 +15,9 @@ legados, que já nasceram com 1, 2 e 4. Nenhum lote passa na frente de outro.
 ⚠ ISTO REESCREVE CÓDIGO DE DOCUMENTO. O `LOT/039/05/26` que o comprador tem
    em papel vira `LOT/003/05/26`. O dono pediu explicitamente, ciente disso —
    é a mesma decisão que ele já tinha tomado em 2026-08-18 no
-   `backfill_doc_codes`. O MÊS de cada código é preservado: o lote 3 continua
+   `backfill_doc_codes`. O ANO de cada código é preservado (o lote 3 continua
+   sendo de 2026 mesmo renumerado); o MÊS saiu do identificador na convenção
+   de 2026-09-02. O texto abaixo é de antes dela: o lote 3 continua
    `/05/26` porque abriu em maio. Só o número muda.
 
 O que NÃO muda: os códigos de ordem de venda e de fatura. Eles têm sequência
@@ -105,9 +107,38 @@ class Command(SafeWriteCommand):
                          'codigo_antes': p['codigo_atual'],
                          'code_str_antes': p['code_str_atual']})
                 self._checar_depois(empresa, exigir_contiguo=not o['so_fechados'])
+                self._acertar_contador(empresa)
             self._gravar_revert(registro)
             self.stdout.write(self.style.SUCCESS(
                 f'\n{len(plano)} lote(s) renumerado(s). Reversão em {REVERT}'))
+
+    # ── contador ─────────────────────────────────────────────────────────
+    def _acertar_contador(self, empresa):
+        """Recua o contador para o maior número que sobrou.
+
+        ⚠ A 1ª execução (01/09/2026) NÃO fazia isto, e o efeito só apareceu no
+        dia seguinte: comprimir 39–50 em 1–13 deixou o contador em 50, e o
+        próximo lote nasceria #51 — um buraco de 37 números no dia seguinte a
+        uma recontagem feita justamente para não ter buraco. A auto-cura do
+        `open_for_company` só empurra o contador para CIMA; contador adiantado
+        ela não vê. Comando que mexe em `number` tem de mexer no contador."""
+        from django.db.models import Max
+        from estoque.models import Lot
+        from tenancy.models import Company
+        from vendas.models import DocSequence, SEQ_LOT
+        for linha in (Lot.all_companies.filter(company=empresa)
+                      .values('doc_year').annotate(m=Max('number'))):
+            if not linha['doc_year']:
+                continue
+            seq, _ = DocSequence.all_companies.get_or_create(
+                company=empresa, kind=SEQ_LOT, year=linha['doc_year'])
+            if seq.last_number != linha['m']:
+                seq.last_number = linha['m']
+                seq.save(update_fields=['last_number'])
+        maior = (Lot.all_companies.filter(company=empresa)
+                 .aggregate(Max('number'))['number__max']) or 0
+        Company.objects.filter(pk=empresa.pk).exclude(
+            last_lot_number=maior).update(last_lot_number=maior)
 
     # ── planejar ─────────────────────────────────────────────────────────
     def _planejar(self, mapa, empresa):

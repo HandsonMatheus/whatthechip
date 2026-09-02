@@ -1072,7 +1072,7 @@ class RoleMatrixTests(TestCase):
         (antes cada usuário só via os próprios lotes; ver _get_lot)."""
         self._as('operator')
         resp = self.client.get(reverse('estoque:index'))
-        self.assertIn('/900/', self.lot.code)   # nomenclatura F11.2
+        self.assertIn('-0900', self.lot.code)   # nomenclatura (convenção 09-02)
         self.assertContains(resp, self.lot.code)
 
 
@@ -1187,7 +1187,7 @@ class PainelTests(TestCase):
         # Nomenclatura F11.2 — o número é perpétuo; o código da empresa entrou
         # no prefixo em 2026-08-18 (LOT/EMI/500/…), por isso a asserção é
         # sobre o `code` do lote e não sobre um literal.
-        self.assertIn('/500/', lot.code)
+        self.assertIn('-0500', lot.code)          # convenção de 2026-09-02
         self.assertContains(resp, lot.code)
         self.assertContains(resp, 'Continuar triagem')
         self.assertContains(resp, reverse('estoque:lot_detail', args=[lot.pk]))
@@ -1251,10 +1251,27 @@ class LotNumberSequenceTests(TestCase):
         self.assertEqual(lot.number, 1)          # "Lote #001" (§5.2 do plano)
         self.assertEqual(Lot.open_for_company(self.company, self.user, origin='phone').number, 2)
 
-    def test_herda_seed_do_bootstrap(self):
-        Company.objects.filter(pk=self.company.pk).update(last_lot_number=40)
-        self.company.refresh_from_db()
+    def test_herda_seed_do_contador(self):
+        """⚠ O contador mudou de casa em 2026-09-02: era `Company.
+        last_lot_number`, virou uma linha do `DocSequence` por (empresa, ano) —
+        porque o número passou a reiniciar em 1º de janeiro."""
+        from django.utils import timezone
+        from vendas.models import DocSequence, SEQ_LOT
+        DocSequence.all_companies.create(
+            company=self.company, kind=SEQ_LOT,
+            year=timezone.localdate().year, last_number=40)
         self.assertEqual(Lot.open_for_company(self.company, self.user, origin='phone').number, 41)
+
+    def test_o_numero_reinicia_a_cada_ano(self):
+        """`LOT-2026-0041` → `LOT-2027-0001`. A chave de unicidade é
+        (empresa, ano, número), então os dois lotes 1 coexistem."""
+        from vendas.models import DocSequence, SEQ_LOT
+        primeiro = Lot.open_for_company(self.company, self.user, origin='phone')
+        self.assertEqual(primeiro.number, 1)
+        # o ano vira: o contador do ano NOVO começa do zero
+        self.assertEqual(
+            DocSequence.next_number(self.company, SEQ_LOT,
+                                    primeiro.doc_year + 1), 1)
 
     def test_auto_cura_drift_do_contador(self):
         """Lote criado POR FORA do contador (legado/manual) não gera colisão:
@@ -1265,6 +1282,95 @@ class LotNumberSequenceTests(TestCase):
         self.assertEqual(lot.number, 78)
         self.company.refresh_from_db()
         self.assertEqual(self.company.last_lot_number, 78)  # contador curado
+
+
+class LotNumeroDevolvidoNaExclusaoTests(TestCase):
+    """Abrir um lote e apagá-lo em seguida DEVOLVE o número (dono, 2026-09-02).
+
+    O relato: "abro um lote, apago, e o próximo começa um número depois". Era
+    verdade — ninguém recuava o contador, e a auto-cura só empurra para cima.
+
+    ⚠ Isto contraria o §4 do contrato ("número emitido nunca se reusa"), e o
+    ALCANCE é o que preserva o espírito da regra: só volta o número que nunca
+    virou documento. Lote que chegou a FECHAR emitiu o PDF de conferência com o
+    código dentro — esse número está no mundo e não volta, nem que o lote seja
+    apagado depois. Buraco no meio também não se preenche: fechar buraco é
+    trabalho do `renumerar_lotes_eminer`, com dry-run e revert, nunca efeito
+    colateral de um clique."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user('del_user')
+        self.company = Company.objects.create(name='DelCo', slug='delco')
+
+    def _abrir(self):
+        return Lot.open_for_company(self.company, self.user, origin='phone')
+
+    def test_abrir_apagar_abrir_devolve_o_mesmo_numero(self):
+        primeiro = self._abrir()
+        self.assertEqual(primeiro.number, 1)
+        primeiro.delete()
+        self.assertEqual(self._abrir().number, 1)
+
+    def test_lote_do_MEIO_nao_devolve_o_numero(self):
+        """Devolver o 1 com o 2 e o 3 vivos faria dois lotes diferentes
+        carregarem `LOT-2026-0001` ao longo do tempo."""
+        primeiro, _segundo = self._abrir(), self._abrir()
+        primeiro.delete()
+        self.assertEqual(self._abrir().number, 3)
+
+    def test_lote_que_ja_foi_FECHADO_nao_devolve(self):
+        """O código dele saiu no PDF de conferência: está no mundo."""
+        lot = self._abrir()
+        lot.status = Lot.STATUS_CLOSED
+        lot.save(update_fields=['status'])
+        lot.refresh_from_db()
+        self.assertTrue(lot.ever_closed)
+        lot.delete()
+        self.assertEqual(self._abrir().number, 2)
+
+    def test_lote_REABERTO_tambem_nao_devolve(self):
+        """⚠ Reabrir zera `closed_at`/`closed_by` — por isso a marca é um campo
+        próprio, que não volta para False. Sem ela, um lote que já imprimiu
+        pareceria virgem."""
+        lot = self._abrir()
+        lot.status = Lot.STATUS_CLOSED
+        lot.save(update_fields=['status'])
+        lot.status = Lot.STATUS_OPEN          # reabertura
+        lot.closed_at = None
+        lot.save(update_fields=['status', 'closed_at'])
+        lot.refresh_from_db()
+        self.assertTrue(lot.ever_closed)
+        self.assertFalse(lot.devolve_numero_ao_excluir)
+        lot.delete()
+        self.assertEqual(self._abrir().number, 2)
+
+    def test_a_devolucao_nao_atravessa_empresa(self):
+        outra = Company.objects.create(name='OutraCo', slug='outraco')
+        Lot.open_for_company(outra, self.user, origin='phone')
+        lot = self._abrir()
+        lot.delete()
+        self.assertEqual(
+            Lot.open_for_company(outra, self.user, origin='phone').number, 2)
+
+    def test_a_devolucao_nao_atravessa_ANO(self):
+        from vendas.models import DocSequence, SEQ_LOT
+        lot = self._abrir()
+        ano_seguinte = lot.doc_year + 1
+        DocSequence.all_companies.create(company=self.company, kind=SEQ_LOT,
+                                         year=ano_seguinte, last_number=7)
+        lot.delete()
+        self.assertEqual(
+            DocSequence.all_companies.get(company=self.company, kind=SEQ_LOT,
+                                          year=ano_seguinte).last_number, 7)
+
+    def test_a_propriedade_diz_a_mesma_coisa_que_o_delete(self):
+        """O modal de exclusão avisa o gerente lendo ESTA propriedade — se ela
+        divergir do `delete()`, a tela promete o que o sistema não faz."""
+        lot = self._abrir()
+        self.assertTrue(lot.devolve_numero_ao_excluir)
+        segundo = self._abrir()
+        self.assertFalse(lot.devolve_numero_ao_excluir)   # deixou de ser o último
+        self.assertTrue(segundo.devolve_numero_ao_excluir)
 
 
 class LotNumberRaceTests(TransactionTestCase):

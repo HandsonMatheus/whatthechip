@@ -70,9 +70,12 @@ def create_draft_for_lot(lot, user=None):
                    .aggregate(t=Sum('quantity'))['t'] or 0)
 
         with transaction.atomic():
+            # O número sai do contador do ANO DO LOTE, não do de hoje (§2.2 da
+            # convenção): um lote de dezembro vendido em janeiro segue sendo
+            # campanha do ano dele. `next_for_lot` é o único lugar que sabe disso.
+            ano, numero = SalesOrder.next_for_lot(lot)
             so = SalesOrder(
-                lot=lot, buyer=buyer,
-                number=DocSequence.next_number(lot.company, SEQ_SO),
+                lot=lot, buyer=buyer, doc_year=ano, number=numero,
                 unkeyed_units=unkeyed)
             so.save()
             for (brand, kind, gen, tv, tu), qty in merged.items():
@@ -1415,7 +1418,9 @@ def data_de_despacho(so):
 _PURCHASE_KEY = {
     'n':      lambda s: (data_de_despacho(s), s.created_at, s.pk),
     'seller': lambda s: ((s.company.name.lower() if s.company_id else ''), s.pk),
-    'so':     lambda s: (s.number, s.pk),
+    # ⚠ (ano, número): com o reinício anual, ordenar só pelo número mistura os
+    # anos — a OV 0001 de 2027 viria antes da 0041 de 2026.
+    'so':     lambda s: (s.doc_year, s.number, s.pk),
     'units':  lambda s: (s.units, s.pk),
     'val':    lambda s: (s.total_rmb or s.est_rmb or Decimal('0'), s.pk),
     'usd':    lambda s: (s.total_usd or s.est_usd or Decimal('0'), s.pk),

@@ -23,7 +23,8 @@ lista mostra ao lado do código, e é o que a busca do comprador varre.
 O código antigo é RECONSTRUÍDO, não digitado: o número vem do `MAPA` do
 próprio `renumerar_lotes_eminer` (fonte única — se o mapa mudar, isto
 acompanha) e o mês vem do `created_at` do lote, que a renumeração não toca.
-A montagem passa pelo `doc_code()`, o mesmo do resto do sistema — escrever o
+A montagem é LOCAL (`codigo_antigo`) desde 2026-09-02: o `doc_code()` do
+sistema emite a grafia NOVA, e aqui o que se reproduz é o papel antigo. Escrever o
 formato à mão aqui seria criar uma segunda convenção de código.
 
 ⚠ Idempotente: lote que já traz "antes LOT/0NN" na descrição é pulado.
@@ -46,7 +47,23 @@ from django.utils import timezone
 
 from core.safe_command import SafeWriteCommand
 from estoque.management.commands.renumerar_lotes_eminer import MAPA
-from tenancy.doc_code import doc_code
+
+def codigo_antigo(numero, quando, company_code='') -> str:
+    """A grafia ANTIGA do lote: ``LOT/039/05/26``.
+
+    ⚠ Montada AQUI, e não pelo `doc_code()` do sistema, desde 2026-09-02.
+    Antes ela vinha de lá — o que estava certo enquanto o sistema escrevia
+    nesse formato. O `doc_code` passou a emitir `LOT-2026-0039`, e este comando
+    precisa exatamente do contrário: o que está IMPRESSO no papel que viajou
+    com a caixa. Grafia histórica é dado congelado, não função viva.
+
+    O código da empresa entra quando ela tinha um (`LOT/EMI/040/07/26`) — a
+    grafia antiga o incluía. A eMiner estava sem código na época, e por isso o
+    dela sai curto.
+    """
+    meio = f'{company_code}/' if company_code else ''
+    return f'LOT/{meio}{numero:03d}/{quando:%m}/{quando:%y}'
+
 from tenancy.models import Company
 from tenancy.scope import company_scope
 
@@ -91,7 +108,7 @@ class Command(SafeWriteCommand):
                     plano.append(dict(lot=None, novo=novo, antigo=antigo,
                                       acao='não existe — pulo', muda=False))
                     continue
-                codigo = doc_code('LOT', empresa.code, antigo, lot.created_at)
+                codigo = codigo_antigo(antigo, lot.created_at, empresa.code)
                 if JA_TEM.search(lot.description or ''):
                     acao, muda, texto = 'já tem — não toco', False, None
                 else:
@@ -107,12 +124,26 @@ class Command(SafeWriteCommand):
             mexer = [p for p in plano if p['muda']]
             for p in plano:
                 atual = p['lot'].code if p['lot'] else f'#{p["novo"]}'
-                w(f'   {atual:<16}{doc_code("LOT", empresa.code, p["antigo"], p["lot"].created_at) if p["lot"] else "—":<16}'
+                w(f'   {atual:<16}{codigo_antigo(p["antigo"], p["lot"].created_at, empresa.code) if p["lot"] else "—":<16}'
                   f'   {p["acao"]}')
             w('')
 
+            existentes = [p for p in plano if p['lot'] is not None]
             if not mexer:
-                w(st.SUCCESS('   Nada a fazer: todos já trazem o código antigo.'))
+                # ⚠ "nada a fazer" tem DUAS causas opostas, e dizer a errada é
+                # pior que não dizer nada: rodado antes da renumeração, nenhum
+                # lote existe — e a 1ª versão anunciava "todos já trazem o
+                # código antigo", veredito verde sobre coisa nenhuma. Pego no
+                # dry-run contra produção em 01/09.
+                if not existentes:
+                    w(st.WARNING(
+                        '   Nenhum dos lotes renumerados existe neste banco '
+                        '— a renumeração ainda\n   não rodou aqui. Este '
+                        'comando vem DEPOIS dela.'))
+                else:
+                    w(st.SUCCESS(
+                        f'   Nada a fazer: os {len(existentes)} lote(s) '
+                        f'encontrados já trazem o código antigo.'))
                 return
 
             w(f'   {len(mexer)} lote(s). A descrição é acrescida, nunca '

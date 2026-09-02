@@ -114,14 +114,29 @@ class RenumeracaoTests(_Cenario):
                       if l.number in destinos]
         self.assertEqual(antes, depois)
 
-    def test_o_codigo_novo_preserva_o_MES_do_lote(self):
-        """O lote 39 abriu em maio: vira LOT/003/05/26, não /09/26 de hoje."""
+    def test_o_codigo_novo_preserva_o_ANO_do_lote(self):
+        """O lote 39 abriu em 2026: vira `LOT-2026-0003`, e o ano é o da
+        ABERTURA, não o de hoje. ⚠ O MÊS saiu do identificador na convenção de
+        2026-09-02 — era ele que carregava a ambiguidade `08/26`."""
         _rodar('--commit')
         with company_scope(self.empresa.id):
-            self.assertTrue(Lot.objects.get(pk=self.abertos[39])
-                            .code.endswith('/003/05/26'))
-            self.assertTrue(Lot.objects.get(pk=self.abertos[40])
-                            .code.endswith('/005/07/26'))
+            l39 = Lot.objects.get(pk=self.abertos[39])
+            self.assertEqual(l39.code, f'LOT-{l39.doc_year}-0003')
+            l40 = Lot.objects.get(pk=self.abertos[40])
+            self.assertEqual(l40.code, f'LOT-{l40.doc_year}-0005')
+
+    def test_a_renumeracao_ACERTA_o_contador(self):
+        """⚠ A 1ª execução não fazia isto: comprimir 39–50 em 1–13 deixou o
+        contador em 50 e o próximo lote nasceria #51. A auto-cura só empurra
+        para cima — contador adiantado ela não vê."""
+        from vendas.models import DocSequence, SEQ_LOT
+        _rodar('--commit')
+        with company_scope(self.empresa.id):
+            maior = max(l.number for l in Lot.objects.all())
+            seq = DocSequence.all_companies.get(
+                company=self.empresa, kind=SEQ_LOT,
+                year=Lot.objects.first().doc_year)
+            self.assertEqual(seq.last_number, maior)
 
     def test_o_codigo_fica_CONGELADO_e_nao_mais_calculado(self):
         """Antes o 39 tinha code_str vazio (código calculado do número).

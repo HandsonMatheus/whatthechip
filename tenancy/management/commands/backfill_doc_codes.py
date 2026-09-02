@@ -1,27 +1,34 @@
 """
 backfill_doc_codes
 ==================
-Põe o CÓDIGO DA EMPRESA nos documentos que já existem — ``LOT/041/08/26`` vira
-``LOT/EMI/041/08/26`` (dono, 2026-08-18).
+Reescreve o CÓDIGO dos documentos que já existem para a convenção de
+2026-09-02 — ``LOT/003/05/26`` vira ``LOT-2026-0003``, ``SO/007/08/26`` vira
+``EMIN-SO-2026-0007`` (CONVENCAO_IDENTIFICADORES.md).
 
-Duas coisas, nesta ordem:
+Duas coisas, nesta ordem — e a ordem IMPORTA:
 
-  1. **Empresa sem código ganha um** — as 3 primeiras letras do nome
-     (``suggest_company_code``), a mesma regra que agora vale para empresa
-     nova. Colisão resolve sozinha: 3 letras → 4 letras → 3 letras + B, C, D…
-  2. **Documento antigo é reescrito** — ``code_str`` de Lot, SalesOrder e
-     Invoice. Só quem ainda NÃO tem código de empresa no identificador; quem já
-     saiu no formato novo não é tocado (número de documento não muda duas vezes).
+  1. **Código de 4 letras em cada empresa** (dono, 2026-09-02): eMiner →
+     ``EMIN``, eRecyclo → ``EREC``. Empresa que já tenha 4 letras não é
+     tocada. Colisão resolve pela regra do ``suggest_company_code``.
+  2. **Documento antigo é reescrito** — ``code_str`` de Lot e SalesOrder.
 
-⚠ A DECISÃO MUDOU. O formato novo tinha sido aplicado só a documento NOVO,
-porque papel já impresso não pode divergir da tela. O dono reverteu em
-2026-08-18: quer o passado renomeado também. O preço é esse — PDF de lote
-antigo que já esteja impresso vai mostrar ``LOT/041/08/26`` enquanto a tela
-mostra ``LOT/EMI/041/08/26``. O número (041) e a data não mudam, então o
-documento continua rastreável; o que muda é só o prefixo.
+⚠ Se o passo 2 rodasse primeiro, as ordens sairiam com o código VELHO da
+empresa e o passo 1 não as alcançaria mais.
 
-Mês/ano vêm do ``created_at`` (``issued_at`` na fatura) — a data REAL de
-emissão, não a de hoje. Um lote de julho continua ``…/07/26``.
+⚠ A FATURA (INV) NÃO ENTRA. Decisão do dono de 2026-09-02: ela está sendo
+aposentada em entrega separada, e reescrever o identificador de um documento
+que está saindo só cria trabalho de reconciliação. Ela fica em
+``INV/EMI/003/08/26``.
+
+⚠ ISTO REESCREVE CÓDIGO DE DOCUMENTO, inclusive de lote já despachado e de
+ordem já quitada. É a decisão do dono desde 2026-08-18, reafirmada em 09-02:
+ele quer tela e papel na mesma grafia. O preço é o PDF já impresso divergir.
+O NÚMERO e a DATA não mudam — só a grafia —, então o documento continua
+rastreável pelo número.
+
+O ano vem do ``doc_year`` do documento (preenchido pela migração), com o ano
+do ``created_at`` como rede. A ordem de venda usa o ano do LOTE dela — que é
+exatamente o que o ``doc_year`` dela guarda (§2.2).
 
 RLS (⚠ armadilha §6.2.2): o laço abre ``company_scope(empresa)`` por empresa.
 Sem o GUC, com FORCE RLS, tanto o SELECT quanto o UPDATE casam **zero linhas em
@@ -46,17 +53,17 @@ from django.core.management.base import CommandError
 from django.db import transaction
 
 from core.safe_command import SafeWriteCommand
-from tenancy.doc_code import doc_code
+from tenancy.doc_code import _ano_de, doc_code
 from tenancy.models import Company, suggest_company_code
 from tenancy.scope import company_scope
 
 REVERT_FILE = 'backfill_doc_codes_revert.json'
 
 #: (rótulo, import path, prefixo do documento, campo de data)
+#: ⚠ A Fatura SAIU daqui em 2026-09-02 (ela está sendo aposentada — não tocar).
 ALVOS = (
     ('Lote',   'estoque.models:Lot',          'LOT', 'created_at'),
     ('OV',     'vendas.models:SalesOrder',    'SO',  'created_at'),
-    ('Fatura', 'vendas.models:Invoice',       'INV', 'issued_at'),
 )
 
 
@@ -70,18 +77,19 @@ def _modelo(caminho):
     return getattr(import_module(modulo), nome)
 
 
-def tem_codigo_de_empresa(code_str: str) -> bool:
-    """``LOT/EMI/041/08/26`` → True; ``LOT/041/08/26`` e ``''`` → False.
+def ja_no_formato_novo(code_str: str) -> bool:
+    """``LOT-2026-0041``/``EMIN-SO-2026-0004`` → True; qualquer grafia com
+    ``/`` (e vazio) → False.
 
-    Olha o segundo pedaço: código de empresa é só LETRAS, número de documento
-    é só dígito. Não dá empate."""
-    partes = (code_str or '').split('/')
-    return len(partes) >= 2 and partes[1].isalpha()
+    O separador basta e não dá empate: a grafia velha é toda com barra, a nova
+    é toda com hífen. Serve à IDEMPOTÊNCIA — rodar duas vezes não reescreve."""
+    return bool(code_str) and '/' not in code_str
 
 
 class Command(SafeWriteCommand):
-    help = ('Põe o código da empresa nos documentos já existentes '
-            '(LOT/041/08/26 → LOT/EMI/041/08/26). Dry-run por padrão.')
+    help = ('Reescreve lote e ordem de venda na convenção nova '
+            '(LOT/003/05/26 → LOT-2026-0003; SO/007/08/26 → '
+            'EMIN-SO-2026-0007). A fatura NÃO é tocada. Dry-run por padrão.')
 
     def add_arguments(self, parser):
         parser.add_argument('--company', default=None,
@@ -112,23 +120,34 @@ class Command(SafeWriteCommand):
 
         for empresa in empresas:
             codigo = empresa.code
-            if not codigo:
-                codigo = suggest_company_code(empresa.name, taken=ocupados)
-                if not codigo:
+            # Código de 4 LETRAS (dono, 2026-09-02). Vazio e código curto ganham
+            # a semente; quem já tem 4 fica como está — código de empresa é
+            # decisão que se toma uma vez, e mexer nele repercute em tudo.
+            if len(codigo) != 4:
+                ocupados.discard(codigo)          # o próprio código velho libera
+                novo_codigo = suggest_company_code(empresa.name, taken=ocupados)
+                if not novo_codigo:
                     sem_codigo.append(empresa)
-                    continue
+                    if not codigo:
+                        continue                  # segue sem prefixo (legado)
+                else:
+                    plano_empresas.append((empresa, codigo, novo_codigo))
+                    codigo = novo_codigo
                 ocupados.add(codigo)
-                plano_empresas.append((empresa, codigo))
 
             # ⚠ RLS: SELECT e UPDATE só enxergam linha DENTRO do escopo.
             with company_scope(empresa):
                 for rotulo, caminho, prefixo, campo_data in ALVOS:
                     Modelo = _modelo(caminho)
                     for obj in Modelo.objects.all().order_by('number'):
-                        if tem_codigo_de_empresa(obj.code_str):
+                        if ja_no_formato_novo(obj.code_str):
                             continue
-                        novo = doc_code(prefixo, codigo, obj.number,
-                                        getattr(obj, campo_data))
+                        quando = getattr(obj, campo_data)
+                        # O ano do documento: o campo é a fonte; o created_at é
+                        # rede para a janela entre a migração e este comando.
+                        ano = getattr(obj, 'doc_year', 0) or _ano_de(quando)
+                        novo = doc_code(prefixo, codigo, obj.number, quando,
+                                        ano=ano)
                         if novo == obj.code_str:
                             continue
                         plano_docs.append({
@@ -149,8 +168,8 @@ class Command(SafeWriteCommand):
             return
 
         revert = {
-            'empresas': [{'pk': e.pk, 'slug': e.slug, 'antes': e.code}
-                         for e, _ in plano_empresas],
+            'empresas': [{'pk': e.pk, 'slug': e.slug, 'antes': antes}
+                         for e, antes, _ in plano_empresas],
             'docs': [{'modelo': d['modelo'], 'pk': d['pk'],
                       'empresa_pk': d['empresa_pk'], 'antes': d['antes']}
                      for d in plano_docs],
@@ -167,7 +186,7 @@ class Command(SafeWriteCommand):
 
     def _gravar(self, plano_empresas, plano_docs):
         with transaction.atomic():
-            for empresa, codigo in plano_empresas:
+            for empresa, _antes, codigo in plano_empresas:
                 # update() e não save(): o save() da Company revalida o slug e
                 # dispara o auto-código — aqui o código já foi escolhido.
                 Company.objects.filter(pk=empresa.pk).update(code=codigo)
@@ -211,13 +230,14 @@ class Command(SafeWriteCommand):
 
     def _mostrar(self, plano_empresas, plano_docs, sem_codigo):
         if plano_empresas:
-            self.stdout.write('\nCÓDIGO DA EMPRESA (novo):')
-            for empresa, codigo in plano_empresas:
-                self.stdout.write(f'  {empresa.name:<28} → {codigo}')
+            self.stdout.write('\nCÓDIGO DA EMPRESA (4 letras):')
+            for empresa, antes, codigo in plano_empresas:
+                self.stdout.write(
+                    f'  {empresa.name:<28} {antes or "(vazio)":<8} → {codigo}')
         if sem_codigo:
             self.stdout.write(self.style.WARNING(
                 '\nSEM código possível (nome com menos de 2 letras) — '
-                'documentos ficam no formato antigo:'))
+                'a ordem de venda sai sem prefixo (SO-2026-0004):'))
             for empresa in sem_codigo:
                 self.stdout.write(f'  {empresa.name} (slug={empresa.slug})')
 

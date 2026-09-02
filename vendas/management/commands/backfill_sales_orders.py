@@ -92,9 +92,9 @@ class Command(BaseCommand):
         criadas = 0
         for lot, lp in plan:
             with transaction.atomic():
+                ano, numero = SalesOrder.next_for_lot(lot)
                 so = SalesOrder(
-                    lot=lot, buyer=lp.buyer,
-                    number=DocSequence.next_number(lot.company, SEQ_SO),
+                    lot=lot, buyer=lp.buyer, doc_year=ano, number=numero,
                     status=STATUS_CONFIRMED,
                     fx_usd_rate=rate,
                     total_usd=lp.total_mid,

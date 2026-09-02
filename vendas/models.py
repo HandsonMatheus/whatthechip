@@ -46,17 +46,48 @@ STATUS_CHOICES = [
 ]
 
 SEQ_SO, SEQ_INVOICE = 'so', 'inv'
+#: O LOTE também tem sequência aqui desde 2026-09-02. Antes o contador dele era
+#: um escalar na `Company` (`last_lot_number`), que não sabia de ANO — e o ano é
+#: o que a convenção nova exige (`LOT-2026-0041`, reiniciando em 1º de janeiro).
+SEQ_LOT = 'lot'
+
+
+def _ano_do_lote(lot) -> int:
+    """Ano de ABERTURA do lote — a fonte do ano de toda a cadeia de documentos.
+
+    O ``doc_year`` do lote é a fonte. O cálculo a partir do ``created_at`` é
+    rede para a janela entre a migração de esquema e o backfill, e para fixture
+    crua; fora disso não roda."""
+    from tenancy.doc_code import _ano_de
+    return lot.doc_year or _ano_de(lot.created_at)
 
 
 class DocSequence(models.Model):
-    """Sequência PERPÉTUA de documento por empresa (SO/INV — dono, 2026-07-16:
-    o NUM nunca reinicia). Mesmo padrão atômico do ``Lot.open_for_company``:
+    """Sequência de documento por empresa, **por ano** (LOT/SO) ou perpétua (INV).
+
     ``select_for_update`` na linha da sequência serializa criações simultâneas
-    (⚠ no-op no SQLite — a prova de corrida é Postgres-only)."""
+    (⚠ no-op no SQLite — a prova de corrida é Postgres-only). É a MESMA linha que
+    a devolução de número trava ao excluir um lote, e é isso que faz "apagar" e
+    "abrir" simultâneos não se atropelarem.
+
+    ── O ano na chave (dono, 2026-09-02) ────────────────────────────────────
+    O número reinicia a cada ano (`LOT-2026-0041` → `LOT-2027-0001`), então a
+    sequência deixa de ser (empresa, tipo) e passa a ser (empresa, tipo, ANO).
+
+    ``year=0`` é a linha PERPÉTUA, e é onde a fatura continua vivendo: a INV não
+    entrou na convenção nova (ela está sendo aposentada) e não pode ter o
+    comportamento alterado de raspão por esta mudança.
+
+    ⚠ O contador de um ano PODE ANDAR depois que o ano acabou, e isso não é bug:
+    a ordem de venda herda o ano do LOTE, então um lote de dezembro/2026 vendido
+    em fevereiro/2027 consome o próximo número de **2026**, em 2027.
+    """
 
     company = models.ForeignKey('tenancy.Company', on_delete=models.CASCADE,
                                 related_name='doc_sequences', verbose_name='Empresa')
-    kind = models.CharField(max_length=8, verbose_name='Documento')   # 'so' | 'inv'
+    kind = models.CharField(max_length=8, verbose_name='Documento')   # 'lot'|'so'|'inv'
+    #: Ano da sequência; ``0`` = perpétua (a INV legada).
+    year = models.PositiveSmallIntegerField(default=0, verbose_name='Ano')
     last_number = models.PositiveIntegerField(default=0, verbose_name='Último número')
 
     objects       = CompanyScopedManager()
@@ -68,21 +99,63 @@ class DocSequence(models.Model):
         base_manager_name = 'all_companies'
         default_manager_name = 'all_companies'
         constraints = [
-            models.UniqueConstraint(fields=['company', 'kind'],
-                                    name='unique_docseq_company_kind'),
+            models.UniqueConstraint(fields=['company', 'kind', 'year'],
+                                    name='unique_docseq_company_kind_year'),
         ]
 
     def __str__(self):
-        return f'{self.company} · {self.kind} · {self.last_number}'
+        ano = self.year or 'perpétua'
+        return f'{self.company} · {self.kind} · {ano} · {self.last_number}'
 
     @classmethod
-    def next_number(cls, company, kind) -> int:
+    def next_number(cls, company, kind, year=0, floor=0) -> int:
+        """Próximo número da sequência (empresa, tipo, ano).
+
+        ``year=0`` de propósito no default: é a sequência PERPÉTUA, que é o que
+        a INV usa. Quem emite LOT ou SO passa o ano SEMPRE — e, na ordem de
+        venda, o ano é o do LOTE, nunca o de hoje (§2.2 da convenção).
+
+        ``floor`` é a AUTO-CURA do drift: o maior número que já existe de fato.
+        O contador nunca pode ficar atrás do dado — e a correção acontece DENTRO
+        do lock, senão duas aberturas simultâneas curariam o mesmo buraco e
+        sairiam com o mesmo número. (O contador de lote da eMiner estava em 50
+        com o maior lote em 13, resíduo da renumeração de 01/09: é este
+        parâmetro que impede o caso simétrico de virar documento duplicado.)
+        """
+        # `company` aceita instância OU pk: os chamadores vêm dos dois jeitos
+        # (a abertura de lote tem a Company travada na mão; a ordem de venda só
+        # tem o `lot.company_id`, e buscar a linha inteira da empresa só para
+        # satisfazer o ORM seria uma query a mais em cada emissão).
+        company_id = getattr(company, 'pk', company)
         with transaction.atomic():
-            seq, _ = cls.all_companies.get_or_create(company=company, kind=kind)
+            seq, _ = cls.all_companies.get_or_create(company_id=company_id,
+                                                     kind=kind, year=year)
             seq = cls.all_companies.select_for_update().get(pk=seq.pk)
-            seq.last_number += 1
+            seq.last_number = max(seq.last_number, floor) + 1
             seq.save(update_fields=['last_number'])
             return seq.last_number
+
+    @classmethod
+    def release_number(cls, company, kind, year, number) -> bool:
+        """Devolve ``number`` à sequência — só se ele for o ÚLTIMO emitido.
+
+        Existe para o caso "abri um lote e apaguei em seguida": sem isto o
+        número fica queimado e o próximo lote pula (dono, 2026-09-02).
+
+        Devolve ``False``, sem erro, quando o contador já andou (outro documento
+        nasceu no meio) — devolver aí abriria a porta para dois documentos com o
+        mesmo número, que é o oposto do que se quer. Trava a MESMA linha que a
+        emissão, então excluir e abrir ao mesmo tempo serializam.
+        """
+        company_id = getattr(company, 'pk', company)
+        with transaction.atomic():
+            seq = (cls.all_companies.select_for_update()
+                   .filter(company_id=company_id, kind=kind, year=year).first())
+            if seq is None or seq.last_number != number:
+                return False
+            seq.last_number = number - 1
+            seq.save(update_fields=['last_number'])
+            return True
 
 
 @pghistory.track()   # dinheiro: criar/confirmar/cancelar OV é evento auditado
@@ -118,14 +191,21 @@ class SalesOrder(models.Model):
     unkeyed_units = models.PositiveIntegerField(default=0,
                                                 verbose_name='Unid. sem chave')
 
+    # ── ANO DO DOCUMENTO — herdado do LOTE (dono, 2026-09-02) ─────────────
+    # ⚠ NÃO é o ano de `created_at`. A venda é o acerto DAQUELE lote: um lote
+    # aberto em dezembro de 2026 e vendido em janeiro não virou campanha de
+    # 2027, e o código dele continua dizendo 2026 (§2.2 da convenção).
+    # Campo GRAVADO, e não derivado: ele entra na chave de unicidade (empresa,
+    # ano, número), e um identificador de documento não pode mudar de valor
+    # porque alguém atravessou uma FK diferente para calculá-lo.
+    doc_year = models.PositiveSmallIntegerField(
+        default=0, editable=False, verbose_name='Ano do documento')
     # ── Código do documento, CONGELADO na criação (dono, 2026-08-18) ───────
-    # Era propriedade calculada. Virou campo porque o formato mudou (ganhou o
-    # prefixo da empresa, `LOT/EMI/041/08/26`) e o dono escolheu aplicar SÓ A
-    # DOCUMENTO NOVO: papel já impresso não pode divergir da tela. Vazio =
-    # documento anterior à mudança → a propriedade `code` cai no formato
-    # antigo. De quebra, o identificador virou IMUTÁVEL — renomear o código da
-    # empresa não reescreve o passado, que é como número de documento deve se
-    # comportar.
+    # Era propriedade calculada. Virou campo porque o formato mudou e o
+    # identificador tem de ser IMUTÁVEL — renomear o código da empresa não
+    # reescreve o passado, que é como número de documento deve se comportar.
+    # O passado só muda por `manage.py backfill_doc_codes`, no ato deliberado
+    # em que o dono decide que tela e papel voltam a usar a mesma grafia.
     code_str = models.CharField(max_length=32, blank=True, default='',
                                 editable=False, verbose_name='Código')
     notes = models.TextField(blank=True, default='', verbose_name='Notas')
@@ -182,8 +262,10 @@ class SalesOrder(models.Model):
         base_manager_name = 'all_companies'
         default_manager_name = 'all_companies'
         constraints = [
-            models.UniqueConstraint(fields=['company', 'number'],
-                                    name='unique_so_company_number'),
+            # ⚠ O ANO entra na chave (2026-09-02): a numeração reinicia a cada
+            # ano, então a OV 1 de 2026 e a OV 1 de 2027 coexistem.
+            models.UniqueConstraint(fields=['company', 'doc_year', 'number'],
+                                    name='unique_so_company_year_number'),
             # Lote vendido INTEIRO a UM comprador: no máximo UMA cotação/OV
             # não-cancelada por lote (reabrir cancela; re-fechar cria outra).
             models.UniqueConstraint(fields=['lot'],
@@ -206,18 +288,33 @@ class SalesOrder(models.Model):
 
     @property
     def code(self) -> str:
-        """``SO/EMI/NUM/MM/YY`` — canônico universal (dono, 2026-07-16):
-        inglês, NUNCA traduz; NUM perpétuo; MM/YY do mês de criação. O código
-        da empresa entrou em 2026-08-18 (a numeração é por empresa e colidia
-        entre clientes); documento antigo fica no formato de então."""
+        """``EMIN-SO-2026-0004`` — canônico universal: inglês, NUNCA traduz.
+
+        Lê o ``code_str`` congelado. O fallback cobre só o instante entre montar
+        o objeto e salvá-lo (e fixture crua): depois do backfill não há documento
+        sem ``code_str``, e um fallback que devolvesse a grafia ANTIGA seria
+        armadilha — mostraria na tela um código que não existe mais em lugar
+        nenhum do sistema."""
         if self.code_str:
             return self.code_str
-        d = self.created_at
-        return f'SO/{self.number:03d}/{d:%m}/{d:%y}' if d else f'SO/{self.number:03d}'
+        from tenancy.doc_code import doc_code
+        return doc_code('SO', self.company.code if self.company_id else '',
+                        self.number, self.created_at, ano=self.doc_year or None)
 
     @property
     def is_draft(self) -> bool:
         return self.status == STATUS_DRAFT
+
+    @classmethod
+    def next_for_lot(cls, lot):
+        """``(doc_year, number)`` da próxima ordem DESTE lote.
+
+        Um lugar só que sabe de qual contador o número sai — o do ANO DO LOTE,
+        nunca o de hoje. Sem isto, cada chamador (fechamento, backfill, comandos
+        de legado) teria de lembrar da regra §2.2 sozinho, e o que se esquece
+        aqui só aparece em janeiro, num número que já foi impresso."""
+        ano = _ano_do_lote(lot)
+        return ano, DocSequence.next_number(lot.company_id, SEQ_SO, ano)
 
     def save(self, *args, **kwargs):
         # company denormalizada: herda do LOTE (a venda é da empresa do lote).
@@ -225,6 +322,9 @@ class SalesOrder(models.Model):
             from estoque.models import Lot
             self.company_id = Lot.all_companies.values_list(
                 'company_id', flat=True).get(pk=self.lot_id)
+        # O ANO vem do LOTE (§2.2) — nunca do próprio created_at.
+        if self._state.adding and not self.doc_year and self.lot_id:
+            self.doc_year = _ano_do_lote(self.lot)
         # Congela o código na CRIAÇÃO (ver tenancy/doc_code.py). Usa
         # timezone.now() em vez do created_at porque o auto_now_add só existe
         # DEPOIS do insert — e um segundo save() aqui dobraria o evento de
@@ -233,7 +333,7 @@ class SalesOrder(models.Model):
             from django.utils import timezone
             from tenancy.doc_code import doc_code
             self.code_str = doc_code('SO', self.company.code, self.number,
-                                     timezone.now())
+                                     timezone.now(), ano=self.doc_year or None)
         # Portão no MODELO (padrão pricing): sem validate_unique/constraints —
         # consultam o _default_manager; a unicidade fica com o BANCO.
         self.full_clean(validate_unique=False, validate_constraints=False)

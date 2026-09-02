@@ -154,20 +154,26 @@ class CriacaoTests(_Cenario):
     def test_o_codigo_leva_o_mes_do_lote_e_nao_o_de_hoje(self):
         """Documento legado datado de hoje seria mentira na tela.
 
-        Asserta o SUFIXO e não o código inteiro: o prefixo da empresa depende
-        de `Company.code`, que é vazio nas empresas de produção (anteriores à
-        mudança de 2026-08-18) e gerado nas novas. O que este teste protege é a
-        DATA — que tem que ser a do lote, não a de hoje."""
+        ⚠ O que se pode assertar mudou em 2026-09-02: o MÊS saiu do
+        identificador (`LOT-2026-0007`), então o código já não prova sozinho a
+        data. O que este teste protege continua sendo a DATA — agora em três
+        lugares: o ANO do código, o `created_at` gravado, e a FATURA, que
+        manteve o formato antigo (com mês) porque está sendo aposentada em
+        entrega separada. Quando a INV sair, esta última asserção sai com ela."""
         _rodar('--commit')
-        hoje = timezone.localdate()
         with company_scope(self.empresa.id):
             l7 = Lot.objects.get(number=7)
-            self.assertTrue(l7.code.endswith('/007/04/26'), l7.code)
-            self.assertNotIn(f'/{hoje:%m/%y}', l7.code.replace('/007/', '/'))
+            self.assertEqual(l7.code, 'LOT-2026-0007')
+            self.assertEqual(l7.doc_year, 2026)
+            self.assertEqual((l7.created_at.year, l7.created_at.month), (2026, 4))
             l8 = Lot.objects.get(number=8)
-            self.assertTrue(l8.code.endswith('/008/07/26'), l8.code)
+            self.assertEqual(l8.code, 'LOT-2026-0008')
+            self.assertEqual((l8.created_at.year, l8.created_at.month), (2026, 7))
             o = l8.sales_orders.get()
-            self.assertTrue(o.code.endswith('/07/26'), o.code)
+            # a ORDEM herda o ano do LOTE (§2.2), não o de hoje
+            self.assertIn(f'-SO-{l8.doc_year}-', o.code)
+            self.assertEqual(o.doc_year, l8.doc_year)
+            # a FATURA seguiu no formato antigo — de propósito (dono, 09-02)
             self.assertTrue(o.invoices.get().code.endswith('/07/26'))
 
     def test_o_k9_ganha_linha_de_verdade(self):

@@ -822,25 +822,27 @@ class UiV2CanaryTests(TestCase):
 
 
 class CodigoDeDocumentoTests(TestCase):
-    """`Company.code` no identificador (dono, 2026-08-18).
+    """A convenção de identificadores (dono, 2026-09-02).
 
-    A numeração é POR EMPRESA — "o lote 41 continua sendo o 41" — então o
-    código COLIDIA entre clientes: o comprador, que lê ordens de várias
-    empresas, via dois `LOT/001/08/26` na lista dele.
+        LOT-2026-0041        lote — SEM código de empresa
+        EMIN-SO-2026-0004    ordem de venda — COM
+
+    O prefixo de empresa nasceu em 2026-08-18 para matar uma colisão real: o
+    comprador, que lê ordens de vários clientes, via dois `LOT/001/08/26` na
+    lista dele. Em 02/09 o LOTE saiu daquela tabela — e só por isso ele pôde
+    devolver o prefixo e voltar a ser número interno. As duas coisas viajam
+    juntas; separar uma da outra reabre o bug.
 
     ⚠ Código de PAÍS foi recusado de propósito: duas recicladoras do mesmo
     país voltariam a colidir, e esse é o caminho de crescimento. País é
     metadado de embarque — já viaja no endereço do SHIP FROM.
-
-    E o formato novo vale só para documento NOVO: papel já impresso não pode
-    divergir da tela.
     """
 
     def setUp(self):
         self.emi = Company.objects.create(name='eMiner cod', slug='eminer-cod',
-                                          code='EMI')
+                                          code='EMIN')
         self.erc = Company.objects.create(name='eRecyclo cod',
-                                          slug='erecyclo-cod', code='ERC')
+                                          slug='erecyclo-cod', code='EREC')
         self.user = User.objects.create_user('cod_op')
 
     def _lote(self, comp):
@@ -848,42 +850,69 @@ class CodigoDeDocumentoTests(TestCase):
         with company_scope(comp):
             return Lot.open_for_company(comp, self.user, 'x', origin='phone')
 
-    def test_mesmo_numero_em_empresas_diferentes_nao_colide_mais(self):
+    def _ordem(self, comp, lot):
+        from pricing.models import Buyer
+        from vendas.models import SalesOrder
+        with company_scope(comp):
+            # get_or_create: o teste do §2.4 emite VÁRIAS ordens da mesma
+            # empresa, e (company, name) é único no Buyer.
+            comprador, _ = Buyer.all_companies.get_or_create(
+                company=comp, name=f'B{comp.pk}',
+                defaults={'slug': f'b-{comp.pk}'})
+            ano, numero = SalesOrder.next_for_lot(lot)
+            so = SalesOrder(lot=lot, buyer=comprador, doc_year=ano, number=numero)
+            so.save()
+            return so
+
+    # ── forma ────────────────────────────────────────────────────────────
+    def test_formato_do_lote(self):
+        from django.utils import timezone
+        lot = self._lote(self.emi)
+        self.assertEqual(lot.code, f'LOT-{timezone.localdate().year}-0001')
+
+    def test_formato_da_ordem_com_codigo_de_empresa(self):
+        from django.utils import timezone
+        so = self._ordem(self.emi, self._lote(self.emi))
+        self.assertEqual(so.code, f'EMIN-SO-{timezone.localdate().year}-0001')
+
+    def test_o_lote_NAO_leva_prefixo_de_empresa(self):
+        """E o de duas empresas fica IGUAL — de propósito (convenção §2.5).
+
+        É seguro porque o lote saiu da tabela do painel do comprador, que é o
+        único lugar onde clientes diferentes apareciam lado a lado. ⚠ Quem
+        devolver o lote àquela tabela reabre a colisão de agosto."""
         a, b = self._lote(self.emi), self._lote(self.erc)
-        self.assertEqual(a.number, b.number)          # a numeração é por empresa
-        self.assertTrue(a.code.startswith('LOT/EMI/001/'))
-        self.assertTrue(b.code.startswith('LOT/ERC/001/'))
-        self.assertNotEqual(a.code, b.code)           # o que motivou a mudança
+        self.assertEqual(a.code, b.code)
+        self.assertNotIn('EMIN', a.code)
 
-    def test_documento_antigo_fica_no_formato_antigo(self):
-        """`code_str` vazio = documento anterior à mudança. O papel que já
-        circulou continua batendo com a tela."""
-        from estoque.models import Lot
-        lot = self._lote(self.emi)
-        Lot.all_companies.filter(pk=lot.pk).update(code_str='')   # simula legado
-        lot.refresh_from_db()
-        self.assertTrue(lot.code.startswith('LOT/001/'))
-        self.assertNotIn('EMI', lot.code)
+    def test_a_ordem_de_empresas_diferentes_NAO_colide(self):
+        """O prefixo vive aqui — é esta lista que o comprador lê."""
+        sa = self._ordem(self.emi, self._lote(self.emi))
+        sb = self._ordem(self.erc, self._lote(self.erc))
+        self.assertEqual(sa.number, sb.number)      # numeração é por empresa
+        self.assertNotEqual(sa.code, sb.code)       # o que motivou o prefixo
 
-    def test_renomear_o_codigo_da_empresa_nao_reescreve_o_passado(self):
-        """O identificador é IMUTÁVEL depois de emitido — é assim que número
-        de documento tem que se comportar."""
-        lot = self._lote(self.emi)
-        antes = lot.code
-        self.emi.code = 'EMN'
-        self.emi.save()
-        lot.refresh_from_db()
-        self.assertEqual(lot.code, antes)
-        self.assertTrue(self._lote(self.emi).code.startswith('LOT/EMN/'))
-
-    def test_empresa_sem_codigo_sai_no_formato_antigo(self):
-        """Empresa legada — nasceu antes do código existir. Hoje só se chega
-        nesse estado apagando o código (empresa NOVA já sai com o padrão)."""
+    def test_empresa_sem_codigo_sai_sem_prefixo(self):
+        """Nunca `-SO-2026-0001` (convenção §3): ninguém é forçado a ter código."""
         sem = Company.objects.create(name='Sem cod', slug='sem-cod')
         Company.objects.filter(pk=sem.pk).update(code='')
         sem.refresh_from_db()
-        self.assertEqual(sem.code, '')
-        self.assertTrue(self._lote(sem).code.startswith('LOT/001/'))
+        so = self._ordem(sem, self._lote(sem))
+        self.assertTrue(so.code.startswith('SO-'))
+        self.assertNotIn('--', so.code)
+
+    def test_renomear_o_codigo_da_empresa_nao_reescreve_o_passado(self):
+        """O identificador é IMUTÁVEL depois de emitido — é assim que número
+        de documento tem que se comportar. Só o `backfill_doc_codes`, que é um
+        ato deliberado do dono, reescreve."""
+        so = self._ordem(self.emi, self._lote(self.emi))
+        antes = so.code
+        self.emi.code = 'EMNX'
+        self.emi.save()
+        so.refresh_from_db()
+        self.assertEqual(so.code, antes)
+        self.assertTrue(self._ordem(self.emi, self._lote(self.emi))
+                        .code.startswith('EMNX-SO-'))
 
     def test_codigo_e_normalizado_e_validado(self):
         from django.core.exceptions import ValidationError
@@ -900,56 +929,118 @@ class CodigoDeDocumentoTests(TestCase):
         """…mas vazio se repete: é o legado, e há N empresas sem código."""
         from django.db import IntegrityError
         with self.assertRaises(IntegrityError):
-            Company.objects.create(name='Clone', slug='clone-cod', code='EMI')
+            Company.objects.create(name='Clone', slug='clone-cod', code='EMIN')
 
-    def test_ov_e_fatura_carregam_o_mesmo_prefixo(self):
-        """Colidiam pelo mesmo motivo do lote — a numeração é por empresa."""
-        from vendas.models import DocSequence, SEQ_SO, SalesOrder
+    # ── o ano ────────────────────────────────────────────────────────────
+    def test_a_ordem_herda_o_ano_do_LOTE(self):
+        """§2.2 — e este é o caso que motivou a regra: lote aberto em dezembro,
+        ordem criada em janeiro. A venda é o acerto DAQUELE lote."""
+        from datetime import datetime, timezone as tz
+        from estoque.models import Lot
         lot = self._lote(self.emi)
-        from pricing.models import Buyer
-        with company_scope(self.emi):
-            comprador = Buyer.all_companies.create(company=self.emi, name='B',
-                                                   slug='b-cod')
-            so = SalesOrder(lot=lot, buyer=comprador,
-                            number=DocSequence.next_number(self.emi, SEQ_SO))
-            so.save()
-        self.assertTrue(so.code.startswith('SO/EMI/001/'))
+        Lot.all_companies.filter(pk=lot.pk).update(
+            doc_year=2026, created_at=datetime(2026, 12, 20, 12, 0, tzinfo=tz.utc))
+        lot.refresh_from_db()
+        so = self._ordem(self.emi, lot)
+        self.assertEqual(so.doc_year, 2026)
+        self.assertIn('-SO-2026-', so.code)
+
+    def test_o_contador_de_2026_anda_em_2027_quando_o_lote_e_de_2026(self):
+        """⚠ §2.4 — parece bug e NÃO é: o número sai do contador do ano do
+        LOTE. Alguém vai olhar em março e querer "consertar"."""
+        from estoque.models import Lot
+        from vendas.models import DocSequence, SEQ_SO
+        l26 = self._lote(self.emi)
+        Lot.all_companies.filter(pk=l26.pk).update(doc_year=2026)
+        l26.refresh_from_db()
+        self._ordem(self.emi, l26)                       # consome 2026 #1
+        l27 = self._lote(self.emi)
+        Lot.all_companies.filter(pk=l27.pk).update(doc_year=2027)
+        l27.refresh_from_db()
+        so27 = self._ordem(self.emi, l27)
+        self.assertEqual(so27.number, 1)                 # 2027 começa do 1
+        l26b = self._lote(self.emi)
+        Lot.all_companies.filter(pk=l26b.pk).update(doc_year=2026)
+        l26b.refresh_from_db()
+        so26 = self._ordem(self.emi, l26b)
+        self.assertEqual(so26.number, 2)                 # 2026 CONTINUA de onde parou
+        self.assertEqual(
+            DocSequence.all_companies.get(company=self.emi, kind=SEQ_SO,
+                                          year=2026).last_number, 2)
+
+    def test_o_numero_reinicia_na_virada_do_ano(self):
+        from vendas.models import DocSequence, SEQ_LOT
+        self.assertEqual(
+            DocSequence.next_number(self.emi, SEQ_LOT, 2026), 1)
+        self.assertEqual(
+            DocSequence.next_number(self.emi, SEQ_LOT, 2026), 2)
+        self.assertEqual(
+            DocSequence.next_number(self.emi, SEQ_LOT, 2027), 1)
+
+    def test_o_ano_vem_do_horario_LOCAL_e_nao_do_UTC(self):
+        """⚠ 31/dez 21:00 em Assunção (UTC−3) já é 1º de janeiro em UTC. Sem o
+        localtime, o documento sairia com o ANO ERRADO exatamente na fronteira
+        que esta convenção existe para acertar."""
+        from datetime import datetime, timezone as tz
+        from tenancy.doc_code import doc_code
+        virada = datetime(2027, 1, 1, 1, 0, tzinfo=tz.utc)   # 31/12 22:00 em -03
+        with self.settings(TIME_ZONE='America/Asuncion'):
+            self.assertEqual(doc_code('LOT', '', 41, virada), 'LOT-2026-0041')
+
+    def test_a_fatura_NAO_entrou_na_convencao(self):
+        """Decisão do dono de 02/09: a INV está sendo aposentada em entrega
+        separada. Mexer no identificador dela agora seria criar reconciliação
+        de graça."""
+        from datetime import datetime, timezone as tz
+        from tenancy.doc_code import doc_code
+        agosto = datetime(2026, 8, 4, 12, 0, tzinfo=tz.utc)
+        self.assertEqual(doc_code('INV', 'EMIN', 3, agosto), 'INV/EMIN/003/08/26')
+
+    def test_tipo_de_documento_desconhecido_explode(self):
+        """Documento novo ganha sua LINHA no mapa — não sai com grafia
+        inventada."""
+        from tenancy.doc_code import doc_code
+        with self.assertRaises(ValueError):
+            doc_code('XPTO', 'EMIN', 1, None, ano=2026)
 
 
 class CodigoPadraoDaEmpresaTests(TestCase):
-    """Empresa NOVA já nasce com código (dono, 2026-08-18): as 3 primeiras
-    letras do nome.
+    """Empresa NOVA já nasce com código: as **4** primeiras letras do nome
+    (dono, 2026-09-02; eram 3 até 01/09).
 
-    POR QUÊ: empresa sem código emite documento no formato antigo, sem
-    prefixo — exatamente a colisão que o código veio desfazer. Deixar o campo
-    em branco no cadastro não podia ser o caminho fácil."""
+    POR QUÊ: empresa sem código emite ordem sem prefixo — exatamente a colisão
+    que o código veio desfazer. Deixar o campo em branco no cadastro não podia
+    ser o caminho fácil. E 4 letras porque o prefixo virou a ÚNICA coisa que
+    separa a ordem de dois clientes na lista do comprador (o lote perdeu o dele)."""
 
-    def test_tres_primeiras_letras_do_nome(self):
+    def test_quatro_primeiras_letras_do_nome(self):
         self.assertEqual(Company.objects.create(name='eMiner',
-                                                slug='emi-auto').code, 'EMI')
+                                                slug='emi-auto').code, 'EMIN')
+        self.assertEqual(Company.objects.create(name='eRecyclo',
+                                                slug='ere-auto').code, 'EREC')
 
     def test_acento_e_digito_caem(self):
         """O código é impresso e DIGITADO (type-to-confirm do fechamento):
         acento e dígito não entram."""
         from .models import suggest_company_code
-        self.assertEqual(suggest_company_code('Açaí Reciclagem'), 'ACA')
-        self.assertEqual(suggest_company_code('3R Metais'), 'RME')
-        self.assertEqual(suggest_company_code('Über Chip'), 'UBE')
+        self.assertEqual(suggest_company_code('Açaí Reciclagem'), 'ACAI')
+        self.assertEqual(suggest_company_code('3R Metais'), 'RMET')
+        self.assertEqual(suggest_company_code('Über Chip'), 'UBER')
 
     def test_colisao_resolve_sozinha(self):
-        """3 letras → 4 letras → 3 letras + B, C, D…"""
+        """4 letras; ocupado → 3 letras + B, C, D… (sempre dentro de 4)."""
         a = Company.objects.create(name='Brasil Reciclagem', slug='bra-1')
         b = Company.objects.create(name='Brasil Metais',     slug='bra-2')
         c = Company.objects.create(name='Brasil Chips',      slug='bra-3')
-        self.assertEqual([a.code, b.code, c.code], ['BRA', 'BRAS', 'BRAB'])
+        self.assertEqual([a.code, b.code, c.code], ['BRAS', 'BRAB', 'BRAC'])
 
     def test_codigo_informado_ganha_do_padrao(self):
         self.assertEqual(Company.objects.create(name='eMiner', slug='emi-man',
                                                 code='xyz').code, 'XYZ')
 
     def test_nome_curto_demais_fica_sem_codigo(self):
-        """Melhor sair sem prefixo (formato antigo, que vale) do que sair com
-        um código ambíguo."""
+        """Melhor a ordem sair sem prefixo (`SO-2026-0001`, que vale) do que
+        sair com um código ambíguo."""
         self.assertEqual(Company.objects.create(name='X', slug='x-curto').code, '')
 
     def test_padrao_so_na_criacao(self):
@@ -963,12 +1054,14 @@ class CodigoPadraoDaEmpresaTests(TestCase):
 
 
 class BackfillDocCodesTests(TestCase):
-    """`backfill_doc_codes` — o passado ganha o código da empresa.
+    """`backfill_doc_codes` — o passado passa para a convenção nova.
 
-    ⚠ O dono reverteu aqui a decisão de 2026-08-18 de manhã ("só documento
-    novo"). O preço, aceito: PDF antigo já impresso mostra `LOT/041/08/26`
-    enquanto a tela passa a mostrar `LOT/EMI/041/08/26` — número e data não
-    mudam, então o documento continua rastreável."""
+    ⚠ O dono decidiu em 2026-08-18, e reafirmou em 09-02, reescrever o passado:
+    ele quer tela e papel na mesma grafia. O preço, aceito: PDF já impresso
+    mostra `LOT/003/05/26` enquanto a tela passa a mostrar `LOT-2026-0003`.
+    NÚMERO e DATA não mudam, então o documento continua rastreável pelo número.
+
+    ⚠ A FATURA não entra (D1 de 02/09): está sendo aposentada em separado."""
 
     def setUp(self):
         import tempfile
@@ -976,7 +1069,7 @@ class BackfillDocCodesTests(TestCase):
         self.user = User.objects.create_user('bf_op')
         self.emi = Company.objects.create(name='eMiner', slug='eminer-bf')
         self.erc = Company.objects.create(name='eRecyclo', slug='erecyclo-bf')
-        # Estado LEGADO: empresa sem código e lote com o identificador antigo.
+        # Estado LEGADO: empresa sem código e documento com a grafia antiga.
         Company.objects.filter(pk__in=[self.emi.pk, self.erc.pk]).update(code='')
         self.emi.refresh_from_db(); self.erc.refresh_from_db()
         self.lote_emi = self._lote_legado(self.emi)
@@ -986,12 +1079,32 @@ class BackfillDocCodesTests(TestCase):
         import shutil
         shutil.rmtree(self.tmp, ignore_errors=True)
 
+    @property
+    def ano(self):
+        from django.utils import timezone
+        return timezone.localdate().year
+
     def _lote_legado(self, comp):
         with company_scope(comp):
             lot = Lot.open_for_company(comp, self.user, 'x', origin='phone')
-        Lot.all_companies.filter(pk=lot.pk).update(code_str='')
+        Lot.all_companies.filter(pk=lot.pk).update(
+            code_str=f'LOT/{lot.number:03d}/01/26')
         lot.refresh_from_db()
         return lot
+
+    def _ordem_legada(self, comp, lot):
+        from pricing.models import Buyer
+        from vendas.models import SalesOrder
+        with company_scope(comp):
+            comprador = Buyer.all_companies.create(company=comp, name='B',
+                                                   slug=f'b-bf-{comp.pk}')
+            ano, numero = SalesOrder.next_for_lot(lot)
+            so = SalesOrder(lot=lot, buyer=comprador, doc_year=ano, number=numero)
+            so.save()
+            SalesOrder.all_companies.filter(pk=so.pk).update(
+                code_str=f'SO/{so.number:03d}/01/26')
+        so.refresh_from_db()
+        return so
 
     def _rodar(self, **kw):
         from io import StringIO
@@ -1005,67 +1118,80 @@ class BackfillDocCodesTests(TestCase):
         saida = self._rodar()
         self.emi.refresh_from_db(); self.lote_emi.refresh_from_db()
         self.assertEqual(self.emi.code, '')
-        self.assertEqual(self.lote_emi.code_str, '')
+        self.assertTrue(self.lote_emi.code_str.startswith('LOT/'))
         # O dono decide olhando ESTE relatório antes de gravar em produção.
         self.assertIn('eMiner', saida)
-        self.assertIn('LOT/EMI/001/', saida)
+        self.assertIn('EMIN', saida)
+        self.assertIn(f'LOT-{self.ano}-0001', saida)
         self.assertIn('DRY-RUN', saida)
 
-    def test_commit_da_codigo_a_empresa_e_reescreve_o_lote(self):
+    def test_commit_da_codigo_de_4_letras_e_reescreve_o_lote(self):
         self._rodar(commit=True)
         self.emi.refresh_from_db(); self.erc.refresh_from_db()
-        self.assertEqual(self.emi.code, 'EMI')
-        self.assertEqual(self.erc.code, 'ERE')
+        self.assertEqual(self.emi.code, 'EMIN')
+        self.assertEqual(self.erc.code, 'EREC')
         self.lote_emi.refresh_from_db(); self.lote_erc.refresh_from_db()
-        self.assertTrue(self.lote_emi.code.startswith('LOT/EMI/001/'))
-        self.assertTrue(self.lote_erc.code.startswith('LOT/ERE/001/'))
-        self.assertNotEqual(self.lote_emi.code, self.lote_erc.code)
+        self.assertEqual(self.lote_emi.code, f'LOT-{self.ano}-0001')
+        # ⚠ IGUAIS de propósito: o lote não leva prefixo (convenção §2.5), e
+        # ele saiu da tabela onde clientes diferentes apareciam lado a lado.
+        self.assertEqual(self.lote_emi.code, self.lote_erc.code)
 
-    def test_mes_e_ano_sao_os_da_EMISSAO_e_nao_os_de_hoje(self):
-        """Lote de julho continua `…/07/26` — renomear não é reemitir."""
-        from datetime import datetime, timezone as tz
-        julho = datetime(2026, 7, 4, 12, 0, tzinfo=tz.utc)
-        Lot.all_companies.filter(pk=self.lote_emi.pk).update(created_at=julho)
-        self._rodar(commit=True)
-        self.lote_emi.refresh_from_db()
-        self.assertEqual(self.lote_emi.code, 'LOT/EMI/001/07/26')
-
-    def test_documento_ja_no_formato_novo_nao_e_tocado(self):
-        """Número de documento não muda duas vezes."""
-        Lot.all_companies.filter(pk=self.lote_emi.pk).update(
-            code_str='LOT/ZZZ/001/01/26')
-        self._rodar(commit=True)
-        self.lote_emi.refresh_from_db()
-        self.assertEqual(self.lote_emi.code_str, 'LOT/ZZZ/001/01/26')
-
-    def test_ov_tambem_ganha_o_prefixo(self):
-        from pricing.models import Buyer
-        from vendas.models import DocSequence, SEQ_SO, SalesOrder
-        with company_scope(self.emi):
-            comprador = Buyer.all_companies.create(company=self.emi, name='B',
-                                                   slug='b-bf')
-            so = SalesOrder(lot=self.lote_emi, buyer=comprador,
-                            number=DocSequence.next_number(self.emi, SEQ_SO))
-            so.save()
-            SalesOrder.all_companies.filter(pk=so.pk).update(code_str='')
+    def test_a_ordem_ganha_o_prefixo_da_empresa(self):
+        so = self._ordem_legada(self.emi, self.lote_emi)
         self._rodar(commit=True)
         so.refresh_from_db()
-        self.assertTrue(so.code.startswith('SO/EMI/001/'))
+        self.assertEqual(so.code, f'EMIN-SO-{self.ano}-0001')
+
+    def test_o_ano_e_o_da_ABERTURA_e_nao_o_de_hoje(self):
+        """Lote de 2025 continua 2025 — renomear não é reemitir."""
+        from datetime import datetime, timezone as tz
+        Lot.all_companies.filter(pk=self.lote_emi.pk).update(
+            doc_year=2025, created_at=datetime(2025, 7, 4, 12, 0, tzinfo=tz.utc))
+        self._rodar(commit=True)
+        self.lote_emi.refresh_from_db()
+        self.assertEqual(self.lote_emi.code, 'LOT-2025-0001')
+
+    def test_a_FATURA_nao_e_tocada(self):
+        """D1: a INV está de saída — o backfill não olha para ela."""
+        from datetime import datetime, timezone as tz
+        from pricing.models import Buyer
+        from vendas.models import Invoice, DocSequence, SEQ_INVOICE, SalesOrder
+        so = self._ordem_legada(self.emi, self.lote_emi)
+        with company_scope(self.emi):
+            inv = Invoice(order=so, total_rmb=1, total_usd=1,
+                          fx_usd_rate=1,
+                          number=DocSequence.next_number(self.emi, SEQ_INVOICE))
+            inv.save()
+            Invoice.all_companies.filter(pk=inv.pk).update(
+                code_str='INV/001/01/26')
+        self._rodar(commit=True)
+        inv.refresh_from_db()
+        self.assertEqual(inv.code_str, 'INV/001/01/26')
+
+    def test_documento_ja_no_formato_novo_nao_e_tocado(self):
+        """Idempotência: número de documento não muda duas vezes."""
+        Lot.all_companies.filter(pk=self.lote_emi.pk).update(
+            code_str='LOT-2026-9999')
+        self._rodar(commit=True)
+        self.lote_emi.refresh_from_db()
+        self.assertEqual(self.lote_emi.code_str, 'LOT-2026-9999')
 
     def test_revert_desfaz_tudo(self):
+        antes = self.lote_emi.code_str
         self._rodar(commit=True)
         self._rodar(revert=True)
         self.emi.refresh_from_db(); self.lote_emi.refresh_from_db()
         self.assertEqual(self.emi.code, '')
-        self.assertEqual(self.lote_emi.code_str, '')
+        self.assertEqual(self.lote_emi.code_str, antes)
 
     def test_uma_empresa_so(self):
+        antes_erc = self.lote_erc.code_str
         self._rodar(company='eminer-bf', commit=True)
         self.emi.refresh_from_db(); self.erc.refresh_from_db()
-        self.assertEqual(self.emi.code, 'EMI')
+        self.assertEqual(self.emi.code, 'EMIN')
         self.assertEqual(self.erc.code, '')
         self.lote_erc.refresh_from_db()
-        self.assertEqual(self.lote_erc.code_str, '')
+        self.assertEqual(self.lote_erc.code_str, antes_erc)
 
     def test_slug_inexistente_explode(self):
         with self.assertRaises(CommandError):

@@ -91,12 +91,28 @@ class Command(BaseCommand):
         # empresa (pós-backfill 0012 todos têm company). company_scope (T4):
         # com RLS+FORCE, sem o GUC a query leria ZERO linhas e o seed falharia.
         from tenancy.scope import company_scope
+        from vendas.models import DocSequence, SEQ_LOT
         with company_scope(company):
+            # ⚠ O contador de lote virou UMA LINHA POR ANO no `DocSequence`
+            # (2026-09-02): o número reinicia em 1º de janeiro, e um escalar não
+            # sabe de ano. O seed passa a ser por (empresa, ano).
+            por_ano = (Lot.all_companies.filter(company=company)
+                       .values('doc_year').annotate(m=Max('number')))
             max_lot = (Lot.all_companies.filter(company=company)
                        .aggregate(Max('number'))['number__max'])
-        if max_lot is not None and max_lot > company.last_lot_number:
-            self._log(f'Contador de lote: last_lot_number {company.last_lot_number} '
-                      f'→ {max_lot} (max atual)')
+            for linha in por_ano:
+                ano = linha['doc_year'] or 0
+                if not ano:
+                    continue           # lote sem ano ainda: o backfill resolve
+                seq, _ = DocSequence.all_companies.get_or_create(
+                    company=company, kind=SEQ_LOT, year=ano)
+                if linha['m'] > seq.last_number:
+                    self._log(f'Contador de lote {ano}: {seq.last_number} '
+                              f'→ {linha["m"]} (max do ano)')
+                    seq.last_number = linha['m']
+                    seq.save(update_fields=['last_number'])
+        # Espelho para o cadastro/admin — não é mais a FONTE.
+        if max_lot is not None and max_lot != company.last_lot_number:
             company.last_lot_number = max_lot
             company.save(update_fields=['last_lot_number'])
 

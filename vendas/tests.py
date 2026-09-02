@@ -188,10 +188,11 @@ class SalesOrderFlowTests(TestCase):
         self.assertEqual(lines[('emmc', '', '16.0')], 5)
         # v3.1: combo keia SÓ pelo NAND — gen vazio na linha.
         self.assertEqual(lines[('emcp', '', '64.0')], 4)
-        # Nomenclatura canônica SO/EMPRESA/NUM/MM/YY (número perpétuo por
-        # empresa; o código da empresa entrou no prefixo em 2026-08-18):
+        # Nomenclatura canônica EMPRESA-SO-AAAA-NNNN (convenção de 2026-09-02;
+        # o número reinicia a cada ano e o ano é o do LOTE, não o de hoje):
         self.assertEqual(so.number, 1)
-        self.assertTrue(so.code.startswith(f'SO/{so.company.code}/001/'))
+        self.assertEqual(so.code,
+                         f'{so.company.code}-SO-{so.lot.doc_year}-0001')
         # Draft é VIVO: nada congelado ainda.
         self.assertIsNone(so.total_rmb)
         self.assertTrue(all(l.unit_rmb is None for l in so.lines.all()))
@@ -415,6 +416,8 @@ class SettlementInvoicePaymentTests(TestCase):
         self.assertEqual(inv.total_rmb, Decimal('330.00'))
         self.assertEqual(inv.total_usd, Decimal('46.20'))
         self.assertEqual(inv.fx_usd_rate, Decimal('0.14'))
+        # ⚠ A FATURA seguiu no formato antigo de propósito (dono, 2026-09-02):
+        # ela está sendo aposentada em entrega separada. Não "arrumar".
         self.assertTrue(inv.code.startswith(f'INV/{inv.company.code}/001/'))
         # OV INTACTA (padrão Odoo): nada mudou na ordem.
         self.so.refresh_from_db()

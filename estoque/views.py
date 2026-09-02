@@ -1602,7 +1602,12 @@ def export_xls(request, lot_pk):
     wb.save(buf)
     buf.seek(0)
 
-    filename = f'lote_{lot.number:03d}_{timezone.localtime(timezone.now()).strftime("%Y%m%d_%H%M")}.xlsx'
+    # O ANO no nome do arquivo (2026-09-02): a numeração reinicia a cada ano,
+    # então `lote_003_...` de 2026 e de 2027 se sobreporiam na mesma pasta de
+    # Downloads — e quem baixa os dois não teria como saber qual é qual.
+    filename = (f'lote_{lot.doc_year or timezone.localdate().year}_'
+                f'{lot.number:04d}_'
+                f'{timezone.localtime(timezone.now()).strftime("%Y%m%d_%H%M")}.xlsx')
     response = HttpResponse(buf.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response

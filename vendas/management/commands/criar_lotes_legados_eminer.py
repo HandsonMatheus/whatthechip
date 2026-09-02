@@ -156,8 +156,12 @@ class Command(SafeWriteCommand):
         feito = {}
 
         # 1. lote — código com o mês DELE, não o de hoje
+        # doc_year EXPLÍCITO: o save() carimbaria o ano de HOJE, e estes lotes
+        # são datados para trás (o de abril tem de sair `LOT-2026-0001` mesmo
+        # que o comando rode em 2027).
         lot = Lot(company=empresa, number=n, description=p['descricao'],
                   status='closed', closed_at=quando, origin=p['origin'],
+                  doc_year=p['data'].year,
                   fx_rate=p['fx'], operator=self._operador(empresa),
                   code_str=self._codigo(empresa, n, p['data']))
         lot.save()
@@ -179,9 +183,10 @@ class Command(SafeWriteCommand):
 
         # 3. ordem
         sem_chave = 0 if p['linha_k9'] else sum(q for _a, q, _b, _c, _d in p['entradas'])
+        _ano_so, _num_so = SalesOrder.next_for_lot(lot)
         so = SalesOrder(
             lot=lot, buyer=Buyer.objects.get(name=COMPRADOR),
-            number=DocSequence.next_number(empresa, SEQ_SO),
+            doc_year=_ano_so, number=_num_so,
             status=STATUS_CONFIRMED, fx_usd_rate=p['fx'],
             total_rmb=p['total_rmb'], total_usd=p['total_usd'],
             unkeyed_units=sem_chave, confirmed_at=quando, received_at=quando)

@@ -142,29 +142,54 @@ class Lot(models.Model):
 
     @property
     def code(self) -> str:
-        """``LOT/EMI/NUM/MM/YY`` — nomenclatura UNIVERSAL canônica (dono,
-        2026-07-16; PRECIFICACAO §12.19): inglês, NUNCA traduz; NUM = a mesma
-        sequência perpétua por empresa de sempre ("lote 41" continua sendo o
-        41); MM/YY do mês de ABERTURA, informativo. É também o texto que o
-        gerente digita para confirmar o fechamento (type-to-confirm).
+        """``LOT-2026-0041`` — nomenclatura UNIVERSAL canônica: inglês, NUNCA
+        traduz. É também o texto que o gerente digita para confirmar o
+        fechamento e a exclusão (type-to-confirm).
 
-        O ``EMI`` (código da empresa) entrou em 2026-08-18 porque a numeração
-        é POR EMPRESA e o código colidia entre clientes — o comprador via dois
-        `LOT/001/08/26` na lista dele. Documento ANTIGO (sem `code_str`) fica
-        no formato de então: é o que está no papel que já circulou."""
+        SEM código de empresa, de propósito (convenção §2.5): o número do lote
+        é interno. Ele carregou o prefixo entre 18/08 e 02/09/2026 porque o lote
+        era a primeira coluna do painel do COMPRADOR, que lê ordens de vários
+        clientes e via dois `LOT/001/08/26`. O lote saiu daquela tabela — e é
+        só por isso que tirar o prefixo daqui voltou a ser seguro.
+
+        O fallback cobre o objeto ainda não salvo e fixture crua; depois do
+        backfill não existe lote sem ``code_str``."""
         if self.code_str:
             return self.code_str
-        d = self.created_at
-        return (f'LOT/{self.number:03d}/{d:%m}/{d:%y}' if d
-                else f'LOT/{self.number:03d}')
+        from tenancy.doc_code import doc_code
+        return doc_code('LOT', '', self.number, self.created_at,
+                        ano=self.doc_year or None)
+    # ── ANO DO DOCUMENTO — o da ABERTURA (dono, 2026-09-02) ───────────────
+    # Não o do fechamento nem o do despacho: um lote aberto em dezembro de 2026
+    # e fechado em fevereiro de 2027 é `LOT-2026-00NN`. Campo GRAVADO porque
+    # entra na chave de unicidade (empresa, ano, número) e porque o ano tem de
+    # ser IMUTÁVEL depois de emitido.
+    # ⚠ Vem do horário LOCAL, não do UTC do banco: um lote aberto 31/dez 21:00
+    # em Assunção já é 1º de janeiro em UTC, e o documento sairia com o ano
+    # errado exatamente na fronteira que esta convenção existe para acertar.
+    doc_year = models.PositiveSmallIntegerField(
+        default=0, editable=False, verbose_name='Ano do documento')
+    # ── JÁ FOI FECHADO ALGUMA VEZ (dono, 2026-09-02) ──────────────────────
+    # Existe para uma pergunta só: apagar este lote pode DEVOLVER o número dele
+    # ao contador? Pode, se ele nunca virou documento. Fechar emite o PDF de
+    # conferência com o código dentro — a partir daí o número está no mundo e
+    # não volta.
+    # ⚠ Por que um campo, e não `closed_at`/`closed_by`: REABRIR zera os dois
+    # (estoque/views.py::lot_reopen), e um lote reaberto já imprimiu. E por que
+    # não o pghistory: os gatilhos de evento são do POSTGRES — na suíte (SQLite)
+    # não existe evento nenhum, então a trava passaria no teste e não protegeria
+    # nada em produção. Este projeto já teve trava assim.
+    # Nunca volta para False. É memória, não estado.
+    ever_closed = models.BooleanField(
+        default=False, editable=False, verbose_name='Já foi fechado',
+        help_text='Marca que o lote chegou a ser fechado alguma vez — o número '
+                  'dele não volta mais para a sequência. Reabrir não desmarca.')
     # ── Código do documento, CONGELADO na criação (dono, 2026-08-18) ───────
-    # Era propriedade calculada. Virou campo porque o formato mudou (ganhou o
-    # prefixo da empresa, `LOT/EMI/041/08/26`) e o dono escolheu aplicar SÓ A
-    # DOCUMENTO NOVO: papel já impresso não pode divergir da tela. Vazio =
-    # documento anterior à mudança → a propriedade `code` cai no formato
-    # antigo. De quebra, o identificador virou IMUTÁVEL — renomear o código da
-    # empresa não reescreve o passado, que é como número de documento deve se
-    # comportar.
+    # Era propriedade calculada. Virou campo porque o identificador tem de ser
+    # IMUTÁVEL depois de emitido — renomear o código da empresa não reescreve o
+    # passado, que é como número de documento deve se comportar. O passado só
+    # muda por `manage.py backfill_doc_codes`, no ato deliberado em que o dono
+    # decide que tela e papel voltam a usar a mesma grafia.
     code_str = models.CharField(max_length=32, blank=True, default='',
                                 editable=False, verbose_name='Código')
     closed_at   = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em')
@@ -201,8 +226,10 @@ class Lot(models.Model):
         constraints = [
             # Cada empresa tem a SUA sequência (Lote #001 da Brasil Reciclagem
             # coexiste com o #001 da eMiner). Substitui o unique global.
-            models.UniqueConstraint(fields=['company', 'number'],
-                                    name='unique_lot_company_number'),
+            # ⚠ E o ANO entra na chave (2026-09-02): a numeração reinicia em 1º
+            # de janeiro, então o lote 1 de 2026 e o de 2027 coexistem.
+            models.UniqueConstraint(fields=['company', 'doc_year', 'number'],
+                                    name='unique_lot_company_year_number'),
             # Origem obrigatória e canônica (2026-08-01) — pega criação por
             # fora do open_for_company (shell/teste) ainda no INSERT.
             models.CheckConstraint(
@@ -220,7 +247,9 @@ class Lot(models.Model):
         ]
 
     def __str__(self):
-        return f'Lote #{self.number:03d}'
+        # O código, e não `Lote #041`: com o reinício anual o número sozinho
+        # deixou de identificar — o #1 de 2026 e o de 2027 são lotes diferentes.
+        return self.code
 
     @property
     def closed_by_user(self):
@@ -242,21 +271,79 @@ class Lot(models.Model):
         return lp.closed_by if lp else None
 
     def save(self, *args, **kwargs):
+        from django.utils import timezone
         # Portão no MODELO: filial tem que ser da mesma empresa do lote.
         if self.branch_id and self.company_id and \
                 self.branch.company_id != self.company_id:
             raise ValidationError(
                 {'branch': 'A filial deve pertencer à empresa do lote.'})
+        # Ano de ABERTURA, em horário LOCAL (ver o campo). Só na criação: o ano
+        # de um documento emitido não muda.
+        if self._state.adding and not self.doc_year:
+            self.doc_year = timezone.localdate().year
+        # "Já foi fechado" no MODELO, não na view: o fechamento acontece pela
+        # tela, por comando de legado e pelo admin, e a marca não pode depender
+        # de quem chamou. Nunca volta para False.
+        if self.status == self.STATUS_CLOSED and not self.ever_closed:
+            self.ever_closed = True
+            uf = kwargs.get('update_fields')
+            if uf is not None and 'ever_closed' not in uf:
+                # ⚠ sem isto o save(update_fields=[...]) do fechamento gravaria
+                # tudo MENOS a marca — e ela é a trava da devolução de número.
+                kwargs['update_fields'] = list(uf) + ['ever_closed']
         # Congela o código na CRIAÇÃO (ver tenancy/doc_code.py). Usa
         # timezone.now() em vez do created_at porque o auto_now_add só existe
         # DEPOIS do insert — e um segundo save() aqui dobraria o evento de
         # histórico do pghistory à toa.
         if self._state.adding and not self.code_str:
-            from django.utils import timezone
+            # Sem código de empresa: o lote não leva prefixo (convenção §2.5).
             from tenancy.doc_code import doc_code
-            self.code_str = doc_code('LOT', self.company.code, self.number,
-                                     timezone.now())
+            self.code_str = doc_code('LOT', '', self.number, timezone.now(),
+                                     ano=self.doc_year)
         return super().save(*args, **kwargs)
+
+    # ── Exclusão: o número pode voltar? (dono, 2026-09-02) ────────────────
+    @property
+    def devolve_numero_ao_excluir(self) -> bool:
+        """True se apagar este lote devolve o número dele para a sequência.
+
+        Duas condições, e as duas têm de valer:
+
+        1. **nunca foi fechado** — fechar emite o PDF de conferência com o
+           código dentro; a partir daí o número está no mundo (§4 do contrato,
+           "número emitido nunca se reusa");
+        2. **é o último emitido** do ano da empresa — devolver um número do meio
+           deixaria dois lotes diferentes com o mesmo código ao longo do tempo.
+
+        É a MESMA regra que o ``delete()`` aplica; existe como propriedade para
+        que o modal de confirmação possa avisar o gerente sem repeti-la."""
+        if self.ever_closed or self.closed_at or self.status == self.STATUS_CLOSED:
+            return False
+        from vendas.models import DocSequence, SEQ_LOT
+        seq = (DocSequence.all_companies
+               .filter(company_id=self.company_id, kind=SEQ_LOT,
+                       year=self.doc_year).first())
+        return bool(seq and seq.last_number == self.number)
+
+    def delete(self, *args, **kwargs):
+        """Apaga o lote e, quando cabe, DEVOLVE o número à sequência.
+
+        Portão no MODELO e não na view (dono, 2026-09-02): abrir um lote e
+        apagá-lo em seguida tem de devolver o número venha o clique de onde
+        vier — tela, admin ou shell.
+
+        ⚠ ``queryset.delete()`` em massa NÃO passa por aqui, e é de propósito:
+        comando de renumeração/limpeza não pode mexer em contador por efeito
+        colateral. Quem apaga em massa acerta o contador explicitamente.
+        """
+        from vendas.models import DocSequence, SEQ_LOT
+        with transaction.atomic():
+            devolver = self.devolve_numero_ao_excluir
+            company_id, ano, numero = self.company_id, self.doc_year, self.number
+            resultado = super().delete(*args, **kwargs)
+            if devolver:
+                DocSequence.release_number(company_id, SEQ_LOT, ano, numero)
+        return resultado
 
     @classmethod
     def open_for_company(cls, company, operator, description='', branch=None,
@@ -266,37 +353,50 @@ class Lot(models.Model):
         era uma CORRIDA real: dois gerentes clicando juntos liam o mesmo max e um
         levava ``IntegrityError`` na cara.
 
-        Como funciona: trava a linha da Company (``select_for_update``) e
-        incrementa ``last_lot_number`` — criações simultâneas serializam no lock
-        e saem com números consecutivos, sem buraco e sem erro. O
-        ``max(contador, Max(number))`` é auto-cura de drift (lotes criados antes
-        do ``bootstrap_tenancy`` seedar o contador, ou contador atrasado por
-        qualquer motivo) enquanto o ``number`` ainda é unique GLOBAL — na T3 ele
-        vira ``unique (company, number)`` e o ``Max`` passa a filtrar por empresa.
+        Como funciona: ``DocSequence.next_number`` trava a linha da sequência
+        (``select_for_update``) e incrementa — criações simultâneas serializam
+        no lock e saem com números consecutivos, sem buraco e sem erro. O
+        ``floor`` (maior ``number`` que existe de fato NAQUELE ano) é auto-cura
+        de drift, aplicada dentro do mesmo lock.
+
+        ── O contador mudou de casa (dono, 2026-09-02) ───────────────────────
+        Era ``Company.last_lot_number``, um escalar que não sabia de ANO. Como o
+        número passou a reiniciar em 1º de janeiro, o contador virou uma linha
+        do ``DocSequence`` por (empresa, 'lot', ano) — a mesma mecânica que a
+        ordem de venda e a fatura já usavam, e a mesma linha que a EXCLUSÃO de
+        lote trava para devolver um número.
+        ⚠ ``last_lot_number`` continua no cadastro (o ``bootstrap_tenancy`` e o
+        admin o leem) e é mantido em dia aqui, mas não é mais a FONTE.
 
         ⚠ ``select_for_update`` é NO-OP no SQLite — o teste de corrida
         (``LotNumberRaceTests``) só prova algo rodando contra Postgres."""
         from django.db.models import Max
+        from django.utils import timezone
         from tenancy.models import Company
+        from vendas.models import DocSequence, SEQ_LOT
 
+        # Ano de ABERTURA, em horário LOCAL (ver o campo `doc_year`).
+        ano = timezone.localdate().year
         with transaction.atomic():
-            locked = Company.objects.select_for_update().get(pk=company.pk)
-            # T3: numeração POR EMPRESA — o floor olha só os lotes DELA
-            # (all_companies de propósito: o método recebe a empresa explícita
-            # e não depende do escopo ambiente — comandos/testes chamam direto).
-            floor = (cls.all_companies.filter(company=locked)
-                     .aggregate(Max('number'))['number__max'])
-            next_n = max(locked.last_lot_number,
-                         floor if floor is not None else -1) + 1
             if origin not in dict(cls.ORIGIN_CHOICES):
                 raise ValidationError({'origin': (
                     'Origem do lote é OBRIGATÓRIA — acordo com o comprador, '
                     '2026-08-01. Sem default de propósito. Válidas: '
                     + ', '.join(dict(cls.ORIGIN_CHOICES)) + '.')})
-            locked.last_lot_number = next_n
-            locked.save(update_fields=['last_lot_number'])
+            locked = Company.objects.select_for_update().get(pk=company.pk)
+            # O floor olha só os lotes DESTA empresa NESTE ano (all_companies de
+            # propósito: o método recebe a empresa explícita e não depende do
+            # escopo ambiente — comandos/testes chamam direto).
+            floor = (cls.all_companies.filter(company=locked, doc_year=ano)
+                     .aggregate(Max('number'))['number__max']) or 0
+            next_n = DocSequence.next_number(locked, SEQ_LOT, ano, floor=floor)
+            # Espelho, não fonte: mantém o cadastro coerente com o maior número
+            # emitido, para o admin não exibir um contador que mente.
+            if next_n > locked.last_lot_number:
+                locked.last_lot_number = next_n
+                locked.save(update_fields=['last_lot_number'])
             return cls.all_companies.create(number=next_n, company=locked,
-                                            origin=origin,
+                                            origin=origin, doc_year=ano,
                                             branch=branch, operator=operator,
                                             description=description)
 

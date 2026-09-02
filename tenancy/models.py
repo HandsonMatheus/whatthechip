@@ -62,34 +62,46 @@ _DNS_LABEL_RE = re.compile(r'^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')
 def validate_company_code(code):
     """2 a 4 letras MAIÚSCULAS (ou vazio = legado, sem prefixo no documento).
 
-    Restrito de propósito: o código entra em `LOT/EMI/041/08/26`, que é
+    Restrito de propósito: o código entra em `EMIN-SO-2026-0004`, que é
     CANÔNICO — nunca traduz, e é digitado pelo gerente no type-to-confirm do
     fechamento. Dígito, hífen e acento fora; ambiguidade de leitura em papel
     impresso é o que estamos evitando.
+
+    ⚠ Continua aceitando de 2 a 4 letras mesmo depois de a SEMENTE virar 4
+    (2026-09-02): a semente é o padrão de quem não escolhe, não uma regra de
+    formato. Fechar em exatamente 4 quebraria empresa que já tenha código curto
+    escolhido à mão, e vazio (o legado) tem de continuar passando.
     """
     if not code:
         return
     if not re.fullmatch(r'[A-Z]{2,4}', code):
         raise ValidationError(_lazy(
             'Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS '
-            '(ex.: "EMI"). Vazio também vale — o documento sai sem prefixo.'))
+            '(ex.: "EMIN"). Vazio também vale — o documento sai sem prefixo.'))
 
 
 def suggest_company_code(name, taken=None) -> str:
-    """Código SUGERIDO a partir do nome — as 3 primeiras LETRAS (dono,
-    2026-08-18): "eMiner" → ``EMI``, "eRecyclo" → ``ERE``.
+    """Código SUGERIDO a partir do nome — as **4** primeiras LETRAS (dono,
+    2026-09-02): "eMiner" → ``EMIN``, "eRecyclo" → ``EREC``.
 
     Serve ao cadastro: o dono não quer digitar código a cada empresa nova, e
-    empresa sem código emite documento no formato antigo (sem prefixo) — que é
+    empresa sem código emite documento sem prefixo (``SO-2026-0004``) — que é
     justamente a colisão que o código veio desfazer. Então o padrão é gerado.
 
+    Por que 4 e não 3 (era 3 até 2026-09-01): o prefixo passou a ser a ÚNICA
+    coisa que separa a ordem de venda de dois clientes (o lote perdeu o dele,
+    §2.5 da convenção), e 4 letras erram menos — "Recicladora Sul" e
+    "Recicladora Norte" colidiriam de qualquer jeito, mas com 4 a colisão fica
+    rara o bastante para ser resolvida à mão por quem cadastra.
+
     Regras, nesta ordem:
-      · acento cai (``Açaí`` → ``ACA``) e só A-Z sobrevive — dígito e espaço
+      · acento cai (``Açaí`` → ``ACAI``) e só A-Z sobrevive — dígito e espaço
         fora, porque o código é lido em papel impresso e digitado no
         type-to-confirm do fechamento;
-      · 3 letras; ocupado → 4 letras; ocupado → 3 letras + B, C, D…
-      · nome com menos de 2 letras → ``''`` (formato antigo, sem prefixo): é
-        melhor sair sem código do que sair com um código ambíguo.
+      · 4 letras; ocupado → 3 letras + B, C, D… (segue com 4 caracteres, que é
+        o ``max_length``, e mantém o código distinguível);
+      · nome com menos de 2 letras → ``''`` (documento sem prefixo): é melhor
+        sair sem código do que sair com um código ambíguo.
 
     ``taken`` são os códigos JÁ EM USO. O chamador passa; assim a função é pura
     e testável sem banco.
@@ -101,9 +113,10 @@ def suggest_company_code(name, taken=None) -> str:
     if len(letras) < 2:
         return ''
     ocupados = {(t or '').upper() for t in (taken or ())}
-    for tentativa in (letras[:3], letras[:4]):
-        if len(tentativa) >= 2 and tentativa not in ocupados:
-            return tentativa
+    if letras[:4] not in ocupados:
+        return letras[:4]
+    # Desempate: mantém as iniciais e troca a última letra. `letras[:3]` pode
+    # ter 2 caracteres num nome curto — o resultado segue dentro de 2..4.
     base = letras[:3]
     for sufixo in 'BCDEFGHIJKLMNOPQRSTUVWXYZ':
         if base + sufixo not in ocupados:
@@ -147,7 +160,11 @@ class Company(models.Model):
     # 41 continua sendo o 41"), então o CÓDIGO colide entre clientes — o
     # comprador via dois `LOT/001/08/26` na lista dele, de empresas
     # diferentes. Este código entra no documento e desfaz a colisão:
-    # `LOT/EMI/041/08/26`.
+    # `EMIN-SO-2026-0004`.
+    # ⚠ Desde 2026-09-02 o prefixo vive só na ORDEM DE VENDA: o lote saiu da
+    # tabela do comprador e voltou a ser número interno (`LOT-2026-0041`).
+    # Tirar o prefixo do lote só é seguro POR CAUSA dessa mudança de tela —
+    # com a coluna lá, o lote 1 de dois clientes vira a mesma string de novo.
     # ⚠ Recusado de propósito o código de PAÍS (PY/VE): duas recicladoras do
     # mesmo país voltariam a colidir, e país é metadado de EMBARQUE — já
     # viaja no endereço do SHIP FROM, não pertence ao identificador.
@@ -156,10 +173,10 @@ class Company(models.Model):
     # passa a divergir do que a empresa usou até aqui.
     code = models.CharField(
         max_length=4, blank=True, default='', verbose_name='Código',
-        help_text='2 a 4 letras MAIÚSCULAS que identificam a empresa nos '
-                  'documentos (ex.: "EMI" → LOT/EMI/041/08/26). Em branco '
-                  'numa empresa NOVA, sai automático: as 3 primeiras letras '
-                  'do nome.')
+        help_text='2 a 4 letras MAIÚSCULAS que identificam a empresa nas '
+                  'ordens de venda (ex.: "EMIN" → EMIN-SO-2026-0004). Em '
+                  'branco numa empresa NOVA, sai automático: as 4 primeiras '
+                  'letras do nome. O código do LOTE não leva prefixo.')
     active = models.BooleanField(default=True, verbose_name='Ativa',
                                  help_text='Desativar ≠ deletar — o histórico fica.')
     # F12 (máscara de categoria, dono 2026-07-17): o conhecimento de chips é o
@@ -281,7 +298,7 @@ class Company(models.Model):
         # HISTÓRICO (sem métodos custom) — backfills antigos não quebram.
         validate_company_slug(self.slug)
         self.code = (self.code or '').strip().upper()
-        # Empresa NOVA sem código ganha um padrão (dono, 2026-08-18): as 3
+        # Empresa NOVA sem código ganha um padrão (dono, 2026-09-02): as 4
         # primeiras letras do nome. Só na CRIAÇÃO — apagar o código de uma
         # empresa existente é uma decisão, não um descuido a ser desfeito.
         if self._state.adding and not self.code:

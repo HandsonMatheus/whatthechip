@@ -335,7 +335,8 @@ class Command(SafeWriteCommand):
                 lot=lot, buyer=comprador, status='confirmed',
                 fx_usd_rate=D('0.1500'), total_rmb=TOTAL, total_usd=TOTAL,
                 unkeyed_units=1200, shipped_at=ONTEM - timedelta(2),
-                number=DocSequence.next_number(emp, SEQ_SO))
+                **dict(zip(('doc_year', 'number'),
+                           SalesOrder.next_for_lot(lot))))
             so.save()
             inv = Invoice(
                 order=so, status='open', fx_usd_rate=D('0.1500'),

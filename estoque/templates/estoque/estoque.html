@@ -1376,6 +1376,16 @@ function closeCloseModal(){document.getElementById('close-modal-overlay').style.
       <div style="background:#fff1f1;border:1px solid #ffd7d9;padding:12px 14px;margin:0 0 14px;font-size:13px;color:#a2191f;">
         ⚠ {% blocktrans trimmed %}Isto apaga o lote e <strong>todos os seus registros</strong> (chips, filas de conferência e descarte, valoração) <strong>definitivamente</strong>. Não há como desfazer.{% endblocktrans %}
       </div>
+      {% comment %} O número VOLTA para a sequência quando o lote nunca chegou a
+         ser fechado e é o último do ano (dono, 2026-09-02): abrir por engano e
+         apagar em seguida não pode queimar um número. A condição é a MESMA que o
+         `Lot.delete()` aplica — vem do modelo como propriedade, para a tela não
+         reescrever a regra e as duas divergirem. Lote que já fechou não mostra
+         esta linha: o código dele saiu no PDF de conferência, e número que virou
+         documento não volta. {% endcomment %}
+      {% if lot.devolve_numero_ao_excluir %}
+      <p class="est-modal-desc" style="margin:0 0 10px;color:#525252;">{% blocktrans trimmed with numero=lot.number %}O número <strong>{{ numero }}</strong> voltará a ficar disponível para o próximo lote.{% endblocktrans %}</p>
+      {% endif %}
       <p class="est-modal-desc" style="margin:0 0 10px;">{% trans "Digite o código completo do lote para confirmar a exclusão:" %}</p>
       <input id="delete-lot-code-input" type="text" autocomplete="off" spellcheck="false"
              placeholder="{{ lot.code }}"
