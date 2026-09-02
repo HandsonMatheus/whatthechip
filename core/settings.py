@@ -42,6 +42,44 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.whatthechip.app',
 ]
 
+
+def dev_hosts_from_env(valor: str, debug: bool):
+    """Hosts extras de DESENVOLVIMENTO → ``(allowed, csrf_origins)``.
+
+    Existe porque `runserver 0.0.0.0:8000` faz o Django ouvir a rede, mas o
+    celular chega com ``Host`` = o IP do Mac — e o ``ALLOWED_HOSTS`` acima não
+    o conhece. O que aparece na tela do aparelho é ``DisallowedHost``, não o
+    painel. O CSRF vai junto porque olhar sem poder logar não serve: o POST do
+    login compararia ``Origin: http://192.168.0.42:8000`` com a lista e
+    devolveria 403.
+
+        WTC_DEV_HOSTS=192.168.0.42          # .env, vírgula separa vários
+        python manage.py runserver 0.0.0.0:8000
+
+    Aceita ``host`` ou ``host:porta``. Sem porta, assume 8000 no CSRF — o
+    ``ALLOWED_HOSTS`` nunca leva porta (o Django a remove antes de comparar).
+
+    ⚠ **Devolve vazio quando ``debug`` é falso, e essa é a razão de ser uma
+    função.** Host aceito é superfície de ataque (Host header poisoning), e
+    uma variável esquecida no painel da Render não pode virar buraco em
+    produção. A garantia está travada em `tenancy/tests_dev_hosts.py`.
+    """
+    if not debug:
+        return [], []
+    itens = [h.strip() for h in (valor or '').split(',') if h.strip()]
+    allowed, origins = [], []
+    for item in itens:
+        host = item.split(':')[0]
+        allowed.append(host)
+        origins.append('http://' + (item if ':' in item else host + ':8000'))
+    return allowed, origins
+
+
+_dev_allowed, _dev_origins = dev_hosts_from_env(
+    os.environ.get('WTC_DEV_HOSTS', ''), DEBUG)
+ALLOWED_HOSTS += _dev_allowed
+CSRF_TRUSTED_ORIGINS += _dev_origins
+
 # TLS termina na BORDA da Render, não no gunicorn: a conexão que chega no Django
 # é http. Sem este header request.is_secure() é False, o CSRF monta a origem
 # esperada como "http://whatthechip.app" e compara com o Origin real

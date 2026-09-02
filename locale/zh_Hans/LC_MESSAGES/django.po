@@ -2626,9 +2626,9 @@ msgstr "本批次有 %(n)s 个类别在您的价目表中无报价："
 
 #: tenancy/models.py
 msgid ""
-"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMI\"). "
+"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMIN\"). "
 "Vazio também vale — o documento sai sem prefixo."
-msgstr "公司代码无效：请使用 2 至 4 个大写字母（例如 \"EMI\"）。留空也可以 — 单据将不带前缀。"
+msgstr "公司代码无效：请使用 2 至 4 个大写字母（例如 \"EMIN\"）。留空也可以 — 单据将不带前缀。"
 
 #. vendas/ (F11.6 — comprador congela)
 msgid "Congelar"
@@ -3946,7 +3946,35 @@ msgid ""
 "transferência em blockchain não volta."
 msgstr "本次采购您直接支付给 %(titular)s，不经过 WhatTheChip。发送前请核对前六位和后六位字符：区块链转账无法撤回。"
 
+#: estoque/templates/estoque/estoque.html:1387
+#, python-format
+msgid "O número <strong>%(numero)s</strong> voltará a ficar disponível para o próximo lote."
+msgstr "编号 <strong>%(numero)s</strong> 将重新可用于下一批次。"
+
+#. Painel do comprador: de que bancada a caixa veio (2026-09-02).
+#: vendas/templates/vendas/partner_compras.html:132
+msgid "Origem"
+msgstr "来源"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."
 #~ msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"
+
+#: vendas/templates/vendas/partner_compra.html
+#: vendas/templates/vendas/partner_compras.html
+#: vendas/views_partner.py
+msgid "Em trânsito"
+msgstr "运输中"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Recebido em"
+msgstr "收货日期"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
+msgstr "确认箱子已到达。收货将以今天的日期记录。"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
+msgstr "以第一个日期为准：再次标记不会更正它，之后也没有界面可以修改。"

@@ -110,11 +110,23 @@
           {% comment %} Coluna ordenável: o link carrega o recorte inteiro MENOS
              `page` — trocar de coluna volta à página 1. Clicar na coluna já
              ativa inverte o sentido. {% endcomment %}
-          <th class="s"><a href="?{{ f.qs }}&sort=n&dir={% if f.sort == 'n' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Lote" %} {% if f.sort == 'n' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
-          <th class="s"><a href="?{{ f.qs }}&sort=seller&dir={% if f.sort == 'seller' and f.dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Cliente" %} {% if f.sort == 'seller' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
-          {% comment %} Data em que a ORDEM foi gerada (dono, 2026-08-18) — não a
-             do lote: é ela que marca quando a compra entrou na fila dele. {% endcomment %}
+          {% comment %} A ORDEM é a primeira coluna desde 2026-09-02, e o LOTE saiu
+             da tabela. Não é arrumação: o código do lote perdeu o prefixo da
+             empresa (`LOT-2026-0007`), e esta lista mistura clientes — com a
+             coluna aqui, o lote 7 de dois clientes viraria a mesma string, que é
+             exatamente a colisão que o prefixo tinha vindo desfazer em agosto.
+             O lote continua BUSCÁVEL na caixa de busca (quem tem packing list
+             antigo na mão precisa achar) e aparece inteiro no detalhe da compra.
+          {% endcomment %}
           <th class="s"><a href="?{{ f.qs }}&sort=so&dir={% if f.sort == 'so' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Ordem" %} {% if f.sort == 'so' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          {% comment %} ORIGEM em coluna PRÓPRIA (dono, 2026-09-02): o selo morava
+             colado no código do lote e teria ido embora junto com ele. Ele diz de
+             que bancada a caixa veio e, portanto, que tipo de chip esperar dentro
+             — sem ele o comprador abre para descobrir. Sem `hide-lg`: é leitura
+             de varredura, e quem cede largura continua sendo Chips e Total US$.
+          {% endcomment %}
+          <th class="s">{% trans "Origem" %}</th>
+          <th class="s"><a href="?{{ f.qs }}&sort=seller&dir={% if f.sort == 'seller' and f.dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Cliente" %} {% if f.sort == 'seller' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           <th class="s hide-lg"><a href="?{{ f.qs }}&sort=units&dir={% if f.sort == 'units' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Chips" %} {% if f.sort == 'units' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           <th class="s"><a href="?{{ f.qs }}&sort=val&dir={% if f.sort == 'val' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Total ¥" %} {% if f.sort == 'val' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           <th class="s hide-lg"><a href="?{{ f.qs }}&sort=usd&dir={% if f.sort == 'usd' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Total US$" %} {% if f.sort == 'usd' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
@@ -162,8 +174,8 @@
              dia voltar ícone, ele vem do modelo ou do CSS — nunca de um `if`
              por valor no template.
           {% endcomment %}
-          <td class="c"><span class="lotc">{{ o.lot.code }}
-            <span class="otag otag--origem otag--sm">{{ o.lot.get_origin_display }}</span></span></td>
+          <td class="c"><span class="lotc">{{ o.code }} <span class="when">{% if o.shipped_at %}{{ o.shipped_at|date:"d/m" }}{% else %}—{% endif %}</span></span></td>
+          <td class="orig"><span class="otag otag--origem otag--sm">{{ o.lot.get_origin_display }}</span></td>
           <td>{{ o.company.name }}</td>
           {% comment %} A data em `d/m`, e não `d/m/Y`, como no protótipo: o ano
              é o mesmo em toda a lista e repeti-lo em cada linha rouba quatro
@@ -180,15 +192,30 @@
              em agosto e pago em julho. Mostrar a data de criação numa lista
              ordenada por embarque faria a tela parecer fora de ordem. Sem
              despacho registrado: travessão, e a linha vai para o topo. {% endcomment %}
-          <td class="c">{{ o.code }} <span class="when">{% if o.shipped_at %}{{ o.shipped_at|date:"d/m" }}{% else %}—{% endif %}</span></td>
           <td class="n hide-lg" data-suffix="{% trans 'Chips' %}">{{ o.units }}</td>
           {% localize off %}
           {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
              tabela de hoje, não o congelado. Antes vinha "—" e a lista não dizia
              nada sobre o tamanho da compra. {% endcomment %}
-          <td class="v">{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}≈ ¥ {{ o.est_rmb }}{% else %}<span class="none">—</span>{% endif %}</td>
+          {% comment %} `.key` = o NÚMERO QUE DECIDE (guia §7.2: "Total ¥
+             (destaque, .key)"). No celular a linha vira cartão de duas
+             alturas e o .key é o que ancora à direita da 1ª linha, ao lado do
+             identificador. Estava no Resultado, e o cartão ficava sem âncora
+             nenhuma. Leva também o acompanhante em US$ (`.cusd`), que acende
+             só abaixo de 1100px — exatamente onde a coluna Total US$ apaga, de
+             modo que nenhuma largura mostra o mesmo número duas vezes.
+          {% endcomment %}
+          <td class="v key" data-lbl="{% trans 'Esperado' %}">{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}≈ ¥ {{ o.est_rmb }}{% else %}<span class="none">—</span>{% endif %}{% if o.total_usd or o.est_usd %}<span class="cusd">{% if o.total_usd %}US$ {{ o.total_usd }}{% else %}≈ US$ {{ o.est_usd }}{% endif %}</span>{% endif %}</td>
           <td class="v hide-lg">{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}≈ US$ {{ o.est_usd }}{% else %}<span class="none">—</span>{% endif %}</td>
-          <td class="v key">
+          {% comment %} O Resultado VOLTOU ao telefone (dono, 2026-09-02: "acho
+             importante mostrar o valor ESPERADO e o valor de RESULTADO"). O
+             guia §7.2 manda o contrário, e a razão dele era boa: sem rótulo,
+             dois valores em dinheiro no mesmo cartão viram o "—" órfão à
+             direita e o "US$ 6.937,00 quitado" flutuando solto. A decisão do
+             dono não revoga essa razão — ela obriga a resolvê-la, e é por isso
+             que as duas células ganharam `data-lbl`. Tirar o rótulo daqui sem
+             tirar a coluna traz o embaralhamento de volta. {% endcomment %}
+          <td class="v" data-lbl="{% trans 'Resultado' %}">
             {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura_saldo %}<span class="due">{% trans "falta" %} US$ {{ o.fatura_saldo }}</span>{% else %}<span class="got">{% trans "quitado" %}</span>{% endif %}
             {% else %}<span class="none">—</span>{% endif %}
           </td>
@@ -196,7 +223,7 @@
           <td>
             {% if o.stage == 'sem_preco' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Falta preço seu" %}</span>
             {% elif o.stage == 'a_congelar' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Congelar" %}</span>
-            {% elif o.stage == 'a_conferir' %}<span class="act act--accept"><i></i>{% trans "A conferir" %}</span>
+            {% elif o.stage == 'a_conferir' %}<span class="act act--accept"><i></i>{% trans "Em trânsito" %}</span>
             {% elif o.stage == 'faturado' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Faturado" %}</span>
             {% elif o.stage == 'parcial' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
             {% else %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>{% endif %}

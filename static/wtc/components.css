@@ -458,12 +458,24 @@ html img.lg-d{display:none}
 /* a descrição é a primeira coisa a sair quando falta largura: sem ela a tabela transbordaria e
    levaria a coluna de Status (onde vive a ação pendente) para fora da tela */
 @media(max-width:1100px){.desc,.dtab .d{display:none}}
+/* acompanhante em US$ dentro da celula do Y: o par ¥/US$ tem de sobreviver
+   ao sumico da coluna Total US$ (dono, 2026-09-02: "so aparece o RMB, deve
+   aparecer USD tambem"). Aceso EXATAMENTE na faixa em que a coluna apaga —
+   fora dela seria o mesmo numero escrito duas vezes na mesma linha. */
+.dtab .v.key .cusd{display:none}
 /* .hide-lg é SUBTRAÇÃO, não descrição: a célula sai na mesma largura que .d, mas sem herdar a
    tipografia de descrição (12px, cinza, elipse). É o que uma coluna de DINHEIRO precisa — .d ali
    dava duas escalas de dinheiro na mesma linha, exatamente o que o modelo .dtab existe para evitar.
-   Par @media + @container, como todo bloco responsivo desta folha. */
-@media(max-width:1100px){.dtab .hide-lg{display:none}}
-@container vp (max-width:1100px){.dtab .hide-lg{display:none}}
+   Par @media + @container, como todo bloco responsivo desta folha.
+   ⚠ O segundo seletor NÃO é redundância — é a mesma armadilha que .hide-sm e
+   .hide-md já resolveram e que aqui tinha ficado aberta: a regra do sufixo
+   (`.dtab tbody td[data-suffix]`, no bloco do telefone) é MAIS ESPECÍFICA que
+   `.dtab .hide-lg`, então a célula com sufixo reaparecia no cartão mesmo
+   marcada para sair. Era o "10000 Chips" no meio da linha do comprador.
+   Dos três degraus, dois estavam remendados e o terceiro não — subtrair tem
+   de vencer qualquer regra de forma, nos três. */
+@media(max-width:1100px){.dtab .hide-lg,.dtab tbody td.hide-lg[data-suffix]{display:none}.dtab .v.key .cusd{display:block}}
+@container vp (max-width:1100px){.dtab .hide-lg,.dtab tbody td.hide-lg[data-suffix]{display:none}.dtab .v.key .cusd{display:block}}
 
 @media(max-width:1180px){.shell__org-txt{display:none}}
 @media(max-width:1080px){.shell__who{display:none}}
@@ -778,7 +790,38 @@ html img.lg-d{display:none}
    era esse seletor que quebrava o rodapé em três faixas. */
 /* min-height da base preservado de propósito: nenhum filho tem altura intrínseca (texto de 17px,
    svg de 15px), então zerá-lo colapsa a faixa — e 52px também dá ao passo o alvo de toque de 44px */
-.tfoot{flex-wrap:nowrap;padding:0;min-height:52px}
+/* ---- BARRA DE FILTROS: linhas CHEIAS, nunca pedacos ----
+   `.tbar` e flex-wrap com `gap:1px` sobre `background:var(--line)`: o fundo E
+   o fio separador. Enquanto cada linha esta cheia isso desenha uma grade; no
+   telefone, com tres controles de largura livre, sobrava vao em duas das tres
+   linhas — e o que aparece no vao nao e espaco vazio, e o fio esticado. A
+   barra ficava rachada em faixas cinza (dono, 2026-09-02, no iPhone).
+   Cada controle passa a ocupar a linha inteira; a unica divisao e a busca com
+   o export, que e um quadrado de 47px e nao tem largura para disputar. */
+.tbar__search{flex:1 1 0;min-width:0}
+.tbar__ico{flex:0 0 47px}
+.tbar__sel,.drange{flex:1 1 100%}
+
+/* ---- RoTULO CURTO: a excecao que o cartao passou a precisar ----
+   A regra do cartao e "nenhum rotulo impresso": a FORMA de cada valor diz o
+   que ele e (pastilha e estado, mono e dinheiro, avatar e gente). Isso so se
+   sustenta enquanto ha UM numero em dinheiro por cartao. Com o esperado e o
+   resultado juntos (dono, 2026-09-02) sao dois valores da mesma especie na
+   mesma altura, e nenhuma forma separa os dois — quem tem de dizer qual e
+   qual e a palavra. Entao ela entra, minuscula, e so nestas duas celulas. */
+.dtab tbody td[data-lbl]::before{content:attr(data-lbl);margin-right:6px;font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+/* no `.key` o rotulo vai ACIMA do numero: ele ancora a direita da 1a linha, e
+   um rotulo antes empurraria o proprio numero para fora da borda */
+.dtab .key[data-lbl]::before{display:block;margin:0 0 1px;text-align:right}
+
+/* ---- RODAPe: DUAS faixas, e nao uma ----
+   Aqui dizia `nowrap`, com a intencao de manter contagem e paginacao na mesma
+   linha. So que duas outras regras pedem o contrario: o `parceiro.css` da
+   `width:100%` ao `.tfoot__sum` abaixo de 760px e o pacote da `flex:1 1 100%`
+   ao `.pgn` logo abaixo. Com `nowrap` nenhum dos dois consegue quebrar, e os
+   dois ficam espremidos lado a lado na mesma faixa — era isso que quebrava a
+   paginacao no telefone. Deixar quebrar e o que as tres regras ja queriam. */
+.tfoot{flex-wrap:wrap;padding:0;min-height:52px}
 .tfoot--sum{flex-wrap:wrap;min-height:0;padding:11px 16px}
 .pgn{margin-left:0;flex:1 1 100%;min-width:0;flex-wrap:nowrap;padding:0;border-top:1px solid var(--line)}
 .pgn__per{display:none}
@@ -857,7 +900,38 @@ html img.lg-d{display:none}
    era esse seletor que quebrava o rodapé em três faixas. */
 /* min-height da base preservado de propósito: nenhum filho tem altura intrínseca (texto de 17px,
    svg de 15px), então zerá-lo colapsa a faixa — e 52px também dá ao passo o alvo de toque de 44px */
-.tfoot{flex-wrap:nowrap;padding:0;min-height:52px}
+/* ---- BARRA DE FILTROS: linhas CHEIAS, nunca pedacos ----
+   `.tbar` e flex-wrap com `gap:1px` sobre `background:var(--line)`: o fundo E
+   o fio separador. Enquanto cada linha esta cheia isso desenha uma grade; no
+   telefone, com tres controles de largura livre, sobrava vao em duas das tres
+   linhas — e o que aparece no vao nao e espaco vazio, e o fio esticado. A
+   barra ficava rachada em faixas cinza (dono, 2026-09-02, no iPhone).
+   Cada controle passa a ocupar a linha inteira; a unica divisao e a busca com
+   o export, que e um quadrado de 47px e nao tem largura para disputar. */
+.tbar__search{flex:1 1 0;min-width:0}
+.tbar__ico{flex:0 0 47px}
+.tbar__sel,.drange{flex:1 1 100%}
+
+/* ---- RoTULO CURTO: a excecao que o cartao passou a precisar ----
+   A regra do cartao e "nenhum rotulo impresso": a FORMA de cada valor diz o
+   que ele e (pastilha e estado, mono e dinheiro, avatar e gente). Isso so se
+   sustenta enquanto ha UM numero em dinheiro por cartao. Com o esperado e o
+   resultado juntos (dono, 2026-09-02) sao dois valores da mesma especie na
+   mesma altura, e nenhuma forma separa os dois — quem tem de dizer qual e
+   qual e a palavra. Entao ela entra, minuscula, e so nestas duas celulas. */
+.dtab tbody td[data-lbl]::before{content:attr(data-lbl);margin-right:6px;font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+/* no `.key` o rotulo vai ACIMA do numero: ele ancora a direita da 1a linha, e
+   um rotulo antes empurraria o proprio numero para fora da borda */
+.dtab .key[data-lbl]::before{display:block;margin:0 0 1px;text-align:right}
+
+/* ---- RODAPe: DUAS faixas, e nao uma ----
+   Aqui dizia `nowrap`, com a intencao de manter contagem e paginacao na mesma
+   linha. So que duas outras regras pedem o contrario: o `parceiro.css` da
+   `width:100%` ao `.tfoot__sum` abaixo de 760px e o pacote da `flex:1 1 100%`
+   ao `.pgn` logo abaixo. Com `nowrap` nenhum dos dois consegue quebrar, e os
+   dois ficam espremidos lado a lado na mesma faixa — era isso que quebrava a
+   paginacao no telefone. Deixar quebrar e o que as tres regras ja queriam. */
+.tfoot{flex-wrap:wrap;padding:0;min-height:52px}
 .tfoot--sum{flex-wrap:wrap;min-height:0;padding:11px 16px}
 .pgn{margin-left:0;flex:1 1 100%;min-width:0;flex-wrap:nowrap;padding:0;border-top:1px solid var(--line)}
 .pgn__per{display:none}

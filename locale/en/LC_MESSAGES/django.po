@@ -2772,10 +2772,10 @@ msgstr "%(n)s category/categories in this lot with no price on your table:"
 
 #: tenancy/models.py
 msgid ""
-"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMI\"). "
+"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMIN\"). "
 "Vazio também vale — o documento sai sem prefixo."
 msgstr ""
-"Invalid company code: use 2 to 4 UPPERCASE letters (e.g. \"EMI\"). Empty is "
+"Invalid company code: use 2 to 4 UPPERCASE letters (e.g. \"EMIN\"). Empty is "
 "fine too — the document comes out with no prefix."
 
 #. vendas/ (F11.6 — comprador congela)
@@ -4181,9 +4181,37 @@ msgstr ""
 "WhatTheChip. Check the first six and the last six characters before sending:"
 " a blockchain transfer does not come back."
 
+#: estoque/templates/estoque/estoque.html:1387
+#, python-format
+msgid "O número <strong>%(numero)s</strong> voltará a ficar disponível para o próximo lote."
+msgstr "Number <strong>%(numero)s</strong> will become available again for the next lot."
+
+#. Painel do comprador: de que bancada a caixa veio (2026-09-02).
+#: vendas/templates/vendas/partner_compras.html:132
+msgid "Origem"
+msgstr "Origin"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."
 #~ msgstr ""
 #~ "Contract rate with WhatTheChip — the rate used to convert your ¥ into US$. "
 #~ "It changes only when the contract changes."
+
+#: vendas/templates/vendas/partner_compra.html
+#: vendas/templates/vendas/partner_compras.html
+#: vendas/views_partner.py
+msgid "Em trânsito"
+msgstr "In transit"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Recebido em"
+msgstr "Received on"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
+msgstr "Confirm the box has arrived. The receipt is recorded with today's date."
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
+msgstr "The first date is the one that counts: marking again will not correct it, and there is no screen to change it later."

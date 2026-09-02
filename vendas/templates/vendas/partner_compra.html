@@ -82,12 +82,17 @@
 
     <div class="rhead__bar">
       <div class="rhead__idl">
+        {% comment %} SEM selo de estado aqui (dono, 2026-09-02). Ele existia ao
+           lado do código e dava um TERCEIRO nome ao mesmo estado: a lista diz
+           "Em trânsito", o trilho ao lado diz "Recebido", e este dizia
+           "Recebimento". Não era só nome trocado — as duas fontes respondiam a
+           perguntas diferentes: o trilho anda por DATA REAL de cada etapa
+           (`order_steps`), e o selo andava por uma cascata de `if` sobre fatura
+           e preço. Duas fontes para o mesmo fato acabam divergindo, e a que
+           tem data por trás é o trilho. Se um dia voltar a fazer falta um
+           resumo de estado no topo, ele tem de LER `steps` — não recalcular.
+        {% endcomment %}
         <span class="rhead__code">{{ so.lot.code }}</span>
-        {% if estimado %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Falta preço seu" %}</span>
-        {% elif pode_acertar %}<span class="tag tag--info"><i class="dot"></i>{% trans "A conferir" %}</span>
-        {% elif invoice and invoice.balance_usd > 0 %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
-        {% elif invoice %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>
-        {% else %}<span class="tag tag--mute"><i class="dot"></i>{% trans "Recebimento" %}</span>{% endif %}
       </div>
 
       {% comment %} O trilho vai NO MEIO da mesma fileira do código, não numa
@@ -100,7 +105,7 @@
             {% if p.state == 'done' %}<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>{% else %}<i></i>{% endif %}
             {% if p.key == 'fechado' %}{% trans "Fechado" %}
             {% elif p.key == 'enviado' %}{% trans "Enviado" %}
-            {% elif p.key == 'recebido' %}{% trans "Recebido" %}
+            {% elif p.key == 'recebido' %}{% if p.state == 'done' or p.state == 'pulado' %}{% trans "Recebido" %}{% else %}{% trans "Em trânsito" %}{% endif %}
             {% elif p.key == 'resultado' %}{% trans "Resultado" %}
             {% else %}{% trans "Pagamento" %}{% endif %}
             {% if p.date and p.state == 'current' %}<small>{{ p.date|date:"d/m" }}</small>{% endif %}
@@ -800,6 +805,60 @@
 <form method="post" action="{% url 'compras:recebido' so.pk %}" id="f-recebi" hidden>
   {% csrf_token %}
 </form>
+
+{% comment %} Confirmação do recebimento (dono, 2026-09-02).
+
+   Ela existe porque o ato é de MÃO ÚNICA: o `mark_received` é idempotente e a
+   PRIMEIRA data vale — "remarcar reescreveria um fato do passado", diz o
+   serviço. Não há tela nenhuma, nem do comprador nem do cliente, que corrija
+   um recebimento marcado por engano. Compare com o despacho, que é editável
+   de propósito (transportadora e rastreio chegam torto o tempo todo): ali um
+   clique errado se conserta, aqui não.
+
+   E a data gravada é a de AGORA, não uma que ele escolhe. Se a caixa chegou
+   na sexta e ele marcar na segunda, o registro diz segunda. O diálogo mostra
+   a data que vai ser gravada em vez de deixar isso implícito — é a única
+   chance dele de perceber antes.
+
+   Segue a mesma mecânica dos outros dois diálogos da ficha: o botão da barra
+   só dá submit no `f-recebi`, e é o SUBMIT que é interceptado. Sem JS o
+   formulário vai direto, como sempre foi — a confirmação é camada por cima,
+   nunca o caminho obrigatório.
+{% endcomment %}
+<div class="mscrim" id="m-recebi">
+  <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="m-recebi-t">
+    <div class="mbox__h">
+      <div>
+        <h2 id="m-recebi-t">{% trans "Marcar como recebido" %}</h2>
+        <p>{% blocktrans trimmed %}
+          Confirme que a caixa chegou. O recebimento é gravado com a data de
+          hoje.
+        {% endblocktrans %}</p>
+      </div>
+      <button type="button" class="mbox__x" data-fecha="m-recebi" aria-label="{% trans 'Fechar' %}">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mbox__b">
+      <div class="blist">
+        <div class="blist__l">{{ so.lot.code }}</div>
+        <div class="blist__r"><span>{% trans "Enviado em" %}</span><b>{{ so.shipped_at|date:"d/m/Y" }}</b></div>
+        <div class="blist__r"><span>{% trans "Recebido em" %}</span><b>{% now "d/m/Y" %}</b></div>
+      </div>
+      <div class="gnote">
+        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span>{% blocktrans trimmed %}
+          A primeira data vale: marcar de novo não a corrige, e não há tela
+          para alterá-la depois.
+        {% endblocktrans %}</span>
+      </div>
+    </div>
+    <div class="mbox__f">
+      <button type="button" class="btn btn--sec" data-fecha="m-recebi">{% trans "Cancelar" %}</button>
+      <button type="button" class="btn btn--pri" id="m-recebi-ok">{% trans "Marcar como recebido" %}</button>
+    </div>
+  </div>
+</div>
 {% endif %}
 
 {% if pode_acertar %}
@@ -1106,6 +1165,24 @@
       });
     }
   });
+
+  // ── Confirmação do recebimento ──────────────────────────────────────────
+  // Intercepta o SUBMIT, e não o clique do botão: o botão é um `type=submit`
+  // com `form=`, e amanhã pode haver outro caminho para o mesmo formulário.
+  // Quem confirma remove o próprio interceptador e reenvia — o mesmo padrão
+  // do "Fechar resultado", lá embaixo.
+  (function () {
+    var fRec = document.getElementById('f-recebi');
+    var okRec = document.getElementById('m-recebi-ok');
+    if (!fRec || !okRec) return;
+    function perguntar(ev) { ev.preventDefault(); abrir('m-recebi'); }
+    fRec.addEventListener('submit', perguntar);
+    okRec.addEventListener('click', function () {
+      fechar('m-recebi');
+      fRec.removeEventListener('submit', perguntar);   // agora vai de verdade
+      fRec.submit();
+    });
+  })();
 
   // ── Totais ao vivo enquanto ele digita os recusados ─────────────────────
   // CONFORTO, nunca a fonte da conta: quem soma de verdade é o servidor no

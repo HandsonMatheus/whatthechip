@@ -67,7 +67,7 @@ def _stage_labels():
     return {
         services.STAGE_SEM_PRECO:  _('Falta preço seu'),
         services.STAGE_A_CONGELAR: _('Congelar'),
-        services.STAGE_A_CONFERIR: _('A conferir'),
+        services.STAGE_A_CONFERIR: _('Em trânsito'),
         services.STAGE_FATURADO:   _('Faturado'),
         services.STAGE_PARCIAL:    _('Pago em parte'),
         services.STAGE_PAGO:       _('Pago'),

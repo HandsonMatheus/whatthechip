@@ -2795,10 +2795,10 @@ msgstr "%(n)s categoría(s) de este lote sin precio en su tabla:"
 
 #: tenancy/models.py
 msgid ""
-"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMI\"). "
+"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMIN\"). "
 "Vazio também vale — o documento sai sem prefixo."
 msgstr ""
-"Código de empresa inválido: use de 2 a 4 letras MAYÚSCULAS (ej.: \"EMI\"). "
+"Código de empresa inválido: use de 2 a 4 letras MAYÚSCULAS (ej.: \"EMIN\"). "
 "Vacío también vale — el documento sale sin prefijo."
 
 #. vendas/ (F11.6 — comprador congela)
@@ -4212,9 +4212,37 @@ msgstr ""
 "WhatTheChip. Verifique los seis primeros y los seis últimos caracteres antes"
 " de enviar: una transferencia en blockchain no vuelve."
 
+#: estoque/templates/estoque/estoque.html:1387
+#, python-format
+msgid "O número <strong>%(numero)s</strong> voltará a ficar disponível para o próximo lote."
+msgstr "El número <strong>%(numero)s</strong> volverá a estar disponible para el próximo lote."
+
+#. Painel do comprador: de que bancada a caixa veio (2026-09-02).
+#: vendas/templates/vendas/partner_compras.html:132
+msgid "Origem"
+msgstr "Origen"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."
 #~ msgstr ""
 #~ "Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a "
 #~ "US$. Cambia solo cuando cambie el contrato."
+
+#: vendas/templates/vendas/partner_compra.html
+#: vendas/templates/vendas/partner_compras.html
+#: vendas/views_partner.py
+msgid "Em trânsito"
+msgstr "En tránsito"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Recebido em"
+msgstr "Recibido el"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
+msgstr "Confirme que la caja llegó. La recepción se registra con la fecha de hoy."
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
+msgstr "Vale la primera fecha: marcarlo de nuevo no la corrige, y no hay pantalla para cambiarla después."
