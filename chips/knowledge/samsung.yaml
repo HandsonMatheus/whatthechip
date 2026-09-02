@@ -1795,6 +1795,24 @@ families:
   suffix_rules: ''
   tip: '⚠ uMCP Samsung KMAG — FLAGSHIP. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. Confirmado: KMAG9001PM-B814 = 128GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. 297-ball FBGA. SAM_EMCP_CAP G9=128GB+8GB. ⚠ VDDQ=0.6V (LPDDR5 — diferente do LPDDR4X). NÃO confundir na bancada. Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. Destino: bancada reacondicional uMCP (Flagship Tier).'
   reasoning: ''
+- prefix: KMAK
+  chip_type: eMMC
+  subtype: ''
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 38
+  pn_length: 10
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ NÃO é uMCP como os vizinhos KMAG/KMAS (mesmo pn[2]=''A'', 4ª letra diferente) — é NAND-ONLY, sem RAM. "KM" genérico (is_emcp=true) forçava "RAM não mapeada" porque não existe RAM neste chip. Confirmado: KMAKG0000M-B998 = 2GB, catalogado pelo distribuidor como "MOVINAND" (Jotrin) — moviNAND é a MARCA Samsung pra NAND gerenciada com interface MMC (predecessora/equivalente ao eMMC; mesmo padrão já usado no banco pra KLMAG2GE4A-A001, onde Octopart tagueia "Movinand" e o known_part confirmado é chip_type=eMMC). Uso real corroborado: fórum elektroda.pl 2014, dono de TomTom XL (4EG0.001.15) identifica fisicamente "2GB KMAKG0000M-B998" na placa após falha de memória. Identity-only: sem tabela de código de capacidade confiável pra pos 5-9 desta sub-família legada — capacidade vem só de known_part confirmado. ⚠ Vizinhos vistos em "related products" (KMAFN0000M-S988/S998, KMAIN0000A-S998, KMBLG0000M-B9980, KMCME0000M-B998) parecem a MESMA linha moviNAND legada mas cada um precisa de pesquisa própria (sidebar do distribuidor é só similaridade de string, não família curada) — sinalizado, não pesquisado ainda. Destino: bancada eMMC (capacidade baixa, valor residual).'
+  reasoning: ''
 - prefix: KMAS
   chip_type: uMCP
   subtype: LPDDR5

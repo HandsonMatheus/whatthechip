@@ -1,0 +1,82 @@
+# Submissão de known_parts — Samsung, família NOVA "KMAK" (moviNAND legado).
+# PN alvo (debug 2026-09-02): KMAKG0000M — gramática genérica "KM" (fallback,
+# is_emcp=true) forçava "Tipo: eMCP / NAND: eMMC ⚠ cap. não mapeada / RAM: RAM
+# não mapeada". Pesquisa mostrou que isso está ERRADO: este PN não tem RAM
+# nenhuma — é NAND gerenciada standalone (moviNAND, marca Samsung pré-eMMC
+# padronizado), não um combo eMCP. Por isso "RAM não mapeada" nunca ia
+# resolver: não existe RAM pra mapear.
+#
+# ⚠ NÃO é a mesma família dos vizinhos KMAG/KMAS (mesmo pn[2]='A', mas 4ª
+# letra diferente: G/S vs K) — aqueles são uMCP LPDDR5+UFS3.1 confirmados
+# (128GB/256GB). Cross-check com a doc iTXTech fdnext (github.com/iTXTech/
+# fdnext, projeto de decode de PN Samsung eMCP/uMCP pra ferramentas de
+# programação de firmware) confirma que KMAG/KMAS são família moderna
+# (2022+, LPDDR5) — mas essa MESMA doc é explícita que a família legada
+# "Class 100"/moviNAND (anos 2008-2013) usa estrutura TOTALMENTE DIFERENTE
+# do formato moderno de 10 caracteres, e que não dá pra decodificar por
+# posição sem amostra confirmada. Por isso família nova IDENTITY-ONLY (sem
+# decode_cap_map), igual ao precedente KFG/KFM/KFW desta mesma sessão —
+# capacidade só via known_part confirmado, não por fórmula.
+# https://raw.githubusercontent.com/iTXTech/fdnext/master/docs/pn_code/samsung_emcp.md
+#
+# ⚠ CLASSIFICAÇÃO chip_type=eMMC (não um tipo novo) — precedente já no
+# PRÓPRIO banco: seed_known_parts.json já tem KLMAG2GE4A-A001 (confidence=
+# manual) com notes citando Octopart: "16GB Movinand Flash 21NM, Samsung" —
+# ou seja, "Movinand" é a marca/tag que a Samsung e os distribuidores usam
+# pra NAND gerenciada com interface MMC, e o próprio banco já trata isso
+# como chip_type=eMMC. Aplico a mesma convenção aqui.
+#
+# FONTES (2 independentes, convergentes em "2GB"):
+#   1. Jotrin (página dedicada) — tag do produto: "KMAKG0000M-B998 / 2GB
+#      MOVINAND". https://www.jotrin.com/product/parts/KMAKG0000M_B998
+#   2. elektroda.pl (fórum de reparo, post original de 11/06/2014 — pré-IA,
+#      sem risco de contaminação por resposta de IA de terceiro): dono de um
+#      GPS TomTom XL (modelo 4EG0.001.15) identifica fisicamente na placa
+#      "2GB KMAKG0000M-B998" após falha de memória durante atualização —
+#      uso real em aparelho físico, não só catálogo.
+#      https://www.elektroda.pl/rtvforum/topic2846882.html
+#   Octopart tem página do PN (confirma existência + múltiplos distribuidores
+#   com estoque) mas SEM campo técnico estruturado (só preço/estoque) —
+#   https://octopart.com/kmakg0000m-b998-samsung-26964161
+#
+# ⚠ Geração/versão eMMC: SEM fonte — provavelmente pré-eMMC-padronizado
+# (moviNAND é anterior ao JEDEC eMMC 4.x em vários casos) ou eMMC muito
+# antigo (4.0/4.1). Não assumo — interface deixado em branco.
+#
+# ⚠ Vizinhos "related products" no Jotrin (KMAFN0000M-S988/S998,
+# KMAIN0000A-S998, KMBLG0000M-B9980, KMCME0000M-B998) parecem a MESMA linha
+# moviNAND legada mas cada um exige pesquisa própria (sidebar de
+# distribuidor é similaridade de string, não família curada) — sinalizado
+# pro futuro em samsung.yaml, não pesquisado nesta rodada.
+brand: "Samsung"
+known_parts:
+  - part_number: "KMAKG0000M"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KMAKG0000M_B998"
+    notes: >
+      PN alvo do debug (2026-09-02), forma bare. Família "KM" genérica
+      (is_emcp=true) decodificava errado como eMCP com "RAM não mapeada" —
+      este chip não tem RAM, é moviNAND (NAND gerenciada standalone,
+      equivalente/predecessora do eMMC — mesma convenção já usada no banco
+      pra KLMAG2GE4A-A001). Capacidade 2GB confirmada por 2 fontes
+      independentes: Jotrin (catálogo, tag "2GB MOVINAND") + elektroda.pl
+      (fórum, 2014, identificação física em GPS TomTom XL real). Geração
+      eMMC não confirmada — deixada em branco.
+
+  - part_number: "KMAKG0000M-B998"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/KMAKG0000M_B998"
+    notes: >
+      Forma completa com sufixo — exatamente como no Jotrin (catálogo
+      dedicado) e no fórum elektroda.pl (post original de 2014, dono
+      identificou este PN completo com sufixo na placa do TomTom XL após
+      falha física de memória). Mesmas specs do PN bare acima — ver notes
+      lá pra discussão completa da classificação.

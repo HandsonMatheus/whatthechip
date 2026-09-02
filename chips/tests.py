@@ -1955,6 +1955,7 @@ _SAM_GOLDEN = {
     'KFG1G16U2C': ('OneNAND', '', '', '', '', 'NÃO RENTÁVEL'),  # família nova 2026-08-26, prefixo "KFG" (2ª convenção OneNAND, distinta de K5D) — ver samsung.yaml
     'KFM4G16Q4B': ('OneNAND', '', '', '', '', 'NÃO RENTÁVEL'),  # família nova 2026-08-27, prefixo "KFM" (variante "Muxed" da nomenclatura OneNAND, irmã de KFG) — Elnec confirma 4Gb/SLC/x16, ver samsung.yaml
     'KFW4G16Q2M': ('OneNAND', '', '', '', '', 'NÃO RENTÁVEL'),  # família nova 2026-08-27, prefixo "KFW" (variante "De-Muxed 4 die stack" da nomenclatura OneNAND, achada no cluster de KFM) — ver samsung.yaml
+    'KMAKG0000M': ('eMMC', '', '', '', '', 'INDETERMINADO'),  # família nova 2026-09-02, prefixo "KMAK" — NÃO é uMCP como os vizinhos KMAG/KMAS (mesmo pn[2]='A'): é moviNAND legado (NAND-only, sem RAM). "KM" genérico forçava eMCP/"RAM não mapeada" errado. Identity-only (sem decode_cap_map) → grammar sozinha não tem capacidade, INDETERMINADO é o esperado aqui; known_part aprovado (capacity=2GB, Jotrin + elektroda.pl 2014 TomTom XL físico) resolve p/ NÃO RENTÁVEL — conferido no sandbox.
     'KLM2G1DEHE': ('eMMC', '2GB', '', '', '', 'NÃO RENTÁVEL'),
     'KLMCG2KETM': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),
     'KLMCG2UCTA': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),
