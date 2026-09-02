@@ -1715,6 +1715,11 @@ _SD_GOLDEN = {  # SanDisk: famílias MAGRAS — chip_type por prefixo; capacidad
     # apagar a família SD5DH26, esta linha volta a "eMMC/INDETERMINADO" e o teste grita.
     "SD5DH26A4G":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
                     "LPDDR1 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    # SDED (2026-09-02, família NOVA — mDOC H3/DiskOnChip, achada a partir do PN SDED5001G).
+    # Magra igual SD5DH/SDIN: sem known_part no banco de teste -> INDETERMINADO, mesmo padrão de
+    # SD5DH24A4G acima. Não testei contra a suíte real (sandbox sem venv utilizável) — se a tupla
+    # não bater, é 1 linha pra ajustar.
+    "SDED5001G":   ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SD7DP24C4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SDADA4DR64G": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
                     "RAM não mapeada — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # subtype vazio → fallback INDETERMINADO (fix 2026-07-15: antes "tipo 'A'" via dict Samsung)
@@ -2345,6 +2350,17 @@ _ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 6 famílias DDR
     # "if _fam == \"ddr\":"), nao copiado de classify() ao vivo.
     "M16U4G16256A": ("DDR4", "", "", "", "", "INDETERMINADO"),   # 4Gb x16
     "M16U4G8512A":  ("DDR4", "", "", "", "", "INDETERMINADO"),   # 4Gb x8
+
+    # M13S -- DDR SDRAM/DDR1 (7a rodada, 2026-09-02), disparado por PN ao vivo do
+    # debug de estoque, sem fuzzy_suggestions. Geracao mais antiga que o M14D/DDR2
+    # desta marca: _ddr_generation("DDR")=1 (sem numero -> default 1, ver docstring
+    # em chips/engine.py) < cfg.ddr_min_gen(3) -> NAO RENTAVEL so por geracao, ANTES
+    # de qualquer density check -- mesmo mecanismo do M14D/DDR2, um degrau mais
+    # obsoleto (geracao 1 vs 2). Verificado por leitura direta de _ddr_generation
+    # (chips/engine.py) e assess_profitability, nao copiado de classify() ao vivo.
+    "M13S128324A":  ("DDR1", "", "", "", "", "NÃO RENTÁVEL"),   # 128Mb x32
+    "M13S2561616A": ("DDR1", "", "", "", "", "NÃO RENTÁVEL"),   # 256Mb x16
+    "M13S5121632A": ("DDR1", "", "", "", "", "NÃO RENTÁVEL"),   # 512Mb x16
 }
 
 

@@ -1,0 +1,99 @@
+# ESMT M13S -- DDR SDRAM/DDR1 (7a rodada, 2026-09-02). Disparado por PN AO VIVO do
+# debug de estoque (M13S128324A, 02/09/2026 13:43:00): veio 100% desconhecido
+# (known:false, in_review_queue:true), SEM fuzzy_suggestions -- prefixo nunca visto
+# antes nesta base.
+#
+# chip_type="DDR1" (especifico, NAO generico -- o portao REJEITA "DDR" puro: "nao
+# resolve a um tipo/geracao canonico", chips/knowledge/schema.py) ja existe em
+# chip_types.py (dram_pc/ddr/ddr, carries_generation=True), nunca usado por
+# nenhuma marca ate esta rodada -- nao e tipo novo, sem handshake novo.
+# _ddr_generation("DDR") = 1 (default documentado no proprio engine.py quando nao
+# ha digito) -- ABAIXO do minimo comercial (cfg.ddr_min_gen=3), entao a familia
+# INTEIRA e NAO RENTAVEL so por geracao, igual ao M14D/DDR2 desta marca (um degrau
+# mais obsoleto ainda). Este arquivo entrega os specs reais pra completude de
+# catalogo/identidade (mesmo padrao usado no M14D) -- NAO muda o veredito, que ja
+# esta fixo em assess_profitability antes de qualquer capacidade.
+#
+# M13S128324A (128Mb, x32): confianca por CONVERGENCIA, nao datasheet direto do PN
+# exato (existencia confirmada via ic37.com, mas pagina bloqueada por robots.txt) --
+# tipo da familia confirmado por 3 fontes (Alldatasheet do irmao M13S5121632A + doc
+# comunitario de PN-decode github.com/iTXTech/fdnext, formula EXATA pro mesmo
+# prefixo de densidade 128 + listagem eBay do M13L64164A relacionado); organizacao
+# x32 cruzada contra um 2o PN real independente que usa o mesmo token (M13S32321A,
+# ariat-tech.com). Mesmo padrao de confianca-por-convergencia ja usado no
+# FM6BD4G2GA desta marca -- revisar com atencao extra antes de aprovar.
+#
+# M13S2561616A e M13S5121632A: leitura DIRETA de datasheet dedicado (Alldatasheet
+# ID 302727 e 302724), confianca alta, sem ressalva.
+#
+# M13L (prefixo relacionado, achado durante a pesquisa via listagem eBay do
+# M13L64164A, tambem "DDR SDRAM... Double Data Rate") NAO pesquisado nesta rodada
+# -- fica como candidato pra proxima sessao ESMT.
+
+brand: "ESMT"
+known_parts:
+  - part_number: "M13S128324A"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    density_gbit: "0.125Gb"
+    density_gb: "16MB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://pdf.ic37.com/ESMT/M13S128324A-_datasheet_15149729/"
+    notes: >
+      ESMT DDR SDRAM (DDR1), 128Mb, organizacao x32 (1M x32bit x4bancos =
+      1.048.576 x 32 x 4 = 134.217.728 bit = 128Mb = 16MB, bate com o "128" do
+      proprio PN). Densidade sub-1Gb -- density_gbit fracionario ("0.125Gb"), nunca
+      "128Mb" (mesma regra documentada no M14D/M14F/M15F, ver ESMT.md §1/§3.3: o
+      parser _extract_gbit/_GBIT_RE do engine so reconhece o sufixo literal "Gb").
+      CONFIANCA: existencia do PN exato confirmada (ic37.com, ficha de 48 paginas,
+      sufixo -5BIG2M, pagina bloqueada por robots.txt pra leitura direta do
+      conteudo) + tipo da familia (DDR SDRAM/DDR1) confirmado por 3 fontes
+      independentes (Alldatasheet do irmao M13S5121632A + doc comunitario de
+      PN-decode github.com/iTXTech/fdnext, formula EXATA "128"+"16"+"8"+"A" pro
+      exemplo oficial M13S128168A, mesmo prefixo de densidade 128 do meu alvo +
+      listagem eBay do M13L64164A relacionado). Organizacao x32 cruzada contra
+      2o PN real independente com o mesmo token (M13S32321A, ariat-tech.com) --
+      nao e datasheet direto do PN exato, e convergencia de fontes (mesmo padrao
+      ja usado no FM6BD4G2GA desta marca) -- revisar com atencao extra.
+      NAO MUDA O VEREDITO: familia inteira e NAO RENTAVEL so por geracao
+      (_ddr_generation=1 < ddr_min_gen=3), capacidade e so pra completude de
+      catalogo/identidade.
+
+  - part_number: "M13S2561616A"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/302727/ESMT/M13S2561616A.html"
+    notes: >
+      ESMT DDR SDRAM (DDR1), 256Mb, 4M x16bit x4bancos = 4.194.304 x 16 x 4 =
+      268.435.456 bit = 256Mb = 32MB. Densidade sub-1Gb -- density_gbit
+      fracionario ("0.25Gb"). Fonte: Alldatasheet ID 302727 (leitura direta,
+      citacao textual "4M x 16 Bit x 4 Banks Double Data Rate SDRAM"). Tambem
+      listado em JLCPCB/LCSC (M13S2561616A-5TG2S, estoque real, confirma PN
+      comercial vivo). NAO MUDA O VEREDITO: ver nota no M13S128324A.
+
+  - part_number: "M13S5121632A"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/302724/ESMT/M13S5121632A.html"
+    notes: >
+      ESMT DDR SDRAM (DDR1), 512Mb, 8M x16bit x4bancos = 8.388.608 x 16 x 4 =
+      536.870.912 bit = 512Mb = 64MB. Densidade sub-1Gb -- density_gbit
+      fracionario ("0.5Gb"). Fonte: Alldatasheet ID 302724 (leitura direta,
+      citacao textual "8M x 16 Bit x 4 Banks Double Data Rate SDRAM"). Tambem
+      listado em datasheet4u.com e Ventron (distribuidora, sufixo -5TG2S). NAO
+      MUDA O VEREDITO: ver nota no M13S128324A.
+
+# Familia M13S (DDR SDRAM/DDR1) inteira = SEMPRE NAO RENTAVEL, limiar FIXO em
+# assess_profitability (nao ProfitabilityConfig do admin) -- mesmo mecanismo do
+# M14D/DDR2 desta marca, um degrau mais obsoleto (geracao 1 vs 2). known_parts
+# aqui e so completude de catalogo/identidade, nao resolve nenhum INDETERMINADO
+# (diferente do M16U/DDR4 da rodada anterior).
