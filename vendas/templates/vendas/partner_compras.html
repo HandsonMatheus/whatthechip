@@ -223,7 +223,14 @@
           <td>
             {% if o.stage == 'sem_preco' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Falta preço seu" %}</span>
             {% elif o.stage == 'a_congelar' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Congelar" %}</span>
-            {% elif o.stage == 'a_conferir' %}<span class="act act--accept"><i></i>{% trans "Em trânsito" %}</span>
+            {% comment %} `act--ship` (azul) para o trânsito e `act--accept`
+               (âmbar) para a conferência. A cor não é enfeite: o protótipo já
+               dizia que "a conferir é ato DESTE lado do balcão, então vira
+               chamada" — âmbar é chamada, azul é informação. Enquanto os dois
+               estados eram um só, as cinco linhas saíam âmbar e quatro delas
+               não pediam nada dele. {% endcomment %}
+            {% elif o.stage == 'a_conferir' %}<span class="act act--ship"><i></i>{% trans "Em trânsito" %}</span>
+            {% elif o.stage == 'conferencia' %}<span class="act act--accept"><i></i>{% trans "Conferência" %}</span>
             {% elif o.stage == 'faturado' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Faturado" %}</span>
             {% elif o.stage == 'parcial' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
             {% else %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>{% endif %}

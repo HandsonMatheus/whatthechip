@@ -1541,7 +1541,18 @@ def annotate_sales(orders):
 #: Estágios comerciais que o comprador vê. Canônicos (a chave nunca traduz);
 #: o rótulo é montado na view/template.
 STAGE_SEM_PRECO, STAGE_A_CONGELAR = 'sem_preco', 'a_congelar'
+#: ⚠ A CHAVE É HISTÓRICA e o rótulo dela mudou duas vezes; leia antes de
+#: "arrumar". Hoje `a_conferir` significa EM TRÂNSITO — a caixa saiu e ainda
+#: não chegou. A chave não foi renomeada porque vive na query string
+#: (`?status=a_conferir`) e em filtro que o comprador salva no telefone.
 STAGE_A_CONFERIR = 'a_conferir'
+#: A caixa CHEGOU e espera a conferência dele. Separado do de cima em
+#: 2026-09-02, com o bug em produção na mão: o dono marcou o recebimento, a
+#: ficha passou a dizer "Recebido ✓ · Conferência" e a LISTA continuou
+#: dizendo "Em trânsito" para a mesma compra. Um estágio só não conseguia
+#: contar as duas histórias — enquanto o rótulo era o vago "A conferir" isso
+#: passava; "Em trânsito" sobre uma caixa entregue é mentira.
+STAGE_CONFERENCIA = 'conferencia'
 STAGE_FATURADO, STAGE_PARCIAL, STAGE_PAGO = 'faturado', 'parcial', 'pago'
 
 
@@ -1566,7 +1577,12 @@ def order_stage(so, pendentes=None) -> str:
         return STAGE_SEM_PRECO if pendentes else STAGE_A_CONGELAR
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
     if inv is None:
-        return STAGE_A_CONFERIR              # confirmada, resultado pendente
+        # Quem separa os dois é o `received_at`, o MESMO campo que o trilho da
+        # ficha usa para o passo `recebido`. Uma segunda regra aqui faria a
+        # lista e a ficha discordarem de novo, que é o defeito que se está
+        # consertando.
+        return (STAGE_CONFERENCIA if so.received_at is not None
+                else STAGE_A_CONFERIR)
     if inv.status == 'paid':
         return STAGE_PAGO
     return STAGE_PARCIAL if inv.paid_usd else STAGE_FATURADO

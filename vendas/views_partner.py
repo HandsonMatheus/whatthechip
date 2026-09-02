@@ -68,6 +68,7 @@ def _stage_labels():
         services.STAGE_SEM_PRECO:  _('Falta preço seu'),
         services.STAGE_A_CONGELAR: _('Congelar'),
         services.STAGE_A_CONFERIR: _('Em trânsito'),
+        services.STAGE_CONFERENCIA: _('Conferência'),
         services.STAGE_FATURADO:   _('Faturado'),
         services.STAGE_PARCIAL:    _('Pago em parte'),
         services.STAGE_PAGO:       _('Pago'),
@@ -173,7 +174,13 @@ def compras_list(request):
         # Quantas esperam ELE (design system v2, 2026-08-19): o rodapé diz o
         # tamanho da fila e quanto dela é trabalho dele. Do conjunto
         # completo — é a fila real, não a que o filtro deixou à vista.
-        'a_conferir': counts.get(services.STAGE_A_CONFERIR, 0),
+        # SOMA os dois estágios de propósito. O número existe desde antes da
+        # divisão e conta a FILA dele: tudo o que ainda vai passar pela sua
+        # conferência, esteja a caixa a caminho ou já na bancada. Trocar por
+        # só `conferencia` mudaria o significado da frase do rodapé sem
+        # ninguém ter pedido — e faria o número cair na cara dele.
+        'a_conferir': (counts.get(services.STAGE_A_CONFERIR, 0)
+                       + counts.get(services.STAGE_CONFERENCIA, 0)),
         'total_filtrado': len(linhas),
         'total_geral': total_geral,
     }))
