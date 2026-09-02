@@ -1,0 +1,70 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3), die E, sufixo HCH9.
+# PN alvo (debug 2026-09-02): K4B1G1646EHCH9 — gramática já decodifica certo
+# hoje (DDR3, 1Gb=128MB por die, x16, RENTÁVEL, grammar_complete=true), só
+# não está confirmado no banco (pn_not_in_db=true, confidence=estimated).
+#
+# NÃO é gap de gramática — é registro puro (Trilha B). Cluster já MUITO bem
+# coberto localmente antes desta rodada:
+#   - K4B1G1646E (bare) já submetido em samsung_k4b2g0846d_2026-08-24.yaml
+#     (alldatasheet #347879, não repito aqui).
+#   - K4B1G1646D-HCH9 (mesmo sufixo "HCH9", die IRMÃ D) já confirmado em
+#     samsung_k4b1g1646d_2026-08-27.yaml, com datasheet dedicado próprio
+#     (#411817) — "HC"=DDR3 1.5V, "H9"=grade de velocidade DDR3-1333
+#     (mesma numeração de grade vista no K4B1G1646G-BCH9, família irmã).
+#   - K4B1G1646G tem as 5 grades de velocidade completas (BCF8/BCH9/BCK0/
+#     BCMA/BCNB) confirmadas via Product Selection Guide.
+# Ou seja: "HCH9" já era um sufixo real e conhecido NESTE banco antes desta
+# rodada — faltava só confirmar que a combinação ESPECÍFICA
+# die-E + HCH9 existe de verdade (Samsung nem sempre produz toda combinação
+# die×grade).
+#
+# CONFIRMAÇÃO da combinação específica:
+#   - Octopart (campo técnico ESTRUTURADO, não prosa): "K4B1G1646E-HCH9" ·
+#     descrição "DDR3 Dram, 64MX16" (confirma x16, 1Gb=64Mx16) ·
+#     Nominal Supply Voltage (DC) = 1.5V (confirma HC=DDR3 1.5V, igual ao
+#     precedente do die D) · Package FBGA96 · "Part Number Aliases:
+#     K4B1G1646EHCH9" — Octopart lista EXPLICITAMENTE a forma sem hífen como
+#     alias do mesmo PN, mesma grafia que a bancada leu.
+#     https://octopart.com/k4b1g1646e-hch9-samsung-18711819
+#   - Alldatasheet: confirma existência do PN (busca dedicada "K4B1G1646E-
+#     HCH9-"), decodificável a partir do datasheet-base K4B1G1646E (mesmo
+#     padrão do tip: 1 datasheet cobre a família de sufixos via tabela
+#     "Ordering Information" — E-die não tem datasheet por-sufixo como D-die
+#     teve, mas o PN aparece indexado).
+#     https://www.alldatasheet.com/view.jsp?Searchword=K4B1G1646E-HCH9-
+#   - Múltiplos distribuidores independentes com estoque real (Win Source,
+#     Worldway Electronics, ICPartonline, Hi-Tech Circuit Group, TIST
+#     Technology) — convergência de existência.
+#
+# capacity="128MB" (1Gbit÷8), mesmo formato já padronizado nesta família
+# (ver samsung_k4b1g1646d_2026-08-27.yaml) — apply_kp_convention preenche
+# density_gbit sozinho no save (regra 4, fill-only).
+#
+# ⚠ SÓ 1 registro (não 2): tentei gravar as duas grafias (com e sem hífen)
+# como known_parts separados e o sandbox rejeitou — UNIQUE constraint em
+# `part_number_norm` (IntegrityError). Ou seja: known_part JÁ normaliza
+# hífen na comparação (a suposição no cabeçalho original desta submissão
+# estava errada) — "K4B1G1646EHCH9" e "K4B1G1646E-HCH9" são o MESMO
+# registro pro engine. Guardo a forma canônica com hífen (Octopart/
+# Alldatasheet/distribuidores); resolve os dois jeitos de busca.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B1G1646E-HCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/k4b1g1646e-hch9-samsung-18711819"
+    notes: >
+      Alvo do debug (2026-09-02); a bancada leu sem hífen
+      ("K4B1G1646EHCH9") mas known_part normaliza hífen na comparação
+      (part_number_norm), então esta única forma resolve os dois jeitos
+      de grafia. Octopart (campo estruturado): DDR3 64Mx16 (1Gb), FBGA96,
+      1.5V — confirma HC=DDR3 1.5V (mesmo padrão do irmão
+      K4B1G1646D-HCH9, já no banco) e lista "K4B1G1646EHCH9" (sem hífen)
+      como alias explícito do mesmo PN. Múltiplos distribuidores com
+      estoque (Win Source, Worldway, ICPartonline, Hi-Tech Circuit Group,
+      TIST). Capacidade/organização já batiam com a gramática antes deste
+      registro — este known_part só confirma banco (era
+      pn_not_in_db=true, confidence=estimated).
