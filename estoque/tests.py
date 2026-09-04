@@ -2098,6 +2098,21 @@ class ReplicateLotXlsxTests(TestCase):
                                   subtype='', decode_cap_pos=3,
                                   decode_cap_map='CAP_REP', is_emcp=False,
                                   active=True, priority=50)
+        # ⚠ 2026-09-04: o `_families_for_version`/`_decode_map_for_version` é
+        # `lru_cache` chaveado pelo `catalog_version`. Em produção a versão é
+        # MONOTÔNICA e a chave nunca se repete; no teste o banco reinicia e o
+        # mesmo número passa a valer para catálogos DIFERENTES — então o
+        # catálogo de um teste anterior fica servido a este, a família KLM
+        # criada acima não é vista, e `KLMAG1JETD` sai sem capacidade
+        # (`price_tier_value=None`). Sintoma: passa sozinho e quebra na suíte.
+        #
+        # O `core.test_runner.EngineCacheIsolationRunner` resolve isto
+        # centralmente, mas só entra pelo `--settings=core.settings_test` (ou
+        # `--testrunner=`). Esta linha faz o teste não depender de COMO ele foi
+        # invocado — é o mesmo cuidado que `chips/tests.py` repete em doze
+        # lugares, com o mesmo comentário.
+        from chips.engine import clear_engine_cache
+        clear_engine_cache()
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.append(['Part Number', 'Category', 'Qty.', 'Last Added',
@@ -3393,6 +3408,45 @@ class OrigensLegadasTests(TestCase):
         for v, _rot in Lot.ORIGIN_CHOICES:
             self.assertIn(v, Lot.ORIGIN_ICONS, f'{v} sem ícone')
         self.assertNotEqual(Lot.ORIGIN_ICONS['mixed'], Lot.ORIGIN_ICONS['k9'])
+
+    def test_toda_origem_tem_rotulo_de_documento(self):
+        """O `origin_doc_label` é o que sai no PDF do resultado (2026-09-04).
+
+        Origem sem entrada no `ORIGIN_DOC` cai no token em caixa alta — que é
+        feio mas HONESTO. O que não pode acontecer é o de 2026-08-28: rótulo
+        de outra origem, com o papel mentindo sobre a procedência declarada.
+        """
+        from estoque.models import Lot
+        for v, _rot in Lot.ORIGIN_CHOICES:
+            rotulo = Lot(origin=v).origin_doc_label
+            self.assertTrue(rotulo, f'{v} saiu sem rótulo de documento')
+            if v in Lot.ORIGIN_LEGACY:
+                # token canônico: sai sozinho, sem par em chinês
+                self.assertEqual(rotulo, v.upper())
+            else:
+                self.assertIn(v, Lot.ORIGIN_DOC, f'{v} sem par inglês/中文')
+                self.assertIn('(', rotulo)
+        # e nenhuma origem empresta o rótulo de outra
+        rotulos = [Lot(origin=v).origin_doc_label
+                   for v, _ in Lot.ORIGIN_CHOICES]
+        self.assertEqual(len(rotulos), len(set(rotulos)))
+
+    def test_o_rotulo_de_documento_NAO_traduz(self):
+        """⚠ O motivo de o `ORIGIN_DOC` existir em vez de reusar o
+        `get_origin_display()`.
+
+        O display passa pelo `_lazy` e sai no idioma da INTERFACE de quem
+        clicou. O PDF do resultado é sempre inglês + 中文 — um papel que muda
+        de língua conforme o operador não é documento, é tela impressa.
+        """
+        from django.utils import translation
+        from estoque.models import Lot
+        lote = Lot(origin='phone')
+        for idioma in ('pt-br', 'es', 'zh-hans', 'en'):
+            with translation.override(idioma):
+                self.assertEqual(lote.origin_doc_label, 'Mobile phone (手機)')
+                # e o display SEGUE traduzindo — não quebrei a tela
+                self.assertTrue(lote.get_origin_display())
 
     def test_NAO_sao_oferecidas_para_lote_novo(self):
         from estoque.models import Lot

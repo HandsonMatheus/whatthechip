@@ -69,7 +69,12 @@ def _stage_labels():
         services.STAGE_A_CONGELAR: _('Congelar'),
         services.STAGE_A_CONFERIR: _('Em trânsito'),
         services.STAGE_CONFERENCIA: _('Conferência'),
-        services.STAGE_FATURADO:   _('Faturado'),
+        # ⚠ "A pagar", não "Faturado" (dono, 2026-09-04). "Faturado" é o
+        # ponto de vista de QUEM EMITE a fatura — nesta tela quem lê é quem
+        # RECEBE, e para ele o fato não é que a fatura existe, é que ele deve.
+        # É a mesma palavra que o CSV desta tela já usava na coluna
+        # "USD a pagar" desde a spec v2: a tela é que estava fora de passo.
+        services.STAGE_FATURADO:   _('A pagar'),
         services.STAGE_PARCIAL:    _('Pago em parte'),
         services.STAGE_PAGO:       _('Pago'),
     }
@@ -183,6 +188,24 @@ def compras_list(request):
                        + counts.get(services.STAGE_CONFERENCIA, 0)),
         'total_filtrado': len(linhas),
         'total_geral': total_geral,
+        # ── O RODAPÉ DE COLUNA (dono, 2026-09-04) ────────────────────────
+        # Somados sobre `linhas` — o RECORTE FILTRADO INTEIRO —, e não sobre
+        # `pagina.object_list`. Um total que só soma a página visível responde
+        # a uma pergunta que ninguém fez: filtrar por "a pagar" e ler um total
+        # que muda ao virar a página é pior do que não ter total.
+        #
+        # ⚠ `so.fatura_saldo` e `so.fatura.total_usd` são atributos JÁ
+        #   MATERIALIZADOS pelo `orders_for_buyer` dentro do `company_scope`
+        #   (ver o comentário longo lá: property que consulta banco não
+        #   atravessa escopo, e o saldo voltava zero em silêncio). Somar aqui
+        #   é aritmética sobre o que já veio — nenhuma consulta nova.
+        'total_resultado_usd': sum(
+            (o.fatura.total_usd for o in linhas
+             if o.fatura is not None and o.fatura.total_usd is not None),
+            Decimal('0.00')),
+        'total_a_pagar_usd': sum(
+            (o.fatura_saldo for o in linhas if o.fatura_saldo),
+            Decimal('0.00')),
     }))
 
 
@@ -628,10 +651,15 @@ def compra_resultado_pdf(request, pk):
         from .pdf import render_result_pdf
         pdf = render_result_pdf(services.result_document(so, inv))
         resp = HttpResponse(pdf, content_type='application/pdf')
-        # inline: ele confere na tela antes de mandar. O nome do arquivo é o
-        # código do LOTE — é assim que cliente e comprador se referem à caixa.
+        # inline: ele confere na tela antes de mandar.
+        #
+        # ⚠ O NOME É `RESULT-<código da OV>` (dono, 2026-09-04), no mesmo molde
+        #   do `PACKING-LIST-<código>` que já existia. Duas correções num nome
+        #   só: ele dizia "resultado" — português, num arquivo que o cliente
+        #   chinês recebe e arquiva —, e trazia o código do LOTE, que é a chave
+        #   interna do vendedor. O comprador manda o papel citando a ORDEM.
         resp['Content-Disposition'] = (
-            f'inline; filename="{so.lot.code.replace("/", "-")}-resultado.pdf"')
+            f'inline; filename="RESULT-{so.code.replace("/", "-")}.pdf"')
         return resp
 
 

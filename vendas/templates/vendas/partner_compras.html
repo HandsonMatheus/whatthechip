@@ -136,6 +136,20 @@
              está na lista do cliente, do outro lado do balcão.
              Lote sem resultado ordena por -1 e AFUNDA (§5.3) — proposital. {% endcomment %}
           <th class="s"><a href="?{{ f.qs }}&sort=due&dir={% if f.sort == 'due' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Resultado" %} {% if f.sort == 'due' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          {% comment %} A PAGAR (dono, 2026-09-04): "na tabela de suas compras
+             também precisamos de uma coluna de TOTAL ADEUDADO".
+
+             O número já estava na tela, mas como SUB-LINHA dentro de
+             Resultado ("falta US$ 8.313,75") — e sub-linha não soma, não
+             ordena e não se varre com o olho numa coluna. Virar coluna é o
+             que torna a dívida um número de primeira classe.
+
+             ⚠ Por isso a sub-linha `.due` SAIU do Resultado: o mesmo valor
+               em duas células da mesma linha não é reforço, é ruído — e das
+               duas, a que o comprador procura é esta. O "quitado" fica, que
+               é informação diferente (não há dívida) e não se repete aqui.
+          {% endcomment %}
+          <th class="s ha">{% trans "A pagar" %}</th>
           <th>{% trans "Situação" %}</th>
           <th></th>
         </tr>
@@ -216,7 +230,11 @@
              que as duas células ganharam `data-lbl`. Tirar o rótulo daqui sem
              tirar a coluna traz o embaralhamento de volta. {% endcomment %}
           <td class="v" data-lbl="{% trans 'Resultado' %}">
-            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura_saldo %}<span class="due">{% trans "falta" %} US$ {{ o.fatura_saldo }}</span>{% else %}<span class="got">{% trans "quitado" %}</span>{% endif %}
+            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if not o.fatura_saldo %}<span class="got">{% trans "quitado" %}</span>{% endif %}
+            {% else %}<span class="none">—</span>{% endif %}
+          </td>
+          <td class="v" data-lbl="{% trans 'A pagar' %}">
+            {% if o.fatura_saldo %}<span class="due">US$ {{ o.fatura_saldo }}</span>
             {% else %}<span class="none">—</span>{% endif %}
           </td>
           {% endlocalize %}
@@ -231,7 +249,21 @@
                não pediam nada dele. {% endcomment %}
             {% elif o.stage == 'a_conferir' %}<span class="act act--ship"><i></i>{% trans "Em trânsito" %}</span>
             {% elif o.stage == 'conferencia' %}<span class="act act--accept"><i></i>{% trans "Conferência" %}</span>
-            {% elif o.stage == 'faturado' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Faturado" %}</span>
+            {% comment %} `act--pay`, âmbar, e não mais `tag--info` azul (dono,
+               2026-09-04): "vira com o status de FATURADO em azul, o que causa
+               confusão, tem que ficar claro de que ele DEVE aquela SO".
+
+               O âmbar não é escolha nova — é a doutrina que o próprio
+               `components.css` escreveu para o `.act`: "azul é despachar
+               (movimento do lote), âmbar é aceitar (decisão sobre dinheiro, o
+               mesmo âmbar de todo saldo em aberto)". Dívida É saldo em aberto.
+               A tela dizia FATURADO em azul e, na célula ao lado, "falta US$
+               8.313,75" em âmbar — duas cores para o mesmo fato.
+
+               Divide o âmbar com `act--accept` (Conferência) de propósito: os
+               dois são "isto espera VOCÊ", nunca acontecem na mesma ordem, e
+               quem os separa é a palavra. {% endcomment %}
+            {% elif o.stage == 'faturado' %}<span class="act act--pay"><i></i>{% trans "A pagar" %}</span>
             {% elif o.stage == 'parcial' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
             {% else %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>{% endif %}
           </td>
@@ -240,7 +272,7 @@
           </td>
         </tr>
       {% empty %}
-        <tr><td colspan="9" class="dtab__empty">
+        <tr><td colspan="10" class="dtab__empty">
           {% if f.filtrando %}
             <b>{% trans "Nenhum lote encontrado." %}</b>
             {% trans "Ajuste a busca ou os filtros acima." %}
@@ -251,6 +283,46 @@
         </td></tr>
       {% endfor %}
       </tbody>
+      {% comment %} RODAPÉ DE COLUNA (dono, 2026-09-04): "que o fim da tabela
+         mostre o total desse importe adeudado, e também dos resultados".
+
+         É o `.dtab tfoot` do design system — claro, colado no fundo do
+         scrollport, o total EMBAIXO DA PRÓPRIA COLUNA. Total em linha de
+         legenda ("total: US$ X") obrigaria a ligar o número à coluna de
+         cabeça; embaixo dela, a soma se lê sem instrução.
+
+         ⚠ Os dois números somam o RECORTE FILTRADO INTEIRO, não a página —
+           ver o comentário na `compras_list`. Por isso o rótulo diz de quantas
+           compras se está falando: um total de 5 páginas embaixo de 10 linhas
+           precisa dizer que não é a soma do que está à vista.
+
+         Só sai quando há linha: rodapé de total sobre tabela vazia é uma
+         soma de nada dizendo "US$ 0.00", que se lê como dado. {% endcomment %}
+      {% comment %} ⚠ `total_filtrado` NA GUARDA, e não só `ordens`: dois testes
+         antigos (`tests_ordem_envio`, `tests_saldo_comprador`) renderizam esta
+         lista com `render_to_string` e um contexto MÍNIMO — só as linhas e o
+         `f`. Sem a chave, o contador do blocktrans recebe string vazia e
+         estoura com "'n' argument to 'blocktrans' tag must be a number",
+         derrubando testes que nada têm a ver com o rodapé.
+
+         E é a guarda CERTA, não um remendo: o rodapé é o resumo do RECORTE.
+         Sem saber de quantas compras se está falando não há resumo para
+         mostrar. {% endcomment %}
+      {% if ordens and total_filtrado %}
+      {% localize off %}
+      <tfoot>
+        <tr>
+          <td class="lbl" colspan="4">{% blocktrans trimmed count n=total_filtrado %}Total · {{ n }} compra{% plural %}Total · {{ n }} compras{% endblocktrans %}</td>
+          <td></td>
+          <td class="hide-lg"></td>
+          <td class="v"><small>{% trans "Resultado" %}</small>US$ {{ total_resultado_usd }}</td>
+          <td class="v ha"><small>{% trans "A pagar" %}</small>US$ {{ total_a_pagar_usd }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      {% endlocalize %}
+      {% endif %}
     </table>
   </div>
 

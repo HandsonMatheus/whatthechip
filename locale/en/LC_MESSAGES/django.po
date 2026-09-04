@@ -4219,3 +4219,16 @@ msgstr "The first date is the one that counts: marking again will not correct it
 #: vendas/templates/vendas/partner_compra.html
 msgid "Unitário"
 msgstr "Unit price"
+
+#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
+#. "Faturado" era o ponto de vista de quem EMITE. Quem lê esta tela é
+#. quem RECEBE a fatura (dono, 2026-09-04): o fato é que ele deve.
+msgid "A pagar"
+msgstr "Payable"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Rótulo do rodapé de coluna: diz de quantas compras é a soma.
+msgid "Total · %(n)s compra"
+msgid_plural "Total · %(n)s compras"
+msgstr[0] "Total · %(n)s purchase"
+msgstr[1] "Total · %(n)s purchases"

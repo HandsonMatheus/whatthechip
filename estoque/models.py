@@ -71,6 +71,38 @@ class Lot(models.Model):
         ORIGIN_K9:    '🧱',
     }
 
+    #: A origem no PAPEL que sai para o cliente chinês (dono, 2026-09-04) —
+    #: inglês + 繁體, na MESMA casa do `ORIGIN_ICONS` e pelo mesmo motivo.
+    #:
+    #: ⚠ NÃO use `get_origin_display()` nesses documentos: ele passa pelo
+    #:   `_lazy` e sai no idioma da INTERFACE de quem clicou. O PDF do
+    #:   resultado é sempre inglês + 中文, independente de quem o gerou — um
+    #:   papel que muda de língua conforme o operador não é um documento, é uma
+    #:   tela impressa.
+    #:
+    #: MIXED e K9 não têm par: são token canônico do controle antigo (a mesma
+    #: regra do `ORIGIN_CHOICES`), e traduzir token é inventar procedência.
+    #: `origin_doc_label` devolve o token cru para eles.
+    #:
+    #: Origem nova = UMA linha aqui. O teste
+    #: `test_toda_origem_tem_rotulo_de_documento` cobra a linha.
+    ORIGIN_DOC = {
+        ORIGIN_PHONE: ('Mobile phone',  '手機'),
+        ORIGIN_PCB:   ('PCB',           '電路板'),
+        ORIGIN_RAM:   ('Memory module', '記憶體模組'),
+    }
+
+    @property
+    def origin_doc_label(self) -> str:
+        """``Mobile phone (手機)`` — a origem como o documento a escreve.
+
+        Token canônico (MIXED, K9) sai sozinho. Origem fora do vocabulário sai
+        em caixa alta em vez de virar outra origem: rótulo faltando é visível,
+        rótulo errado mente — é a lição do bug de 2026-08-28.
+        """
+        par = self.ORIGIN_DOC.get(self.origin)
+        return '%s (%s)' % par if par else (self.origin or '').upper()
+
     STATUS_OPEN   = 'open'
     STATUS_CLOSED = 'closed'
     STATUS_CHOICES = [

@@ -42,7 +42,7 @@
 [data-theme="dark"] .dtab tbody tr:hover .go,
 [data-theme="dark"] .nrow:hover .nrow__go,[data-theme="dark"] .rhead__back:hover{color:var(--blue-40)}
 /* barra do grupo de comparação: --ink-100 vira BRANCO no escuro, então o degrau extra é preto */
-[data-theme="dark"] .dtab th.hr,[data-theme="dark"] .dtab th.hg,[data-theme="dark"] .dtab th.hb{background:#000}
+[data-theme="dark"] .dtab th.hr,[data-theme="dark"] .dtab th.hg,[data-theme="dark"] .dtab th.hb,[data-theme="dark"] .dtab th.ha{background:#000}
 [data-theme="dark"] .btn--ter{border-color:var(--blue-40)}
 [data-theme="dark"] .nlink.is-active svg{stroke:var(--blue-40)}
 [data-theme="dark"] .shell__role,[data-theme="dark"] .me__hd .shell__role{color:var(--blue-40)}
@@ -365,10 +365,24 @@ html img.lg-d{display:none}
 .dtab tbody td.hb{background:var(--blue-10)}
 /* no cabeçalho o grupo NÃO se anuncia com fundo claro (furaria a barra escura e deixaria pastel
    sobre pastel): a barra fica um degrau mais escura e o rótulo recebe a cor da família */
-.dtab th.hr,.dtab th.hg,.dtab th.hb{background:var(--ink-100)}
+.dtab th.hr,.dtab th.hg,.dtab th.hb,.dtab th.ha{background:var(--ink-100)}
 .dtab th.hr{color:var(--red-50)}
 .dtab th.hg{color:var(--green-40)}
 .dtab th.hb{color:var(--blue-40)}
+/* ---- .ha — A QUARTA FAMÍLIA: âmbar, a coluna do que se DEVE (2026-09-04) ----
+   Completa um vocabulário que já existia pela metade: vermelho recusa, verde aceite, azul
+   informação — e faltava a cor que esta folha já usa em todo saldo em aberto (`.due`, `--amber-70`)
+   e na chamada de ação `.act--accept`. Coluna "A pagar" sem ela ficaria azul, que aqui significa
+   informação, e o ponto da coluna é o oposto: é cobrança.
+
+   ⚠ SEM `.dtab tbody td.ha{background:...}`, ao contrário das outras três, e é decisão e não
+     esquecimento: hr/hg/hb tingem colunas em que TODA linha tem valor (enviado, recusado, aceito).
+     Dívida é exceção — numa lista de dez compras, três devem. Tingir a coluna inteira pintaria
+     sete células vazias de âmbar e a tela gritaria uma cobrança que não existe. Quem carrega a cor
+     é o número, pelo `.due` que já está nele. O fundo âmbar fica só onde há sempre número: o total.
+*/
+.dtab th.ha{color:var(--amber-40)}
+.dtab tfoot td.ha{background:var(--amber-10)}
 /* no hover a linha inteira acende, mas o grupo mantém identidade: um tom acima da própria cor —
    com o azul do hover por cima, as três colunas viravam uma faixa só */
 .dtab tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
@@ -389,6 +403,14 @@ html img.lg-d{display:none}
 .dtab .act--ship i{background:var(--blue-60)}
 .dtab .act--accept{background:var(--amber-10);color:var(--amber-70)}
 .dtab .act--accept i{background:var(--amber-60)}
+/* `act--pay` — o que ele DEVE. Divide o âmbar com `act--accept` por doutrina, não por preguiça:
+   a regra escrita acima é "âmbar é decisão sobre dinheiro, o mesmo âmbar de todo saldo em aberto",
+   e dívida é literalmente saldo em aberto. Os dois nunca aparecem na mesma ordem (ou está em
+   conferência, ou já tem fatura) e quem os separa é a palavra. Antes disto o estágio faturado saía
+   em AZUL — informação — com "falta US$ 8.313,75" em âmbar na célula ao lado: duas cores para o
+   mesmo fato, na mesma linha. */
+.dtab .act--pay{background:var(--amber-10);color:var(--amber-70)}
+.dtab .act--pay i{background:var(--amber-60)}
 /* marcador ao vivo: com o número à esquerda, o "+n" nasce depois dele, nunca por cima */
 .dtab .n--live{position:relative;min-width:104px}
 .dtab .n--live .wtc-pop--in{left:auto;right:14px}

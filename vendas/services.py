@@ -651,6 +651,10 @@ def result_document(so, invoice):
         'company_logo': company_logo_bytes(so.company if so.company_id else None),
         'lot_code': lot.code,
         'so_code': so.code,
+        # A PROCEDÊNCIA do material (dono, 2026-09-04). Vem pronta do modelo
+        # (`origin_doc_label`) e não do `get_origin_display()`, que traduziria
+        # para o idioma de quem clicou — ver o comentário no `ORIGIN_DOC`.
+        'lot_origin': lot.origin_doc_label,
         # ⚠ Sem o código da FATURA: é papel interno do WhatTheChip e não diz
         # nada a quem recebe este documento (dono, 2026-08-18).
         'company': so.company.name if so.company_id else '',

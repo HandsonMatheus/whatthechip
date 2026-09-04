@@ -3982,3 +3982,17 @@ msgstr "以第一个日期为准：再次标记不会更正它，之后也没有
 #: vendas/templates/vendas/partner_compra.html
 msgid "Unitário"
 msgstr "单价"
+
+#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
+#. 应付 — o termo contábil de "a pagar" (应付账款 = contas a pagar).
+#. SIMPLIFICADO: esta locale é zh_Hans. O PDF do resultado usa 繁體,
+#. que é outro público — não copie um do outro.
+msgid "A pagar"
+msgstr "应付"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Rótulo do rodapé de coluna: diz de quantas compras é a soma.
+msgid "Total · %(n)s compra"
+msgid_plural "Total · %(n)s compras"
+msgstr[0] "合计 · %(n)s 笔采购"
+msgstr[1] "合计 · %(n)s 笔采购"

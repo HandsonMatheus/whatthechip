@@ -4250,3 +4250,15 @@ msgstr "Vale la primera fecha: marcarlo de nuevo no la corrige, y no hay pantall
 #: vendas/templates/vendas/partner_compra.html
 msgid "Unitário"
 msgstr "Unitario"
+
+#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
+#. A palavra do dono: "en español se dice ADEUDADO".
+msgid "A pagar"
+msgstr "Adeudado"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Rótulo do rodapé de coluna: diz de quantas compras é a soma.
+msgid "Total · %(n)s compra"
+msgid_plural "Total · %(n)s compras"
+msgstr[0] "Total · %(n)s compra"
+msgstr[1] "Total · %(n)s compras"

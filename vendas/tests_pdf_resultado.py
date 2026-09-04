@@ -46,6 +46,7 @@ def _doc(linhas, esperado=None, notas=()):
     esperado = tot if esperado is None else esperado
     return {
         'lot_code': 'LOT-2026-0008', 'so_code': 'EMIN-SO-2026-0008',
+        'lot_origin': 'Mobile phone (手機)',
         'company': 'eMiner', 'company_logo': None,
         'closed_at': date(2026, 8, 27), 'received_at': date(2026, 9, 2),
         'settled_at': datetime(2026, 9, 4, 12, 9),
@@ -153,6 +154,74 @@ class CabecalhoTests(TestCase):
         """
         self.assertEqual(vpdf._L['so'][0], 'Reference')
         self.assertEqual(vpdf._L['so_result'][0], 'Sales Order')
+
+
+class OrigemDoLoteTests(TestCase):
+    """A procedência do material no papel (dono, 2026-09-04).
+
+      "Esquecemos de colocar a ORIGEM do lote lá no pdf, pode colocar ao lado
+       da exchange rate, embaixo de box received"
+
+    Faz falta porque a recusa se discute contra ela: chip de CELULAR e chip de
+    PCB não têm o mesmo padrão de aceite, e sem a origem no papel a conversa
+    sobre um lote recusado começa perguntando de onde ele veio.
+    """
+
+    def test_a_origem_sai_no_bloco_de_informacao(self):
+        txt = _texto(vpdf.render_result_pdf(_doc(LINHAS)))
+        self.assertIn('Lot origin', txt)
+        self.assertIn('批次來源', txt)
+        self.assertIn('Mobile phone (手機)', txt)
+
+    def test_a_origem_fica_depois_do_cambio(self):
+        """"ao lado da exchange rate": mesma linha do grid, coluna seguinte.
+        No texto extraído isso aparece como a ordem em que os dois saem."""
+        txt = _texto(vpdf.render_result_pdf(_doc(LINHAS)))
+        self.assertLess(txt.index('Exchange rate'), txt.index('Lot origin'))
+        self.assertLess(txt.index('Box received on'), txt.index('Lot origin'))
+
+    def test_o_rotulo_nao_e_so_Origin(self):
+        """Num papel que atravessa alfândega, "Origin" sozinho lê como PAÍS de
+        origem — que é outra coisa, e das caras de errar."""
+        self.assertEqual(vpdf._L['lot_origin'][0], 'Lot origin')
+
+    def test_o_grid_de_informacao_desenha_TODOS_os_campos(self):
+        """⚠ A regressão que este teste existe para pegar já aconteceu: o grid
+        cravava `''` na terceira coluna da segunda linha, então o campo novo
+        era montado no `meta` e simplesmente não saía no papel — sem erro
+        nenhum. Campo a mais tem de aparecer só por entrar na lista.
+        """
+        fonte = io.open(vpdf.__file__.replace('.pyc', '.py'),
+                        encoding='utf-8').read()
+        corpo = fonte[fonte.index('def render_result_pdf'):]
+        trecho = corpo[corpo.index('info = Table('):
+                       corpo.index('info.setStyle')]
+        for cravado in ("meta[0]", "meta[1]", "meta[2]",
+                        "meta[3]", "meta[4]", "meta[5]"):
+            self.assertNotIn(
+                cravado, trecho,
+                'o grid voltou a indexar o meta à mão — campo novo some')
+
+
+class NomeDoArquivoTests(TestCase):
+    """`RESULT-<código da OV>.pdf` (dono, 2026-09-04).
+
+    Duas correções no mesmo nome: ele dizia "resultado" — português, num
+    arquivo que o cliente chinês recebe e arquiva — e trazia o código do LOTE,
+    que é a chave interna do vendedor. O molde é o do `PACKING-LIST-<código>`,
+    que já valia desde 2026-08-20: o nome do arquivo é a primeira coisa que se
+    lê, antes de abrir o PDF.
+    """
+
+    def test_o_arquivo_se_chama_RESULT_mais_a_ordem(self):
+        fonte = io.open(
+            os.path.join(settings.BASE_DIR, 'vendas', 'views_partner.py'),
+            encoding='utf-8').read()
+        trecho = fonte[fonte.index('def compra_resultado_pdf'):]
+        trecho = trecho[:trecho.index('@partner_required', 10)]
+        self.assertIn('RESULT-{so.code', trecho.replace('f"', '"'))
+        self.assertNotIn('resultado.pdf', trecho)
+        self.assertNotIn('so.lot.code', trecho)
 
 
 class RotulosDoTopoTests(TestCase):

@@ -1038,7 +1038,7 @@ class PdfConferenciaGerenteTests(TestCase):
                 # este documento não desenha — 銷售訂單, 結果明細, 單價. O
                 # reportlab embute só o glifo USADO, então cobrá-los aqui é
                 # cobrar da fonte de outro papel.
-                'so_result', 'detail', 'unit'}
+                'so_result', 'detail', 'unit', 'lot_origin'}
         # ⚠ A conta é só dos caracteres que o `_rich` MANDA para a TTF (o
         # `_CJK_RE`). Rótulo em chinês pode trazer pontuação latina — o travessão
         # de '1. 貨物性質 — 非廢棄物', por exemplo — e essa sai em Helvetica, que

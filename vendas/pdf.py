@@ -363,6 +363,10 @@ _L = {
     #: vizinhos (dono, 2026-09-04). Chave separada para um não mexer no
     #: outro — é a mesma armadilha do `so`/`so_result`.
     'ship_from_r': ('Ship from',           '寄件人'),
+    #: A PROCEDÊNCIA do material (dono, 2026-09-04). "Lot origin" e não só
+    #: "Origin": num papel que atravessa alfândega, "origin" sozinho lê como
+    #: PAÍS de origem, que é outra coisa e das caras de errar.
+    'lot_origin': ('Lot origin',          '批次來源'),
     'expected':   ('Expected',             '預期'),
     #: "Final" sozinho não diz final DE QUÊ — ao lado de "Expected" e
     #: "Difference" o leitor tem de deduzir. 最終 é o mesmo problema em
@@ -1205,13 +1209,20 @@ def render_result_pdf(doc: dict) -> bytes:
         (_t('settled'), _fmt_dt(doc.get('settled_at'))),
         (_t('fx'), (f"1 ¥ = US$ {doc['fx_rate']}"
                     if doc.get('fx_rate') is not None else '—')),
-        ('', ''),
+        # ⚠ Esta terceira coluna da segunda linha era o buraco do bloco. A
+        # origem cai exatamente nela (dono, 2026-09-04: "ao lado da exchange
+        # rate, embaixo de box received") — sem mexer no grid nem empurrar
+        # nada, porque o espaço já estava reservado.
+        (_t('lot_origin'), doc.get('lot_origin') or '—'),
     ]
+    # ⚠ O grid se monta a partir do `meta`, e não com índices escritos à mão:
+    #   a versão anterior cravava `''` na terceira coluna da segunda linha, o
+    #   que fez o `meta[5]` novo (a origem) ser montado e nunca desenhado.
+    #   Campo a mais = uma linha no `meta`, e o grid acompanha.
     info = Table(
-        [[P(meta[0][0], st_cap), P(meta[1][0], st_cap), P(meta[2][0], st_cap)],
-         [P(meta[0][1], st_tdb), P(meta[1][1], st_tdb), P(meta[2][1], st_tdb)],
-         [P(meta[3][0], st_cap), P(meta[4][0], st_cap), ''],
-         [P(meta[3][1], st_tdb), P(meta[4][1], st_tdb), '']],
+        [linha for i in (0, 3)
+         for linha in ([P(r, st_cap) for r, _ in meta[i:i + 3]],
+                       [P(v, st_tdb) for _, v in meta[i:i + 3]])],
         colWidths=[avail / 3.0] * 3)
     info.setStyle(TableStyle([
         ('LEFTPADDING', (0, 0), (-1, -1), 0),
