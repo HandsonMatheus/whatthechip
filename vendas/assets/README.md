@@ -22,3 +22,24 @@ de um logo — o raster commitado é determinístico e não pesa no deploy. Mesm
 padrão da fonte CJK em `pricing/fonts/`.
 
 Mudou a marca? Rode o comando acima de novo e comite o PNG.
+
+---
+
+`IBMPlexMono-SemiBold.ttf` — a `--font-mono` do design system
+(`tokens/typography.css`), no peso 600 que o `.dtab th` usa. Vem do pacote
+`@ibm/plex-mono` (woff → ttf com `fontTools`), licença **SIL OFL 1.1** em
+`LICENSE-IBMPlexMono.txt`.
+
+Só o **cabeçalho da tabela do PDF do resultado** a usa, para o topo preto do
+papel ser a mesma coisa que o topo preto da tela. O resto do documento segue
+em Helvetica: a Manrope não está embutida.
+
+**Ela não é mais estreita que a Courier.** Toda monoespaçada de texto avança
+600/1000 por caractere — Plex, Courier, JetBrains Mono, Roboto Mono, as mesmas
+600. O que faz a tela parecer mais apertada é o desenho da letra, não a
+métrica. A quebra de linha do cabeçalho foi resolvida repartindo as colunas
+(`larguras` em `vendas/pdf.py`), não trocando a fonte.
+
+Se o arquivo não subir no deploy, `_mono_font()` cai na Courier-Bold e o PDF
+continua saindo — o teste `test_o_topo_preto_usa_a_mono_do_design_system`
+avisa que o fallback entrou.

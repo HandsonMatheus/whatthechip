@@ -1033,7 +1033,12 @@ class PdfConferenciaGerenteTests(TestCase):
                 'capacity', 'type', 'confirmed', 'cancelled',
                 'result', 'received', 'settled', 'sent',
                 'rejected', 'accepted', 'brand', 'notes', 'checked_by',
-                'expected', 'final', 'difference'}
+                'expected', 'final', 'difference',
+                # 2026-09-04: chaves criadas para o PDF do RESULTADO e que
+                # este documento não desenha — 銷售訂單, 結果明細, 單價. O
+                # reportlab embute só o glifo USADO, então cobrá-los aqui é
+                # cobrar da fonte de outro papel.
+                'so_result', 'detail', 'unit'}
         # ⚠ A conta é só dos caracteres que o `_rich` MANDA para a TTF (o
         # `_CJK_RE`). Rótulo em chinês pode trazer pontuação latina — o travessão
         # de '1. 貨物性質 — 非廢棄物', por exemplo — e essa sai em Helvetica, que
@@ -3131,11 +3136,17 @@ class CompradorEtapasEResultadoTests(TestCase):
         self.assertTrue(resp.content.startswith(b'%PDF'))
         texto = b' '.join(_textos_do_pdf(resp.content))
         # Enviado × recusado × aceito: sem os TRÊS não presta contas de nada.
-        for pedaco in (b'Sent', b'Rejected', b'Accepted'):
+        # ⚠ CAIXA ALTA desde 2026-09-04: o cabeçalho da tabela é o `.dtab th`
+        #   do design system, que é `text-transform:uppercase`. Não é capricho
+        #   de grafia — se um dia voltar a minúscula, o papel deixou de ser a
+        #   tela, que é a coisa que esta rodada de desenho comprou.
+        for pedaco in (b'SENT', b'REJECTED', b'ACCEPTED'):
             self.assertIn(pedaco, texto)
         self.assertIn(b'quatro queimados', texto)       # o motivo da recusa
-        # ESPERADO × FINAL × DIFERENÇA, a divisão que o dono pediu:
-        for pedaco in (b'Expected', b'Final', b'Difference'):
+        # ESPERADO × FINAL × DIFERENÇA, a divisão que o dono pediu.
+        # "FINAL RESULT" e não "FINAL" (dono, 2026-09-04): adjetivo sozinho
+        # não diz final de quê, e ao lado de "Expected" o leitor deduzia.
+        for pedaco in (b'EXPECTED', b'FINAL RESULT', b'DIFFERENCE'):
             self.assertIn(pedaco, texto)
         self.assertIn(b'150.00', texto)                 # esperado (10 × \xa515)
         self.assertIn(b'90.00', texto)                  # final (6 × \xa515)
@@ -4211,12 +4222,27 @@ class ListasMostramOTamanhoDaVendaTests(TestCase):
 
     # ── PDF do resultado ────────────────────────────────────────────────────
 
-    def test_caixas_do_pdf_saem_pintadas_de_leve(self):
-        """Dono, 2026-08-19: FINAL em azul, DIFERENÇA em amarelo. A prova é o
-        operador de cor no stream — asserção de estilo em objeto de tabela
-        provaria só que o código foi escrito, não que o PDF saiu pintado."""
+    def test_a_cor_do_resultado_saiu_da_caixa_e_foi_para_o_NUMERO(self):
+        """A regra de 2026-08-19 continua; o SUPORTE dela mudou.
+
+        Era: FINAL em azul e DIFERENÇA em amarelo, pintados como FUNDO de
+        três caixas. O dono derrubou as caixas em 2026-09-04 — *"essa caixa
+        dos valores expected, final e difference, tira elas, mt feio, deixa
+        so os numeros com as cores correspondentes, como é no frontend"* — e
+        a cor passou para o próprio algarismo, que é como a tela sempre fez.
+
+        ⚠ Este teste NÃO foi apagado quando o pedido mudou, e é de propósito:
+          a garantia que valia (o papel distingue os três números POR COR) não
+          caiu junto com a caixa. Apagá-lo teria deixado de fora justamente o
+          que sobreviveu à mudança de desenho.
+
+        A prova continua sendo o operador de cor no stream: asserção sobre o
+        objeto de tabela provaria que o código foi escrito, não que o PDF saiu
+        pintado.
+        """
         from reportlab.lib.rl_accel import fp_str
-        from .pdf import _SAND, _SKY, render_result_pdf
+        from .pdf import (_SAND, _SKY, _T_AMBER, _T_BLUE70,
+                          render_result_pdf)
         _sem_compressao(self)
         inv = self._fechar_resultado(recusados=4)
         with company_scope(self.company):
@@ -4226,8 +4252,14 @@ class ListasMostramOTamanhoDaVendaTests(TestCase):
         def _rg(cor):
             return (fp_str(cor.red, cor.green, cor.blue) + ' rg').encode()
 
-        self.assertIn(_rg(_SKY), fluxo)
-        self.assertIn(_rg(_SAND), fluxo)
+        # o FINAL em azul e a DIFERENÇA a menos em âmbar, agora na tinta
+        self.assertIn(_rg(_T_BLUE70), fluxo)
+        self.assertIn(_rg(_T_AMBER), fluxo)
+        # e as três caixas não voltaram
+        for antiga, nome in ((_SKY, 'azul'), (_SAND, 'âmbar')):
+            self.assertNotIn(
+                _rg(antiga), fluxo,
+                'o fundo %s das caixas voltou ao PDF do resultado' % nome)
 
 
 class DesignSystemNaTelaDoCompradorTests(TestCase):
