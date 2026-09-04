@@ -283,16 +283,24 @@ html img.lg-d{display:none}
 .dtab tbody tr{cursor:pointer}
 .dtab tbody tr:hover td{background:var(--blue-10)}
 .dtab tbody tr.sel td{background:var(--blue-10)}
-/* fio de posição: nasce da própria célula, então acompanha a coluna grudada sem truque de layout */
-.dtab tbody td:first-child{box-shadow:inset 3px 0 0 transparent}
-.dtab tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--blue-60)}
-.dtab tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--blue-60)}
+/* ---- SEM FIO VERTICAL DE POSIÇÃO (dono, 2026-09-04) ----
+   Havia um `box-shadow:inset 3px 0 0 var(--blue-60)` na 1ª célula em hover e em `.sel` — um traço
+   azul vertical na borda esquerda da linha. Saiu: "fica uma borda vertical na esquerda que é
+   horrível, remova isso desta tabela, e da tabela padrão e de qualquer outro lugar com hover".
+
+   Quem marca hover e seleção é o FUNDO da linha inteira, que já fazia o trabalho sozinho — o fio
+   era um segundo sinal para o mesmo fato, e num varrimento de olho pela coluna da esquerda ele
+   compete com o próprio dado. Saiu também do `.sel`: ele não é hover, mas é o MESMO traço, e
+   deixá-lo só na seleção traria de volta na primeira linha marcada exatamente o que foi chamado de
+   horrível. (Se um dia a seleção precisar de um segundo sinal, que não seja este.)
+
+   ⚠ O `.cell.dirty` do `patterns/parceiro.css` usa o mesmo desenho e FICA: lá ele marca célula
+     alterada e não é estado de ponteiro — não é o que foi pedido para sair. */
 .dtab tbody tr.dim td{color:var(--ink-60)}
 /* tabela que só mostra: nenhuma linha leva a lugar nenhum. Cursor de mão, hover azul e fio de
    posição são as três coisas que dizem "clique aqui" — numa tabela de consulta, mentem. */
 .dtab--static tbody tr{cursor:default}
 .dtab--static tbody tr:hover,.dtab--static tbody tr:hover td{background:var(--surface)}
-.dtab--static tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 transparent}
 
 /* tipos de célula — uma escala só, sempre à esquerda */
 .dtab .c{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
@@ -383,6 +391,15 @@ html img.lg-d{display:none}
 */
 .dtab th.ha{color:var(--amber-40)}
 .dtab tfoot td.ha{background:var(--amber-10)}
+/* ⚠ A COR VAI NA CÉLULA, não num <span> dentro dela (dono, 2026-09-04: "a fonte e o tamanho da
+   fonte do valor está diferente e fora do padrão do resto da tabela"). A 1ª versão da coluna
+   embrulhava o número num `<span class="due">`, e span dentro de `.v` é SUB-LINHA por definição
+   nesta folha (regra logo acima: display:block, 11px, --muted) — o valor principal saía com corpo
+   de rodapé, em sans, ao lado do mesmo número em mono 14px na coluna Resultado. Aqui o número é o
+   valor PRIMÁRIO da célula: herda `.dtab .v` inteiro (mono, 14px, 600, tabular-nums) e só troca a
+   tinta. `.dtab tbody td.ha` vale 0,3,1 e vence o `.dtab .v` (0,2,0). O `.none` do travessão tem
+   cor própria e continua cinza — dívida que não existe não se pinta de cobrança. */
+.dtab tbody td.ha{color:var(--amber-70)}
 /* no hover a linha inteira acende, mas o grupo mantém identidade: um tom acima da própria cor —
    com o azul do hover por cima, as três colunas viravam uma faixa só */
 .dtab tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
@@ -414,7 +431,22 @@ html img.lg-d{display:none}
 /* marcador ao vivo: com o número à esquerda, o "+n" nasce depois dele, nunca por cima */
 .dtab .n--live{position:relative;min-width:104px}
 .dtab .n--live .wtc-pop--in{left:auto;right:14px}
-.dtab .cbx{width:44px;padding-right:0}
+/* ---- CAIXA DE SELEÇÃO (dono, 2026-09-04: "maior e mais no padrão do design system") ----
+   18px em vez dos ~13px nativos, e `accent-color` no azul do sistema — a caixa passa a ser
+   `--blue-60` marcada, como todo controle desta folha.
+
+   ⚠ `accent-color` e não uma caixa desenhada à mão (input escondido + ::before). Caixa desenhada
+     custa foco, `indeterminate`, leitor de tela e o comportamento de teclado — tudo que o controle
+     nativo já dá de graça —, e é o tipo de troca que só se paga se o desenho exigir algo que o
+     nativo não faz. Aqui não exige: o que foi pedido é tamanho e cor.
+
+   `user-select:none` na célula existe por causa do SHIFT-clique: sem ele, segurar shift e clicar
+   pinta de azul o texto entre as duas linhas antes de a seleção acontecer. */
+.dtab .cbx{width:44px;padding-right:0;user-select:none;-webkit-user-select:none}
+.dtab .cbx input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:var(--blue-60);cursor:pointer;vertical-align:middle}
+/* a célula INTEIRA marca: 44px de alvo em vez de 18px. Sem isto, clicar no respiro ao lado da
+   caixa abriria a compra — o alvo grande estaria mentindo. */
+.dtab td.cbx{cursor:pointer}
 .dtab__empty{padding:56px 20px;text-align:center;color:var(--faint);background:var(--surface);border-bottom:1px solid var(--line)}
 .dtab__empty b{display:block;font-size:14px;color:var(--muted);margin-bottom:4px;font-weight:600}
 
@@ -498,9 +530,10 @@ html img.lg-d{display:none}
 /* o fio da coluna grudada soma ao fio de posição em vez de substituí-lo: numa lista clicável com
    rolagem lateral os dois precisam conviver — um diz onde a coluna termina, o outro onde o
    cursor está. */
-.dtab__wrap--x .dtab tbody td:first-child{background:var(--surface);box-shadow:inset 3px 0 0 transparent,1px 0 0 var(--line-2)}
+/* ⚠ AQUI o box-shadow tem outra função além do fio removido acima: o `1px 0 0 var(--line-2)` é a
+   BORDA DIREITA da coluna grudada, que separa o que rola do que fica. Ela fica. */
+.dtab__wrap--x .dtab tbody td:first-child{background:var(--surface);box-shadow:1px 0 0 var(--line-2)}
 .dtab__wrap--x .dtab thead th:first-child{box-shadow:1px 0 0 var(--line-2)}
-.dtab__wrap--x .dtab tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--blue-60),1px 0 0 var(--line-2)}
 .dtab__wrap--x .dtab tbody tr.g td:first-child{background:var(--ink-10)}
 
 /* Nem no tablet a tabela rola de lado. A rolagem horizontal (com identificador grudado e sombra
@@ -808,7 +841,6 @@ html img.lg-d{display:none}
    seleção — uma vez, na borda do cartão inteiro. */
 .dtab tbody tr:hover td:first-child,.dtab tbody tr.sel td:first-child,.dtab tbody tr:hover td.cbx,.dtab tbody tr.sel td.cbx,.dtab tbody tr:hover td.cbx+td,.dtab tbody tr.sel td.cbx+td{box-shadow:none}
 .dtab tbody tr:hover,.dtab tbody tr.sel{background:var(--blue-10)}
-.dtab tbody tr.sel{box-shadow:inset 3px 0 0 var(--blue-60)}
 /* Ordem e quebra: a 1ª linha é fechada por um item de largura total e altura zero. Depender do
    espaço que sobra não funciona — o flex decide a quebra pela BASE do item, então um selo curto
    ("PCB") ainda entrava na 1ª linha e um largo ("CELULAR") ia para a 2ª: dois desenhos diferentes
@@ -918,7 +950,6 @@ html img.lg-d{display:none}
    seleção — uma vez, na borda do cartão inteiro. */
 .dtab tbody tr:hover td:first-child,.dtab tbody tr.sel td:first-child,.dtab tbody tr:hover td.cbx,.dtab tbody tr.sel td.cbx,.dtab tbody tr:hover td.cbx+td,.dtab tbody tr.sel td.cbx+td{box-shadow:none}
 .dtab tbody tr:hover,.dtab tbody tr.sel{background:var(--blue-10)}
-.dtab tbody tr.sel{box-shadow:inset 3px 0 0 var(--blue-60)}
 /* Ordem e quebra: a 1ª linha é fechada por um item de largura total e altura zero. Depender do
    espaço que sobra não funciona — o flex decide a quebra pela BASE do item, então um selo curto
    ("PCB") ainda entrava na 1ª linha e um largo ("CELULAR") ia para a 2ª: dois desenhos diferentes

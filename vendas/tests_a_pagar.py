@@ -102,6 +102,17 @@ class _Base(TestCase):
         self.assertEqual(r.status_code, 200)
         return r
 
+    def _css(self):
+        import io as _io, os
+        from django.conf import settings
+        return _io.open(os.path.join(settings.BASE_DIR, 'static', 'wtc',
+                                     'components.css'), encoding='utf-8').read()
+
+    def _csv(self, **params):
+        r = self.client.get(reverse('compras:export_csv'), params)
+        self.assertEqual(r.status_code, 200)
+        return r.content.decode('utf-8-sig')
+
     def _tbody(self, **params):
         """Só as LINHAS.
 
@@ -228,6 +239,68 @@ class ColunaDoQueSeDeveTests(_Base):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# (B2) A COLUNA NÃO É SUB-LINHA
+# ═══════════════════════════════════════════════════════════════════════════
+class TipografiaDaColunaTests(_Base):
+    """"a fonte e o tamanho da fonte do valor está diferente e fora do padrão
+    do resto da tabela" (dono, 2026-09-04).
+
+    A 1ª versão embrulhava o número num `<span class="due">`, e span dentro de
+    `.v` é SUB-LINHA por definição nesta folha: `display:block`, 11px, sans,
+    `--muted`. O valor principal saía com corpo de rodapé ao lado do mesmo
+    número em mono 14px na coluna Resultado.
+
+    A cor mora na CÉLULA agora (`td.v.ha`), que herda `.dtab .v` inteiro.
+    """
+
+    def test_o_valor_nao_esta_dentro_de_um_span(self):
+        import re
+        self._faturar(self._ordem(1))
+        corpo = self._tbody()
+        m = re.search(r'<td class="v ha"[^>]*>(.*?)</td>', corpo, re.S)
+        self.assertIsNotNone(m, 'a célula de A pagar sumiu')
+        self.assertNotIn('<span', m.group(1),
+                         'o valor voltou a ser sub-linha — vai sair 11px sans')
+
+    def test_a_celula_leva_a_familia_ambar(self):
+        self._faturar(self._ordem(1))
+        self.assertIn('<td class="v ha"', self._tbody())
+
+    def test_a_folha_pinta_a_celula_e_nao_o_span(self):
+        import io as _io, os
+        from django.conf import settings
+        css = _io.open(os.path.join(settings.BASE_DIR, 'static', 'wtc',
+                                    'components.css'), encoding='utf-8').read()
+        self.assertIn('.dtab tbody td.ha{color:var(--amber-70)}', css)
+
+    def test_sem_divida_o_travessao_nao_fica_ambar(self):
+        """`.none` tem cor própria e vence: dívida que não existe não se pinta
+        de cobrança."""
+        self._ordem(1)
+        self.assertIn('<span class="none">—</span>', self._tbody())
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# (B3) AS COLUNAS DE ESPERADO
+# ═══════════════════════════════════════════════════════════════════════════
+class RotuloEsperadoTests(_Base):
+    """"mudar as colunas de TOTAL para ESPERADO" (dono, 2026-09-04).
+
+    "Total" não dizia total de quê, e a mesma célula já se chamava "Esperado"
+    no cartão do celular (`data-lbl`) desde 02/09 — a tela larga é que estava
+    fora de passo consigo mesma.
+    """
+
+    def test_os_cabecalhos_dizem_esperado(self):
+        html = self._lista().content.decode()
+        cab = html[html.index('<thead>'):html.index('</thead>')]
+        self.assertIn('Esperado ¥', cab)
+        self.assertIn('Esperado US$', cab)
+        self.assertNotIn('Total ¥', cab)
+        self.assertNotIn('Total US$', cab)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # (C) O RODAPÉ — a trava que mais vale
 # ═══════════════════════════════════════════════════════════════════════════
 class RodapeTotalizaTests(_Base):
@@ -280,3 +353,165 @@ class RodapeTotalizaTests(_Base):
         html = self._lista().content.decode()
         self.assertIn('<tfoot>', html)
         self.assertIn('12', html)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# (D) SELEÇÃO DE LINHAS — o pedaço que vive no SERVIDOR
+# ═══════════════════════════════════════════════════════════════════════════
+class SelecaoDeLinhasTests(_Base):
+    """Checkbox por linha, no padrão do Odoo (dono, 2026-09-04):
+
+      "conforme eu seleciono, o valor da última linha da tabela muda (...) e
+       selecionando só alguns tbm posso exportar somente eles"
+
+    O recálculo do rodapé é JAVASCRIPT e está coberto por um harness de DOM
+    à parte — assertar soma em JS por HTML renderizado seria testar o
+    navegador. O que vive no servidor, e é o que este arquivo trava, é:
+
+      · a coluna de seleção existe e traz o dado que o JS soma;
+      · o `ids` da URL RECORTA de verdade — senão "exportar só os marcados"
+        seria uma promessa da interface que o download não cumpre;
+      · e o `ids` não é uma porta: ele intersecta o que o comprador já podia
+        ver, nunca amplia.
+    """
+
+    def test_a_coluna_de_selecao_existe_em_toda_linha(self):
+        self._ordem(1)
+        self._ordem(2)
+        corpo = self._tbody()
+        self.assertEqual(corpo.count('<td class="cbx">'), 2)
+        self.assertEqual(corpo.count('type="checkbox" class="chk"'), 2)
+
+    def test_a_linha_carrega_o_dado_que_o_rodape_soma(self):
+        """⚠ O JS soma o DADO, nunca o texto desenhado: fazer parse de
+        "US$ 8313.75" amarraria a conta à formatação e ao idioma."""
+        inv = self._faturar(self._ordem(1))
+        self._pagar(inv, D('40.00'))
+        with company_scope(self.emp.id):
+            inv.refresh_from_db()
+        corpo = self._tbody()
+        self.assertIn('data-res="%s"' % inv.total_usd, corpo)
+        self.assertIn('data-due="%s"' % inv.balance_usd, corpo)
+
+    def test_compra_sem_fatura_leva_zero_e_nao_vazio(self):
+        """Zero soma sem caso especial; vazio viraria NaN no `parseFloat` e o
+        rodapé inteiro sumiria por causa de uma linha sem resultado."""
+        self._ordem(1)
+        corpo = self._tbody()
+        self.assertIn('data-res="0"', corpo)
+        self.assertIn('data-due="0"', corpo)
+
+    def test_a_folha_estiliza_a_caixa_e_o_alvo_de_44px(self):
+        """"maior e mais no padrão do design system" (dono, 2026-09-04).
+
+        `accent-color` e não caixa desenhada à mão: caixa desenhada custa foco,
+        `indeterminate`, leitor de tela e teclado — tudo que o nativo dá de
+        graça — e só se paga se o desenho exigir algo que o nativo não faz.
+        Aqui o pedido era tamanho e cor.
+        """
+        css = self._css()
+        self.assertIn('.dtab .cbx input[type=checkbox]{', css)
+        trecho = css[css.index('.dtab .cbx input[type=checkbox]{'):][:180]
+        self.assertIn('accent-color:var(--blue-60)', trecho)
+        self.assertIn('18px', trecho)
+        self.assertIn('.dtab td.cbx{cursor:pointer}', css)
+
+    def test_o_clique_na_celula_de_selecao_nao_abre_a_compra(self):
+        """A célula é um alvo de 44px e só 18px dela são `input`. Sem `.cbx` na
+        guarda, clicar no respiro ao lado da caixa marcava a linha E abria a
+        compra — alvo grande fazendo outra coisa é pior que alvo pequeno."""
+        html = self._lista().content.decode()
+        self.assertIn("closest('a,button,input,select,.cbx')", html)
+
+    def test_a_linha_marcada_usa_o_sel_do_design_system(self):
+        """`.sel` já existia na folha (inclusive nos blocos de celular) — a
+        seleção veste a classe que o sistema já tinha em vez de inventar."""
+        html = self._lista().content.decode()
+        self.assertIn("classList.toggle('sel'", html)
+        self.assertIn('.dtab tbody tr.sel td{background:var(--blue-10)}',
+                      self._css())
+
+    def test_o_fio_vertical_de_hover_saiu_do_componente(self):
+        """"fica uma borda vertical na esquerda que é horrível, remova isso
+        desta tabela, e da tabela padrão e de qualquer outro lugar com hover".
+
+        ⚠ Some do COMPONENTE, então some de toda tabela do sistema — não é
+          correção desta tela. O único `box-shadow` que fica na 1ª célula é o
+          da variante de rolagem horizontal, e ele é outra coisa: a borda que
+          separa a coluna grudada do que rola.
+        """
+        # ⚠ Sem os COMENTÁRIOS: o comentário que explica a remoção cita o
+        #   `box-shadow` removido, e um assertNotIn na folha crua acusaria a
+        #   prosa que documenta o conserto. Regra é regra; comentário é texto.
+        import re as _re
+        css = self._css()
+        regras = _re.sub(r'/\*.*?\*/', '', css, flags=_re.S)
+        self.assertNotIn('inset 3px 0 0 var(--blue-60)', regras)
+        self.assertIn('.dtab__wrap--x .dtab tbody td:first-child', regras)
+        trecho = regras[regras.index('.dtab__wrap--x .dtab tbody td:first-child'):][:160]
+        self.assertIn('1px 0 0 var(--line-2)', trecho)
+
+    def test_o_rodape_leva_os_dois_moldes_de_plural(self):
+        """Gettext escolhe o plural no RENDER, então as duas formas têm de vir
+        prontas do servidor — o JS só decide qual usar. Um molde só daria
+        "Selecionadas · 1 compras"."""
+        self._ordem(1)
+        html = self._lista().content.decode()
+        self.assertIn('data-sel1=', html)
+        self.assertIn('data-seln=', html)
+        self.assertIn('data-cheio=', html)
+
+    # ── o `ids` RECORTA ──────────────────────────────────────────────────
+    def test_o_csv_leva_so_as_marcadas(self):
+        a = self._ordem(1)
+        b = self._ordem(2)
+        self._ordem(3)
+        texto = self._csv(ids='%d,%d' % (a.pk, b.pk))
+        self.assertIn(a.code, texto)
+        self.assertIn(b.code, texto)
+        linhas = [l for l in texto.lstrip('﻿').splitlines() if l]
+        self.assertEqual(len(linhas), 3, 'cabeçalho + 2 marcadas')
+
+    def test_sem_ids_o_csv_leva_o_recorte_inteiro(self):
+        for n in (1, 2, 3):
+            self._ordem(n)
+        linhas = [l for l in self._csv().lstrip('﻿').splitlines() if l]
+        self.assertEqual(len(linhas), 4, 'cabeçalho + 3')
+
+    def test_ids_lixo_nao_derruba_nem_esvazia(self):
+        """Saneamento por construção: só dígitos entram. `ids=abc` não casa
+        com nada e devolveria zero linhas — o que é uma tela vazia, não um
+        erro; `ids=` vazio não filtra."""
+        self._ordem(1)
+        self.assertEqual(self.client.get(
+            reverse('compras:export_csv'), {'ids': ''}).status_code, 200)
+        self.assertEqual(self.client.get(
+            reverse('compras:export_csv'), {'ids': "'; DROP TABLE"}).status_code,
+            200)
+        linhas = [l for l in self._csv().lstrip('﻿').splitlines() if l]
+        self.assertEqual(len(linhas), 2)
+
+    def test_o_ids_NAO_e_uma_porta_para_a_ordem_de_outro_comprador(self):
+        """⚠ A trava de segurança da feature.
+
+        O `ids` filtra o conjunto que o `orders_for_buyer` JÁ limitou — ele
+        intersecta, nunca amplia. Uma OV de outro comprador citada no `ids`
+        não aparece: não está no conjunto de partida.
+        """
+        from pricing.models import Buyer as _B
+        outro = _B.all_companies.create(company=None, name='Outro',
+                                        slug='outro-comprador')
+        with company_scope(self.emp.id):
+            lot = Lot.all_companies.create(
+                company=self.emp, number=99, description='x', status='closed',
+                operator=self.gerente, origin='pcb')
+            alheia = SalesOrder(
+                lot=lot, buyer=outro, status=STATUS_CONFIRMED,
+                fx_usd_rate=D('0.1400'), total_rmb=D('1000.00'),
+                total_usd=D('140.00'), shipped_at=date(2026, 8, 18),
+                number=DocSequence.next_number(self.emp, SEQ_SO))
+            alheia.save()
+        minha = self._ordem(1)
+        texto = self._csv(ids='%d,%d' % (minha.pk, alheia.pk))
+        self.assertIn(minha.code, texto)
+        self.assertNotIn(alheia.code, texto)

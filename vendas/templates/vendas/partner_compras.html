@@ -96,7 +96,7 @@
     </div>
     {% comment %} O export leva o MESMO recorte — por isso é um link montado com a
        query string atual, e não um botão que reenvia o formulário. {% endcomment %}
-    <a class="tbar__ico" href="{% url 'compras:export_csv' %}?{{ f.qs_full }}"
+    <a class="tbar__ico" id="exportar" href="{% url 'compras:export_csv' %}?{{ f.qs_full }}"
        title="{% trans 'Exportar CSV' %}" aria-label="{% trans 'Exportar CSV' %}">
       <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>
     </a>
@@ -118,6 +118,22 @@
              O lote continua BUSCÁVEL na caixa de busca (quem tem packing list
              antigo na mão precisa achar) e aparece inteiro no detalhe da compra.
           {% endcomment %}
+          {% comment %} SELEÇÃO DE LINHAS (dono, 2026-09-04, "como no Odoo"): marcar
+             linhas recalcula o rodapé e o botão de exportar passa a levar só as
+             marcadas. A `.cbx` (44px, sem padding à direita) já existia no pacote
+             esperando por isto.
+
+             ⚠ A caixa do CABEÇALHO marca a PÁGINA, não o recorte. É o que ela pode
+               honestamente fazer: as outras páginas não estão no HTML. Por isso o
+               rodapé passa a dizer quantas linhas estão somadas assim que há
+               seleção — sem essa frase, "3 de 47" e "as 47" mostrariam números
+               diferentes sem explicar por quê.
+
+             Sem JS a coluna aparece e não faz nada: os totais do servidor continuam
+             corretos e o export continua levando o recorte inteiro. Degrada para o
+             comportamento de antes, que é o certo. {% endcomment %}
+          <th class="cbx"><input type="checkbox" id="chk-todas"
+              aria-label="{% trans 'Marcar todas as linhas desta página' %}"></th>
           <th class="s"><a href="?{{ f.qs }}&sort=so&dir={% if f.sort == 'so' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Ordem" %} {% if f.sort == 'so' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           {% comment %} ORIGEM em coluna PRÓPRIA (dono, 2026-09-02): o selo morava
              colado no código do lote e teria ido embora junto com ele. Ele diz de
@@ -128,8 +144,8 @@
           <th class="s">{% trans "Origem" %}</th>
           <th class="s"><a href="?{{ f.qs }}&sort=seller&dir={% if f.sort == 'seller' and f.dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Cliente" %} {% if f.sort == 'seller' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           <th class="s hide-lg"><a href="?{{ f.qs }}&sort=units&dir={% if f.sort == 'units' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Chips" %} {% if f.sort == 'units' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
-          <th class="s"><a href="?{{ f.qs }}&sort=val&dir={% if f.sort == 'val' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Total ¥" %} {% if f.sort == 'val' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
-          <th class="s hide-lg"><a href="?{{ f.qs }}&sort=usd&dir={% if f.sort == 'usd' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Total US$" %} {% if f.sort == 'usd' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          <th class="s"><a href="?{{ f.qs }}&sort=val&dir={% if f.sort == 'val' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Esperado ¥" %} {% if f.sort == 'val' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
+          <th class="s hide-lg"><a href="?{{ f.qs }}&sort=usd&dir={% if f.sort == 'usd' and f.dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Esperado US$" %} {% if f.sort == 'usd' %}<span class="ar">{% if f.dir == 'desc' %}▼{% else %}▲{% endif %}</span>{% endif %}</a></th>
           {% comment %} RESULTADO (dono, 2026-08-19): o total ao lado é o ESPERADO —
              o que o lote valia quando saiu. O que ele paga de fato é o que sobra
              depois da conferência, e isso só existe com fatura. A mesma coluna
@@ -156,7 +172,26 @@
       </thead>
       <tbody>
       {% for o in ordens %}
-        <tr data-href="{% url 'compras:detail' o.pk %}">
+        {% localize off %}
+        <tr data-href="{% url 'compras:detail' o.pk %}"
+            data-res="{{ o.fatura.total_usd|default:0 }}"
+            data-due="{{ o.fatura_saldo|default_if_none:0 }}">
+          {% comment %} O `data-res`/`data-due` é o MESMO número que a célula
+             mostra, em forma crua — o JS soma o dado, nunca faz parse do texto
+             desenhado (que muda com idioma e formatação). Zero quando não há
+             fatura: linha sem resultado não contribui, e não precisa de caso
+             especial no somatório.
+
+             ⚠ FILTROS DIFERENTES, e não por descuido. `fatura_saldo` é atributo
+               que o `orders_for_buyer` materializa e vale `None` sem fatura —
+               `default_if_none` pega. Já `o.fatura.total_usd` é um lookup que
+               FALHA quando `fatura` é None, e um lookup que falha vira STRING
+               VAZIA no template do Django, não None: o `default_if_none` não
+               dispara e o atributo saía `data-res=""` → `parseFloat('')` =
+               NaN → o total inteiro sumiria por causa de uma linha sem
+               resultado. `default` pega o vazio. {% endcomment %}
+          <td class="cbx"><input type="checkbox" class="chk" value="{{ o.pk }}"
+              aria-label="{% blocktrans trimmed with c=o.code %}Selecionar {{ c }}{% endblocktrans %}"></td>
           {% comment %} O selo de ORIGEM (2026-08-27): o protótipo marca cada
              lote ao lado do código, e não é enfeite — é o que diz de que
              bancada aquela caixa veio e, portanto, que tipo de chip esperar
@@ -233,8 +268,8 @@
             {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if not o.fatura_saldo %}<span class="got">{% trans "quitado" %}</span>{% endif %}
             {% else %}<span class="none">—</span>{% endif %}
           </td>
-          <td class="v" data-lbl="{% trans 'A pagar' %}">
-            {% if o.fatura_saldo %}<span class="due">US$ {{ o.fatura_saldo }}</span>
+          <td class="v ha" data-lbl="{% trans 'A pagar' %}">
+            {% if o.fatura_saldo %}US$ {{ o.fatura_saldo }}
             {% else %}<span class="none">—</span>{% endif %}
           </td>
           {% endlocalize %}
@@ -271,8 +306,9 @@
             <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
           </td>
         </tr>
+        {% endlocalize %}
       {% empty %}
-        <tr><td colspan="10" class="dtab__empty">
+        <tr><td colspan="11" class="dtab__empty">
           {% if f.filtrando %}
             <b>{% trans "Nenhum lote encontrado." %}</b>
             {% trans "Ajuste a busca ou os filtros acima." %}
@@ -312,11 +348,29 @@
       {% localize off %}
       <tfoot>
         <tr>
-          <td class="lbl" colspan="4">{% blocktrans trimmed count n=total_filtrado %}Total · {{ n }} compra{% plural %}Total · {{ n }} compras{% endblocktrans %}</td>
+          {% comment %} O rótulo tem DOIS textos e o JS troca entre eles. O do
+             servidor conta o recorte inteiro; o da seleção conta o que está
+             marcado. Os dois vêm renderizados daqui em vez de montados em JS
+             porque plural e tradução são trabalho de gettext, não de string
+             concatenada no navegador.
+
+             ⚠ DOIS moldes de seleção, não um. A 1ª versão renderizava um só
+               com `n=999` e mandava o JS trocar o número — o que dá
+               "Selecionadas · 1 compras" ao marcar uma linha. O gettext escolhe
+               a forma plural no RENDER, então a forma tem de vir escolhida:
+               `data-sel1` é a singular, `data-seln` a plural, e o JS só decide
+               qual usar. Vale para pt/en/es/zh (no máximo duas formas); idioma
+               com três formas plurais exigiria um molde a mais. {% endcomment %}
+          <td class="lbl" colspan="5" id="tf-lbl"
+              data-cheio="{% blocktrans trimmed count n=total_filtrado %}Total · {{ n }} compra{% plural %}Total · {{ n }} compras{% endblocktrans %}"
+              data-sel1="{% blocktrans trimmed count n=1 %}Selecionada · {{ n }} compra{% plural %}Selecionadas · {{ n }} compras{% endblocktrans %}"
+              data-seln="{% blocktrans trimmed count n=2 %}Selecionada · {{ n }} compra{% plural %}Selecionadas · {{ n }} compras{% endblocktrans %}">{% blocktrans trimmed count n=total_filtrado %}Total · {{ n }} compra{% plural %}Total · {{ n }} compras{% endblocktrans %}</td>
           <td></td>
           <td class="hide-lg"></td>
-          <td class="v"><small>{% trans "Resultado" %}</small>US$ {{ total_resultado_usd }}</td>
-          <td class="v ha"><small>{% trans "A pagar" %}</small>US$ {{ total_a_pagar_usd }}</td>
+          {% localize off %}
+          <td class="v" id="tf-res" data-cheio="{{ total_resultado_usd }}"><small>{% trans "Resultado" %}</small>US$ {{ total_resultado_usd }}</td>
+          <td class="v ha" id="tf-due" data-cheio="{{ total_a_pagar_usd }}"><small>{% trans "A pagar" %}</small>US$ {{ total_a_pagar_usd }}</td>
+          {% endlocalize %}
           <td></td>
           <td></td>
         </tr>
@@ -380,10 +434,131 @@
 // linha continua sendo dele.
 document.querySelectorAll('.dtab tbody tr[data-href]').forEach(function (tr) {
   tr.addEventListener('click', function (ev) {
-    if (ev.target.closest('a,button,input,select')) return;
+    // ⚠ `.cbx` na lista junto com os controles: a célula de seleção é um ALVO
+    //   DE 44px, e só os 18px do meio são `input`. Sem ela aqui, clicar no
+    //   respiro ao lado da caixa marcava a linha E abria a compra — o alvo
+    //   grande fazendo outra coisa, que é pior do que não existir.
+    if (ev.target.closest('a,button,input,select,.cbx')) return;
     location.href = tr.dataset.href;
   });
 });
+
+// ── SELEÇÃO DE LINHAS ──────────────────────────────────────────────────────
+// Marcar linhas recalcula o rodapé e faz o botão de exportar levar só o que
+// está marcado (dono, 2026-09-04, "como no Odoo").
+//
+// Três decisões que valem ler antes de mexer:
+//
+//  1. O JS soma o DADO (`data-res`/`data-due`), nunca o texto desenhado. Fazer
+//     parse do "US$ 8313.75" da célula amarraria a conta à formatação e ao
+//     idioma — troca o separador decimal e a soma vira NaN em silêncio.
+//
+//  2. Sem seleção, o rodapé VOLTA ao número do servidor, que é o do recorte
+//     inteiro (todas as páginas). Com seleção, mostra só o marcado — e o
+//     rótulo muda para "Selecionadas · N", porque senão os dois estados
+//     mostrariam números diferentes sem dizer por quê.
+//
+//  3. O clique na linha inteira já ignora `input` (ver o handler acima), então
+//     marcar não navega. É por isso que a caixa é um `<input>` de verdade e
+//     não um ícone com listener.
+//
+//  4. SHIFT-CLIQUE marca o intervalo, como em qualquer lista que se preze. O
+//     listener é de `click` e não de `change`: `change` não carrega
+//     `shiftKey`. No `click` de uma caixa o navegador JÁ alternou o estado
+//     (a ativação acontece antes do evento), então `c.checked` aqui é o valor
+//     NOVO — é ele que o intervalo copia.
+//
+//  5. A CÉLULA inteira marca, não só os 18px da caixa: 44px de alvo. Sem isso,
+//     clicar no respiro ao lado da caixa cairia no handler da linha e abriria
+//     a compra — um alvo grande que faz outra coisa é pior que um alvo
+//     pequeno.
+(function () {
+  var tabela = document.querySelector('.dtab tbody');
+  var lbl = document.getElementById('tf-lbl');
+  var elRes = document.getElementById('tf-res');
+  var elDue = document.getElementById('tf-due');
+  var todas = document.getElementById('chk-todas');
+  var link = document.getElementById('exportar');
+  if (!tabela || !lbl || !elRes || !elDue) return;
+
+  var caixas = Array.prototype.slice.call(tabela.querySelectorAll('.chk'));
+  if (!caixas.length) return;
+
+  var baseHref = link ? link.getAttribute('href') : null;
+
+  function dinheiro(el, valor) {
+    // Mantém o <small> do rótulo e troca só o número — innerHTML aqui
+    // reescreveria o rótulo traduzido a cada clique.
+    var rotulo = el.querySelector('small');
+    el.textContent = 'US$ ' + valor.toFixed(2);
+    if (rotulo) el.insertBefore(rotulo, el.firstChild);
+  }
+
+  function pinta() {
+    var marcadas = caixas.filter(function (c) { return c.checked; });
+    var res = 0, due = 0;
+    marcadas.forEach(function (c) {
+      var tr = c.closest('tr');
+      res += parseFloat(tr.dataset.res || 0) || 0;
+      due += parseFloat(tr.dataset.due || 0) || 0;
+    });
+
+    if (marcadas.length) {
+      var molde = marcadas.length === 1 ? lbl.dataset.sel1 : lbl.dataset.seln;
+      lbl.textContent = molde.replace(/\d+/, marcadas.length);
+      dinheiro(elRes, res);
+      dinheiro(elDue, due);
+    } else {
+      lbl.textContent = lbl.dataset.cheio;
+      dinheiro(elRes, parseFloat(elRes.dataset.cheio) || 0);
+      dinheiro(elDue, parseFloat(elDue.dataset.cheio) || 0);
+    }
+
+    if (link && baseHref !== null) {
+      var ids = marcadas.map(function (c) { return c.value; }).join(',');
+      link.setAttribute('href', ids ? baseHref + '&ids=' + ids : baseHref);
+    }
+    if (todas) {
+      todas.checked = marcadas.length === caixas.length;
+      todas.indeterminate = marcadas.length > 0 && !todas.checked;
+    }
+    // a linha inteira fica azul: é o `.sel` que o design system já define
+    caixas.forEach(function (c) {
+      c.closest('tr').classList.toggle('sel', c.checked);
+    });
+  }
+
+  var ultima = null;
+  caixas.forEach(function (c, i) {
+    c.addEventListener('click', function (ev) {
+      if (ev.shiftKey && ultima !== null) {
+        var a = Math.min(ultima, i), b = Math.max(ultima, i);
+        for (var k = a; k <= b; k++) caixas[k].checked = c.checked;
+      }
+      ultima = i;
+      pinta();
+    });
+    // a célula toda é alvo — menos quando o clique já foi na própria caixa,
+    // que o navegador alterna sozinho (alternar de novo aqui desfaria)
+    var celula = c.closest('td');
+    if (celula) {
+      celula.addEventListener('click', function (ev) {
+        if (ev.target === c) return;
+        c.checked = !c.checked;
+        ultima = i;
+        pinta();
+      });
+    }
+  });
+  if (todas) {
+    todas.addEventListener('change', function () {
+      caixas.forEach(function (c) { c.checked = todas.checked; });
+      ultima = null;
+      pinta();
+    });
+  }
+  pinta();   // reflete um estado já marcado (voltar pelo histórico, p.ex.)
+})();
 
 // O recorte se aplica sozinho ao trocar um select — a busca continua no Enter,
 // porque aplicar a cada tecla recarregaria a página no meio da digitação.

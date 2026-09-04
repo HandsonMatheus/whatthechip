@@ -4207,18 +4207,42 @@ class ListasMostramOTamanhoDaVendaTests(TestCase):
         self.assertContains(tela, '¥ 150.00')           # o esperado, congelado
 
     def test_resultado_da_compra_aparece_e_o_que_falta_pagar_tambem(self):
+        """A garantia é a mesma de 2026-08-19; o SUPORTE dela mudou.
+
+        O saldo em aberto era uma SUB-LINHA `.due` dentro da célula de
+        Resultado. Em 2026-09-04 virou COLUNA própria ("A pagar") — sub-linha
+        não soma, não se varre com o olho e não tem rodapé — e o `.due` saiu
+        do Resultado para o mesmo número não aparecer duas vezes na linha.
+
+        ⚠ A asserção continua sendo pelo MARKUP e não pela palavra: 'falta'
+          aparecia em mais de um lugar do HTML (o rótulo "Falta preço seu" do
+          seletor de status), e casar por texto pegaria o vizinho errado. O
+          que mudou é QUAL marcação carrega o saldo: `td.v.ha`, a família
+          âmbar da coluna.
+        """
+        import re as _re
+
+        def _celula_a_pagar(resposta):
+            corpo = resposta.content.decode()
+            corpo = corpo[corpo.index('<tbody>'):corpo.index('</tbody>')]
+            m = _re.search(r'<td class="v ha"[^>]*>(.*?)</td>', corpo, _re.S)
+            self.assertIsNotNone(m, 'a coluna A pagar sumiu da linha')
+            return m.group(1)
+
         inv = self._fechar_resultado(recusados=4)
         tela = self._compras()
-        self.assertContains(tela, f'US$ {inv.total_usd}')
-        # ⚠ Asserção pelo MARKUP, não pela palavra: 'falta' aparece em mais de
-        # um lugar do HTML e o assertNotContains casaria com o vizinho errado.
-        # `.due` é a sub-linha de saldo em aberto do design system.
-        self.assertContains(tela, 'class="due"')
+        self.assertContains(tela, f'US$ {inv.total_usd}')       # o resultado
+        self.assertIn(f'US$ {inv.balance_usd}', _celula_a_pagar(tela))
+
         with company_scope(self.company):
             services.register_payment(inv, inv.total_usd,
                                       timezone.localdate(), self.parceiro)
         tela = self._compras()
-        self.assertNotContains(tela, 'class="due"')         # quitada, sem saldo
+        # Quitada: a COLUNA continua (é coluna, não sub-linha), mas sem dívida
+        # dentro dela — e o Resultado passa a dizer "quitado".
+        self.assertIn('—', _celula_a_pagar(tela))
+        self.assertContains(tela, 'quitado')
+        self.assertNotContains(tela, 'class="due"')
 
     # ── PDF do resultado ────────────────────────────────────────────────────
 

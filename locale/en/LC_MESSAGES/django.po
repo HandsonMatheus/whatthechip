@@ -4232,3 +4232,32 @@ msgid "Total · %(n)s compra"
 msgid_plural "Total · %(n)s compras"
 msgstr[0] "Total · %(n)s purchase"
 msgstr[1] "Total · %(n)s purchases"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+msgid "Esperado ¥"
+msgstr "Expected ¥"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+msgid "Esperado US$"
+msgstr "Expected US$"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+msgid "Marcar todas as linhas desta página"
+msgstr "Select all rows on this page"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+msgid "Selecionar %(c)s"
+msgstr "Select %(c)s"
+
+#: vendas/templates/vendas/partner_compras.html
+#. Rodapé de coluna quando há linhas marcadas. As DUAS formas são
+#. renderizadas em data- e o JS escolhe: gettext decide o plural no
+#. render, então a forma tem de vir pronta do servidor.
+msgid "Selecionada · %(n)s compra"
+msgid_plural "Selecionadas · %(n)s compras"
+msgstr[0] "Selected · %(n)s purchase"
+msgstr[1] "Selected · %(n)s purchases"

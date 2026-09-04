@@ -30,6 +30,7 @@ próxima pessoa precisa saber antes de editar:
   não 403 — não confirmamos nem que ela existe.
 """
 
+import re
 import uuid
 from decimal import Decimal, InvalidOperation
 
@@ -133,6 +134,25 @@ def _recorte(request):
         dt_from=_iso(f['from']), dt_to=_iso(f['to']))
     linhas = services.sort_purchases(linhas, f['sort'],
                                      desc=f['dir'] == 'desc')
+
+    # ── SELEÇÃO DE LINHAS (dono, 2026-09-04, "como no Odoo") ─────────────
+    # `ids` é um recorte a MAIS, aplicado por último: quem marca três linhas
+    # e exporta leva as três, não a página nem o filtro inteiro.
+    #
+    # Mora AQUI, e não só na view do CSV, pela mesma razão que o resto do
+    # recorte mora: a spec §5.3 manda o export levar "o MESMO recorte
+    # filtrado" da tela, e dois caminhos de leitura são duas chances de
+    # divergir. Como a tela nunca põe `ids` na URL (só o link de export, e o
+    # JS o injeta na hora do clique), a lista segue inteira.
+    #
+    # ⚠ Saneamento por CONSTRUÇÃO: só dígitos entram, e o filtro é feito
+    #   contra as linhas que o comprador JÁ podia ver. Um `ids` forjado com
+    #   a OV de outro comprador não abre nada — ele intersecta um conjunto
+    #   que o `orders_for_buyer` já limitou.
+    escolhidos = {int(x) for x in re.findall(r'\d+', request.GET.get('ids') or '')}
+    f['ids'] = ','.join(str(i) for i in sorted(escolhidos)) if escolhidos else ''
+    if escolhidos:
+        linhas = [o for o in linhas if o.pk in escolhidos]
 
     # Query string SEM `page`: é o que os links de ordenação carregam, e é o
     # que faz trocar de coluna voltar para a página 1 (§5.3).
