@@ -4215,3 +4215,7 @@ msgstr "Confirm the box has arrived. The receipt is recorded with today's date."
 #: vendas/templates/vendas/partner_compra.html
 msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
 msgstr "The first date is the one that counts: marking again will not correct it, and there is no screen to change it later."
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Unitário"
+msgstr "Unit price"

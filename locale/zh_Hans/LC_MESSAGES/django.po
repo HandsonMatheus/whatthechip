@@ -3978,3 +3978,7 @@ msgstr "确认箱子已到达。收货将以今天的日期记录。"
 #: vendas/templates/vendas/partner_compra.html
 msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
 msgstr "以第一个日期为准：再次标记不会更正它，之后也没有界面可以修改。"
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Unitário"
+msgstr "单价"

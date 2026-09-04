@@ -39,7 +39,7 @@
   resultado são calculados no SERVIDOR ao fechar — o número que se move
   enquanto ele digita é conforto, nunca a fonte da conta.
 {% endcomment %}
-{% block title %}{{ so.lot.code }}{% endblock %}
+{% block title %}{{ so.code }}{% endblock %}
 {% block sidebar %}{% endblock %}
 
 {% comment %} ── 1. BARRA DE AÇÃO ───────────────────────────────────────────
@@ -92,7 +92,16 @@
            tem data por trás é o trilho. Se um dia voltar a fazer falta um
            resumo de estado no topo, ele tem de LER `steps` — não recalcular.
         {% endcomment %}
-        <span class="rhead__code">{{ so.lot.code }}</span>
+        {% comment %} A ORDEM DE VENDA é o identificador primário (dono,
+           2026-09-04). O lote é a chave INTERNA do vendedor — quem embala e
+           quem confere pensa por lote. O comprador não: ele pediu uma ordem,
+           combinou um preço numa ordem e vai pagar por uma ordem. Pôr o lote
+           no lugar mais nobre da tela obrigava a traduzir de cabeça toda vez.
+           Ele não some: desce para a linha de baixo, que é onde vive a
+           informação de referência — e é a mesma hierarquia do PDF do
+           resultado, onde o título é o documento e o lote foi para o rodapé.
+        {% endcomment %}
+        <span class="rhead__code">{{ so.code }}</span>
       </div>
 
       {% comment %} O trilho vai NO MEIO da mesma fileira do código, não numa
@@ -138,7 +147,11 @@
     </div>
 
     <div class="rhead__desc">
-      <p>{% blocktrans trimmed with cliente=so.company.name %}de <b>{{ cliente }}</b>{% endblocktrans %} · <span class="mono">{{ so.code }}</span></p>
+      {% comment %} SEM guarda condicional no lote: `SalesOrder.lot` é FK
+         obrigatória (PROTECT, sem null) — toda ordem tem lote, inclusive
+         rascunho. Guarda aqui seria código morto fingindo cuidar de um caso
+         que não existe. {% endcomment %}
+      <p>{% blocktrans trimmed with cliente=so.company.name %}de <b>{{ cliente }}</b>{% endblocktrans %} · <span class="mono">{{ so.lot.code }}</span></p>
     </div>
 
     {% comment %} ── OS TRÊS NÚMEROS ────────────────────────────────────────
@@ -463,12 +476,18 @@
               <th>{% trans "Capacidade" %}</th>
               <th>{% trans "Caixa WTC" %}</th>
               <th class="n">{% trans "Enviados" %}</th>
-              <th class="n hide-lg">{% trans "¥ unit." %}</th>
-              <th class="n">{% trans "¥ esperado" %}</th>
+              {% comment %} A moeda saiu do TÍTULO porque agora são duas por
+                 célula (dono, 2026-09-02: "preciso que mostre o valor unitario
+                 em USD e ESPERADO e RESULTADO também em USD, levando destaque
+                 o valor em USD, que é o que ele vai pagar de fato"). Um título
+                 "¥ esperado" sobre uma célula que abre em US$ diria a moeda
+                 errada logo na primeira leitura. {% endcomment %}
+              <th class="n hide-lg">{% trans "Unitário" %}</th>
+              <th class="n">{% trans "Esperado" %}</th>
               {% if pode_acertar or tem_resultado %}
               <th class="n hr">{% trans "Recusados" %}{% if pode_acertar %}<i class="pen"></i>{% endif %}</th>
               <th class="n hg">{% trans "Aprovados" %}</th>
-              <th class="n hb">{% trans "¥ resultado" %}</th>
+              <th class="n hb">{% trans "Resultado" %}</th>
               {% endif %}
             </tr>
           </thead>
@@ -490,11 +509,11 @@
                 {% if g.sem_preco and not registro_legado %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
               <td class="n" data-gq="{{ forloop.counter0 }}">{{ g.qty }}</td>
               <td class="n hide-lg"></td>
-              <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}¥ {{ g.rmb }}{% endif %}{% endlocalize %}</td>
+              <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.usd }}<span class="cy">¥ {{ g.rmb }}</span>{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
               <td class="n hr" data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</td>
               <td class="n hg" data-gok="{{ forloop.counter0 }}">{{ g.accepted }}</td>
-              <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}¥ {{ g.pago_rmb }}{% endif %}{% endlocalize %}</td>
+              <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.pago_usd }}<span class="cy">¥ {{ g.pago_rmb }}</span>{% endif %}{% endlocalize %}</td>
               {% endif %}
             </tr>
             {% for l in g.lines %}
@@ -506,8 +525,8 @@
                  telefone — o pacote o esconde no desktop, onde o cabeçalho
                  da coluna já disse a mesma coisa. {% endcomment %}
               <td class="n c-qty"><i class="c-lbl">{% trans "enviados" %}</i>{{ l.qty }}</td>
-              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans '¥ unit.' %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
-              <td class="v c-exp" data-label="{% trans '¥ esperado' %}">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans 'Unitário' %}">{% localize off %}{% if l.unit_rmb %}{% if l.unit_usd %}US$ {{ l.unit_usd }}{% endif %}<span class="cy">¥ {{ l.unit_rmb }}</span>{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+              <td class="v c-exp" data-label="{% trans 'Esperado' %}">{% localize off %}{% if l.total_rmb %}{% if l.total_usd %}US$ {{ l.total_usd }}{% endif %}<span class="cy">¥ {{ l.total_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar %}
               <td class="n hr c-rej">
                 <i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
@@ -517,11 +536,17 @@
                        data-rj="{{ l.pk }}"
                        aria-label="{% blocktrans trimmed with marca=g.brand tipo=l.type cap=l.capacity %}Recusados {{ marca }} {{ tipo }} {{ cap }}{% endblocktrans %}"
                        data-qty="{{ l.qty|unlocalize }}"
-                       data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}">
+                       data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}"
+                       {% comment %} O US$ vem CONGELADO da linha, não de ¥ ×
+                          taxa. O servidor calcula `unit_usd * aprovados`; se o
+                          JS multiplicasse o ¥ pela taxa, os centavos
+                          divergiriam e o número pularia no recarregamento
+                          depois de fechar. {% endcomment %}
+                       data-unit-usd="{% if l.unit_usd %}{{ l.unit_usd|unlocalize }}{% else %}0{% endif %}">
               </td>
               <td class="n hg c-ok" data-ok="{{ l.pk }}">
                 <i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
-              <td class="v hb c-val" data-label="{% trans '¥ resultado' %}" data-val="{{ l.pk }}">{% localize off %}{% if l.pago_rmb is not None %}¥ {{ l.pago_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="v hb c-val" data-label="{% trans 'Resultado' %}" data-val="{{ l.pk }}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% elif tem_resultado %}
               {% comment %} Conferência JÁ FEITA: os mesmos números, sem campo.
                  A tela não muda de forma quando a etapa passa — muda só o que
@@ -529,7 +554,7 @@
               <td class="n hr c-rej"><i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
                 <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b></td>
               <td class="n hg c-ok"><i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
-              <td class="v hb c-val" data-label="{% trans '¥ resultado' %}">{% localize off %}{% if l.pago_rmb is not None %}¥ {{ l.pago_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="v hb c-val" data-label="{% trans 'Resultado' %}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% endif %}
             </tr>
             {% endfor %}
@@ -540,11 +565,17 @@
               <td class="lbl" colspan="3">{% blocktrans trimmed count n=grupos|length with tipos=total_qty %}Total · {{ n }} marca{% plural %}Total · {{ n }} marcas{% endblocktrans %}</td>
               <td class="n"><small>{% trans "Enviados" %}</small>{{ total_qty }}</td>
               <td class="n hide-lg"></td>
-              <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ US$ {{ total_estimado_usd }}<span class="cy">≈ ¥ {{ total_estimado }}</span>{% elif so.total_rmb %}US$ {{ so.total_usd }}<span class="cy">¥ {{ so.total_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
               <td class="n hr" id="t-rej"><small>{% trans "Recusados" %}</small>0</td>
               <td class="n hg" id="t-ace"><small>{% trans "Aprovados" %}</small>{{ total_qty }}</td>
-              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</td>
+              {% comment %} O `escreverNumero` do JS escreve no ÚLTIMO nó de
+                 TEXTO da célula — com o `<span>` do ¥ no fim, o último nó
+                 deixaria de ser texto e ele acrescentaria um número solto
+                 depois do span. Por isso o rodapé passa a ter alvos próprios:
+                 o JS escreve em `#t-pagar-usd` e `#t-pagar-rmb`, cada um no
+                 seu. {% endcomment %}
+              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}<b id="t-pagar-usd">US$ {{ so.total_usd }}</b><span class="cy" id="t-pagar-rmb">¥ {{ so.total_rmb }}</span>{% endlocalize %}</td>
               {% endif %}
             </tr>
           </tfoot>
@@ -1196,6 +1227,8 @@
   var campos = document.querySelectorAll('.rjin[data-qty]');
   var form = document.getElementById('f-resultado');
   var elPagar = document.getElementById('t-pagar');
+  var elPagarUsd = document.getElementById('t-pagar-usd');
+  var elPagarRmb = document.getElementById('t-pagar-rmb');
   if (!campos.length || !elPagar || !form) return;
 
   var fx = parseFloat(form.dataset.fx) || 0;
@@ -1212,6 +1245,20 @@
   // Escreve o número SEM matar o rótulo. As células do rodapé são
   // `<small>Recusados</small>0`: um `textContent =` levaria o <small> junto,
   // e o rodapé ficaria sem legenda no primeiro toque de tecla.
+  // ── O PAR DE MOEDAS, num lugar só ───────────────────────────────────────
+  // US$ na frente (é o que ele paga) e ¥ apagado embaixo. Existe como função
+  // porque o mesmo par é escrito em TRÊS lugares durante a digitação — linha,
+  // faixa da marca e rodapé — e três cópias divergem na primeira alteração.
+  // `extra` é a perda, e vai DENTRO do span do ¥: fora dele viraria uma
+  // terceira linha na célula.
+  function par(usd, rmb, extra) {
+    var y = '¥ ' + rmb.toFixed(2) + (extra || '');
+    // Sem US$ na linha (rascunho sem taxa) o par não existe: escreve só o ¥,
+    // no lugar do valor forte. Um "US$ 0.00" ali seria um preço inventado.
+    if (!usd) return y;
+    return 'US$ ' + usd.toFixed(2) + '<span class="cy">' + y + '</span>';
+  }
+
   function escreverNumero(el, txt) {
     if (!el) return;
     var ultimo = el.lastChild;
@@ -1229,7 +1276,7 @@
   var T_TUDOOK = '{% trans "lote inteiro aprovado"|escapejs %}';
 
   function recalcular() {
-    var rej = 0, aceitos = 0, enviados = 0, pagar = 0;
+    var rej = 0, aceitos = 0, enviados = 0, pagar = 0, pagarUsd = 0;
     // Subtotais POR MARCA. A faixa do grupo tem de somar exatamente as linhas
     // dela — faixa dizendo um número e linhas dizendo outro é o tipo de erro
     // que só aparece depois de fechado.
@@ -1237,13 +1284,14 @@
     campos.forEach(function (i) {
       var qtd = parseInt(i.dataset.qty, 10) || 0;
       var unit = parseFloat(i.dataset.unit) || 0;
+      var unitUsd = parseFloat(i.dataset.unitUsd) || 0;
       var r = parseInt(i.value, 10);
       if (isNaN(r) || r < 0) r = 0;
       if (r > qtd) r = qtd;
       var tr = i.closest('tr');
       if (tr) tr.classList.toggle('on', r > 0);
-      var ok = qtd - r, val = ok * unit;
-      rej += r; enviados += qtd; aceitos += ok; pagar += val;
+      var ok = qtd - r, val = ok * unit, valUsd = ok * unitUsd;
+      rej += r; enviados += qtd; aceitos += ok; pagar += val; pagarUsd += valUsd;
 
       // ── a LINHA: o que sobrou de pé e quanto dela virou dinheiro ──
       var pk = i.dataset.rj;
@@ -1253,15 +1301,16 @@
       if (cVal) {
         // A PERDA ao lado do valor, e só quando existe: `.dl2` é o risco do
         // pacote. Sem ela o comprador vê o resultado cair sem ver o quanto.
-        cVal.innerHTML = '¥ ' + val.toFixed(2)
-          + (r && unit ? ' <span class="dl2">−¥ ' + (r * unit).toFixed(2)
-             + '</span>' : '');
+        cVal.innerHTML = par(valUsd, val,
+          r && unit ? ' <b class="dl2">−¥ ' + (r * unit).toFixed(2) + '</b>'
+                    : '');
       }
       // ── o GRUPO ──
       var gi = tr && tr.getAttribute('data-g');
       if (gi !== null && gi !== undefined) {
-        var g = porGrupo[gi] || (porGrupo[gi] = {rej: 0, ok: 0, val: 0});
-        g.rej += r; g.ok += ok; g.val += val;
+        var g = porGrupo[gi] || (porGrupo[gi] = {rej: 0, ok: 0, val: 0,
+                                                 valUsd: 0});
+        g.rej += r; g.ok += ok; g.val += val; g.valUsd += valUsd;
       }
     });
     Object.keys(porGrupo).forEach(function (gi) {
@@ -1276,14 +1325,19 @@
       // aviso do topo acabou de desmentir. Este laço só roda quando o
       // comprador está digitando recusa, o que não acontece numa compra já
       // faturada; a guarda é para o dia em que passar a rodar.
-      if (eVal && !REGISTRO_LEGADO) eVal.textContent = '¥ ' + g.val.toFixed(2);
+      // innerHTML, e não textContent: o par leva o <span> do ¥ dentro.
+      if (eVal && !REGISTRO_LEGADO) eVal.innerHTML = par(g.valUsd, g.val);
     });
     estado = {rej: rej, aceitos: aceitos, enviados: enviados, pagar: pagar};
     // ⚠ `textContent` apagaria o <small> do rótulo que o rodapé carrega desde
     // 2026-08-27. Escreve-se no ÚLTIMO nó de texto, que é o número.
     escreverNumero(elRej, rej ? '−' + rej : '0');
     escreverNumero(elAce, aceitos);
-    escreverNumero(elPagar, '¥ ' + pagar.toFixed(2));
+    // Alvos PRÓPRIOS no rodapé: o `escreverNumero` escreve no último nó de
+    // texto, e com o span do ¥ no fim ele acrescentaria um número solto
+    // depois dele. Cada moeda tem o seu elemento.
+    if (elPagarUsd) elPagarUsd.textContent = 'US$ ' + pagarUsd.toFixed(2);
+    if (elPagarRmb) elPagarRmb.textContent = '¥ ' + pagar.toFixed(2);
     // Só o RESULTADO se move — o ESPERADO é o preço fechado com o cliente e
     // fica parado, senão a referência se perde (dono, 2026-08-18).
     if (kRmb) kRmb.textContent = '¥ ' + pagar.toFixed(2);

@@ -106,12 +106,66 @@ class _Ficha(TestCase):
 class SeloDoTopoTests(_Ficha):
 
     def test_o_topo_nao_tem_mais_selo_de_estado(self):
-        """Sobra o código do lote e nada mais. Se um selo voltar aqui, volta
-        junto a divergência — a lista, o trilho e ele responderiam à mesma
-        pergunta por caminhos diferentes."""
+        """Sobra o código e nada mais. Se um selo voltar aqui, volta junto a
+        divergência — a lista, o trilho e ele responderiam à mesma pergunta
+        por caminhos diferentes."""
         topo = self._topo(self._html())
         self.assertIn('rhead__code', topo)
         self.assertNotIn('class="tag', topo)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# (A2) QUEM É O IDENTIFICADOR DA PÁGINA
+# ═══════════════════════════════════════════════════════════════════════════
+class IdentificadorDoTopoTests(_Ficha):
+    """A ordem de venda na frente, o lote embaixo (dono, 2026-09-04).
+
+    O lote é a chave INTERNA do vendedor: quem embala e quem confere pensa
+    por lote. O comprador não — ele pediu uma ordem, combinou preço numa
+    ordem e paga por uma ordem. Com `LOT-…` no lugar mais nobre da tela, ele
+    traduzia de cabeça toda vez que abria a página.
+
+    Mesma hierarquia do PDF do resultado, onde o título é o documento, o
+    identificador do topo é a OV e o lote desceu para o rodapé — o objetivo é
+    o comprador reconhecer o mesmo número no papel e na tela.
+    """
+
+    def test_o_codigo_grande_e_o_da_ordem_de_venda(self):
+        topo = self._topo(self._html())
+        self.assertIn(self.so.code, topo)
+        self.assertNotIn(self.lot.code, topo)
+
+    def test_o_lote_desceu_para_a_linha_de_referencia(self):
+        """Não some: continua na tela, uma linha abaixo. É o número que o
+        comprador cita quando fala com quem embalou."""
+        html = self._html()
+        m = re.search(r'<div class="rhead__desc">(.*?)</div>', html, re.S)
+        self.assertIsNotNone(m, 'a linha de referência sumiu da ficha')
+        self.assertIn(self.lot.code, m.group(1))
+
+    def test_o_lote_continua_na_pagina(self):
+        self.assertIn(self.lot.code, self._html())
+
+    def test_o_titulo_da_aba_segue_o_mesmo_criterio(self):
+        """Se a aba dissesse `LOT-…` e a página dissesse `EMIN-SO-…`, o
+        comprador com seis abas abertas não acha a que procura."""
+        html = self._html()
+        m = re.search(r'<title>(.*?)</title>', html, re.S)
+        self.assertIsNotNone(m, 'a página perdeu o <title>')
+        self.assertIn(self.so.code, m.group(1))
+
+    def test_toda_ordem_tem_lote(self):
+        """A premissa da linha de referência não levar guarda.
+
+        `SalesOrder.lot` é FK obrigatória (PROTECT, sem `null=True`), então o
+        `·` antes do código nunca fica pendurado. Se alguém tornar o campo
+        opcional um dia, é aqui que aparece — e aí a linha precisa de um
+        `{% if %}` que hoje seria código morto.
+        """
+        campo = SalesOrder._meta.get_field('lot')
+        self.assertFalse(campo.null,
+                         'lot virou opcional: a linha de referência agora '
+                         'precisa de guarda para não deixar "·" solto')
 
     def test_o_topo_nao_diz_mais_recebimento(self):
         """"Recebimento" era o ramo `{% else %}` do selo. Ele descrevia a

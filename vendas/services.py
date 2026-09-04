@@ -612,6 +612,21 @@ def result_document(so, invoice):
         n_ace = line.quantity - n_rej
         unit = (sl.new_unit_rmb if sl and sl.new_unit_rmb is not None
                 else line.unit_rmb)
+        # ── O US$ DA LINHA (dono, 2026-09-04) ─────────────────────────────
+        # O PDF passou a mostrar o par US$/¥ como a tela do comprador, e o
+        # dólar tem DUAS origens diferentes — o ramo separado é o que deixa
+        # isso visível em vez de escondido num `or`:
+        #
+        #   · normal   → `line.unit_usd`, CONGELADO no fechamento da OV. É o
+        #     mesmo número que a tela lê, então papel e tela não divergem.
+        #   · repactuado → o acerto muda o ¥ (`new_unit_rmb`) e não tem par em
+        #     US$ para mudar junto; aí, e só aí, o dólar é DERIVADO da taxa
+        #     travada. É a única linha do documento em que ele não é congelado.
+        if sl is not None and sl.new_unit_rmb is not None:
+            unit_usd = (sl.new_unit_rmb * invoice.fx_usd_rate
+                        if invoice.fx_usd_rate else None)
+        else:
+            unit_usd = line.unit_usd
         linhas.append({
             'brand': line.brand or '—',
             'type': line.type_label,
@@ -624,6 +639,8 @@ def result_document(so, invoice):
             'accepted': n_ace,
             'unit_rmb': unit,
             'total_rmb': (unit * n_ace) if unit is not None else None,
+            'unit_usd': unit_usd,
+            'total_usd': (unit_usd * n_ace) if unit_usd is not None else None,
         })
         env += line.quantity
         rej += n_rej
@@ -1628,6 +1645,16 @@ def result_rows(so):
                               {'brand': line.brand or '—', 'lines': [],
                                'qty': 0, 'rmb': Decimal('0.00'),
                                'sem_preco': 0, 'rejected': 0, 'accepted': 0,
+                               # US$ do grupo (dono, 2026-09-02): a tela do
+                               # comprador passou a mostrar o par nas três
+                               # colunas de dinheiro, e a FAIXA da marca tem de
+                               # somar exatamente as linhas dela nas DUAS
+                               # moedas. Somar só ¥ e converter a faixa pela
+                               # taxa daria um número que não bate com a soma
+                               # dos US$ das linhas — divergência de centavos
+                               # que aparece justamente no total.
+                               'usd': Decimal('0.00'),
+                               'pago_usd': Decimal('0.00'),
                                # ¥ do que sobrou de pé no grupo. Existe desde
                                # 2026-08-27, quando a conferência ganhou a
                                # coluna de RESULTADO por linha: o subtotal da
@@ -1673,6 +1700,12 @@ def result_rows(so):
         if total is not None:
             g['rmb'] += total
             g['pago_rmb'] += (unit * ace)
+        if unit_usd is not None:
+            # Condição PRÓPRIA, e não o `else` do ¥: o par pode ter ¥ sem US$
+            # (rascunho com cotação viva sem taxa). Pendurar o US$ no mesmo
+            # `if` faria o grupo somar zero em silêncio nesse caso.
+            g['usd'] += (unit_usd * line.quantity)
+            g['pago_usd'] += (unit_usd * ace)
         else:
             g['sem_preco'] += line.quantity
     for g in grupos.values():

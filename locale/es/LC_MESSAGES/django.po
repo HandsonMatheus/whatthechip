@@ -4246,3 +4246,7 @@ msgstr "Confirme que la caja llegó. La recepción se registra con la fecha de h
 #: vendas/templates/vendas/partner_compra.html
 msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
 msgstr "Vale la primera fecha: marcarlo de nuevo no la corrige, y no hay pantalla para cambiarla después."
+
+#: vendas/templates/vendas/partner_compra.html
+msgid "Unitário"
+msgstr "Unitario"

@@ -319,6 +319,22 @@ html img.lg-d{display:none}
 /* sub-linha (≈ US$, taxa) — o marcador ao vivo .wtc-pop também é um span solto aqui e tem
    estilo próprio, então fica de fora: esta regra o sobrescreveria e o apagaria contra o verde */
 .dtab .v span:not(.wtc-pop),.dtab .n span:not(.wtc-pop){display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);margin-top:3px;letter-spacing:-.01em}
+/* ---- A MOEDA SECUNDÁRIA DO PAR (.cy) ----
+   Na conferência do comprador as três colunas de dinheiro abrem em US$ e
+   trazem o ¥ embaixo (dono, 2026-09-02: "levando destaque o valor em USD, que
+   é o que ele vai pagar de fato, e as colunas em YUAN com um aspecto de tipo
+   desabilitado"). O ¥ continua ali — é a moeda em que a compra foi fechada e
+   a que o cliente lê —, só deixa de disputar a primeira leitura.
+
+   ⚠ Isto NÃO substitui o `.mvd`, e a diferença é de argumento, não de gosto.
+   O `.mvd` põe as duas moedas em pé de igualdade porque no herói da ficha a
+   negociação é sobre as duas. Aqui a pergunta é uma só — quanto ele paga —, e
+   é a mesma hierarquia que o `.mval` sempre teve, com os papéis trocados.
+
+   Um degrau abaixo do `--muted` que a regra acima já dá: é `--faint` que lê
+   como desabilitado nesta folha. A especificidade empata com a de cima
+   (0,3,1) e vence por vir depois — mexer na ordem apaga o efeito. */
+.dtab .v span.cy,.dtab .n span.cy{color:var(--faint)}
 /* rótulo em palavra volta para a sans — mono se justifica em cifra, não em texto */
 .dtab .v span.due{color:var(--amber-70);font-weight:600;font-family:var(--sans);letter-spacing:0}
 .dtab .v span.got{color:var(--green-70);font-weight:600;font-family:var(--sans);letter-spacing:0}

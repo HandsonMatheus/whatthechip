@@ -438,6 +438,7 @@ def _detalhe(so):
         'delta_abs': (abs(inv.total_rmb - so.total_rmb)
                       if inv and so.total_rmb is not None else None),
         'total_estimado': sum((g['rmb'] for g in grupos), Decimal('0.00')),
+        'total_estimado_usd': sum((g['usd'] for g in grupos), Decimal('0.00')),
         # Uma chave por PÁGINA SERVIDA (spec v2 §5.4): dois cliques no botão
         # mandam a mesma; recarregar é intenção nova e gera outra.
         'idem_key': uuid.uuid4().hex,
