@@ -2388,6 +2388,51 @@ class ESMTLoadBrandsTests(TestCase):
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
+_ISOCOM_GOLDEN = {  # ISOCOM/Longbo — onboarding 2026-09-01/02 (chips/knowledge/isocom.yaml).
+    # Duas famílias eMMC de capacidade LITERAL no PN (3 dígitos = GB, NÃO Gbit — mesma
+    # convenção Foresee/Longsys, provável mesma dona). O mapa ISC_EMMC_CAP é COMPARTILHADO
+    # entre as duas; o que muda é só a POSIÇÃO: MEMA lê pn[4:7], MEMD lê pn[6:9].
+    #
+    # As duas FORMAS do PN entram de propósito. O chip físico é marcado SEM sufixo (é o que
+    # o dono escaneia: `MEMA032G`, `MEMDNN064G`), e o order code do fabricante traz sufixo
+    # (`-M0T00`, `-M1S07`). O `pn_length` da família só rejeita PN mais CURTO que o esperado,
+    # então a forma longa tem de decodificar igual — e é isso que as duas âncoras com sufixo
+    # provam. Se um dia alguém passar a exigir comprimento exato, quebra aqui.
+    #
+    # Fonte de cada âncora (do reasoning do próprio YAML — nenhuma capacidade foi deduzida):
+    "MEMA032G":          ("eMMC", "32GB", "", "", "", "RENTÁVEL"),  # confirmação FÍSICA do dono (fotos) + digipart + Alibaba
+    "MEMA016G-M0T00":    ("eMMC", "16GB", "", "", "", "RENTÁVEL"),  # lista de fornecedores aprovados da Rockchip
+    "MEMA064G":          ("eMMC", "64GB", "", "", "", "RENTÁVEL"),  # título de listagem Alibaba (MEMA064G-M0S00, 153FBGA)
+    "MEMDNN064G":        ("eMMC", "64GB", "", "", "", "RENTÁVEL"),  # forma BARE, scan ao vivo do estoque do dono (2026-09-02)
+    "MEMDNN032G-M1S07":  ("eMMC", "32GB", "", "", "", "RENTÁVEL"),  # lista Rockchip (256Gb TLC, v5.1)
+    # ⚠ SEM âncora negativa para os códigos não observados (004/008/128/256, que o YAML
+    #   manda deixar INDETERMINADO): ela seria útil — prova que o mapa não extrapola —, mas
+    #   eu não sei de cabeça o que o engine devolve no campo `capacity` de um eMMC com
+    #   capacidade não mapeada, e cravar um palpite aqui transformaria a trava em ruído.
+    #   Fica como reforço para quem tem o engine na mão.
+}
+
+
+class IsocomLoadBrandsTests(TestCase):
+    """ISOCOM/Longbo: fidelidade YAML→banco + as âncoras do `_ISOCOM_GOLDEN`.
+
+    Sem esta classe o `GoldenObrigatorioTests` passaria só por existir um PN começando
+    com `MEMA`/`MEMD` num dicionário — o dicionário vira prova quando alguém o compara
+    com o que o engine realmente devolve, que é o que acontece aqui.
+    """
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "isocom")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "isocom", "--commit", "--skip-known-parts", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia)
+        for pn, esperado in _ISOCOM_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
 class KnownPartsLoadTests(TestCase):
     """Migração da AUTORIDADE (fix_known_parts → YAML known_parts): o loader cria os
     KnownParts e eles VENCEM a gramática (confirmed/manual). Round-trip dump→load provado
