@@ -543,7 +543,15 @@
               <td class="n hide-lg"></td>
               <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.usd }}<span class="cy">¥ {{ g.rmb }}</span>{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
-              <td class="n hr" data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</td>
+              {% comment %} A perda em ¥ ao lado da contagem, e não lá na
+                 coluna do resultado (dono, 2026-09-07: "ele esta no lugar
+                 correto?"). O número que ela tira pertence ao mesmo lugar que
+                 a recusa que o causou; do outro lado da tabela ele virava uma
+                 terceira linha na célula do dinheiro, disputando a leitura
+                 com o valor. O `<b>` interno existe porque o JS reescreve a
+                 CONTAGEM por `textContent` — sem ele, levaria a perda junto.
+              {% endcomment %}
+              <td class="n hr"><b data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</b><b class="dl2" data-gperda="{{ forloop.counter0 }}">{% localize off %}{% if g.perda_rmb %}−¥ {{ g.perda_rmb }}{% endif %}{% endlocalize %}</b></td>
               <td class="n hg" data-gok="{{ forloop.counter0 }}">{{ g.accepted }}</td>
               <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.pago_usd }}<span class="cy">¥ {{ g.pago_rmb }}</span>{% endif %}{% endlocalize %}</td>
               {% endif %}
@@ -575,6 +583,7 @@
                           divergiriam e o número pularia no recarregamento
                           depois de fechar. {% endcomment %}
                        data-unit-usd="{% if l.unit_usd %}{{ l.unit_usd|unlocalize }}{% else %}0{% endif %}">
+                <b class="dl2" data-perda="{{ l.pk }}">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</b>
               </td>
               <td class="n hg c-ok" data-ok="{{ l.pk }}">
                 <i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
@@ -583,8 +592,12 @@
               {% comment %} Conferência JÁ FEITA: os mesmos números, sem campo.
                  A tela não muda de forma quando a etapa passa — muda só o que
                  aceita toque. {% endcomment %}
+              {% comment %} Fechada, a linha mostra a MESMA perda que mostrava
+                 enquanto ele digitava. Antes o número existia só durante a
+                 digitação e sumia no F5 — a tela contradizia a si mesma sobre
+                 um fato que não muda. {% endcomment %}
               <td class="n hr c-rej"><i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
-                <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b></td>
+                <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b><b class="dl2">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</b></td>
               <td class="n hg c-ok"><i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
               <td class="v hb c-val" data-label="{% trans 'Resultado' %}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% endif %}
@@ -1284,10 +1297,12 @@
   // US$ na frente (é o que ele paga) e ¥ apagado embaixo. Existe como função
   // porque o mesmo par é escrito em TRÊS lugares durante a digitação — linha,
   // faixa da marca e rodapé — e três cópias divergem na primeira alteração.
-  // `extra` é a perda, e vai DENTRO do span do ¥: fora dele viraria uma
-  // terceira linha na célula.
-  function par(usd, rmb, extra) {
-    var y = '¥ ' + rmb.toFixed(2) + (extra || '');
+  // ⚠ SÓ o par de moedas. A perda saiu daqui em 2026-09-07 (dono: "sai na
+  //   coluna de resultado quebrando tudo (...) ele esta no lugar correto?") e
+  //   foi para a célula da RECUSA, que é o que a causa. Enquanto morava aqui
+  //   ela era um terceiro número espremido na célula do dinheiro.
+  function par(usd, rmb) {
+    var y = '¥ ' + rmb.toFixed(2);
     // Sem US$ na linha (rascunho sem taxa) o par não existe: escreve só o ¥,
     // no lugar do valor forte. Um "US$ 0.00" ali seria um preço inventado.
     if (!usd) return y;
@@ -1333,24 +1348,20 @@
       var cOk = document.querySelector('[data-ok="' + pk + '"] b');
       if (cOk) cOk.textContent = ok;
       var cVal = document.querySelector('[data-val="' + pk + '"]');
-      if (cVal) {
-        // A PERDA ao lado do valor, e só quando existe: `.dl2` é o risco do
-        // pacote. Sem ela o comprador vê o resultado cair sem ver o quanto.
-        //
-        // ⚠ SEM espaço antes do `<b>`: o respiro entre as duas cifras é o
-        //   `margin-left` do `.dtab .dl2`. Espaço em string de JS é a primeira
-        //   coisa que some quando alguém reindenta o trecho — e some sem
-        //   quebrar nada, o que é pior.
-        cVal.innerHTML = par(valUsd, val,
-          r && unit ? '<b class="dl2">−¥ ' + (r * unit).toFixed(2) + '</b>'
-                    : '');
-      }
+      if (cVal) cVal.innerHTML = par(valUsd, val);
+      // A PERDA, ao lado do campo que a produziu. Sem ela o comprador vê o
+      // resultado cair sem ver o quanto — e `textContent`, não `innerHTML`:
+      // aqui só entra número, e é ele que o servidor também escreve.
+      var cPerda = document.querySelector('[data-perda="' + pk + '"]');
+      if (cPerda) cPerda.textContent = (r && unit)
+        ? '−¥ ' + (r * unit).toFixed(2) : '';
       // ── o GRUPO ──
       var gi = tr && tr.getAttribute('data-g');
       if (gi !== null && gi !== undefined) {
         var g = porGrupo[gi] || (porGrupo[gi] = {rej: 0, ok: 0, val: 0,
-                                                 valUsd: 0});
+                                                 valUsd: 0, perda: 0});
         g.rej += r; g.ok += ok; g.val += val; g.valUsd += valUsd;
+        g.perda += r * unit;
       }
     });
     Object.keys(porGrupo).forEach(function (gi) {
@@ -1360,6 +1371,12 @@
       var eVal = document.querySelector('[data-gval="' + gi + '"]');
       if (eRej) eRej.textContent = g.rej ? '−' + g.rej : '0';
       if (eOk) eOk.textContent = g.ok;
+      // A faixa soma exatamente as linhas dela, também na perda: faixa
+      // dizendo um número e linhas dizendo outro é o erro que só aparece
+      // depois de fechado.
+      var ePerda = document.querySelector('[data-gperda="' + gi + '"]');
+      if (ePerda) ePerda.textContent = g.perda
+        ? '−¥ ' + g.perda.toFixed(2) : '';
       // Registro legado: as linhas não têm ¥, então recalcular escreveria
       // "¥ 0.00" por cima do "—" que o servidor mandou — a mesma mentira que o
       // aviso do topo acabou de desmentir. Este laço só roda quando o

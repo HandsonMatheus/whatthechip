@@ -1878,6 +1878,12 @@ def result_rows(so, com_rascunho=False):
                                # que aparece justamente no total.
                                'usd': Decimal('0.00'),
                                'pago_usd': Decimal('0.00'),
+                               # ¥ que a RECUSA tirou do grupo (2026-09-07).
+                               # Mora aqui e não na tela porque a faixa da
+                               # marca tem de somar exatamente as linhas dela
+                               # — faixa dizendo um número e linhas dizendo
+                               # outro é o erro que só aparece depois.
+                               'perda_rmb': Decimal('0.00'),
                                # ¥ do que sobrou de pé no grupo. Existe desde
                                # 2026-08-27, quando a conferência ganhou a
                                # coluna de RESULTADO por linha: o subtotal da
@@ -1905,6 +1911,12 @@ def result_rows(so, com_rascunho=False):
             'qty': line.quantity,
             'rejected': rej,
             'accepted': ace,
+            # ⚠ O QUANTO a recusa custou, em ¥ — e agora vem do SERVIDOR
+            #   (2026-09-07). Antes só existia enquanto ele digitava: o número
+            #   aparecia com a tecla e sumia no F5, o que é a definição de
+            #   estar no lugar errado. `None` sem preço: inventar zero ali
+            #   diria que a recusa não custou nada.
+            'perda_rmb': (unit * rej) if (unit is not None and rej) else None,
             'unit_rmb': unit,
             'unit_usd': unit_usd,
             'total_rmb': total,
@@ -1923,6 +1935,7 @@ def result_rows(so, com_rascunho=False):
         if total is not None:
             g['rmb'] += total
             g['pago_rmb'] += (unit * ace)
+            g['perda_rmb'] += (unit * rej)
         if unit_usd is not None:
             # Condição PRÓPRIA, e não o `else` do ¥: o par pode ter ¥ sem US$
             # (rascunho com cotação viva sem taxa). Pendurar o US$ no mesmo

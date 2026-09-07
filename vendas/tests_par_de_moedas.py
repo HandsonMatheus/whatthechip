@@ -112,6 +112,16 @@ class _Base(TestCase):
         self.assertEqual(r.status_code, 200)
         return r.content.decode()
 
+    def _com_recusa(self, qtd):
+        """Salva a recusa no RASCUNHO e devolve a OV recarregada.
+
+        Pelo rascunho e não pelo acerto de propósito: é o estado em que o
+        comprador está quando digita, que é quando a perda importa.
+        """
+        with company_scope(self.emp.id):
+            services.save_draft(self.so, {self.linha.pk: qtd}, self.parceiro)
+            return SalesOrder.objects.get(pk=self.so.pk)
+
     def _resumo(self):
         """Só a `#tab-resumo`. A ficha tem quatro tabelas e as outras três
         seguem em ¥ — asserção de moeda na página inteira mede a tabela
@@ -250,8 +260,14 @@ class RecalculoAoVivoTests(_Base):
         self.js = _ler(FICHA)
 
     def test_existe_uma_funcao_unica_que_escreve_o_par(self):
-        """Três cópias do mesmo formato divergem na primeira alteração."""
-        self.assertIn('function par(usd, rmb, extra)', self.js)
+        """Três cópias do mesmo formato divergem na primeira alteração.
+
+        Sem o `extra` desde 2026-09-07: a perda saiu desta célula. Enquanto
+        ela entrava por aqui, a função do PAR DE MOEDAS era também a função
+        que escrevia um terceiro número — e foi assim que a perda acabou
+        espremida na coluna do dinheiro.
+        """
+        self.assertIn('function par(usd, rmb)', self.js)
 
     def test_os_tres_lugares_usam_a_funcao(self):
         for alvo in ('cVal.innerHTML = par(', 'eVal.innerHTML = par('):
@@ -275,25 +291,35 @@ class RecalculoAoVivoTests(_Base):
         self.assertIn('id="t-pagar-rmb"', self.js)
         self.assertNotIn("escreverNumero(elPagar,", self.js)
 
-    #: O `extra` (a perda) viaja dentro do `y`, e o `y` entra no span do ¥.
-    _PERDA_DENTRO = ''''<span class="cy">' + y +'''
-    #: A abertura da string COM um espaço dentro — o que não pode existir.
-    #: Aspa, espaço, `<b`. Escrito nesta ordem de propósito: a primeira versão
-    #: deste teste era espaço-aspa-`<b`, que casa com a INDENTAÇÃO do `? ` e
-    #: reprovava o código certo.
-    _PERDA_COM_ESPACO = """' <b class="dl2">"""
+    def test_a_perda_NAO_entra_mais_na_celula_do_dinheiro(self):
+        """A correção de 07/09, na sua forma mais curta.
 
-    def test_a_perda_entra_DENTRO_do_span_do_yuan(self):
-        """Fora dele o `.dl2` seria IRMÃO do span, e o span é `display:block`
-        nesta folha: a perda cairia numa terceira linha da célula."""
-        self.assertIn('<b class="dl2">', self.js)
-        self.assertIn(self._PERDA_DENTRO, self.js)
+        A perda morava na célula do RESULTADO, que já empilha US$ e ¥ — um
+        terceiro número numa célula de dois, e ainda por cima virando bloco
+        alinhado à direita (`.dl2` do `patterns/parceiro.css`). O dono: *"sai
+        na coluna de resultado quebrando tudo (...) ele esta no lugar
+        correto?"*. Não estava: foi para a célula da RECUSA, que é o que a
+        causa, e que tinha a folga.
+        """
+        self.assertIn('cVal.innerHTML = par(valUsd, val);', self.js)
+        # a célula do dinheiro não escreve mais `.dl2` nenhum
+        antes, _, depois = self.js.partition('var cVal =')
+        trecho = depois[:depois.index('var cPerda')]
+        self.assertNotIn('dl2', trecho)
 
-    def test_a_perda_nao_traz_espaco_na_string(self):
-        """O respiro entre as duas cifras é o `margin-left` do `.dtab .dl2`.
-        Espaço em string de JS some no primeiro reindent — e some sem quebrar
-        nada, que é o pior tipo de regressão visual."""
-        self.assertNotIn(self._PERDA_COM_ESPACO, self.js)
+    def test_a_perda_tem_alvo_PROPRIO_na_celula_da_recusa(self):
+        """`textContent` num elemento só dela, e não `innerHTML` numa célula
+        compartilhada: aqui só entra número, e é o MESMO número que o servidor
+        escreve no carregamento."""
+        self.assertIn("[data-perda=", self.js)
+        self.assertIn("cPerda.textContent", self.js)
+        self.assertIn("[data-gperda=", self.js)
+
+    def test_a_faixa_da_marca_soma_a_perda_das_linhas_dela(self):
+        """Faixa dizendo um número e linhas dizendo outro é o erro que só
+        aparece depois de fechado."""
+        self.assertIn('g.perda += r * unit;', self.js)
+        self.assertIn("ePerda.textContent", self.js)
 
 
 class EstiloTests(TestCase):
@@ -313,26 +339,95 @@ class EstiloTests(TestCase):
         self.assertNotEqual(cy, -1)
         self.assertLess(geral, cy)
 
-    def test_a_perda_da_linha_e_INLINE_dentro_da_dtab(self):
+    def test_a_perda_desarma_o_display_block_do_pattern(self):
         """O DEFEITO DE 07/09, e ele não estava no `.dtab`: o `.dl2` do
         `patterns/parceiro.css` é `display:block;text-align:right`, e a regra
-        daqui só sobrescrevia fonte e cor. Ao digitar a recusa, a perda virava
-        um bloco encostado na borda direita — terceira linha na célula — e a
-        linha da tabela crescia de 48 para 56px (dono: "sai na coluna de
-        resultado quebrando tudo").
+        daqui só sobrescrevia fonte e cor. A perda virava um bloco encostado
+        na borda direita da célula e a linha crescia de 48 para 56px.
 
         Aqui é ESPECIFICIDADE (0,2,0 contra 0,1,0), não ordem: o `.dl2` do
-        pattern carrega depois no `<head>` e mesmo assim perde. Por isso este
-        teste cobra as declarações, e não a posição no arquivo.
+        pattern carrega depois no `<head>` e mesmo assim perde. Por isso o
+        teste cobra as DECLARAÇÕES, e não a posição no arquivo.
         """
         regra = _regra(_ler(CSS), '.dtab .dl2')
-        self.assertIn('display:inline', regra)
+        self.assertIn('display:inline-block', regra)
         self.assertIn('text-align:inherit', regra)
+        # centrada contra o CAMPO, que é bem mais alto que o texto
+        self.assertIn('vertical-align:middle', regra)
+        self.assertIn('margin-left', regra)
 
-    def test_o_respiro_da_perda_mora_no_css(self):
-        """Par com o `test_a_perda_nao_traz_espaco_na_string`: um dos dois tem
-        de dar o espaço, e os dois juntos dariam o dobro."""
-        self.assertIn('margin-left', _regra(_ler(CSS), '.dtab .dl2'))
+    def test_no_cartao_do_celular_a_perda_nao_faz_o_cartao_crescer(self):
+        """No telefone o campo ocupa a largura toda: ao lado dele a perda não
+        cabe. Ela sobe para a fileira do RÓTULO, em `absolute` — o cartão fica
+        do mesmo tamanho com ou sem recusa.
+
+        ⚠ A regra tem de existir DUAS vezes: o pacote repete todo o bloco de
+          600px em `@media` e em `@container`, e uma cópia só deixa metade das
+          telas para trás.
+        """
+        pat = _ler(os.path.join(settings.BASE_DIR, 'static', 'wtc',
+                                'patterns', 'parceiro.css'))
+        self.assertEqual(pat.count('.dtab--conf .c-rej .dl2{position:absolute'),
+                         2)
+        self.assertEqual(pat.count('.dtab--conf .c-rej{position:relative'), 2)
+
+
+class PerdaDaLinhaTests(_Base):
+    """A perda em ¥ — o que a recusa tirou. Agora vem do SERVIDOR.
+
+    Antes ela só existia enquanto ele digitava: aparecia com a tecla e sumia
+    no F5. Um número que some ao recarregar está no lugar errado por
+    definição — a tela contradizia a si mesma sobre um fato que não muda.
+    """
+
+    def _linha(self, grupos, pk):
+        return next(l for g in grupos for l in g['lines'] if l['pk'] == pk)
+
+    def test_sem_recusa_nao_ha_perda(self):
+        """`None`, e não zero: a célula fica VAZIA. Um "−¥ 0.00" ao lado de
+        cada campo em branco seria ruído em toda linha da tabela."""
+        for g in self._grupos():
+            for l in g['lines']:
+                self.assertIsNone(l['perda_rmb'])
+            self.assertEqual(g['perda_rmb'], D('0.00'))
+
+    def test_a_perda_e_a_recusa_vezes_o_unitario(self):
+        so = self._com_recusa(3)
+        with company_scope(self.emp.id):
+            grupos = services.result_rows(so, com_rascunho=True)
+        l = self._linha(grupos, self.linha.pk)
+        self.assertEqual(l['rejected'], 3)
+        self.assertEqual(l['perda_rmb'], self.UNIT_RMB * 3)
+
+    def test_a_faixa_da_marca_soma_as_linhas_dela(self):
+        so = self._com_recusa(3)
+        with company_scope(self.emp.id):
+            grupos = services.result_rows(so, com_rascunho=True)
+        for g in grupos:
+            self.assertEqual(
+                g['perda_rmb'],
+                sum((l['perda_rmb'] or D('0.00')) for l in g['lines']))
+
+    def test_o_numero_chega_desenhado_na_celula_da_RECUSA(self):
+        """E não na do dinheiro. A `data-perda` mora dentro do `td.c-rej`."""
+        import re
+        so = self._com_recusa(3)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        celula = re.search(
+            r'<td class="n hr c-rej".*?</td>', html, re.S)
+        self.assertIsNotNone(celula, 'célula da recusa não encontrada')
+        self.assertIn('data-perda="%s"' % self.linha.pk, celula.group(0))
+        self.assertIn('−¥ %s' % (self.UNIT_RMB * 3), celula.group(0))
+
+    def test_a_celula_do_dinheiro_NAO_traz_a_perda(self):
+        import re
+        so = self._com_recusa(3)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        for celula in re.findall(r'<td class="v hb c-val[^>]*>.*?</td>',
+                                 html, re.S):
+            self.assertNotIn('dl2', celula)
 
 
 class RegistroLegadoTests(_Base):
