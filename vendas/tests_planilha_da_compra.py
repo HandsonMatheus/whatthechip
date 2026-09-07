@@ -120,17 +120,54 @@ class ArquivoTests(_Base):
 
 class ColunasIguaisAsDaTelaTests(_Base):
 
-    #: exatamente os `<th>` da tabela do Resumo, na ordem, mais a Marca —
-    #: que na tela é a faixa de grupo e aqui vira coluna, para dar filtro.
-    RESUMO = ['Marca', 'Tipo', 'Capacidade', 'Caixa WTC', 'Enviados',
-              '¥ unit.', '¥ esperado']
+    #: EXATAMENTE os `<th>` da tabela do Resumo, na ordem, em caixa alta.
+    #:
+    #: ⚠ A MARCA NÃO É COLUNA (2026-09-07). Era, "para dar filtro" — e o dono
+    #:   pediu o contrário: *"iguais em termos não só de design, como também
+    #:   de uso e posicionamento de cada coluna"*. Uma coluna a mais desloca
+    #:   todas as outras, que é exatamente o que "posicionamento" proíbe. Na
+    #:   planilha, como na tela, a marca é a FAIXA DE GRUPO. Quem precisa
+    #:   filtrar por marca tem a aba Chips, que continua com a coluna.
+    #:
+    #: ⚠ O `¥` no rótulo das colunas de dinheiro é a única diferença de texto
+    #:   para a tela, e é obrigatória: lá cada coluna dessas mostra o par
+    #:   US$/¥ empilhado, e numa célula isso seria TEXTO — texto não soma.
+    #:   Uma coluna por coluna da tela, em ¥, com a moeda dita no rótulo.
+    RESUMO = ['TIPO', 'CAPACIDADE', 'CAIXA WTC', 'ENVIADOS',
+              'UNITÁRIO ¥', 'ESPERADO ¥']
     #: exatamente os `<th>` da tabela de Chips, na ordem.
-    CHIPS = ['Part Number', 'Marca', 'Tipo', 'Spec', 'Caixa WTC', 'Qtd.',
-             '¥ unit.', '¥ total']
+    CHIPS = ['PART NUMBER', 'MARCA', 'TIPO', 'SPEC', 'CAIXA WTC', 'QTD.',
+             'UNITÁRIO ¥', 'TOTAL ¥']
 
     def test_as_colunas_do_resumo_sao_as_da_tela(self):
         cab = [c for c in self._linha(self._wb()['Resumo'], 3) if c]
         self.assertEqual(cab[:len(self.RESUMO)], self.RESUMO)
+
+    def test_a_marca_nao_e_coluna_e_a_planilha_nao_tem_coluna_a_mais(self):
+        """A trava do "posicionamento": qualquer coluna nova antes da recusa
+        empurra a coluna que o comprador digita — e é ela que a importação vai
+        ler pela POSIÇÃO."""
+        cab = [c for c in self._linha(self._wb()['Resumo'], 3) if c]
+        self.assertNotIn('Marca', cab)
+        self.assertEqual(cab[0], 'TIPO', 'a primeira coluna mudou')
+
+    def test_os_rotulos_sao_os_mesmos_msgid_da_tela(self):
+        """Reusa o catálogo em vez de criar msgid paralelo: os rótulos saem
+        de `_('Tipo')`, `_('Enviados')`… — as MESMAS entradas que o
+        `{% trans %}` do template usa, só que em caixa alta. Um msgid novo
+        aqui seria uma tradução a mais para manter, dizendo a mesma coisa."""
+        import re
+        from pathlib import Path
+        from django.conf import settings
+        tpl = (Path(settings.BASE_DIR) / 'vendas' / 'templates' / 'vendas'
+               / 'partner_compra.html').read_text(encoding='utf-8')
+        thead = re.search(r'<thead>.*?</thead>', tpl, re.S).group(0)
+        da_tela = re.findall(r'<th[^>]*>\{%\s*trans "([^"]+)"', thead)
+        for rotulo in ('Tipo', 'Capacidade', 'Caixa WTC', 'Enviados',
+                       'Unitário', 'Esperado', 'Recusados', 'Aprovados',
+                       'Resultado'):
+            self.assertIn(rotulo, da_tela,
+                          '%s deixou de ser <th> da tela' % rotulo)
 
     def test_as_colunas_de_chips_sao_as_da_tela(self):
         self.assertEqual([c for c in self._linha(self._wb()['Chips'], 3) if c],
@@ -140,7 +177,14 @@ class ColunasIguaisAsDaTelaTests(_Base):
         """O defeito nº 3. A tela sempre mostrou `Tipo` na aba Chips; o CSV
         exportava sem ela, e ninguém tinha como notar sem comparar as duas
         lado a lado."""
-        self.assertIn('Tipo', self._linha(self._wb()['Chips'], 3))
+        self.assertIn('TIPO', self._linha(self._wb()['Chips'], 3))
+
+
+#: As colunas do Resumo, por POSIÇÃO — as mesmas constantes do exportador.
+#: Cravadas aqui de propósito: se alguém acrescentar uma coluna no meio, é
+#: para estes testes quebrarem, porque é a posição que a importação vai ler.
+C_TIPO, C_CAP, C_WTC, C_ENV, C_UNIT = 1, 2, 3, 4, 5
+C_ESP, C_REJ, C_REJV, C_ACE, C_RES = 6, 7, 8, 9, 10
 
 
 class NumeroEhNumeroTests(_Base):
@@ -151,19 +195,26 @@ class NumeroEhNumeroTests(_Base):
         ws = self._wb()['Resumo']
         achou = False
         for linha in range(4, ws.max_row + 1):
-            c = ws.cell(row=linha, column=7)           # ¥ esperado
+            c = ws.cell(row=linha, column=C_ESP)
             if isinstance(c.value, (int, float)):
                 self.assertIn('¥', c.number_format)
                 achou = True
         self.assertTrue(achou, 'nenhuma célula de dinheiro virou número')
 
     def test_quantidade_sai_como_inteiro(self):
+        """Na LINHA. Na faixa e no rodapé a quantidade é `SUM` — ver
+        `PlanilhaVivaTests`."""
         ws = self._wb()['Resumo']
-        self.assertIsInstance(ws.cell(row=4, column=5).value, int)
+        self.assertIsInstance(ws.cell(row=5, column=C_ENV).value, int)
 
     def test_o_total_bate_com_o_congelado_da_ordem(self):
+        """⚠ E é o ÚNICO número do rodapé que não é fórmula, de propósito: o
+        esperado é o congelado da ordem — o valor que o cliente tinha na mão
+        quando a caixa saiu —, e não a soma de hoje. É o que a tela mostra
+        ali. Somar as faixas aqui apagaria a diferença entre o combinado e o
+        conferido, que é a informação da tabela."""
         ws = self._wb()['Resumo']
-        self.assertEqual(ws.cell(row=ws.max_row, column=7).value,
+        self.assertEqual(ws.cell(row=ws.max_row, column=C_ESP).value,
                          float(self.so.total_rmb))
 
 
@@ -191,7 +242,7 @@ class ColunasDeAcertoTests(_Base):
     def _cabecalho(self):
         return [c for c in self._linha(self._wb()['Resumo'], 3) if c]
 
-    ACERTO = ['Recusados', 'Aprovados', '¥ resultado']
+    ACERTO = ['RECUSADOS', 'RECUSADOS ¥', 'APROVADOS', 'RESULTADO ¥']
 
     def test_sem_recebimento_as_colunas_nao_aparecem(self):
         """Não há o que relatar: nada foi conferido. Coluna vazia num export
@@ -232,9 +283,194 @@ class ColunasDeAcertoTests(_Base):
             self.assertEqual(esperado, recebido,
                              'a condição da tela mudou — reveja a planilha')
             cab = self._cabecalho()
-            self.assertEqual('Recusados' in cab, esperado,
+            self.assertEqual('RECUSADOS' in cab, esperado,
                              'a planilha discorda da tela com recebido=%s'
                              % recebido)
+
+
+class DesenhoIgualAoDaTelaTests(_Base):
+    """A planilha é a MESMA tabela (dono, 2026-09-07).
+
+      "é muito comum o comprador exportar os chips e trabalhar na planilha,
+       em vez de na UI (...) a ideia é que a planilha seja visualmente
+       idêntica à UI, para facilitar a edição e familiaridade lá"
+
+    O que se trava aqui não é "está bonito" — isso é olho, e o olho fez o
+    trabalho medindo o arquivo aberto no LibreOffice. O que fica travado é o
+    que some sem avisar: as cores saírem do `colors.css` e não de um hex
+    parecido, e a célula que ele digita continuar marcada como campo.
+
+    É o mesmo argumento do teste de cores do PDF do resultado, e pelo mesmo
+    motivo: a diferença some numa olhada isolada e aparece quando o arquivo
+    está do lado da tela.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+
+    def _tokens(self):
+        import os
+        import re
+        caminho = os.path.join(settings.BASE_DIR, 'static', 'wtc', 'tokens',
+                               'colors.css')
+        with io.open(caminho, encoding='utf-8') as f:
+            css = f.read()
+        # O BLOCO CLARO, que é o que a planilha copia: o arquivo declara os
+        # mesmos nomes duas vezes — `:root` é o claro, `[data-theme="dark"]`
+        # é o escuro. Ler o arquivo inteiro pegaria a segunda declaração de
+        # cada token e o teste cobraria a paleta do tema errado.
+        claro = css[:css.index('[data-theme="dark"]')]
+        return {n: v.upper() for n, v in
+                re.findall(r'--([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})', claro)}
+
+    def _cor(self, cel, onde='fill'):
+        if onde == 'fill':
+            return (cel.fill.fgColor.rgb or '')[-6:] if cel.fill.fill_type \
+                else ''
+        return (cel.font.color.rgb or '')[-6:] if cel.font.color else ''
+
+    def test_o_cabecalho_e_a_barra_preta_da_tela(self):
+        t = self._tokens()
+        ws = self._wb()['Resumo']
+        self.assertEqual(self._cor(ws.cell(row=3, column=C_TIPO)),
+                         t['ink-90'][1:])
+        self.assertEqual(self._cor(ws.cell(row=3, column=C_TIPO), 'font'),
+                         'FFFFFF')
+        # e as colunas do acerto no `--ink-100`, como `.dtab th.hr/.hg/.hb`
+        for col in (C_REJ, C_REJV, C_ACE, C_RES):
+            self.assertEqual(self._cor(ws.cell(row=3, column=col)),
+                             t['ink-100'][1:], 'coluna %s' % col)
+
+    def test_cada_coluna_do_acerto_tem_a_COR_dela(self):
+        """Vermelho, verde e azul, os mesmos `--red-50/--green-40/--blue-40`
+        do `.dtab th.hr/.hg/.hb`. É por eles que o olho acha a coluna."""
+        t = self._tokens()
+        ws = self._wb()['Resumo']
+        for col, token in ((C_REJ, 'red-50'), (C_REJV, 'red-50'),
+                           (C_ACE, 'green-40'), (C_RES, 'blue-40')):
+            self.assertEqual(
+                self._cor(ws.cell(row=3, column=col), 'font'),
+                t[token][1:], 'a cor da coluna %s saiu do token' % col)
+
+    def test_as_tres_tintas_de_coluna_sao_as_da_tela(self):
+        """`.dtab tbody td.hr/.hg/.hb` — `--red-10`, `--green-10`,
+        `--blue-10`."""
+        t = self._tokens()
+        ws = self._wb()['Resumo']
+        linha = 5                                   # a primeira linha de dado
+        for col, token in ((C_REJV, 'red-10'), (C_ACE, 'green-10'),
+                           (C_RES, 'blue-10')):
+            self.assertEqual(self._cor(ws.cell(row=linha, column=col)),
+                             t[token][1:], 'a tinta da coluna %s' % col)
+
+    def test_a_celula_que_ele_digita_esta_MARCADA_como_campo(self):
+        """Na tela é um `<input>` branco com régua vermelha; aqui a célula É o
+        campo, então ela fica branca com a régua vermelha embaixo. Sem essa
+        marca a planilha não diz onde se escreve — e é ela que a importação
+        vai ler."""
+        t = self._tokens()
+        c = self._wb()['Resumo'].cell(row=5, column=C_REJ)
+        self.assertEqual(self._cor(c), 'FFFFFF')
+        self.assertEqual((c.border.bottom.color.rgb or '')[-6:],
+                         t['red-60'][1:])
+        self.assertEqual(c.border.bottom.style, 'medium')
+
+    def test_a_faixa_da_marca_traz_a_marca_e_quantas_linhas(self):
+        """A `<tr class="g">` da tela, inclusive o "N linhas" em corpo menor.
+        Sem ela a planilha teria de trazer a marca em coluna — que é o que
+        deslocava tudo."""
+        ws = self._wb()['Resumo']
+        faixas = [str(ws.cell(row=r, column=C_TIPO).value)
+                  for r in range(4, ws.max_row + 1)]
+        for marca in ('Samsung', 'Hynix'):
+            self.assertTrue(any(marca in f for f in faixas),
+                            'a faixa de %s sumiu' % marca)
+        self.assertTrue(any('linha' in f for f in faixas),
+                        'o "N linhas" da faixa sumiu')
+
+    def test_a_dica_da_tela_veio_junto(self):
+        """A barra azul do `.rhint`, palavra por palavra. É ela que conta a
+        regra do campo a quem abre o arquivo dias depois — e é a legenda que
+        toda planilha para preencher precisa ter."""
+        ws = self._wb()['Resumo']
+        self.assertIn('campo em branco vale zero',
+                      str(ws.cell(row=2, column=1).value))
+
+    def test_sem_conferencia_nao_ha_dica_de_digitar(self):
+        """Fechada, não há o que digitar: a barra sai, como sai da tela."""
+        self.so.received_at = None
+        self.so.save(update_fields=['received_at'])
+        self.assertIsNone(self._wb()['Resumo'].cell(row=2, column=1).value)
+
+
+class PlanilhaVivaTests(_Base):
+    """As colunas derivadas são FÓRMULA, não o número que o servidor calculou.
+
+    É a diferença entre uma foto e a tela. O dono trabalha NA planilha; se
+    digitar 12 ali não move a perda, o aprovado, o resultado, a faixa da marca
+    e o rodapé — como move na tela —, ele tem de voltar para a tela para
+    conferir, e a planilha não serviu para nada.
+
+    ⚠ Os testes cobram a FÓRMULA, e não o resultado dela: o openpyxl escreve
+      fórmula sem valor em cache, e quem calcula é o Excel na mão dele. O
+      valor foi conferido à parte, abrindo o arquivo no LibreOffice — 86
+      fórmulas, zero erros.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+
+    def test_a_perda_o_aprovado_e_o_resultado_saem_da_celula_do_campo(self):
+        ws = self._wb()['Resumo']
+        r = 5                                       # primeira linha de dado
+        self.assertIn('G%d' % r, ws.cell(row=r, column=C_REJV).value)
+        self.assertIn('G%d' % r, ws.cell(row=r, column=C_ACE).value)
+        self.assertTrue(ws.cell(row=r, column=C_RES).value.startswith('='))
+
+    def test_o_vazio_vale_ZERO_tambem_na_planilha(self):
+        """`N()` devolve zero para vazio E para texto: é o que faz a regra da
+        tela valer aqui, e o que impede a coluna inteira de virar `#VALUE!`
+        quando ele digitar "ok" numa célula por engano."""
+        ws = self._wb()['Resumo']
+        self.assertIn('N(G5)', ws.cell(row=5, column=C_ACE).value)
+
+    def test_a_faixa_soma_as_linhas_dela(self):
+        """O mesmo contrato da tela: faixa dizendo um número e linhas dizendo
+        outro é o erro que só aparece depois de fechado."""
+        ws = self._wb()['Resumo']
+        for col in (C_ENV, C_ESP, C_REJV, C_ACE, C_RES):
+            self.assertIn('SUM(', str(ws.cell(row=4, column=col).value),
+                          'a faixa parou de somar a coluna %s' % col)
+
+    def test_o_rodape_soma_as_FAIXAS(self):
+        """E não as linhas: cada faixa já soma as linhas dela, então o rodapé
+        fecha com a tela por construção — e é a mesma cadeia que a tela
+        percorre (linha → grupo → total)."""
+        ws = self._wb()['Resumo']
+        formula = ws.cell(row=ws.max_row, column=C_ACE).value
+        self.assertTrue(formula.startswith('='))
+        self.assertNotIn('SUM', formula)
+        self.assertIn('+', formula)
+
+    def test_a_recusa_e_POSITIVA_na_celula_que_ele_digita(self):
+        """Como no campo da tela. Negativa é a LEITURA — faixa e rodapé —, e
+        é assim que a tela também mostra. E é o número positivo que a
+        importação vai ler de volta."""
+        with company_scope(self.emp.id):
+            from vendas import services
+            from vendas.models import SalesOrderLine
+            linha = SalesOrderLine.objects.filter(order=self.so).first()
+            services.save_draft(self.so, {linha.pk: 7}, self.parceiro)
+        ws = self._wb()['Resumo']
+        digitados = [ws.cell(row=r, column=C_REJ).value
+                     for r in range(4, ws.max_row + 1)]
+        self.assertIn(7, digitados, 'o número digitado não voltou: %r'
+                      % digitados)
+        self.assertTrue(ws.cell(row=4, column=C_REJ).value.startswith('=-'))
 
 
 class BotaoDaFichaTests(_Base):
@@ -310,10 +546,22 @@ class IdiomaTests(_Base):
                              'aba Resumo em %s' % idioma)
 
     def test_os_titulos_das_colunas_seguem_o_idioma(self):
-        for idioma, (_aba, marca, enviados) in self.ESPERADO.items():
-            cab = [c.value for c in self._em(idioma)[_aba][3]]
-            self.assertIn(marca, cab, 'coluna Marca em %s' % idioma)
-            self.assertIn(enviados, cab, 'coluna Enviados em %s' % idioma)
+        """⚠ A MARCA é conferida na aba CHIPS: no Resumo ela deixou de ser
+        coluna em 2026-09-07 (virou a faixa de grupo, como na tela). Os
+        rótulos saem em CAIXA ALTA, como os `<th>` da tela — daí o `.upper()`
+        na comparação, que também prova que o `.upper()` do exportador não
+        estraga o chinês (não há caixa em ideograma)."""
+        for idioma, (aba, marca, enviados) in self.ESPERADO.items():
+            wb = self._em(idioma)
+            resumo = [c.value for c in wb[aba][3]]
+            self.assertIn(enviados.upper(), resumo,
+                          'coluna Enviados em %s' % idioma)
+            self.assertNotIn(marca.upper(), resumo,
+                             'a Marca voltou a ser coluna do Resumo (%s)'
+                             % idioma)
+            chips = [c.value for c in wb[wb.sheetnames[1]][3]]
+            self.assertIn(marca.upper(), chips,
+                          'coluna Marca da aba Chips em %s' % idioma)
 
     def test_trocar_de_idioma_troca_o_arquivo(self):
         """A prova de que nada ficou preso no import: dois downloads na MESMA
@@ -336,15 +584,20 @@ class IdiomaTests(_Base):
         colunas = {}
         for idioma, (aba, _m, _e) in self.ESPERADO.items():
             ws = self._em(idioma)[aba]
-            colunas[idioma] = [ws.cell(row=r, column=5).value
+            colunas[idioma] = [ws.cell(row=r, column=C_ENV).value
                                for r in range(4, ws.max_row + 1)]
         referencia = colunas['pt-br']
-        self.assertTrue(all(isinstance(v, int) for v in referencia),
-                        'a coluna Enviados deixou de ser número: %r'
+        # ⚠ A coluna tem DOIS tipos desde 2026-09-07: as LINHAS trazem o
+        #   inteiro e as faixas/rodapé trazem `=SUM(...)`. Fórmula também não
+        #   traduz — e é justamente o que este teste garante quando compara a
+        #   coluna inteira entre os idiomas.
+        numeros = [v for v in referencia if isinstance(v, int)]
+        self.assertEqual(sorted(numeros), [50, 200],
+                         'as quantidades das linhas mudaram: %r' % referencia)
+        self.assertTrue(all(isinstance(v, str) and v.startswith('=')
+                            for v in referencia if not isinstance(v, int)),
+                        'faixa/rodapé deixaram de ser fórmula: %r'
                         % referencia)
-        # 200 + 50 nas faixas, os mesmos nas linhas, e 250 no rodapé.
-        self.assertEqual(referencia[-1], 250, 'o total de enviados mudou')
-        self.assertEqual(sorted(referencia), [50, 50, 200, 200, 250])
         for idioma, valores in colunas.items():
             self.assertEqual(valores, referencia,
                              'a coluna Enviados mudou em %s' % idioma)
