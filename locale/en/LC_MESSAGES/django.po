@@ -2716,6 +2716,18 @@ msgstr "Saved"
 msgid "Não salvou — sem conexão"
 msgstr "Not saved — no connection"
 
+#: vendas/ (planilha)
+msgid "Tipo do lote"
+msgstr "Lot type"
+
+#: vendas/ (planilha)
+msgid "Quantidade inválida"
+msgstr "Invalid quantity"
+
+#: vendas/ (planilha)
+msgid "Digite um número inteiro entre 0 e a quantidade enviada."
+msgstr "Enter a whole number between 0 and the quantity sent."
+
 #: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "Invalid rejected quantity in %(cat)s."

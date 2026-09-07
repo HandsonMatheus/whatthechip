@@ -68,7 +68,12 @@ class _Base(TestCase):
                 SalesOrderLine.all_companies.create(
                     order=self.so, company=self.emp, brand=marca,
                     kind='emmc', gen='', tier_value=cap, tier_unit='GB',
-                    quantity=qtd, unit_rmb=D('10.00'))
+                    quantity=qtd, unit_rmb=D('10.00'),
+                    # ⚠ CONGELADO na linha, como em toda OV confirmada. A
+                    # primeira versão deste cenário não o tinha, e o cabeçalho
+                    # da planilha saía com travessão no US$ — o que está certo
+                    # para uma ordem legada e errado para o caso comum.
+                    unit_usd=D('1.40'))
         self.client.force_login(self.parceiro)
 
     def _baixar(self):
@@ -110,12 +115,14 @@ class ArquivoTests(_Base):
 
     def test_a_planilha_diz_de_que_compra_e(self):
         """Ela vira anexo de e-mail. Sem identificação, dois arquivos na mesma
-        pasta são indistinguíveis — e o cabeçalho da tabela não diz nada sobre
-        a compra."""
+        pasta são indistinguíveis.
+
+        ⚠ SÓ O CÓDIGO DA ORDEM desde 2026-09-07 (dono: "nome do comprador e
+          numero de lote remova"). É a chave que ele cita e a que a importação
+          vai conferir; o resto era ruído no topo de uma tela de trabalho.
+        """
         cab = self._wb()['Resumo'].cell(row=1, column=1).value
-        self.assertIn(self.so.code, cab)
-        self.assertIn('Wu Quan', cab)
-        self.assertIn(self.lot.code, cab)
+        self.assertEqual(cab, self.so.code)
 
 
 class ColunasIguaisAsDaTelaTests(_Base):
@@ -140,14 +147,14 @@ class ColunasIguaisAsDaTelaTests(_Base):
              'UNITÁRIO ¥', 'TOTAL ¥']
 
     def test_as_colunas_do_resumo_sao_as_da_tela(self):
-        cab = [c for c in self._linha(self._wb()['Resumo'], 3) if c]
+        cab = [c for c in self._linha(self._wb()['Resumo'], L_CAB) if c]
         self.assertEqual(cab[:len(self.RESUMO)], self.RESUMO)
 
     def test_a_marca_nao_e_coluna_e_a_planilha_nao_tem_coluna_a_mais(self):
         """A trava do "posicionamento": qualquer coluna nova antes da recusa
         empurra a coluna que o comprador digita — e é ela que a importação vai
         ler pela POSIÇÃO."""
-        cab = [c for c in self._linha(self._wb()['Resumo'], 3) if c]
+        cab = [c for c in self._linha(self._wb()['Resumo'], L_CAB) if c]
         self.assertNotIn('Marca', cab)
         self.assertEqual(cab[0], 'TIPO', 'a primeira coluna mudou')
 
@@ -185,6 +192,17 @@ class ColunasIguaisAsDaTelaTests(_Base):
 #: para estes testes quebrarem, porque é a posição que a importação vai ler.
 C_TIPO, C_CAP, C_WTC, C_ENV, C_UNIT = 1, 2, 3, 4, 5
 C_ESP, C_REJ, C_REJV, C_ACE, C_RES = 6, 7, 8, 9, 10
+#: escondida, depois de todas as visíveis — insumo do US$ do cabeçalho
+C_USD = 11
+#: O Resumo ganhou cabeçalho informativo em 2026-09-07: cinco linhas de
+#: cabeçalho, a dica na sexta, os títulos na sétima. A aba Chips segue com o
+#: cabeçalho simples (títulos na terceira).
+#:
+#: `L_FAIXA` é a PRIMEIRA faixa de marca e `L_1` a primeira linha de dado —
+#: nomeados porque a primeira versão destes testes trocou os dois e leu o
+#: cabeçalho achando que lia a faixa.
+L_CAB, L_FAIXA, L_1 = 7, 8, 9
+_LETRA_USD = 'K'
 
 
 class NumeroEhNumeroTests(_Base):
@@ -194,7 +212,7 @@ class NumeroEhNumeroTests(_Base):
         igual na tela e não soma — e quem exporta soma a coluna."""
         ws = self._wb()['Resumo']
         achou = False
-        for linha in range(4, ws.max_row + 1):
+        for linha in range(L_1, ws.max_row + 1):
             c = ws.cell(row=linha, column=C_ESP)
             if isinstance(c.value, (int, float)):
                 self.assertIn('¥', c.number_format)
@@ -205,7 +223,7 @@ class NumeroEhNumeroTests(_Base):
         """Na LINHA. Na faixa e no rodapé a quantidade é `SUM` — ver
         `PlanilhaVivaTests`."""
         ws = self._wb()['Resumo']
-        self.assertIsInstance(ws.cell(row=5, column=C_ENV).value, int)
+        self.assertIsInstance(ws.cell(row=L_1, column=C_ENV).value, int)
 
     def test_o_total_bate_com_o_congelado_da_ordem(self):
         """⚠ E é o ÚNICO número do rodapé que não é fórmula, de propósito: o
@@ -240,7 +258,7 @@ class ColunasDeAcertoTests(_Base):
     """
 
     def _cabecalho(self):
-        return [c for c in self._linha(self._wb()['Resumo'], 3) if c]
+        return [c for c in self._linha(self._wb()['Resumo'], L_CAB) if c]
 
     ACERTO = ['RECUSADOS', 'RECUSADOS ¥', 'APROVADOS', 'RESULTADO ¥']
 
@@ -334,13 +352,13 @@ class DesenhoIgualAoDaTelaTests(_Base):
     def test_o_cabecalho_e_a_barra_preta_da_tela(self):
         t = self._tokens()
         ws = self._wb()['Resumo']
-        self.assertEqual(self._cor(ws.cell(row=3, column=C_TIPO)),
+        self.assertEqual(self._cor(ws.cell(row=L_CAB, column=C_TIPO)),
                          t['ink-90'][1:])
-        self.assertEqual(self._cor(ws.cell(row=3, column=C_TIPO), 'font'),
+        self.assertEqual(self._cor(ws.cell(row=L_CAB, column=C_TIPO), 'font'),
                          'FFFFFF')
         # e as colunas do acerto no `--ink-100`, como `.dtab th.hr/.hg/.hb`
         for col in (C_REJ, C_REJV, C_ACE, C_RES):
-            self.assertEqual(self._cor(ws.cell(row=3, column=col)),
+            self.assertEqual(self._cor(ws.cell(row=L_CAB, column=col)),
                              t['ink-100'][1:], 'coluna %s' % col)
 
     def test_cada_coluna_do_acerto_tem_a_COR_dela(self):
@@ -351,7 +369,7 @@ class DesenhoIgualAoDaTelaTests(_Base):
         for col, token in ((C_REJ, 'red-50'), (C_REJV, 'red-50'),
                            (C_ACE, 'green-40'), (C_RES, 'blue-40')):
             self.assertEqual(
-                self._cor(ws.cell(row=3, column=col), 'font'),
+                self._cor(ws.cell(row=L_CAB, column=col), 'font'),
                 t[token][1:], 'a cor da coluna %s saiu do token' % col)
 
     def test_as_tres_tintas_de_coluna_sao_as_da_tela(self):
@@ -359,7 +377,7 @@ class DesenhoIgualAoDaTelaTests(_Base):
         `--blue-10`."""
         t = self._tokens()
         ws = self._wb()['Resumo']
-        linha = 5                                   # a primeira linha de dado
+        linha = L_1                                 # a primeira linha de dado
         for col, token in ((C_REJV, 'red-10'), (C_ACE, 'green-10'),
                            (C_RES, 'blue-10')):
             self.assertEqual(self._cor(ws.cell(row=linha, column=col)),
@@ -371,7 +389,7 @@ class DesenhoIgualAoDaTelaTests(_Base):
         marca a planilha não diz onde se escreve — e é ela que a importação
         vai ler."""
         t = self._tokens()
-        c = self._wb()['Resumo'].cell(row=5, column=C_REJ)
+        c = self._wb()['Resumo'].cell(row=L_1, column=C_REJ)
         self.assertEqual(self._cor(c), 'FFFFFF')
         self.assertEqual((c.border.bottom.color.rgb or '')[-6:],
                          t['red-60'][1:])
@@ -383,7 +401,7 @@ class DesenhoIgualAoDaTelaTests(_Base):
         deslocava tudo."""
         ws = self._wb()['Resumo']
         faixas = [str(ws.cell(row=r, column=C_TIPO).value)
-                  for r in range(4, ws.max_row + 1)]
+                  for r in range(L_FAIXA, ws.max_row + 1)]
         for marca in ('Samsung', 'Hynix'):
             self.assertTrue(any(marca in f for f in faixas),
                             'a faixa de %s sumiu' % marca)
@@ -396,13 +414,14 @@ class DesenhoIgualAoDaTelaTests(_Base):
         toda planilha para preencher precisa ter."""
         ws = self._wb()['Resumo']
         self.assertIn('campo em branco vale zero',
-                      str(ws.cell(row=2, column=1).value))
+                      str(ws.cell(row=L_CAB - 1, column=1).value))
 
     def test_sem_conferencia_nao_ha_dica_de_digitar(self):
         """Fechada, não há o que digitar: a barra sai, como sai da tela."""
         self.so.received_at = None
         self.so.save(update_fields=['received_at'])
-        self.assertIsNone(self._wb()['Resumo'].cell(row=2, column=1).value)
+        self.assertIsNone(
+            self._wb()['Resumo'].cell(row=L_CAB - 1, column=1).value)
 
 
 class PlanilhaVivaTests(_Base):
@@ -426,7 +445,7 @@ class PlanilhaVivaTests(_Base):
 
     def test_a_perda_o_aprovado_e_o_resultado_saem_da_celula_do_campo(self):
         ws = self._wb()['Resumo']
-        r = 5                                       # primeira linha de dado
+        r = L_1                                     # primeira linha de dado
         self.assertIn('G%d' % r, ws.cell(row=r, column=C_REJV).value)
         self.assertIn('G%d' % r, ws.cell(row=r, column=C_ACE).value)
         self.assertTrue(ws.cell(row=r, column=C_RES).value.startswith('='))
@@ -436,14 +455,14 @@ class PlanilhaVivaTests(_Base):
         tela valer aqui, e o que impede a coluna inteira de virar `#VALUE!`
         quando ele digitar "ok" numa célula por engano."""
         ws = self._wb()['Resumo']
-        self.assertIn('N(G5)', ws.cell(row=5, column=C_ACE).value)
+        self.assertIn('N(G%d)' % L_1, ws.cell(row=L_1, column=C_ACE).value)
 
     def test_a_faixa_soma_as_linhas_dela(self):
         """O mesmo contrato da tela: faixa dizendo um número e linhas dizendo
         outro é o erro que só aparece depois de fechado."""
         ws = self._wb()['Resumo']
         for col in (C_ENV, C_ESP, C_REJV, C_ACE, C_RES):
-            self.assertIn('SUM(', str(ws.cell(row=4, column=col).value),
+            self.assertIn('SUM(', str(ws.cell(row=L_FAIXA, column=col).value),
                           'a faixa parou de somar a coluna %s' % col)
 
     def test_o_rodape_soma_as_FAIXAS(self):
@@ -467,10 +486,175 @@ class PlanilhaVivaTests(_Base):
             services.save_draft(self.so, {linha.pk: 7}, self.parceiro)
         ws = self._wb()['Resumo']
         digitados = [ws.cell(row=r, column=C_REJ).value
-                     for r in range(4, ws.max_row + 1)]
+                     for r in range(L_FAIXA, ws.max_row + 1)]
         self.assertIn(7, digitados, 'o número digitado não voltou: %r'
                       % digitados)
-        self.assertTrue(ws.cell(row=4, column=C_REJ).value.startswith('=-'))
+        self.assertTrue(
+            ws.cell(row=L_FAIXA, column=C_REJ).value.startswith('=-'))
+
+
+class CabecalhoInformativoTests(_Base):
+    """O topo do Resumo (dono, 2026-09-07).
+
+      "faca um cabecalho informativo simples com o valor esperado e o valor do
+       resultado, esse deve se atualizar conforme ele vai mexendo, deve ter tbm
+       nesse cabeclho o numero da ordem de venda, o TIPO do lote, o cliente e a
+       TAXA de cambio, essas sao as unicas informacoes q importam, nome do
+       comprador e numero de lote remova."
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+
+    def _topo(self):
+        ws = self._wb()['Resumo']
+        return [str(ws.cell(row=r, column=c).value)
+                for r in range(1, L_CAB) for c in range(1, C_USD + 1)
+                if ws.cell(row=r, column=c).value is not None]
+
+    def test_traz_as_quatro_informacoes_que_importam(self):
+        topo = self._topo()
+        self.assertIn(self.so.code, topo)
+        self.assertIn(self.emp.name, topo)                  # cliente
+        self.assertIn(self.lot.get_origin_display(), topo)  # tipo do lote
+        self.assertIn(float(self.so.fx_usd_rate), [
+            v for v in self._wb()['Resumo'].iter_rows(
+                min_row=1, max_row=L_CAB - 1, values_only=True)
+            for v in v if isinstance(v, float)])
+
+    def test_o_comprador_e_o_lote_SAIRAM(self):
+        """Pedido literal. E não é só limpeza: o topo de uma tela de trabalho
+        só aguenta o que ele usa para decidir."""
+        topo = ' '.join(self._topo())
+        self.assertNotIn(self.buyer.name, topo)
+        self.assertNotIn(self.lot.code, topo)
+
+    def test_o_resultado_do_topo_ACOMPANHA_o_que_ele_digita(self):
+        """"esse deve se atualizar conforme ele vai mexendo" — então é
+        fórmula, e ela aponta para o rodapé da tabela, que por sua vez soma as
+        faixas. Uma segunda conta aqui divergiria da primeira."""
+        ws = self._wb()['Resumo']
+        rmb = ws.cell(row=4, column=C_ACE).value
+        usd = ws.cell(row=5, column=C_ACE).value
+        self.assertTrue(str(rmb).startswith('='), rmb)
+        self.assertIn('%s%d' % ('J', ws.max_row), rmb)
+        self.assertIn('SUMPRODUCT', str(usd))
+
+    def test_o_esperado_do_topo_NAO_se_move(self):
+        """É o congelado da ordem — o número que o cliente tinha na mão
+        quando a caixa saiu. Se ele se movesse junto, a diferença entre o
+        combinado e o conferido sumiria da tela."""
+        ws = self._wb()['Resumo']
+        self.assertEqual(ws.cell(row=4, column=C_REJ).value,
+                         float(self.so.total_rmb))
+        self.assertEqual(ws.cell(row=5, column=C_REJ).value,
+                         float(self.so.total_usd))
+
+    def test_o_dolar_NAO_e_o_yuan_vezes_a_taxa(self):
+        """⚠ A armadilha. Na tela o US$ é a soma dos unitários CONGELADOS, e
+        não ¥ × taxa — as duas contas diferem em alguns dólares. Por isso a
+        planilha carrega o unitário em US$ numa coluna escondida e soma por
+        `SUMPRODUCT`: derivar da taxa daria um número que discorda da tela sem
+        nada dizendo qual está certo."""
+        ws = self._wb()['Resumo']
+        self.assertIn(_LETRA_USD, str(ws.cell(row=5, column=C_ACE).value))
+        self.assertTrue(ws.column_dimensions[_LETRA_USD].hidden,
+                        'a coluna do US$ unitário ficou visível')
+        # a coluna escondida traz o CONGELADO da linha, não uma conta
+        self.assertEqual(ws.cell(row=L_1, column=C_USD).value,
+                         float(self.so.lines.all()[0].unit_usd))
+
+    def test_sem_nenhum_unitario_em_dolar_o_topo_diz_TRAVESSAO(self):
+        """Ordem legada, ou rascunho sem taxa: o `SUMPRODUCT` daria ZERO, e
+        "US$ 0.00" é um preço — ausência de preço não é. A tela faz o mesmo."""
+        with company_scope(self.emp.id):
+            self.so.lines.all().update(unit_usd=None)
+        self.assertEqual(
+            self._wb()['Resumo'].cell(row=5, column=C_ACE).value, '—')
+
+
+class SoOCampoEditavelTests(_Base):
+    """Dono, 2026-09-07: *"esta sendo possivel digital texto tbm onde digita
+    os chips rechazados, proiba"* e *"inabilite todos os outros campos de
+    serem editados, exceto o de chips recusados"*.
+
+    Duas travas para duas coisas diferentes: a PROTEÇÃO impede tocar no que
+    não é campo (um Ctrl+V no lugar errado apaga uma fórmula e a planilha
+    passa a mostrar um número que não é dela, em silêncio); a VALIDAÇÃO
+    recusa o que não é inteiro entre 0 e o enviado — o `min`/`max` do
+    `<input>` da tela, palavra por palavra.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        self.ws = self._wb()['Resumo']
+
+    def test_a_folha_esta_protegida_e_SEM_senha(self):
+        """Sem senha de propósito: isto é guarda de mão trocada, não segredo.
+        Uma planilha que ele não consegue destrancar viraria um problema
+        dele."""
+        self.assertTrue(self.ws.protection.sheet)
+        self.assertIsNone(self.ws.protection.password)
+
+    def test_so_a_coluna_da_recusa_esta_destrancada(self):
+        soltas = {c.coordinate for linha in self.ws.iter_rows()
+                  for c in linha
+                  if c.protection and c.protection.locked is False}
+        self.assertTrue(soltas, 'nada ficou editável — nem o campo')
+        self.assertTrue(all(c.startswith('G') for c in soltas),
+                        'algo fora da coluna da recusa ficou editável: %s'
+                        % sorted(soltas))
+
+    def test_a_faixa_e_o_rodape_continuam_trancados(self):
+        """São fórmula: se ele digitar por cima, a tabela passa a somar outra
+        coisa e nada avisa."""
+        for r in (L_FAIXA, self.ws.max_row):
+            self.assertTrue(self.ws.cell(row=r, column=C_REJ).protection.locked,
+                            'linha %d ficou editável' % r)
+
+    def test_redimensionar_coluna_continua_liberado(self):
+        """Não é editar dado — e uma coluna estreita que não se pode alargar é
+        uma tela pior. (`False` no OOXML quer dizer PERMITIDO.)"""
+        self.assertFalse(self.ws.protection.formatColumns)
+        self.assertFalse(self.ws.protection.formatRows)
+
+    def _dv(self):
+        dvs = self.ws.data_validations.dataValidation
+        self.assertEqual(len(dvs), 1, 'esperava UMA validação: %r' % dvs)
+        return dvs[0]
+
+    def test_texto_nao_entra_no_campo(self):
+        dv = self._dv()
+        self.assertEqual(dv.type, 'whole')
+        self.assertEqual(dv.errorStyle, 'stop', 'aviso não basta: tem de BARRAR')
+        self.assertTrue(dv.showErrorMessage)
+
+    def test_nao_da_para_recusar_mais_do_que_veio(self):
+        """⚠ `$D8` e não `D8`: o `$` trava a COLUNA e deixa a linha correr, de
+        modo que em `G12` a regra vira `$D12`. Sem ele a referência andaria
+        também na horizontal se alguém mexesse no `sqref`, e a regra passaria
+        a comparar com a coluna errada — silenciosamente."""
+        dv = self._dv()
+        self.assertEqual(dv.operator, 'between')
+        self.assertEqual(dv.formula1, '0')
+        self.assertEqual(dv.formula2, '$D%d' % L_1)
+        self.assertTrue(dv.allow_blank, 'campo em branco tem de valer zero')
+
+    def test_a_validacao_cobre_TODOS_os_campos_e_so_eles(self):
+        from openpyxl.utils import get_column_letter
+        dv = self._dv()
+        celulas = {'%s%d' % (get_column_letter(col), linha)
+                   for faixa in dv.sqref.ranges for linha, col in faixa.cells}
+        soltas = {c.coordinate for linha in self.ws.iter_rows()
+                  for c in linha
+                  if c.protection and c.protection.locked is False}
+        self.assertEqual(celulas, soltas,
+                         'validação e destravamento discordam sobre onde se '
+                         'digita')
 
 
 class BotaoDaFichaTests(_Base):
@@ -553,7 +737,7 @@ class IdiomaTests(_Base):
         estraga o chinês (não há caixa em ideograma)."""
         for idioma, (aba, marca, enviados) in self.ESPERADO.items():
             wb = self._em(idioma)
-            resumo = [c.value for c in wb[aba][3]]
+            resumo = [c.value for c in wb[aba][L_CAB]]
             self.assertIn(enviados.upper(), resumo,
                           'coluna Enviados em %s' % idioma)
             self.assertNotIn(marca.upper(), resumo,
@@ -585,7 +769,7 @@ class IdiomaTests(_Base):
         for idioma, (aba, _m, _e) in self.ESPERADO.items():
             ws = self._em(idioma)[aba]
             colunas[idioma] = [ws.cell(row=r, column=C_ENV).value
-                               for r in range(4, ws.max_row + 1)]
+                               for r in range(L_FAIXA, ws.max_row + 1)]
         referencia = colunas['pt-br']
         # ⚠ A coluna tem DOIS tipos desde 2026-09-07: as LINHAS trazem o
         #   inteiro e as faixas/rodapé trazem `=SUM(...)`. Fórmula também não

@@ -131,49 +131,158 @@ def _estilos():
     }
 
 
-def _titulo(ws, so, colunas, e, dica=''):
-    """As duas linhas acima da tabela: a identificação e a DICA.
-
-    A identificação existe porque o arquivo vira anexo de e-mail — sem o
-    código da ordem, dois downloads na mesma pasta são indistinguíveis.
-
-    A dica é a barra azul da tela (`.rhint`), copiada palavra por palavra:
-    *"Digite só o que recusou — campo em branco vale zero."* É ela que conta
-    ao comprador a regra do campo, e é ela que faz a planilha se explicar
-    sozinha para quem abre o arquivo dias depois.
-    """
-    from openpyxl.styles import Alignment, Font, PatternFill
+def _colunas(ws, colunas, e, linha):
+    """A barra preta dos títulos — a `<thead>` da tela."""
     from openpyxl.utils import get_column_letter
-    ws.cell(row=1, column=1, value='%s · %s · %s' % (
-        so.code, so.buyer.name if so.buyer_id else '—',
-        so.lot.code if so.lot_id else '—')).font = Font(
-            name=SANS, bold=True, size=12)
-    if dica:
-        c = ws.cell(row=2, column=1, value=dica)
-        c.font = Font(name=SANS, size=9, color=INK_70)
-        for i in range(1, len(colunas) + 1):
-            ws.cell(row=2, column=i).fill = PatternFill('solid',
-                                                        fgColor=BLUE_10)
-        ws.cell(row=2, column=1).font = Font(name=SANS, size=9, color=INK_70)
-        ws.cell(row=2, column=1).alignment = Alignment(vertical='center')
-        ws.row_dimensions[2].height = 20
-    ws.freeze_panes = 'A4'
-    # A tabela é larga e ele imprime: sem isto o Excel quebra as colunas do
-    # acerto para uma segunda folha, e a conferência chega ao papel partida
-    # ao meio — que é o oposto de "igual à tela".
-    ws.sheet_properties.pageSetUpPr.fitToPage = True
-    ws.page_setup.orientation = 'landscape'
-    ws.page_setup.fitToWidth, ws.page_setup.fitToHeight = 1, 0
-    ws.print_title_rows = '1:3'
     for i, coluna in enumerate(colunas, start=1):
         rotulo, largura, tinta = coluna
-        c = ws.cell(row=3, column=i, value=rotulo)
+        c = ws.cell(row=linha, column=i, value=rotulo)
         c.fill = e['h_fill_acerto'] if tinta else e['h_fill']
         c.font = {'rej': e['h_rej'], 'ace': e['h_ace'],
                   'res': e['h_res']}.get(tinta, e['h_font'])
         c.alignment = e['h_alin']
         ws.column_dimensions[get_column_letter(i)].width = largura
-    ws.row_dimensions[3].height = 30
+    ws.row_dimensions[linha].height = 30
+
+
+def _impressao(ws, titulos):
+    """A tabela é larga e ele imprime: sem isto o Excel quebra as colunas do
+    acerto para uma segunda folha, e a conferência chega ao papel partida ao
+    meio — que é o oposto de "igual à tela"."""
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.page_setup.orientation = 'landscape'
+    ws.page_setup.fitToWidth, ws.page_setup.fitToHeight = 1, 0
+    ws.print_title_rows = titulos
+
+
+def _titulo(ws, so, colunas, e):
+    """O cabeçalho SIMPLES da aba Chips: uma linha de identificação."""
+    from openpyxl.styles import Font
+    ws.cell(row=1, column=1, value='%s · %s · %s' % (
+        so.code, so.company.name if so.company_id else '—',
+        so.lot.get_origin_display() if so.lot_id else '—')).font = Font(
+            name=SANS, bold=True, size=12)
+    ws.freeze_panes = 'A4'
+    _impressao(ws, '1:3')
+    _colunas(ws, colunas, e, 3)
+
+
+def _dica(ws, texto, e):
+    """A barra azul do `.rhint`, na linha logo acima da tabela."""
+    from openpyxl.styles import Alignment, Font, PatternFill
+    for col in range(1, _COLS + 1):
+        ws.cell(row=LINHA_CAB - 1, column=col).fill = PatternFill(
+            'solid', fgColor=BLUE_10)
+    c = ws.cell(row=LINHA_CAB - 1, column=1, value=texto)
+    c.font = Font(name=SANS, size=9, color=INK_70)
+    c.alignment = Alignment(vertical='center')
+    ws.row_dimensions[LINHA_CAB - 1].height = 20
+
+
+def _cabecalho_da_compra(ws, so, ctx, e, acerto, ultima_linha):
+    """O TOPO INFORMATIVO do Resumo (dono, 2026-09-07).
+
+      "faca um cabecalho informativo simples com o valor esperado e o valor do
+       resultado, esse deve se atualizar conforme ele vai mexendo, deve ter tbm
+       nesse cabeclho o numero da ordem de venda, o TIPO do lote, o cliente e a
+       TAXA de cambio, essas sao as unicas informacoes q importam, nome do
+       comprador e numero de lote remova."
+
+    É o herói da ficha, em célula: as três identificações à esquerda e os dois
+    números grandes à direita, cada um com ¥ em cima e US$ embaixo — a mesma
+    pilha da tela.
+
+    ⚠ SAÍRAM o nome do comprador e o código do lote. O arquivo continua se
+      identificando pelo CÓDIGO DA ORDEM, que é a chave que ele cita e a que a
+      importação vai conferir.
+
+    ⚠ O RESULTADO É FÓRMULA; o esperado é valor. O esperado é o congelado da
+      ordem — o número que o cliente tinha na mão quando a caixa saiu — e não
+      se move enquanto ele digita. O resultado se move: é ele que responde
+      "quanto sobrou".
+
+    ⚠ Cada número ocupa DUAS colunas (`merge`). A primeira versão punha um por
+      coluna e o Excel devolveu `###` em todos os quatro: 13pt em mono não
+      cabe em 13 caracteres. Foi o arquivo aberto que disse isso, não a
+      leitura do código.
+    """
+    from openpyxl.styles import Alignment, Border, Font, Side
+    fx = so.fx_usd_rate
+    AZUL_HERO = '0F62FE'
+
+    ws.cell(row=1, column=1, value=so.code).font = Font(
+        name=SANS, bold=True, size=14)
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=3)
+    ws.row_dimensions[1].height = 24
+    ws.row_dimensions[2].height = 6
+
+    def _campo(col, rotulo, valor, fmt=None):
+        r = ws.cell(row=3, column=col, value=rotulo)
+        r.font, r.alignment = e['t_lbl'], e['esq']
+        v = ws.cell(row=4, column=col, value=valor)
+        v.font, v.alignment = e['mono_b'], e['esq']
+        if fmt:
+            v.number_format = fmt
+        for f in (3, 4):
+            ws.merge_cells(start_row=f, start_column=col,
+                           end_row=f, end_column=col + 1)
+
+    _campo(COL_TIPO, _('Cliente').upper(),
+           so.company.name if so.company_id else '—')
+    _campo(COL_WTC, _('Tipo do lote').upper(),
+           so.lot.get_origin_display() if so.lot_id else '—')
+    _campo(COL_UNIT, _('Taxa').upper() + ' ¥→US$',
+           float(fx) if fx else '—', fmt='0.0000' if fx else None)
+
+    # ── OS DOIS NÚMEROS, ¥ em cima e US$ embaixo, como na tela ────────────
+    def _hero(col, rotulo, rmb, usd, fmt_rmb, azul):
+        cor = AZUL_HERO if azul else '161616'
+        r = ws.cell(row=3, column=col, value=rotulo)
+        r.font = Font(name=SANS, bold=True, size=9,
+                      color=AZUL_HERO if azul else INK_70)
+        r.alignment = e['esq']
+        for linha, valor, fmt in ((4, rmb, fmt_rmb),
+                                  (5, usd, '"US$" #,##0.00')):
+            c = ws.cell(row=linha, column=col, value=valor)
+            c.font = Font(name=MONO, bold=True, size=12, color=cor)
+            c.alignment, c.number_format = e['esq'], fmt
+        for linha in (3, 4, 5):
+            ws.merge_cells(start_row=linha, start_column=col,
+                           end_row=linha, end_column=col + 1)
+
+    esperado_rmb = (float(ctx['total_estimado']) if ctx['estimado']
+                    else (float(so.total_rmb) if so.total_rmb else '—'))
+    fmt_esp = FMT_RMB_EST if ctx['estimado'] else FMT_RMB
+    _hero(COL_REJ, _('Resultado esperado').upper(), esperado_rmb,
+          float(so.total_usd) if so.total_usd else '—', fmt_esp, False)
+    if acerto:
+        # O ¥ vem do rodapé; o US$ vem da coluna escondida — `SUMPRODUCT` de
+        # aprovados × unitário congelado. As faixas entram no intervalo e
+        # contribuem ZERO, porque a coluna do US$ é vazia nelas.
+        #
+        # ⚠ Sem NENHUM unitário em US$ (ordem legada, rascunho sem taxa) o
+        #   `SUMPRODUCT` daria zero, e "US$ 0.00" é um preço — ausência de
+        #   preço não é. Aí sai travessão, como a tela faz.
+        tem_usd = any(l['unit_usd'] is not None
+                      for g in ctx['grupos'] for l in g['lines'])
+        _hero(COL_ACE, _('Resultado').upper(),
+              '=%s%d' % (_L(COL_RES), ultima_linha),
+              '=SUMPRODUCT(%s%d:%s%d,%s%d:%s%d)' % (
+                  _L(COL_ACE), LINHA_1, _L(COL_ACE), ultima_linha - 1,
+                  _L(COL_USD), LINHA_1, _L(COL_USD), ultima_linha - 1)
+              if tem_usd else '—',
+              FMT_RMB, True)
+    else:
+        _hero(COL_ACE, _('Resultado').upper(), esperado_rmb,
+              float(so.total_usd) if so.total_usd else '—', fmt_esp, True)
+    ws.row_dimensions[3].height = 14
+    for linha in (4, 5):
+        ws.row_dimensions[linha].height = 20
+
+    # a régua azul que fecha o cabeçalho, como na ficha
+    for col in range(1, _COLS + 1):
+        ws.cell(row=5, column=col).border = Border(
+            bottom=Side(style='medium', color=AZUL_HERO))
 
 
 def _pinta(ws, linha, dados, e, fonte=None, fill=None, borda=None):
@@ -220,6 +329,18 @@ def _dinheiro(valor, legado):
 _COLS = 10
 COL_TIPO, COL_CAP, COL_WTC, COL_ENV, COL_UNIT = 1, 2, 3, 4, 5
 COL_ESP, COL_REJ, COL_REJV, COL_ACE, COL_RES = 6, 7, 8, 9, 10
+#: ⚠ COLUNA ESCONDIDA, depois de todas as visíveis. Guarda o US$ unitário
+#:   CONGELADO de cada linha, e existe por um motivo só: o cabeçalho mostra o
+#:   resultado nas duas moedas, e o US$ da tela NÃO é ¥ × taxa — é a soma dos
+#:   unitários congelados. Derivar da taxa daria um número que discorda da
+#:   tela em alguns dólares, que é a divergência silenciosa que este projeto
+#:   passa a vida caçando. Fica em K (depois de tudo) para não deslocar
+#:   coluna nenhuma, e escondida porque é insumo, não leitura.
+COL_USD = 11
+
+#: A tabela começa mais abaixo desde 2026-09-07: o cabeçalho informativo
+#: ocupa as cinco primeiras linhas e a dica a sexta.
+LINHA_CAB, LINHA_1 = 7, 8
 
 #: `{coluna: chave de tinta}` — as mesmas `.hr/.hg/.hb` da tela.
 TINTA = {COL_REJ: 'rej', COL_REJV: 'rej', COL_ACE: 'ace', COL_RES: 'res'}
@@ -252,19 +373,16 @@ def _aba_resumo(ws, so, ctx):
                     ('%s ¥' % _('Recusados').upper(), 15, 'rej'),
                     (_('Aprovados').upper(), 13, 'ace'),
                     ('%s ¥' % _('Resultado').upper(), 15, 'res')]
-    # A MESMA frase da barra azul da tela — o comprador reconhece a regra
-    # antes de digitar a primeira célula.
-    dica = _('Digite só o que recusou — campo em branco vale zero.') \
-        if editavel else ''
-    _titulo(ws, so, colunas, e, dica=dica)
 
-    r = 4
-    faixas = []                     # as linhas de faixa, para o rodapé somar
+    r = LINHA_1
+    faixas, campos = [], []
     for i, g in enumerate(ctx['grupos']):
         faixa_r, r = r, r + 1
         primeira = r
         for l in g['lines']:
             _linha_do_chip(ws, r, l, e, acerto, editavel, legado, ctx)
+            if editavel:
+                campos.append(r)
             r += 1
         _faixa_da_marca(ws, faixa_r, g, i, e, acerto, legado, ctx,
                         primeira, r - 1, CellRichText, TextBlock, InlineFont,
@@ -272,6 +390,81 @@ def _aba_resumo(ws, so, ctx):
         faixas.append(faixa_r)
 
     _rodape(ws, r, ctx, so, e, acerto, legado, faixas)
+    _cabecalho_da_compra(ws, so, ctx, e, acerto, r)
+    if editavel:
+        # A MESMA frase da barra azul da tela (`.rhint`) — ele reconhece a
+        # regra do campo antes de digitar a primeira célula, e quem abrir o
+        # arquivo dias depois a lê sem precisar perguntar.
+        _dica(ws, _('Digite só o que recusou — campo em branco vale zero.'),
+              e)
+    _colunas(ws, colunas, e, LINHA_CAB)
+    if acerto:
+        # A coluna escondida do US$ unitário — insumo do cabeçalho, não
+        # leitura. Nem título tem: um `<th>` ali seria uma coluna a mais.
+        ws.column_dimensions[_L(COL_USD)].hidden = True
+    ws.freeze_panes = '%s%d' % (_L(1), LINHA_1)
+    _impressao(ws, '1:%d' % LINHA_CAB)
+    if editavel:
+        _so_o_campo_e_editavel(ws, campos, r)
+
+
+def _so_o_campo_e_editavel(ws, campos, ultima):
+    """A planilha inteira TRANCADA, menos a coluna que ele digita.
+
+    Dono, 2026-09-07: *"esta sendo possivel digital texto tbm onde digita os
+    chips rechazados, proiba"* e *"inabilite todos os outros campos de serem
+    editados, exceto o de chips recusados"*.
+
+    Duas travas, e elas respondem a coisas diferentes:
+
+      · A PROTEÇÃO da folha impede tocar em qualquer célula que não seja o
+        campo. Sem ela, um Ctrl+V no lugar errado apaga uma fórmula e a
+        planilha passa a mostrar um número que não é dela — em silêncio.
+      · A VALIDAÇÃO recusa o que não é inteiro entre 0 e o enviado. É o
+        `min`/`max` do `<input>` da tela, palavra por palavra: recusar 20 de
+        13 não é digitação, é engano, e a tela sempre barrou.
+
+    ⚠ SEM SENHA, de propósito. Isto é guarda de mão trocada, não segredo:
+      qualquer um remove a proteção em dois cliques, e é assim que tem de ser
+      — uma planilha que ele não consegue destrancar viraria um problema
+      dele, não uma ajuda.
+
+    Redimensionar coluna e linha continua liberado: não é editar dado, e uma
+    coluna estreita demais que não se pode alargar é uma tela pior.
+    """
+    from openpyxl.styles import Protection
+    from openpyxl.worksheet.datavalidation import DataValidation
+
+    for linha in ws.iter_rows(min_row=1, max_row=ultima, max_col=COL_USD):
+        for c in linha:
+            c.protection = Protection(locked=True)
+    for r in campos:
+        ws.cell(row=r, column=COL_REJ).protection = Protection(locked=False)
+
+    ws.protection.sheet = True
+    ws.protection.formatColumns = False      # False = PERMITIDO
+    ws.protection.formatRows = False
+    ws.protection.selectLockedCells = False  # ler e copiar continua livre
+    ws.protection.selectUnlockedCells = False
+
+    if not campos:
+        return
+    # ⚠ UMA validação para todos os campos, com `formula2` RELATIVA. O Excel
+    #   ancora a referência na primeira célula do `sqref` e desloca por
+    #   célula. `$D8` trava a COLUNA e deixa a linha correr: em `G12` a regra
+    #   vira `$D12`, em `G27` vira `$D27` — inclusive com as faixas no meio,
+    #   porque o deslocamento é por linha. O `$` não é enfeite: sem ele a
+    #   referência anda também na horizontal se alguém mexer no `sqref`.
+    #   Uma validação por linha daria o mesmo e um arquivo bem maior.
+    dv = DataValidation(
+        type='whole', operator='between',
+        formula1='0', formula2='$%s%d' % (_L(COL_ENV), campos[0]),
+        allow_blank=True, showErrorMessage=True, errorStyle='stop',
+        errorTitle=_('Quantidade inválida'),
+        error=_('Digite um número inteiro entre 0 e a quantidade enviada.'))
+    ws.add_data_validation(dv)
+    for r in campos:
+        dv.add(ws.cell(row=r, column=COL_REJ))
 
 
 def _linha_do_chip(ws, r, l, e, acerto, editavel, legado, ctx):
@@ -343,6 +536,10 @@ def _linha_do_chip(ws, r, l, e, acerto, editavel, legado, ctx):
     _num(ws, r, COL_REJV, FMT_RMB_NEG)
     _num(ws, r, COL_ACE, FMT_QTD)
     _num(ws, r, COL_RES, FMT_RMB)
+    # O insumo ESCONDIDO do US$ do cabeçalho: o unitário CONGELADO da
+    # linha, que é de onde a tela tira o dólar — e não de ¥ × taxa.
+    if l['unit_usd'] is not None:
+        ws.cell(row=r, column=COL_USD, value=float(l['unit_usd']))
 
 
 def _faixa_da_marca(ws, r, g, i, e, acerto, legado, ctx, a, b,

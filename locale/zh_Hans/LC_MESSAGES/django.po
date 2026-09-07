@@ -2575,6 +2575,18 @@ msgstr "已保存"
 msgid "Não salvou — sem conexão"
 msgstr "未保存 — 无网络连接"
 
+#: vendas/ (planilha)
+msgid "Tipo do lote"
+msgstr "批次类型"
+
+#: vendas/ (planilha)
+msgid "Quantidade inválida"
+msgstr "数量无效"
+
+#: vendas/ (planilha)
+msgid "Digite um número inteiro entre 0 e a quantidade enviada."
+msgstr "请填写 0 到发出数量之间的整数。"
+
 #: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "%(cat)s 的拒收数量无效。"

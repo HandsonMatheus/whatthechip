@@ -2739,6 +2739,18 @@ msgstr "Guardado"
 msgid "Não salvou — sem conexão"
 msgstr "No se guardó — sin conexión"
 
+#: vendas/ (planilha)
+msgid "Tipo do lote"
+msgstr "Tipo de lote"
+
+#: vendas/ (planilha)
+msgid "Quantidade inválida"
+msgstr "Cantidad inválida"
+
+#: vendas/ (planilha)
+msgid "Digite um número inteiro entre 0 e a quantidade enviada."
+msgstr "Escriba un número entero entre 0 y la cantidad enviada."
+
 #: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "Cantidad rechazada inválida en %(cat)s."
