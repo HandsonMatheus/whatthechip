@@ -55,6 +55,17 @@ def _ler(p):
         return f.read()
 
 
+def _regra(css, seletor):
+    """O corpo `{...}` da regra deste seletor exato.
+
+    Recorta em vez de procurar a linha inteira: assim acrescentar uma
+    declaração à regra não reprova o teste que cobra outra.
+    """
+    i = css.find(seletor + '{')
+    assert i != -1, 'seletor %r não existe no CSS' % seletor
+    return css[i:css.index('}', i) + 1]
+
+
 class _Base(TestCase):
     #: ⚠ De propósito NÃO é `unit_rmb * fx_usd_rate` (2.00 × 0.1400 = 0.28).
     #: Um US$ que não é derivável da taxa é o que permite provar que a tela lê
@@ -264,6 +275,26 @@ class RecalculoAoVivoTests(_Base):
         self.assertIn('id="t-pagar-rmb"', self.js)
         self.assertNotIn("escreverNumero(elPagar,", self.js)
 
+    #: O `extra` (a perda) viaja dentro do `y`, e o `y` entra no span do ¥.
+    _PERDA_DENTRO = ''''<span class="cy">' + y +'''
+    #: A abertura da string COM um espaço dentro — o que não pode existir.
+    #: Aspa, espaço, `<b`. Escrito nesta ordem de propósito: a primeira versão
+    #: deste teste era espaço-aspa-`<b`, que casa com a INDENTAÇÃO do `? ` e
+    #: reprovava o código certo.
+    _PERDA_COM_ESPACO = """' <b class="dl2">"""
+
+    def test_a_perda_entra_DENTRO_do_span_do_yuan(self):
+        """Fora dele o `.dl2` seria IRMÃO do span, e o span é `display:block`
+        nesta folha: a perda cairia numa terceira linha da célula."""
+        self.assertIn('<b class="dl2">', self.js)
+        self.assertIn(self._PERDA_DENTRO, self.js)
+
+    def test_a_perda_nao_traz_espaco_na_string(self):
+        """O respiro entre as duas cifras é o `margin-left` do `.dtab .dl2`.
+        Espaço em string de JS some no primeiro reindent — e some sem quebrar
+        nada, que é o pior tipo de regressão visual."""
+        self.assertNotIn(self._PERDA_COM_ESPACO, self.js)
+
 
 class EstiloTests(TestCase):
 
@@ -281,6 +312,27 @@ class EstiloTests(TestCase):
         self.assertNotEqual(geral, -1)
         self.assertNotEqual(cy, -1)
         self.assertLess(geral, cy)
+
+    def test_a_perda_da_linha_e_INLINE_dentro_da_dtab(self):
+        """O DEFEITO DE 07/09, e ele não estava no `.dtab`: o `.dl2` do
+        `patterns/parceiro.css` é `display:block;text-align:right`, e a regra
+        daqui só sobrescrevia fonte e cor. Ao digitar a recusa, a perda virava
+        um bloco encostado na borda direita — terceira linha na célula — e a
+        linha da tabela crescia de 48 para 56px (dono: "sai na coluna de
+        resultado quebrando tudo").
+
+        Aqui é ESPECIFICIDADE (0,2,0 contra 0,1,0), não ordem: o `.dl2` do
+        pattern carrega depois no `<head>` e mesmo assim perde. Por isso este
+        teste cobra as declarações, e não a posição no arquivo.
+        """
+        regra = _regra(_ler(CSS), '.dtab .dl2')
+        self.assertIn('display:inline', regra)
+        self.assertIn('text-align:inherit', regra)
+
+    def test_o_respiro_da_perda_mora_no_css(self):
+        """Par com o `test_a_perda_nao_traz_espaco_na_string`: um dos dois tem
+        de dar o espaço, e os dois juntos dariam o dobro."""
+        self.assertIn('margin-left', _regra(_ler(CSS), '.dtab .dl2'))
 
 
 class RegistroLegadoTests(_Base):

@@ -1322,8 +1322,13 @@
       if (cVal) {
         // A PERDA ao lado do valor, e só quando existe: `.dl2` é o risco do
         // pacote. Sem ela o comprador vê o resultado cair sem ver o quanto.
+        //
+        // ⚠ SEM espaço antes do `<b>`: o respiro entre as duas cifras é o
+        //   `margin-left` do `.dtab .dl2`. Espaço em string de JS é a primeira
+        //   coisa que some quando alguém reindenta o trecho — e some sem
+        //   quebrar nada, o que é pior.
         cVal.innerHTML = par(valUsd, val,
-          r && unit ? ' <b class="dl2">−¥ ' + (r * unit).toFixed(2) + '</b>'
+          r && unit ? '<b class="dl2">−¥ ' + (r * unit).toFixed(2) + '</b>'
                     : '');
       }
       // ── o GRUPO ──

@@ -495,7 +495,17 @@ html img.lg-d{display:none}
 .dtab th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
 /* a linha em edição vence o hover neutro de .dtab--static: é estado, não passagem de cursor */
 .dtab tbody tr.on td,.dtab--static tbody tr.on:hover td{background:var(--ink-05)}
-.dtab .dl2{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--red-60)}
+/* a PERDA da linha (−¥ X), escrita pelo JS ao lado do ¥ enquanto ele digita.
+   ⚠ `display:inline` e `text-align:inherit` NÃO são enfeite: o `.dl2` do
+   `patterns/parceiro.css` é `display:block;text-align:right`, e como esta
+   regra só sobrescrevia fonte e cor, a perda virava um BLOCO alinhado à
+   direita — terceira linha na célula, encostada na borda, e a linha da tabela
+   crescendo de 48 para 56px assim que ele digitava (dono, 2026-09-07: "sai na
+   coluna de resultado quebrando tudo"). Medido no navegador: com a regra, a
+   altura das linhas não muda mais em nenhuma largura.
+   O `margin-left` é o respiro entre as duas cifras — em CSS, e não um espaço
+   na string do JS, que some no primeiro `trim` de quem editar o script. */
+.dtab .dl2{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--red-60);display:inline;text-align:inherit;margin-left:4px}
 /* rodapé de coluna: o total embaixo da própria coluna, colado no fundo do scrollport. Claro e
    não escuro, pela mesma razão da faixa de grupo — a barra escura pertence ao cabeçalho. */
 .dtab tfoot td{position:sticky;bottom:0;z-index:2;height:var(--row-h);padding:0 16px;background:var(--ink-10);border-top:1px solid var(--line-2);border-bottom:0;font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap}
