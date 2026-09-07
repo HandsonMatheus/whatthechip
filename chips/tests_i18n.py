@@ -100,7 +100,21 @@ class CadeiaDeResolucaoTests(TestCase):
 
     def test_preferencia_invalida_cai_na_deteccao(self):
         """Idioma removido do settings não pode travar o usuário (fail-open)."""
-        UserLanguage.objects.create(user=self.user, language='xx-removido')
+        # ⚠ `xx` e não `xx-removido` (2026-09-07). `UserLanguage.language` é
+        #   `max_length=10` e o valor antigo tinha ONZE caracteres: o SQLite
+        #   não cobra largura de varchar, então o teste passava com
+        #   `--settings=core.settings_test` e só quebrava no Postgres — que é
+        #   o banco de produção. Ficou dois meses assim porque o portão
+        #   documentado do i18n roda em SQLite.
+        #
+        #   O valor sai do assert abaixo, e não de uma string mágica: o que o
+        #   teste precisa é de um código FORA do `settings.LANGUAGES`, e `xx`
+        #   é faixa de uso privado do ISO 639 — nunca vira idioma de verdade.
+        #   O `_preferred_language` decide por pertencimento ao conjunto, então
+        #   o formato do código não muda o caminho exercitado.
+        invalido = 'xx'
+        self.assertNotIn(invalido, {c for c, _n in settings.LANGUAGES})
+        UserLanguage.objects.create(user=self.user, language=invalido)
         c = Client(headers={'accept-language': 'es-PY,es;q=0.9'})
         c.force_login(self.user)
         self.assertEqual(c.get('/login/').headers.get('Content-Language'), 'es')
