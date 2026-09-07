@@ -23,6 +23,7 @@ Três defeitos no que existia, e cada um vira teste aqui:
 """
 
 import io
+import re
 from decimal import Decimal as D
 from datetime import date
 
@@ -136,12 +137,28 @@ class ColunasIguaisAsDaTelaTests(_Base):
     #:   planilha, como na tela, a marca é a FAIXA DE GRUPO. Quem precisa
     #:   filtrar por marca tem a aba Chips, que continua com a coluna.
     #:
-    #: ⚠ O `¥` no rótulo das colunas de dinheiro é a única diferença de texto
-    #:   para a tela, e é obrigatória: lá cada coluna dessas mostra o par
-    #:   US$/¥ empilhado, e numa célula isso seria TEXTO — texto não soma.
-    #:   Uma coluna por coluna da tela, em ¥, com a moeda dita no rótulo.
-    RESUMO = ['TIPO', 'CAPACIDADE', 'CAIXA WTC', 'ENVIADOS',
-              'UNITÁRIO ¥', 'ESPERADO ¥']
+    #: ⚠ O `¥` no rótulo DEIXOU de ser diferença (2026-09-07). Era: a tela
+    #:   trazia o par US$/¥ empilhado na célula e por isso não podia cravar
+    #:   moeda no título; a planilha, em ¥, cravava. Com a tabela da tela em
+    #:   uma moeda só, os dois títulos passaram a ser o MESMO texto — e há
+    #:   teste comparando as duas listas de verdade, renderizando as duas
+    #:   (`test_a_planilha_e_a_TELA_tem_a_MESMA_lista_de_titulos`), em vez de
+    #:   confiar em duas listas cravadas à mão.
+    #: ⚠ ORDEM revista pelo dono em 2026-09-07: *"mover ESPERADO para o lado
+    #:   esquerdo de RESULTADO"* e *"trocar ENVIADOS e UNITARIO de lugar"*. O
+    #:   preço vem antes da quantidade, e ESPERADO cola em RESULTADO — os dois
+    #:   números que ele compara ficam vizinhos. Mudou nas DUAS pontas, tela e
+    #:   planilha, que é o contrato desta classe inteira.
+    #:
+    #: Sem conferência (ordem ainda não recebida) não existem as quatro
+    #: colunas do acerto, e o ESPERADO fecha a tabela na 6ª — senão sobrariam
+    #: três colunas vazias no meio. É o que `RESUMO` traz; `RESUMO_ACERTO`
+    #: traz a tabela inteira.
+    RESUMO = ['TIPO', 'CAPACIDADE', 'CAIXA WTC', 'UNITÁRIO ¥', 'ENVIADOS',
+              'ESPERADO ¥']
+    RESUMO_ACERTO = ['TIPO', 'CAPACIDADE', 'CAIXA WTC', 'UNITÁRIO ¥',
+                     'ENVIADOS', 'RECUSADOS', 'RECUSADOS ¥', 'APROVADOS',
+                     'ESPERADO ¥', 'RESULTADO ¥']
     #: exatamente os `<th>` da tabela de Chips, na ordem.
     CHIPS = ['PART NUMBER', 'MARCA', 'TIPO', 'SPEC', 'CAIXA WTC', 'QTD.',
              'UNITÁRIO ¥', 'TOTAL ¥']
@@ -149,6 +166,37 @@ class ColunasIguaisAsDaTelaTests(_Base):
     def test_as_colunas_do_resumo_sao_as_da_tela(self):
         cab = [c for c in self._linha(self._wb()['Resumo'], L_CAB) if c]
         self.assertEqual(cab[:len(self.RESUMO)], self.RESUMO)
+
+    def test_a_planilha_e_a_TELA_tem_a_MESMA_lista_de_titulos(self):
+        """O contrato de 07/09 medido de verdade, e não com duas listas
+        cravadas à mão que alguém atualiza uma e esquece a outra.
+
+        Renderiza a ficha do comprador, extrai os `<th>` da tabela do Resumo,
+        gera o XLSX, lê a linha de títulos, e compara as duas — em caixa alta,
+        que é a única diferença de forma que sobrou (a barra preta da planilha
+        é toda maiúscula, como o `<th>` da tela em `text-transform`).
+
+        Este é o teste que faz o pedido *"a ideia é que a planilha seja
+        visualmente idêntico a UI"* virar uma coisa que quebra quando deixa de
+        ser verdade.
+        """
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+
+        html = self.client.get(
+            reverse('compras:detail', args=[self.so.pk])).content.decode()
+        tabela = re.search(r'<table[^>]*id="tab-resumo".*?</thead>', html,
+                           re.S)
+        self.assertIsNotNone(tabela, 'a tabela do resumo sumiu da ficha')
+        # `<th[^>]*>` casaria com `<thead>` (`<th` + `ead`) e contaria uma
+        # coluna a mais — o `\b` é o que separa os dois.
+        na_tela = [re.sub(r'<[^>]+>', '', t).strip().upper()
+                   for t in re.findall(r'<th\b[^>]*>(.*?)</th>',
+                                       tabela.group(0), re.S)]
+        na_planilha = [c for c in
+                       self._linha(self._wb()['Resumo'], L_CAB) if c]
+        self.assertEqual(na_tela, na_planilha)
+        self.assertEqual(na_tela, self.RESUMO_ACERTO)
 
     def test_a_marca_nao_e_coluna_e_a_planilha_nao_tem_coluna_a_mais(self):
         """A trava do "posicionamento": qualquer coluna nova antes da recusa
@@ -190,8 +238,19 @@ class ColunasIguaisAsDaTelaTests(_Base):
 #: As colunas do Resumo, por POSIÇÃO — as mesmas constantes do exportador.
 #: Cravadas aqui de propósito: se alguém acrescentar uma coluna no meio, é
 #: para estes testes quebrarem, porque é a posição que a importação vai ler.
-C_TIPO, C_CAP, C_WTC, C_ENV, C_UNIT = 1, 2, 3, 4, 5
-C_ESP, C_REJ, C_REJV, C_ACE, C_RES = 6, 7, 8, 9, 10
+C_TIPO, C_CAP, C_WTC, C_UNIT, C_ENV = 1, 2, 3, 4, 5
+C_REJ, C_REJV, C_ACE, C_ESP, C_RES = 6, 7, 8, 9, 10
+#: sem conferência o ESPERADO fecha a tabela na 6ª, sem buraco antes
+C_ESP_SEM_ACERTO = 6
+#: As LETRAS que as fórmulas citam. Nomeadas porque a ordem já mudou uma vez
+#: e um `'G%d'` cravado no meio de um `assertIn` não diz qual coluna era.
+LET_UNIT, LET_ENV, LET_REJ = 'D', 'E', 'F'
+LET_REJV, LET_ACE, LET_ESP, LET_RES = 'G', 'H', 'I', 'J'
+#: ⚠ O CABEÇALHO tem layout PRÓPRIO e não segue a ordem das colunas de dados:
+#:   três campos e dois números, duas colunas cada. Reaproveitar `C_REJ`/`C_ACE`
+#:   aqui (era o que estes testes faziam) fazia a troca de ordem da tabela
+#:   embaralhar o cabeçalho junto.
+C_HERO_ESP, C_HERO_RES = 7, 9
 #: escondida, depois de todas as visíveis — insumo do US$ do cabeçalho
 C_USD = 11
 #: O Resumo ganhou cabeçalho informativo em 2026-09-07: cinco linhas de
@@ -213,7 +272,7 @@ class NumeroEhNumeroTests(_Base):
         ws = self._wb()['Resumo']
         achou = False
         for linha in range(L_1, ws.max_row + 1):
-            c = ws.cell(row=linha, column=C_ESP)
+            c = ws.cell(row=linha, column=C_ESP_SEM_ACERTO)
             if isinstance(c.value, (int, float)):
                 self.assertIn('¥', c.number_format)
                 achou = True
@@ -232,8 +291,9 @@ class NumeroEhNumeroTests(_Base):
         ali. Somar as faixas aqui apagaria a diferença entre o combinado e o
         conferido, que é a informação da tabela."""
         ws = self._wb()['Resumo']
-        self.assertEqual(ws.cell(row=ws.max_row, column=C_ESP).value,
-                         float(self.so.total_rmb))
+        self.assertEqual(
+            ws.cell(row=ws.max_row, column=C_ESP_SEM_ACERTO).value,
+            float(self.so.total_rmb))
 
 
 class ColunasDeAcertoTests(_Base):
@@ -269,6 +329,46 @@ class ColunasDeAcertoTests(_Base):
         cab = self._cabecalho()
         for coluna in self.ACERTO:
             self.assertNotIn(coluna, cab)
+
+    def test_sem_conferencia_o_ESPERADO_fecha_a_tabela_sem_buraco(self):
+        """Com conferência o ESPERADO é a 9ª (colado no RESULTADO). Sem ela
+        não existem as três colunas do acerto na frente, e deixá-lo na 9ª
+        abriria três colunas VAZIAS no meio da tabela — que é a coisa que a
+        ordem inteira existe para evitar."""
+        self.assertIsNone(self.so.received_at)
+        ws = self._wb()['Resumo']
+        self.assertEqual(ws.cell(row=L_CAB, column=C_ESP_SEM_ACERTO).value,
+                         'ESPERADO ¥')
+        self.assertIsNone(ws.cell(row=L_CAB, column=C_ESP_SEM_ACERTO + 1).value)
+
+    def test_a_ordem_das_colunas_e_a_que_o_dono_pediu(self):
+        """Dono, 2026-09-07: *"mover ESPERADO para o lado esquerdo de
+        RESULTADO"* e *"trocar ENVIADOS e UNITARIO de lugar"* — e valendo nas
+        DUAS pontas, tela e planilha.
+
+        A lista inteira, e não só as duas mexidas: é a posição que a
+        importação vai ler, e um teste que cobra só o que mudou deixa a
+        próxima coluna nova entrar em qualquer lugar.
+        """
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        self.assertEqual(self._cabecalho(),
+                         ColunasIguaisAsDaTelaTests.RESUMO_ACERTO)
+
+    def test_o_ESPERADO_e_vizinho_do_RESULTADO(self):
+        """O motivo do pedido, dito como invariante: os dois números que ele
+        compara ficam lado a lado, sem o olho atravessar a tabela."""
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        cab = self._cabecalho()
+        self.assertEqual(cab.index('RESULTADO ¥') - cab.index('ESPERADO ¥'), 1)
+
+    def test_o_UNITARIO_vem_antes_dos_ENVIADOS(self):
+        """Ele confere o preço primeiro, depois quanto veio."""
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        cab = self._cabecalho()
+        self.assertEqual(cab.index('ENVIADOS') - cab.index('UNITÁRIO ¥'), 1)
 
     def test_marcado_o_recebimento_as_colunas_entram(self):
         self.so.received_at = timezone.now()
@@ -446,8 +546,10 @@ class PlanilhaVivaTests(_Base):
     def test_a_perda_o_aprovado_e_o_resultado_saem_da_celula_do_campo(self):
         ws = self._wb()['Resumo']
         r = L_1                                     # primeira linha de dado
-        self.assertIn('G%d' % r, ws.cell(row=r, column=C_REJV).value)
-        self.assertIn('G%d' % r, ws.cell(row=r, column=C_ACE).value)
+        self.assertIn('%s%d' % (LET_REJ, r),
+                      ws.cell(row=r, column=C_REJV).value)
+        self.assertIn('%s%d' % (LET_REJ, r),
+                      ws.cell(row=r, column=C_ACE).value)
         self.assertTrue(ws.cell(row=r, column=C_RES).value.startswith('='))
 
     def test_o_vazio_vale_ZERO_tambem_na_planilha(self):
@@ -455,7 +557,8 @@ class PlanilhaVivaTests(_Base):
         tela valer aqui, e o que impede a coluna inteira de virar `#VALUE!`
         quando ele digitar "ok" numa célula por engano."""
         ws = self._wb()['Resumo']
-        self.assertIn('N(G%d)' % L_1, ws.cell(row=L_1, column=C_ACE).value)
+        self.assertIn('N(%s%d)' % (LET_REJ, L_1),
+                      ws.cell(row=L_1, column=C_ACE).value)
 
     def test_a_faixa_soma_as_linhas_dela(self):
         """O mesmo contrato da tela: faixa dizendo um número e linhas dizendo
@@ -536,10 +639,10 @@ class CabecalhoInformativoTests(_Base):
         fórmula, e ela aponta para o rodapé da tabela, que por sua vez soma as
         faixas. Uma segunda conta aqui divergiria da primeira."""
         ws = self._wb()['Resumo']
-        rmb = ws.cell(row=4, column=C_ACE).value
-        usd = ws.cell(row=5, column=C_ACE).value
+        rmb = ws.cell(row=4, column=C_HERO_RES).value
+        usd = ws.cell(row=5, column=C_HERO_RES).value
         self.assertTrue(str(rmb).startswith('='), rmb)
-        self.assertIn('%s%d' % ('J', ws.max_row), rmb)
+        self.assertIn('%s%d' % (LET_RES, ws.max_row), rmb)
         self.assertIn('SUMPRODUCT', str(usd))
 
     def test_o_esperado_do_topo_NAO_se_move(self):
@@ -547,9 +650,9 @@ class CabecalhoInformativoTests(_Base):
         quando a caixa saiu. Se ele se movesse junto, a diferença entre o
         combinado e o conferido sumiria da tela."""
         ws = self._wb()['Resumo']
-        self.assertEqual(ws.cell(row=4, column=C_REJ).value,
+        self.assertEqual(ws.cell(row=4, column=C_HERO_ESP).value,
                          float(self.so.total_rmb))
-        self.assertEqual(ws.cell(row=5, column=C_REJ).value,
+        self.assertEqual(ws.cell(row=5, column=C_HERO_ESP).value,
                          float(self.so.total_usd))
 
     def test_o_dolar_NAO_e_o_yuan_vezes_a_taxa(self):
@@ -559,7 +662,8 @@ class CabecalhoInformativoTests(_Base):
         `SUMPRODUCT`: derivar da taxa daria um número que discorda da tela sem
         nada dizendo qual está certo."""
         ws = self._wb()['Resumo']
-        self.assertIn(_LETRA_USD, str(ws.cell(row=5, column=C_ACE).value))
+        self.assertIn(_LETRA_USD,
+                      str(ws.cell(row=5, column=C_HERO_RES).value))
         self.assertTrue(ws.column_dimensions[_LETRA_USD].hidden,
                         'a coluna do US$ unitário ficou visível')
         # a coluna escondida traz o CONGELADO da linha, não uma conta
@@ -572,7 +676,7 @@ class CabecalhoInformativoTests(_Base):
         with company_scope(self.emp.id):
             self.so.lines.all().update(unit_usd=None)
         self.assertEqual(
-            self._wb()['Resumo'].cell(row=5, column=C_ACE).value, '—')
+            self._wb()['Resumo'].cell(row=5, column=C_HERO_RES).value, '—')
 
 
 class SoOCampoEditavelTests(_Base):
@@ -605,7 +709,7 @@ class SoOCampoEditavelTests(_Base):
                   for c in linha
                   if c.protection and c.protection.locked is False}
         self.assertTrue(soltas, 'nada ficou editável — nem o campo')
-        self.assertTrue(all(c.startswith('G') for c in soltas),
+        self.assertTrue(all(c.startswith(LET_REJ) for c in soltas),
                         'algo fora da coluna da recusa ficou editável: %s'
                         % sorted(soltas))
 
@@ -641,7 +745,7 @@ class SoOCampoEditavelTests(_Base):
         dv = self._dv()
         self.assertEqual(dv.operator, 'between')
         self.assertEqual(dv.formula1, '0')
-        self.assertEqual(dv.formula2, '$D%d' % L_1)
+        self.assertEqual(dv.formula2, '$%s%d' % (LET_ENV, L_1))
         self.assertTrue(dv.allow_blank, 'campo em branco tem de valer zero')
 
     def test_a_validacao_cobre_TODOS_os_campos_e_so_eles(self):

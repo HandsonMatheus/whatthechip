@@ -45,6 +45,13 @@ tela. Conferido um por um:
 | `planilha.py` → XLSX | `SUMPRODUCT(aceitos × unit_usd)` sobre a coluna escondida | ✅ |
 | rodapé da tabela (`t-pagar-usd`) | `pagarUsd`, somado linha a linha | ✅ |
 | **herói (`k-usd`)** | **`pagar × fx`** | ❌ **era o bug** |
+
+> ⚠ **Atualização de 07/09, depois desta correção.** O dono tirou o US$ da
+> tabela da conferência (*"vamos deixar somente em YUAN agora como primario"*),
+> então o rodapé não mostra mais dólar — some o segundo número que denunciava a
+> divergência. A guarda passou a ser o cruzamento com o `settlement_totals`, que
+> é a conta da FATURA: é ela que importava desde o começo, e o teste de
+> navegador compara os dois. O herói segue no par ¥ = US$; só a tabela mudou.
 | `_rmb_de` e a caixa de pagamento | US$ → ¥ (**divide**), leitura derivada declarada §2.4 | ✅ |
 | `pricing/*` | converte **preço unitário**, não total | ✅ |
 
@@ -105,7 +112,7 @@ não prova nada.
 | # | passo | o que TEM de acontecer | o que era o bug |
 |---|---|---|---|
 | 1 | Abrir a ficha, **sem digitar nada** | O US$ de **RESULTADO ESPERADO** e o de **RESULTADO FINAL** são **idênticos** | o FINAL nascia maior |
-| 2 | Ainda sem digitar, olhar o **rodapé** da tabela | O `RESULTADO` do rodapé é **igual** ao do cartão | discordavam na mesma tela |
+| 2 | Ainda sem digitar, olhar o **rodapé** da tabela | O `RESULTADO ¥` do rodapé é **igual** ao ¥ do cartão (desde 07/09 a tabela é só ¥ — o dólar se confere no passo 6/7/8) | discordavam na mesma tela |
 | 3 | Digitar **1** recusa numa linha | O US$ do FINAL **cai** | subia, ou caía menos que devia |
 | 4 | Apagar a recusa (campo vazio) | O US$ volta **exatamente** ao esperado | voltava para o número inflado |
 | 5 | Recusar **o lote inteiro** | `US$ 0.00` e `¥ 0.00` — **zero escrito como número**, não travessão | — |

@@ -227,11 +227,11 @@ def _cabecalho_da_compra(ws, so, ctx, e, acerto, ultima_linha):
             ws.merge_cells(start_row=f, start_column=col,
                            end_row=f, end_column=col + 1)
 
-    _campo(COL_TIPO, _('Cliente').upper(),
+    _campo(CAB_CLIENTE, _('Cliente').upper(),
            so.company.name if so.company_id else '—')
-    _campo(COL_WTC, _('Tipo do lote').upper(),
+    _campo(CAB_LOTE, _('Tipo do lote').upper(),
            so.lot.get_origin_display() if so.lot_id else '—')
-    _campo(COL_UNIT, _('Taxa').upper() + ' ¥→US$',
+    _campo(CAB_TAXA, _('Taxa').upper() + ' ¥→US$',
            float(fx) if fx else '—', fmt='0.0000' if fx else None)
 
     # ── OS DOIS NÚMEROS, ¥ em cima e US$ embaixo, como na tela ────────────
@@ -253,7 +253,7 @@ def _cabecalho_da_compra(ws, so, ctx, e, acerto, ultima_linha):
     esperado_rmb = (float(ctx['total_estimado']) if ctx['estimado']
                     else (float(so.total_rmb) if so.total_rmb else '—'))
     fmt_esp = FMT_RMB_EST if ctx['estimado'] else FMT_RMB
-    _hero(COL_REJ, _('Resultado esperado').upper(), esperado_rmb,
+    _hero(CAB_ESP, _('Resultado esperado').upper(), esperado_rmb,
           float(so.total_usd) if so.total_usd else '—', fmt_esp, False)
     if acerto:
         # O ¥ vem do rodapé; o US$ vem da coluna escondida — `SUMPRODUCT` de
@@ -265,7 +265,7 @@ def _cabecalho_da_compra(ws, so, ctx, e, acerto, ultima_linha):
         #   preço não é. Aí sai travessão, como a tela faz.
         tem_usd = any(l['unit_usd'] is not None
                       for g in ctx['grupos'] for l in g['lines'])
-        _hero(COL_ACE, _('Resultado').upper(),
+        _hero(CAB_RES, _('Resultado').upper(),
               '=%s%d' % (_L(COL_RES), ultima_linha),
               '=SUMPRODUCT(%s%d:%s%d,%s%d:%s%d)' % (
                   _L(COL_ACE), LINHA_1, _L(COL_ACE), ultima_linha - 1,
@@ -273,7 +273,7 @@ def _cabecalho_da_compra(ws, so, ctx, e, acerto, ultima_linha):
               if tem_usd else '—',
               FMT_RMB, True)
     else:
-        _hero(COL_ACE, _('Resultado').upper(), esperado_rmb,
+        _hero(CAB_RES, _('Resultado').upper(), esperado_rmb,
               float(so.total_usd) if so.total_usd else '—', fmt_esp, True)
     ws.row_dimensions[3].height = 14
     for linha in (4, 5):
@@ -327,8 +327,27 @@ def _dinheiro(valor, legado):
 #:     US$/¥ empilhado; numa célula isso seria texto, e texto não soma. Uma
 #:     coluna por coluna da tela, em ¥, com a moeda no rótulo.
 _COLS = 10
-COL_TIPO, COL_CAP, COL_WTC, COL_ENV, COL_UNIT = 1, 2, 3, 4, 5
-COL_ESP, COL_REJ, COL_REJV, COL_ACE, COL_RES = 6, 7, 8, 9, 10
+#: ⚠ ORDEM revista pelo dono em 2026-09-07 ("mover ESPERADO para o lado
+#:   esquerdo de RESULTADO" / "trocar ENVIADOS e UNITARIO de lugar"). Ela vale
+#:   AQUI E NA TELA — as duas mudaram juntas, que é o ponto de a planilha ser
+#:   a tela em célula.
+#:
+#:   UNITÁRIO · ENVIADOS · RECUSADOS · RECUSADOS ¥ · APROVADOS · ESPERADO ·
+#:   RESULTADO
+#:
+#:   O preço vem antes da quantidade (ele confere o preço primeiro, depois
+#:   quanto veio), e ESPERADO cola em RESULTADO: os dois números que ele
+#:   compara ficam vizinhos, sem o olho atravessar a tabela.
+COL_TIPO, COL_CAP, COL_WTC, COL_UNIT, COL_ENV = 1, 2, 3, 4, 5
+COL_REJ, COL_REJV, COL_ACE, COL_ESP, COL_RES = 6, 7, 8, 9, 10
+#: SEM conferência não existem RECUSADOS/APROVADOS/RESULTADO — e o ESPERADO
+#: na 9 deixaria três colunas vazias no meio da tabela. Aí ele fecha na 6,
+#: como última coluna. É a mesma regra da tela, que também não desenha as
+#: quatro colunas antes do recebimento.
+COL_ESP_SEM_ACERTO = 6
+#: A primeira coluna NUMÉRICA: daqui para a direita é mono e alinhado à
+#: direita. Nomeada porque a ordem já mudou duas vezes e `col >= COL_ENV`
+#: virava mentira silenciosa a cada troca.
 #: ⚠ COLUNA ESCONDIDA, depois de todas as visíveis. Guarda o US$ unitário
 #:   CONGELADO de cada linha, e existe por um motivo só: o cabeçalho mostra o
 #:   resultado nas duas moedas, e o US$ da tela NÃO é ¥ × taxa — é a soma dos
@@ -336,7 +355,15 @@ COL_ESP, COL_REJ, COL_REJV, COL_ACE, COL_RES = 6, 7, 8, 9, 10
 #:   tela em alguns dólares, que é a divergência silenciosa que este projeto
 #:   passa a vida caçando. Fica em K (depois de tudo) para não deslocar
 #:   coluna nenhuma, e escondida porque é insumo, não leitura.
+COL_NUM1 = COL_UNIT
 COL_USD = 11
+
+#: ⚠ O CABEÇALHO tem o layout DELE, e de propósito não reaproveita as
+#:   constantes da tabela: os cinco blocos do topo (três campos + dois
+#:   números, duas colunas cada) não têm nada a ver com a ordem das colunas de
+#:   dados, e quando tinham, trocar a ordem da tabela embaralhava o cabeçalho
+#:   junto — foi o que quase aconteceu na revisão de 07/09.
+CAB_CLIENTE, CAB_LOTE, CAB_TAXA, CAB_ESP, CAB_RES = 1, 3, 5, 7, 9
 
 #: A tabela começa mais abaixo desde 2026-09-07: o cabeçalho informativo
 #: ocupa as cinco primeiras linhas e a dica a sexta.
@@ -362,17 +389,22 @@ def _aba_resumo(ws, so, ctx):
     editavel = ctx['pode_acertar']
     legado = ctx['registro_legado']
 
+    # O ESPERADO fecha a tabela quando não há conferência, e cola no
+    # RESULTADO quando há — as duas ordens da tela, sem coluna vazia.
+    esperado = ('%s ¥' % _('Esperado').upper(), 15, None)
     colunas = [(_('Tipo').upper(), 15, None),
                (_('Capacidade').upper(), 15, None),
                (_('Caixa WTC').upper(), 14, None),
-               (_('Enviados').upper(), 12, None),
                ('%s ¥' % _('Unitário').upper(), 13, None),
-               ('%s ¥' % _('Esperado').upper(), 15, None)]
+               (_('Enviados').upper(), 12, None)]
     if acerto:
         colunas += [(_('Recusados').upper(), 13, 'rej'),
                     ('%s ¥' % _('Recusados').upper(), 15, 'rej'),
                     (_('Aprovados').upper(), 13, 'ace'),
+                    esperado,
                     ('%s ¥' % _('Resultado').upper(), 15, 'res')]
+    else:
+        colunas += [esperado]
 
     r = LINHA_1
     faixas, campos = [], []
@@ -470,21 +502,25 @@ def _so_o_campo_e_editavel(ws, campos, ultima):
 def _linha_do_chip(ws, r, l, e, acerto, editavel, legado, ctx):
     """Uma categoria — a `<tr>` de dados da tela, célula por célula."""
     fmt_unit = FMT_RMB_EST if ctx['estimado'] else FMT_RMB
-    _pinta(ws, r, [l['type'], l['capacity'], l['wtc'], l['qty'],
-                   _dinheiro(l['unit_rmb'], legado),
-                   float(l['total_rmb']) if l['total_rmb'] is not None
-                   else '—'] + ([None] * 4 if acerto else []), e)
+    esp = COL_ESP if acerto else COL_ESP_SEM_ACERTO
+    esperado = (float(l['total_rmb']) if l['total_rmb'] is not None else '—')
+    base = [l['type'], l['capacity'], l['wtc'],
+            _dinheiro(l['unit_rmb'], legado), l['qty']]
+    # Com conferência o ESPERADO é a 9ª (três colunas de acerto na frente e o
+    # RESULTADO, fórmula, escrito depois); sem ela, é a 6ª e última.
+    _pinta(ws, r, base + ([None, None, None, esperado, None] if acerto
+                          else [esperado]), e)
     ws.cell(row=r, column=COL_TIPO).font = e['texto']
     ws.cell(row=r, column=COL_CAP).font = e['mono_b']
     ws.cell(row=r, column=COL_WTC).font = e['wtc']
-    for col in (COL_ENV, COL_UNIT, COL_ESP):
+    for col in (COL_UNIT, COL_ENV, esp):
         ws.cell(row=r, column=col).font = e['mono']
         ws.cell(row=r, column=col).alignment = e['dir']
     _num(ws, r, COL_ENV, FMT_QTD)
     if l['unit_rmb'] is not None:
         _num(ws, r, COL_UNIT, fmt_unit)
     if l['total_rmb'] is not None:
-        _num(ws, r, COL_ESP, FMT_RMB)
+        _num(ws, r, esp, FMT_RMB)
     ws.row_dimensions[r].height = 22
     if not acerto:
         return
@@ -564,12 +600,13 @@ def _faixa_da_marca(ws, r, g, i, e, acerto, legado, ctx, a, b,
     # O quadradinho de cor da tela vira a régua esquerda da faixa: a Nª marca
     # recebe a Nª cor, aqui e lá.
     cor = CORES_MARCA[i % len(CORES_MARCA)]
-    for col in range(1, (_COLS + 1) if acerto else (COL_ESP + 1)):
+    esp = COL_ESP if acerto else COL_ESP_SEM_ACERTO
+    for col in range(1, (_COLS if acerto else COL_ESP_SEM_ACERTO) + 1):
         cel = ws.cell(row=r, column=col)
         cel.fill = e['g_fill']
         cel.border = e['g_borda']
-        cel.font = e['g_mono'] if col >= COL_ENV else e['g_font']
-        if col >= COL_ENV:
+        cel.font = e['g_mono'] if col >= COL_NUM1 else e['g_font']
+        if col >= COL_NUM1:
             cel.alignment = e['dir']
     ws.cell(row=r, column=COL_TIPO).border = Border(
         left=Side(style='thick', color=cor), top=e['g_borda'].top,
@@ -583,10 +620,10 @@ def _faixa_da_marca(ws, r, g, i, e, acerto, legado, ctx, a, b,
     ws.cell(row=r, column=COL_ENV).value = soma(COL_ENV)
     _num(ws, r, COL_ENV, FMT_QTD)
     if legado:
-        ws.cell(row=r, column=COL_ESP).value = '—'
+        ws.cell(row=r, column=esp).value = '—'
     else:
-        ws.cell(row=r, column=COL_ESP).value = soma(COL_ESP)
-        _num(ws, r, COL_ESP, FMT_RMB)
+        ws.cell(row=r, column=esp).value = soma(esp)
+        _num(ws, r, esp, FMT_RMB)
     if not acerto:
         return
     # Na faixa a recusa é NEGATIVA, como na tela (−14): ali ela não é campo,
@@ -618,13 +655,14 @@ def _rodape(ws, r, ctx, so, e, acerto, legado, faixas):
         'Total · %(n)s marca', 'Total · %(n)s marcas', n) % {'n': n})
     ws.merge_cells(start_row=r, start_column=COL_TIPO,
                    end_row=r, end_column=COL_WTC)
-    for col in range(1, (_COLS if acerto else 6) + 1):
+    esp = COL_ESP if acerto else COL_ESP_SEM_ACERTO
+    for col in range(1, (_COLS if acerto else COL_ESP_SEM_ACERTO) + 1):
         c = ws.cell(row=r, column=col)
         c.fill = {'rej': e['f_rej'], 'ace': e['f_ace'],
                   'res': e['f_res']}.get(TINTA.get(col)) or e['t_fill']
-        c.font = e['t_font'] if col >= COL_ENV else e['t_lbl']
+        c.font = e['t_font'] if col >= COL_NUM1 else e['t_lbl']
         c.border = e['t_borda']
-        c.alignment = e['dir'] if col >= COL_ENV else Alignment(
+        c.alignment = e['dir'] if col >= COL_NUM1 else Alignment(
             horizontal='left', vertical='center')
     ws.row_dimensions[r].height = 26
 
@@ -640,12 +678,12 @@ def _rodape(ws, r, ctx, so, e, acerto, legado, faixas):
     #   tela mostra ali. No rascunho não há congelado: aí é a soma viva, com o
     #   "≈" que a tela também põe.
     if ctx['estimado']:
-        ws.cell(row=r, column=COL_ESP).value = float(ctx['total_estimado'])
+        ws.cell(row=r, column=esp).value = float(ctx['total_estimado'])
     elif so.total_rmb:
-        ws.cell(row=r, column=COL_ESP).value = float(so.total_rmb)
+        ws.cell(row=r, column=esp).value = float(so.total_rmb)
     else:
-        ws.cell(row=r, column=COL_ESP).value = '—'
-    _num(ws, r, COL_ESP, FMT_RMB_EST if ctx['estimado'] else FMT_RMB)
+        ws.cell(row=r, column=esp).value = '—'
+    _num(ws, r, esp, FMT_RMB_EST if ctx['estimado'] else FMT_RMB)
     if not acerto:
         return
     for col in (COL_REJ, COL_REJV, COL_ACE, COL_RES):

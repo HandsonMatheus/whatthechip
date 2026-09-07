@@ -214,11 +214,21 @@ class OScriptTests(TestCase):
         """
         self.assertNotIn('var fx = parseFloat(form.dataset.fx)', self.js)
 
-    def test_o_heroi_escreve_a_MESMA_variavel_do_rodape(self):
-        """Um número só, escrito em dois lugares. Duas variáveis é como o
-        cartão passa a discordar do rodapé da tabela na mesma tela."""
+    def test_o_heroi_escreve_a_SOMA_congelada(self):
+        """O herói escreve o `pagarUsd` — a soma linha a linha.
+
+        ⚠ Este teste cobrava também o `elPagarUsd` do rodapé, que era o
+          SEGUNDO lugar onde o mesmo número aparecia e foi o que denunciou o
+          bug numa captura (herói 6251.00 contra rodapé 6230.82). Em 07/09 o
+          dono tirou o US$ da tabela ("somente em YUAN agora como primario"),
+          e o rodapé deixou de ter dólar: some o segundo par de olhos. Por
+          isso a guarda passou a ser o `NavegadorTests`, que compara o herói
+          com o `settlement_totals` — a conta da FATURA, que é a referência
+          que importava desde o começo.
+        """
         self.assertIn("kUsd.textContent = temUsd ? 'US$ ' + pagarUsd", self.js)
-        self.assertIn("elPagarUsd.textContent = 'US$ ' + pagarUsd", self.js)
+        self.assertIn('pagarUsd += valUsd', self.js)
+        self.assertNotIn("elPagarUsd", self.js)
 
     def test_o_total_em_usd_e_somado_linha_a_linha(self):
         self.assertIn('valUsd = ok * unitUsd', self.js)
@@ -374,19 +384,21 @@ class NavegadorTests(_Base):
         self.assertEqual(antes['kUsd'], 'US$ 4400.00')
         self.assertEqual(antes['kRmb'], '¥ 30000.00')
 
-    def test_o_heroi_e_o_rodape_dizem_o_MESMO_numero(self):
-        """Dois lugares na mesma tela, no mesmo instante. Foi vendo estes dois
-        discordarem numa captura que o problema ficou visível."""
+    def test_o_heroi_e_o_rodape_dizem_o_MESMO_yuan(self):
+        """O ¥ é a moeda que os dois ainda mostram, e tem de bater em toda
+        situação. (Em US$ eles não se comparam mais: desde 07/09 a tabela é só
+        ¥ — o cruzamento em dólar é com o `settlement_totals`, no teste
+        abaixo.)"""
         # Nenhuma recusa, uma pequena, e o lote inteiro recusado.
         for rej in (0, 50, self.QTD):
             r = self._rodar({str(self.linha.pk): rej} if rej else {})
             for quando in ('antes', 'depois'):
-                self.assertEqual(r[quando]['kUsd'], r[quando]['tUsd'],
-                                 'herói e rodapé discordam em US$ '
-                                 '(%s, recusa=%d)' % (quando, rej))
                 self.assertEqual(r[quando]['kRmb'], r[quando]['tRmb'],
                                  'herói e rodapé discordam em ¥ '
                                  '(%s, recusa=%d)' % (quando, rej))
+                self.assertIsNone(r[quando]['tUsd'],
+                                  'o rodapé voltou a mostrar US$ — a tabela é '
+                                  'de uma moeda só desde 07/09')
         # Lote inteiro recusado: zero, e zero escrito como número — não um
         # travessão, que é o desenho de "não sei".
         tudo = self._rodar({str(self.linha.pk): self.QTD})['depois']
@@ -416,7 +428,10 @@ class NavegadorTests(_Base):
         r = self._rodar({str(self.linha.pk): rej})
         with company_scope(self.emp.id):
             linhas = list(self.so.lines.all())
-            _rmb, usd = services.settlement_totals(
+            rmb, usd = services.settlement_totals(
                 linhas, {self.linha.pk: (rej, None)}, self.FX)
         self.assertEqual(D(r['depois']['kUsd'].replace('US$ ', '')), usd)
-        self.assertEqual(D(r['depois']['tUsd'].replace('US$ ', '')), usd)
+        # e o ¥, nas duas alturas — a tabela é de uma moeda só desde 07/09,
+        # então é por aqui que o rodapé entra na conferência.
+        self.assertEqual(D(r['depois']['kRmb'].replace('¥ ', '')), rmb)
+        self.assertEqual(D(r['depois']['tRmb'].replace('¥ ', '')), rmb)

@@ -508,15 +508,35 @@
               <th>{% trans "Tipo" %}</th>
               <th>{% trans "Capacidade" %}</th>
               <th>{% trans "Caixa WTC" %}</th>
+              {% comment %} ══ A ORDEM DAS COLUNAS ═══════════════════════
+                 Dono, 2026-09-07: *"mover ESPERADO para o lado esquerdo de
+                 RESULTADO"* e *"trocar ENVIADOS e UNITARIO de lugar"* — e
+                 valendo nas DUAS pontas, tela e planilha (`planilha.py`
+                 carrega a MESMA ordem, e há teste cobrando os dois).
+
+                 O preço vem antes da quantidade (ele confere o preço
+                 primeiro, depois quanto veio) e o ESPERADO cola no RESULTADO:
+                 os dois números que ele compara ficam vizinhos, sem o olho
+                 atravessar a tabela.
+
+                 ⚠ O ESPERADO fica FORA do `{% templatetag openblock %} if {% templatetag closeblock %}` do acerto, e o RESULTADO
+                   dentro de um segundo. Sem conferência as três colunas do
+                   meio não existem, e o ESPERADO desce sozinho para o fim da
+                   tabela — sem buraco nenhum. Um `{% templatetag openblock %} if {% templatetag closeblock %}` só, com o ESPERADO
+                   dentro, deixaria a tabela sem esperado antes do
+                   recebimento.
+
+                 ⚠ A MOEDA VOLTOU AO TÍTULO (dono, 2026-09-07: "remover os
+                   precos em USD, vamos deixar somente em YUAN agora como
+                   primario, que é o que o comprador trabalha, isso somente na
+                   tabela"). Enquanto a célula trazia o par US$/¥ o título não
+                   podia cravar moeda; agora a coluna é de uma moeda só, e
+                   dizê-la no título é o que a planilha já fazia — as duas
+                   passam a ler idêntico. O resto da página (o cartão do topo,
+                   o pagamento, a fatura) segue no par: lá é o que ele PAGA.
+              {% endcomment %}
+              <th class="n hide-lg">{% trans "Unitário" %} ¥</th>
               <th class="n">{% trans "Enviados" %}</th>
-              {% comment %} A moeda saiu do TÍTULO porque agora são duas por
-                 célula (dono, 2026-09-02: "preciso que mostre o valor unitario
-                 em USD e ESPERADO e RESULTADO também em USD, levando destaque
-                 o valor em USD, que é o que ele vai pagar de fato"). Um título
-                 "¥ esperado" sobre uma célula que abre em US$ diria a moeda
-                 errada logo na primeira leitura. {% endcomment %}
-              <th class="n hide-lg">{% trans "Unitário" %}</th>
-              <th class="n">{% trans "Esperado" %}</th>
               {% if pode_acertar or tem_resultado %}
               <th class="n hr">{% trans "Recusados" %}{% if pode_acertar %}<i class="pen"></i>{% endif %}</th>
               {% comment %} A RECUSA EM DINHEIRO, coluna própria (dono,
@@ -540,7 +560,10 @@
               {% endcomment %}
               <th class="n hr">{% trans "Recusados" %} ¥</th>
               <th class="n hg">{% trans "Aprovados" %}</th>
-              <th class="n hb">{% trans "Resultado" %}</th>
+              {% endif %}
+              <th class="n">{% trans "Esperado" %} ¥</th>
+              {% if pode_acertar or tem_resultado %}
+              <th class="n hb">{% trans "Resultado" %} ¥</th>
               {% endif %}
             </tr>
           </thead>
@@ -560,14 +583,16 @@
                 <i style="background:{% cycle 'var(--blue-60)' 'var(--ink-80)' 'var(--green-50)' 'var(--amber-40)' 'var(--blue-40)' 'var(--ink-40)' %}"></i>{{ g.brand }}
                 <em>{% blocktrans trimmed count n=g.lines|length %}{{ n }} linha{% plural %}{{ n }} linhas{% endblocktrans %}</em>
                 {% if g.sem_preco and not registro_legado %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
-              <td class="n" data-gq="{{ forloop.counter0 }}">{{ g.qty }}</td>
               <td class="n hide-lg"></td>
-              <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.usd }}<span class="cy">¥ {{ g.rmb }}</span>{% endif %}{% endlocalize %}</td>
+              <td class="n" data-gq="{{ forloop.counter0 }}">{{ g.qty }}</td>
               {% if pode_acertar or tem_resultado %}
               <td class="n hr" data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</td>
               <td class="n hr rv" data-gperda="{{ forloop.counter0 }}">{% localize off %}{% if g.perda_rmb %}−¥ {{ g.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg" data-gok="{{ forloop.counter0 }}">{{ g.accepted }}</td>
-              <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.pago_usd }}<span class="cy">¥ {{ g.pago_rmb }}</span>{% endif %}{% endlocalize %}</td>
+              {% endif %}
+              <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}¥ {{ g.rmb }}{% endif %}{% endlocalize %}</td>
+              {% if pode_acertar or tem_resultado %}
+              <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}¥ {{ g.pago_rmb }}{% endif %}{% endlocalize %}</td>
               {% endif %}
             </tr>
             {% for l in g.lines %}
@@ -578,9 +603,8 @@
               {% comment %} O `.c-lbl` é o rótulo que só existe no cartão do
                  telefone — o pacote o esconde no desktop, onde o cabeçalho
                  da coluna já disse a mesma coisa. {% endcomment %}
+              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans 'Unitário' %} ¥">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
               <td class="n c-qty"><i class="c-lbl">{% trans "enviados" %}</i>{{ l.qty }}</td>
-              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans 'Unitário' %}">{% localize off %}{% if l.unit_rmb %}{% if l.unit_usd %}US$ {{ l.unit_usd }}{% endif %}<span class="cy">¥ {{ l.unit_rmb }}</span>{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
-              <td class="v c-exp" data-label="{% trans 'Esperado' %}">{% localize off %}{% if l.total_rmb %}{% if l.total_usd %}US$ {{ l.total_usd }}{% endif %}<span class="cy">¥ {{ l.total_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar %}
               <td class="n hr c-rej">
                 <i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
@@ -601,7 +625,8 @@
               <td class="n hr rv c-rejv" data-label="{% trans 'Recusados' %} ¥" data-perda="{{ l.pk }}">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg c-ok" data-ok="{{ l.pk }}">
                 <i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
-              <td class="v hb c-val" data-label="{% trans 'Resultado' %}" data-val="{{ l.pk }}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="v c-exp" data-label="{% trans 'Esperado' %} ¥">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="v hb c-val" data-label="{% trans 'Resultado' %} ¥" data-val="{{ l.pk }}">{% localize off %}{% if l.pago_rmb is not None %}¥ {{ l.pago_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               {% elif tem_resultado %}
               {% comment %} Conferência JÁ FEITA: os mesmos números, sem campo.
                  A tela não muda de forma quando a etapa passa — muda só o que
@@ -614,7 +639,10 @@
                 <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b></td>
               <td class="n hr rv c-rejv" data-label="{% trans 'Recusados' %} ¥">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg c-ok"><i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
-              <td class="v hb c-val" data-label="{% trans 'Resultado' %}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="v c-exp" data-label="{% trans 'Esperado' %} ¥">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="v hb c-val" data-label="{% trans 'Resultado' %} ¥">{% localize off %}{% if l.pago_rmb is not None %}¥ {{ l.pago_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              {% else %}
+              <td class="v c-exp" data-label="{% trans 'Esperado' %} ¥">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               {% endif %}
             </tr>
             {% endfor %}
@@ -623,9 +651,8 @@
           <tfoot>
             <tr>
               <td class="lbl" colspan="3">{% blocktrans trimmed count n=grupos|length with tipos=total_qty %}Total · {{ n }} marca{% plural %}Total · {{ n }} marcas{% endblocktrans %}</td>
-              <td class="n"><small>{% trans "Enviados" %}</small>{{ total_qty }}</td>
               <td class="n hide-lg"></td>
-              <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ US$ {{ total_estimado_usd }}<span class="cy">≈ ¥ {{ total_estimado }}</span>{% elif so.total_rmb %}US$ {{ so.total_usd }}<span class="cy">¥ {{ so.total_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
+              <td class="n"><small>{% trans "Enviados" %}</small>{{ total_qty }}</td>
               {% if pode_acertar or tem_resultado %}
               <td class="n hr" id="t-rej"><small>{% trans "Recusados" %}</small>0</td>
               {% comment %} Coluna nova = célula nova NO RODAPÉ também, senão
@@ -634,13 +661,14 @@
                  três alturas (linha, faixa, rodapé). {% endcomment %}
               <td class="n hr rv" id="t-rejv"><small>{% trans "Recusados" %} ¥</small>{% localize off %}{% if total_perda_rmb %}−¥ {{ total_perda_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               <td class="n hg" id="t-ace"><small>{% trans "Aprovados" %}</small>{{ total_qty }}</td>
-              {% comment %} O `escreverNumero` do JS escreve no ÚLTIMO nó de
-                 TEXTO da célula — com o `<span>` do ¥ no fim, o último nó
-                 deixaria de ser texto e ele acrescentaria um número solto
-                 depois do span. Por isso o rodapé passa a ter alvos próprios:
-                 o JS escreve em `#t-pagar-usd` e `#t-pagar-rmb`, cada um no
-                 seu. {% endcomment %}
-              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}<b id="t-pagar-usd">US$ {{ so.total_usd }}</b><span class="cy" id="t-pagar-rmb">¥ {{ so.total_rmb }}</span>{% endlocalize %}</td>
+              {% endif %}
+              <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              {% if pode_acertar or tem_resultado %}
+              {% comment %} ALVO PRÓPRIO para o número, e não o `<td>` cru: o
+                 `escreverNumero` escreve no ÚLTIMO nó de TEXTO da célula, e o
+                 `<small>` do rótulo vem antes — sem o `<b>` ele acabaria
+                 sobrescrevendo o rótulo em vez do número. {% endcomment %}
+              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}<b id="t-pagar-rmb">¥ {{ so.total_rmb }}</b>{% endlocalize %}</td>
               {% endif %}
             </tr>
           </tfoot>
@@ -1295,7 +1323,6 @@
   var campos = document.querySelectorAll('.rjin[data-qty]');
   var form = document.getElementById('f-resultado');
   var elPagar = document.getElementById('t-pagar');
-  var elPagarUsd = document.getElementById('t-pagar-usd');
   var elPagarRmb = document.getElementById('t-pagar-rmb');
   if (!campos.length || !elPagar || !form) return;
 
@@ -1318,21 +1345,16 @@
   // Escreve o número SEM matar o rótulo. As células do rodapé são
   // `<small>Recusados</small>0`: um `textContent =` levaria o <small> junto,
   // e o rodapé ficaria sem legenda no primeiro toque de tecla.
-  // ── O PAR DE MOEDAS, num lugar só ───────────────────────────────────────
-  // US$ na frente (é o que ele paga) e ¥ apagado embaixo. Existe como função
-  // porque o mesmo par é escrito em TRÊS lugares durante a digitação — linha,
-  // faixa da marca e rodapé — e três cópias divergem na primeira alteração.
-  // ⚠ SÓ o par de moedas. A perda saiu daqui em 2026-09-07 (dono: "sai na
-  //   coluna de resultado quebrando tudo (...) ele esta no lugar correto?") e
-  //   foi para a célula da RECUSA, que é o que a causa. Enquanto morava aqui
-  //   ela era um terceiro número espremido na célula do dinheiro.
-  function par(usd, rmb) {
-    var y = '¥ ' + rmb.toFixed(2);
-    // Sem US$ na linha (rascunho sem taxa) o par não existe: escreve só o ¥,
-    // no lugar do valor forte. Um "US$ 0.00" ali seria um preço inventado.
-    if (!usd) return y;
-    return 'US$ ' + usd.toFixed(2) + '<span class="cy">' + y + '</span>';
-  }
+  // ── O DINHEIRO DA TABELA, num lugar só ──────────────────────────────────
+  // ⚠ NÃO existe mais `par(usd, rmb)` aqui (dono, 2026-09-07: "remover os
+  //   precos em USD, vamos deixar somente em YUAN agora como primario, que é
+  //   o que o comprador trabalha, isso somente na tabela"). A tabela virou de
+  //   UMA moeda, e uma célula de uma moeda é `textContent`, não HTML montado.
+  //
+  //   O `pagarUsd` continua sendo somado logo abaixo, e continua sendo
+  //   obrigatório: é ele que o CARTÃO DO TOPO escreve. O US$ saiu da TABELA,
+  //   não da tela — e nunca da conta.
+  function dinheiro(rmb) { return '¥ ' + rmb.toFixed(2); }
 
   function escreverNumero(el, txt) {
     if (!el) return;
@@ -1380,7 +1402,7 @@
       var cOk = document.querySelector('[data-ok="' + pk + '"] b');
       if (cOk) cOk.textContent = ok;
       var cVal = document.querySelector('[data-val="' + pk + '"]');
-      if (cVal) cVal.innerHTML = par(valUsd, val);
+      if (cVal) cVal.textContent = dinheiro(val);
       // A PERDA, na COLUNA dela. `textContent` e não `innerHTML`: aqui só
       // entra número, e é o mesmo que o servidor escreve no carregamento.
       var cPerda = document.querySelector('[data-perda="' + pk + '"]');
@@ -1414,7 +1436,7 @@
       // comprador está digitando recusa, o que não acontece numa compra já
       // faturada; a guarda é para o dia em que passar a rodar.
       // innerHTML, e não textContent: o par leva o <span> do ¥ dentro.
-      if (eVal && !REGISTRO_LEGADO) eVal.innerHTML = par(g.valUsd, g.val);
+      if (eVal && !REGISTRO_LEGADO) eVal.textContent = dinheiro(g.val);
     });
     estado = {rej: rej, aceitos: aceitos, enviados: enviados, pagar: pagar};
     // ⚠ `textContent` apagaria o <small> do rótulo que o rodapé carrega desde
@@ -1424,11 +1446,9 @@
     // não há recusa: zero de perda é a boa notícia, e não precisa de tinta.
     escreverNumero(elRejV, perdaTotal ? '−¥ ' + perdaTotal.toFixed(2) : '—');
     escreverNumero(elAce, aceitos);
-    // Alvos PRÓPRIOS no rodapé: o `escreverNumero` escreve no último nó de
-    // texto, e com o span do ¥ no fim ele acrescentaria um número solto
-    // depois dele. Cada moeda tem o seu elemento.
-    if (elPagarUsd) elPagarUsd.textContent = 'US$ ' + pagarUsd.toFixed(2);
-    if (elPagarRmb) elPagarRmb.textContent = '¥ ' + pagar.toFixed(2);
+    // Alvo PRÓPRIO no rodapé: o `escreverNumero` escreve no último nó de
+    // TEXTO, e o `<small>` do rótulo vem antes do número.
+    if (elPagarRmb) elPagarRmb.textContent = dinheiro(pagar);
     // Só o RESULTADO se move — o ESPERADO é o preço fechado com o cliente e
     // fica parado, senão a referência se perde (dono, 2026-08-18).
     if (kRmb) kRmb.textContent = '¥ ' + pagar.toFixed(2);
@@ -1440,8 +1460,14 @@
     // `so.total_usd` (soma congelada) e o RESULTADO era ¥×taxa, então o mesmo
     // cartão mostrava duas contas diferentes — e a recusa de ¥63 aparecia como
     // US$ 6246.12 contra US$ 6235.30 "esperado", ou seja, recusar SUBIA o
-    // dólar. O rodapé da tabela já fazia a conta certa (`pagarUsd`, somado
-    // linha a linha logo acima); o herói só não a usava.
+    // dólar. O `pagarUsd`, somado linha a linha logo acima, já era o número
+    // certo; o herói só não o usava.
+    //
+    // ⚠ Desde 07/09 este é o ÚNICO US$ que a conferência escreve — a tabela
+    //   virou de uma moeda só. Some mais um lugar onde a divergência podia
+    //   aparecer, e some também o segundo número que a denunciava: o teste
+    //   que guarda a regra agora compara o herói com o `settlement_totals`,
+    //   que é a conta da FATURA (`tests_dolar_do_heroi`).
     //
     // Sem US$ congelado em alguma linha o total sairia MENOR do que é, calado.
     // Travão, como em toda parte (§2.7): número que falta não se chuta.
