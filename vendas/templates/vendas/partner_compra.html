@@ -1299,7 +1299,11 @@
   var elPagarRmb = document.getElementById('t-pagar-rmb');
   if (!campos.length || !elPagar || !form) return;
 
-  var fx = parseFloat(form.dataset.fx) || 0;
+  // ⚠ Não existe mais `var fx` aqui, e é de propósito (2026-09-07): o
+  // recálculo ao vivo NÃO converte moeda. Cada linha já traz o seu US$
+  // congelado em `data-unit-usd`, e o total é a soma deles. A taxa segue
+  // no `data-fx` do form porque é o câmbio TRAVADO desta OV e o papel a
+  // declara — mas multiplicar por ela aqui foi exatamente o bug.
   var esperado = parseFloat(form.dataset.esperado) || 0;
   var elRej = document.getElementById('t-rej');
   var elRejV = document.getElementById('t-rejv');
@@ -1348,6 +1352,10 @@
 
   function recalcular() {
     var rej = 0, aceitos = 0, enviados = 0, pagar = 0, pagarUsd = 0;
+    // TODA linha de OV confirmada tem `unit_usd` congelado (o `confirm` se
+    // recusa a fechar sem taxa). Isto é para o registro legado, em que não
+    // tem: aí o total em US$ não existe, e dizer isso é melhor que somar 0.
+    var temUsd = true;
     var perdaTotal = 0;
     // Subtotais POR MARCA. A faixa do grupo tem de somar exatamente as linhas
     // dela — faixa dizendo um número e linhas dizendo outro é o tipo de erro
@@ -1362,6 +1370,7 @@
       if (r > qtd) r = qtd;
       var tr = i.closest('tr');
       if (tr) tr.classList.toggle('on', r > 0);
+      if (!(unitUsd > 0)) temUsd = false;
       var ok = qtd - r, val = ok * unit, valUsd = ok * unitUsd;
       rej += r; enviados += qtd; aceitos += ok; pagar += val; pagarUsd += valUsd;
       perdaTotal += r * unit;
@@ -1423,7 +1432,20 @@
     // Só o RESULTADO se move — o ESPERADO é o preço fechado com o cliente e
     // fica parado, senão a referência se perde (dono, 2026-08-18).
     if (kRmb) kRmb.textContent = '¥ ' + pagar.toFixed(2);
-    if (kUsd && fx) kUsd.textContent = 'US$ ' + (pagar * fx).toFixed(2);
+    // ⚠ BUG GRAVE, 2026-09-07 (dono: "rechacei chips e o resultado SUBIU").
+    // Esta linha era `(pagar * fx)` — total em ¥ vezes a taxa. É a conta que o
+    // `services.confirm` PROIBE com todas as letras: "Total US$ = SOMA das
+    // linhas congeladas — NÃO total_rmb × taxa, que divergiria por
+    // arredondamento por linha". E divergia MESMO: o ESPERADO ao lado é o
+    // `so.total_usd` (soma congelada) e o RESULTADO era ¥×taxa, então o mesmo
+    // cartão mostrava duas contas diferentes — e a recusa de ¥63 aparecia como
+    // US$ 6246.12 contra US$ 6235.30 "esperado", ou seja, recusar SUBIA o
+    // dólar. O rodapé da tabela já fazia a conta certa (`pagarUsd`, somado
+    // linha a linha logo acima); o herói só não a usava.
+    //
+    // Sem US$ congelado em alguma linha o total sairia MENOR do que é, calado.
+    // Travão, como em toda parte (§2.7): número que falta não se chuta.
+    if (kUsd) kUsd.textContent = temUsd ? 'US$ ' + pagarUsd.toFixed(2) : '—';
     if (kExp) {
       // ⚠ 2026-08-27. Antes esta linha era o `.kpi__d`, que SÓ existia quando
       // havia diferença — daí o `hidden`. Agora é o `.rmx__d`, a sub-linha do
