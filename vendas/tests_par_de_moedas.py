@@ -307,13 +307,14 @@ class RecalculoAoVivoTests(_Base):
         trecho = depois[:depois.index('var cPerda')]
         self.assertNotIn('dl2', trecho)
 
-    def test_a_perda_tem_alvo_PROPRIO_na_celula_da_recusa(self):
-        """`textContent` num elemento só dela, e não `innerHTML` numa célula
-        compartilhada: aqui só entra número, e é o MESMO número que o servidor
-        escreve no carregamento."""
+    def test_a_perda_tem_alvo_PROPRIO_em_cada_altura(self):
+        """`textContent` numa célula só dela — linha, faixa e rodapé —, e não
+        `innerHTML` numa célula compartilhada: aqui só entra número, e é o
+        MESMO número que o servidor escreve no carregamento."""
         self.assertIn("[data-perda=", self.js)
         self.assertIn("cPerda.textContent", self.js)
         self.assertIn("[data-gperda=", self.js)
+        self.assertIn("escreverNumero(elRejV,", self.js)
 
     def test_a_faixa_da_marca_soma_a_perda_das_linhas_dela(self):
         """Faixa dizendo um número e linhas dizendo outro é o erro que só
@@ -339,37 +340,50 @@ class EstiloTests(TestCase):
         self.assertNotEqual(cy, -1)
         self.assertLess(geral, cy)
 
-    def test_a_perda_desarma_o_display_block_do_pattern(self):
-        """O DEFEITO DE 07/09, e ele não estava no `.dtab`: o `.dl2` do
-        `patterns/parceiro.css` é `display:block;text-align:right`, e a regra
-        daqui só sobrescrevia fonte e cor. A perda virava um bloco encostado
-        na borda direita da célula e a linha crescia de 48 para 56px.
+    def test_a_coluna_da_perda_e_UMA_LINHA_de_css(self):
+        """A prova de que ela virou COLUNA, e não mais um ajuste.
 
-        Aqui é ESPECIFICIDADE (0,2,0 contra 0,1,0), não ordem: o `.dl2` do
-        pattern carrega depois no `<head>` e mesmo assim perde. Por isso o
-        teste cobra as DECLARAÇÕES, e não a posição no arquivo.
+        Como `<td class="n">`, ela herda do pacote a mono 14, o
+        `tabular-nums` e o alinhamento — o dono pediu exatamente isso ("do
+        tamanho dos outros na tabela mesmo, mesmo padrao"). A única coisa que
+        sobra para esta folha é a TINTA.
+
+        As duas tentativas anteriores enfiaram o número na célula de outro
+        dado e precisaram de três ou quatro declarações para brigar com o
+        `.dl2` do `patterns/parceiro.css` — sem nunca resolver o problema, que
+        era de layout de tabela e não de display.
         """
-        regra = _regra(_ler(CSS), '.dtab .dl2')
-        self.assertIn('display:inline-block', regra)
-        self.assertIn('text-align:inherit', regra)
-        # centrada contra o CAMPO, que é bem mais alto que o texto
-        self.assertIn('vertical-align:middle', regra)
-        self.assertIn('margin-left', regra)
+        regra = _regra(_ler(CSS), '.dtab .rv')
+        self.assertEqual(regra, '.dtab .rv{color:var(--red-60)}')
+        # e o `.dl2` deixou de ser usado nesta tela
+        self.assertNotIn('dl2', _ler(FICHA))
 
-    def test_no_cartao_do_celular_a_perda_nao_faz_o_cartao_crescer(self):
-        """No telefone o campo ocupa a largura toda: ao lado dele a perda não
-        cabe. Ela sobe para a fileira do RÓTULO, em `absolute` — o cartão fica
-        do mesmo tamanho com ou sem recusa.
+    def test_no_cartao_do_celular_a_coluna_vira_fileira(self):
+        """No telefone o campo ocupa a largura toda: ao lado dele nada cabe.
+        A célula desce para uma fileira própria logo abaixo, e some inteira
+        quando está vazia — senão TODO cartão da tela ficaria 9px mais alto
+        por causa de uma célula sem conteúdo, que é o mesmo defeito de sempre
+        pelo outro lado.
 
-        ⚠ A regra tem de existir DUAS vezes: o pacote repete todo o bloco de
+        ⚠ As regras têm de existir DUAS vezes: o pacote repete todo o bloco de
           600px em `@media` e em `@container`, e uma cópia só deixa metade das
           telas para trás.
         """
         pat = _ler(os.path.join(settings.BASE_DIR, 'static', 'wtc',
                                 'patterns', 'parceiro.css'))
-        self.assertEqual(pat.count('.dtab--conf .c-rej .dl2{position:absolute'),
-                         2)
-        self.assertEqual(pat.count('.dtab--conf .c-rej{position:relative'), 2)
+        self.assertEqual(pat.count('.dtab--conf .c-rejv{flex:1 0 100%'), 2)
+        self.assertEqual(pat.count('.dtab--conf .c-rejv:empty{display:none}'), 2)
+
+    def test_ninguem_tentou_ordenar_a_celula_com_order(self):
+        """⚠ ARMADILHA MEDIDA, não suposta: o pacote crava `order:6` em TODA
+        célula do corpo, com uma regra que vale (0,5,2). Qualquer `order` de
+        duas classes aqui é código morto que PARECE funcionar na leitura. Quem
+        decide a posição no cartão é a ordem do DOM — que é a das colunas."""
+        pat = _ler(os.path.join(settings.BASE_DIR, 'static', 'wtc',
+                                'patterns', 'parceiro.css'))
+        self.assertNotIn('.dtab--conf .c-rejv{flex:0 0 auto;order', pat)
+        self.assertIn('td:not(.cbx):not(.c):not(.key):not(.go){order:6',
+                      _ler(CSS))
 
 
 class PerdaDaLinhaTests(_Base):
@@ -408,17 +422,66 @@ class PerdaDaLinhaTests(_Base):
                 g['perda_rmb'],
                 sum((l['perda_rmb'] or D('0.00')) for l in g['lines']))
 
-    def test_o_numero_chega_desenhado_na_celula_da_RECUSA(self):
-        """E não na do dinheiro. A `data-perda` mora dentro do `td.c-rej`."""
+    def test_o_numero_chega_desenhado_na_COLUNA_dele(self):
+        """Célula própria: `td.c-rejv`. Nem na do dinheiro, nem espremido na
+        do campo — foram as duas tentativas que o dono reprovou."""
         import re
         so = self._com_recusa(3)
         html = self.client.get(
             reverse('compras:detail', args=[so.pk])).content.decode()
-        celula = re.search(
-            r'<td class="n hr c-rej".*?</td>', html, re.S)
-        self.assertIsNotNone(celula, 'célula da recusa não encontrada')
+        celula = re.search(r'<td class="n hr rv c-rejv".*?</td>', html, re.S)
+        self.assertIsNotNone(celula, 'coluna da perda não encontrada')
         self.assertIn('data-perda="%s"' % self.linha.pk, celula.group(0))
         self.assertIn('−¥ %s' % (self.UNIT_RMB * 3), celula.group(0))
+
+    def test_a_celula_do_CAMPO_so_tem_o_campo(self):
+        import re
+        so = self._com_recusa(3)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        celula = re.search(r'<td class="n hr c-rej".*?</td>', html, re.S)
+        self.assertNotIn('−¥', celula.group(0))
+
+    def test_o_rodape_soma_a_coluna(self):
+        so = self._com_recusa(3)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        import re
+        rodape = re.search(r'<tfoot>.*?</tfoot>', html, re.S).group(0)
+        self.assertIn('id="t-rejv"', rodape)
+        self.assertIn('−¥ %s' % (self.UNIT_RMB * 3), rodape)
+
+    def test_as_TRES_faixas_da_tabela_tem_o_mesmo_numero_de_colunas(self):
+        """A conta que uma coluna nova quebra primeiro, e que ninguém vê até
+        a terceira coluna sair do prumo: `thead`, cada `tr` do `tbody` e o
+        `tfoot` têm de somar a mesma largura, contando `colspan`."""
+        import re
+        so = self._com_recusa(3)
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        tabela = re.search(r'<table[^>]*id="tab-resumo".*?</table>', html,
+                           re.S).group(0)
+
+        def largura(trecho, tag):
+            # ⚠ `<%s[^>]*>` NÃO serve: `<thead>` casa com `<th` + `ead`, e
+            #   o cabeçalho passa a ter uma coluna a mais do que tem. A
+            #   primeira versão deste teste reprovou a tabela por causa
+            #   disso — o defeito era da regex, não do template.
+            marcas = re.finditer(r'<(t[hd])(\s[^>]*)?>', trecho)
+            return sum(
+                int(re.search(r'colspan="(\d+)"', m.group(0)).group(1))
+                if 'colspan=' in m.group(0) else 1
+                for m in marcas if m.group(1) == tag)
+
+        cab = largura(re.search(r'<thead>.*?</thead>', tabela, re.S).group(0),
+                      'th')
+        pe = largura(re.search(r'<tfoot>.*?</tfoot>', tabela, re.S).group(0),
+                     'td')
+        corpo = re.search(r'<tbody>.*?</tbody>', tabela, re.S).group(0)
+        linhas = {largura(tr, 'td')
+                  for tr in re.findall(r'<tr[^>]*>.*?</tr>', corpo, re.S)}
+        self.assertEqual(linhas, {cab}, 'linha do corpo fora do prumo')
+        self.assertEqual(pe, cab, 'rodapé fora do prumo')
 
     def test_a_celula_do_dinheiro_NAO_traz_a_perda(self):
         import re

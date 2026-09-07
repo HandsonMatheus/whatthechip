@@ -477,14 +477,30 @@
   /* referência não se lê com o dedo ocupado */
   .dtab--conf .c-unit,.dtab--conf .c-exp{display:none}
   /* o campo abre fileira e tem altura de toque: 48px, acima do mínimo de 44 */
-  .dtab--conf .c-rej{position:relative;flex:1 0 100%;text-align:left;margin-top:2px}
+  .dtab--conf .c-rej{flex:1 0 100%;text-align:left;margin-top:2px}
   .dtab--conf .c-rej .rjin{width:100%;max-width:none;height:48px;font-size:18px;text-align:left;padding:0 12px}
   .dtab--conf .c-rej .rej{font-size:16px}
-  /* A PERDA no cartão: o campo ocupa a largura toda, então ela não cabe ao
-     lado — sobe para a FILEIRA DO RÓTULO, encostada à direita, e o cartão não
-     cresce um pixel quando ele digita. `absolute` contra o `.c-rej`, que por
-     isso ganhou `position:relative` acima. */
-  .dtab--conf .c-rej .dl2{position:absolute;top:0;right:0;margin:0;font-size:12px}
+  /* A coluna de RECUSADOS ¥ no cartão: fileira PRÓPRIA logo abaixo do campo,
+     encostada à direita. No telefone o campo ocupa a largura toda e ao lado
+     dele não cabe nada; embaixo, o número fica colado na recusa que o
+     produziu, sem precisar de rótulo para dizer de quem ele é.
+
+     ⚠ NÃO tente `order` aqui: o pacote crava `order:6` em TODA célula do
+       corpo (`.dtab tbody td:not(.cbx):not(.c):not(.key):not(.go)`, que vale
+       0,5,2) e uma regra de duas classes não chega perto. Quem manda é a
+       ordem do DOM — que é a ordem das COLUNAS, e é justamente por isso que
+       o número cai onde cai.
+
+     Vazia a célula tem altura zero: o cartão sem recusa fica do mesmo
+     tamanho de sempre, e só cresce quando há o que mostrar. */
+  .dtab--conf .c-rejv{flex:1 0 100%;text-align:right;margin-top:4px;padding:0;
+    height:auto;border:0;background:none;font-size:12.5px;white-space:nowrap}
+  /* Sem recusa a célula sai do fluxo inteira — `margin` e quebra de fileira
+     incluídas. Sem isto todo cartão da tela ficava 9px mais alto por causa de
+     uma célula vazia, o que é o mesmo defeito de sempre pelo outro lado.
+     O `:empty` casa porque a célula é renderizada SEM espaço em branco
+     dentro, e porque o JS a esvazia com `textContent = ''`. */
+  .dtab--conf .c-rejv:empty{display:none}
   /* a consequência divide a última fileira: aprovados à esquerda, dinheiro à direita */
   .dtab--conf .c-ok{flex:0 0 auto;font-size:12px;color:var(--muted)}
   .dtab--conf .c-ok b{font-family:var(--mono);font-size:12.5px;color:var(--green-70)}
@@ -536,14 +552,30 @@
   /* referência não se lê com o dedo ocupado */
   .dtab--conf .c-unit,.dtab--conf .c-exp{display:none}
   /* o campo abre fileira e tem altura de toque: 48px, acima do mínimo de 44 */
-  .dtab--conf .c-rej{position:relative;flex:1 0 100%;text-align:left;margin-top:2px}
+  .dtab--conf .c-rej{flex:1 0 100%;text-align:left;margin-top:2px}
   .dtab--conf .c-rej .rjin{width:100%;max-width:none;height:48px;font-size:18px;text-align:left;padding:0 12px}
   .dtab--conf .c-rej .rej{font-size:16px}
-  /* A PERDA no cartão: o campo ocupa a largura toda, então ela não cabe ao
-     lado — sobe para a FILEIRA DO RÓTULO, encostada à direita, e o cartão não
-     cresce um pixel quando ele digita. `absolute` contra o `.c-rej`, que por
-     isso ganhou `position:relative` acima. */
-  .dtab--conf .c-rej .dl2{position:absolute;top:0;right:0;margin:0;font-size:12px}
+  /* A coluna de RECUSADOS ¥ no cartão: fileira PRÓPRIA logo abaixo do campo,
+     encostada à direita. No telefone o campo ocupa a largura toda e ao lado
+     dele não cabe nada; embaixo, o número fica colado na recusa que o
+     produziu, sem precisar de rótulo para dizer de quem ele é.
+
+     ⚠ NÃO tente `order` aqui: o pacote crava `order:6` em TODA célula do
+       corpo (`.dtab tbody td:not(.cbx):not(.c):not(.key):not(.go)`, que vale
+       0,5,2) e uma regra de duas classes não chega perto. Quem manda é a
+       ordem do DOM — que é a ordem das COLUNAS, e é justamente por isso que
+       o número cai onde cai.
+
+     Vazia a célula tem altura zero: o cartão sem recusa fica do mesmo
+     tamanho de sempre, e só cresce quando há o que mostrar. */
+  .dtab--conf .c-rejv{flex:1 0 100%;text-align:right;margin-top:4px;padding:0;
+    height:auto;border:0;background:none;font-size:12.5px;white-space:nowrap}
+  /* Sem recusa a célula sai do fluxo inteira — `margin` e quebra de fileira
+     incluídas. Sem isto todo cartão da tela ficava 9px mais alto por causa de
+     uma célula vazia, o que é o mesmo defeito de sempre pelo outro lado.
+     O `:empty` casa porque a célula é renderizada SEM espaço em branco
+     dentro, e porque o JS a esvazia com `textContent = ''`. */
+  .dtab--conf .c-rejv:empty{display:none}
   /* a consequência divide a última fileira: aprovados à esquerda, dinheiro à direita */
   .dtab--conf .c-ok{flex:0 0 auto;font-size:12px;color:var(--muted)}
   .dtab--conf .c-ok b{font-family:var(--mono);font-size:12.5px;color:var(--green-70)}

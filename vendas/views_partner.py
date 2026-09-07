@@ -473,6 +473,11 @@ def _detalhe(so):
         'hoje': timezone.localdate(),
         # Linha de TOTAIS da tabela de cima (dono, 2026-08-18).
         'total_qty': sum(g['qty'] for g in grupos),
+        # O total da coluna nova de RECUSADOS ¥ (2026-09-07). Soma dos
+        # grupos, que somam as linhas — a mesma cadeia dos outros totais, e
+        # não uma segunda conta a partir da OV.
+        'total_perda_rmb': sum((g['perda_rmb'] for g in grupos),
+                               Decimal('0.00')),
         # Câmbio: TRAVADO no fechamento do lote (PLANO_FX fase C) — a OV
         # herda essa taxa, e é ela que converte o ¥ dele em US$.
         'fx_rate': so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None),

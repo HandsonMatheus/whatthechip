@@ -495,7 +495,8 @@
          linha de rodapé — um total. O comprador via quanto sobrou no fim, mas
          não via o que CADA recusa custou, que é a leitura que ele precisa
          enquanto digita. Agora cada linha mostra o que sobrou de pé e quanto
-         dela virou dinheiro, com a perda em `.dl2` do lado.
+         dela virou dinheiro. A PERDA em ¥ ganhou COLUNA PRÓPRIA em
+         2026-09-07 — o porquê está no comentário do `<th>` dela.
 
          As três colunas do resultado são tingidas pelo grupo do pacote:
          `.hr` a recusa, `.hg` o aprovado, `.hb` o dinheiro.
@@ -518,6 +519,26 @@
               <th class="n">{% trans "Esperado" %}</th>
               {% if pode_acertar or tem_resultado %}
               <th class="n hr">{% trans "Recusados" %}{% if pode_acertar %}<i class="pen"></i>{% endif %}</th>
+              {% comment %} A RECUSA EM DINHEIRO, coluna própria (dono,
+                 2026-09-07: "abre logo uma coluna de recusados ai do lado da
+                 quantidade e faz esse numero do tamanho dos outros na tabela
+                 mesmo, mesmo padrao (...) teremos duas colunas de recusados,
+                 1 em unidades, onde o comprador digita, e outra em YUAN, que
+                 reflete a de quantidades").
+
+                 Ele está certo, e as duas tentativas anteriores erraram pelo
+                 mesmo motivo: eu enfiei o número DENTRO de uma célula que já
+                 tinha dono — primeiro a do resultado, depois a do campo. Numa
+                 tabela, número que não cabe na célula do vizinho quer uma
+                 coluna. Com `<td class="n">` ele herda a tipografia dos
+                 outros (mono 14, tabular) sem regra nenhuma, e a largura
+                 passa a ser problema da tabela, não do texto.
+
+                 Só ¥ (foi o pedido). É a única coluna de dinheiro da tabela
+                 sem o par US$ — se um dia incomodar, o par entra como nas
+                 outras.
+              {% endcomment %}
+              <th class="n hr">{% trans "Recusados" %} ¥</th>
               <th class="n hg">{% trans "Aprovados" %}</th>
               <th class="n hb">{% trans "Resultado" %}</th>
               {% endif %}
@@ -543,15 +564,8 @@
               <td class="n hide-lg"></td>
               <td class="n{% if registro_legado %} dim{% endif %}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.usd }}<span class="cy">¥ {{ g.rmb }}</span>{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
-              {% comment %} A perda em ¥ ao lado da contagem, e não lá na
-                 coluna do resultado (dono, 2026-09-07: "ele esta no lugar
-                 correto?"). O número que ela tira pertence ao mesmo lugar que
-                 a recusa que o causou; do outro lado da tabela ele virava uma
-                 terceira linha na célula do dinheiro, disputando a leitura
-                 com o valor. O `<b>` interno existe porque o JS reescreve a
-                 CONTAGEM por `textContent` — sem ele, levaria a perda junto.
-              {% endcomment %}
-              <td class="n hr"><b data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</b><b class="dl2" data-gperda="{{ forloop.counter0 }}">{% localize off %}{% if g.perda_rmb %}−¥ {{ g.perda_rmb }}{% endif %}{% endlocalize %}</b></td>
+              <td class="n hr" data-grej="{{ forloop.counter0 }}">{% if g.rejected %}−{{ g.rejected }}{% else %}0{% endif %}</td>
+              <td class="n hr rv" data-gperda="{{ forloop.counter0 }}">{% localize off %}{% if g.perda_rmb %}−¥ {{ g.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg" data-gok="{{ forloop.counter0 }}">{{ g.accepted }}</td>
               <td class="n hb{% if registro_legado %} dim{% endif %}" data-gval="{{ forloop.counter0 }}">{% localize off %}{% if registro_legado %}—{% else %}US$ {{ g.pago_usd }}<span class="cy">¥ {{ g.pago_rmb }}</span>{% endif %}{% endlocalize %}</td>
               {% endif %}
@@ -583,8 +597,8 @@
                           divergiriam e o número pularia no recarregamento
                           depois de fechar. {% endcomment %}
                        data-unit-usd="{% if l.unit_usd %}{{ l.unit_usd|unlocalize }}{% else %}0{% endif %}">
-                <b class="dl2" data-perda="{{ l.pk }}">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</b>
               </td>
+              <td class="n hr rv c-rejv" data-label="{% trans 'Recusados' %} ¥" data-perda="{{ l.pk }}">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg c-ok" data-ok="{{ l.pk }}">
                 <i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
               <td class="v hb c-val" data-label="{% trans 'Resultado' %}" data-val="{{ l.pk }}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
@@ -597,7 +611,8 @@
                  digitação e sumia no F5 — a tela contradizia a si mesma sobre
                  um fato que não muda. {% endcomment %}
               <td class="n hr c-rej"><i class="c-lbl c-lbl--rej">{% trans "Recusados" %}</i>
-                <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b><b class="dl2">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</b></td>
+                <b class="rej {% if l.rejected %}some{% else %}zero{% endif %}">{% if l.rejected %}−{{ l.rejected }}{% else %}0{% endif %}</b></td>
+              <td class="n hr rv c-rejv" data-label="{% trans 'Recusados' %} ¥">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg c-ok"><i class="c-lbl">{% trans "aprovados" %}</i><b>{{ l.accepted }}</b></td>
               <td class="v hb c-val" data-label="{% trans 'Resultado' %}">{% localize off %}{% if l.pago_rmb is not None %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% endif %}<span class="cy">¥ {{ l.pago_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% endif %}
@@ -613,6 +628,11 @@
               <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ US$ {{ total_estimado_usd }}<span class="cy">≈ ¥ {{ total_estimado }}</span>{% elif so.total_rmb %}US$ {{ so.total_usd }}<span class="cy">¥ {{ so.total_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
               <td class="n hr" id="t-rej"><small>{% trans "Recusados" %}</small>0</td>
+              {% comment %} Coluna nova = célula nova NO RODAPÉ também, senão
+                 as colunas saem do prumo daqui para baixo. E já que ela existe,
+                 mostra o total: a coluna inteira fica lendo a mesma coisa em
+                 três alturas (linha, faixa, rodapé). {% endcomment %}
+              <td class="n hr rv" id="t-rejv"><small>{% trans "Recusados" %} ¥</small>{% localize off %}{% if total_perda_rmb %}−¥ {{ total_perda_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               <td class="n hg" id="t-ace"><small>{% trans "Aprovados" %}</small>{{ total_qty }}</td>
               {% comment %} O `escreverNumero` do JS escreve no ÚLTIMO nó de
                  TEXTO da célula — com o `<span>` do ¥ no fim, o último nó
@@ -1282,6 +1302,7 @@
   var fx = parseFloat(form.dataset.fx) || 0;
   var esperado = parseFloat(form.dataset.esperado) || 0;
   var elRej = document.getElementById('t-rej');
+  var elRejV = document.getElementById('t-rejv');
   var elAce = document.getElementById('t-ace');
   var kRmb = document.getElementById('k-rmb');
   var kUsd = document.getElementById('k-usd');
@@ -1327,6 +1348,7 @@
 
   function recalcular() {
     var rej = 0, aceitos = 0, enviados = 0, pagar = 0, pagarUsd = 0;
+    var perdaTotal = 0;
     // Subtotais POR MARCA. A faixa do grupo tem de somar exatamente as linhas
     // dela — faixa dizendo um número e linhas dizendo outro é o tipo de erro
     // que só aparece depois de fechado.
@@ -1342,6 +1364,7 @@
       if (tr) tr.classList.toggle('on', r > 0);
       var ok = qtd - r, val = ok * unit, valUsd = ok * unitUsd;
       rej += r; enviados += qtd; aceitos += ok; pagar += val; pagarUsd += valUsd;
+      perdaTotal += r * unit;
 
       // ── a LINHA: o que sobrou de pé e quanto dela virou dinheiro ──
       var pk = i.dataset.rj;
@@ -1349,9 +1372,8 @@
       if (cOk) cOk.textContent = ok;
       var cVal = document.querySelector('[data-val="' + pk + '"]');
       if (cVal) cVal.innerHTML = par(valUsd, val);
-      // A PERDA, ao lado do campo que a produziu. Sem ela o comprador vê o
-      // resultado cair sem ver o quanto — e `textContent`, não `innerHTML`:
-      // aqui só entra número, e é ele que o servidor também escreve.
+      // A PERDA, na COLUNA dela. `textContent` e não `innerHTML`: aqui só
+      // entra número, e é o mesmo que o servidor escreve no carregamento.
       var cPerda = document.querySelector('[data-perda="' + pk + '"]');
       if (cPerda) cPerda.textContent = (r && unit)
         ? '−¥ ' + (r * unit).toFixed(2) : '';
@@ -1389,6 +1411,9 @@
     // ⚠ `textContent` apagaria o <small> do rótulo que o rodapé carrega desde
     // 2026-08-27. Escreve-se no ÚLTIMO nó de texto, que é o número.
     escreverNumero(elRej, rej ? '−' + rej : '0');
+    // A coluna nova soma como as outras. Travessão e não "−¥ 0.00" quando
+    // não há recusa: zero de perda é a boa notícia, e não precisa de tinta.
+    escreverNumero(elRejV, perdaTotal ? '−¥ ' + perdaTotal.toFixed(2) : '—');
     escreverNumero(elAce, aceitos);
     // Alvos PRÓPRIOS no rodapé: o `escreverNumero` escreve no último nó de
     // texto, e com o span do ¥ no fim ele acrescentaria um número solto

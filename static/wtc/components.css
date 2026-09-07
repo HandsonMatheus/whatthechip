@@ -495,20 +495,22 @@ html img.lg-d{display:none}
 .dtab th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
 /* a linha em edição vence o hover neutro de .dtab--static: é estado, não passagem de cursor */
 .dtab tbody tr.on td,.dtab--static tbody tr.on:hover td{background:var(--ink-05)}
-/* A PERDA (−¥ X): o que a recusa tirou daquela linha.
-   MORA NA CÉLULA DA RECUSA, ao lado do campo e da contagem — não na coluna do
-   dinheiro (dono, 2026-09-07: "sai na coluna de resultado quebrando tudo (...)
-   ele esta no lugar correto?"). Lá ela era um TERCEIRO número espremido numa
-   célula que já empilha US$ e ¥, e ainda por cima virava bloco alinhado à
-   direita, porque o `.dl2` do `patterns/parceiro.css` é
-   `display:block;text-align:right` e esta regra só sobrescrevia fonte e cor —
-   a linha da tabela crescia de 48 para 56px assim que ele digitava. Aqui o
-   número está ao lado da causa dele, e a célula da recusa tinha a folga.
+/* A RECUSA EM DINHEIRO — coluna própria desde 2026-09-07 (dono: "abre logo
+   uma coluna de recusados ai do lado da quantidade e faz esse numero do
+   tamanho dos outros na tabela mesmo, mesmo padrao").
 
-   `inline-block` + `vertical-align:middle` para centrar contra o campo de
-   número, que é bem mais alto que o texto. As três declarações são
-   necessárias: sem elas o `.dl2` do pattern volta a mandar. */
-.dtab .dl2{display:inline-block;vertical-align:middle;margin-left:10px;text-align:inherit;font-family:var(--sans);font-size:11px;font-weight:500;color:var(--red-60)}
+   ⚠ A regra é UMA LINHA porque a coluna é uma coluna: o `td.n` já dá mono 14,
+     `tabular-nums` e o alinhamento; a tinta é o único acréscimo. As duas
+     tentativas anteriores enfiaram o número dentro da célula de outro dado —
+     primeiro a do resultado, depois a do campo de recusa — e cada uma pediu
+     três ou quatro declarações para brigar com o `.dl2` do
+     `patterns/parceiro.css` (`display:block;text-align:right`), sem nunca
+     resolver o que era o problema de verdade: número que não cabe na célula
+     do vizinho quer uma coluna, não um ajuste de display.
+
+   O `.dl2` fica onde estava, no pattern, sem uso nesta tabela. */
+.dtab .rv{color:var(--red-60)}
+.dtab tfoot td.rv{color:var(--red-60)}
 /* rodapé de coluna: o total embaixo da própria coluna, colado no fundo do scrollport. Claro e
    não escuro, pela mesma razão da faixa de grupo — a barra escura pertence ao cabeçalho. */
 .dtab tfoot td{position:sticky;bottom:0;z-index:2;height:var(--row-h);padding:0 16px;background:var(--ink-10);border-top:1px solid var(--line-2);border-bottom:0;font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap}
