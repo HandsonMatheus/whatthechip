@@ -1038,7 +1038,13 @@ class PdfConferenciaGerenteTests(TestCase):
                 # este documento não desenha — 銷售訂單, 結果明細, 單價. O
                 # reportlab embute só o glifo USADO, então cobrá-los aqui é
                 # cobrar da fonte de outro papel.
-                'so_result', 'detail', 'unit', 'lot_origin'}
+                'so_result', 'detail', 'unit', 'lot_origin',
+                # 2026-09-04, RESULTADO PARCIAL: 部分結果. Terceira vez que
+                # esta lista morde uma chave nova do PDF do resultado — se
+                # aparecer uma quarta, o certo é o teste perguntar ao
+                # `pdf.py` quais chaves ESTE documento desenha, em vez de
+                # manter a lista à mão.
+                'result_partial'}
         # ⚠ A conta é só dos caracteres que o `_rich` MANDA para a TTF (o
         # `_CJK_RE`). Rótulo em chinês pode trazer pontuação latina — o travessão
         # de '1. 貨物性質 — 非廢棄物', por exemplo — e essa sai em Helvetica, que

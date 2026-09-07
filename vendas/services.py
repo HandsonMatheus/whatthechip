@@ -602,16 +602,73 @@ def result_document(so, invoice):
     documento — a máscara F12 protege o conhecimento de categoria nas telas da
     empresa-cliente, não no que o comprador escolhe compartilhar.
     """
-    from pricing.models import CategoryCode
     acerto = invoice.settlement
-    recusas = {sl.order_line_id: sl for sl in acerto.lines.all()}
+    return _monta_documento(
+        so,
+        # `{pk: (recusadas, novo_unitário)}` — a MESMA forma que o
+        # `settle_and_invoice` recebe, para os dois caminhos (fatura emitida e
+        # resultado PARCIAL) alimentarem o mesmo montador.
+        recusas={sl.order_line_id: (sl.qty_rejected, sl.new_unit_rmb)
+                 for sl in acerto.lines.all()},
+        fx=invoice.fx_usd_rate,
+        settled_at=acerto.created_at,
+        total_rmb=invoice.total_rmb,
+        total_usd=invoice.total_usd,
+        notas=order_notes(so),
+        parcial=False)
+
+
+def result_preview(so, adjustments, nota=''):
+    """O MESMO documento do resultado, a partir das recusas DIGITADAS.
+
+    Dono, 2026-09-04: em Conferência o comprador digita as recusas e não tem
+    como mandar isso ao cliente para começar a conversa sobre os chips com
+    problema — diagnóstico, explicação, o que for. Este é o papel dessa
+    conversa, e ele sai ANTES de a fatura existir.
+
+    ⚠ NÃO PERSISTE NADA. Nem acerto, nem fatura, nem observação, nem
+      `received_at` (o `settle_and_invoice` marca o recebimento; aqui não há
+      fechamento nenhum para implicar isso). Gerar o parcial dez vezes deixa o
+      banco exatamente como estava — é um rascunho impresso, não um estado.
+
+    ⚠ Os totais saem do `settlement_totals`, a MESMA função que a fatura usa.
+      É o que garante que o número do papel de hoje seja o número do papel de
+      amanhã para as mesmas recusas.
+
+    `nota` é o texto que o comprador digitou no diálogo de fechamento e ainda
+    NÃO salvou. Entra no papel com a data de hoje porque é a data que ele terá
+    quando for salvo, e porque a observação é justamente onde vive a
+    explicação que o parcial existe para transmitir.
+    """
+    from django.utils import timezone as _tz
+    lines = list(so.lines.all())
+    total_rmb, total_usd = settlement_totals(lines, adjustments,
+                                             so.fx_usd_rate)
+    notas = list(order_notes(so))
+    if (nota or '').strip():
+        notas.append({'at': _tz.now(), 'text': nota.strip()})
+    return _monta_documento(
+        so, recusas=adjustments, fx=so.fx_usd_rate,
+        # Sem data de fechamento: NÃO houve fechamento. O campo sai com
+        # travessão, e é a segunda coisa (depois do título) que diz ao cliente
+        # que este papel ainda não é o final.
+        settled_at=None,
+        total_rmb=total_rmb, total_usd=total_usd,
+        notas=notas, parcial=True)
+
+
+def _monta_documento(so, *, recusas, fx, settled_at, total_rmb, total_usd,
+                     notas, parcial):
+    """O miolo que os dois caminhos dividem — o que muda entre o resultado
+    FECHADO e o PARCIAL é só de onde vêm as recusas, a taxa, a data e os
+    totais. Um montador só é o que impede os dois papéis de divergirem no
+    desenho."""
+    from pricing.models import CategoryCode
     linhas, env, rej, ace = [], 0, 0, 0
     for line in so.lines.all().order_by('brand'):
-        sl = recusas.get(line.pk)
-        n_rej = sl.qty_rejected if sl else 0
+        n_rej, novo_unit = recusas.get(line.pk, (0, None))
         n_ace = line.quantity - n_rej
-        unit = (sl.new_unit_rmb if sl and sl.new_unit_rmb is not None
-                else line.unit_rmb)
+        unit = novo_unit if novo_unit is not None else line.unit_rmb
         # ── O US$ DA LINHA (dono, 2026-09-04) ─────────────────────────────
         # O PDF passou a mostrar o par US$/¥ como a tela do comprador, e o
         # dólar tem DUAS origens diferentes — o ramo separado é o que deixa
@@ -622,9 +679,8 @@ def result_document(so, invoice):
         #   · repactuado → o acerto muda o ¥ (`new_unit_rmb`) e não tem par em
         #     US$ para mudar junto; aí, e só aí, o dólar é DERIVADO da taxa
         #     travada. É a única linha do documento em que ele não é congelado.
-        if sl is not None and sl.new_unit_rmb is not None:
-            unit_usd = (sl.new_unit_rmb * invoice.fx_usd_rate
-                        if invoice.fx_usd_rate else None)
+        if novo_unit is not None:
+            unit_usd = (novo_unit * fx) if fx else None
         else:
             unit_usd = line.unit_usd
         linhas.append({
@@ -662,31 +718,69 @@ def result_document(so, invoice):
         # para o cliente, e de quem o WhatTheChip compra é sigilo de negócio.
         'closed_at': lot.closed_at,
         'received_at': so.received_at,
-        'settled_at': acerto.created_at,
+        'settled_at': settled_at,
         # ⚠ Só DATA e TEXTO: a autoria vira "Conferência" no papel (spec
         # §7.1). O cliente sabe que alguém conferiu; não pode saber quem
         # comprou. Cortado AQUI, na origem — não no template —, porque é
         # assim que ninguém reintroduz o nome desenhando a página.
-        'notes': [{'at': n['at'], 'text': n['text']}
-                  for n in order_notes(so)],
+        'notes': [{'at': n['at'], 'text': n['text']} for n in notas],
         # Câmbio do FECHAMENTO (PLANO_FX fase C) — a fatura usa a taxa da OV,
         # que herdou a trava do lote.
-        'fx_rate': invoice.fx_usd_rate,
+        'fx_rate': fx,
         'fx_locked_at': lot.fx_locked_at,
         'lines': linhas,
         'sent': env, 'rejected': rej, 'accepted': ace,
         'order_rmb': so.total_rmb, 'order_usd': so.total_usd,
-        'total_rmb': invoice.total_rmb, 'total_usd': invoice.total_usd,
+        'total_rmb': total_rmb, 'total_usd': total_usd,
         # ESPERADO × FINAL, já subtraído (dono, 2026-08-18): a diferença é a
         # informação do documento — é ela que o cliente vai querer explicada.
-        'delta_rmb': (invoice.total_rmb - so.total_rmb
+        'delta_rmb': (total_rmb - so.total_rmb
                       if so.total_rmb is not None else None),
-        'delta_usd': (invoice.total_usd - so.total_usd
+        'delta_usd': (total_usd - so.total_usd
                       if so.total_usd is not None else None),
+        # O papel se anuncia: o `render_result_pdf` troca o TÍTULO por
+        # "Partial result" quando isto é verdadeiro, e a view troca o nome do
+        # arquivo. Uma chave só, lida em dois lugares — não dois caminhos de
+        # renderização que podem divergir.
+        'partial': parcial,
     }
 
 
 # ═══ F11.4 — Acerto → Fatura → Pagamentos ═══════════════════════════════════
+
+def settlement_totals(lines, adjustments, rate):
+    """``(total_rmb, total_usd)`` de um acerto — A CONTA DA FATURA.
+
+    Extraída do `settle_and_invoice` em 2026-09-04, quando o RESULTADO PARCIAL
+    passou a precisar do mesmo número ANTES de existir fatura. Duas
+    implementações da mesma conta é como o papel que o cliente recebe hoje
+    (parcial) acaba dizendo um valor e o de amanhã (final) outro, para as
+    MESMAS recusas — e aí a discussão que o parcial existe para começar vira
+    uma discussão sobre o sistema.
+
+    ⚠ O US$ aqui é DERIVADO da taxa e quantizado POR LINHA
+      (`(unit × rate).quantize(_CENT)` × qtd), e NÃO é o `line.unit_usd`
+      congelado que a tabela do documento exibe. Os dois podem diferir de
+      centavos numa OV com muitas linhas — é assim desde o F10 e não é
+      correção deste commit; o que este commit garante é que parcial e final
+      façam a MESMA conta, seja ela qual for.
+
+    `lines` vem pronto de propósito: o `settle_and_invoice` já tem a lista
+    carregada e a percorre para gravar as `SettlementLine`, então passar a
+    lista evita uma segunda consulta dentro da transação.
+    """
+    total_rmb = Decimal('0.00')
+    total_usd = Decimal('0.00')
+    for line in lines:
+        rej, novo = adjustments.get(line.pk, (0, None))
+        qty = line.quantity - rej
+        unit = novo if novo is not None else line.unit_rmb
+        unit_usd = (unit * rate).quantize(_CENT, ROUND_HALF_UP)
+        total_rmb += unit * qty
+        total_usd += unit_usd * qty          # soma por linha (F10, fatura)
+    return (total_rmb.quantize(_CENT, ROUND_HALF_UP),
+            total_usd.quantize(_CENT, ROUND_HALF_UP))
+
 
 def settle_and_invoice(so, adjustments, user, notes=''):
     """RESULTADO do comprador → Acerto + Fatura, num ato atômico (padrão
@@ -736,8 +830,6 @@ def settle_and_invoice(so, adjustments, user, notes=''):
         # a tela e o PDF passam a ler daqui.
         if (notes or '').strip():
             add_order_note(so, notes, user)
-        total_rmb = Decimal('0.00')
-        total_usd = Decimal('0.00')
         rate = so.fx_usd_rate
         for line in lines:
             rej, novo = adjustments.get(line.pk, (0, None))
@@ -745,13 +837,11 @@ def settle_and_invoice(so, adjustments, user, notes=''):
                 SettlementLine.all_companies.create(
                     settlement=st, order_line=line,
                     qty_rejected=rej, new_unit_rmb=novo)
-            qty = line.quantity - rej
-            unit = novo if novo is not None else line.unit_rmb
-            unit_usd = (unit * rate).quantize(_CENT, ROUND_HALF_UP)
-            total_rmb += unit * qty
-            total_usd += unit_usd * qty          # soma por linha (F10, fatura)
-        total_rmb = total_rmb.quantize(_CENT, ROUND_HALF_UP)
-        total_usd = total_usd.quantize(_CENT, ROUND_HALF_UP)
+        # ⚠ A conta saiu deste laço para o `settlement_totals` (2026-09-04) e
+        #   virou DOIS laços sobre a MESMA lista já carregada — equivalente,
+        #   sem consulta nova, e agora é a única conta que existe: o resultado
+        #   PARCIAL chama a mesma função antes de haver fatura.
+        total_rmb, total_usd = settlement_totals(lines, adjustments, rate)
         # TAXA DE SERVIÇO congelada aqui (dono, 2026-08-19), como o câmbio: é
         # a do CADASTRO no momento em que a fatura nasce. Mudar
         # `Company.service_fee_pct` depois não reescreve esta venda.
@@ -1607,6 +1697,25 @@ def order_stage(so, pendentes=None) -> str:
     if inv.status == 'paid':
         return STAGE_PAGO
     return STAGE_PARCIAL if inv.paid_usd else STAGE_FATURADO
+
+
+def can_settle(so) -> bool:
+    """A conferência está ABERTA? — a caixa chegou e ainda não virou fatura.
+
+    Existe como função porque DUAS superfícies precisam da mesma resposta e
+    divergir seria um bug silencioso: a tela do comprador decide com ela se
+    mostra os campos de recusa e os botões da etapa, e a view do RESULTADO
+    PARCIAL decide com ela se aceita o POST. Botão visível e rota permitida
+    passam a ser a mesma pergunta, feita uma vez só.
+
+    Não é o mesmo que ``order_stage(so) == STAGE_CONFERENCIA``: aquele só
+    exige "não é rascunho", e uma OV CANCELADA já recebida cairia nele. Aqui
+    é CONFIRMADA — a mesma exigência do ``settle_and_invoice``.
+    """
+    from .models import STATUS_CONFIRMED
+    return (so.status == STATUS_CONFIRMED
+            and so.received_at is not None
+            and not any(i.status != 'cancelled' for i in so.invoices.all()))
 
 
 def result_rows(so):

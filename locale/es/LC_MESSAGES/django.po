@@ -2720,6 +2720,14 @@ msgid "Pago em parte"
 msgstr "Pagado en parte"
 
 #: vendas/ (F11.6)
+msgid "%(cat)s: rejeitadas (%(rej)s) acima da quantidade enviada (%(qtd)s)."
+msgstr "%(cat)s: rechazadas (%(rej)s) por encima de la cantidad enviada (%(qtd)s)."
+
+#: vendas/ (F11.6)
+msgid "Resultado parcial"
+msgstr "Resultado parcial"
+
+#: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "Cantidad rechazada inválida en %(cat)s."
 

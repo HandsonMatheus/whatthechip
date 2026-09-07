@@ -31,6 +31,11 @@ urlpatterns = [
     path('compras/<int:pk>/resultado/', views.compra_resultado, name='resultado'),
     path('compras/<int:pk>/resultado.pdf', views.compra_resultado_pdf,
          name='resultado_pdf'),
+    # O resultado PARCIAL — mesmo papel, ainda na conferência (dono,
+    # 2026-09-04). É POST porque as recusas ainda não estão no banco: elas
+    # vêm no corpo, do mesmo formulário que o "Fechar resultado" envia.
+    path('compras/<int:pk>/resultado-parcial.pdf',
+         views.compra_resultado_parcial, name='resultado_parcial'),
     # A aba aberta em CSV (spec v2 §6.10). Uma rota POR ABA, não `?aba=`: o
     # nome do arquivo faz parte da entrega.
     # A planilha vem ANTES do `<slug:aba>.csv` por clareza de leitura, não

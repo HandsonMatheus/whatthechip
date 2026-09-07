@@ -2556,6 +2556,14 @@ msgid "Pago em parte"
 msgstr "部分付款"
 
 #: vendas/ (F11.6)
+msgid "%(cat)s: rejeitadas (%(rej)s) acima da quantidade enviada (%(qtd)s)."
+msgstr "%(cat)s：拒收数量（%(rej)s）超过发出数量（%(qtd)s）。"
+
+#: vendas/ (F11.6)
+msgid "Resultado parcial"
+msgstr "部分结果"
+
+#: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "%(cat)s 的拒收数量无效。"
 

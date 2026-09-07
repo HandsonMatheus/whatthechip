@@ -136,6 +136,27 @@
           {% trans "Marcar como recebido" %}
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
         {% elif pode_acertar %}
+        {% comment %} RESULTADO PARCIAL (dono, 2026-09-04): o papel da conversa
+           sobre a recusa, antes de fechar. Mesmo documento do "Imprimir
+           resultado", com PARCIAL no título e no nome do arquivo.
+
+           É `submit` do MESMO `f-resultado`, desviado por `formaction`, e não
+           um link: as recusas ainda não estão no banco — vivem nos campos
+           deste formulário. Um `<a href>` baixaria o PDF do que está salvo,
+           que na conferência é "nada recusado".
+
+           SEM `formnovalidate`: campo em branco já é válido (ele digita só o
+           que recusou), então a validação do navegador só barra o que o
+           servidor também barraria — e barra COM a dica na própria célula,
+           em vez de abrir uma aba com a página de erro.
+           `formtarget=_blank` mantém ele na tela com o que digitou.
+        {% endcomment %}
+        <button type="submit" form="f-resultado" class="btn btn--ghost" id="b-parcial"
+                formaction="{% url 'compras:resultado_parcial' so.pk %}"
+                formtarget="_blank">
+          <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 22h8v-8H8z"/></svg>
+          {% trans "Resultado parcial" %}
+        </button>
         <button type="submit" form="f-resultado" class="btn btn--pri">
           {% trans "Fechar resultado" %}
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
@@ -1412,7 +1433,31 @@
   // ── Confirmação antes de gravar ─────────────────────────────────────────
   var modal = document.getElementById('m-fechar');
   if (!modal) return;
+
+  // ⚠ O "Resultado parcial" envia o MESMO formulário, desviado por
+  //   `formaction` — e NÃO pode cair no diálogo de confirmação. Cairia num
+  //   desastre silencioso: o "Fechar resultado" do diálogo chama
+  //   `form.submit()`, que IGNORA o `formaction` do botão e vai para o
+  //   `action` do formulário. Ele pediria um rascunho e GRAVARIA o acerto.
+  //   Por isso a saída é aqui, antes do `preventDefault`.
+  var bParcial = document.getElementById('b-parcial');
+  var indoParcial = false;
+  if (bParcial) {
+    // O clique vem imediatamente antes do submit nativo. `e.submitter` faria
+    // sozinho em navegador novo; a bandeira cobre os antigos, e o `setTimeout`
+    // a abaixa se o envio não acontecer (validação do navegador barrou),
+    // para não sobrar levantada para o próximo "Fechar resultado".
+    bParcial.addEventListener('click', function () {
+      indoParcial = true;
+      setTimeout(function () { indoParcial = false; }, 0);
+    });
+  }
+
   function conferir(e) {
+    if (indoParcial || (bParcial && e.submitter === bParcial)) {
+      indoParcial = false;
+      return;                          // segue o envio nativo, com formaction
+    }
     e.preventDefault();
     recalcular();
     document.getElementById('m-env').textContent = estado.enviados + ' un.';

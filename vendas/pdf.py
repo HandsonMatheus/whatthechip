@@ -340,6 +340,12 @@ _L = {
                    '2. Uso final'),
     # ── Documento do RESULTADO (dono, 2026-08-18) ──────────────────────────
     'result':     ('Purchase result',      '採購結果'),
+    #: O MESMO papel, antes de a fatura existir (dono, 2026-09-04). O título é
+    #: a primeira coisa que o cliente lê, e é ele que impede o parcial de ser
+    #: arquivado como final. "Partial" e não "Draft": rascunho sugere que os
+    #: números podem estar errados, e não estão — eles são os de HOJE, com a
+    #: conferência ainda em curso.
+    'result_partial': ('Partial result',    '部分結果'),
     'detail':     ('Result detail',        '結果明細'),
     #: ⚠ NÃO reaproveite o `so` aqui, e não troque o `so` por isto.
     #:
@@ -1185,7 +1191,8 @@ def render_result_pdf(doc: dict) -> bytes:
          [P(doc['so_code'], st_code)]], colWidths=[0.44 * avail]),
         [('BOTTOMPADDING', (0, 0), (0, 0), 3)])
     story += [_limpa(Table(
-        [[P(_t('result'), st_title), bloco_so]],
+        [[P(_t('result_partial') if doc.get('partial') else _t('result'),
+            st_title), bloco_so]],
         colWidths=[0.56 * avail, 0.44 * avail]),
         # ⚠ O alinhamento horizontal mora no ESTILO DO PARÁGRAFO
         # (`alignment=2`), não num ('ALIGN', ...) do TableStyle: o TableStyle
@@ -1274,7 +1281,13 @@ def render_result_pdf(doc: dict) -> bytes:
     col = avail / 3.0
     valores = Table(
         [[P(_t_up('expected'), _st_l(_T_INK70)),
-          P(_t_up('final'), _st_l(_T_BLUE70)),
+          # ⚠ No PARCIAL esta coluna NÃO pode dizer "FINAL RESULT": seria um
+          #   papel intitulado "Partial result" afirmando, no número que o
+          #   cliente vai olhar primeiro, que aquilo é o final — exatamente a
+          #   confusão que este documento existe para evitar. Mesma chave do
+          #   título, para os dois nunca discordarem.
+          P(_t_up('result_partial' if doc.get('partial') else 'final'),
+            _st_l(_T_BLUE70)),
           P(_t_up('difference'), _st_l(dif_ink))],
          # US$ NA FRENTE (dono, 2026-09-04): é a moeda em que o dinheiro
          # muda de mão. O ¥ desce para secundário — continua no papel porque

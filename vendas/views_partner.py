@@ -405,8 +405,10 @@ def _detalhe(so):
         # (dono, 2026-08-18: "ele deve acusar como recebido primeiro para ir
         # pra parte de resultado"). Sem o recebimento a tabela é leitura: não
         # se confere caixa que ainda não chegou.
-        'pode_acertar': (so.status == STATUS_CONFIRMED and inv is None
-                         and so.received_at is not None),
+        # A MESMA pergunta que a view do resultado parcial faz para aceitar
+        # o POST (`services.can_settle`). Repetir a condição aqui já foi a
+        # versão anterior — e duas cópias divergem na primeira alteração.
+        'pode_acertar': services.can_settle(so),
         # ⚠ ACHADO DE 2026-08-27, e é um buraco antigo. `pode_acertar` responde
         # "ele PODE digitar recusa agora?" e vira falso assim que a fatura
         # nasce. O template usava só ele para decidir se as colunas do
@@ -683,6 +685,85 @@ def compra_resultado_pdf(request, pk):
         return resp
 
 
+def _recusas_do_post(request, so):
+    """`{pk: (recusadas, None)}` a partir do formulário, ou `None` no erro.
+
+    Compartilhado pelo "Fechar resultado" e pelo "Resultado parcial": os dois
+    leem os MESMOS campos do MESMO formulário, e ler duas vezes seria a
+    chance de o parcial aceitar o que o fechamento recusa (ou o contrário) —
+    o comprador veria um PDF que o botão do lado se nega a fechar.
+
+    Campo em branco vale ZERO (é o padrão: ele digita só o que recusou).
+    """
+    ajustes = {}
+    for line in so.lines.all():
+        cru = (request.POST.get(f'rej_{line.pk}') or '').strip()
+        if not cru:
+            continue
+        try:
+            rej = int(cru)
+        except ValueError:
+            messages.error(request, _(
+                'Quantidade recusada inválida em %(cat)s.')
+                % {'cat': line.label})
+            return None
+        if rej < 0 or rej > line.quantity:
+            # 'rejeitadas' de propósito: era a palavra que o comprador já
+            # lia (a mensagem vinha do `settle_and_invoice`, que continua
+            # validando por baixo). A frase melhorou; o vocabulário não mudou.
+            messages.error(request, _(
+                '%(cat)s: rejeitadas (%(rej)s) acima da quantidade enviada '
+                '(%(qtd)s).') % {'cat': line.label, 'rej': rej,
+                                 'qtd': line.quantity})
+            return None
+        if rej:
+            ajustes[line.pk] = (rej, None)      # sem repreço no MVP
+    return ajustes
+
+
+@partner_required
+@require_POST
+def compra_resultado_parcial(request, pk):
+    """O resultado PARCIAL em PDF — o papel da conversa sobre a recusa.
+
+    Dono, 2026-09-04: em Conferência o comprador digita as recusas e não tinha
+    como mandar isso ao cliente para começar a discussão (diagnóstico,
+    explicação, foto do chip queimado). Este botão baixa o MESMO documento do
+    resultado, com o título e o nome do arquivo dizendo que é parcial.
+
+    ⚠ POST, e não um link. As recusas ainda NÃO estão no banco — vivem no
+      formulário `f-resultado`, e só o "Fechar resultado" as grava. Um GET
+      geraria o PDF do que está salvo, que em Conferência é *nada recusado*:
+      o comprador baixaria um papel dizendo que aceitou tudo, exatamente
+      quando ele quer dizer o contrário.
+
+    ⚠ NÃO grava nada — nem acerto, nem fatura, nem a observação digitada, nem
+      o `received_at`. Baixar dez vezes deixa o banco como estava.
+
+    Só em CONFERÊNCIA: depois de fechado existe o botão "Imprimir resultado",
+    que é o mesmo papel sem a palavra "parcial"; antes do recebimento não há
+    o que conferir.
+    """
+    from django.http import Http404, HttpResponse
+    with services.buyer_order(request.buyer, pk) as so:
+        if not services.can_settle(so):
+            raise Http404('O resultado parcial é da etapa de conferência.')
+        ajustes = _recusas_do_post(request, so)
+        if ajustes is None:
+            return redirect('compras:detail', pk=so.pk)
+        from .pdf import render_result_pdf
+        doc = services.result_preview(
+            so, ajustes, nota=(request.POST.get('notes') or ''))
+        resp = HttpResponse(render_result_pdf(doc),
+                            content_type='application/pdf')
+        # `PARTIAL-` na frente, no mesmo molde do `RESULT-<código>`: o nome do
+        # arquivo é a primeira coisa que se lê, e é ele que impede o parcial
+        # de ser arquivado como final na pasta do cliente.
+        resp['Content-Disposition'] = (
+            f'inline; filename="PARTIAL-RESULT-{so.code.replace("/", "-")}.pdf"')
+        return resp
+
+
 @partner_required
 @require_POST
 def compra_resultado(request, pk):
@@ -694,20 +775,9 @@ def compra_resultado(request, pk):
     então um POST forjado também não passa.
     """
     with services.buyer_order(request.buyer, pk) as so:
-        ajustes = {}
-        for line in so.lines.all():
-            cru = (request.POST.get(f'rej_{line.pk}') or '').strip()
-            if not cru:
-                continue
-            try:
-                rej = int(cru)
-            except ValueError:
-                messages.error(request, _(
-                    'Quantidade recusada inválida em %(cat)s.')
-                    % {'cat': line.label})
-                return redirect('compras:detail', pk=so.pk)
-            if rej:
-                ajustes[line.pk] = (rej, None)      # sem repreço no MVP
+        ajustes = _recusas_do_post(request, so)
+        if ajustes is None:
+            return redirect('compras:detail', pk=so.pk)
         try:
             services.settle_and_invoice(
                 so, ajustes, request.user,
