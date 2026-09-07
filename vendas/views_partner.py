@@ -386,7 +386,11 @@ def _pagamentos_com_registro(inv):
 def _detalhe(so):
     """Tudo que a tela da compra desenha. Roda DENTRO do escopo da empresa."""
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
-    grupos = services.result_rows(so)
+    # `com_rascunho=True` SÓ AQUI: esta é a tela do comprador, e é dele o
+    # rascunho. A do cliente (`vendas/views.py`) chama a mesma função sem o
+    # sinalizador e continua vendo recusa só depois de fechada.
+    grupos = services.result_rows(so, com_rascunho=True)
+    rascunho = getattr(so, 'settlement_draft', None)
     pendencias = services.draft_pendencias(grupos)
     return {
         'so': so,
@@ -409,6 +413,13 @@ def _detalhe(so):
         # o POST (`services.can_settle`). Repetir a condição aqui já foi a
         # versão anterior — e duas cópias divergem na primeira alteração.
         'pode_acertar': services.can_settle(so),
+        # O RASCUNHO na tela: a observação volta para o campo e a hora do
+        # último salvamento alimenta o selo. Os NÚMEROS não entram por aqui —
+        # eles já vêm nas linhas do `result_rows(com_rascunho=True)`, que é o
+        # mesmo caminho por onde vem a recusa depois de fechada. Dois caminhos
+        # para o mesmo número é como a tela passa a discordar de si mesma.
+        'rascunho_nota': getattr(rascunho, 'notes', ''),
+        'rascunho_em': getattr(rascunho, 'updated_at', None),
         # ⚠ ACHADO DE 2026-08-27, e é um buraco antigo. `pode_acertar` responde
         # "ele PODE digitar recusa agora?" e vira falso assim que a fatura
         # nasce. O template usava só ele para decidir se as colunas do
@@ -566,7 +577,11 @@ def compra_aba_csv(request, pk, aba):
             if recebido:
                 colunas += [_('Recusados'), _('Aprovados'), 'CNY resultado']
             linhas = []
-            for grupo in services.result_rows(so):
+            # Mesma leitura da ficha e da planilha: as três superfícies do
+            # COMPRADOR mostram o rascunho. Uma delas dizendo 0 recusados
+            # enquanto a tela ao lado diz 12 é o comprador tendo de descobrir
+            # sozinho qual das duas mente.
+            for grupo in services.result_rows(so, com_rascunho=True):
                 for l in grupo['lines']:
                     linha = [grupo['brand'], l['type'], l['capacity'],
                              l['wtc'], l['qty'], _csv_num(l['unit_rmb']),
@@ -719,6 +734,47 @@ def _recusas_do_post(request, so):
         if rej:
             ajustes[line.pk] = (rej, None)      # sem repreço no MVP
     return ajustes
+
+
+@partner_required
+@require_POST
+def compra_rascunho(request, pk):
+    """AUTOSAVE das recusas digitadas — o rascunho da conferência.
+
+    Dono, 2026-09-07: a página não guardava o que ele digitava, então voltar
+    à compra significava digitar tudo de novo. Uma conferência de lote grande
+    são dezenas de linhas e não acontece numa sentada só.
+
+    ⚠ NUNCA responde erro por CONTEÚDO. É autosave: dispara enquanto ele
+      digita, e uma mensagem vermelha por tecla seria pior do que o problema
+      que isto resolve. Quantidade inválida é limitada no `save_draft`; quem
+      recusa de verdade continua sendo o "Fechar resultado".
+
+    ⚠ O que volta é ISO-8601, não "14:32". Quem formata a hora é o navegador
+      DELE: o comprador está na China e o servidor no fuso do Render — a hora
+      do servidor na tela dele seria uma hora errada com cara de certa.
+
+    `notes` só é gravada quando o campo VEM no POST (o autosave dos números
+    manda só os números). Sem essa distinção, digitar uma recusa apagaria a
+    observação escrita no diálogo.
+    """
+    from django.http import JsonResponse
+    with services.buyer_order(request.buyer, pk) as so:
+        if not services.can_settle(so):
+            # 409 e não 404: a compra existe e é dele — o que não existe mais
+            # é a etapa. A tela usa isso para PARAR de tentar salvar em vez de
+            # insistir contra uma porta fechada.
+            return JsonResponse({'ok': False, 'motivo': 'fora_da_conferencia'},
+                                status=409)
+        recusas = {}
+        for line in so.lines.all():
+            cru = (request.POST.get(f'rej_{line.pk}') or '').strip()
+            if cru:
+                recusas[line.pk] = cru
+        nota = request.POST.get('notes') if 'notes' in request.POST else None
+        d = services.save_draft(so, recusas, request.user, notes=nota)
+        return JsonResponse({'ok': True, 'em': d.updated_at.isoformat(),
+                             'linhas': len(d.rejections)})
 
 
 @partner_required

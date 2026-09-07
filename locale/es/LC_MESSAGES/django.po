@@ -2728,6 +2728,18 @@ msgid "Resultado parcial"
 msgstr "Resultado parcial"
 
 #: vendas/ (F11.6)
+msgid "Salvando…"
+msgstr "Guardando…"
+
+#: vendas/ (F11.6)
+msgid "Salvo"
+msgstr "Guardado"
+
+#: vendas/ (F11.6)
+msgid "Não salvou — sem conexão"
+msgstr "No se guardó — sin conexión"
+
+#: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "Cantidad rechazada inválida en %(cat)s."
 

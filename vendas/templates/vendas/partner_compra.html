@@ -459,6 +459,16 @@
     <span>{% blocktrans trimmed %}
       Digite só o que <b>recusou</b> — campo em branco vale zero.
     {% endblocktrans %}</span>
+    {% comment %} O SELO DO AUTOSAVE (dono, 2026-09-07). Autosave silencioso é
+       o que faz as pessoas desconfiarem do Odoo — o registro salva sozinho e
+       não há nada na tela dizendo isso. O selo é a diferença entre "salva
+       sozinho" e "some sozinho".
+
+       A hora sai em ISO no `data-em` e quem formata é o navegador DELE: o
+       comprador está na China e o servidor no fuso do Render.
+    {% endcomment %}
+    <span class="rsv" id="rasc" aria-live="polite"
+          {% if rascunho_em %}data-em="{{ rascunho_em|date:'c' }}"{% endif %}></span>
     <button type="button" class="rhint__z" id="zerar">{% trans "Limpar recusas" %}</button>
   </div>
   {% endif %}
@@ -466,6 +476,7 @@
   {% comment %} O formulário do resultado embrulha SÓ a planilha; quem o envia
      é o botão da barra de ação, via `form=`. {% endcomment %}
   <form method="post" action="{% url 'compras:resultado' so.pk %}" id="f-resultado"
+        {% if pode_acertar %}data-rascunho="{% url 'compras:rascunho' so.pk %}"{% endif %}
         data-lote="{{ so.lot.code }}"
         data-fx="{% localize off %}{{ fx_rate|default:0|unlocalize }}{% endlocalize %}"
         data-esperado="{% localize off %}{{ so.total_rmb|default:0|unlocalize }}{% endlocalize %}">
@@ -955,8 +966,11 @@
       <div class="dlt"><span id="m-esp"></span><b id="m-delta"></b></div>
       <div>
         <div class="nts__l">{% trans "Observação (opcional)" %}</div>
+        {% comment %} O `value` do rascunho: ele escreve aqui, fecha o
+           diálogo para revisar os lançamentos e o texto continua. Antes
+           sumia junto com a página. {% endcomment %}
         <textarea class="nts__ta" name="notes" rows="3" form="f-resultado"
-                  placeholder="{% trans 'Motivo da recusa, número do lacre, o que for útil registrar.' %}"></textarea>
+                  placeholder="{% trans 'Motivo da recusa, número do lacre, o que for útil registrar.' %}">{{ rascunho_nota }}</textarea>
       </div>
       <div class="gnote">
         <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
@@ -1431,9 +1445,105 @@
     zerar.addEventListener('click', function () {
       campos.forEach(function (i) { i.value = ''; });
       recalcular();
+      // Limpar TAMBÉM salva: senão ele apaga tudo, sai da página e volta com
+      // as recusas de volta — o oposto do que o botão prometeu.
+      if (window.wtcRascunho) window.wtcRascunho.agora();
     });
   }
   recalcular();
+
+  // ── AUTOSAVE DO RASCUNHO ────────────────────────────────────────────────
+  // Dono, 2026-09-07: a página não guardava o que ele digitava, e voltar à
+  // compra era digitar tudo de novo. Uma conferência de lote grande são
+  // dezenas de linhas e não acontece numa sentada só.
+  //
+  // É o par do Odoo, e a distinção é a coisa toda: o RASCUNHO salva sozinho,
+  // CONFIRMAR é botão. O que este bloco grava não emite fatura, não move a
+  // etapa e não sai em documento — o "Fechar resultado" segue com o diálogo
+  // de confirmação que sempre teve.
+  (function () {
+    var url = form.dataset.rascunho;
+    var selo = document.getElementById('rasc');
+    if (!url || !selo) return;              // fora da conferência: nada a salvar
+
+    var T_SALVANDO = '{% trans "Salvando…"|escapejs %}';
+    var T_SALVO    = '{% trans "Salvo"|escapejs %}';
+    var T_ERRO     = '{% trans "Não salvou — sem conexão"|escapejs %}';
+
+    var espera = null, sujo = false, desligado = false;
+
+    // `new FormData(form)` recolhe também os campos ligados por `form=` — a
+    // observação mora DENTRO do diálogo de fechamento, fora do <form>, e
+    // varreria a mão erraria justamente ela.
+    function corpo() { return new FormData(form); }
+
+    // O RELÓGIO é do navegador dele (o servidor manda ISO), mas o FORMATO
+    // segue o idioma da PÁGINA — o que ele escolheu no seletor. Com o `[]`
+    // aqui saía "06:45 PM" numa tela em português, porque quem decidia era a
+    // locale do sistema operacional dele, não a língua que ele está lendo.
+    var IDIOMA = document.documentElement.lang || undefined;
+    function hora(iso) {
+      var d = new Date(iso);
+      return isNaN(d) ? '' : d.toLocaleTimeString(IDIOMA, {hour: '2-digit',
+                                                           minute: '2-digit'});
+    }
+    function marcar(txt, cls) {
+      selo.textContent = txt;
+      selo.className = 'rsv' + (cls ? ' rsv--' + cls : '');
+    }
+    if (selo.dataset.em) marcar(T_SALVO + ' ' + hora(selo.dataset.em), 'ok');
+
+    function salvar() {
+      if (desligado) return;
+      clearTimeout(espera); espera = null;
+      sujo = false;
+      marcar(T_SALVANDO, 'indo');
+      fetch(url, {method: 'POST', body: corpo(), credentials: 'same-origin'})
+        .then(function (r) {
+          // 409 = a etapa acabou (fechou noutra aba). Insistir contra uma
+          // porta fechada só produziria erro vermelho a cada tecla.
+          if (r.status === 409) { desligado = true; marcar('', ''); return null; }
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
+        })
+        .then(function (d) { if (d) marcar(T_SALVO + ' ' + hora(d.em), 'ok'); })
+        .catch(function () { sujo = true; marcar(T_ERRO, 'erro'); });
+    }
+
+    function adiar() {
+      if (desligado) return;
+      sujo = true;
+      clearTimeout(espera);
+      espera = setTimeout(salvar, 900);     // depois que ele PARA de digitar
+    }
+
+    campos.forEach(function (i) {
+      i.addEventListener('input', adiar);
+      i.addEventListener('change', salvar);   // sair do campo grava na hora
+    });
+    var nota = document.querySelector('textarea[name="notes"]');
+    if (nota) { nota.addEventListener('input', adiar);
+                nota.addEventListener('change', salvar); }
+
+    // ⚠ A ÚLTIMA CHANCE. `fetch` é cancelado quando a página morre; o
+    //   `sendBeacon` é entregue pelo navegador depois. E o gatilho é o
+    //   `visibilitychange`, não só o `pagehide`: no celular, trocar de app
+    //   costuma não disparar `pagehide` nenhum — é exatamente o caso em que
+    //   ele perde o trabalho.
+    function despedida() {
+      if (!sujo || desligado || !navigator.sendBeacon) return;
+      sujo = false;
+      clearTimeout(espera);
+      navigator.sendBeacon(url, corpo());
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') despedida();
+    });
+    window.addEventListener('pagehide', despedida);
+
+    // O "Limpar recusas" chama por aqui.
+    window.wtcRascunho = {agora: salvar};
+  })();
 
   // ── Confirmação antes de gravar ─────────────────────────────────────────
   var modal = document.getElementById('m-fechar');

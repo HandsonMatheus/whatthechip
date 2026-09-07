@@ -823,6 +823,11 @@ def settle_and_invoice(so, adjustments, user, notes=''):
             so.save(update_fields=['received_at'])
         st = Settlement(order=so, created_by=user, notes=notes)
         st.save()
+        # O rascunho cumpriu o papel: daqui em diante quem responde pelas
+        # recusas é o ACERTO. Dentro da MESMA transação — fatura emitida com
+        # rascunho sobrevivente é a tela lendo duas fontes para o mesmo
+        # número, e a que ela escolheria é a errada.
+        clear_draft(so)
         # A observação do diálogo de fechamento entra na MESMA lista da aba
         # (spec §6.9) — dois lugares para procurar o que o comprador escreveu
         # é um a mais. O `Settlement.notes` continua gravado acima como
@@ -1718,7 +1723,99 @@ def can_settle(so) -> bool:
             and not any(i.status != 'cancelled' for i in so.invoices.all()))
 
 
-def result_rows(so):
+# ═══ RASCUNHO da conferência (dono, 2026-09-07) ═════════════════════════════
+
+class _RascunhoDaLinha:
+    """O mínimo que o laço do `result_rows` espera de uma recusa.
+
+    Existe para o rascunho entrar no MESMO `recusas` que o acerto preenche, em
+    vez de um segundo ramo dentro do laço: o desenho da linha continua com um
+    caminho só, e a diferença entre rascunho e acerto morre na porta.
+    """
+
+    __slots__ = ('qty_rejected', 'new_unit_rmb')
+
+    def __init__(self, qtd):
+        self.qty_rejected, self.new_unit_rmb = qtd, None
+
+
+def draft_rejections(so) -> dict:
+    """``{pk da linha: quantidade recusada}`` do rascunho — só o que é válido.
+
+    Intersecta com as linhas da OV e descarta o que não presta: pk de outra
+    ordem, valor não-inteiro, negativo ou acima do enviado. A escrita já
+    filtra tudo isso; a leitura filtra DE NOVO porque o JSON é o único campo
+    do sistema que o banco não valida, e uma tela que quebra por causa de um
+    rascunho é pior do que um rascunho perdido.
+
+    Devolve ``{}`` quando não há rascunho — e é isto que faz a tela do
+    resultado fechado continuar lendo o ACERTO, e não este registro.
+    """
+    d = getattr(so, 'settlement_draft', None)
+    if d is None or not d.rejections:
+        return {}
+    quantidades = {l.pk: l.quantity for l in so.lines.all()}
+    fora = {}
+    for chave, valor in d.rejections.items():
+        try:
+            pk, qtd = int(chave), int(valor)
+        except (TypeError, ValueError):
+            continue
+        if qtd > 0 and pk in quantidades and qtd <= quantidades[pk]:
+            fora[pk] = qtd
+    return fora
+
+
+def save_draft(so, rejections, user=None, notes=None):
+    """Grava o rascunho e devolve o registro. **Não valida para RECUSAR.**
+
+    É autosave: ele dispara enquanto o comprador digita, e um erro por
+    conteúdo viraria mensagem vermelha a cada tecla. Então o contrato é o de
+    um bloco de rascunho — guarda o que faz sentido e ignora o resto:
+
+      · pk que não é desta ordem, ou valor não-inteiro → fora;
+      · negativo → zero (que é o mesmo que não estar no mapa);
+      · maior que o enviado → LIMITADO ao enviado, e não descartado. Descartar
+        deixaria na tela o valor anterior, que ele não digitou; limitar mostra
+        o teto real da linha, que é o que o campo já impõe no navegador.
+
+    ``notes=None`` NÃO mexe na observação — só um POST que traz o campo é que
+    a reescreve. Sem isso, o autosave dos números apagaria o texto que ele
+    escreveu no diálogo (o campo não vai junto em todo envio).
+    """
+    from .models import SettlementDraft
+    quantidades = {l.pk: l.quantity for l in so.lines.all()}
+    limpo = {}
+    for chave, valor in (rejections or {}).items():
+        try:
+            pk, qtd = int(chave), int(valor)
+        except (TypeError, ValueError):
+            continue
+        if pk not in quantidades:
+            continue
+        qtd = max(0, min(qtd, quantidades[pk]))
+        if qtd:
+            limpo[str(pk)] = qtd       # chave em TEXTO: é como o JSON volta
+    d = SettlementDraft.all_companies.filter(order=so).first()
+    if d is None:
+        d = SettlementDraft(order=so)
+    d.rejections = limpo
+    if notes is not None:
+        d.notes = (notes or '').strip()
+    d.updated_by = user if (user and user.is_authenticated) else None
+    d.save()
+    return d
+
+
+def clear_draft(so) -> None:
+    """Apaga o rascunho. Chamado ao FECHAR o resultado — a partir daí quem
+    responde pelas recusas é o acerto, e dois donos da mesma resposta é como
+    a tela volta a discordar de si mesma."""
+    from .models import SettlementDraft
+    SettlementDraft.all_companies.filter(order=so).delete()
+
+
+def result_rows(so, com_rascunho=False):
     """``[{'brand': str, 'lines': [...], 'qty', 'rmb'}]`` — o que a tela do
     resultado desenha.
 
@@ -1752,6 +1849,19 @@ def result_rows(so):
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
     if inv is not None and inv.settlement_id:
         recusas = {sl.order_line_id: sl for sl in inv.settlement.lines.all()}
+    elif com_rascunho:
+        # ⚠ `com_rascunho` é OPT-IN, e o padrão é não. Esta função desenha a
+        #   tela do COMPRADOR e a do CLIENTE (`vendas/views.py`), e o rascunho
+        #   é só do comprador (dono, 2026-09-07): recusa pela metade na tela do
+        #   cliente lê como acusação, e ele reagiria a um total que o comprador
+        #   ainda está montando. O cliente vê a recusa quando o resultado
+        #   fecha — ou no PDF parcial, que é mandado quando o comprador QUER
+        #   começar a conversa.
+        #
+        #   Só ANTES da fatura: depois dela quem responde é o acerto, e o
+        #   `clear_draft` do fechamento já apagou o rascunho.
+        recusas = {pk: _RascunhoDaLinha(qtd)
+                   for pk, qtd in draft_rejections(so).items()}
     grupos = {}
     for line in so.lines.all():
         g = grupos.setdefault(line.brand or '—',

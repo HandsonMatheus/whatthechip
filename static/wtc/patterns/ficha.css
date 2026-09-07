@@ -228,7 +228,21 @@
 .rhint span{min-width:0;text-wrap:pretty}
 .rhint b{font-weight:700}
 .rhint kbd{font-family:var(--mono);font-size:10.5px;font-weight:600;background:var(--surface);border:1px solid var(--line-2);padding:1px 5px}
+/* SELO DO AUTOSAVE (dono, 2026-09-07). Quieto de propósito: um "Salvo" verde
+   piscando a cada pausa de digitação vira ruído em dez minutos, e o que ele
+   precisa saber é só que o trabalho não está no ar. Só o ERRO ganha tinta —
+   é o único estado em que ele tem de fazer alguma coisa.
+   O `margin-left:auto` passa a ser DO SELO: a folga da fileira cai antes dele,
+   e selo e botão terminam juntos na direita. O botão MANTÉM o dele para a
+   barra que não tem selo (a da aba Chips, e a próxima que alguém escrever); a
+   terceira regra é que desliga o auto do botão justamente quando o selo veio
+   antes — dois `auto` na mesma fileira rachariam a folga no meio.
+   Vazio, o span não ocupa nada: antes do primeiro salvamento a barra é a
+   mesma de sempre. */
+.rsv{margin-left:auto;flex:none;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
+.rsv--erro{color:var(--red-60)}
 .rhint__z{margin-left:auto;flex:none;border:0;background:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--blue-60);cursor:pointer;white-space:nowrap}
+.rhint>.rsv+.rhint__z{margin-left:14px}
 .rhint__z:hover{text-decoration:underline}
 .sst th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
 .rjin{width:100%;max-width:104px;height:34px;padding:0 10px;border:1px solid var(--line-2);border-bottom-width:2px;border-bottom-color:var(--red-50);background:var(--surface);font-family:var(--mono);font-size:14px;font-weight:600;color:var(--red-70);text-align:right;transition:border-color var(--d1),box-shadow var(--d1)}

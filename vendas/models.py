@@ -815,6 +815,79 @@ class OrderNote(models.Model):
         return super().save(*args, **kwargs)
 
 
+class SettlementDraft(models.Model):
+    """RASCUNHO da conferência — o que o comprador digitou e ainda não fechou.
+
+    Dono, 2026-09-07: *"a pagina nao salva os chips que foram dados como
+    recusados, assim quando voltamos pra mesma pagina temos que digitar os
+    chips de novo"*. Uma conferência de lote grande é dezenas de linhas e não
+    acontece numa sentada só — as caixas chegam, ele testa por partes. Sem
+    isto, sair da página é perder o trabalho, e a única forma de não perder
+    era fechar o resultado, que é IRREVERSÍVEL.
+
+    ⚠ É RASCUNHO, e a distância para o ``Settlement`` é a coisa toda. Este
+      registro não emite fatura, não move a etapa, não entra em auditoria e
+      não sai em documento nenhum. O ato de valor continua sendo o "Fechar
+      resultado", com o diálogo de confirmação que ele sempre teve. É o
+      mesmo par do Odoo: o rascunho salva sozinho, CONFIRMAR é botão.
+
+    ⚠ NÃO é ``@pghistory.track()``, ao contrário do ``Settlement``. O autosave
+      grava a cada pausa de digitação; versionar isso encheria a tabela de
+      auditoria de estados intermediários que ninguém vai ler, e afogaria os
+      eventos que importam.
+
+    **UMA linha por ordem, com o mapa em JSON** (``{"<pk da linha>": qtd}``),
+    e não uma tabela de linhas como o ``SettlementLine``. O acerto é documento
+    e por isso é relacional; o rascunho é bloco de rascunho: salvar é UM
+    UPDATE em vez de apagar e recriar N linhas a cada pausa, e fechar o
+    resultado apaga UMA linha, sem chance de rascunho pela metade.
+
+    A confiança do JSON vem da ESCRITA, não do banco: o ``save_draft``
+    aceita só pk que é desta ordem e limita a quantidade ao que foi enviado.
+    A leitura ainda intersecta com as linhas da OV — pk órfão é ignorado, não
+    quebra a tela.
+    """
+
+    order = models.OneToOneField(SalesOrder, on_delete=models.CASCADE,
+                                 related_name='settlement_draft',
+                                 verbose_name='Ordem de venda')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    #: ``{"<pk da SalesOrderLine>": quantidade recusada}``. Chave em TEXTO
+    #: porque é isso que o JSON do Postgres devolve — converter na leitura, uma
+    #: vez, é melhor do que descobrir na terceira tela que às vezes é int.
+    rejections = models.JSONField(default=dict, blank=True,
+                                  verbose_name='Recusas digitadas')
+    notes = models.TextField(blank=True, default='',
+                             verbose_name='Observação digitada')
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name='Salvo em')
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Salvo por')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Rascunho da conferência'
+        verbose_name_plural = 'Rascunhos da conferência'
+        ordering = ['-updated_at']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+
+    def __str__(self):
+        return f'Rascunho da {self.order_id}'
+
+    def save(self, *args, **kwargs):
+        if self.order_id and not self.company_id:
+            self.company_id = SalesOrder.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.order_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
 
 class Wallet(models.Model):
     """A carteira que RECEBE o pagamento do comprador (spec v2 §3.12).

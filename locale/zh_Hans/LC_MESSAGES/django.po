@@ -2564,6 +2564,18 @@ msgid "Resultado parcial"
 msgstr "部分结果"
 
 #: vendas/ (F11.6)
+msgid "Salvando…"
+msgstr "保存中…"
+
+#: vendas/ (F11.6)
+msgid "Salvo"
+msgstr "已保存"
+
+#: vendas/ (F11.6)
+msgid "Não salvou — sem conexão"
+msgstr "未保存 — 无网络连接"
+
+#: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "%(cat)s 的拒收数量无效。"
 

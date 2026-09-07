@@ -29,6 +29,10 @@ urlpatterns = [
     path('compras/<int:pk>/', views.compra_detail, name='detail'),
     path('compras/<int:pk>/recebido/', views.compra_recebido, name='recebido'),
     path('compras/<int:pk>/resultado/', views.compra_resultado, name='resultado'),
+    # AUTOSAVE do rascunho da conferência (dono, 2026-09-07). POST puro, sem
+    # tela: quem chama é o JS a cada pausa de digitação.
+    path('compras/<int:pk>/rascunho/', views.compra_rascunho,
+         name='rascunho'),
     path('compras/<int:pk>/resultado.pdf', views.compra_resultado_pdf,
          name='resultado_pdf'),
     # O resultado PARCIAL — mesmo papel, ainda na conferência (dono,

@@ -2705,6 +2705,18 @@ msgid "Resultado parcial"
 msgstr "Partial result"
 
 #: vendas/ (F11.6)
+msgid "Salvando…"
+msgstr "Saving…"
+
+#: vendas/ (F11.6)
+msgid "Salvo"
+msgstr "Saved"
+
+#: vendas/ (F11.6)
+msgid "Não salvou — sem conexão"
+msgstr "Not saved — no connection"
+
+#: vendas/ (F11.6)
 msgid "Quantidade recusada inválida em %(cat)s."
 msgstr "Invalid rejected quantity in %(cat)s."
 
