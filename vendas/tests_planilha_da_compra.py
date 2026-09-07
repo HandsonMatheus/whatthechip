@@ -483,6 +483,49 @@ class DesenhoIgualAoDaTelaTests(_Base):
             self.assertEqual(self._cor(ws.cell(row=linha, column=col)),
                              t[token][1:], 'a tinta da coluna %s' % col)
 
+    def test_a_FAIXA_e_o_RODAPE_levam_a_tinta_um_tom_abaixo(self):
+        """Dono, 07/09, olhando o PDF: *"vc aderiu as cores da coluna também
+        na barra de titulo de cada marca, deixando ela so mais escura (...)
+        quero que aplique na planilha e também na UI"*.
+
+        As duas linhas que SOMAM — a faixa da marca e o rodapé — levam a
+        mesma tinta da coluna um passo abaixo. Sem isso, o subtotal de uma
+        marca tem exatamente a cor das linhas que ele soma, e num lote de 40
+        linhas o olho não distingue a conta do lançamento.
+
+        Hexes conferidos no arquivo ABERTO e batendo com o `getComputedStyle`
+        do Chromium sobre a mesma tabela na tela — ver
+        `tests_cor_da_linha_que_soma`, que amarra as três superfícies.
+        """
+        from vendas.planilha import BLUE_TOT, GREEN_TOT, RED_TOT
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        ws = self._wb()['Resumo']
+        for linha in (L_FAIXA, ws.max_row):
+            for col, tom in ((C_REJ, RED_TOT), (C_REJV, RED_TOT),
+                             (C_ACE, GREEN_TOT), (C_RES, BLUE_TOT)):
+                self.assertEqual(
+                    self._cor(ws.cell(row=linha, column=col)), tom,
+                    'linha %s, coluna %s' % (linha, col))
+
+    def test_a_linha_de_DADO_continua_com_a_tinta_clara(self):
+        """A outra metade: se as duas ficassem no mesmo tom, o passo a mais
+        não diria nada. É a DIFERENÇA entre as duas que carrega a informação.
+        """
+        from vendas.planilha import GREEN_TOT, RED_TOT
+        self.so.received_at = timezone.now()
+        self.so.save(update_fields=['received_at'])
+        t = self._tokens()
+        ws = self._wb()['Resumo']
+        self.assertEqual(self._cor(ws.cell(row=L_1, column=C_REJV)),
+                         t['red-10'][1:])
+        self.assertNotEqual(self._cor(ws.cell(row=L_1, column=C_REJV)),
+                            RED_TOT)
+        self.assertEqual(self._cor(ws.cell(row=L_1, column=C_ACE)),
+                         t['green-10'][1:])
+        self.assertNotEqual(self._cor(ws.cell(row=L_1, column=C_ACE)),
+                            GREEN_TOT)
+
     def test_a_celula_que_ele_digita_esta_MARCADA_como_campo(self):
         """Na tela é um `<input>` branco com régua vermelha; aqui a célula É o
         campo, então ela fica branca com a régua vermelha embaixo. Sem essa

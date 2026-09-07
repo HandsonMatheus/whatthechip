@@ -635,11 +635,25 @@ class CoresSaoTokensTests(TestCase):
         receitas = re.findall(
             r'color-mix\(in srgb,var\(--(red|green)-10\) (\d+)%,'
             r'var\(--(?:red|green)-50\)\)', css)
-        self.assertEqual(
+        # ⚠ Eram DUAS ocorrências (o realce de hover das duas colunas) e
+        #   passaram a QUATRO em 07/09, quando a tela adotou o mesmo tom na
+        #   faixa da marca e no rodapé — que é justamente o desenho que nasceu
+        #   neste PDF e o dono pediu de volta na tela e na planilha. O que
+        #   este teste guarda é a RECEITA e o PESO, não quantos lugares a
+        #   usam: cravar o número de usos fazia um teste do papel reprovar por
+        #   causa de uma decisão de CSS.
+        self.assertGreaterEqual(
             len(receitas), 2,
             'a receita do realce sumiu do components.css — se ela mudou, '
             'o PDF tem de mudar junto')
-        pesos = {cor: 1 - int(pct) / 100.0 for cor, pct in receitas}
+        pesos = {}
+        for cor, pct in receitas:
+            peso = 1 - int(pct) / 100.0
+            self.assertEqual(pesos.setdefault(cor, peso), peso,
+                             'a receita do %s aparece com DOIS pesos '
+                             'diferentes no CSS' % cor)
+        self.assertEqual(sorted(pesos), ['green', 'red'],
+                         'sumiu um dos dois lados do julgamento')
         self.assertEqual(pesos['red'], pesos['green'],
                          'os dois lados do julgamento têm de escurecer igual')
         self.assertEqual(

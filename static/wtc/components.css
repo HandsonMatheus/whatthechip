@@ -488,6 +488,48 @@ html img.lg-d{display:none}
 .dtab th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
 /* a linha em edição vence o hover neutro de .dtab--static: é estado, não passagem de cursor */
 .dtab tbody tr.on td,.dtab--static tbody tr.on:hover td{background:var(--ink-05)}
+/* ⚠ …MAS NÃO POR CIMA DAS COLUNAS TINGIDAS (bug, dono 07/09: "o fundo ta ficando
+   cinza em vez de vermelho"). A regra acima vale (0,3,2) e a tinta de coluna
+   (`.dtab tbody td.hr`) vale (0,2,2): bastava digitar uma recusa para a linha
+   inteira virar cinza e o vermelho/verde/azul das colunas sumirem — logo na
+   linha em que eles mais importam, que é a que tem recusa.
+
+   O cinza continua onde ele diz alguma coisa (TIPO, CAPACIDADE, ENVIADOS…);
+   nas quatro colunas do julgamento a TINTA vence, porque ali a cor não é
+   decoração de estado, é a coluna.
+
+   ⚠ O par com `:hover` não é zelo: `.dtab--static tbody tr.on:hover td` vale
+     (0,3,3) e empataria com a versão sem hover — decidir por ordem de arquivo
+     é como esta correção some no dia em que alguém reordenar o bloco. */
+.dtab tbody tr.on td.hr,.dtab tbody tr.on:hover td.hr{background:var(--red-10)}
+.dtab tbody tr.on td.hg,.dtab tbody tr.on:hover td.hg{background:var(--green-10)}
+.dtab tbody tr.on td.hb,.dtab tbody tr.on:hover td.hb{background:var(--blue-10)}
+
+/* ── A LINHA QUE SOMA: A MESMA TINTA, UM TOM ABAIXO ─────────────────────────
+   Dono, 07/09, olhando o PDF: *"vc aderiu as cores da coluna também na barra
+   de titulo de cada marca, deixando ela so mais escura (...) eu gostei disso
+   e quero que aplique na planilha e também na UI"*.
+
+   Veio do papel para a tela, e não o contrário — o `vendas/pdf.py` faz isto
+   desde 04/09 pelo mesmo motivo: sem o passo a mais, o subtotal de uma marca
+   tem exatamente a cor das linhas que ele soma, e num lote de 40 linhas o
+   olho não distingue a CONTA do LANÇAMENTO.
+
+   A receita é a do realce de hover, logo acima: `--red-10` e `--green-10` não
+   têm passo 20 na rampa (ela vai de 10 para 40), então a tela mistura os dois
+   passos que existem em vez de inventar um hex. O azul TEM o passo 20 — e
+   `color-mix(--blue-10 88%, --blue-60)` dá #d2e3ff contra os #d0e2ff do
+   token, o que é a confirmação de que 88/12 É o "um tom abaixo" do sistema.
+   Onde o token existe, usa-se o token.
+
+   Vale para as DUAS linhas que somam: a faixa da marca e o rodapé. Uma
+   escura e a outra clara seriam duas gramáticas para a mesma ideia.
+
+   ⚠ Depois do `.dtab tbody tr.g:hover td` (0,4,2), senão passar o mouse na
+     faixa apagaria a tinta de volta para cinza. */
+.dtab tbody tr.g td.hr,.dtab tbody tr.g:hover td.hr,.dtab tfoot td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
+.dtab tbody tr.g td.hg,.dtab tbody tr.g:hover td.hg,.dtab tfoot td.hg{background:color-mix(in srgb,var(--green-10) 88%,var(--green-50))}
+.dtab tbody tr.g td.hb,.dtab tbody tr.g:hover td.hb,.dtab tfoot td.hb{background:var(--blue-20)}
 /* A RECUSA EM DINHEIRO — coluna própria desde 2026-09-07 (dono: "abre logo
    uma coluna de recusados ai do lado da quantidade e faz esse numero do
    tamanho dos outros na tabela mesmo, mesmo padrao").
@@ -509,9 +551,8 @@ html img.lg-d{display:none}
 .dtab tfoot td{position:sticky;bottom:0;z-index:2;height:var(--row-h);padding:0 16px;background:var(--ink-10);border-top:1px solid var(--line-2);border-bottom:0;font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap}
 .dtab tfoot td small{display:block;font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
 .dtab tfoot td.lbl{font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-70)}
-.dtab tfoot td.hr{background:var(--red-10)}
-.dtab tfoot td.hg{background:var(--green-10)}
-.dtab tfoot td.hb{background:var(--blue-10)}
+/* (as tintas do rodapé subiram para o bloco "A LINHA QUE SOMA", junto com as
+   da faixa de marca: são a mesma ideia e passaram a ter o mesmo tom.) */
 
 /* ---- GRADE DE LANÇAMENTO: a .dtab quando cada célula É um campo ----
    A grade de preços é a planilha levada ao extremo: a célula não mostra um valor, ela é o campo.
@@ -843,7 +884,14 @@ html img.lg-d{display:none}
 /* a tinta de GRUPO também sai: a comparação já virou duas linhas, e um retângulo de cor atrás de um
    número solto não diz que ele pertence a um grupo — só mancha o cartão */
 .dtab tbody tr td.hr,.dtab tbody tr td.hg,.dtab tbody tr td.hb,
-.dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb{background:none}
+.dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb,
+/* as três acima valem (0,3,2). As regras de estado e de faixa que o bloco de
+   desktop acrescentou valem (0,4,2) e (0,4,3) e passariam por cima delas,
+   repintando o cartão — o mesmo descuido de sempre, pelo outro lado. */
+.dtab tbody tr.on td.hr,.dtab tbody tr.on td.hg,.dtab tbody tr.on td.hb,
+.dtab tbody tr.on:hover td.hr,.dtab tbody tr.on:hover td.hg,.dtab tbody tr.on:hover td.hb,
+.dtab tbody tr.g td.hr,.dtab tbody tr.g td.hg,.dtab tbody tr.g td.hb,
+.dtab tbody tr.g:hover td.hr,.dtab tbody tr.g:hover td.hg,.dtab tbody tr.g:hover td.hb{background:none}
 /* o fio azul de posição é da LINHA de tabela: no cartão ele nascia da 1ª célula (a da seleção) e
    virava um traço solto ao lado da caixa. Aqui quem marca hover é o fundo, e o fio fica só para a
    seleção — uma vez, na borda do cartão inteiro. */
@@ -952,7 +1000,14 @@ html img.lg-d{display:none}
 /* a tinta de GRUPO também sai: a comparação já virou duas linhas, e um retângulo de cor atrás de um
    número solto não diz que ele pertence a um grupo — só mancha o cartão */
 .dtab tbody tr td.hr,.dtab tbody tr td.hg,.dtab tbody tr td.hb,
-.dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb{background:none}
+.dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb,
+/* as três acima valem (0,3,2). As regras de estado e de faixa que o bloco de
+   desktop acrescentou valem (0,4,2) e (0,4,3) e passariam por cima delas,
+   repintando o cartão — o mesmo descuido de sempre, pelo outro lado. */
+.dtab tbody tr.on td.hr,.dtab tbody tr.on td.hg,.dtab tbody tr.on td.hb,
+.dtab tbody tr.on:hover td.hr,.dtab tbody tr.on:hover td.hg,.dtab tbody tr.on:hover td.hb,
+.dtab tbody tr.g td.hr,.dtab tbody tr.g td.hg,.dtab tbody tr.g td.hb,
+.dtab tbody tr.g:hover td.hr,.dtab tbody tr.g:hover td.hg,.dtab tbody tr.g:hover td.hb{background:none}
 /* o fio azul de posição é da LINHA de tabela: no cartão ele nascia da 1ª célula (a da seleção) e
    virava um traço solto ao lado da caixa. Aqui quem marca hover é o fundo, e o fio fica só para a
    seleção — uma vez, na borda do cartão inteiro. */

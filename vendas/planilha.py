@@ -44,6 +44,38 @@ INK_70 = '4D5358'
 RED_50, RED_10, RED_60 = 'FA4D56', 'FFF1F1', 'DA1E28'
 GREEN_40, GREEN_10 = '42BE65', 'E6F7EC'
 BLUE_40, BLUE_10 = '78A9FF', 'EDF5FF'
+GREEN_50, BLUE_20 = '24A148', 'D0E2FF'
+
+
+def _mistura(base, tinta, peso=0.12):
+    """O `color-mix(in srgb, base 88%, tinta)` do CSS, em hex de openpyxl.
+
+    A rampa do design system NÃO tem passo 20 de vermelho nem de verde: vai de
+    10 direto para 40. Quando uma superfície precisa da MESMA tinta um tom
+    abaixo, ela mistura os dois passos que existem em vez de inventar um hex —
+    é o que o `components.css` faz no realce e na linha que soma, e o que o
+    `vendas/pdf.py` faz desde 04/09. Três superfícies, uma receita: no dia em
+    que `--red-10` mudar, as três se movem juntas.
+
+    (O AZUL tem o passo 20, e a mistura o reproduz: `--blue-10` com 12% de
+    `--blue-60` dá #D2E3FF contra o #D0E2FF do token. Onde o token existe,
+    usa-se o token — é o que a tela faz.)
+    """
+    def canal(i):
+        a, b = int(base[i:i + 2], 16), int(tinta[i:i + 2], 16)
+        return '%02X' % round(a * (1 - peso) + b * peso)
+    return canal(0) + canal(2) + canal(4)
+
+
+#: A LINHA QUE SOMA — a faixa da marca e o rodapé — leva as mesmas tintas das
+#: colunas um tom abaixo (dono, 07/09, olhando o PDF: "vc aderiu as cores da
+#: coluna também na barra de titulo de cada marca, deixando ela so mais
+#: escura (...) quero que aplique na planilha e também na UI"). Sem o passo a
+#: mais, o subtotal de uma marca tem exatamente a cor das linhas que ele soma,
+#: e num lote de 40 linhas o olho não distingue a CONTA do LANÇAMENTO.
+RED_TOT = _mistura(RED_10, RED_50)          # FEDDDE
+GREEN_TOT = _mistura(GREEN_10, GREEN_50)    # CFEDD8
+BLUE_TOT = BLUE_20                          # o token existe
 BRANCO = 'FFFFFF'
 #: O `{% cycle %}` do quadradinho da faixa de marca, na MESMA ordem do
 #: template: a Nª marca da tela recebe a Nª cor, aqui e lá. Na planilha ela
@@ -117,6 +149,10 @@ def _estilos():
         'f_rej': PatternFill('solid', fgColor=RED_10),
         'f_ace': PatternFill('solid', fgColor=GREEN_10),
         'f_res': PatternFill('solid', fgColor=BLUE_10),
+        # as mesmas três, um tom abaixo, para a faixa e o rodapé
+        'f_rej_tot': PatternFill('solid', fgColor=RED_TOT),
+        'f_ace_tot': PatternFill('solid', fgColor=GREEN_TOT),
+        'f_res_tot': PatternFill('solid', fgColor=BLUE_TOT),
         # O CAMPO. Na tela é um `<input>` branco com régua vermelha dentro da
         # célula rosa; na planilha a célula É o campo, então ela fica branca
         # com a régua vermelha embaixo. Diz "digite aqui" sem precisar de
@@ -603,7 +639,12 @@ def _faixa_da_marca(ws, r, g, i, e, acerto, legado, ctx, a, b,
     esp = COL_ESP if acerto else COL_ESP_SEM_ACERTO
     for col in range(1, (_COLS if acerto else COL_ESP_SEM_ACERTO) + 1):
         cel = ws.cell(row=r, column=col)
-        cel.fill = e['g_fill']
+        # A faixa leva a tinta da COLUNA um tom abaixo, e cinza só onde a
+        # coluna não tem tinta (dono, 07/09 — veio do PDF). Antes era cinza de
+        # ponta a ponta, e aí a linha que SOMA quebrava a coluna em duas.
+        cel.fill = ({'rej': e['f_rej_tot'], 'ace': e['f_ace_tot'],
+                     'res': e['f_res_tot']}.get(TINTA.get(col))
+                    or e['g_fill'])
         cel.border = e['g_borda']
         cel.font = e['g_mono'] if col >= COL_NUM1 else e['g_font']
         if col >= COL_NUM1:
@@ -658,8 +699,11 @@ def _rodape(ws, r, ctx, so, e, acerto, legado, faixas):
     esp = COL_ESP if acerto else COL_ESP_SEM_ACERTO
     for col in range(1, (_COLS if acerto else COL_ESP_SEM_ACERTO) + 1):
         c = ws.cell(row=r, column=col)
-        c.fill = {'rej': e['f_rej'], 'ace': e['f_ace'],
-                  'res': e['f_res']}.get(TINTA.get(col)) or e['t_fill']
+        # Um tom abaixo, como a faixa: as duas SOMAM, e uma escura com a
+        # outra clara seriam duas gramáticas para a mesma ideia.
+        c.fill = ({'rej': e['f_rej_tot'], 'ace': e['f_ace_tot'],
+                   'res': e['f_res_tot']}.get(TINTA.get(col))
+                  or e['t_fill'])
         c.font = e['t_font'] if col >= COL_NUM1 else e['t_lbl']
         c.border = e['t_borda']
         c.alignment = e['dir'] if col >= COL_NUM1 else Alignment(
