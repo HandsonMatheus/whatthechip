@@ -488,22 +488,27 @@ html img.lg-d{display:none}
 .dtab th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
 /* a linha em edição vence o hover neutro de .dtab--static: é estado, não passagem de cursor */
 .dtab tbody tr.on td,.dtab--static tbody tr.on:hover td{background:var(--ink-05)}
-/* ⚠ …MAS NÃO POR CIMA DAS COLUNAS TINGIDAS (bug, dono 07/09: "o fundo ta ficando
-   cinza em vez de vermelho"). A regra acima vale (0,3,2) e a tinta de coluna
-   (`.dtab tbody td.hr`) vale (0,2,2): bastava digitar uma recusa para a linha
-   inteira virar cinza e o vermelho/verde/azul das colunas sumirem — logo na
-   linha em que eles mais importam, que é a que tem recusa.
+/* ⚠ SEM CONSUMIDOR desde 07/09, e a história vale mais que a regra.
+   A conferência do comprador marcava com `.on` a linha em que o comprador
+   tinha digitado uma recusa. Deu DOIS problemas, um atrás do outro:
 
-   O cinza continua onde ele diz alguma coisa (TIPO, CAPACIDADE, ENVIADOS…);
-   nas quatro colunas do julgamento a TINTA vence, porque ali a cor não é
-   decoração de estado, é a coluna.
+     1. A regra acima vale (0,3,2) e a tinta de coluna (`.dtab tbody td.hr`)
+        vale (0,2,2) — então o cinza de estado cobria o vermelho/verde/azul
+        das colunas LOGO NA LINHA em que eles mais importam. Foi corrigido com
+        três regras de (0,4,2) devolvendo a tinta.
+     2. Corrigido isso, o dono olhou o resultado e matou a ideia inteira: *"vc
+        adota uma alternancia de cor das linhas em branco entre branco e
+        cinza, para umas marcas e para outras nao, deixe tudo branco, cinza
+        somente o titulo da marca"*. Ele leu como listra alternada, e estava
+        certo: o cinza caía nas linhas DIGITADAS, que se agrupam por marca
+        porque é assim que se confere um lote. O olho vê a marca, não o
+        estado.
 
-   ⚠ O par com `:hover` não é zelo: `.dtab--static tbody tr.on:hover td` vale
-     (0,3,3) e empataria com a versão sem hover — decidir por ordem de arquivo
-     é como esta correção some no dia em que alguém reordenar o bloco. */
-.dtab tbody tr.on td.hr,.dtab tbody tr.on:hover td.hr{background:var(--red-10)}
-.dtab tbody tr.on td.hg,.dtab tbody tr.on:hover td.hg{background:var(--green-10)}
-.dtab tbody tr.on td.hb,.dtab tbody tr.on:hover td.hb{background:var(--blue-10)}
+   A tabela deixou de emitir a classe (`partner_compra.html`), então as três
+   regras da correção saíram junto — CSS sem consumidor é sobre o que a
+   próxima pessoa desenha achando que está de pé. A regra do pacote fica: é
+   dela, não nossa. Quem for usar `.on` numa tabela COM colunas tingidas
+   precisa reescrever a correção — o problema nº 1 continua lá. */
 
 /* ── A LINHA QUE SOMA: A MESMA TINTA, UM TOM ABAIXO ─────────────────────────
    Dono, 07/09, olhando o PDF: *"vc aderiu as cores da coluna também na barra
@@ -551,6 +556,13 @@ html img.lg-d{display:none}
 .dtab tfoot td{position:sticky;bottom:0;z-index:2;height:var(--row-h);padding:0 16px;background:var(--ink-10);border-top:1px solid var(--line-2);border-bottom:0;font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap}
 .dtab tfoot td small{display:block;font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
 .dtab tfoot td.lbl{font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-70)}
+/* ⚠ O rodapé pede 600 na regra acima, e não estava recebendo: `.dtab .n` vale
+   (0,2,0) e `.dtab tfoot td` vale (0,1,2), então uma célula de rodapé com
+   `class="n"` caía para 500 — mais LEVE que o `.v` das linhas que ela soma e
+   que os 700 da faixa de marca. A hierarquia da linha de total ficava
+   invertida. Medido em 07/09 com `getComputedStyle`, não lido no arquivo.
+   (0,2,2) devolve o peso que a folha sempre quis. */
+.dtab tfoot td.n,.dtab tfoot td.v{font-weight:600}
 /* (as tintas do rodapé subiram para o bloco "A LINHA QUE SOMA", junto com as
    da faixa de marca: são a mesma ideia e passaram a ter o mesmo tom.) */
 
@@ -885,11 +897,9 @@ html img.lg-d{display:none}
    número solto não diz que ele pertence a um grupo — só mancha o cartão */
 .dtab tbody tr td.hr,.dtab tbody tr td.hg,.dtab tbody tr td.hb,
 .dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb,
-/* as três acima valem (0,3,2). As regras de estado e de faixa que o bloco de
-   desktop acrescentou valem (0,4,2) e (0,4,3) e passariam por cima delas,
-   repintando o cartão — o mesmo descuido de sempre, pelo outro lado. */
-.dtab tbody tr.on td.hr,.dtab tbody tr.on td.hg,.dtab tbody tr.on td.hb,
-.dtab tbody tr.on:hover td.hr,.dtab tbody tr.on:hover td.hg,.dtab tbody tr.on:hover td.hb,
+/* as três acima valem (0,3,2). As regras de FAIXA que o bloco de desktop
+   acrescentou valem (0,4,2) e (0,4,3) e passariam por cima delas, repintando
+   o cartão — o mesmo descuido de sempre, pelo outro lado. */
 .dtab tbody tr.g td.hr,.dtab tbody tr.g td.hg,.dtab tbody tr.g td.hb,
 .dtab tbody tr.g:hover td.hr,.dtab tbody tr.g:hover td.hg,.dtab tbody tr.g:hover td.hb{background:none}
 /* o fio azul de posição é da LINHA de tabela: no cartão ele nascia da 1ª célula (a da seleção) e
@@ -1001,11 +1011,9 @@ html img.lg-d{display:none}
    número solto não diz que ele pertence a um grupo — só mancha o cartão */
 .dtab tbody tr td.hr,.dtab tbody tr td.hg,.dtab tbody tr td.hb,
 .dtab tbody tr:hover td.hr,.dtab tbody tr:hover td.hg,.dtab tbody tr:hover td.hb,
-/* as três acima valem (0,3,2). As regras de estado e de faixa que o bloco de
-   desktop acrescentou valem (0,4,2) e (0,4,3) e passariam por cima delas,
-   repintando o cartão — o mesmo descuido de sempre, pelo outro lado. */
-.dtab tbody tr.on td.hr,.dtab tbody tr.on td.hg,.dtab tbody tr.on td.hb,
-.dtab tbody tr.on:hover td.hr,.dtab tbody tr.on:hover td.hg,.dtab tbody tr.on:hover td.hb,
+/* as três acima valem (0,3,2). As regras de FAIXA que o bloco de desktop
+   acrescentou valem (0,4,2) e (0,4,3) e passariam por cima delas, repintando
+   o cartão — o mesmo descuido de sempre, pelo outro lado. */
 .dtab tbody tr.g td.hr,.dtab tbody tr.g td.hg,.dtab tbody tr.g td.hb,
 .dtab tbody tr.g:hover td.hr,.dtab tbody tr.g:hover td.hg,.dtab tbody tr.g:hover td.hb{background:none}
 /* o fio azul de posição é da LINHA de tabela: no cartão ele nascia da 1ª célula (a da seleção) e

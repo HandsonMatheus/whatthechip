@@ -245,15 +245,41 @@
 .rhint>.rsv+.rhint__z{margin-left:14px}
 .rhint__z:hover{text-decoration:underline}
 .sst th .pen{display:inline-block;width:5px;height:5px;background:currentColor;margin-left:7px;vertical-align:2px}
-.rjin{width:100%;max-width:104px;height:34px;padding:0 10px;border:1px solid var(--line-2);border-bottom-width:2px;border-bottom-color:var(--red-50);background:var(--surface);font-family:var(--mono);font-size:14px;font-weight:600;color:var(--red-70);text-align:right;transition:border-color var(--d1),box-shadow var(--d1)}
-.rjin::placeholder{color:var(--ink-40);font-weight:500}
+/* ── O CAMPO DE RECUSA (.rjin) ─────────────────────────────────────────────
+   Aqui havia o bloco INTEIRO do campo: altura 34, mono 14, alinhado à
+   direita, texto em `--red-70`. Nada disso valia. O `.rjin` só existe dentro
+   da tabela do Resumo, e lá o `components.css` traz
+   `.dtab .rjin,.dtab .cell{…}` — (0,2,0) contra os (0,1,0) daqui. O pacote
+   ganhava TODAS as propriedades compartilhadas: 40px (`--ctl-sm`), mono 13,
+   à esquerda, `--text`.
+
+   Medido em 07/09, não deduzido: o campo desenhado na tela é 40px/13px/à
+   esquerda — os números do PACOTE. O que estava escrito aqui era um segundo
+   desenho, plausível na leitura e sem efeito nenhum, que é a pior forma de
+   CSS morto. Saiu; o campo continua idêntico.
+
+   ⚠ SOBROU o `:hover`, e ele é o único que sempre esteve VIVO: o pacote não
+     tem `.dtab .rjin:hover`, então esta linha é a que pinta a borda ao passar
+     o mouse. */
 .rjin:hover{border-color:var(--red-50)}
-.rjin:focus{outline:0;border-color:var(--red-60);box-shadow:0 0 0 2px rgba(218,30,40,.18)}
-.rjin.bad{border-color:var(--red-60);background:var(--red-60);color:#fff}
-.sst tbody tr.on td{background:var(--ink-05)}
-.sst tbody tr.on td.hr{background:#ffe0e0}
-.sst tbody tr.on td.hg{background:#d3f0de}
-.sst tbody tr.on td.hb{background:var(--blue-20)}
+/* ── E aqui estava a solução do protótipo para o problema que voltou ───────
+   `.sst tbody tr.on td{--ink-05}` seguido de `.hr/.hg/.hb` um tom abaixo: a
+   linha em edição ficava marcada SEM perder a tinta das colunas. O protótipo
+   já tinha resolvido isso.
+
+   Em 27/08 a tabela do Resumo migrou de `.sst` para `.dtab`, e estas quatro
+   regras deixaram de casar em silêncio — foi assim que, em 07/09, digitar uma
+   recusa passou a apagar o vermelho/verde/azul da linha. O bug não foi uma
+   regra escrita errado: foi uma solução que ficou para trás numa migração de
+   classe.
+
+   Não foram traduzidas para `.dtab` porque o dono, vendo o resultado,
+   dispensou o estado inteiro ("deixe tudo branco, cinza somente o titulo da
+   marca") e a tabela parou de emitir `.on`. Ficam registradas aqui em
+   comentário: os hexes eram cravados (#ffe0e0, #d3f0de), fora dos tokens —
+   quem for refazer isso um dia usa a receita `color-mix` da "linha que soma".
+   As demais regras `.sst` seguem vivas: as abas Chips, Categorias e
+   Pagamentos ainda são `.sst`. */
 .sst .hg b{font-family:var(--mono);font-size:13px;font-weight:600}
 .sst .rej.some{color:var(--red-70);font-weight:600}
 .sst .rej.zero{color:var(--ink-40)}

@@ -419,6 +419,34 @@ class NavegadorTests(_Base):
                         'de 2026-09-07 de volta')
         self.assertEqual(depois, D('4378.00'))       # 0,44 × 9.950
 
+    def test_o_script_roda_INTEIRO_sem_estourar(self):
+        """A armadilha mais cara desta tela, e ela já aconteceu.
+
+        O `recalcular()` escreve na ordem: linha → faixa da marca → rodapé.
+        Um erro no meio deixa a LINHA certa e o TOTAL velho na mesma tela —
+        plausível, e errado. Em 07/09 eu removi a classe `.on` e levei junto o
+        `var tr` que a linha seguinte usava para achar o grupo: a linha
+        mostrava 45 aprovados e a faixa continuava dizendo 50. Nenhum teste
+        pegou; o screenshot pegou.
+
+        Agora o harness escuta erro não capturado, e este teste o cobra.
+        """
+        r = self._rodar({str(self.linha.pk): 50})
+        self.assertEqual(r['erros'], [], 'o script da ficha estourou')
+
+    def test_a_faixa_e_o_rodape_ACOMPANHAM_a_linha(self):
+        """O contrato de sempre: faixa dizendo um número e linhas dizendo
+        outro é o erro que só aparece depois de fechado. Aqui há UMA linha, e
+        a faixa dela tem de repetir exatamente o que ela diz."""
+        r = self._rodar({str(self.linha.pk): 50})
+        d = r['depois']
+        self.assertEqual(d['gRej'], '−50')
+        self.assertEqual(d['gOk'], str(self.QTD - 50))
+        self.assertEqual(d['gVal'], d['tRmb'])          # faixa == rodapé
+        self.assertIn('−¥ 150.00', d['gPerda'])         # 50 × ¥3,00
+        self.assertIn('−50', d['tRej'])
+        self.assertIn(str(self.QTD - 50), d['tAce'])
+
     def test_o_numero_da_tela_e_o_da_FATURA(self):
         """O fecho do arco: o que ele lê enquanto digita tem de ser o que o
         `settlement_totals` vai gravar quando ele clicar em fechar. Tela e

@@ -42,11 +42,16 @@ caçando — duas verdades para o mesmo fato.
 
 import io
 import os
+import re
 
 from django.conf import settings
 from django.test import TestCase
 
 CSS = os.path.join(settings.BASE_DIR, 'static', 'wtc', 'components.css')
+FICHA_CSS = os.path.join(settings.BASE_DIR, 'static', 'wtc', 'patterns',
+                         'ficha.css')
+FICHA_TPL = os.path.join(settings.BASE_DIR, 'vendas', 'templates', 'vendas',
+                         'partner_compra.html')
 
 #: Os três tons "um passo abaixo", medidos. `--red-10`/`--green-10` não têm
 #: passo 20 na rampa (ela vai de 10 para 40), então saem da mistura; o azul TEM
@@ -61,48 +66,75 @@ def _ler(p):
         return f.read()
 
 
-class BugDoCinzaTests(TestCase):
-    """O pedido nº 1. Leitura de CSS, com o argumento de cascata junto —
-    porque aqui o defeito NUNCA foi uma regra faltando: era uma regra certa
-    perdendo por dois pontos de especificidade."""
+def _sem_comentarios(css):
+    """O CSS sem os blocos `/* … */`.
+
+    Necessário porque as correções deste dia DOCUMENTAM o que saiu citando o
+    seletor pelo nome — sem isto, o teste que proíbe `.sst tbody tr.on td`
+    reprova por causa do comentário que explica por que ele foi removido. Foi
+    exatamente o que aconteceu na primeira execução.
+    """
+    return re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+
+
+class SemFundoNaLinhaDeDADOTests(TestCase):
+    """O pedido nº 1, na forma que ele acabou tomando.
+
+    ⚠ ESTA CLASSE MUDOU DE ASSUNTO NO MESMO DIA, e a história é o valor dela.
+
+    Primeiro eu tratei como bug de cascata, e era: `.dtab tbody tr.on td`
+    (0,3,2) cobria a tinta de coluna `.dtab tbody td.hr` (0,2,2), então
+    digitar uma recusa apagava o vermelho/verde/azul LOGO NA LINHA em que eles
+    mais importam. Corrigi com três regras de (0,4,2) devolvendo a tinta.
+
+    Aí ele olhou o resultado e matou a ideia inteira:
+
+      "tambem ha bug de cor nas linhas em branco, vc adota uma alternancia de
+       cor das linhas em branco entre branco e cinza, para umas marcas e para
+       outras nao, deixe tudo branco, cinza somente o titulo da marca"
+
+    Ele leu como listra alternada, e estava certo em ler assim: o cinza caía
+    nas linhas DIGITADAS, que se agrupam por marca porque é assim que se
+    confere um lote. O olho vê a marca, não o estado — e uma tabela em que a
+    marca A é cinza e a B é branca afirma uma coisa que não é verdade.
+
+    ⚠ ARQUEOLOGIA, e ela explica o bug inteiro: o protótipo JÁ tinha resolvido
+      isso, em `patterns/ficha.css`, com `.sst tbody tr.on td.hr{#ffe0e0}` e
+      companhia — linha marcada SEM perder a tinta. Em 27/08 a tabela migrou
+      de `.sst` para `.dtab` e essas regras deixaram de casar EM SILÊNCIO. O
+      defeito não foi uma regra escrita errado: foi uma solução que ficou para
+      trás numa migração de classe.
+    """
 
     def setUp(self):
         self.css = _ler(CSS)
+        self.ficha = _ler(FICHA_TPL)
 
-    def test_a_tinta_da_coluna_sobrevive_a_linha_em_edicao(self):
-        for classe, cor in (('hr', 'red-10'), ('hg', 'green-10'),
-                            ('hb', 'blue-10')):
-            regra = ('.dtab tbody tr.on td.%s,.dtab tbody tr.on:hover td.%s'
-                     '{background:var(--%s)}' % (classe, classe, cor))
-            self.assertIn(regra, self.css,
-                          'a linha com recusa perdeu a tinta da coluna .%s '
-                          '— é o bug de 07/09 de volta' % classe)
+    def test_a_tabela_NAO_marca_mais_a_linha_digitada(self):
+        """Sem a classe não há fundo, e não há o que vencer na cascata."""
+        self.assertNotIn("classList.toggle('on', r > 0)", self.ficha)
 
-    def test_o_par_com_hover_existe_e_NAO_e_zelo(self):
-        """`.dtab--static tbody tr.on:hover td` vale (0,3,3) e empataria com a
-        versão sem `:hover` da correção. Empate decide por ordem de arquivo, e
-        depender disso é como esta correção some no dia em que alguém
-        reordenar o bloco."""
-        for classe in ('hr', 'hg', 'hb'):
-            self.assertIn('.dtab tbody tr.on:hover td.%s' % classe, self.css)
+    def test_a_linha_de_dado_nao_ganha_fundo_nenhum_do_nosso_lado(self):
+        """Branco é o `.dtab td{background:var(--surface)}` do pacote. O que
+        este teste proíbe é acrescentarmos um segundo fundo por cima."""
+        for proibido in ('.dtab tbody tr.on td.hr', '.sst tbody tr.on td'):
+            self.assertNotIn(proibido, _sem_comentarios(self.css))
+            self.assertNotIn(proibido, _sem_comentarios(_ler(FICHA_CSS)))
 
-    def test_a_correcao_vem_DEPOIS_da_regra_que_ela_corrige(self):
-        # ⚠ A REGRA INTEIRA, e não só o seletor: `.dtab tbody tr.on td.hr`
-        #   aparece também no bloco do telefone (onde ele APAGA a tinta), e
-        #   procurar só o seletor deixava este teste passar com a correção do
-        #   desktop apagada — foi o que ele fez na primeira versão.
-        cinza = self.css.find('.dtab tbody tr.on td,.dtab--static')
-        tinta = self.css.find('.dtab tbody tr.on td.hr,.dtab tbody tr.on:'
-                              'hover td.hr{background:var(--red-10)}')
-        self.assertNotEqual(cinza, -1)
-        self.assertNotEqual(tinta, -1)
-        self.assertLess(cinza, tinta)
-
-    def test_o_cinza_CONTINUA_nas_colunas_sem_tinta(self):
-        """A linha tocada segue reconhecível: o `.on` não foi removido, só
-        deixou de atropelar as quatro colunas do julgamento."""
+    def test_a_regra_do_PACOTE_fica_e_esta_documentada(self):
+        """Ela não é nossa. Fica, com o aviso de que quem usar `.on` numa
+        tabela COM colunas tingidas herda o problema de cascata inteiro."""
         self.assertIn('.dtab tbody tr.on td,.dtab--static tbody tr.on:hover '
                       'td{background:var(--ink-05)}', self.css)
+        self.assertIn('SEM CONSUMIDOR desde 07/09', self.css)
+
+    def test_a_recusa_continua_visivel_por_TRES_sinais(self):
+        """O fundo era o quarto, e o único ambíguo. Tirar um sinal só é seguro
+        porque os outros três estão na própria linha: o número no campo, o −¥
+        da coluna da perda, e o aprovado que caiu."""
+        self.assertIn('data-perda=', self.ficha)
+        self.assertIn('data-ok=', self.ficha)
+        self.assertIn('class="rjin"', self.ficha)
 
 
 class LinhaQueSomaNaTelaTests(TestCase):
@@ -158,9 +190,8 @@ class LinhaQueSomaNaTelaTests(TestCase):
         ⚠ DUAS vezes: o pacote repete todo o bloco de 600px em `@media` e em
           `@container`, e uma cópia só deixa metade das telas para trás.
         """
-        for seletor in ('.dtab tbody tr.on td.hr,.dtab tbody tr.on td.hg',
-                        '.dtab tbody tr.g td.hr,.dtab tbody tr.g td.hg'):
-            self.assertEqual(self.css.count(seletor), 2, seletor)
+        self.assertEqual(
+            self.css.count('.dtab tbody tr.g td.hr,.dtab tbody tr.g td.hg'), 2)
 
 
 class LinhaQueSomaNaPlanilhaTests(TestCase):

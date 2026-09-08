@@ -1390,8 +1390,28 @@
       var r = parseInt(i.value, 10);
       if (isNaN(r) || r < 0) r = 0;
       if (r > qtd) r = qtd;
+      // ⚠ AQUI a linha ganhava a classe `.on`, que o pacote pinta de
+      //   `--ink-05`. SAIU em 07/09 (dono: "vc adota uma alternancia de cor
+      //   das linhas em branco entre branco e cinza, para umas marcas e para
+      //   outras nao, deixe tudo branco, cinza somente o titulo da marca").
+      //
+      //   Ele leu como listra alternada, e estava certo em ler assim: o
+      //   cinza caía nas linhas em que ele tinha DIGITADO, que se agrupam por
+      //   marca porque é assim que se confere um lote. O olho vê a marca, não
+      //   o estado — e uma tabela em que a marca A é cinza e a B é branca diz
+      //   uma coisa que não é verdade.
+      //
+      //   A recusa já se anuncia em três lugares na própria linha (o número
+      //   no campo, o −¥ da coluna da perda, o aprovado que caiu). O fundo
+      //   era o quarto, e o único ambíguo.
+      //
+      // ⚠ O `var tr` FICA: quem o usava não era só a classe — o subtotal por
+      //   marca sai do `data-g` desta mesma linha, logo abaixo. Tirar a
+      //   declaração junto com o `.on` quebrou o recálculo da faixa e do
+      //   rodapé em silêncio (o `recalcular` estourava DEPOIS de escrever a
+      //   linha, então a linha certa e o total velho conviviam na tela).
+      //   Pego olhando a tabela renderizada, não lendo o diff.
       var tr = i.closest('tr');
-      if (tr) tr.classList.toggle('on', r > 0);
       if (!(unitUsd > 0)) temUsd = false;
       var ok = qtd - r, val = ok * unit, valUsd = ok * unitUsd;
       rej += r; enviados += qtd; aceitos += ok; pagar += val; pagarUsd += valUsd;
