@@ -20,6 +20,11 @@ DDR/GDDR/SDRAM/RDRAM com density_gbit vazio e capacity "pelada" em Gbit
 ('2G'/'2Gb', o que o bless_base gravava) ganha density_gbit='<n>Gb'. FILL-ONLY
 (capacity fica; 'GB' nunca entra), mecanico e reversivel como o resto. E a
 MESMA regra 4 do apply_kp_convention — este comando so a aplica ao legado.
+Excecao 2 (2026-08-28): GERACAO NO LUGAR CERTO — KnownPart eMCP/uMCP cujo
+`subtype` nao e token do vocabulario ganha a geracao vinda do proprio registro
+(do subtype canonicalizavel, senao de dentro do `emcp_ram`). FILL-ONLY, deny by
+default (`is_ram_generation`), so KnownPart (familia pode ser multi-geracao).
+Sem isso, limpar o `emcp_ram` derruba 105 chips de RENTAVEL p/ INDETERMINADO.
 Comportamento (label/rentabilidade) NAO muda — so o chip_type/subtype ARMAZENADO vira
 canonico (o engine ja resolvia em tempo real via canonical_chip_type).
 """
@@ -31,7 +36,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from chips.chip_types import canonical_chip_type, is_generic, label_kind
-from chips.conventions import canonical_gen
+from chips.conventions import canonical_gen, is_ram_generation
 from chips.knowledge.convention import DENSITY_KINDS, RX_DENSITY_BARE
 from chips.models import ChipFamily, KnownPart
 
@@ -41,13 +46,36 @@ BOGUS_KINGSTON_PREFIXES = {"KF", "KVR", "ACR"}
 
 # Numeros de geracao por familia, p/ detectar multi-geracao (2 numeros distintos).
 _GEN_NUM_RE = re.compile(r"(?:LP|G)?DDR(\d+)", re.I)
+#: Forma ABREVIADA da multi-geracao: "LPDDR4X/5X" — o "5X" NAO repete o prefixo,
+#: entao o regex acima nao o enxerga e a string conta como UMA geracao so. Achado
+#: em 2026-08-28: "LPDDR4X/5X" e justamente o exemplo citado no docstring do
+#: `_plan` como a razao de nao migrar subtype... e nao era pego. Sem isto a
+#: migracao escolheria a 4X e APAGARIA a 5X.
+_GEN_NUM_ABREV_RE = re.compile(r"/\s*(\d+)X?", re.I)
+
+#: Versao do protocolo de armazenamento dentro do subtype ("LPDDR4X + UFS 2.1").
+#: NAO pode ser jogada fora ao canonizar o subtype: a versao do eMMC/UFS e
+#: informacao COMERCIAL (o dono, 2026-08-27: "a versao emmc vale dinheiro"), e o
+#: lugar dela e o campo `interface` (§6). O dry-run de 2026-08-28 pegou a 1a
+#: versao desta migracao APAGANDO a versao de 43 registros em silencio.
+_PROTOCOLO_RE = re.compile(r"\b(eMMC|UFS)\s*(\d+(?:\.\d+)?)", re.I)
+
+
+def _protocolo(texto: str) -> str:
+    """'LPDDR4X + UFS 2.1' -> 'UFS 2.1'.  Sem protocolo -> ''."""
+    m = _PROTOCOLO_RE.search(texto or "")
+    if not m:
+        return ""
+    nome = "eMMC" if m.group(1).lower() == "emmc" else "UFS"
+    return f"{nome} {m.group(2)}"
 _FAMILY_GENERIC = {"lpddr": "LPDDR", "ddr": "DDR", "gddr": "GDDR"}
 
 
 def _multi_gen(subtype: str) -> bool:
     """True se o subtype menciona 2+ numeros de geracao DISTINTOS (ex.: LPDDR2/LPDDR3).
     DDR3/DDR3L conta como UM (mesmo numero 3, variante L)."""
-    nums = set(_GEN_NUM_RE.findall(subtype or ""))
+    s = subtype or ""
+    nums = set(_GEN_NUM_RE.findall(s)) | set(_GEN_NUM_ABREV_RE.findall(s))
     return len(nums) > 1
 
 
@@ -96,6 +124,41 @@ def _plan(obj):
         m = RX_DENSITY_BARE.match((obj.capacity or "").strip())
         if m:
             ch["density_gbit"] = [obj.density_gbit, f"{m.group(1)}Gb"]
+    # Geracao no lugar certo (2026-08-28) — 2a excecao, gemea da densidade acima.
+    # A geracao da RAM de um eMCP mora hoje DENTRO do `emcp_ram` ("LPDDR3 2GB"),
+    # que e campo de MEDIDA e deve guardar UMA medida so (§6). Enquanto ela nao
+    # estiver no `subtype`, limpar o `emcp_ram` derruba o veredito de 105 chips
+    # de RENTAVEL para INDETERMINADO (medido no banco, 2026-08-28) — ver §7.
+    # Nao inventa nada: MOVE dado ja confirmado de dentro do mesmo registro.
+    #
+    # FILL-ONLY, como a densidade: so escreve quando o subtype ATUAL nao e um
+    # token do vocabulario. Nunca sobrescreve um subtype ja canonico.
+    # DENY BY DEFAULT: o candidato tem que passar por `is_ram_generation`
+    # (fullmatch, lista fechada). O `canonical_gen` PROPOE (e fail-open — devolve
+    # frase intacta quando nao reconhece); o `is_ram_generation` DISPOE. Sem esse
+    # par, "embedded Multi-Chip Package (LPDDR + eMMC)" viraria subtype.
+    # SO KnownPart: ChipFamily pode ser MULTI-GERACAO de proposito ("LPDDR4X/5X")
+    # e forcar uma geracao nela apagaria informacao (e a razao documentada no
+    # `_plan` para o subtype nunca ter sido migrado).
+    if hasattr(obj, "emcp_ram") and label_kind(canon) in ("emcp", "umcp") \
+            and not is_ram_generation(st):
+        ram = (obj.emcp_ram or "").strip()
+        if not (_multi_gen(st) or _multi_gen(ram)):
+            for cand in (canonical_gen(st), canonical_gen(ram)):
+                if is_ram_generation(cand):
+                    ch["subtype"] = [obj.subtype, cand]
+                    # A versao do protocolo que estava no subtype MUDA DE CAMPO,
+                    # nao evapora. Se a `interface` ja diz outra coisa, o comando
+                    # NAO arbitra: desiste do registro inteiro (contradicao e
+                    # decisao humana, e limpar o subtype sozinho perderia o dado).
+                    proto = _protocolo(st)
+                    if proto:
+                        atual = (getattr(obj, "interface", "") or "").strip()
+                        if not atual:
+                            ch["interface"] = [obj.interface, proto]
+                        elif atual.upper().replace(" ", "") != proto.upper().replace(" ", ""):
+                            ch.pop("subtype")
+                    break
     return ch
 
 
@@ -128,6 +191,8 @@ class Command(BaseCommand):
 
         revert_log = []
         ct_moves = collections.Counter()
+        st_moves = collections.Counter()
+        if_moves = collections.Counter()
         samples = []
 
         # Familias
@@ -154,6 +219,10 @@ class Command(BaseCommand):
                 revert_log.append({"model": "knownpart", "pk": kp.pk, "changes": ch})
                 if "chip_type" in ch:
                     ct_moves[f"{ch['chip_type'][0]!r} -> {ch['chip_type'][1]!r}"] += 1
+                if "subtype" in ch:
+                    st_moves[f"{(ch['subtype'][0] or '(vazio)')!r} -> {ch['subtype'][1]!r}"] += 1
+                if "interface" in ch:
+                    if_moves[f"{(ch['interface'][0] or '(vazio)')!r} -> {ch['interface'][1]!r}"] += 1
                 if len(samples) < 12:
                     samples.append((kp.part_number, ch))
 
@@ -164,6 +233,16 @@ class Command(BaseCommand):
         self.stdout.write("\n  chip_type — top movimentos:")
         for k, c in ct_moves.most_common(20):
             self.stdout.write(f"    [{c:5d}x] {k}")
+        if st_moves:
+            self.stdout.write("\n  subtype — geracao no lugar certo "
+                              f"({sum(st_moves.values())} KnownPart):")
+            for k, c in st_moves.most_common(20):
+                self.stdout.write(f"    [{c:5d}x] {k}")
+        if if_moves:
+            self.stdout.write("\n  interface — versao do protocolo RESGATADA do subtype "
+                              f"({sum(if_moves.values())} KnownPart):")
+            for k, c_ in if_moves.most_common(20):
+                self.stdout.write(f"    [{c_:5d}x] {k}")
         self.stdout.write("\n  amostra (KnownPart):")
         for pn, ch in samples:
             self.stdout.write(f"    {pn[:26]:26s} {ch}")

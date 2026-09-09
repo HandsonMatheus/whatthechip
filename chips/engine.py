@@ -32,7 +32,7 @@ from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 from .chip_types import canonical_chip_type, label_kind, profit_family
-from .conventions import canonical_gen
+from .conventions import canonical_gen, is_ram_generation
 from .knowledge.convention import (DENSITY_KINDS, RX_DENSITY_BARE, RX_DIE_GB,
                                    RX_DIE_MB)
 from .normalize import normalize_pn
@@ -1186,6 +1186,33 @@ def assess_profitability(result: dict) -> str:
         # e causaria retorno INDETERMINADO antes de checar a geração (bug original).
         # Chips afetados: KMN5X000ZM, KML7X000HM, KMK*, KMV* etc. (campos sem GB).
         lpddr_gen = _lpddr_generation(ram_str)
+
+        # ── FIX 2026-08-28: a GERAÇÃO também conta quando vem do `subtype` ──
+        # `emcp_ram` carrega hoje DUAS informações ("LPDDR3 2GB": geração + medida),
+        # e a rentabilidade só sabia lê-la DALI. O fallback pelo `subtype` (FIX
+        # 2026-06-26, logo acima) rodava SÓ com o campo vazio — então um `emcp_ram`
+        # escrito na forma correta de campo de MEDIDA ("2GB", uma medida só) perdia
+        # a geração e o chip caía em INDETERMINADO, mesmo com o `subtype` declarando
+        # "LPDDR4X". Medido no banco (537 eMCP com RAM e NAND): 451 virariam
+        # INDETERMINADO. A geração não é uma medida — pertence ao `subtype`
+        # (convenção §6); aqui o motor passa a lê-la de lá TAMBÉM.
+        #
+        # ⚠ LÊ O `subtype` PELO VOCABULÁRIO, NUNCA POR `search` NA FRASE.
+        # `is_ram_generation` (fonte única de `conventions.py`, a MESMA do portão do
+        # `load_brands`) é `fullmatch` contra o vocabulário — nega por padrão. A 1ª
+        # versão disto usava `_lpddr_generation(combined)`, que é `search`: o subtype
+        # da família KM6E é a FRASE "embedded Multi-Chip Package (LPDDR + eMMC)", e o
+        # `search` pescou o "LPDDR" solto de dentro dela → geração 1 → o chip virou
+        # sucata por uma palavra numa descrição. Pego pelo golden (`KM6E3S4AM0`).
+        # Duas coisas o portão exige, e as duas importam: o subtype tem que ser SÓ o
+        # token (frase não conta) e o token tem que ter DÍGITO ("LPDDR" pelado não é
+        # geração — é "tem LPDDR dentro", e chutar 1 aí é condenar por ignorância).
+        # Só COMPLEMENTA: quando o `emcp_ram` traz a geração, ela vence (é o dado
+        # mais específico do próprio registro). Sem isto, a limpeza dos campos de
+        # medida seria uma mudança de VEREDITO — dado certo virando prateleira errada.
+        if lpddr_gen is None and is_ram_generation(subtype):
+            lpddr_gen = _lpddr_generation(subtype)
+
         if lpddr_gen is not None and lpddr_gen < cfg.emcp_min_lpddr_gen:
             return "NÃO RENTÁVEL"
 
