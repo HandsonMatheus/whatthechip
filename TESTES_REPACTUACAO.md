@@ -16,10 +16,10 @@ APLICADO  → RESULTADO. É o congelado, ou o repactuado.
 ## No terminal
 
 ```bash
-# a feature funcionando, ponta a ponta (31)
+# a feature funcionando, ponta a ponta (38)
 python manage.py test vendas.tests_repactuacao
 
-# a varredura de situações (41)
+# a varredura de situações (44)
 python manage.py test vendas.tests_repactuacao_situacoes
 
 # as duas, com o nome de cada caso
@@ -46,13 +46,13 @@ estoura.
 | `AFaixaDaMarcaTests` | a faixa soma exatamente as linhas dela, nas duas contas |
 | `ORascunhoGuardaOPrecoTests` | o preço sobrevive a sair da página; apagar apaga |
 | `OPostDoCompradorTests` | o formulário da conferência |
-| `ASetaTests` | ↑ verde, ↓ vermelha, nada quando não tocou |
-| `NavegadorTests` | a ficha **rodando** num DOM: seta, autosave, herói × fatura |
+| `ASetaTests` | ↑ verde, ↓ vermelha, nada quando não tocou — e o **preço antigo riscado**, com a cor amarrada à da seta |
+| `NavegadorTests` | a ficha **rodando** num DOM: seta, riscado, autosave, herói × fatura |
 | `NumeroDePontaTests` | vírgula, casas, zero, negativo, teto do campo |
 | `RecusaMaisRepactuacaoTests` | as duas coisas na mesma linha |
 | `VariasLinhasEMarcasTests` | uma sobe, outra desce, e nada vaza entre marcas |
 | `ODinheiroDaEmpresaTests` | a **comissão cai junto** com o preço |
-| `OPapelEAPlanilhaTests` | o PDF e o XLSX levam o preço novo |
+| `OPapelEAPlanilhaTests` | o PDF (parcial **e** final) e o XLSX levam o preço novo, a seta e o riscado |
 | `QuandoNaoPodeTests` | sem recebimento, outra ordem, outro comprador |
 | `DepoisDeFecharTests` | o rascunho morre, a seta fica, não fecha duas vezes |
 | `OsCentavosTests` | arredondamento — onde tela e fatura se separam sem ninguém ver |
@@ -87,6 +87,26 @@ Numa OV **confirmada e recebida**, comprador logado, aba **Conferência**.
 | 12 | Baixar o **RESULTADO PARCIAL** | O PDF mostra o preço novo |
 | 13 | **Fechar resultado** e recarregar | Some o lápis, **fica a seta**, e o número é o repactuado |
 | 14 | Abrir a mesma OV como **cliente** | Ele vê o preço novo no RESULTADO e o combinado no ESPERADO |
+
+### O preço ANTIGO e a tabela parada (09/09)
+
+| # | passo | o que TEM de acontecer |
+|---|---|---|
+| 19 | Depois de baixar um preço, olhar **embaixo** do número | O congelado aparece **riscado e vermelho**, numa linha menor |
+| 20 | Subir um preço noutra linha | O riscado dessa linha é **verde** — a cor segue a seta, sempre |
+| 21 | Apagar o campo e sair | Riscado e seta somem **juntos** |
+| 22 | Digitar o **mesmo** valor do congelado | Nada acende: sem seta, sem riscado |
+| 23 | Dar **F5** com preço repactuado salvo | O riscado já está lá **antes** de qualquer tecla |
+| 24 | **Passar o mouse** por cima de qualquer linha | **Nada muda de cor** — nem as colunas brancas, nem as tingidas |
+| 25 | Baixar o **RESULTADO PARCIAL** | Na linha repactuada: `US$ x.xx ↓`, o ¥ novo, e o ¥ antigo **riscado** |
+| 26 | **Fechar resultado** e baixar o **RESULTADO FINAL** | O mesmo desenho do parcial — o papel definitivo não perde a seta |
+| 27 | Numa OV **sem** repactuação, baixar os dois PDFs | Célula do unitário **exatamente como sempre foi**: US$ em cima, ¥ embaixo |
+
+⚠ **Passo 25/26, se a seta não sair:** é a fonte, não o código. A Helvetica do
+reportlab não tem `↑↓`; quem os tem é a `vendas/assets/IBMPlexMono-SemiBold.ttf`.
+Se ela não subiu no deploy, o PDF cai para `Courier-Bold` e **a seta some — mas
+o riscado fica**, que é o que preserva o fato. Conferir o arquivo no servidor
+antes de procurar bug no desenho.
 
 ### Erros que a tela tem de barrar (passos 15–18)
 
