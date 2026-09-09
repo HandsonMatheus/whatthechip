@@ -1144,6 +1144,52 @@ def render_result_pdf(doc: dict) -> bytes:
                     + _rich(_money(rmb, '¥'), cjk) + "</font>")
         return Paragraph(txt, estilo)
 
+    #: ⚠ A Helvetica base do reportlab NÃO tem ↑↓ no vetor WinAnsi — sairiam
+    #:   como 0x7F, o mesmo defeito que fez o `_MASK` ser `***` e não `•••`.
+    #:   A `WTC-Mono` (IBM Plex Mono) TEM os dois — conferido no cmap da TTF.
+    #:   Se ela não veio no deploy, `_mono_font()` cai em `Courier-Bold`, que
+    #:   também não tem: aí a seta some e o PREÇO RISCADO carrega a informação
+    #:   sozinho — dois números, um riscado, dizem "mudou" sem seta e sem
+    #:   rótulo. O desenho degrada; o fato não se perde.
+    _MONO = _mono_font()
+    _TEM_SETA = _MONO == 'WTC-Mono'
+
+    def P_unit(it, estilo):
+        """A célula do UNITÁRIO — o par US$/¥ e, quando houve repactuação, a
+        SETA e o preço de ANTES (dono, 2026-09-09).
+
+        O documento é a prestação de contas que o cliente recebe. Se a tela
+        mostra que o preço mudou e o papel não, o papel é o que fica na mão
+        dele — e é o papel que ele vai citar de volta.
+
+        Três linhas SÓ na linha repactuada. Nas outras a célula continua
+        exatamente como era, que é o que faz a repactuação saltar do papel em
+        vez de se diluir nele.
+        """
+        novo, cong = it.get('novo_rmb'), it.get('congelado_rmb')
+        houve = novo is not None and cong is not None
+        subiu = houve and novo > cong
+        cor = '#198038' if subiu else '#da1e28'         # green-60 / red-60
+        txt = _rich(_money(it.get('unit_usd'), 'US$'), cjk)
+        if houve and _TEM_SETA:
+            txt += (" <font name='%s' size='8' color='%s'>%s</font>"
+                    % (_MONO, cor, '\u2191' if subiu else '\u2193'))
+        if it['unit_rmb'] is not None:
+            txt += ("<br/><font size='7' color='#878d96'>"
+                    + _rich(_money(it['unit_rmb'], '¥'), cjk) + "</font>")
+        if houve:
+            # ⚠ RISCADO, e sem rótulo — de propósito. A primeira versão
+            #   escrevia "Was (原價) ¥ 3,00", bilíngue como manda a regra do
+            #   `_t`, e a coluna quebrava a linha no meio do número. A regra
+            #   diz "não crie variante só inglês para caber: aumente a
+            #   coluna" — e ela está certa, mas a saída melhor aqui é não ter
+            #   RÓTULO nenhum: preço riscado é o idioma que o comprador
+            #   chinês e o cliente hispano leem igual, sem tradução e sem
+            #   alargar nada. É também o mesmo desenho que a tela usa.
+            txt += ("<br/><font size='7' color='%s'><strike>%s</strike>"
+                    "</font>" % (cor, _rich(_money(cong, '¥'), cjk)))
+        return Paragraph(txt, estilo)
+
     def _limpa(tabela, styles=()):
         tabela.setStyle(TableStyle([
             ('LEFTPADDING', (0, 0), (-1, -1), 0),
@@ -1390,7 +1436,7 @@ def render_result_pdf(doc: dict) -> bytes:
                 P(f"−{it['rejected']}", st_rej_r) if it['rejected']
                 else P('0', st_dim_r),
                 P(it['accepted'], st_td_r),
-                P_par(it.get('unit_usd'), it['unit_rmb'], st_td_r),
+                P_unit(it, st_td_r),
                 P_par(it.get('total_usd'), it['total_rmb'], st_td_r)])
 
     i_total = len(dados)

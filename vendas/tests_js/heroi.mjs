@@ -77,6 +77,14 @@ const foto = () => ({
   // o unitário APLICADO de cada linha, para conferir contra a fatura
   unis: Object.fromEntries([...d.querySelectorAll('.pcin[data-pc]')].map(
     e => [e.getAttribute('data-pc'), e.value || e.placeholder])),
+  // O PREÇO ANTIGO riscado, por pk: 'oculto' ou o texto que aparece.
+  // Ele nasce escondido e quem o acende é o mesmo `recalcular()` que acende a
+  // seta — se um dia os dois discordarem, a linha diz "mudou" com uma seta e
+  // não diz DE QUANTO, que é a metade que o dono pediu ("mostrasse o preço
+  // antigo em algum lugar aí claramente").
+  antigos: Object.fromEntries([...d.querySelectorAll('[data-uant]')].map(
+    e => [e.getAttribute('data-uant'),
+          e.hidden ? 'oculto' : e.textContent.trim()])),
 });
 
 const antes = foto();

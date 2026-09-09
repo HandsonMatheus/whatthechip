@@ -697,6 +697,15 @@ def _monta_documento(so, *, recusas, fx, settled_at, total_rmb, total_usd,
             'total_rmb': (unit * n_ace) if unit is not None else None,
             'unit_usd': unit_usd,
             'total_usd': (unit_usd * n_ace) if unit_usd is not None else None,
+            # A REPACTUAÇÃO, para o PAPEL desenhar a seta e o preço antigo
+            # (dono, 2026-09-09: "preciso que o sistema de setas seja aplicado
+            # tambem no PDF"). O documento é a prestação de contas que o
+            # cliente recebe — se a tela mostra que o preço mudou e o papel
+            # não, o papel é o que fica na mão dele.
+            # `novo_unit` é None quando não houve repactuação: é essa ausência
+            # que apaga a seta, e não uma comparação refeita no desenho.
+            'novo_rmb': novo_unit,
+            'congelado_rmb': line.unit_rmb,
         })
         env += line.quantity
         rej += n_rej

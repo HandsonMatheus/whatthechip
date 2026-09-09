@@ -319,6 +319,48 @@ class ASetaTests(_Base):
         self.assertNotIn('class="rep rep--down"', html)
         self.assertNotIn('class="rep rep--up"', html)
 
+    def test_o_preco_ANTIGO_vem_riscado_na_sub_linha(self):
+        """O pedido de 09/09, no HTML: a seta diz QUE mudou, o riscado diz DE
+        QUANTO. E o riscado é o CONGELADO — nunca o aplicado, senão a linha
+        mostraria o mesmo número duas vezes."""
+        with company_scope(self.emp.id):
+            services.save_draft(self.so, {}, self.parceiro,
+                                prices={self.l1.pk: '2.55'})
+        m = re.search(r'<span class="uant"[^>]*>(.*?)</span>', self._html(),
+                      re.S)
+        self.assertIsNotNone(m, 'o preço antigo sumiu da célula')
+        self.assertNotIn('hidden', m.group(0))     # visível, houve mudança
+        self.assertEqual(m.group(1).strip(), '<s>¥ %s</s>' % self.U1)
+
+    def test_a_cor_do_riscado_VEM_da_seta_e_nao_de_uma_classe_propria(self):
+        """No `--muted` da sub-linha, a 11px e riscado, o número ficava
+        ilegível — três atenuações no mesmo texto, e o pedido era vê-lo
+        CLARAMENTE. A cor resolve; de onde ela vem é que importa.
+
+        Vem do IRMÃO GERAL da seta. Uma classe própria no `.uant` obrigaria o
+        JS a escrever a direção em DOIS lugares a cada tecla, e dois lugares é
+        onde nasce a divergência: seta para cima com riscado vermelho. Com o
+        `~`, a cor não PODE discordar — é a seta que a manda.
+
+        ⚠ Depende da ORDEM no DOM (`.rep` antes de `.uant`) e da seta manter a
+          classe de direção. Se um dia alguém trocar a ordem da célula, este
+          teste é o que avisa.
+        """
+        css = io.open(os.path.join(settings.BASE_DIR, 'static', 'wtc',
+                                   'components.css'), encoding='utf-8').read()
+        self.assertIn('.dtab td.c-unit .rep--up ~ span.uant'
+                      '{color:var(--green-60)}', css)
+        self.assertIn('.dtab td.c-unit .rep--down ~ span.uant'
+                      '{color:var(--red-60)}', css)
+        # a MESMA cor da seta — se uma mudar sem a outra, aqui quebra
+        self.assertIn('.dtab .rep--up{color:var(--green-60)}', css)
+        self.assertIn('.dtab .rep--down{color:var(--red-60)}', css)
+        # e a ordem de que o `~` depende: a seta ANTES do preço antigo
+        with io.open(FICHA, encoding='utf-8') as f:
+            ficha = f.read()
+        self.assertLess(ficha.find('class="rep{% if l.novo_rmb %}'),
+                        ficha.find('<span class="uant" data-uant='))
+
     def test_o_campo_leva_o_CONGELADO_como_base_do_JS(self):
         """⚠ O `data-unit` tem de ser o CONGELADO, não o `unit_rmb` (que é o
         APLICADO desde 09/09). Com o aplicado ali, o JS comparava o preço novo
@@ -389,6 +431,58 @@ class NavegadorTests(_Base):
                                 str(self.l2.pk): '11.00'})['depois']
         self.assertEqual(d['setas'][str(self.l1.pk)], '↓|rep rep--down')
         self.assertEqual(d['setas'][str(self.l2.pk)], '↑|rep rep--up')
+
+    def test_o_PRECO_ANTIGO_acende_junto_com_a_seta(self):
+        """O pedido de 09/09: *"quando alterado o preço, mostrasse o preço
+        antigo em algum lugar aí claramente"*.
+
+        A seta diz QUE mudou; o riscado diz DE QUANTO. Um sem o outro é meia
+        informação — e a metade que falta é justamente a que o dono precisa
+        para explicar a queda ao cliente. Os dois acendem pela MESMA condição
+        (`repact`), então este teste os lê juntos, na mesma foto: se alguém
+        mexer numa e esquecer a outra, aqui quebra.
+        """
+        d = self._rodar(precos={str(self.l1.pk): '2.55',
+                                str(self.l2.pk): '11.00'})['depois']
+        self.assertEqual(d['antigos'][str(self.l1.pk)], '¥ 3.00')
+        self.assertEqual(d['antigos'][str(self.l2.pk)], '¥ 10.00')
+        # e a seta concorda, na mesma linha
+        self.assertEqual(d['setas'][str(self.l1.pk)], '↓|rep rep--down')
+        self.assertEqual(d['setas'][str(self.l2.pk)], '↑|rep rep--up')
+
+    def test_o_preco_antigo_NASCE_oculto_na_linha_intocada(self):
+        """Ele está no DOM desde o carregamento — quem o acende é o JS, e não
+        dá para renderizá-lo sob demanda sem ida ao servidor. Estar no DOM e
+        estar na TELA são coisas diferentes, e a linha que ninguém tocou tem
+        de ler exatamente como sempre leu."""
+        r = self._rodar()
+        self.assertEqual(r['antes']['antigos'][str(self.l1.pk)], 'oculto')
+        self.assertEqual(r['depois']['antigos'][str(self.l1.pk)], 'oculto')
+
+    def test_apagar_o_preco_APAGA_tambem_o_riscado(self):
+        """Desfazer é apagar o campo. Se o riscado ficasse aceso depois disso,
+        a linha diria "mudou de ¥3,00 para ¥3,00" — pior que não dizer nada,
+        porque parece um preço repactuado que por acaso deu no mesmo."""
+        d = self._rodar(precos={str(self.l1.pk): ''})['depois']
+        self.assertEqual(d['antigos'][str(self.l1.pk)], 'oculto')
+        self.assertEqual(d['setas'][str(self.l1.pk)], '|rep')
+
+    def test_preco_IGUAL_ao_congelado_nao_acende_o_riscado(self):
+        """Digitar o mesmo número não é repactuação — a regra é a mesma da
+        seta, e o riscado tem de segui-la sem exceção."""
+        d = self._rodar(precos={str(self.l1.pk): '3.00'})['depois']
+        self.assertEqual(d['antigos'][str(self.l1.pk)], 'oculto')
+
+    def test_o_riscado_do_SERVIDOR_sobrevive_ao_carregamento(self):
+        """O gêmeo do teste da seta logo abaixo. A OV chega com repactuação
+        já salva: o riscado tem de estar VISÍVEL antes de qualquer tecla, e o
+        `recalcular()` do load não pode apagá-lo."""
+        with company_scope(self.emp.id):
+            services.save_draft(self.so, {}, self.parceiro,
+                                prices={self.l1.pk: '2.55'})
+        r = self._rodar()
+        self.assertEqual(r['antes']['antigos'][str(self.l1.pk)], '¥ 3.00')
+        self.assertEqual(r['depois']['antigos'][str(self.l1.pk)], '¥ 3.00')
 
     def test_a_seta_do_SERVIDOR_sobrevive_ao_carregamento(self):
         """O bug de 09/09, virado teste. A OV chega com repactuação já salva;

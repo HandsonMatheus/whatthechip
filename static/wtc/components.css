@@ -281,7 +281,23 @@ html img.lg-d{display:none}
 .dtab th.is-sort .ar{opacity:1;color:var(--blue-40)}
 .dtab td{padding:0 16px;height:var(--row-h);border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle;white-space:nowrap;background:var(--surface);transition:background var(--d1)}
 .dtab tbody tr{cursor:pointer}
-.dtab tbody tr:hover td{background:var(--blue-10)}
+/* ⚠ `:not(.dtab--static)` — a tabela estática não PARTICIPA do hover, em vez
+   de participar e desfazer depois. A diferença não é estilística.
+
+   Como era: esta regra pintava tudo de azul no hover (0,2,3), e a
+   `.dtab--static tbody tr:hover td{background:var(--surface)}` pintava tudo
+   de BRANCO por cima — as duas empatam em (0,2,3) e a estática vem depois.
+   Só que a tinta de coluna (`.dtab tbody td.hr`) vale (0,2,2) e perdia para
+   as DUAS: passar o mouse LAVAVA o vermelho/verde/azul das colunas, deixando
+   a célula branca.
+
+   Na tela era isto (dono, 2026-09-09): "ta dando hover apenas nas colunas que
+   tem cor e nas brancas esta sem hover". A célula branca já estava branca e
+   não mudava; a tingida perdia a cor. Meia-tabela reagindo ao ponteiro.
+
+   Tirar a estática do hover resolve os dois de uma vez, e diz o que a classe
+   sempre quis dizer: "nenhuma linha leva a lugar nenhum". */
+.dtab:not(.dtab--static) tbody tr:hover td{background:var(--blue-10)}
 .dtab tbody tr.sel td{background:var(--blue-10)}
 /* ---- SEM FIO VERTICAL DE POSIÇÃO (dono, 2026-09-04) ----
    Havia um `box-shadow:inset 3px 0 0 var(--blue-60)` na 1ª célula em hover e em `.sel` — um traço
@@ -300,7 +316,11 @@ html img.lg-d{display:none}
 /* tabela que só mostra: nenhuma linha leva a lugar nenhum. Cursor de mão, hover azul e fio de
    posição são as três coisas que dizem "clique aqui" — numa tabela de consulta, mentem. */
 .dtab--static tbody tr{cursor:default}
-.dtab--static tbody tr:hover,.dtab--static tbody tr:hover td{background:var(--surface)}
+/* ⚠ SEM o `td`: a lavagem de branco era o que apagava a tinta das colunas.
+   Com o hover já excluído acima, não há mais o que desfazer — e desfazer com
+   uma tinta por cima é o que criava o bug. Fica só a linha, que não tem cor
+   de coluna para apagar. */
+.dtab--static tbody tr:hover{background:var(--surface)}
 
 /* tipos de célula — uma escala só, sempre à esquerda */
 .dtab .c{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
@@ -395,9 +415,22 @@ html img.lg-d{display:none}
 .dtab tbody td.ha{color:var(--amber-70)}
 /* no hover a linha inteira acende, mas o grupo mantém identidade: um tom acima da própria cor —
    com o azul do hover por cima, as três colunas viravam uma faixa só */
-.dtab tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
-.dtab tbody tr:hover td.hg{background:color-mix(in srgb,var(--green-10) 88%,var(--green-50))}
-.dtab tbody tr:hover td.hb{background:var(--blue-20)}
+/* ⚠ `:not(.dtab--static)` (bug, dono 2026-09-09: "ta dando hover apenas nas
+   colunas que tem cor e nas brancas esta sem hover. deixa TUDO sem hover").
+
+   A `.dtab--static` já anula o hover em `.dtab--static tbody tr:hover td`
+   (0,3,2) — mas estas três valem (0,3,2) TAMBÉM e vinham depois no arquivo,
+   então venciam por ORDEM. Resultado: célula branca parada e célula tingida
+   acendendo, na mesma linha, ao passar o mouse. Meia-tabela reagindo é pior
+   que a tabela toda reagindo.
+
+   A correção não é mais uma regra de desempate: é dizer para QUEM o realce
+   existe. Tabela em que a linha leva a algum lugar tem hover; a estática, em
+   que "nenhuma linha leva a lugar nenhum", não tem — e agora em coluna
+   nenhuma. */
+.dtab:not(.dtab--static) tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
+.dtab:not(.dtab--static) tbody tr:hover td.hg{background:color-mix(in srgb,var(--green-10) 88%,var(--green-50))}
+.dtab:not(.dtab--static) tbody tr:hover td.hb{background:var(--blue-20)}
 .dtab td.d{color:var(--muted);font-size:12px;max-width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dtab .go{width:44px;text-align:right;color:var(--ink-30);padding-left:0}
 .dtab .go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;display:inline-block;vertical-align:middle;transition:transform var(--d1)}
@@ -521,6 +554,45 @@ html img.lg-d{display:none}
   transition:color var(--d1)}
 .dtab .upen:hover,.dtab .upen:focus-visible{color:var(--blue-60)}
 .dtab .upen svg{display:block;fill:none;stroke:currentColor}
+/* ── O PREÇO ANTIGO (.uant) ────────────────────────────────────────────────
+   Dono, 2026-09-09: *"quando alterado o preco, mostrasse o preco antigo em
+   algum lugar ai claramente"*.
+
+   Vai na SUB-LINHA, logo abaixo do preço novo. E a escolha do lugar tem
+   argumento: o pacote JÁ tem essa fatia — `.dtab .n span{display:block;
+   font-size:11px;color:var(--muted)}` é literalmente a regra de "sub-linha
+   (≈ US$, taxa)". Usar o slot que existe é melhor que inventar um, e é por
+   isso que esta regra aqui quase não tem declaração: a tipografia toda vem
+   de lá.
+
+   ⚠ Repare no par de contrários na MESMA célula: o `.uv` (o preço novo)
+     FOGE dessa regra com `font:inherit`, porque ele é o número principal; o
+     `.uant` a ABRAÇA, porque ele é legenda. Dois spans, dois papéis.
+
+   ⚠ Só aparece na linha repactuada, como a seta. Numa OV sem repactuação a
+     tabela lê exatamente como antes — é o que mantém o "mexeu" visível. */
+/* ⚠ RISCADO e sem rótulo. A primeira versão escrevia "antes ¥ 3,00" — e no
+   PDF, onde todo rótulo é bilíngue por regra, "Was (原價) ¥ 3,00" quebrava a
+   coluna no meio do número. Preço riscado é o idioma que o comprador chinês e
+   o cliente hispano leem igual, sem tradução e sem alargar coluna nenhuma. E
+   com isso a tela e o papel passam a desenhar a MESMA coisa. */
+.dtab td.c-unit span.uant{margin-top:2px;white-space:nowrap;
+  text-decoration:line-through}
+.dtab td.c-unit span.uant s{text-decoration:inherit}
+/* ── …e ele pega a COR DA SETA ─────────────────────────────────────────────
+   No `--muted` da sub-linha, riscado e a 11px, o número ficava ilegível na
+   captura — três atenuações somadas no mesmo texto. E o pedido era ver o
+   preço antigo CLARAMENTE. A cor devolve a legibilidade sem devolver o peso:
+   continua 11px e continua riscado, então nunca se confunde com o número que
+   vale; e é a MESMA cor do PDF, que já desenhava o riscado em vermelho/verde.
+
+   O irmão geral (`~`) em vez de uma classe no próprio span: a direção já vive
+   na seta, e o JS a reescreve a cada tecla (`seta.className = ...`). Repetir a
+   direção em dois lugares é criar a chance de eles discordarem — do jeito que
+   está, a cor do riscado NÃO PODE divergir da seta, porque é a seta que a
+   manda. Ordem no DOM: `.uv`, `.rep`, o lápis, o campo, `.uant`. */
+.dtab td.c-unit .rep--up ~ span.uant{color:var(--green-60)}
+.dtab td.c-unit .rep--down ~ span.uant{color:var(--red-60)}
 .dtab .rep{display:inline-block;width:12px;margin-left:6px;font-style:normal;
   font-family:var(--sans);font-size:12px;font-weight:800;line-height:1}
 .dtab .rep--up{color:var(--green-60)}

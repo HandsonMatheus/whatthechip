@@ -283,8 +283,9 @@ class ColunaResultadoTests(_Base):
         ¥ desde que nasceu."""
         linha = re.search(r'<tr data-g="0">.*?</tr>', self._resumo(), re.S)
         self.assertIsNotNone(linha)
-        self.assertNotIn('US$', linha.group(0))
-        # TRÊS textos em ¥ — unitário, esperado e resultado.
+        html = linha.group(0)
+        self.assertNotIn('US$', html)
+        # TRÊS textos em ¥ VISÍVEIS — unitário, esperado e resultado.
         #
         # ⚠ Este número foi para 2 e voltou para 3 no mesmo dia, e a ida e a
         #   volta são a mesma decisão sendo refinada: em 09/09 o unitário
@@ -292,10 +293,26 @@ class ColunaResultadoTests(_Base):
         #   depois o dono viu a tela — *"tem uma caixinha em todos os precos é
         #   foda, instiga o comprador a querer mexer em tudo"* — e o campo foi
         #   para trás de um LÁPIS. O número voltou a ser número.
-        self.assertEqual(linha.group(0).count('¥ '), 3)
-        self.assertIn('class="cell pcin"', linha.group(0))   # o campo existe…
-        self.assertIn('hidden', linha.group(0))              # …e nasce fechado
-        self.assertIn('class="upen"', linha.group(0))        # atrás do lápis
+        #
+        # ⚠ E existe um QUARTO ¥ no HTML desde 09/09: o preço ANTIGO riscado,
+        #   que nasce `hidden` e só aparece quando há repactuação. Ele fica no
+        #   DOM desde o carregamento porque quem o acende é o JS, enquanto o
+        #   comprador digita — não dá para renderizá-lo sob demanda sem ida ao
+        #   servidor. Contar o HTML cru diria 4 e esconderia o que importa:
+        #   o que este teste guarda é quantos ¥ o comprador VÊ. Por isso o
+        #   `.uant` sai da conta aqui e ganha asserção própria logo abaixo.
+        sem_antigo = re.sub(r'<span class="uant"[^>]*>.*?</span>', '', html,
+                            flags=re.S)
+        self.assertEqual(sem_antigo.count('¥ '), 3)
+        # …e o quarto está lá, riscado e fechado, esperando a repactuação.
+        antigo = re.search(r'<span class="uant"[^>]*>.*?</span>', html, re.S)
+        self.assertIsNotNone(antigo, 'o preço antigo sumiu da célula')
+        self.assertIn('hidden', antigo.group(0))
+        self.assertIn('<s>¥ ', antigo.group(0))
+        self.assertNotIn('US$', antigo.group(0))
+        self.assertIn('class="cell pcin"', html)             # o campo existe…
+        self.assertIn('hidden', html)                        # …e nasce fechado
+        self.assertIn('class="upen"', html)                  # atrás do lápis
 
     def test_a_faixa_da_marca_segue_a_linha(self):
         """Faixa em uma moeda com as linhas dela em outra é o tipo de

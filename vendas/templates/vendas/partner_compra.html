@@ -631,7 +631,7 @@
                        placeholder="{{ l.congelado_rmb|unlocalize }}"
                        value="{% if l.novo_rmb %}{{ l.novo_rmb|unlocalize }}{% endif %}"
                        data-pc="{{ l.pk }}"
-                       aria-label="{% blocktrans trimmed with marca=g.brand tipo=l.type cap=l.capacity %}Preço unitário {{ marca }} {{ tipo }} {{ cap }}{% endblocktrans %}">{% elif l.unit_rmb %}¥ {{ l.unit_rmb }}{% if l.novo_rmb %}<i class="rep rep--{% if l.novo_rmb > l.congelado_rmb %}up{% else %}down{% endif %}">{% if l.novo_rmb > l.congelado_rmb %}↑{% else %}↓{% endif %}</i>{% endif %}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+                       aria-label="{% blocktrans trimmed with marca=g.brand tipo=l.type cap=l.capacity %}Preço unitário {{ marca }} {{ tipo }} {{ cap }}{% endblocktrans %}"><span class="uant" data-uant="{{ l.pk }}"{% if not l.novo_rmb %} hidden{% endif %}><s>¥ {{ l.congelado_rmb }}</s></span>{% elif l.unit_rmb %}¥ {{ l.unit_rmb }}{% if l.novo_rmb %}<i class="rep rep--{% if l.novo_rmb > l.congelado_rmb %}up{% else %}down{% endif %}">{% if l.novo_rmb > l.congelado_rmb %}↑{% else %}↓{% endif %}</i><span class="uant"><s>¥ {{ l.congelado_rmb }}</s></span>{% endif %}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
               <td class="n c-qty"><i class="c-lbl">{% trans "enviados" %}</i>{{ l.qty }}</td>
               {% if pode_acertar %}
               <td class="n hr c-rej">
@@ -1492,6 +1492,10 @@
         seta.className = 'rep' + (repact ? (subiu ? ' rep--up' : ' rep--down')
                                          : '');
       }
+      // O PREÇO ANTIGO só existe quando houve repactuação — some junto com a
+      // seta, pela mesma regra, para a linha não tocada ler como sempre leu.
+      var ant = document.querySelector('[data-uant="' + i.dataset.rj + '"]');
+      if (ant) ant.hidden = !repact;
 
       // ── a LINHA: o que sobrou de pé e quanto dela virou dinheiro ──
       var pk = i.dataset.rj;

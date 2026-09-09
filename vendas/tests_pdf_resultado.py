@@ -621,7 +621,7 @@ class CoresSaoTokensTests(TestCase):
         tela precisa da mesma tinta um tom abaixo, ela MISTURA os dois passos
         que existem, no realce das mesmas duas colunas::
 
-            .dtab tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
+            .dtab:not(.dtab--static) tbody tr:hover td.hr{background:color-mix(in srgb,var(--red-10) 88%,var(--red-50))}
 
         Este teste prende o papel a essa receita: se alguém trocar `--red-10`
         no CSS e não mexer no PDF, o `_T_ROSE` muda junto e a conta continua

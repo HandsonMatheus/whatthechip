@@ -159,9 +159,18 @@ class LinhaQueSomaNaTelaTests(TestCase):
     def test_a_receita_e_a_MESMA_do_realce_de_hover(self):
         """Não é um tom inventado: é o passo que a folha já usava no hover das
         duas colunas. Um `#feddde` cravado aqui seria um passo de paleta que
-        ninguém mais usa — mentira em design system."""
-        self.assertIn('.dtab tbody tr:hover td.hr{background:color-mix(in '
+        ninguém mais usa — mentira em design system.
+
+        ⚠ O SELETOR ganhou `:not(.dtab--static)` em 09/09, quando o dono pediu
+        "deixa TUDO sem hover" na tabela da compra. A receita é a mesma; quem
+        mudou foi o alcance. Este teste continua guardando a RECEITA, então
+        aceita o seletor com o `:not(...)` — o que ele não aceita é um hex
+        cravado no lugar da mistura.
+        """
+        self.assertIn(':hover td.hr{background:color-mix(in '
                       'srgb,var(--red-10) 88%,var(--red-50))}', self.css)
+        self.assertIn('.dtab:not(.dtab--static) tbody tr:hover td.hr{',
+                      self.css)
 
     def test_o_rodape_NAO_tem_mais_a_tinta_clara(self):
         """Duas declarações para a mesma célula é como uma delas vira código

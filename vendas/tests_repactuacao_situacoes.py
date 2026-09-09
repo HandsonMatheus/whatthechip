@@ -331,6 +331,59 @@ class OPapelEAPlanilhaTests(_Base):
         linha = next(l for l in doc['lines'] if l['unit_rmb'] == D('2.55'))
         self.assertEqual(linha['unit_usd'], D('2.55') * self.FX)
 
+    def test_o_PDF_desenha_a_SETA_e_o_preco_riscado(self):
+        """Dono, 2026-09-09: *"preciso que o sistema de setas seja aplicado
+        tambem no PDF de resultado parcial e no de resultado final"*.
+
+        O documento é a prestação de contas que o cliente recebe. Se a tela
+        mostra que o preço mudou e o papel não, o papel é o que fica na mão
+        dele — e é o papel que ele vai citar de volta.
+
+        ⚠ Lê o TEXTO do PDF, não o desenho: `↓` e `↑` chegam ao arquivo como
+          caracteres da `WTC-Mono`. A Helvetica base do reportlab NÃO os tem
+          no vetor WinAnsi — sairiam como 0x7F, o mesmo defeito que fez o
+          `_MASK` ser `***` e não `•••`.
+        """
+        from pdfminer.high_level import extract_text
+        from vendas import pdf as vpdf
+        _st, inv = self._fechar({self.ls[0].pk: (0, D('2.55')),
+                                 self.ls[1].pk: (0, D('12.00'))})
+        with company_scope(self.emp.id):
+            bruto = vpdf.render_result_pdf(
+                services.result_document(self.so, inv))
+        texto = extract_text(io.BytesIO(bruto))
+        self.assertIn('\u2193', texto, 'a seta de queda não saiu no papel')
+        self.assertIn('\u2191', texto, 'a seta de alta não saiu no papel')
+        self.assertIn('3.00', texto, 'o preço antigo não saiu no papel')
+        self.assertIn('2.55', texto, 'o preço novo não saiu no papel')
+
+    def test_o_PDF_PARCIAL_tambem_leva_a_seta(self):
+        """Ele manda o parcial ao cliente ANTES de fechar — é justamente o
+        documento em que a repactuação ainda está em discussão, e o que mais
+        precisa dizer que o preço mudou."""
+        from pdfminer.high_level import extract_text
+        from vendas import pdf as vpdf
+        with company_scope(self.emp.id):
+            doc = services.result_preview(
+                self.so, {self.ls[0].pk: (0, D('2.55'))}, nota='')
+            bruto = vpdf.render_result_pdf(doc)
+        texto = extract_text(io.BytesIO(bruto))
+        self.assertIn('\u2193', texto)
+        self.assertIn('3.00', texto)
+
+    def test_o_PDF_de_uma_OV_SEM_repactuacao_nao_ganha_seta(self):
+        """A trava do outro lado: a linha não tocada tem de imprimir
+        exatamente como imprimia."""
+        from pdfminer.high_level import extract_text
+        from vendas import pdf as vpdf
+        _st, inv = self._fechar({self.ls[0].pk: (10, None)})
+        with company_scope(self.emp.id):
+            bruto = vpdf.render_result_pdf(
+                services.result_document(self.so, inv))
+        texto = extract_text(io.BytesIO(bruto))
+        self.assertNotIn('\u2193', texto)
+        self.assertNotIn('\u2191', texto)
+
     def test_a_PLANILHA_abre_e_o_unitario_e_o_aplicado(self):
         """A fórmula do RESULTADO na planilha é `aprovados × unitário`. Com o
         congelado ali, o arquivo que ele exporta daria outro total."""
