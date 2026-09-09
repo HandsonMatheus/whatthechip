@@ -708,7 +708,15 @@ class K9NoFechamentoTests(TestCase):
         self.assertEqual(SalesOrder.all_companies.filter(lot=lot).count(), 1)
 
     def test_lote_com_k9_gera_ov(self):
-        lot = Lot.open_for_company(self.company, self.user, 'k9', origin='phone')
+        # ⚠ LOTE DE PCB, não de celular (política origem × tipo, 02/09). A
+        #   tabela do dono manda K9 em PCB, e o backstop do `pre_save` do
+        #   `InventoryEntry` passou a RECUSAR K9 em lote de celular — este
+        #   fixture descrevia um estado que o sistema não permite mais.
+        #   PCB aceita `emmc` e `k9`, que é exatamente o que este cenário
+        #   lança (o `com_emcp=False` abaixo não é decoração: PCB não aceita
+        #   eMCP). O que o teste guarda continua sendo o mesmo — a chave PLANA
+        #   do K9 virando linha de OV sem capacidade inventada.
+        lot = Lot.open_for_company(self.company, self.user, 'k9', origin='pcb')
         _entries(lot, self.brand, com_emcp=False)
         InventoryEntry.all_companies.create(
             lot=lot, part_number='K9', quantity=500, brand=self.brand,
