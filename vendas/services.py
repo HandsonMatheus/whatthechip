@@ -813,6 +813,18 @@ def settle_and_invoice(so, adjustments, user, notes=''):
             raise ValidationError(
                 f'{line.label}: rejeitadas ({rej}) > quantidade '
                 f'({line.quantity}).')
+        # ⚠ O PREÇO também se valida AQUI, e não só na tela (2026-09-09).
+        #   A guarda da view protege o formulário do comprador; esta protege o
+        #   CONTRATO. O `SettlementLine.new_unit_rmb` não tem validador de
+        #   modelo e `.save()` não roda validação: um preço negativo chegando
+        #   por qualquer outro caminho — importação de planilha, comando,
+        #   admin, um teste — viraria fatura negativa sem uma linha sequer
+        #   reclamando. `max_digits=8, decimal_places=2` é o teto real do
+        #   campo; passar disso estoura no banco, com erro que não explica.
+        if _novo is not None and not (
+                Decimal('0') < _novo < Decimal('1000000')):
+            raise ValidationError(
+                f'{line.label}: preço repactuado fora de faixa ({_novo}).')
 
     with transaction.atomic():
         # Fechar o resultado IMPLICA que a caixa chegou: se ele não marcou o
@@ -1878,6 +1890,13 @@ def clear_draft(so) -> None:
     a tela volta a discordar de si mesma."""
     from .models import SettlementDraft
     SettlementDraft.all_companies.filter(order=so).delete()
+    # ⚠ E LIMPA O CACHE, pelo mesmo motivo do `save_draft`: o Django guarda a
+    #   relação inversa no `so`, e apagar por queryset não o avisa. Sem esta
+    #   linha o `settle_and_invoice` apaga o rascunho e um `draft_prices(so)`
+    #   no MESMO request devolve o rascunho APAGADO — a fatura já emitida e a
+    #   tela ainda lendo o que o comprador digitou antes de fechar, que é a
+    #   "tela lendo duas fontes" contra a qual este método existe.
+    so._state.fields_cache.pop('settlement_draft', None)
 
 
 def result_rows(so, com_rascunho=False):
