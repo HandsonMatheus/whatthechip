@@ -40,10 +40,19 @@ const dom = new JSDOM(html, {
 });
 const w = dom.window, d = w.document;
 w.addEventListener('error', e => erros.push(String(e.message || e)));
-// A ficha fala com o servidor (autosave do rascunho) e com o htmx. Nenhum dos
-// dois existe aqui e nenhum dos dois participa da conta — dublês mudos, para
-// o script não morrer no meio e levar o teste junto com um falso verde.
-w.fetch = () => new Promise(() => {});
+// ⚠ O `fetch` do AUTOSAVE deixou de ser um dublê mudo e passou a ANOTAR
+//   (2026-09-09). Ele engolia as chamadas em silêncio, e por isso o harness
+//   passou verde enquanto o preço digitado não salvava: o `save_draft`
+//   gravava, a tela desenhava, e ninguém nunca AGENDAVA o envio. Um dublê que
+//   só engole não testa o telefonema — testa que ninguém reclamou dele.
+const enviados = [];
+w.fetch = (url, opt) => {
+  let campos = [];
+  try { campos = [...opt.body.entries()].filter(([, v]) => String(v) !== ''); }
+  catch (e) { /* corpo que não é FormData: registra a URL e segue */ }
+  enviados.push({ url: String(url), campos });
+  return new Promise(() => {});          // nunca resolve: é dublê, não servidor
+};
 w.htmx = { process: () => {}, ajax: () => {}, on: () => {} };
 
 const ler = (id) => {
@@ -76,6 +85,11 @@ let digitou = 0;
 for (const [pk, v] of Object.entries(precos)) {
   const campo = d.querySelector('.pcin[data-pc="' + pk + '"]');
   if (!campo) continue;
+  // O campo nasce ESCONDIDO atrás do lápis (2026-09-09) — o comprador clica
+  // para editar, e o harness faz o mesmo em vez de escrever num campo que na
+  // tela dele está fechado.
+  const lapis = d.querySelector('.upen[data-upen="' + pk + '"]');
+  if (lapis) lapis.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
   campo.value = String(v);
   campo.dispatchEvent(new w.Event('input', { bubbles: true }));
   digitou += 1;
@@ -89,7 +103,12 @@ for (const [pk, n] of Object.entries(recusas)) {
   digitou += 1;
 }
 
+// O autosave espera 900ms depois da última tecla. Sem esperar, o harness
+// olharia para a fila vazia e diria que nada foi enviado — que é justamente
+// o defeito que ele passou a cobrar.
+await new Promise((r) => setTimeout(r, 1400));
+
 console.log(JSON.stringify({
-  antes, depois: foto(), digitou, erros,
+  antes, depois: foto(), digitou, erros, enviados,
   campos: d.querySelectorAll('.rjin[data-qty]').length,
 }));

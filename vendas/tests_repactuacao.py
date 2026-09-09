@@ -419,3 +419,34 @@ class NavegadorTests(_Base):
                         precos={str(self.l1.pk): '2.55'})
         esperado = D('2.55') * (self.Q1 - 100) + self.U2 * self.Q2
         self.assertEqual(D(r['depois']['kRmb'].replace('¥ ', '')), esperado)
+
+    def test_o_LAPIS_abre_a_edicao_e_o_numero_some(self):
+        """Antes do clique o campo não existe para o comprador: o que há é o
+        número e um lápis apagado."""
+        r = self._rodar(precos={str(self.l1.pk): '2.55'})
+        self.assertEqual(r['depois']['setas'][str(self.l1.pk)],
+                         '↓|rep rep--down')
+
+    def test_o_PRECO_DIGITADO_DISPARA_O_AUTOSAVE(self):
+        """O bug de 09/09, e o motivo de este harness ter deixado de engolir o
+        `fetch` calado.
+
+        O `save_draft` gravava, o `result_rows` desenhava, 28 testes passavam
+        — e o autosave escutava só os campos de RECUSA. Ninguém nunca agendava
+        o envio do preço, então atualizar a página trazia tudo em branco. Um
+        dublê que só engole não testa o telefonema; testa que ninguém
+        reclamou dele.
+        """
+        r = self._rodar(precos={str(self.l1.pk): '2.55'})
+        self.assertTrue(r['enviados'],
+                        'o preço digitado não agendou salvamento nenhum')
+        campos = dict(c for e in r['enviados'] for c in e['campos'])
+        self.assertEqual(campos.get('price_%d' % self.l1.pk), '2.55',
+                         'o preço não foi no corpo do autosave: %s' % campos)
+
+    def test_a_RECUSA_continua_disparando_o_autosave(self):
+        """A outra metade: consertar o preço não pode ter quebrado a recusa,
+        que é o que o rascunho salvava desde 07/09."""
+        r = self._rodar(recusas={str(self.l1.pk): '12'})
+        campos = dict(c for e in r['enviados'] for c in e['campos'])
+        self.assertEqual(campos.get('rej_%d' % self.l1.pk), '12')

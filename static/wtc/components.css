@@ -497,6 +497,30 @@ html img.lg-d{display:none}
    seta para fora — o `<i>` estava no HTML, com a direção certa, e não
    aparecia na tela. Pego na captura, não na leitura. */
 .dtab .pcin{width:84px;max-width:84px;text-align:right;padding:0 8px}
+/* ── O NÚMERO E O LÁPIS ────────────────────────────────────────────────────
+   O campo vive ESCONDIDO atrás do lápis. Uma caixa em toda linha faz de
+   editar o padrão e de ler a exceção — invertido, numa tabela cujo trabalho
+   principal é conferir. Aqui o número é número, e mexer nele se escolhe.
+
+   ⚠ `span.uv` com (0,3,2): o pacote tem `.dtab .n span{display:block}` com
+     (0,3,1), e sem isto o valor quebra para uma linha própria e o lápis vai
+     para outra. É a mesma armadilha do segmentado e do `.fx`.
+
+   O lápis é `--ink-30` parado e azul no hover: presente o bastante para ser
+   achado, apagado o bastante para não convidar. */
+/* ⚠ `font:inherit` não é zelo: a regra de SUB-LINHA do pacote
+   (`.dtab .n span{...font-size:11px;font-weight:500;color:var(--muted)}`)
+   pegava o valor e o desenhava apagado e menor que os outros números da
+   tabela — o preço, que é o dado mais importante da coluna, virava legenda.
+   Um `display:inline` sozinho consertava a quebra de linha e deixava a
+   tipografia errada. Pego na captura. */
+.dtab td.c-unit span.uv{display:inline;font:inherit;color:inherit;
+  letter-spacing:inherit;margin:0}
+.dtab .upen{border:0;background:none;padding:0;margin-left:7px;line-height:0;
+  color:var(--ink-30);cursor:pointer;vertical-align:-2px;
+  transition:color var(--d1)}
+.dtab .upen:hover,.dtab .upen:focus-visible{color:var(--blue-60)}
+.dtab .upen svg{display:block;fill:none;stroke:currentColor}
 .dtab .rep{display:inline-block;width:12px;margin-left:6px;font-style:normal;
   font-family:var(--sans);font-size:12px;font-weight:800;line-height:1}
 .dtab .rep--up{color:var(--green-60)}

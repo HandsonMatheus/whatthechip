@@ -230,10 +230,10 @@ class TelaTests(_Base):
         resumo = self._resumo()
         self.assertNotIn('class="cy"', resumo)
         self.assertIn('¥ %s' % (self.UNIT_RMB * self.QTD), resumo)
-        # ⚠ O UNITÁRIO não entra nesta conta desde 2026-09-09: em conferência
-        #   ele é um CAMPO (o comprador repactua), e o congelado aparece como
-        #   placeholder — sem o `¥`, que dentro de um input teria de ser
-        #   digitado e reparseado. Quem diz a moeda ali é o título da coluna.
+        # O unitário é TEXTO na célula (o campo mora atrás do lápis) e o
+        # congelado repete-se no placeholder, para o campo abrir já mostrando
+        # de onde ele partiu.
+        self.assertIn('¥ %s' % self.UNIT_RMB, resumo)
         self.assertIn('placeholder="%s"' % self.UNIT_RMB, resumo)
         self.assertIn('>Unitário ¥<', resumo.replace('</th>', '<'))
 
@@ -284,10 +284,18 @@ class ColunaResultadoTests(_Base):
         linha = re.search(r'<tr data-g="0">.*?</tr>', self._resumo(), re.S)
         self.assertIsNotNone(linha)
         self.assertNotIn('US$', linha.group(0))
-        # DOIS textos em ¥ (esperado e resultado) — o unitário virou campo em
-        # 2026-09-09 e leva o congelado no placeholder.
-        self.assertEqual(linha.group(0).count('¥ '), 2)
-        self.assertIn('class="cell pcin"', linha.group(0))
+        # TRÊS textos em ¥ — unitário, esperado e resultado.
+        #
+        # ⚠ Este número foi para 2 e voltou para 3 no mesmo dia, e a ida e a
+        #   volta são a mesma decisão sendo refinada: em 09/09 o unitário
+        #   virou CAMPO (o comprador repactua) e o ¥ saiu do texto; horas
+        #   depois o dono viu a tela — *"tem uma caixinha em todos os precos é
+        #   foda, instiga o comprador a querer mexer em tudo"* — e o campo foi
+        #   para trás de um LÁPIS. O número voltou a ser número.
+        self.assertEqual(linha.group(0).count('¥ '), 3)
+        self.assertIn('class="cell pcin"', linha.group(0))   # o campo existe…
+        self.assertIn('hidden', linha.group(0))              # …e nasce fechado
+        self.assertIn('class="upen"', linha.group(0))        # atrás do lápis
 
     def test_a_faixa_da_marca_segue_a_linha(self):
         """Faixa em uma moeda com as linhas dela em outra é o tipo de
