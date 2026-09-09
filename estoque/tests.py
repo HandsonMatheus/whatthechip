@@ -2040,6 +2040,11 @@ class TenancyDeclarationTests(TestCase):
         # pn/lote/empresa) — não há o que isolar, e um uuid4 não colide entre
         # empresas. Fora do RLS; poda lazy de 48h no próprio add_chip.
         'estoque.SubmitToken',
+        # A TORNEIRA origem × tipo (dono 2026-09-02): régua do NEGÓCIO,
+        # combinada com o comprador — não de cada empresa-cliente. Mesmo
+        # padrão do ProfitabilityConfig: global, sem RLS. Quem cobra linha
+        # para vocabulário novo é o PoliticaOrigemDeclaracaoTests.
+        'estoque.PoliticaOrigemTipo',
     }
     # F11.2: 'vendas' entra — SalesOrder/SalesOrderLine/DocSequence são
     # ESCOPADOS (company + CompanyScopedManager + RLS em vendas/0002).
@@ -2426,7 +2431,10 @@ class K9BenchTests(TestCase):
         self.user = User.objects.create_user(username='op_k9', password='x')
         self.company = _grant(self.user)
         _scope(self, self.company)
-        self.lot = Lot.objects.create(number=0, origin='phone',
+        # ⚠ origin='pcb', e é a régua do dono (2026-09-02): "o K9 vamos aposentar,
+        # ele só pode vir dentro do PCB". Este lote era 'phone' porque a origem
+        # era irrelevante quando o teste nasceu — agora não é mais.
+        self.lot = Lot.objects.create(number=0, origin='pcb',
                                       operator=self.user, company=self.company)
         self.client.login(username='op_k9', password='x')
 
@@ -2772,7 +2780,10 @@ class AuditCategoryCodesTests(TestCase):
         from decimal import Decimal
         set_current_company(self.co.pk)
         self.addCleanup(set_current_company, None)
-        lot = Lot.all_companies.create(number=902, origin='phone',
+        # origin='pcb': a fixture lança um DDR, e DDR mora em lote de PCB
+        # (política origem × tipo, 2026-09-02). A origem é incidental para o
+        # que este teste mede — mas fixture mentirosa é dívida.
+        lot = Lot.all_companies.create(number=902, origin='pcb',
                                        operator=self.op, company=self.co)
         InventoryEntry.all_companies.create(
             lot=lot, company=self.co, part_number='AUDPN1', quantity=7,
@@ -2863,7 +2874,7 @@ class AposentarCategoryCodeTests(TestCase):
         from decimal import Decimal
         set_current_company(self.co.pk)
         self.addCleanup(set_current_company, None)
-        lot = Lot.all_companies.create(number=numero, origin='phone',
+        lot = Lot.all_companies.create(number=numero, origin='pcb',
                                        operator=self.op, company=self.co)
         return InventoryEntry.all_companies.create(
             lot=lot, company=self.co, part_number=f'RETPN{numero}',
@@ -3510,3 +3521,547 @@ class OrigensLegadasTests(TestCase):
         cond = next(c.condition for c in Lot._meta.constraints
                     if c.name == 'lot_origin_vocab')
         self.assertEqual(set(cond.children[0][1]), set(dict(Lot.ORIGIN_CHOICES)))
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# POLÍTICA ORIGEM × TIPO (dono, 2026-09-02) — "a torneira"
+# ═════════════════════════════════════════════════════════════════════════════
+# "Proibir tipos de chip em tipos de lote a que eles não pertencem", editável no
+# admin, com semântica de TORNEIRA: fechar um tipo para de aceitar lançamento
+# NOVO; o que já entrou não é tocado.
+#
+# ⚠ O que estes testes NÃO são: prova de que DESTINO/RENTABILIDADE/PREÇO não
+# mudaram. Essa régua (o baseline das três colunas) é vácua aqui por
+# construção — esta feature não encosta em `classify`, `assess_profitability`,
+# `_compute_destination` nem `derive_price_key`. Ela decide, DEPOIS de tudo
+# isso, se a linha é gravada. A prova que esta feature precisa é a de baixo.
+
+
+class PoliticaOrigemDeclaracaoTests(TestCase):
+    """A tabela é COMPLETA por construção — e este teste é o que cobra isso.
+
+    `bloqueio_de_origem` é fail-closed: kind de mercado sem linha BARRA. Isso só
+    é seguro se toda combinação existir. Origem nova (as legadas MIXED/K9 de
+    2026-09-01 foram exatamente isso) ou kind novo no pricing deixam a suíte
+    vermelha até alguém decidir a régua — que é o ponto."""
+
+    def test_toda_combinacao_origem_x_kind_tem_linha(self):
+        from pricing.models import KINDS
+        from .models import PoliticaOrigemTipo
+        faltando = [
+            f'{origem} × {kind}'
+            for origem, _rot in Lot.ORIGIN_CHOICES
+            for kind in sorted(KINDS)
+            if not PoliticaOrigemTipo.objects.filter(origin=origem, kind=kind).exists()
+        ]
+        self.assertEqual(
+            faltando, [],
+            'Combinação(ões) origem × tipo SEM linha na política. O '
+            '`bloqueio_de_origem` é fail-closed: sem linha ele BARRA o tipo '
+            'inteiro naquela origem. Semeie na migração e decida a régua: '
+            f'{faltando}')
+
+    def test_tabela_do_dono_esta_semeada(self):
+        """A régua de 2026-09-02, literal. Editar a semente sem querer é
+        exatamente o erro que este teste existe para pegar."""
+        from .models import PoliticaOrigemTipo
+
+        def abertos(origem):
+            return set(PoliticaOrigemTipo.objects
+                       .filter(origin=origem, permitido=True)
+                       .values_list('kind', flat=True))
+
+        self.assertEqual(abertos('phone'), {'emcp', 'umcp', 'emmc', 'ufs', 'lpddr'})
+        # LPDDR em PCB (2026-09-08): o comprador mandou foto de um LPDDR numa
+        # placa de PCB. A lista original era o que o dono SABE que vai ali, não
+        # o que ele verificou que nunca vai.
+        self.assertEqual(abertos('pcb'),   {'ddr', 'emmc', 'k9', 'ssd', 'lpddr'})
+        # eMMC nos DOIS de propósito (dono): o preço do eMMC varia com a origem,
+        # então ele é legítimo dos dois lados — não é engano de semente.
+        self.assertIn('emmc', abertos('phone'))
+        self.assertIn('emmc', abertos('pcb'))
+
+    def test_ram_e_legadas_nascem_abertas(self):
+        """RAM é FASE 2 (depende da largura de barramento, outro eixo); MIXED e
+        K9 são rótulos do passado. Semear qualquer uma delas fechada mudaria
+        comportamento HOJE sem regra pronta."""
+        from pricing.models import KINDS
+        from .models import PoliticaOrigemTipo
+        for origem in ('ram', *sorted(Lot.ORIGIN_LEGACY)):
+            fechados = list(PoliticaOrigemTipo.objects
+                            .filter(origin=origem, permitido=False)
+                            .values_list('kind', flat=True))
+            self.assertEqual(fechados, [], f'{origem} deveria nascer 100% aberta')
+            self.assertEqual(
+                PoliticaOrigemTipo.objects.filter(origin=origem).count(), len(KINDS))
+
+
+class PoliticaOrigemRegraTests(TestCase):
+    """`bloqueio_de_origem` — a fonte única, como função."""
+
+    def test_permitido_libera(self):
+        from .politica_origem import bloqueio_de_origem
+        self.assertIsNone(bloqueio_de_origem('phone', 'emcp'))
+        self.assertIsNone(bloqueio_de_origem('pcb', 'ddr'))
+
+    def test_proibido_diz_ONDE_o_chip_entra(self):
+        """Recusa sem destino faz o chip voltar pra bancada e virar problema de
+        outra pessoa. A mensagem tem que ser acionável."""
+        from .politica_origem import bloqueio_de_origem
+        motivo = bloqueio_de_origem('phone', 'ddr')
+        self.assertIsNotNone(motivo)
+        self.assertIn('DDR', motivo)
+        self.assertIn('PCB', motivo)          # onde ele ENTRA
+
+    def test_nao_manda_o_operador_para_um_lote_que_ele_nao_pode_abrir(self):
+        """MIXED e K9 são rótulos do PASSADO (Lot.ORIGIN_LEGACY) — não aparecem
+        na tela de abrir lote. Sugeri-los é mandar o operador procurar uma opção
+        que não existe, que é pior do que não sugerir nada."""
+        from .politica_origem import bloqueio_de_origem
+        motivo = bloqueio_de_origem('phone', 'ddr')
+        for legada in Lot.ORIGIN_LEGACY:
+            rotulo = str(dict(Lot.ORIGIN_CHOICES)[legada])
+            self.assertNotIn(rotulo, motivo)
+
+    def test_nao_sugere_origem_que_nao_fecha_nada(self):
+        """Dono, 2026-09-09: *"remova onde diz MÓDULO DE MEMÓRIA, ainda não
+        temos chips pra isso agora"*.
+
+        A régua não é "ram é especial" — é: **origem que não FECHA nada não teve
+        régua decidida**, e origem que aceita tudo não é conselho sobre onde
+        ESTE chip vai. Vale pra RAM hoje e pra qualquer origem nova amanhã, sem
+        ninguém lembrar de mexer no código."""
+        from .politica_origem import bloqueio_de_origem, origens_que_aceitam
+        ram = str(dict(Lot.ORIGIN_CHOICES)['ram'])
+        self.assertNotIn(ram, bloqueio_de_origem('phone', 'ddr'))
+        self.assertNotIn(ram, origens_que_aceitam('ddr'))
+        # PCB continua sendo conselho — ele FECHA emcp/ufs/umcp
+        self.assertIn('PCB', origens_que_aceitam('ddr'))
+
+    def test_origem_volta_a_ser_conselho_quando_decide_a_regua(self):
+        """A auto-manutenção, provada: no dia em que a RAM fechar o primeiro
+        tipo, ela volta ao conselho SOZINHA. Se este teste quebrar, alguém
+        trocou a regra por uma lista fixa — que é a 4ª vez que este projeto
+        escreveria vocabulário fechado fora do modelo."""
+        from .models import PoliticaOrigemTipo
+        from .politica_origem import origens_que_aceitam
+        ram = str(dict(Lot.ORIGIN_CHOICES)['ram'])
+        self.assertNotIn(ram, origens_que_aceitam('ddr'))
+        PoliticaOrigemTipo.objects.filter(origin='ram', kind='k9').update(permitido=False)
+        self.assertIn(ram, origens_que_aceitam('ddr'))
+
+    def test_a_ordem_do_conselho_e_a_do_formulario(self):
+        from .politica_origem import origens_que_aceitam
+        from .models import PoliticaOrigemTipo
+        PoliticaOrigemTipo.objects.filter(origin='ram', kind='k9').update(permitido=False)
+        ordem_form = [str(r) for _v, r in Lot.origin_choices_novas()]
+        conselho = [str(x) for x in origens_que_aceitam('emmc')]
+        self.assertEqual(conselho, [r for r in ordem_form if r in conselho])
+
+    def test_tipo_fora_do_mercado_nao_e_assunto_desta_regra(self):
+        """Sucata por tipo (GDDR/SDRAM) já é barrada pela RENTABILIDADE, e
+        indeterminado (`none`, vazio) é falta de COBERTURA DE CATÁLOGO, não lote
+        errado. Barrar aqui seria reimplementar rentabilidade num 2º lugar e
+        transformar todo buraco de gramática em chip recusado na bancada."""
+        from .politica_origem import bloqueio_de_origem
+        for kind in ('', 'none', 'gddr', 'sdram', 'nand'):
+            for origem, _r in Lot.ORIGIN_CHOICES:
+                self.assertIsNone(bloqueio_de_origem(origem, kind),
+                                  f'{origem} × {kind!r} não devia ser barrado aqui')
+
+    def test_origem_desconhecida_falha_FECHADO(self):
+        from .politica_origem import bloqueio_de_origem
+        motivo = bloqueio_de_origem('marte', 'emcp')
+        self.assertIsNotNone(motivo)
+        self.assertIn('marte', motivo)
+
+    def test_linha_ausente_falha_FECHADO(self):
+        """Linha apagada = decisão que ninguém tomou, não permissão. É o
+        oposto do zero silencioso."""
+        from .models import PoliticaOrigemTipo
+        from .politica_origem import bloqueio_de_origem
+        PoliticaOrigemTipo.objects.filter(origin='phone', kind='emcp').delete()
+        motivo = bloqueio_de_origem('phone', 'emcp')
+        self.assertIsNotNone(motivo)
+        self.assertIn('EMCP', motivo)
+
+    def test_torneira_fecha_na_hora_sem_deploy(self):
+        from .models import PoliticaOrigemTipo
+        from .politica_origem import bloqueio_de_origem
+        self.assertIsNone(bloqueio_de_origem('phone', 'emcp'))
+        PoliticaOrigemTipo.objects.filter(origin='phone', kind='emcp').update(permitido=False)
+        self.assertIsNotNone(bloqueio_de_origem('phone', 'emcp'))
+
+
+def _ddr3_rentavel(**over):
+    """Classificação de um DDR3 4Gb: RENTÁVEL, `price_kind='ddr'`. É o chip que
+    NÃO pode entrar em lote de celular (e pode em PCB)."""
+    base = dict(chip_type='DDR3', subtype='DDR3 SDRAM', capacity='512MB',
+                dram_density='4Gb = 512MB por die [✓]', density_gbit_num=4,
+                classification_source='banco de dados', confidence='confirmed')
+    base.update(over)
+    return _result(**base)
+
+
+def _lpddr_rentavel(**over):
+    """LPDDR4 4GB: RENTÁVEL, `price_kind='lpddr'`. É o chip da foto do comprador
+    (2026-09-08) — LPDDR numa placa de PCB."""
+    base = dict(chip_type='LPDDR4', subtype='LPDDR4', capacity='4GB', cap_gb=4,
+                ram_gen='LPDDR4',
+                classification_source='banco de dados', confidence='confirmed')
+    base.update(over)
+    return _result(**base)
+
+
+def _emmc_rentavel(**over):
+    base = dict(chip_type='eMMC', capacity='16GB', cap_gb=16,
+                classification_source='banco de dados', confidence='confirmed')
+    base.update(over)
+    return _result(**base)
+
+
+class PoliticaOrigemBancadaTests(TestCase):
+    """A barreira REAL: `add_chip`. O card desabilitar o botão é experiência;
+    template nunca é a única barreira (POST forjado / página velha)."""
+
+    def setUp(self):
+        User = get_user_model()
+        self.user = User.objects.create_user(username='op_pol', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.lot_phone = Lot.objects.create(number=940, origin='phone',
+                                            operator=self.user, company=self.company)
+        self.lot_pcb = Lot.objects.create(number=941, origin='pcb',
+                                          operator=self.user, company=self.company)
+        self.client.login(username='op_pol', password='x')
+
+    def _post(self, lot, pn, qty=1):
+        return self.client.post(reverse('estoque:add', args=[lot.pk]),
+                                {'pn': pn, 'qty': str(qty), 'has_cap': 'true',
+                                 'submit_token': uuid4().hex})
+
+    @patch('estoque.views.classify')
+    def test_ddr_em_lote_de_celular_e_recusado_e_NADA_e_gravado(self, mock_classify):
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self._post(self.lot_phone, 'DDRNOFONE1')
+        self.assertEqual(r.status_code, 200)
+        # ⚠ a frase do OPERADOR não diz o que o chip é (dono 2026-09-09)
+        self.assertContains(r, 'Este chip não pode ser enviado com este lote')
+        self.assertFalse(InventoryEntry.objects.filter(part_number='DDRNOFONE1').exists())
+        # Lote errado NÃO é sucata: o chip volta pra bancada e vai pro lote
+        # certo. Gerar RejectedEntry aqui poluiria a auditoria de descarte com
+        # material que tem valor.
+        self.assertFalse(RejectedEntry.objects.filter(part_number='DDRNOFONE1').exists())
+        self.assertFalse(PendingEntry.objects.filter(part_number='DDRNOFONE1').exists())
+
+    @patch('estoque.views.classify')
+    def test_o_mesmo_ddr_entra_no_lote_de_PCB(self, mock_classify):
+        """Prova que a recusa é da ORIGEM, não do chip."""
+        mock_classify.return_value = _ddr3_rentavel()
+        self._post(self.lot_pcb, 'DDRNOPCB1')
+        self.assertTrue(InventoryEntry.objects.filter(
+            lot=self.lot_pcb, part_number='DDRNOPCB1').exists())
+
+    @patch('estoque.views.classify')
+    def test_LPDDR_entra_em_lote_de_PCB(self, mock_classify):
+        """2026-09-08, foto do comprador: LPDDR existe em placa de PCB, e está
+        caro. A lista original do dono ('PCB recebe DDR/eMMC/K9/SSD') era o que
+        ele SABE que vai ali, não o que ele verificou que nunca vai.
+
+        ⚠ Este teste protege o material BOM. O bloqueio mora depois da fila e
+        depois da rentabilidade, então uma célula fechada por engano só
+        consegue barrar chip que o sistema já conhece E já avaliou como
+        rentável — exatamente o que o comprador está pagando caro."""
+        mock_classify.return_value = _lpddr_rentavel()
+        r = self._post(self.lot_pcb, 'LPDDRNOPCB1', qty=2)
+        self.assertNotContains(r, 'não entra em lote de')
+        e = InventoryEntry.objects.get(lot=self.lot_pcb, part_number='LPDDRNOPCB1')
+        self.assertEqual(e.quantity, 2)
+        self.assertEqual(e.price_kind, 'lpddr')
+        # e segue entrando no lote de celular, que é a origem "natural" dele
+        mock_classify.return_value = _lpddr_rentavel()
+        self._post(self.lot_phone, 'LPDDRNOFONE1')
+        self.assertTrue(InventoryEntry.objects.filter(
+            lot=self.lot_phone, part_number='LPDDRNOFONE1').exists())
+
+    @patch('estoque.views.classify')
+    def test_fechar_a_torneira_barra_o_INCREMENTO_tambem(self, mock_classify):
+        """O buraco que a checagem no modelo NÃO cobriria: quando o PN já existe
+        no lote, o `get_or_create` do add_chip não cria nada — faz `.update()`
+        de queryset, que não dispara `save()` nem sinal. Sem a checagem na VIEW,
+        cada PN já lançado viraria torneira permanentemente aberta naquele lote."""
+        from .models import PoliticaOrigemTipo
+        mock_classify.return_value = _emmc_rentavel()
+        self._post(self.lot_phone, 'EMMCINCR', qty=3)
+        e = InventoryEntry.objects.get(lot=self.lot_phone, part_number='EMMCINCR')
+        self.assertEqual(e.quantity, 3)
+
+        PoliticaOrigemTipo.objects.filter(origin='phone', kind='emmc').update(permitido=False)
+
+        r = self._post(self.lot_phone, 'EMMCINCR', qty=5)
+        self.assertContains(r, 'Este chip não pode ser enviado com este lote')
+        e.refresh_from_db()
+        self.assertEqual(e.quantity, 3, 'o incremento passou pela torneira fechada')
+
+    @patch('estoque.views.classify')
+    def test_sucata_no_lote_errado_AINDA_gera_RejectedEntry(self, mock_classify):
+        """A ORDEM importa: a checagem de origem roda DEPOIS da rentabilidade.
+        Sucata é terminal (vai pro descarte de qualquer jeito); lote errado é só
+        endereço. Se a origem viesse antes, a auditoria de sucata perderia a
+        linha — e é a auditoria que calibra as regras."""
+        mock_classify.return_value = _result(
+            chip_type='DDR2', subtype='DDR2 SDRAM', capacity='256MB',
+            dram_density='2Gb', density_gbit_num=2,
+            classification_source='banco de dados', confidence='confirmed')
+        self._post(self.lot_phone, 'DDR2SUCATA')
+        self.assertEqual(RejectedEntry.objects.filter(
+            lot=self.lot_phone, part_number='DDR2SUCATA').count(), 1)
+        self.assertFalse(InventoryEntry.objects.filter(part_number='DDR2SUCATA').exists())
+
+    def test_gateway_bloqueado_nao_cunha_codigo_de_caixa(self):
+        """`entra_no_estoque` é lido TAMBÉM pela cunhagem do código F12, e código
+        de caixa é ETERNO. Chip que não vai entrar não pode queimar um número."""
+        g_ok = _compute_gateway(_ddr3_rentavel(), True, lot=self.lot_pcb)
+        g_no = _compute_gateway(_ddr3_rentavel(), True, lot=self.lot_phone)
+        self.assertTrue(g_ok['entra_no_estoque'])
+        self.assertFalse(g_no['entra_no_estoque'])
+        self.assertFalse(g_no['can_add'])
+        self.assertIn('não entra em lote de', g_no['origem_bloqueada'])
+        self.assertEqual(g_ok['origem_bloqueada'], '')
+        # A rentabilidade NÃO é contaminada: o chip continua rentável, só está
+        # no endereço errado. (Se esta linha cair, a regra virou rentabilidade.)
+        self.assertEqual(g_no['profitable'], 'RENTÁVEL')
+        self.assertEqual(g_no['destination'], 'aprovado')
+
+    @patch('estoque.views.classify')
+    def test_o_card_DIZ_o_motivo_antes_do_clique(self, mock_classify):
+        """Tooltip não serve na bancada — ninguém passa o mouse por cima de um
+        botão apagado. O aviso é visível, e diz onde o chip ENTRA."""
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                            {'pn': 'DDRPREVIEW1'})
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'Este chip não pode ser enviado com este lote')
+        self.assertContains(r, 'disabled')
+
+    @patch('estoque.views.classify')
+    def test_o_aviso_TOMA_O_LUGAR_do_cartao_de_destino(self, mock_classify):
+        """Dono, 2026-09-09: o aviso substitui o cartão de destino inteiro —
+        mesmo desenho, conteúdo oposto. O CÓDIGO DA CAIXA some: mostrar "A-02 /
+        Caixa" e, embaixo, "não vai neste lote" é a tela dando duas ordens
+        contrárias ao mesmo tempo."""
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                            {'pn': 'DDRPREVIEW3'})
+        corpo = r.content.decode()
+        # ⚠ 'dcard dcard--outro' e não 'dcard--outro': o segundo aparece
+        # também no <style>, e uma asserção que casa com o CSS passa mesmo
+        # com o cartão nunca renderizado.
+        self.assertIn('dcard dcard--outro', corpo)
+        self.assertIn('Este chip não pode ser enviado com este lote', corpo)
+        self.assertNotIn('dcard dcard--box', corpo)  # o cartão verde saiu de cena
+        self.assertNotIn('>Caixa<', corpo)
+        # a faixa vermelha separada saiu (ver o gêmeo no card completo)
+        self.assertNotIn('est-msg est-msg--error', corpo)
+
+    @patch('estoque.views.classify')
+    def test_o_card_do_OPERADOR_nao_revela_o_TIPO_do_chip(self, mock_classify):
+        """Dono, 2026-09-09: *"não é para revelar o tipo do chip na frase,
+        empregados não podem ter acesso a isso"*.
+
+        O que sai é **só o TIPO**. O LOTE DE DESTINO fica — e essa distinção é a
+        correção de um exagero meu: eu tinha tirado os dois, e a tela virou uma
+        recusa sem saída ("não pode, fale com o gestor" e ponto). Dono:
+        *"o destino dele pode voltar, pode mostrar que é celular ou pcb, não tem
+        problema"*. Máscara é sobre o que o chip É, não sobre o que fazer com ele.
+        """
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                            {'pn': 'ZZ9SEMPISTA'})   # PN sem 'DDR' dentro:
+        # o PN é exibido de propósito (é o que o operador escaneou), então um PN
+        # que contenha o tipo faria a asserção falhar por motivo errado.
+        corpo = r.content.decode()
+        # o que FICA: o destino e a instrução
+        self.assertIn('Este chip vai em', corpo)
+        self.assertIn('PCB', corpo)
+        self.assertIn('Este chip não pode ser enviado com este lote', corpo)
+        self.assertIn('Comunique ao seu gestor', corpo)
+        # o que SAI: o tipo, em qualquer forma
+        self.assertNotIn('DDR', corpo)
+        self.assertNotIn('não entra em lote de', corpo)
+
+    @patch('estoque.views.classify')
+    def test_o_POST_forcado_tambem_e_mascarado(self, mock_classify):
+        """O pior lugar possível para vazar: a resposta do `add_chip` só
+        aparece quando alguém FORÇA o envio com o botão desabilitado — ou seja,
+        quando alguém está fuçando. Ela mostrava a frase completa."""
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self._post(self.lot_phone, 'ZZ9FORCADO')
+        corpo = r.content.decode()
+        self.assertIn('Este chip não pode ser enviado com este lote', corpo)
+        self.assertNotIn('DDR', corpo)          # o TIPO, não
+        self.assertFalse(InventoryEntry.objects.filter(
+            part_number='ZZ9FORCADO').exists())
+
+    @patch('estoque.views.classify')
+    def test_a_PLATAFORMA_continua_vendo_tudo(self, mock_classify):
+        """A contrapartida: quem decide precisa do dado. Superusuário vê o tipo,
+        o lote de destino e a frase completa — no card E na resposta do POST.
+        Sem este teste, "mascarar" viraria "esconder de todo mundo", e o gestor
+        ficaria sem saber o que fazer com o chip."""
+        User = get_user_model()
+        adm = User.objects.create_user(username='plat_leak', password='x',
+                                       is_superuser=True)
+        _grant(adm)
+        self.client.force_login(adm)
+        mock_classify.return_value = _ddr3_rentavel()
+
+        corpo = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                                {'pn': 'DDRPLAT'}).content.decode()
+        self.assertIn('Este chip vai em', corpo)
+        self.assertIn('PCB', corpo)
+        self.assertIn('não entra em lote de', corpo)
+
+        corpo = self._post(self.lot_phone, 'DDRPLATPOST').content.decode()
+        self.assertIn('não entra em lote de', corpo)
+
+    @patch('estoque.views.classify')
+    def test_o_cartao_de_destino_normal_continua_intacto(self, mock_classify):
+        """Controle: no lote certo, o cartão verde com o código da caixa segue
+        exatamente como era. A torneira só troca a tela quando barra."""
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_pcb.pk]),
+                            {'pn': 'DDRPREVIEW4'})
+        corpo = r.content.decode()
+        self.assertIn('dcard dcard--box', corpo)
+        self.assertIn('>Caixa<', corpo)
+        self.assertNotIn('dcard dcard--outro', corpo)
+        self.assertNotIn('Este chip vai em', corpo)
+
+    @patch('estoque.views.classify')
+    def test_no_card_COMPLETO_a_barra_de_destino_tambem_troca(self, mock_classify):
+        """O mesmo tratamento no card da PLATAFORMA (superusuário): a barra
+        `rc__dest` diz o bloqueio no lugar da caixa, e não sobra faixa
+        duplicada. Dois templates, uma decisão — se um mudar sozinho, a bancada
+        e a plataforma passam a contar histórias diferentes."""
+        User = get_user_model()
+        adm = User.objects.create_user(username='plat_pol', password='x',
+                                       is_superuser=True)
+        _grant(adm)
+        self.client.force_login(adm)
+        mock_classify.return_value = _ddr3_rentavel()
+
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                            {'pn': 'DDRPREVIEW5'})
+        corpo = r.content.decode()
+        self.assertIn('rc__dest rc__dest--o', corpo)
+        self.assertIn('Este chip vai em', corpo)
+        self.assertNotIn('→ Caixa', corpo)
+        # A faixa vermelha separada saiu — dois avisos pra mesma coisa é um
+        # a mais pra ignorar. (A frase ainda aparece 2x de propósito: na
+        # barra e no `title` do botão desabilitado. Contar ocorrências da
+        # frase seria fixar o tooltip sem querer.)
+        self.assertNotIn('est-msg est-msg--error', corpo)
+
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_pcb.pk]),
+                            {'pn': 'DDRPREVIEW6'})
+        corpo = r.content.decode()
+        self.assertIn('→ Caixa', corpo)
+        self.assertNotIn('rc__dest rc__dest--o', corpo)
+
+    @patch('estoque.views.classify')
+    def test_sucata_no_lote_errado_mostra_DESCARTE_no_card(self, mock_classify):
+        """O gêmeo VISUAL do `test_sucata_no_lote_errado_AINDA_gera_RejectedEntry`.
+
+        Bug meu de 2026-09-09: o cartão de "vai em outro lote" vinha ANTES do de
+        descarte no template, então um DDR2 em lote de celular mostrava
+        "Este chip vai em PCB" com o botão "Registrar descarte" embaixo — a tela
+        dando duas ordens contrárias, e a errada em cima. Quem pegou foi o
+        `PortaoCunhagemCategoriaTests`, que nem é desta feature.
+
+        A ordem agora é resolvida no GATEWAY, uma vez, e não em cada template:
+        a pergunta "pertence a este lote?" só existe pro chip que ENTRARIA."""
+        mock_classify.return_value = _result(
+            chip_type='DDR2', subtype='DDR2 SDRAM', capacity='256MB',
+            dram_density='2Gb', density_gbit_num=2,
+            classification_source='banco de dados', confidence='confirmed')
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                            {'pn': 'DDR2NOFONE'})
+        corpo = r.content.decode()
+        self.assertIn('R-00', corpo)                        # destino é o refino
+        self.assertNotIn('dcard dcard--outro', corpo)
+        self.assertNotIn('Este chip vai em', corpo)
+
+    @patch('estoque.views.classify')
+    def test_indeterminado_no_lote_errado_nao_vira_aviso_de_origem(self, mock_classify):
+        """Mesma ordem, o outro caso: sem rentabilidade AVALIADA o chip não
+        lança por falta de dado — e essa é a etapa que vem primeiro no
+        `add_chip`. Dizer "vai em PCB" aqui mandaria o operador levar pra outro
+        lote um chip que não entra em lote nenhum enquanto o dado não completar."""
+        mock_classify.return_value = _result(
+            chip_type='DDR3', subtype='DDR3 SDRAM', capacity='',
+            classification_source='banco de dados', confidence='confirmed')
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_phone.pk]),
+                            {'pn': 'DDRSEMDADO'})
+        corpo = r.content.decode()
+        self.assertNotIn('dcard dcard--outro', corpo)
+        self.assertNotIn('Este chip vai em', corpo)
+
+    @patch('estoque.views.classify')
+    def test_o_card_do_lote_certo_nao_avisa_nada(self, mock_classify):
+        mock_classify.return_value = _ddr3_rentavel()
+        r = self.client.get(reverse('estoque:preview', args=[self.lot_pcb.pk]),
+                            {'pn': 'DDRPREVIEW2'})
+        self.assertNotContains(r, 'não entra em lote de')
+
+    def test_gateway_sem_lote_nao_julga_origem(self):
+        """Sem lote não há origem para julgar — a regra desliga em vez de
+        chutar. (`_compute_gateway` tem chamadas fora de um lote.)"""
+        g = _compute_gateway(_ddr3_rentavel(), True)
+        self.assertEqual(g['origem_bloqueada'], '')
+        self.assertTrue(g['entra_no_estoque'])
+
+
+class PoliticaOrigemBackstopTests(TestCase):
+    """O sinal `pre_save` — cobre quem cria `InventoryEntry` DIRETO, sem passar
+    pelo funil: a aprovação de `PendingEntry` no admin e o `replicate_lot_xlsx`."""
+
+    def setUp(self):
+        from django.core.exceptions import ValidationError
+        self.ValidationError = ValidationError
+        User = get_user_model()
+        self.user = User.objects.create_user(username='op_bs', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.lot_phone = Lot.objects.create(number=950, origin='phone',
+                                            operator=self.user, company=self.company)
+
+    def test_create_direto_com_tipo_proibido_levanta(self):
+        with self.assertRaises(self.ValidationError):
+            InventoryEntry.objects.create(
+                lot=self.lot_phone, part_number='BSDDR1', quantity=1,
+                chip_type='DDR3', price_kind='ddr', price_gen='DDR3',
+                company=self.company)
+
+    def test_entrada_LEGADA_sem_chave_nao_levanta(self):
+        """Entrada legada (pré-F11.1) tem `price_kind` vazio. Barrá-la
+        transformaria toda réplica de lote antigo numa parede."""
+        InventoryEntry.objects.create(
+            lot=self.lot_phone, part_number='BSLEGADO', quantity=1,
+            chip_type='DDR3', price_kind='', company=self.company)
+        self.assertTrue(InventoryEntry.objects.filter(part_number='BSLEGADO').exists())
+
+    def test_save_de_entrada_EXISTENTE_fora_da_regra_NAO_levanta(self):
+        """A semântica de TORNEIRA, no ponto onde ela mais importa: o que já
+        entrou não é tocado. Sem isto, o `resnapshot_lote` — que dá `save()` em
+        entradas existentes — quebraria em todo lote antigo com material fora da
+        régua (medido em 2026-09-02: 608 de 3.282 linhas em prod)."""
+        from .models import PoliticaOrigemTipo
+        e = InventoryEntry.objects.create(
+            lot=self.lot_phone, part_number='BSEMMC1', quantity=1,
+            chip_type='eMMC', price_kind='emmc', company=self.company)
+        PoliticaOrigemTipo.objects.filter(origin='phone', kind='emmc').update(permitido=False)
+        e.quantity = 9
+        e.save()                      # não pode levantar
+        e.refresh_from_db()
+        self.assertEqual(e.quantity, 9)

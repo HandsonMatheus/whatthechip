@@ -4323,3 +4323,39 @@ msgid "Selecionada · %(n)s compra"
 msgid_plural "Selecionadas · %(n)s compras"
 msgstr[0] "Seleccionada · %(n)s compra"
 msgstr[1] "Seleccionadas · %(n)s compras"
+
+# ── Política origem × tipo: cada origem de lote só aceita certos tipos
+#    de chip (dono, 2026-09-02). A mensagem tem que ser ACIONÁVEL: diz
+#    onde o chip ENTRA, não só que ali não serve.
+
+msgid "%(tipo)s não entra em lote de %(origem)s. Este chip vai em: %(aceitam)s."
+msgstr "%(tipo)s no entra en lote de %(origem)s. Este chip va en: %(aceitam)s."
+
+msgid "%(tipo)s não entra em nenhum tipo de lote no momento."
+msgstr "%(tipo)s no entra en ningún tipo de lote por ahora."
+
+msgid "Este lote tem uma origem desconhecida (%(origem)s) — nenhum chip pode ser lançado nele até a origem ser corrigida."
+msgstr "Este lote tiene un origen desconocido (%(origem)s) — ningún chip puede registrarse en él hasta corregir el origen."
+
+msgid "Tipo %(tipo)s ainda não tem regra definida para lotes de %(origem)s. Fale com o gestor."
+msgstr "El tipo %(tipo)s todavía no tiene regla definida para lotes de %(origem)s. Hable con el gestor."
+
+# ── O aviso TOMA O LUGAR do cartão de destino (dono, 2026-09-09): mesmo
+#    desenho, conteúdo oposto. O rótulo grande é PRA ONDE O CHIP VAI —
+#    a única coisa acionável na tela.
+
+msgid "%(tipo)s não entra em lote de %(origem)s"
+msgstr "%(tipo)s no entra en lote de %(origem)s"
+
+msgid "Este chip vai em"
+msgstr "Este chip va en"
+
+msgid "Não vai neste lote"
+msgstr "No va en este lote"
+
+# ── A recusa que o OPERADOR lê (dono, 2026-09-09): não diz o TIPO nem o
+#    lote de destino. A frase completa é da PLATAFORMA — a máscara do
+#    `is_unmasked` vale aqui como no resto da bancada.
+
+msgid "Este chip não pode ser enviado com este lote. Comunique ao seu gestor."
+msgstr "Este chip no puede enviarse con este lote. Comuníquelo a su gestor."

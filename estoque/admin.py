@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.db.models import F
 from django.utils import timezone
 
-from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
+from .models import (InventoryEntry, Lot, PendingEntry,
+                     PoliticaOrigemTipo, RejectedEntry)
 
 
 def _confirm_as_knownpart(pend):
@@ -150,4 +151,29 @@ class RejectedEntryAdmin(PlatformScopedAdmin):
     display_capacity.short_description = "Capacidade"
 
     def has_add_permission(self, request):
+        return False
+
+
+@admin.register(PoliticaOrigemTipo)
+class PoliticaOrigemTipoAdmin(admin.ModelAdmin):
+    """A TORNEIRA. Desmarcar `permitido` fecha o tipo para lotes daquela origem
+    — imediatamente, sem deploy. O que já foi lançado não muda (a validação só
+    roda na criação da entrada).
+
+    Tabela GLOBAL (sem `company`, sem RLS) — igual ao ProfitabilityConfig: a
+    régua é do negócio, combinada com o comprador, não de cada empresa.
+    Sem `add`/`delete` de propósito: as linhas nascem da migração e o teste de
+    declaração exige uma para cada (origem × kind). Apagar uma linha faria o
+    `bloqueio_de_origem` cair no fail-closed e barrar o tipo inteiro.
+    """
+    list_display  = ('origin', 'kind', 'permitido', 'updated_at')
+    list_filter   = ('origin', 'permitido', 'kind')
+    list_editable = ('permitido',)
+    ordering      = ('origin', 'kind')
+    readonly_fields = ('origin', 'kind', 'updated_at')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False

@@ -345,27 +345,46 @@ python manage.py audit_targets --file correcoes.csv        # read-only: status (
 python manage.py fix_pns --lot 39 --file correcoes.csv     # corrige PNs (merge/rename/refresh) via CSV errado,certo; reavalia estado a cada passo; --commit, --revert
 ```
 
-> O bloqueio **"só confirmados"** em `estoque/views.py::add_chip` barra PN não
-> confirmado: vai para `PendingEntry` (fila em `/admin/estoque/pendingentry/`,
-> ações Aprovar/Reprovar) em vez do estoque. `bless_base` é a ponte para não
-> travar reposição dos comuns. Cada KnownPart salvo dispara o bump de `catalog_version`
-> (signal em `chips/apps.py`) → o engine recarrega sozinho, **sem reiniciar**.
-
-**Somente local** (precisam de `playwright`/`curl_cffi`/`pdfplumber` ou chaves de
-API — **não** rodam no Render: a imagem de produção (`requirements-render.txt`)
-não inclui esses pacotes):
+**A planilha que o comprador DEVOLVE** (read-only; ele exporta a compra, edita e manda de volta):
 
 ```bash
-python scripts/collect_pns.py --brand Samsung      # coleta PNs crus (default: Samsung!)
-python scripts/nexar_validate.py --validate <PN>   # Octopart/Nexar
-python manage.py enrich_micron_fbga / lookup_fbga <FBGA> / fill_capacity_from_micron_api
+python manage.py auditar_planilha_comprador <arquivo>.xlsx [--so EMIN-SO-2026-0004] [--detalhe]
 ```
 
-Ordem típica (DB vazio → populado), encadeada pelo **`deploy_catalog`**: `migrate` →
-`load_brands` (as 10 marcas — grava gramática + known_parts dos yamls) → `link_doc_pages`/
-`sync_index_page` → `import_*` (PSG etc., complementam) → (coleta/enriquecimento local, se houver).
-O `catalog_version` sobe no fim e o cache recarrega sozinho (sem reiniciar). **Nada de `populate_*`,
-`add_chip_families` nem `fix_known_parts` — aposentados; o conhecimento é YAML.**
+Devolve **a planilha DELE** (`<arquivo> - PINTADA.xlsx`, cópia — o original é a prova do que ele mandou) com
+três colunas INSERIDAS no meio, encostadas no preço: `¥ ANTES │ ¥ unit. (dele) │ ¥ TOTAL ANTES │ ¥ TOTAL AGORA`.
+A célula do ¥ que ele mudou fica vermelha (baixou) ou verde (subiu); a de ENVIADOS se ele a reescreveu; a de
+APROVADOS se a conta dele não fecha. Os dois totais somam por marca na faixa e no rodapé, com `SUM` de verdade.
+`¥ ANTES` existe em TODA linha — coluna com buraco não se corre o olho nem se soma.
+
+> **Lição de FORMA, dono 08/09/2026 — três rodadas no mesmo arquivo, e as três falhas foram de LUGAR e NOME,
+> nunca de conta.** (1) Comparativo de 17 colunas em arquivo novo → *"impossível ler, informação demais"*:
+> auditoria completa não é auditoria legível, e quem confere já conhece aquela planilha. (2) As colunas certas
+> chamadas `¥ SISTEMA`/`¥ DELE` → ele pediu *"uma coluna com o preço COMO ERA ANTES"*, que era exatamente
+> aquela: **o rótulo responde à pergunta de quem lê ("quanto era?"), não nomeia a fonte do dado.** (3)
+> Acrescentadas DEPOIS da última coluna dele → *"não veio coluna de antes e agora não"*. Vieram; estavam a três
+> colunas de rolagem. **Informação a uma tela de distância do dado que ela explica não existe.** O relatório
+> longo virou `--detalhe`; no terminal ficam 6 linhas, e a que importa é *"mexeu e NÃO marcou com o próprio
+> check"* — no EMIN-SO-2026-0004 (Wu Quan) foram 28 preços mexidos, 3 sem check, um de ¥ 1.544 sozinho.
+
+**RECUSA não é marcada, de propósito:** a coluna de recusados é dele (paga o que chega bom), e pintá-la trataria
+o combinado como irregularidade. Marca-se o que ele mudou onde não devia. Ele **não escreve nada** — nem no
+banco, nem no arquivo de entrada; corrigir é o acerto no admin (`SettlementLine.qty_rejected` para recusa,
+`new_unit_rmb` para repreciação).
+⚠ Abre `platform_scope()` + `company_scope()` e **aborta gritando** se a OV vier com zero linhas: aqui o zero
+silencioso do RLS (§7) se disfarça de "nenhuma diferença encontrada", que é o que autoriza pagar sem discutir.
+`--sem-banco` usa a aba Chips como referência (testemunha: ele quase nunca desce aos PNs).
+⚠ `insert_cols` do openpyxl move as CÉLULAS mas não as LARGURAS (dict à parte, por letra), nem merges, fórmulas
+ou validações — este arquivo não tem nenhum dos três (conferido antes de escolher o caminho); as larguras são
+remontadas à mão, e `width = None` é recusado pelo descritor.
+Parser em `vendas/planilha_auditoria.py` (casa por CABEÇALHO, nos 4 idiomas — o arquivo que volta é de uma versão
+ANTERIOR do export e passou por outra ferramenta); travas em `vendas/tests_planilha_auditoria.py` (35 testes,
+25 mutações mordem), incluindo o **ida-e-volta**: exportar pelo `compra_em_planilha` e ler de volta tem de dar
+ZERO diferença — foi quem pegou o bug em que a faixa da 2ª marca herdava a marca da 1ª. **Duas travas desta
+suíte já PASSARAM numa mutação** (`¥ ANTES` só na linha mexida; largura não deslocada) porque o cenário não
+isolava o caso — o arquivo de teste ganhou faixa de marca, rodapé e larguras declaradas por causa disso.
+⚠ O .xlsx pintado sai em PORTUGUÊS. É dívida assumida (marcar sem traduzir deixa o `check_translations`
+vermelho para todo chat); virou documento de rotina, a entrega é marcar + traduzir es/en/zh no MESMO commit.
 
 ### Deploy (Render)
 
@@ -1108,6 +1127,86 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   ⚠ Preço NÃO foi afetado: `pricing::_row_origin` só usa origem no **eMMC** e
   manda qualquer valor fora de phone/pcb para o fallback conservador `'phone'` —
   documentado no modelo e coberto por teste desde 2026-08-24.
+- **CADA ORIGEM DE LOTE SÓ ACEITA CERTOS TIPOS DE CHIP — a "torneira"
+  (dono, 2026-09-02):** celular aceita eMCP/uMCP/eMMC/UFS/LPDDR; PCB aceita
+  DDR/eMMC/K9/SSD/**LPDDR**. **eMMC nos dois de propósito** — o preço dele varia
+  com a origem (`pricing::_row_origin`), então ele é legítimo dos dois lados.
+  ⚠ **O LPDDR entrou no PCB em 2026-09-08, e a lição vale mais que a célula:**
+  a lista original era o que o dono **SABE** que vai ali, não o que ele
+  **VERIFICOU** que nunca vai — são afirmações diferentes e a tabela tratava as
+  duas igual. Uma foto do comprador (LPDDR numa placa de PCB, *"these chips are
+  pretty expensive right now"*) derrubou a célula **antes** de ela chegar em
+  produção. E o custo dos dois erros não é o mesmo: o bloqueio mora DEPOIS da
+  fila e DEPOIS da rentabilidade, então uma célula fechada por engano só
+  consegue barrar chip que o sistema **já conhece E já avaliou como RENTÁVEL** —
+  o material bom. Bloqueio errado joga dinheiro fora e ensina o operador a
+  desconfiar da ferramenta; liberação errada só precifica conservador. Semeie
+  seguindo essa assimetria: feche o que foi VERIFICADO, deixe aberto o resto.
+  ⚠ **O TIPO do chip não aparece na recusa do operador (dono, 2026-09-09):**
+  *"não é para revelar o tipo do chip na frase, empregados não podem ter acesso
+  a isso"*. A 1ª versão vazava `EMCP` em TRÊS superfícies — o texto do cartão, o
+  `title` do botão e **a resposta do `add_chip`**, que é o pior lugar possível:
+  ela só aparece quando alguém FORÇA o envio com o botão desabilitado. Hoje
+  `politica_origem.motivo_neutro()` é a fonte única do que o operador lê, o
+  gateway devolve as DUAS versões (`origem_bloqueada` completa ×
+  `origem_aviso` neutra) e o card mascarado não menciona a completa nem por
+  engano. ⚠ **Mas o LOTE DE DESTINO fica** — e essa distinção é a correção de um
+  exagero meu, que tinha tirado os dois: *"o destino dele pode voltar, pode
+  mostrar que é celular ou pcb, não tem problema"*. A máscara é sobre **o que o
+  chip É**, não sobre **o que fazer com ele**; sem o destino a tela vira recusa
+  sem saída, que é o alarme que o operador aprende a ignorar. Regra geral:
+  **mensagem de erro é superfície de vazamento** e obedece à mesma máscara da
+  tela — e "esconder do operador" não pode virar "esconder de todo mundo": o
+  superusuário segue vendo tipo e frase completa, com teste dos dois lados.
+  ⚠ **E o AVISO TOMA O LUGAR do cartão de destino**, mesmo desenho: mostrar
+  "Caixa A-02" e, embaixo, "não vai neste lote" é a tela dando duas ordens
+  contrárias. A ordem do funil se resolve no GATEWAY, uma vez, e não em cada
+  template (bug de 2026-09-09: o cartão de bloqueio vinha antes do de descarte,
+  e um DDR2 aparecia como "vai em PCB" com o botão "Registrar descarte"
+  embaixo). Cor AZUL, não vermelha: vermelho nessa tela quer dizer R-00, joga
+  fora — confundir os dois na bancada é jogar dinheiro no lixo.
+  ⚠ **Abrir a torneira não resolve PREÇO.** Só o eMMC carrega origem na chave
+  (constraint `price_origin_emmc_only`, pricing/0019); LPDDR de celular e de PCB
+  caem na MESMA linha. O comprador separa os dois mercados na fala ("mobile"
+  fraco × "PCB boards" estável) — se ele pagar diferente, falta dar origem à
+  chave do LPDDR, e isso é precificação, não esta tabela. Régua
+  editável no admin (`estoque.PoliticaOrigemTipo`, uma linha por origem × kind),
+  com semântica de **torneira**: fechar um tipo para de aceitar lançamento NOVO;
+  **o que já entrou não é tocado**. Fonte única: `estoque/politica_origem.py`.
+  ⚠ **NÃO é rentabilidade** (regra de ouro #11): "este chip vale alguma coisa?"
+  é do `assess_profitability`; "vale, MAS pertence a este lote?" é daqui. Por
+  isso GDDR/SDRAM/NAND **não moram na tabela** — já são sucata POR TIPO no motor,
+  barradas antes. **Decisões que a medição no banco real forçou:** (a) `kind`
+  fora dos `KINDS` do pricing **NÃO bloqueia** — indeterminado é falta de
+  COBERTURA DE CATÁLOGO, não lote errado, e 3 linhas de kind `none` somavam
+  **2.659 unidades** de DDR Nanya/ISSI no lote CERTO; barrá-las ensinaria o
+  operador a ignorar o aviso, que é o custo real de um alarme que mente;
+  (b) origem sem linha, ou `kind` de mercado sem linha, **fail-closed** — o
+  contrário é o zero silencioso do `audit_category_codes` outra vez; (c) a
+  checagem roda **DEPOIS da rentabilidade**: sucata é terminal e precisa gerar
+  o `RejectedEntry` de auditoria mesmo no lote errado — lote errado é só
+  endereço; (d) chip barrado **não** vira `RejectedEntry` (tem valor, volta pra
+  bancada). ⚠ **A barreira mora na VIEW (`add_chip`), não só no sinal do
+  modelo** — quando o PN já existe no lote, o `get_or_create` não cria nada:
+  faz `.update()` de queryset, que **não dispara `save()` nem sinal**. Sem a
+  checagem na view, cada PN errado já lançado viraria torneira permanentemente
+  aberta naquele lote. O `pre_save` é **backstop** dos caminhos que criam
+  `InventoryEntry` DIRETO (aprovação de `PendingEntry` no admin,
+  `replicate_lot_xlsx`), e só na CRIAÇÃO (`_state.adding`) — sem isso o
+  `resnapshot_lote` quebraria em todo lote antigo fora da régua (medido:
+  **608 de 3.282** linhas em prod). ⚠ `entra_no_estoque` também cai quando
+  bloqueado: ele é lido pela CUNHAGEM do código de caixa (F12) e código de
+  caixa é ETERNO — chip que não vai entrar não pode queimar um número.
+  ⚠ **RAM e as origens LEGADAS (MIXED/K9) nascem 100% ABERTAS**: RAM é fase 2
+  (depende da largura de barramento, que vive no `interface` — outro eixo, não
+  um item a mais na tabela) e as legadas só rotulam o passado importado; semear
+  qualquer uma fechada mudaria comportamento HOJE sem regra pronta. E a
+  mensagem **só sugere origem que o gerente PODE ABRIR** (`origin_choices_novas`)
+  — mandar o operador pôr o chip num lote MIXED, que nem aparece na tela de
+  abrir lote, é conselho que não dá pra seguir — e a régua não é "ram é
+  especial", é **origem que não FECHA nada não teve régua decidida** (auto-mantida:
+  no dia em que a RAM fechar o primeiro tipo, volta ao conselho sozinha).
+  Travas: 30 testes (`PoliticaOrigem*Tests`); **21 mutações mordem**.
 - **Categoria de caixa só nasce do que ENTRA no estoque (2026-08-18):** o
   `_masked_category` cunhava no RENDER do card de conferência — bipar um DDR2
   já gastava um número, mesmo o chip indo pro R-00 refino. Hoje a cunhagem

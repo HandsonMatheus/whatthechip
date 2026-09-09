@@ -20,6 +20,10 @@
   .spec__v{font-size:14px;font-weight:600;margin-top:3px;color:#161616;word-break:break-word}.spec--hi .spec__v{color:#0f62fe}
   .rc__dest{display:flex;align-items:center;gap:10px;padding:13px 16px;border-top:1px solid #dde1e6;font-size:13px;color:#343a3f}
   .rc__dest--x{background:#fff1f1;color:#a2191f}.rc__dest--m{background:#fdf3d6;color:#8a6a00}
+  /* Origem x tipo: azul (acao), nao vermelho (sucata) — o chip tem valor,
+     so tem outro endereco. Ver o comentario gemeo no card mascarado. */
+  .rc__dest--o{background:#edf5ff;color:#0043ce}
+  .rc__dest--o .rc__destcode{color:#0f62fe}
   .rc__destcode{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;color:#161616}
   .rc__debug{margin-left:auto}
   .rc .rc__dbg{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:1px solid #c1c7cd;background:#fff;color:#697077;font-size:12px;font-weight:600;cursor:pointer;font-family:'IBM Plex Mono',monospace}
@@ -110,8 +114,12 @@
       {% endif %}
     </div>
 
-    <div class="rc__dest{% if gateway_dest == 'reprovado' %} rc__dest--x{% elif gateway_dest == 'fila' %} rc__dest--m{% endif %}">
-      {% if gateway_dest == 'aprovado' %}→ {% trans "Caixa" %} <span class="rc__destcode">{{ destination }}</span>
+    <div class="rc__dest{% if gateway.origem_bloqueada %} rc__dest--o{% elif gateway_dest == 'reprovado' %} rc__dest--x{% elif gateway_dest == 'fila' %} rc__dest--m{% endif %}">
+      {% comment %} Origem x tipo (dono, 2026-09-09): TOMA O LUGAR da caixa —
+         mesma barra, mesmo desenho. Sem faixa separada embaixo: dois avisos
+         pra mesma coisa e um a mais pra ignorar. {% endcomment %}
+      {% if gateway.origem_bloqueada %}{% if gateway.origem_destinos %}→ {% trans "Este chip vai em" %} <span class="rc__destcode">{{ gateway.origem_destinos|join:" · " }}</span> · {% blocktrans trimmed with tipo=gateway.origem_tipo origem=lot.get_origin_display %}{{ tipo }} não entra em lote de {{ origem }}{% endblocktrans %}{% else %}→ {% trans "Não vai neste lote" %} · {% blocktrans trimmed with tipo=gateway.origem_tipo %}{{ tipo }} não entra em nenhum tipo de lote no momento.{% endblocktrans %}{% endif %}
+      {% elif gateway_dest == 'aprovado' %}→ {% trans "Caixa" %} <span class="rc__destcode">{{ destination }}</span>
       {% elif gateway_dest == 'reprovado' %}→ {% trans "Descarte" %}{% if gateway.reject_by_generation %} · {% trans "por geração" %}{% endif %}
       {% elif gateway_dest == 'fila' %}→ {% trans "Conferência" %}
       {% else %}→ {% trans "Não identificado" %}{% endif %}
@@ -181,7 +189,7 @@
           {% comment %} Dono 2026-07-31: sem rentabilidade avaliada não lança —
              botão DESABILITADO (o add_chip recusa no servidor também). {% endcomment %}
           <button type="submit" class="rc-btn rc-btn--box" disabled
-                  title="{% trans 'Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo.' %}"
+                  title="{% if gateway.origem_bloqueada %}{{ gateway.origem_bloqueada }}{% else %}{% trans 'Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo.' %}{% endif %}"
                   style="opacity:.45;cursor:not-allowed;">+ {% trans "Adicionar ao estoque" %}</button>
           {% endif %}
         {% elif gateway_dest == 'fila' %}

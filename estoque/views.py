@@ -617,7 +617,7 @@ _PROFIT_KEY = {
 }
 
 
-def _compute_gateway(result: dict, has_cap: bool) -> dict:
+def _compute_gateway(result: dict, has_cap: bool, lot=None) -> dict:
     """
     Decide o destino de triagem de um chip em 3 etapas de funil (a primeira que
     falha decide), mais um sinal de digitação em paralelo.
@@ -647,6 +647,24 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
     """
     fuzzy = result.get('fuzzy_suggestions') or []
     typo = {'has': bool(fuzzy), 'suggestions': fuzzy}
+
+    # Origem × tipo — calculado uma vez, lido pelo `_out`. `lot=None` (chamadas
+    # fora de um lote) desliga a regra: sem lote não há origem para julgar.
+    bloqueio_origem, origem_destinos, origem_tipo = '', [], ''
+    if lot is not None:
+        from estoque.politica_origem import (bloqueio_de_origem,
+                                             motivo_neutro,
+                                             origens_que_aceitam)
+        _kind = _price_key_fields(result).get('price_kind', '')
+        bloqueio_origem = bloqueio_de_origem(lot.origin, _kind) or ''
+        if bloqueio_origem:
+            # O CARD toma o lugar do cartão de destino (dono, 2026-09-09), e
+            # pra isso precisa das PEÇAS, não da frase pronta: o rótulo grande
+            # é PRA ONDE O CHIP VAI, que é a única coisa acionável na tela.
+            # A frase inteira continua existindo — é ela que o `add_chip`
+            # devolve e que vira o `title` do botão.
+            origem_destinos = origens_que_aceitam(_kind)
+            origem_tipo = _kind.upper()
     # i18n: 'id' e 'status' são CHAVES (lógica/CSS — nunca traduzir);
     # 'label' e 'detail' são EXIBIÇÃO (gettext, resolve no idioma da request).
     steps = [
@@ -661,7 +679,18 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
         # tem DOIS leitores: o botão de adicionar e — desde 2026-08-18 — a
         # CUNHAGEM do código de caixa (F12). Categoria só nasce do que vai pra
         # prateleira; ver _masked_category.
-        entra = destination == 'aprovado' and profitable == 'RENTÁVEL'
+        # ⚠ `bloqueio_origem` derruba o `entra` de propósito: este predicado é
+        # lido TAMBÉM pela cunhagem do código de caixa (F12), e código de caixa
+        # é ETERNO. Chip que não vai entrar não pode queimar um número.
+        entraria = (destination == 'aprovado' and profitable == 'RENTÁVEL')
+        entra = entraria and not bloqueio_origem
+        # ⚠ A ORDEM DO FUNIL, resolvida AQUI e não em cada template (bug meu de
+        # 2026-09-09, pego pelo `PortaoCunhagemCategoriaTests`): a pergunta
+        # "pertence a este lote?" só existe para o chip que ENTRARIA. Um DDR2 é
+        # sucata em qualquer lote — mostrar "vai em PCB" nele fazia o cartão
+        # mandar levar pro PCB enquanto o botão embaixo dizia "Registrar
+        # descarte". Sucata é terminal; lote errado é só endereço. Zerar aqui
+        # deixa os DOIS templates simples e impede que eles divirjam.
         return {
             'destination':          destination,
             'steps':                steps,
@@ -674,6 +703,18 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
             # com INDETERMINADO fica com o botão de adicionar DESABILITADO
             # (os outros destinos têm botões próprios: fila/descarte/desconhecido).
             'can_add': entra or destination != 'aprovado',
+            # Origem × tipo (2026-09-02): o card já diz ANTES do clique, e o
+            # botão nasce desabilitado. A barreira REAL é o add_chip (template
+            # nunca é a única barreira) — isto é a boa experiência, não a trava.
+            # ⚠ DUAS versões, de propósito. A completa diz o TIPO e o lote de
+            # destino — é da PLATAFORMA (card completo). A neutra é a que o
+            # operador vê, e não revela o que o chip é. Ver `motivo_neutro`.
+            'origem_bloqueada': bloqueio_origem if entraria else '',
+            'origem_aviso':     (motivo_neutro() if (entraria and bloqueio_origem)
+                                 else ''),
+            # Peças do cartão (ver acima): pra onde vai, e o tipo que não entra.
+            'origem_destinos':  origem_destinos if entraria else [],
+            'origem_tipo':      origem_tipo if entraria else '',
         }
 
     # ── Atalho: morto por GERAÇÃO → reprovado direto ─────────────────────────
@@ -1155,7 +1196,7 @@ def preview_chip(request, lot_pk):
 
     # Gateway de triagem (3 etapas + typo). Substitui o cálculo solto de
     # profitable/prof_key — a regra de destino agora mora num lugar só.
-    gateway = _compute_gateway(result, has_cap)
+    gateway = _compute_gateway(result, has_cap, lot=lot)
 
     ctx = {
         'lot':             lot,
@@ -1327,6 +1368,34 @@ def add_chip(request, lot_pk):
             + _('Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor.')
             + '</div>'
         )
+
+    # ── Bloqueio ORIGEM × TIPO (dono, 2026-09-02) ────────────────────────────
+    # "Cada origem de lote só aceita certos tipos de chip." Fonte única:
+    # estoque/politica_origem.py; a régua é editável no admin (torneira).
+    #
+    # ⚠ POSIÇÃO: DEPOIS da rentabilidade, de propósito. Um chip que é sucata E
+    # está no lote errado vai pro descarte de qualquer jeito — se esta checagem
+    # viesse antes, o `RejectedEntry` não seria criado e a auditoria de sucata
+    # perderia a linha. Sucata é terminal; lote errado é só endereço.
+    #
+    # ⚠ COBRE O INCREMENTO, e é por isso que mora AQUI e não só no sinal do
+    # modelo: quando o PN já existe no lote, o `get_or_create` abaixo não cria
+    # nada — faz um `.update()` de queryset, que não dispara `save()` nem sinal.
+    # Sem esta checagem na view, cada PN errado já lançado viraria uma torneira
+    # permanentemente aberta naquele lote.
+    from estoque.politica_origem import bloqueio_de_origem
+    _bloqueio = bloqueio_de_origem(lot.origin,
+                                   _price_key_fields(server_result).get('price_kind', ''))
+    if _bloqueio:
+        # ⚠ A resposta ao POST TAMBÉM é mascarada. Ela aparece exatamente quando
+        # alguém força o envio com o botão desabilitado — o caminho de quem está
+        # fuçando —, então era o pior lugar possível para vazar o tipo do chip.
+        from estoque.politica_origem import motivo_neutro
+        from tenancy.access import is_unmasked
+        _texto = _bloqueio if is_unmasked(request) else motivo_neutro()
+        return HttpResponse(
+            '<div class="est-msg est-msg--error" style="padding:12px 16px;border:1px solid #da1e28;color:#da1e28;margin-top:12px;">'
+            + _texto + '</div>')
 
     # Grava SEMPRE a partir do classify do SERVIDOR (server_result), não do POST
     # do cliente — fonte autoritativa, à prova de form forjado/defasado, e idêntica

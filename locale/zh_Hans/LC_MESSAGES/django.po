@@ -4057,3 +4057,39 @@ msgid "Selecionada · %(n)s compra"
 msgid_plural "Selecionadas · %(n)s compras"
 msgstr[0] "已选 · %(n)s 笔采购"
 msgstr[1] "已选 · %(n)s 笔采购"
+
+# ── Política origem × tipo: cada origem de lote só aceita certos tipos
+#    de chip (dono, 2026-09-02). A mensagem tem que ser ACIONÁVEL: diz
+#    onde o chip ENTRA, não só que ali não serve.
+
+msgid "%(tipo)s não entra em lote de %(origem)s. Este chip vai em: %(aceitam)s."
+msgstr "%(tipo)s 不能放入 %(origem)s 批次。此芯片应放入：%(aceitam)s。"
+
+msgid "%(tipo)s não entra em nenhum tipo de lote no momento."
+msgstr "%(tipo)s 目前不能放入任何类型的批次。"
+
+msgid "Este lote tem uma origem desconhecida (%(origem)s) — nenhum chip pode ser lançado nele até a origem ser corrigida."
+msgstr "此批次来源未知（%(origem)s）——在更正来源之前，任何芯片都不能录入。"
+
+msgid "Tipo %(tipo)s ainda não tem regra definida para lotes de %(origem)s. Fale com o gestor."
+msgstr "类型 %(tipo)s 尚未为 %(origem)s 批次定义规则。请联系管理员。"
+
+# ── O aviso TOMA O LUGAR do cartão de destino (dono, 2026-09-09): mesmo
+#    desenho, conteúdo oposto. O rótulo grande é PRA ONDE O CHIP VAI —
+#    a única coisa acionável na tela.
+
+msgid "%(tipo)s não entra em lote de %(origem)s"
+msgstr "%(tipo)s 不能放入 %(origem)s 批次"
+
+msgid "Este chip vai em"
+msgstr "此芯片应放入"
+
+msgid "Não vai neste lote"
+msgstr "不属于此批次"
+
+# ── A recusa que o OPERADOR lê (dono, 2026-09-09): não diz o TIPO nem o
+#    lote de destino. A frase completa é da PLATAFORMA — a máscara do
+#    `is_unmasked` vale aqui como no resto da bancada.
+
+msgid "Este chip não pode ser enviado com este lote. Comunique ao seu gestor."
+msgstr "此芯片不能随此批次发出。请告知您的主管。"

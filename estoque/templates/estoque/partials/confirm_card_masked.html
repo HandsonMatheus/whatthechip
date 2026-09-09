@@ -27,6 +27,15 @@
   .dcard--desc .dcard__eyebrow,.dcard--desc .dcard__code,.dcard--desc .dcard__sub{color:#a2191f}
   .dcard--unk{background:#f2f4f8;border:2px dashed #c1c7cd}
   .dcard--unk .dcard__eyebrow,.dcard--unk .dcard__code{color:#697077}
+  /* Origem x tipo (dono 2026-09-09): o chip NAO e sucata — ele so tem outro
+     endereco. Por isso NAO usa o vermelho do --desc: vermelho nesta tela quer
+     dizer "joga fora", e confundir os dois na bancada e jogar dinheiro no lixo.
+     Azul e a cor de ACAO deste sistema, e o rotulo grande e o lote pra onde
+     levar — a tela vira instrucao em vez de recusa. */
+  .dcard--outro{background:linear-gradient(180deg,#edf5ff,#fff 78%);border-color:#a6c8ff}
+  .dcard--outro .dcard__eyebrow{color:#0043ce}
+  .dcard--outro .dcard__code{color:#0f62fe}
+  .dcard--outro .dcard__sub{color:#4589ff}
   /* typo chips (só caracteres do PN — zero spec) */
   .dcard-typo{max-width:520px;margin:16px 0 0}
   .dcard-typo__lbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:#697077;margin-bottom:10px}
@@ -52,7 +61,32 @@
    "#confirm-area .est-confirm". {% endcomment %}
 <div class="est-confirm est-confirm--{{ gateway_dest }}">
 
-  {% if gateway_dest == 'aprovado' %}
+  {% comment %} A condicao usa `origem_aviso` (neutro) e nao
+     `origem_bloqueada` (completo): assim este template NAO TOCA na frase
+     que revela o tipo, nem por engano de quem editar depois. {% endcomment %}
+  {% if gateway.origem_aviso %}
+    {% comment %} TOMA O LUGAR do cartao de destino (dono, 2026-09-09): mesmo
+       desenho, conteudo oposto. O grande e PRA ONDE O CHIP VAI — a unica coisa
+       acionavel aqui. A faixa separada embaixo saiu: dois avisos pra mesma
+       coisa e um a mais pra ignorar. {% endcomment %}
+    <div class="dcard dcard--outro">
+      <div class="dcard__body">
+        {% comment %} O que NAO pode aparecer aqui e o TIPO do chip (dono,
+           2026-09-09) — so isso. O LOTE DE DESTINO pode e deve: e o que o
+           operador faz a seguir, e sem ele a tela vira uma recusa sem saida.
+           O tipo mora so no card COMPLETO (plataforma). {% endcomment %}
+        {% if gateway.origem_destinos %}
+        <div class="dcard__eyebrow">{% trans "Este chip vai em" %}</div>
+        <div class="dcard__code dcard__code--word">{{ gateway.origem_destinos|join:" · " }}</div>
+        {% else %}
+        <div class="dcard__eyebrow">{% trans "Não vai neste lote" %}</div>
+        <div class="dcard__code dcard__code--word">—</div>
+        {% endif %}
+        <div class="dcard__sub">{{ gateway.origem_aviso }}</div>
+        <div class="dcard__pn">{{ pn }}</div>
+      </div>
+    </div>
+  {% elif gateway_dest == 'aprovado' %}
     <div class="dcard dcard--{% if masked_general %}geral{% else %}box{% endif %}">
       <div class="dcard__body">
         {% comment %} v3 (convenção universal, dono 2026-07-23): o CÓDIGO da
@@ -177,7 +211,7 @@
         {% comment %} Dono 2026-07-31: sem rentabilidade avaliada não lança —
            botão DESABILITADO (o add_chip recusa no servidor também). {% endcomment %}
         <button type="submit" class="dcard-btn dcard-btn--box" disabled
-                title="{% trans 'Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo.' %}"
+                title="{% if gateway.origem_aviso %}{{ gateway.origem_aviso }}{% else %}{% trans 'Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo.' %}{% endif %}"
                 style="opacity:.45;cursor:not-allowed;">+ {% trans "Adicionar ao lote" %}</button>
         {% endif %}
       {% elif gateway_dest == 'fila' %}

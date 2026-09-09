@@ -481,6 +481,51 @@ class CompanyBoundByLot(models.Model):
         return super().save(*args, **kwargs)
 
 
+class PoliticaOrigemTipo(models.Model):
+    """A torneira: que TIPO de chip cada ORIGEM de lote aceita (dono, 2026-09-02).
+
+    Uma linha por (origem × kind), editável no admin. Fechar uma torneira para
+    de aceitar lançamentos NOVOS daquele tipo naquela origem; **o que já entrou
+    não é tocado** — a validação só roda na CRIAÇÃO da entrada.
+
+    ⚠ NÃO é rentabilidade. Ver `estoque/politica_origem.py` — GDDR/SDRAM/NAND
+    não moram aqui porque já são sucata por tipo no motor.
+
+    GLOBAL (sem `company`), igual ao `ProfitabilityConfig`: a régua é do
+    NEGÓCIO, combinada com o comprador, não de cada empresa-cliente. Sem RLS,
+    como o resto das tabelas globais.
+    """
+
+    #: SEM `choices`, de propósito — mesma razão do `kind` logo abaixo: choices
+    #: congela na migração, e toda origem nova (as legadas MIXED/K9 de 2026-09-01,
+    #: por exemplo) viraria uma migração de `AlterField` que não muda uma linha de
+    #: banco. O vocabulário é o `Lot.ORIGIN_CHOICES` vivo, e quem cobra linha para
+    #: origem nova é o `PoliticaOrigemDeclaracaoTests`, não o schema.
+    origin = models.CharField(max_length=5, verbose_name='Origem do lote')
+    #: Vocabulário = os KINDS do pricing. Choices resolvidos em tempo de
+    #: MIGRAÇÃO seria congelar a lista; aqui fica livre e o teste de declaração
+    #: (`PoliticaOrigemDeclaracaoTests`) é quem exige linha para todo kind novo.
+    kind = models.CharField(max_length=8, verbose_name='Tipo de chip')
+    permitido = models.BooleanField(
+        default=True, verbose_name='Permitido',
+        help_text='Desmarque para FECHAR a torneira: este tipo para de ser '
+                  'aceito em lotes desta origem. O que já foi lançado não muda.')
+    notes = models.TextField(blank=True, default='', verbose_name='Observação')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Política de origem × tipo'
+        verbose_name_plural = 'Política de origem × tipo'
+        ordering = ('origin', 'kind')
+        constraints = [
+            models.UniqueConstraint(fields=['origin', 'kind'],
+                                    name='politica_origem_tipo_unica'),
+        ]
+
+    def __str__(self):
+        return f'{self.origin} × {self.kind} = {"OK" if self.permitido else "BLOQUEADO"}'
+
+
 class InventoryEntry(CompanyBoundByLot):
     lot = models.ForeignKey(
         Lot,
@@ -682,3 +727,34 @@ class RejectedEntry(CompanyBoundByLot):
 
     def __str__(self):
         return f'{self.part_number} × {self.quantity} (reprovado · Lote #{self.lot.number:03d})'
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# BACKSTOP da política origem × tipo (dono, 2026-09-02)
+# ─────────────────────────────────────────────────────────────────────────
+# A barreira principal é a checagem no `add_chip` — ela é a única que enxerga
+# o INCREMENTO (`get_or_create` que não cria faz `.update()` de queryset, sem
+# `save()` e sem sinal). Este sinal cobre o resto: a aprovação de `PendingEntry`
+# no admin e o `replicate_lot_xlsx`, que criam `InventoryEntry` DIRETO, sem
+# passar por nenhuma etapa do funil (verificado em 2026-09-02).
+#
+# ⚠ SÓ NA CRIAÇÃO (`_state.adding`). É a semântica de TORNEIRA que o dono pediu:
+# fechar um tipo para de aceitar lançamento novo, e o que já entrou não é
+# tocado. Sem isso, o `resnapshot_lote` — que faz `save()` em entradas
+# existentes — quebraria em todo lote antigo que tenha material fora da regra.
+from django.db.models.signals import pre_save   # noqa: E402
+from django.dispatch import receiver            # noqa: E402
+
+
+@receiver(pre_save, sender=InventoryEntry)
+def _politica_origem_backstop(sender, instance, **kwargs):
+    if not instance._state.adding:
+        return
+    from django.core.exceptions import ValidationError
+    from estoque.politica_origem import bloqueio_de_origem
+    lot = getattr(instance, 'lot', None)
+    if lot is None:
+        return
+    motivo = bloqueio_de_origem(lot.origin, instance.price_kind or '')
+    if motivo:
+        raise ValidationError({'part_number': motivo})
