@@ -32,7 +32,7 @@ próxima pessoa precisa saber antes de editar:
 
 import re
 import uuid
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -706,7 +706,7 @@ def compra_resultado_pdf(request, pk):
 
 
 def _recusas_do_post(request, so):
-    """`{pk: (recusadas, None)}` a partir do formulário, ou `None` no erro.
+    """`{pk: (recusadas, novo ¥ unitário)}` do formulário, ou `None` no erro.
 
     Compartilhado pelo "Fechar resultado" e pelo "Resultado parcial": os dois
     leem os MESMOS campos do MESMO formulário, e ler duas vezes seria a
@@ -714,19 +714,46 @@ def _recusas_do_post(request, so):
     o comprador veria um PDF que o botão do lado se nega a fechar.
 
     Campo em branco vale ZERO (é o padrão: ele digita só o que recusou).
+
+    ⚠ O PREÇO entrou em 2026-09-09 (dono: *"vamos deixar ele mudar o preco
+      mesmo... Ele é comprador, ele quem diz o preco"*). Vale a mesma regra
+      dos dois botões: um só lugar lê o formulário.
+
+    ⚠ Preço IGUAL ao congelado devolve `None`, não o número. Repactuação é a
+      DIFERENÇA: gravar "2.00" onde o congelado já é 2.00 criaria um
+      `SettlementLine` afirmando que houve repactuação, acenderia a seta na
+      tela do cliente e sujaria o resumo do lote — tudo por um campo que o
+      comprador só tocou e devolveu.
     """
     ajustes = {}
     for line in so.lines.all():
         cru = (request.POST.get(f'rej_{line.pk}') or '').strip()
-        if not cru:
+        cru_p = (request.POST.get(f'price_{line.pk}') or '').strip()
+        if not cru and not cru_p:
             continue
         try:
-            rej = int(cru)
+            rej = int(cru) if cru else 0
         except ValueError:
             messages.error(request, _(
                 'Quantidade recusada inválida em %(cat)s.')
                 % {'cat': line.label})
             return None
+        novo = None
+        if cru_p:
+            try:
+                novo = Decimal(cru_p.replace(',', '.')).quantize(
+                    Decimal('0.01'), ROUND_HALF_UP)
+            except (ValueError, ArithmeticError, InvalidOperation):
+                messages.error(request, _('Preço inválido em %(cat)s.')
+                               % {'cat': line.label})
+                return None
+            if novo <= 0 or novo >= Decimal('1000000'):
+                messages.error(request, _(
+                    '%(cat)s: preço fora de faixa (%(v)s).')
+                    % {'cat': line.label, 'v': novo})
+                return None
+            if line.unit_rmb is not None and novo == line.unit_rmb:
+                novo = None            # não mudou: não é repactuação
         if rej < 0 or rej > line.quantity:
             # 'rejeitadas' de propósito: era a palavra que o comprador já
             # lia (a mensagem vinha do `settle_and_invoice`, que continua
@@ -736,8 +763,8 @@ def _recusas_do_post(request, so):
                 '(%(qtd)s).') % {'cat': line.label, 'rej': rej,
                                  'qtd': line.quantity})
             return None
-        if rej:
-            ajustes[line.pk] = (rej, None)      # sem repreço no MVP
+        if rej or novo is not None:
+            ajustes[line.pk] = (rej, novo)
     return ajustes
 
 
@@ -771,15 +798,27 @@ def compra_rascunho(request, pk):
             # insistir contra uma porta fechada.
             return JsonResponse({'ok': False, 'motivo': 'fora_da_conferencia'},
                                 status=409)
-        recusas = {}
+        recusas, precos = {}, {}
         for line in so.lines.all():
             cru = (request.POST.get(f'rej_{line.pk}') or '').strip()
             if cru:
                 recusas[line.pk] = cru
+            # O PREÇO entra no mesmo autosave (2026-09-09). Sem isto ele
+            # digitaria a repactuação, sairia da página e a perderia — que é
+            # exatamente o problema que o rascunho existe para resolver, e
+            # perder um preço dói mais do que perder uma contagem.
+            cru_p = (request.POST.get(f'price_{line.pk}') or '').strip()
+            if cru_p:
+                precos[line.pk] = cru_p
         nota = request.POST.get('notes') if 'notes' in request.POST else None
-        d = services.save_draft(so, recusas, request.user, notes=nota)
+        # `prices={}` (e não None) de propósito: apagar o campo na tela TEM de
+        # apagar a repactuação no rascunho. `None` significa "não veio no
+        # envio" e preserva — o que aqui esconderia um preço que ele acabou
+        # de limpar.
+        d = services.save_draft(so, recusas, request.user, notes=nota,
+                                prices=precos)
         return JsonResponse({'ok': True, 'em': d.updated_at.isoformat(),
-                             'linhas': len(d.rejections)})
+                             'linhas': len(d.rejections) + len(d.prices)})
 
 
 @partner_required

@@ -17,7 +17,7 @@ Fonte única das três operações; as views/hooks só chamam daqui:
 import logging
 
 from contextlib import contextmanager
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -1735,8 +1735,10 @@ class _RascunhoDaLinha:
 
     __slots__ = ('qty_rejected', 'new_unit_rmb')
 
-    def __init__(self, qtd):
-        self.qty_rejected, self.new_unit_rmb = qtd, None
+    def __init__(self, qtd, novo=None):
+        # `new_unit_rmb` sempre esteve no `__slots__` (o `SettlementLine` tem
+        # o campo desde o começo); o que faltava era o rascunho preenchê-lo.
+        self.qty_rejected, self.new_unit_rmb = qtd, novo
 
 
 def draft_rejections(so) -> dict:
@@ -1766,7 +1768,37 @@ def draft_rejections(so) -> dict:
     return fora
 
 
-def save_draft(so, rejections, user=None, notes=None):
+def draft_prices(so) -> dict:
+    """``{pk da linha: novo ¥ unitário}`` do rascunho — só o que é válido.
+
+    Irmã da `draft_rejections`, e pela mesma razão: o JSON é o único campo do
+    sistema que o banco não valida, então a leitura filtra DE NOVO. Um preço
+    ilegível numa tela de dinheiro é pior que um rascunho perdido.
+
+    ⚠ Preço IGUAL ao congelado não volta daqui. Repactuação é a DIFERENÇA —
+      guardar "2.00" onde o congelado já é 2.00 acenderia a seta e escreveria
+      um `SettlementLine` dizendo que houve repactuação quando não houve.
+    """
+    d = getattr(so, 'settlement_draft', None)
+    if d is None or not getattr(d, 'prices', None):
+        return {}
+    congelado = {l.pk: l.unit_rmb for l in so.lines.all()}
+    fora = {}
+    for chave, valor in d.prices.items():
+        try:
+            pk = int(chave)
+            novo = Decimal(str(valor)).quantize(_CENT, ROUND_HALF_UP)
+        except (TypeError, ValueError, InvalidOperation):
+            continue
+        if pk not in congelado or novo <= 0 or novo >= Decimal('1000000'):
+            continue
+        if congelado[pk] is not None and novo == congelado[pk]:
+            continue
+        fora[pk] = novo
+    return fora
+
+
+def save_draft(so, rejections, user=None, notes=None, prices=None):
     """Grava o rascunho e devolve o registro. **Não valida para RECUSAR.**
 
     É autosave: ele dispara enquanto o comprador digita, e um erro por
@@ -1796,14 +1828,47 @@ def save_draft(so, rejections, user=None, notes=None):
         qtd = max(0, min(qtd, quantidades[pk]))
         if qtd:
             limpo[str(pk)] = qtd       # chave em TEXTO: é como o JSON volta
+    # ── OS PREÇOS, mesma disciplina ───────────────────────────────────────
+    # `prices=None` NÃO mexe no que está gravado, igual ao `notes`: o autosave
+    # dos números não pode apagar uma repactuação que o comprador digitou num
+    # envio anterior que não trouxe o campo.
+    congelado = {l.pk: l.unit_rmb for l in so.lines.all()}
+    precos = None
+    if prices is not None:
+        precos = {}
+        for chave, valor in (prices or {}).items():
+            try:
+                pk = int(chave)
+                novo = Decimal(str(valor).replace(',', '.')).quantize(
+                    _CENT, ROUND_HALF_UP)
+            except (TypeError, ValueError, InvalidOperation):
+                continue
+            if pk not in congelado or novo <= 0 or novo >= Decimal('1000000'):
+                continue
+            if congelado[pk] is not None and novo == congelado[pk]:
+                continue           # igual ao congelado não é repactuação
+            # TEXTO, e não float: `Decimal(float)` é como ¥2,70 vira
+            # 2.7000000000000002 e o centavo passa a depender do caminho.
+            precos[str(pk)] = f'{novo:.2f}'
     d = SettlementDraft.all_companies.filter(order=so).first()
     if d is None:
         d = SettlementDraft(order=so)
     d.rejections = limpo
+    if precos is not None:
+        d.prices = precos
     if notes is not None:
         d.notes = (notes or '').strip()
     d.updated_by = user if (user and user.is_authenticated) else None
     d.save()
+    # ⚠ DEIXA O `so` APONTANDO PARA O RASCUNHO RECÉM-GRAVADO.
+    #   O Django guarda a relação inversa em cache no momento em que alguém
+    #   constrói um `SettlementDraft(order=so)` — e este método busca o
+    #   registro por queryset, então grava numa instância e deixa OUTRA no
+    #   cache. Sem esta linha, um `draft_prices(so)`/`draft_rejections(so)` no
+    #   MESMO request lê o rascunho ANTERIOR: o banco já tem o valor novo e a
+    #   tela mostra o velho, que é a divergência mais difícil de enxergar que
+    #   existe. Pego por um teste que apagava o preço e o via voltar.
+    so._state.fields_cache['settlement_draft'] = d
     return d
 
 
@@ -1860,8 +1925,14 @@ def result_rows(so, com_rascunho=False):
         #
         #   Só ANTES da fatura: depois dela quem responde é o acerto, e o
         #   `clear_draft` do fechamento já apagou o rascunho.
-        recusas = {pk: _RascunhoDaLinha(qtd)
+        # O rascunho entra pelo MESMO mapa que o acerto, agora com o preço
+        # junto: uma linha pode ter só recusa, só repactuação, ou as duas.
+        precos = draft_prices(so)
+        recusas = {pk: _RascunhoDaLinha(qtd, precos.pop(pk, None))
                    for pk, qtd in draft_rejections(so).items()}
+        # …e o que sobrou é repactuação SEM recusa, que também é uma linha.
+        for pk, novo in precos.items():
+            recusas[pk] = _RascunhoDaLinha(0, novo)
     grupos = {}
     for line in so.lines.all():
         g = grupos.setdefault(line.brand or '—',
@@ -1891,14 +1962,39 @@ def result_rows(so, com_rascunho=False):
                                # linhas dela, senão a faixa do grupo diz um
                                # número e as linhas embaixo dizem outro.
                                'pago_rmb': Decimal('0.00')})
+        # ── DOIS PREÇOS POR LINHA, e confundi-los é o bug (2026-09-09) ────
+        #   CONGELADO → o combinado. Alimenta o ESPERADO, e NÃO se move nunca:
+        #     é ele que permite mostrar "combinado × conferido" lado a lado,
+        #     que é como o cliente entende uma queda em vez de levar um susto.
+        #   APLICADO  → o que virou dinheiro. É o congelado, ou o repactuado
+        #     quando o comprador mexeu no preço.
+        #
+        # O `unit` sozinho alimentava os dois. Repactuar sem separá-los faria
+        # o ESPERADO andar junto com o RESULTADO — e a diferença, que é a
+        # informação inteira, desapareceria da tela.
         if so.status == STATUS_DRAFT:
-            unit, unit_usd, estimado = (vivo.get(line.pk),
+            cong, cong_usd, estimado = (vivo.get(line.pk),
                                         vivo_usd.get(line.pk), True)
         else:
-            unit, unit_usd, estimado = line.unit_rmb, line.unit_usd, False
-        total = (unit * line.quantity) if unit is not None else None
+            cong, cong_usd, estimado = line.unit_rmb, line.unit_usd, False
+        total = (cong * line.quantity) if cong is not None else None
+        total_usd = ((cong_usd * line.quantity)
+                     if cong_usd is not None else None)
         sl = recusas.get(line.pk)
         rej = sl.qty_rejected if sl else 0
+        novo = getattr(sl, 'new_unit_rmb', None) if sl is not None else None
+        unit, unit_usd = cong, cong_usd
+        if novo is not None and cong is not None:
+            unit = novo
+            # ⚠ O US$ da linha REPACTUADA é derivado da taxa TRAVADA da OV —
+            #   o `new_unit_rmb` não tem par em dólar para vir congelado. É a
+            #   mesma conta que o `settlement_totals` faz para a fatura e que
+            #   o `_monta_documento` faz para o papel: arredonda em CENTAVOS
+            #   por linha e só então multiplica pela quantidade. Derivar o
+            #   TOTAL da taxa continua proibido — o que se deriva aqui é o
+            #   UNITÁRIO, e o total segue sendo soma de linhas.
+            unit_usd = ((novo * so.fx_usd_rate).quantize(_CENT, ROUND_HALF_UP)
+                        if so.fx_usd_rate else None)
         ace = line.quantity - rej
         g['lines'].append({
             'pk': line.pk,
@@ -1917,11 +2013,21 @@ def result_rows(so, com_rascunho=False):
             #   estar no lugar errado. `None` sem preço: inventar zero ali
             #   diria que a recusa não custou nada.
             'perda_rmb': (unit * rej) if (unit is not None and rej) else None,
+            # UNITÁRIO = o APLICADO. É o que a tela mostra na coluna e o que a
+            # fórmula da planilha multiplica pelos aprovados; se aqui viesse o
+            # congelado, o RESULTADO da planilha sairia errado depois de uma
+            # repactuação.
             'unit_rmb': unit,
             'unit_usd': unit_usd,
+            # ⚠ ESPERADO = o CONGELADO × enviados. Não se move.
             'total_rmb': total,
-            'total_usd': ((unit_usd * line.quantity)
-                          if unit_usd is not None else None),
+            'total_usd': total_usd,
+            # A REPACTUAÇÃO, para a tela desenhar a seta e dizer de onde veio.
+            # `novo_rmb` é None quando o preço não foi tocado — é essa
+            # ausência que apaga a seta, e não uma comparação refeita na tela.
+            'novo_rmb': novo,
+            'congelado_rmb': cong,
+            'congelado_usd': cong_usd,
             # ¥/US$ do que foi ACEITO — é o que virou dinheiro de verdade.
             'pago_rmb': (unit * ace) if unit is not None else None,
             'pago_usd': (unit_usd * ace) if unit_usd is not None else None,
@@ -1933,16 +2039,18 @@ def result_rows(so, com_rascunho=False):
         g['rejected'] += rej
         g['accepted'] += ace
         if total is not None:
+            # ESPERADO do grupo: congelado. PAGO e PERDA: aplicado.
             g['rmb'] += total
             g['pago_rmb'] += (unit * ace)
             g['perda_rmb'] += (unit * rej)
-        if unit_usd is not None:
+        if cong_usd is not None:
             # Condição PRÓPRIA, e não o `else` do ¥: o par pode ter ¥ sem US$
             # (rascunho com cotação viva sem taxa). Pendurar o US$ no mesmo
             # `if` faria o grupo somar zero em silêncio nesse caso.
-            g['usd'] += (unit_usd * line.quantity)
+            g['usd'] += (cong_usd * line.quantity)
+        if unit_usd is not None:
             g['pago_usd'] += (unit_usd * ace)
-        else:
+        if cong_usd is None:
             g['sem_preco'] += line.quantity
     for g in grupos.values():
         g['lines'].sort(key=lambda r: (r['type'], r['capacity']))

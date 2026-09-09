@@ -19,6 +19,10 @@ import { JSDOM } from 'jsdom';
 
 const html = readFileSync(process.argv[2], 'utf8');
 const recusas = JSON.parse(process.argv[3] || '{}');
+// PREÇOS repactuados (2026-09-09): `{"<pk>": "2.55"}`. O comprador digita
+// preço e recusa no mesmo formulário, e o harness precisa dos dois para
+// exercer a linha que tem as duas coisas ao mesmo tempo.
+const precos = JSON.parse(process.argv[4] || '{}');
 
 // ⚠ ERROS NÃO CAPTURADOS derrubam o `recalcular()` NO MEIO: a linha já foi
 //   escrita e a faixa e o rodapé não. A tela fica com a linha certa e o total
@@ -58,11 +62,24 @@ const foto = () => ({
   gRej: texto('[data-grej="0"]'), gOk: texto('[data-gok="0"]'),
   gVal: texto('[data-gval="0"]'), gPerda: texto('[data-gperda="0"]'),
   tRej: ler('t-rej'), tAce: ler('t-ace'), tRejv: ler('t-rejv'),
+  // AS SETAS, por pk: '↑', '↓' ou '' — e a classe, que é o que dá a cor.
+  setas: Object.fromEntries([...d.querySelectorAll('[data-rep]')].map(
+    e => [e.getAttribute('data-rep'), e.textContent.trim() + '|' + e.className])),
+  // o unitário APLICADO de cada linha, para conferir contra a fatura
+  unis: Object.fromEntries([...d.querySelectorAll('.pcin[data-pc]')].map(
+    e => [e.getAttribute('data-pc'), e.value || e.placeholder])),
 });
 
 const antes = foto();
 
 let digitou = 0;
+for (const [pk, v] of Object.entries(precos)) {
+  const campo = d.querySelector('.pcin[data-pc="' + pk + '"]');
+  if (!campo) continue;
+  campo.value = String(v);
+  campo.dispatchEvent(new w.Event('input', { bubbles: true }));
+  digitou += 1;
+}
 for (const [pk, n] of Object.entries(recusas)) {
   const campo = d.querySelector('.rjin[data-rj="' + pk + '"]');
   if (!campo) continue;

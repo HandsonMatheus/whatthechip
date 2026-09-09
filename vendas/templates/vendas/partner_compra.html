@@ -603,7 +603,26 @@
               {% comment %} O `.c-lbl` é o rótulo que só existe no cartão do
                  telefone — o pacote o esconde no desktop, onde o cabeçalho
                  da coluna já disse a mesma coisa. {% endcomment %}
-              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans 'Unitário' %} ¥">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+              {% comment %} ══ O UNITÁRIO, EDITÁVEL (dono, 2026-09-09) ═══════════
+                 *"vamos deixar ele mudar o preco mesmo... Ele é comprador,
+                 ele quem diz o preco, se eu achar ruim busco outro"*.
+
+                 O congelado vira PLACEHOLDER e o campo nasce vazio: campo em
+                 branco = preço combinado, exatamente como o de recusa. Assim
+                 uma OV sem repactuação nenhuma continua lendo igual à de
+                 antes, e o que se destaca é só o que ele mexeu.
+
+                 A SETA é o registro visual: ↑ verde subiu, ↓ vermelha baixou,
+                 nada quando não tocou. Ela vem do SERVIDOR no carregamento
+                 (`l.novo_rmb`) e o JS a reescreve enquanto ele digita — os
+                 dois lendo a mesma regra: existe seta quando existe `novo`.
+              {% endcomment %}
+              <td class="n hide-lg c-unit{% if l.sem_preco or registro_legado %} dim{% endif %}" data-label="{% trans 'Unitário' %} ¥">{% localize off %}{% if pode_acertar and l.congelado_rmb %}<input type="number" name="price_{{ l.pk }}" step="0.01" min="0.01"
+                       class="cell pcin" inputmode="decimal"
+                       placeholder="{{ l.congelado_rmb|unlocalize }}"
+                       value="{% if l.novo_rmb %}{{ l.novo_rmb|unlocalize }}{% endif %}"
+                       data-pc="{{ l.pk }}"
+                       aria-label="{% blocktrans trimmed with marca=g.brand tipo=l.type cap=l.capacity %}Preço unitário {{ marca }} {{ tipo }} {{ cap }}{% endblocktrans %}"><i class="rep{% if l.novo_rmb %} rep--{% if l.novo_rmb > l.congelado_rmb %}up{% else %}down{% endif %}{% endif %}" data-rep="{{ l.pk }}">{% if l.novo_rmb %}{% if l.novo_rmb > l.congelado_rmb %}↑{% else %}↓{% endif %}{% endif %}</i>{% elif l.unit_rmb %}¥ {{ l.unit_rmb }}{% if l.novo_rmb %}<i class="rep rep--{% if l.novo_rmb > l.congelado_rmb %}up{% else %}down{% endif %}">{% if l.novo_rmb > l.congelado_rmb %}↑{% else %}↓{% endif %}</i>{% endif %}{% elif registro_legado %}—{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
               <td class="n c-qty"><i class="c-lbl">{% trans "enviados" %}</i>{{ l.qty }}</td>
               {% if pode_acertar %}
               <td class="n hr c-rej">
@@ -614,13 +633,21 @@
                        data-rj="{{ l.pk }}"
                        aria-label="{% blocktrans trimmed with marca=g.brand tipo=l.type cap=l.capacity %}Recusados {{ marca }} {{ tipo }} {{ cap }}{% endblocktrans %}"
                        data-qty="{{ l.qty|unlocalize }}"
-                       data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}"
+                       {% comment %} ⚠ O CONGELADO, e não o `unit_rmb`. Desde
+                          2026-09-09 o `unit_rmb` é o preço APLICADO (já com a
+                          repactuação dentro), e o JS precisa da BASE: é
+                          contra ela que ele decide se houve repactuação e
+                          qual seta acender. Com o aplicado aqui, "mudou?"
+                          respondia sempre não e a seta nunca acendia — o
+                          `<i>` estava no HTML, com a direção certa, e o
+                          recálculo o apagava no carregamento. {% endcomment %}
+                       data-unit="{% if l.congelado_rmb %}{{ l.congelado_rmb|unlocalize }}{% else %}0{% endif %}"
                        {% comment %} O US$ vem CONGELADO da linha, não de ¥ ×
                           taxa. O servidor calcula `unit_usd * aprovados`; se o
                           JS multiplicasse o ¥ pela taxa, os centavos
                           divergiriam e o número pularia no recarregamento
                           depois de fechar. {% endcomment %}
-                       data-unit-usd="{% if l.unit_usd %}{{ l.unit_usd|unlocalize }}{% else %}0{% endif %}">
+                       data-unit-usd="{% if l.congelado_usd %}{{ l.congelado_usd|unlocalize }}{% else %}0{% endif %}">
               </td>
               <td class="n hr rv c-rejv" data-label="{% trans 'Recusados' %} ¥" data-perda="{{ l.pk }}">{% localize off %}{% if l.perda_rmb %}−¥ {{ l.perda_rmb }}{% endif %}{% endlocalize %}</td>
               <td class="n hg c-ok" data-ok="{{ l.pk }}">
@@ -1326,11 +1353,25 @@
   var elPagarRmb = document.getElementById('t-pagar-rmb');
   if (!campos.length || !elPagar || !form) return;
 
-  // ⚠ Não existe mais `var fx` aqui, e é de propósito (2026-09-07): o
-  // recálculo ao vivo NÃO converte moeda. Cada linha já traz o seu US$
-  // congelado em `data-unit-usd`, e o total é a soma deles. A taxa segue
-  // no `data-fx` do form porque é o câmbio TRAVADO desta OV e o papel a
-  // declara — mas multiplicar por ela aqui foi exatamente o bug.
+  // ⚠ A TAXA VOLTOU ao escopo em 2026-09-09, e a regra mudou de forma — não
+  //   de conteúdo. Leia isto antes de mexer.
+  //
+  //   Em 07/09 ela saiu porque o herói fazia `pagar * fx` — TOTAL em ¥ vezes
+  //   a taxa —, que é a conta que o `services.confirm` proíbe e que fez
+  //   recusar chips AUMENTAR o resultado em dólar.
+  //
+  //   Agora o comprador pode REPACTUAR o ¥ de uma linha, e o `new_unit_rmb`
+  //   não tem par em dólar para vir congelado. O US$ dessa linha só pode ser
+  //   derivado — e é o que o `settlement_totals` faz para a fatura e o
+  //   `_monta_documento` para o papel.
+  //
+  //   A regra, então, é esta, e é a mesma de sempre:
+  //     PROIBIDO  total em ¥ × taxa
+  //     PERMITIDO unitário × taxa, POR LINHA, arredondado em CENTAVOS antes
+  //               de multiplicar pela quantidade
+  //   O total continua sendo soma de linhas. `tests_dolar_do_heroi` cobra as
+  //   duas metades.
+  var fx = parseFloat(form.dataset.fx) || 0;
   var esperado = parseFloat(form.dataset.esperado) || 0;
   var elRej = document.getElementById('t-rej');
   var elRejV = document.getElementById('t-rejv');
@@ -1385,8 +1426,23 @@
     var porGrupo = {};
     campos.forEach(function (i) {
       var qtd = parseInt(i.dataset.qty, 10) || 0;
-      var unit = parseFloat(i.dataset.unit) || 0;
-      var unitUsd = parseFloat(i.dataset.unitUsd) || 0;
+      var base = parseFloat(i.dataset.unit) || 0;          // ¥ CONGELADO
+      var baseUsd = parseFloat(i.dataset.unitUsd) || 0;    // US$ CONGELADO
+      // ── A REPACTUAÇÃO DA LINHA ──────────────────────────────────────────
+      // Campo vazio, zero ou igual ao congelado NÃO é repactuação — é a
+      // mesma regra do `_recusas_do_post`, e ela mora nos dois lugares
+      // porque a tela tem de acender a seta exatamente quando o servidor
+      // vai gravar um `SettlementLine`.
+      var campoP = document.querySelector('[data-pc="' + i.dataset.rj + '"]');
+      var novo = campoP ? parseFloat(campoP.value) : NaN;
+      var repact = !isNaN(novo) && novo > 0 && novo !== base;
+      var unit = repact ? novo : base;
+      // ⚠ ARREDONDA EM CENTAVOS ANTES de multiplicar pela quantidade. É o
+      //   `.quantize(_CENT)` do `settlement_totals`, e sem ele a tela e a
+      //   fatura divergem em centavos numa linha de milhares de unidades.
+      var unitUsd = repact
+        ? (fx ? Math.round(novo * fx * 100) / 100 : 0)
+        : baseUsd;
       var r = parseInt(i.value, 10);
       if (isNaN(r) || r < 0) r = 0;
       if (r > qtd) r = qtd;
@@ -1416,6 +1472,15 @@
       var ok = qtd - r, val = ok * unit, valUsd = ok * unitUsd;
       rej += r; enviados += qtd; aceitos += ok; pagar += val; pagarUsd += valUsd;
       perdaTotal += r * unit;
+
+      // ── a SETA da repactuação ──
+      var seta = document.querySelector('[data-rep="' + i.dataset.rj + '"]');
+      if (seta) {
+        var subiu = repact && novo > base;
+        seta.textContent = repact ? (subiu ? '↑' : '↓') : '';
+        seta.className = 'rep' + (repact ? (subiu ? ' rep--up' : ' rep--down')
+                                         : '');
+      }
 
       // ── a LINHA: o que sobrou de pé e quanto dela virou dinheiro ──
       var pk = i.dataset.rj;
@@ -1524,6 +1589,10 @@
     }
   }
   campos.forEach(function (i) { i.addEventListener('input', recalcular); });
+  // O preço mexe nos MESMOS totais que a recusa, então escuta o mesmo evento.
+  document.querySelectorAll('.pcin[data-pc]').forEach(function (p) {
+    p.addEventListener('input', recalcular);
+  });
 
   // ── FILTRO da conferência ────────────────────────────────────────────────
   // Um lote grande tem dezenas de linhas; achar "a DDR4 de 8GB da Micron"
@@ -1554,6 +1623,11 @@
   if (zerar) {
     zerar.addEventListener('click', function () {
       campos.forEach(function (i) { i.value = ''; });
+      // Limpa a repactuação junto: o botão promete devolver a tela ao estado
+      // combinado, e deixar o preço mexido cumpriria metade da promessa.
+      document.querySelectorAll('.pcin[data-pc]').forEach(function (p) {
+        p.value = '';
+      });
       recalcular();
       // Limpar TAMBÉM salva: senão ele apaga tudo, sai da página e volta com
       // as recusas de volta — o oposto do que o botão prometeu.

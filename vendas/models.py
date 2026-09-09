@@ -859,6 +859,20 @@ class SettlementDraft(models.Model):
     #: vez, é melhor do que descobrir na terceira tela que às vezes é int.
     rejections = models.JSONField(default=dict, blank=True,
                                   verbose_name='Recusas digitadas')
+    #: ``{"<pk da SalesOrderLine>": "novo ¥ unitário"}`` — a REPACTUAÇÃO em
+    #: rascunho (dono, 2026-09-09: *"vamos deixar ele mudar o preco mesmo"*).
+    #:
+    #: ⚠ CAMPO PRÓPRIO, e não uma chave a mais dentro do `rejections`. São
+    #:   dois fatos independentes: uma linha pode ter recusa sem repactuação,
+    #:   repactuação sem recusa, ou as duas. Fundir os dois num só JSON
+    #:   obrigaria a reescrever o formato do rascunho que já está em produção
+    #:   e a migrar o que os compradores já digitaram.
+    #:
+    #: ⚠ O valor é TEXTO ("2.70"), não float. `Decimal(float)` é como um
+    #:   preço de ¥2,70 vira 2.7000000000000002 e o centavo passa a depender
+    #:   do caminho — e este número vai virar dinheiro na fatura.
+    prices = models.JSONField(default=dict, blank=True,
+                              verbose_name='Preços repactuados (rascunho)')
     notes = models.TextField(blank=True, default='',
                              verbose_name='Observação digitada')
     updated_at = models.DateTimeField(auto_now=True,

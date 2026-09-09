@@ -480,6 +480,27 @@ html img.lg-d{display:none}
 .dtab .rjin::placeholder,.dtab .cell::placeholder{color:var(--ink-40);font-family:var(--sans);font-size:12px;font-weight:500}
 .dtab .rjin:focus,.dtab .cell:focus{outline:2px solid var(--blue-60);outline-offset:-2px}
 /* recusa: a régua é vermelha desde vazia — o campo existe para tirar unidades da linha */
+/* ── O CAMPO DE PREÇO DA CONFERÊNCIA (.pcin) e a SETA (.rep) ───────────────
+   Dono, 2026-09-09: o comprador passa a poder mudar o ¥ unitário no acerto.
+
+   O campo é `.cell` do pacote — a célula que É um campo, com a régua âmbar
+   de "pendência". Não é `.rjin`: aquele é vermelho porque recusa é perda, e
+   preço mexido não é perda, é fato a conferir. Aqui `.pcin` só ajusta a
+   largura, porque o unitário é um número curto e um campo de 132px numa
+   coluna de "¥ 2.00" fica maior que o dado.
+
+   A SETA é um glifo, não um número: ela diz a DIREÇÃO e a cor diz o resto.
+   O valor está no campo ao lado, e repetir a diferença aqui seria o terceiro
+   número na célula — o erro que a coluna da perda já custou uma vez. */
+/* ⚠ `width:84px` e não só `max-width`: o `.dtab .cell` do pacote é
+   `width:100%`, e com isso o campo tomava a célula inteira e empurrava a
+   seta para fora — o `<i>` estava no HTML, com a direção certa, e não
+   aparecia na tela. Pego na captura, não na leitura. */
+.dtab .pcin{width:84px;max-width:84px;text-align:right;padding:0 8px}
+.dtab .rep{display:inline-block;width:12px;margin-left:6px;font-style:normal;
+  font-family:var(--sans);font-size:12px;font-weight:800;line-height:1}
+.dtab .rep--up{color:var(--green-60)}
+.dtab .rep--down{color:var(--red-60)}
 .dtab .rjin{border-bottom-color:var(--red-50)}
 .dtab .rjin:focus{outline:0;border-color:var(--red-60);box-shadow:0 0 0 2px rgba(218,30,40,.18)}
 .dtab .rjin.bad{border-color:var(--red-60);background:var(--red-60);color:#fff}

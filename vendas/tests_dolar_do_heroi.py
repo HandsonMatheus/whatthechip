@@ -193,26 +193,52 @@ class OScriptTests(TestCase):
     def setUp(self):
         self.js = _sem_comentarios(_ler(FICHA))
 
-    def test_o_recalculo_NAO_multiplica_nada_pela_taxa(self):
+    def test_o_TOTAL_nunca_e_multiplicado_pela_taxa(self):
         """A regra do `confirm`, cobrada onde ela foi quebrada.
 
+        ⚠ A REGRA MUDOU DE FORMA EM 2026-09-09, e não de conteúdo. Antes este
+          teste proibia QUALQUER `* fx` no recálculo, porque naquele momento
+          não havia uso legítimo. Aí o comprador ganhou o direito de repactuar
+          o ¥ de uma linha (dono: *"vamos deixar ele mudar o preco mesmo"*), e
+          o `new_unit_rmb` não tem par em dólar para vir congelado: o US$
+          dessa linha SÓ pode ser derivado.
+
+          Proibir a derivação inteira teria feito este teste reprovar o código
+          certo — que é o pior defeito que um teste pode ter. Então ele passou
+          a cobrar a regra de verdade, que sempre foi esta:
+
+            PROIBIDO  total em ¥ × taxa
+            PERMITIDO unitário × taxa, POR LINHA, arredondado em centavos
+
         `assertNotIn`, e não `assertIn` de outra coisa: era exatamente essa
-        troca que deixava o bug passar por `tests_par_de_moedas`.
+        troca que deixava o bug de 07/09 passar por `tests_par_de_moedas`.
         """
-        for proibido in ('pagar * fx', 'pagar*fx', '* fx)', '*fx)'):
+        for proibido in ('pagar * fx', 'pagar*fx', 'pagarUsd = pagar',
+                         'total * fx', 'total*fx'):
             self.assertNotIn(
                 proibido, self.js,
-                'US$ derivado da taxa no recálculo ao vivo — a conta que o '
+                'TOTAL em ¥ multiplicado pela taxa — a conta que o '
                 '`services.confirm` proíbe (bug de 2026-09-07)')
 
-    def test_nao_existe_taxa_no_escopo_do_recalculo(self):
-        """Sem a variável não há como reintroduzir a conta por descuido.
+    def test_a_derivacao_da_linha_repactuada_arredonda_em_CENTAVOS(self):
+        """A metade que autoriza, e a condição que a torna segura.
 
-        A taxa segue no `data-fx` do form (é o câmbio TRAVADO desta OV e o
-        papel a declara) — o que não existe mais é ela virar número no laço
-        que soma dinheiro.
+        O `settlement_totals` faz `(unit * rate).quantize(_CENT)` e SÓ ENTÃO
+        multiplica pela quantidade. Se a tela multiplicar primeiro e arredondar
+        depois, ela e a fatura divergem em centavos numa linha de milhares de
+        unidades — que é a divergência silenciosa de sempre, pelo outro lado.
         """
-        self.assertNotIn('var fx = parseFloat(form.dataset.fx)', self.js)
+        self.assertIn('Math.round(novo * fx * 100) / 100', self.js)
+        # e o total continua sendo SOMA de linhas, não uma conta própria
+        self.assertIn('pagarUsd += valUsd', self.js)
+        self.assertIn('valUsd = ok * unitUsd', self.js)
+
+    def test_a_taxa_existe_no_escopo_e_isso_esta_JUSTIFICADO(self):
+        """Ela saiu em 07/09 e voltou em 09/09. Um comentário no código
+        explicando por quê não é zelo: sem ele, a próxima pessoa lê `var fx`
+        num arquivo cheio de avisos contra `* fx` e desfaz a coisa certa."""
+        self.assertIn('var fx = parseFloat(form.dataset.fx)', self.js)
+        self.assertIn('PROIBIDO  total em ¥ × taxa', _ler(FICHA))
 
     def test_o_heroi_escreve_a_SOMA_congelada(self):
         """O herói escreve o `pagarUsd` — a soma linha a linha.
@@ -286,7 +312,16 @@ class VarreduraTests(TestCase):
 
         `_rmb_de` e a caixa de pagamento fazem o caminho INVERSO (US$ → ¥) e
         são leitura derivada declarada (§2.4): dividem, não multiplicam.
+
+        ⚠ A ÚNICA multiplicação pela taxa permitida em template é a do
+          UNITÁRIO da linha repactuada, e ela tem forma fixa e reconhecível:
+          `Math.round(novo * fx * 100) / 100` — arredonda em centavos ANTES de
+          multiplicar pela quantidade, como o `settlement_totals`. Qualquer
+          outra forma cai aqui, inclusive uma que só troque a ordem dos
+          fatores: a ordem É a diferença entre bater com a fatura e divergir
+          em centavos.
         """
+        PERMITIDA = 'Math.round(novo * fx * 100) / 100'
         raiz = os.path.join(settings.BASE_DIR, 'vendas', 'templates')
         achados = []
         for dirpath, _dirs, arquivos in os.walk(raiz):
@@ -296,6 +331,8 @@ class VarreduraTests(TestCase):
                 caminho = os.path.join(dirpath, nome)
                 for n, linha in enumerate(_sem_comentarios(
                         _ler(caminho)).split('\n'), 1):
+                    if PERMITIDA in linha:
+                        continue
                     if re.search(r'\*\s*fx\b|\bfx\s*\*', linha):
                         achados.append('%s:%d' % (nome, n))
         self.assertEqual(achados, [], 'multiplicação pela taxa em: %s'

@@ -229,8 +229,13 @@ class TelaTests(_Base):
         prova que ele subiu, e não que o dólar apenas sumiu de vista."""
         resumo = self._resumo()
         self.assertNotIn('class="cy"', resumo)
-        self.assertIn('¥ %s' % self.UNIT_RMB, resumo)
         self.assertIn('¥ %s' % (self.UNIT_RMB * self.QTD), resumo)
+        # ⚠ O UNITÁRIO não entra nesta conta desde 2026-09-09: em conferência
+        #   ele é um CAMPO (o comprador repactua), e o congelado aparece como
+        #   placeholder — sem o `¥`, que dentro de um input teria de ser
+        #   digitado e reparseado. Quem diz a moeda ali é o título da coluna.
+        self.assertIn('placeholder="%s"' % self.UNIT_RMB, resumo)
+        self.assertIn('>Unitário ¥<', resumo.replace('</th>', '<'))
 
     def test_o_titulo_da_coluna_VOLTOU_a_cravar_a_moeda(self):
         """De 02/09 a 07/09 o título não podia dizer a moeda: a célula trazia
@@ -279,7 +284,10 @@ class ColunaResultadoTests(_Base):
         linha = re.search(r'<tr data-g="0">.*?</tr>', self._resumo(), re.S)
         self.assertIsNotNone(linha)
         self.assertNotIn('US$', linha.group(0))
-        self.assertEqual(linha.group(0).count('¥ '), 3)   # unit, esperado, res
+        # DOIS textos em ¥ (esperado e resultado) — o unitário virou campo em
+        # 2026-09-09 e leva o congelado no placeholder.
+        self.assertEqual(linha.group(0).count('¥ '), 2)
+        self.assertIn('class="cell pcin"', linha.group(0))
 
     def test_a_faixa_da_marca_segue_a_linha(self):
         """Faixa em uma moeda com as linhas dela em outra é o tipo de
