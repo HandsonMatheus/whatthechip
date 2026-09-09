@@ -1,0 +1,87 @@
+brand:
+  name: ISOCOM
+  code: ISC
+  notes: >
+    Marca em onboarding (2026-09-01, evoluida em 5 rodadas no mesmo dia). Identidade provavel
+    (ver ISOCOM.md secao 3.1 pro relato completo): Shenzhen Longsys Electronics Co., Ltd. --
+    mesma dona da Foresee/FRS e da Lexar. "ISOCOM" aparece em memorias distribuidas sob esse
+    nome; ha tambem uma "Isocom Components 2004 Limited" britanica (optoacopladores/MOSFETs/SSR,
+    catalogo oficial conferido -- ZERO produtos de memoria), envolvida num litigio de marca
+    registrada JA ENCERRADO com a Longsys (TTAB case 91256263, terminado -- trademarkelite.com).
+    As duas marcas sao entidades DIFERENTES; a memoria aqui e da Longsys.
+
+    2 familias eMMC (MEMA e MEMD) entraram em 2026-09-01, ambas capacidade LITERAL no PN (mesma
+    convencao Foresee) e interface 'eMMC 5.1' -- as duas confirmadas via uma lista oficial de
+    fornecedores aprovados de eMMC da Rockchip (documento tecnico de fabricante de SoC, hospedado
+    em dl.radxa.com -- Tier-1-adjacente, nao e distribuidor nem marketplace): MEMA016G-M0T00
+    (16GB), MEMA032G-M0D01 (32GB), MEMDNN032G-M1S07 (32GB) e MEMDNN064G-M1D03 (64GB), todos 3D
+    TLC, FBGA 11.5x13mm. MEMD espelha a estrutura FEMD da Foresee EXATAMENTE (prefixo 4 chars
+    terminado em D, grade NN em pn[4:6], capacidade em pn[6:9]) -- reforça a hipotese Longsys.
+    MEMA usa capacidade direto em pn[4:7], sem grade infixa (forma mais curta, e a que aparece
+    fisicamente marcada no chip do dono -- sem sufixo). Ancoras known_parts confirmadas:
+    MEMA032G (32GB) e MEMA064G (64GB) em submissions/isocom_mema_2026-09-01.yaml
+    (confidence=manual, confirmacao FISICA do dono); MEMA016G, MEMDNN032G-M1S07 e
+    MEMDNN064G-M1D03 em submissions/isocom_mema_r2_2026-09-01.yaml (confidence=distributor,
+    fonte = lista Rockchip). Relacao exata entre MEMA0xxG e MEMDNNxxxG-xxxxx (mesmo produto sob
+    2 nomes, ou 2 SKUs distintos com specs identicas) NAO confirmada -- documentada como
+    observacao, nao como fato.
+
+    Pin-count FBGA exato do MEMA032G (fisico) permanece nao 100% cravado (Rockchip diz 11.5x13mm
+    mas nao da a contagem de pinos; MEMA064G tem "153-Pin FBGA" via Alibaba) -- baixo risco, nao
+    bloqueia nada. Nenhum datasheet OFICIAL da Longsys/fabricante foi encontrado ainda; toda a
+    base e lista de fornecedor aprovado (Rockchip) + distribuidor + confirmacao fisica do dono +
+    registro de marca/TTAB -- nenhuma fonte "confirmed" (3 fontes de engenharia cruzadas) ainda.
+
+    brand.code = "ISC" e PALPITE deste chat (padrao de 3 letras da maioria das marcas). Ja em
+    uso nas familias e nos known_parts -- trocar agora nao e mais custo zero (seria rename de
+    Brand apos possivel commit, nao so texto).
+maps:
+  # Capacidade eMMC -- LITERAL no PN (3 digitos = GB, NAO Gbit -- mesma convencao Foresee/Longsys,
+  # ver FRS_EMMC_CAP em foresee.yaml). Compartilhado entre MEMA (pn[4:7]) e MEMD (pn[6:9]) --
+  # mesma tabela de digito->GB, so a POSICAO no PN muda por familia (igual Foresee reusa
+  # FRS_EMMC_CAP entre FEMD/FEMK/FEMJ). '016' e '032' confirmados via lista de fornecedores
+  # aprovados de eMMC da Rockchip (dl.radxa.com, doc tecnico de fabricante de SoC -- ver
+  # reasoning das familias MEMA/MEMD). '064' via titulo de listagem Alibaba (MEMA064G) +
+  # cross-referencia MEMDNN064G-M1D03 (mesma Rockchip). NAO extrapolar pra outros codigos
+  # (004/008/128/256) sem evidencia -- ficam INDETERMINADO.
+  ISC_EMMC_CAP:
+  - ['016', 16GB, '']
+  - ['032', 32GB, '']
+  - ['064', 64GB, '']
+families:
+- prefix: MEMA
+  chip_type: eMMC
+  subtype: ''
+  interface: 'eMMC 5.1'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 8
+  decode_cap_pos: 4
+  decode_cap_len: 3
+  decode_cap_map: ISC_EMMC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC ISOCOM/Longbo, familia MEMA (MEMAxxxG, 8 chars -- forma CURTA sem sufixo, a que aparece marcada fisicamente no chip do dono). Capacidade LITERAL no PN: pn[4:7] = GB (016=16GB, 032=32GB, 064=64GB) -- mesma convencao Foresee/Longsys (3 digitos = GB, nao Gbit). eMMC 5.1 confirmado (lista de fornecedores aprovados Rockchip). 3D TLC, FBGA 11.5x13mm (Rockchip); pacote fisico BGA confirmado pelo dono pro MEMA032G. O ORDER CODE completo do fabricante tem sufixo (ex.: MEMA016G-M0T00, MEMA032G-M0D01, visto na mesma lista Rockchip) que NAO decodificamos aqui -- so o prefixo base de 8 chars, que e o que o dono realmente escaneia/marca. Identidade da marca: provavelmente Shenzhen Longsys Electronics (mesma dona da Foresee) -- ver ISOCOM.md secao 3.'
+  reasoning: '["Confirmacao fisica do dono (fotos, 2026-09-01): chip BGA com "ISOCOM", "MEMA032G", "M0S00" e "203520081878" impressos. MEMA032G corroborado por digipart.com/part/MEMA032G e por listagem Alibaba (titulo: MEMA032G-Longbo-32GB-ISOCOM-eMMC-flash). MEMA064G corroborado por listagem Alibaba (titulo: MEMA064G-M0S00-EMMC-64GB-153FBGA-Memory) -- mesma marcacao M0S00 do 032G, mesma familia/pacote. MEMA016G e MEMA032G confirmados de forma independente numa 2a busca (2026-09-01, apos feedback do dono pra pesquisar mais a fundo): lista de fornecedores aprovados de eMMC da Rockchip (RKeMMCSupportList, dl.radxa.com -- doc tecnico de fabricante de SoC, nao distribuidor/marketplace) lista MEMA016G-M0T00 (16GB, 128Gb TLC x1, 3D, v5.1, 11.5x13mm) e MEMA032G-M0D01 (32GB, 256Gb TLC x1, 3D, v5.1, 11.5x13mm) -- confirma capacidade E versao eMMC exata dos dois, deixando de ser so derivacao de regra pro MEMA016G. Regra posicional (pn[4:7]=GB) validada em pelo menos 3 PNs (016/032/064) com fonte propria cada um, ZERO contra-exemplos. A mesma lista Rockchip tambem lista MEMDNN032G-M1S07 (32GB) e MEMDNN064G-M1D03 (64GB) -- prefixo IRMAO com estrutura identica a FEMD da Foresee (grade NN antes da capacidade); ver familia MEMD separada. known_parts MEMA032G/MEMA064G ficam em submissions/isocom_mema_2026-09-01.yaml (confidence:manual, ancora=confirmacao fisica); MEMA016G ganhou known_part proprio em submissions/isocom_mema_r2_2026-09-01.yaml (confidence:distributor, ancora=lista Rockchip) -- a gramatica aqui cobre esses 3 e qualquer sibling futuro dentro dos codigos ja no ISC_EMMC_CAP, sem exigir confirmacao individual de cada capacidade, mas NAO extrapola pra codigos ainda nao vistos (004/008/128/256 ficam INDETERMINADO ate serem observados em fonte real)."]'
+- prefix: MEMD
+  chip_type: eMMC
+  subtype: ''
+  interface: 'eMMC 5.1'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 10
+  decode_cap_pos: 6
+  decode_cap_len: 3
+  decode_cap_map: ISC_EMMC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC ISOCOM/Longbo, familia MEMD -- espelha EXATAMENTE a estrutura FEMD da Foresee (mesma dona provavel, Longsys): prefixo MEMD (pn[0:4]) + grade em pn[4:6] (NN=comercial, unico grade visto ate agora) + capacidade LITERAL em pn[6:9]=GB (nao Gbit) + "G" + sufixo de order code (ex.: -M1S07, -M1D03) nao decodificado. pn_length=10 (atualizado 2026-09-02): scan ao vivo do estoque do dono capturou a forma BARE "MEMDNN064G" (10 chars, sem sufixo) -- primeira evidencia fisica/de campo de como um chip MEMD e marcado de verdade, e bate EXATAMENTE com o padrao ja estabelecido na MEMA (chip fisico sem sufixo, sufixo so aparece no order code do distribuidor/Rockchip). eMMC 5.1, 3D TLC, FBGA 11.5x13mm (Rockchip). Relacao com a familia MEMA (mesmas capacidades 32GB/64GB, specs identicas) NAO confirmada -- pode ser o mesmo produto com 2 nomes, ou 2 SKUs distintos; ver ISOCOM.md secao 3.2.'
+  reasoning: '["Lista de fornecedores aprovados de eMMC da Rockchip (RKeMMCSupportList Ver1.84, dl.radxa.com -- doc tecnico de fabricante de SoC pra qualificacao de hardware, nao distribuidor/marketplace), achada numa 2a busca (2026-09-01) apos feedback do dono pra pesquisar o cluster mais a fundo. Lista MEMDNN032G-M1S07 (32GB, 256Gb TLC x1, 3D, v5.1, 11.5x13mm) e MEMDNN064G-M1D03 (64GB, 512Gb TLC x1, 3D, v5.1, 11.5x13mm) lado a lado com MEMA016G-M0T00/MEMA032G-M0D01 na MESMA tabela, mesmo fabricante ISOCOM. Estrutura MEMD+NN+capacidade+G bate exatamente com o padrao FEMD+NN+capacidade+G da Foresee (chips/knowledge/foresee.yaml) -- mesma convencao, reforca a hipotese de mesma controladora (Longsys) ou ao menos mesma pratica de nomenclatura de fabrica. 2 PNs independentes (032/064) confirmam a posicao pn[6:9] sem contra-exemplo. known_parts MEMDNN032G-M1S07 e MEMDNN064G-M1D03 (forma completa com sufixo, unica forma observada) em submissions/isocom_mema_r2_2026-09-01.yaml, confidence:distributor (fonte tecnica unica, nao cruzada com 2a fonte independente ainda). ATUALIZACAO 2026-09-02: debug de estoque ao vivo do dono capturou PN MEMDNN064G (bare, 10 chars, sem sufixo, in_review_queue=false -- engine ja classificou certo via gramatica: eMMC 64GB ISC 5.1 RENTAVEL) -- primeira vez que se ve a forma SEM sufixo desta familia na pratica, usada pra fixar pn_length=10 (paralelo exato ao pn_length=8 da MEMA, que tambem so aparece bare no chip fisico apesar do order code ter sufixo). NAO virou known_part novo: a unica evidencia da forma bare especifica e o proprio scan, sem fonte externa citavel confirmando MEMDNN064G (sem sufixo) como PN valido -- capacidade/interface aqui vem so por heranca da gramatica + do known_part irmao MEMDNN064G-M1D03, nao por confirmacao independente da string bare em si."]'

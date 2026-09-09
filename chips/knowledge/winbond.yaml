@@ -1,0 +1,36 @@
+brand:
+  name: Winbond
+  code: WBD
+  notes: >
+    Winbond Electronics Corporation (Taiwan, Hsinchu). Onboarding 2026-09-01.
+
+    ARQUIVO MINIMO DE PROPOSITO -- brand SEM nenhuma familia. A razao e dupla e
+    esta escrita aqui pra ninguem "completar" isto por analogia depois:
+
+    (1) NENHUM prefixo Winbond foi confirmado em Tier-1 ate agora. O mapa de
+    familias do WINBOND.md 3.1 (W25X/W25N/W25M/W77Q/PSRAM/HyperRAM...) vem de
+    UMA pagina de distribuidor + Wikipedia, e o proprio contrato de autoria da
+    marca (regra 1 da trilha A) proibe criar familia por analogia estrutural sem
+    fonte que nomeie o prefixo diretamente. Criar familias daqui seria
+    exatamente o erro que o documento manda evitar.
+
+    (2) Familia ATIVA sem PN-ancora no _WINBOND_GOLDEN quebra o
+    GoldenObrigatorioTests -- e ele e GLOBAL: a suite fica vermelha pra TODOS os
+    chats, nao so pra quem esqueceu (CLAUDE.md 7, incidente de 2026-08-24 com
+    ESMT/SanDisk/Toshiba). Sem PN pesquisado nao ha ancora possivel.
+
+    O QUE ESTE ARQUIVO RESOLVE HOJE: o `submit_known_parts` levanta erro quando a
+    Brand nao existe no banco -- e isso acontece ja no DRY-RUN (a checagem esta
+    na linha 184; o early-return do dry-run so vem na 285). Sem a Brand gravada,
+    o chat da Winbond nao consegue nem VALIDAR um arquivo de submissao. Com este
+    yaml + `load_brands --brand winbond --commit`, a trilha B destrava.
+
+    PROXIMO PASSO (nao pule): a 1a familia nasce junto com o PN-ancora dela no
+    _WINBOND_GOLDEN de chips/tests.py, na mesma entrega -- gramatica e golden sao
+    UMA entrega so, nunca duas. Ver WINBOND.md 2.1 passo 4.
+
+    ARMADILHA DA MARCA (WINBOND.md 0.2 regra 6-bis): a nomenclatura da Winbond e
+    em BIT (W25Q128 = 128 Mbit = 16 MB; W25N01G = 1 Gbit = 128 MB) e o portao NAO
+    barra unidade de bit no campo `capacity` -- so em emcp_ram/emcp_nand.
+    `capacity: "1Gb"` passa e o engine le 1.0 GB (8x a mais). Converter SEMPRE
+    pra byte, com a aritmetica visivel na `notes`.
