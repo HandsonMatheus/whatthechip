@@ -120,6 +120,51 @@ class ComOResultadoFECHADOTests(_Base):
                          sum(g['accepted'] for g in grupos))
 
 
+class OCartaoDoTopoTests(_Base):
+    """O mesmo defeito, no trilho de etapas — dono, 10/09: *"o cartão do topo
+    diz Recusados 0 / Aprovados 9980"*.
+
+    `f-rej` e `f-ace` eram cravados exatamente como os do rodapé, e pelo mesmo
+    motivo caíam pelo mesmo buraco: com o resultado fechado o JavaScript não
+    tem campo para percorrer e nunca os corrige.
+    """
+
+    def setUp(self):
+        super().setUp()
+        with company_scope(self.emp.id):
+            services.settle_and_invoice(self.so, {self.linha.pk: (400, None)},
+                                        self.parceiro)
+
+    def _b(self, html, ident):
+        m = re.search(r'id="%s"[^>]*>(.*?)</b>' % ident, html, re.S)
+        return None if m is None else re.sub(r'<[^>]+>', '', m.group(1)).strip()
+
+    def test_o_cartao_mostra_as_RECUSAS(self):
+        self.assertEqual(self._b(self._html(), 'f-rej'), '400')
+
+    def test_o_cartao_mostra_os_APROVADOS_e_nao_os_enviados(self):
+        self.assertEqual(self._b(self._html(), 'f-ace'), '600')
+
+    def test_cartao_e_rodape_dizem_a_MESMA_coisa(self):
+        """São duas leituras da mesma compra em alturas diferentes da tela.
+        Discordarem é o que o dono viu e chamou de problema."""
+        html = self._html()
+        self.assertEqual(self._b(html, 'f-rej'), _celula(html, 't-rej'))
+        self.assertEqual(self._b(html, 'f-ace'), _celula(html, 't-ace'))
+
+    def test_sem_conferencia_nem_fatura_continua_TRAVESSAO(self):
+        """OV despachada e ainda não recebida: não há resultado nenhum, e
+        travessão é diferente de zero."""
+        with company_scope(self.emp.id):
+            outro = SalesOrder.all_companies.get(pk=self.so.pk)
+            outro.invoices.all().delete()
+            SalesOrder.all_companies.filter(pk=self.so.pk).update(
+                received_at=None)
+        html = self._html()
+        self.assertEqual(self._b(html, 'f-rej'), '—')
+        self.assertEqual(self._b(html, 'f-ace'), '—')
+
+
 class ComAConferenciaABERTATests(_Base):
     """O caso que já funcionava — não pode ter piorado."""
 
@@ -138,6 +183,31 @@ class ComAConferenciaABERTATests(_Base):
         self.assertEqual(_celula(html, 't-rej'), '250')
         self.assertEqual(_celula(html, 't-ace'), '750')
         self.assertEqual(_celula(html, 't-pagar-rmb'), '¥ 2250.00')
+
+    def test_a_barra_FLUTUANTE_tambem_nasce_com_a_verdade(self):
+        """A `conflive` só existe com a conferência aberta, então o
+        `recalcular()` do fim do script a conserta no load. Mas ela NASCIA
+        dizendo o valor cheio e "sem recusa" mesmo com rascunho salvo — e
+        nascer preenchida com o número errado é pior que nascer vazia.
+        """
+        with company_scope(self.emp.id):
+            services.save_draft(self.so, {self.linha.pk: 250}, self.parceiro)
+        html = self._html()
+        m = re.search(r'id="cl-v"[^>]*>(.*?)</b>', html, re.S)
+        self.assertIsNotNone(m)
+        self.assertIn('2250.00', m.group(1))
+        d = re.search(r'id="cl-d"[^>]*>(.*?)</span>', html, re.S)
+        self.assertIn('250', d.group(1))
+        self.assertNotIn('sem recusa', d.group(1))
+
+    def test_a_CAUSA_do_defeito_fica_documentada_no_script(self):
+        """O `return` que faz o bloco desistir sem campos é o mecanismo do
+        defeito de 10/09. Ele continua lá — está certo —, mas com o aviso do
+        lado, para o próximo não voltar a pendurar valor nele.
+        """
+        html = self._html()
+        self.assertIn('if (!campos.length || !elPagar || !form) return;', html)
+        self.assertIn('CAUSA DE UM DEFEITO DE 10/09', html)
 
     def test_o_JavaScript_continua_dono_do_rodape_enquanto_ele_digita(self):
         """O servidor dá o estado INICIAL; quem manda durante a digitação

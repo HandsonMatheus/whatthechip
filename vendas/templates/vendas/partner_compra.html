@@ -292,12 +292,19 @@
           <span class="rgrp__n">{% trans "Resultado" %}</span>
           <span class="rgrp__w">{% if invoice %}{{ invoice.created_at|date:"d/m" }}{% elif pode_acertar %}{% trans "em curso" %}{% endif %}</span>
         </div>
+        {% comment %} ⚠ `f-rej` e `f-ace` vêm do SERVIDOR (dono, 10/09).
+           Eram cravados em `0` e `{{ total_qty }}` — o estado "ninguém recusou
+           nada ainda" — e quem os corrigia era o `recalcular()`. Só que ele
+           não roda quando não há campo para digitar: com o resultado FECHADO
+           o cartão congelava dizendo 0 recusados numa compra com milhares de
+           recusas. Mesmo defeito do `<tfoot>`, mesma correção. O JavaScript
+           continua escrevendo neles durante a digitação. {% endcomment %}
         <div class="rgrp__b">
           <div class="fld2"><span>{% trans "Enviados" %}</span><b class="m">{{ total_qty }}</b></div>
           <div class="fld2"><span>{% trans "Recusados" %}</span>
-            <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-rej">{% if invoice or pode_acertar %}0{% else %}—{% endif %}</b></div>
+            <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-rej">{% if invoice or pode_acertar %}{{ total_rej }}{% else %}—{% endif %}</b></div>
           <div class="fld2"><span>{% trans "Aprovados" %}</span>
-            <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-ace">{% if invoice or pode_acertar %}{{ total_qty }}{% else %}—{% endif %}</b></div>
+            <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-ace">{% if invoice or pode_acertar %}{{ total_ace }}{% else %}—{% endif %}</b></div>
           {% if so.unkeyed_units %}
           <div class="fgrp__n"><span class="why">{% blocktrans trimmed with n=so.unkeyed_units %}A caixa traz ainda {{ n }} unidade(s) sem preço na tabela — elas não entram nesta conta.{% endblocktrans %}</span></div>
           {% endif %}
@@ -722,12 +729,18 @@
          ⚠ Nasce PREENCHIDA. No protótipo ela só era escrita pelo `live()`, e
          `live()` só roda no input — quem abria a aba via uma faixa preta
          vazia grudada no rodapé até tocar o primeiro campo.
+
+         ⚠ E nasce preenchida com a VERDADE desde 10/09. Era `¥ {{ so.total_rmb }}`
+         e "sem recusa" cravados: com rascunho salvo, a barra abria dizendo o
+         valor cheio e zero recusas até o `recalcular()` do fim do script
+         passar por cima. Nascer preenchida com o número errado é pior que
+         nascer vazia — a vazia ao menos não afirma nada.
       {% endcomment %}
       {% if pode_acertar %}
       <div class="conflive" id="conflive">
         <span class="conflive__l">{% trans "Resultado final" %}</span>
-        <b class="conflive__v" id="cl-v">{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</b>
-        <span class="conflive__d" id="cl-d">{% trans "sem recusa" %}</span>
+        <b class="conflive__v" id="cl-v">{% localize off %}{% if total_pago_rmb %}¥ {{ total_pago_rmb }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</b>
+        <span class="conflive__d" id="cl-d">{% if total_rej %}{% blocktrans trimmed with n=total_rej %}{{ n }} recusadas{% endblocktrans %}{% else %}{% trans "sem recusa" %}{% endif %}</span>
       </div>
       {% endif %}
     </div>
@@ -1360,6 +1373,13 @@
   var form = document.getElementById('f-resultado');
   var elPagar = document.getElementById('t-pagar');
   var elPagarRmb = document.getElementById('t-pagar-rmb');
+  // ⚠ ESTA LINHA É A CAUSA DE UM DEFEITO DE 10/09, e fica documentada aqui.
+  //   Sem campos de recusa — resultado FECHADO — o bloco inteiro desiste, e
+  //   com razão: não há o que recalcular. O problema era o outro lado: o
+  //   rodapé e o cartão do topo nasciam CRAVADOS em "nada recusado ainda" e
+  //   contavam com este bloco para corrigi-los. Quando ele desiste, eles
+  //   ficam mentindo. Agora esses valores vêm do servidor já corretos, e o
+  //   `return` aqui não deixa nada por fazer.
   if (!campos.length || !elPagar || !form) return;
 
   // ⚠ A TAXA VOLTOU ao escopo em 2026-09-09, e a regra mudou de forma — não
