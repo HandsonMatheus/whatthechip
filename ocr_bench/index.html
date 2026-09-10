@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bancada OCR — WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Bancada de medição de OCR — Fase 0.
+   Tokens copiados de static/wtc/tokens/colors.css (mesma linguagem visual do app).
+   NÃO faz parte do Django: é página solta, servida por python3 -m http.server.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root{
+  --ink-100:#161616;--ink-70:#4d5358;--ink-60:#697077;--ink-50:#878d96;
+  --ink-40:#a2a9b0;--ink-30:#c1c7cd;--ink-20:#dde1e6;--ink-10:#f2f4f8;
+  --ink-05:#f7f8fb;--white:#fff;
+  --blue-10:#edf5ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;
+  --green-10:#e6f7ec;--green-50:#24a148;--green-70:#0e6027;
+  --amber-10:#fdf3d6;--amber-40:#f1c21b;--amber-70:#8a6a00;
+  --red-10:#fff1f1;--red-60:#da1e28;--red-70:#a2191f;
+  --shell:#101317;--shell-2:#1a1f25;--shell-line:#272d33;--shell-text:#f2f4f8;
+  --bg:var(--ink-05);--surface:var(--white);--surface-2:var(--ink-10);
+  --line:var(--ink-20);--line-2:var(--ink-30);
+  --text:var(--ink-100);--muted:var(--ink-60);--faint:var(--ink-50);
+  --accent:var(--blue-60);
+  --sans:'Manrope',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* ── Shell escuro (igual à bancada do app) ─────────────────────────────── */
+.shell{background:var(--shell);color:var(--shell-text);padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.shell__t{font-weight:800;letter-spacing:-.02em;font-size:16px}
+.shell__t span{color:var(--ink-40);font-weight:500}
+.shell__meta{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--ink-40);display:flex;gap:14px;flex-wrap:wrap}
+.shell__meta b{color:var(--shell-text);font-weight:600}
+
+.warn{background:var(--amber-10);color:var(--amber-70);border-bottom:1px solid #e8d48a;padding:10px 20px;font-size:13.5px}
+.warn code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-family:var(--mono)}
+.warn--err{background:var(--red-10);color:var(--red-70);border-bottom-color:#f0b0b3}
+
+.grid{display:grid;grid-template-columns:minmax(340px,420px) 1fr;gap:16px;padding:16px 20px 40px;align-items:start}
+@media(max-width:940px){.grid{grid-template-columns:1fr}}
+
+.panel{background:var(--surface);border:1px solid var(--line);margin-bottom:16px}
+.panel__h{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line);background:var(--ink-05);flex-wrap:wrap}
+.panel__h h2{margin:0;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono)}
+.panel__h .hint{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
+.panel__b{padding:15px}
+
+/* ── Controles ─────────────────────────────────────────────────────────── */
+label.f{display:block;margin:0 0 11px}
+label.f>span{display:block;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-family:var(--mono)}
+label.f>span em{font-style:normal;color:var(--text);float:right;font-weight:500}
+select,input[type=text],input[type=number]{width:100%;height:36px;padding:0 9px;border:1px solid var(--line-2);background:var(--white);color:var(--text);font-family:var(--sans);font-size:14px;border-radius:0}
+input[type=range]{width:100%;accent-color:var(--accent);height:20px}
+input[type=text].pn{font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+.chk{display:flex;align-items:center;gap:7px;font-size:13.5px;margin:0 0 9px;cursor:pointer}
+.chk input{accent-color:var(--accent);width:15px;height:15px;flex:none}
+
+button{font-family:var(--sans);font-size:14px;font-weight:600;border:1px solid transparent;padding:9px 15px;cursor:pointer;border-radius:0;background:var(--surface-2);color:var(--text);border-color:var(--line-2)}
+button:hover:not(:disabled){background:var(--ink-20)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.pri:hover:not(:disabled){background:var(--blue-60h)}
+button.ok{background:var(--green-50);color:#fff;border-color:var(--green-50)}
+button.ghost{background:transparent;border-color:var(--line-2)}
+button.big{width:100%;height:52px;font-size:16px;font-weight:700;letter-spacing:.01em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ── Vídeo + ROI ───────────────────────────────────────────────────────── */
+.stage{position:relative;background:#000;line-height:0;overflow:hidden}
+.stage video,.stage canvas.src{width:100%;display:block;max-height:52vh;object-fit:contain}
+#roi{position:absolute;border:2px solid var(--blue-60);box-shadow:0 0 0 9999px rgba(0,0,0,.42);cursor:grab;touch-action:none}
+#roi.drag{cursor:grabbing}
+#roi::after{content:"ROI";position:absolute;top:-19px;left:0;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;color:#fff;background:var(--blue-60);padding:1px 5px}
+.stage__empty{color:var(--ink-40);font-family:var(--mono);font-size:12.5px;padding:52px 20px;text-align:center;line-height:1.7}
+
+.prev{background:#000;border:1px solid var(--line);line-height:0;overflow:auto;max-height:190px}
+.prev canvas{display:block;image-rendering:pixelated;max-width:100%}
+.diag{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-family:var(--mono);font-size:11.5px}
+.diag span{padding:3px 8px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted)}
+.diag span.al{background:var(--amber-10);border-color:#e8d48a;color:var(--amber-70);font-weight:600}
+.diag span.ok{background:var(--green-10);border-color:#a7f0ba;color:var(--green-70)}
+
+/* ── Saída bruta do OCR ────────────────────────────────────────────────── */
+.raw{font-family:var(--mono);font-size:12.5px;background:var(--shell);color:var(--shell-text);padding:12px 14px;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-all;line-height:1.65}
+.raw .dim{color:var(--ink-50)}
+.raw .hit{color:#6fdc8c;font-weight:600}
+.raw:empty::before{content:"— nada lido ainda —";color:var(--ink-50)}
+
+/* ── Candidatos ────────────────────────────────────────────────────────── */
+.cands{display:flex;flex-direction:column;gap:1px;background:var(--line)}
+.cd{background:var(--surface);padding:11px 14px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;cursor:pointer;border:0;text-align:left;width:100%;font-family:var(--sans)}
+.cd:hover{background:var(--blue-10)}
+.cd--top{background:var(--green-10)}
+.cd--top:hover{background:#d6f2e0}
+.cd__pn{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.03em;color:var(--text);grid-column:1;overflow-wrap:anywhere}
+.cd__pn mark{background:#ffe0a3;color:inherit;padding:0 1px}
+.cd__sc{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--muted);grid-column:2;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cd__meta{grid-column:1/-1;font-size:12px;color:var(--faint);font-family:var(--mono);overflow-wrap:anywhere}
+.badge{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;margin-right:6px;vertical-align:1px}
+.b-exato{background:var(--green-10);color:var(--green-70)}
+.b-fbga{background:#e8d9ff;color:#5b2c9e}
+.b-visual{background:var(--blue-10);color:var(--blue-70)}
+.b-prefixo{background:var(--amber-10);color:var(--amber-70)}
+.b-janela{background:#ffe8d6;color:#8a3d00}
+.empty{padding:26px 16px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12.5px}
+
+/* ── Medição ───────────────────────────────────────────────────────────── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:14px}
+.kpi{background:var(--surface);padding:10px 12px}
+.kpi b{display:block;font-family:var(--mono);font-size:20px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi span{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);font-family:var(--mono)}
+.kpi--good b{color:var(--green-70)}.kpi--bad b{color:var(--red-70)}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:6px 9px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+td{font-family:var(--mono);overflow-wrap:anywhere}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.miss td{background:var(--red-10)}
+.scroll{max-height:270px;overflow:auto;border:1px solid var(--line)}
+.conf{display:flex;flex-wrap:wrap;gap:6px}
+.cpair{font-family:var(--mono);font-size:12px;background:var(--surface-2);border:1px solid var(--line);padding:3px 8px}
+.cpair b{color:var(--red-70)}.cpair i{font-style:normal;color:var(--faint)}
+.note{font-size:12.5px;color:var(--faint);line-height:1.55;margin:10px 0 0}
+.sep{height:1px;background:var(--line);margin:15px 0}
+h3{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin:0 0 9px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="shell__t">Bancada OCR <span>· WhatTheChip · Fase 0</span></div>
+  <div class="shell__meta">
+    <span>corpus <b id="m-fonte">…</b></span>
+    <span>PNs <b id="m-pns">0</b></span>
+    <span>FBGA <b id="m-fbga">0</b></span>
+    <span>prefixos <b id="m-pfx">0</b></span>
+    <span>motor <b id="m-ocr">carregando…</b></span>
+  </div>
+</div>
+
+<div id="avisos"></div>
+
+<div class="grid">
+
+  <!-- ═════════ COLUNA ESQUERDA: captura e pré-processo ═════════ -->
+  <div>
+    <div class="panel">
+      <div class="panel__h">
+        <h2>1 · Fonte da imagem</h2>
+        <span class="hint" id="src-hint">nenhuma</span>
+      </div>
+      <div class="stage" id="stage">
+        <video id="vid" playsinline muted style="display:none"></video>
+        <canvas id="still" class="src" style="display:none"></canvas>
+        <div class="stage__empty" id="stage-empty">
+          Abra a câmera do microscópio<br>ou solte uma foto de chip aqui
+        </div>
+        <div id="roi" style="display:none"></div>
+      </div>
+      <div class="panel__b">
+        <label class="f"><span>Câmera</span>
+          <select id="cam"><option value="">— permitir acesso primeiro —</option></select>
+        </label>
+        <div class="row" style="margin-bottom:11px">
+          <button id="b-cam" class="pri">Abrir câmera</button>
+          <button id="b-stop" class="ghost" disabled>Parar</button>
+        </div>
+        <div class="row">
+          <button id="b-file" class="ghost">Carregar foto…</button>
+          <button id="b-crop" class="ghost">ROI = tudo</button>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+        <label class="f" style="margin-top:11px"><span>Largura do ROI <em id="v-rw">40%</em></span>
+          <input type="range" id="rw" min="5" max="100" value="40"></label>
+        <label class="f"><span>Altura do ROI <em id="v-rh">22%</em></span>
+          <input type="range" id="rh" min="5" max="100" value="22"></label>
+        <p class="note">Arraste a caixa azul sobre a marcação. Só o que está dentro dela vai pro OCR — enquadrar bem vale mais que trocar de motor.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__h"><h2>2 · Pré-processo</h2><span class="hint">é aqui que se ganha</span></div>
+      <div class="panel__b">
+        <div class="prev"><canvas id="prev"></canvas></div>
+        <div id="diag" class="diag"></div>
+        <div class="sep"></div>
+        <label class="f"><span>Limiar</span>
+          <select id="th">
+            <option value="adapt" selected>adaptativo (local) — recomendado</option>
+            <option value="otsu">Otsu (global) — só com luz uniforme</option>
+            <option value="man">manual</option>
+            <option value="none">nenhum (tons de cinza)</option>
+          </select></label>
+        <div id="wrap-adapt">
+          <label class="f"><span>Bloco <em id="v-blk">51</em> px</span>
+            <input type="range" id="blk" min="11" max="151" step="10" value="51"></label>
+          <label class="f"><span>Sensibilidade <em id="v-cadj">8</em></span>
+            <input type="range" id="cadj" min="0" max="30" step="1" value="8"></label>
+        </div>
+        <label class="f" id="wrap-tv" style="display:none"><span>Corte <em id="v-tv">128</em></span>
+          <input type="range" id="tv" min="0" max="255" value="128"></label>
+        <label class="f"><span>Polaridade da marcação</span>
+          <select id="pol">
+            <option value="auto" selected>automática</option>
+            <option value="clara">clara sobre fundo escuro</option>
+            <option value="escura">escura sobre fundo claro</option>
+          </select></label>
+        <div class="sep"></div>
+        <label class="chk"><input type="checkbox" id="med" checked> Tirar pontilhado (mediana 3×3)</label>
+        <label class="chk"><input type="checkbox" id="sharp"> Realçar bordas <span style="color:var(--faint);font-size:12px">— amplifica o pontilhado, use por último</span></label>
+        <label class="f" style="margin-top:11px"><span>Escala <em id="v-sc">2×</em></span>
+          <input type="range" id="sc" min="1" max="6" step="1" value="2"></label>
+        <label class="f"><span>Contraste <em id="v-ct">0</em></span>
+          <input type="range" id="ct" min="-100" max="200" value="0"></label>
+        <label class="f"><span>Brilho <em id="v-br">0</em></span>
+          <input type="range" id="br" min="-120" max="120" value="0"></label>
+        <label class="f"><span>Rotação da imagem <em id="v-rot">0°</em></span>
+          <input type="range" id="rot" min="0" max="3" step="1" value="0"></label>
+        <p class="note">O alvo da prévia é <b>letra preta sólida em fundo branco limpo</b>. Com limiar adaptativo o contraste e o brilho quase nunca precisam sair do zero — mexa neles só se a prévia não fechar.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__h"><h2>3 · Motor</h2></div>
+      <div class="panel__b">
+        <label class="f"><span>Segmentação (PSM)</span>
+          <select id="psm">
+            <option value="both" selected>6 + 13 — roda as duas (recomendado)</option>
+            <option value="6">6 — bloco uniforme</option>
+            <option value="13">13 — linha crua, sem layout</option>
+            <option value="7">7 — linha única</option>
+            <option value="11">11 — texto esparso</option>
+          </select></label>
+        <label class="f"><span>Frames por leitura <em id="v-nf">1</em></span>
+          <input type="range" id="nf" min="1" max="8" step="1" value="1"></label>
+        <label class="chk"><input type="checkbox" id="r4"> Testar as 4 rotações (4× mais lento)</label>
+        <p class="note">Duas segmentações no mesmo frame rendem mais que três frames na mesma — com o microscópio parado os frames são quase idênticos, e o juiz aceita as duas hipóteses de qualquer jeito.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ COLUNA DIREITA: leitura, juiz, medição ═════════ -->
+  <div>
+    <div class="panel">
+      <div class="panel__h"><h2>4 · Leitura</h2><span class="hint" id="ocr-hint">—</span></div>
+      <div class="panel__b">
+        <button id="b-read" class="pri big" disabled>LER CHIP</button>
+        <p class="note" style="margin-bottom:12px">Atalho: <b>barra de espaço</b> lê · <b>Enter</b> no campo de baixo registra a amostra.</p>
+        <h3>Hipóteses cruas do OCR</h3>
+        <div class="raw" id="raw"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__h"><h2>5 · O juiz — banco + gramática</h2><span class="hint" id="judge-hint">—</span></div>
+      <div class="cands" id="cands"><div class="empty">leia um chip para ver os candidatos</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__h"><h2>6 · Medição</h2><span class="hint">o ponto da Fase 0</span></div>
+      <div class="panel__b">
+        <label class="f"><span>PN verdadeiro (o que você lê no chip)</span>
+          <input type="text" id="truth" class="pn" placeholder="digite e dê Enter" autocomplete="off" spellcheck="false"></label>
+        <div class="row" style="margin-bottom:14px">
+          <button id="b-rec" class="ok">Registrar amostra</button>
+          <button id="b-skip" class="ghost">Ilegível / pular</button>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><b id="k-n">0</b><span>amostras</span></div>
+          <div class="kpi kpi--good"><b id="k-t1">—</b><span>top-1</span></div>
+          <div class="kpi kpi--good"><b id="k-t3">—</b><span>top-3</span></div>
+          <div class="kpi kpi--bad"><b id="k-out">—</b><span>fora da lista</span></div>
+          <div class="kpi"><b id="k-err">—</b><span>erros/PN</span></div>
+          <div class="kpi"><b id="k-ms">—</b><span>ms por leitura</span></div>
+        </div>
+
+        <h3>Pares que o OCR confunde</h3>
+        <div class="conf" id="conf"><span class="note">aparece a partir da 1ª amostra registrada</span></div>
+        <p class="note">Estes pares alimentam a <code>_CHIP_VISUAL_COST</code> do <code>engine.py</code>: par frequente que não está na matriz é candidato a entrar.</p>
+
+        <div class="sep"></div>
+        <h3>Amostras</h3>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>#</th><th>Verdade</th><th>Melhor hipótese</th><th>Proposto</th><th class="n">Pos.</th><th class="n">Δ</th></tr></thead>
+            <tbody id="log"><tr><td colspan="6" style="color:var(--faint);text-align:center;padding:18px">nenhuma amostra</td></tr></tbody>
+          </table>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button id="b-csv" class="ghost" disabled>Exportar CSV</button>
+          <button id="b-clear" class="ghost" disabled>Limpar</button>
+        </div>
+        <label class="chk" style="margin-top:11px"><input type="checkbox" id="savecrop"> Baixar o recorte a cada amostra (semente do dataset da Fase 3)</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="corpus.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Bancada de medição de OCR — Fase 0 do BRAINSTORM_OCR_BANCADA.md
+   Tudo roda no navegador. Nenhuma imagem sai da máquina; nenhum byte vai
+   pro banco. É instrumentação, não produção.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+/* ── 0. Avisos de ambiente ─────────────────────────────────────────────── */
+function aviso(html, erro){
+  var d = document.createElement('div');
+  d.className = 'warn' + (erro ? ' warn--err' : '');
+  d.innerHTML = html;
+  $('avisos').appendChild(d);
+}
+if (!window.isSecureContext) {
+  aviso('<b>A câmera não vai abrir aqui.</b> O navegador só libera <code>getUserMedia</code> em contexto seguro. ' +
+        'Rode na pasta do arquivo: <code>python3 -m http.server 8000</code> e abra ' +
+        '<code>http://localhost:8000/index.html</code>. Carregar foto do disco funciona mesmo assim.');
+}
+if (!window.WTC_CORPUS) {
+  aviso('<b>corpus.js não carregou.</b> Ele precisa estar na mesma pasta deste arquivo. ' +
+        'Gere com <code>python3 ocr_bench/gerar_corpus.py</code> a partir da raiz do repo.', true);
+}
+
+/* ── 1. Corpus — o juiz ────────────────────────────────────────────────── */
+var C = window.WTC_CORPUS || { pns:[], prefixos:[], fonte:'(vazio)', gerado_em:'' };
+var PNS   = C.pns.map(function(r){ return r[0]; });
+var INFO  = {};                       // pn -> [marca, tipo, spec, fbga]
+var FBGA  = {};                       // codigo fbga -> pn
+C.pns.forEach(function(r){
+  INFO[r[0]] = r;
+  if (r[4]) FBGA[r[4]] = r[0];
+});
+var PFX = (C.prefixos || []).slice().sort(function(a,b){ return b.length - a.length; });
+
+$('m-fonte').textContent = C.gerado_em || '—';
+$('m-pns').textContent   = PNS.length;
+$('m-fbga').textContent  = Object.keys(FBGA).length;
+$('m-pfx').textContent   = PFX.length;
+
+/* ── 2. Distância visual — porte fiel de chips/engine.py ───────────────── */
+/* Mesma matriz de _CHIP_VISUAL_COST. Substituição entre caracteres que o
+   laser confunde custa menos que 1.0; inserção/deleção sempre custam 1.0. */
+var PARES_VISUAIS = [
+  ['O','0',0.1],['O','Q',0.1],['Q','0',0.1],['1','I',0.1],['B','8',0.1],
+  ['L','1',0.2],['S','5',0.2],['Z','2',0.2],['M','W',0.2],
+  ['U','V',0.3],['C','G',0.3],['D','0',0.3],['K','X',0.4]
+];
+/* A matriz achatada por código de caractere: montar chave de string e consultar
+   objeto dentro do laço da DP custava mais que a própria DP. */
+var COSTM = new Float64Array(128 * 128);
+(function(){
+  var i, j;
+  for (i = 0; i < 128; i++) for (j = 0; j < 128; j++) COSTM[i*128 + j] = (i === j ? 0 : 1);
+  PARES_VISUAIS.forEach(function(t){
+    var a = t[0].charCodeAt(0), b = t[1].charCodeAt(0);
+    COSTM[a*128 + b] = t[2]; COSTM[b*128 + a] = t[2];
+  });
+})();
+function naMatriz(a, b){
+  for (var i = 0; i < PARES_VISUAIS.length; i++){
+    var t = PARES_VISUAIS[i];
+    if ((t[0] === a && t[1] === b) || (t[1] === a && t[0] === b)) return true;
+  }
+  return false;
+}
+
+/* Buffers reusados — alocar dois arrays por comparação dominava o tempo. */
+var _bufA = new Float64Array(96), _bufB = new Float64Array(96), _codA = new Int32Array(96);
+
+/* corte (opcional): desiste assim que a linha inteira da DP passa do limite.
+   É o que segura o julgamento rápido com o banco cheio: sem ele, 12 hipóteses
+   contra 596 PNs levam 207 ms — o que dá ~2 s com os 6 mil do banco (medido). */
+function ved(a, b, corte){
+  if (a === b) return 0;
+  if (a.length > b.length){ var t = a; a = b; b = t; }
+  var n = a.length, m = b.length, i, j, tmp;
+  if (corte !== undefined && m - n > corte) return Infinity;   // só as inserções já estouram
+  if (n + 1 > _bufA.length){
+    _bufA = new Float64Array(n + 1); _bufB = new Float64Array(n + 1); _codA = new Int32Array(n + 1);
+  }
+  var prev = _bufA, curr = _bufB;
+  for (i = 0; i < n; i++) _codA[i] = a.charCodeAt(i);
+  for (i = 0; i <= n; i++) prev[i] = i;
+  for (j = 0; j < m; j++){
+    var cb = b.charCodeAt(j);
+    var base = (cb < 128) ? cb : -1;
+    curr[0] = prev[0] + 1;
+    var minLinha = curr[0];
+    for (i = 0; i < n; i++){
+      var ca = _codA[i];
+      var sub = (base >= 0 && ca < 128) ? COSTM[ca*128 + base] : (ca === cb ? 0 : 1);
+      var v = prev[i] + sub;
+      var w = curr[i] + 1;     if (w < v) v = w;
+      var z = prev[i+1] + 1;   if (z < v) v = z;
+      curr[i+1] = v;
+      if (v < minLinha) minLinha = v;
+    }
+    if (corte !== undefined && minLinha > corte) return Infinity;
+    tmp = prev; prev = curr; curr = tmp;
+  }
+  return prev[n];
+}
+
+/* Alinhamento semi-global ("janela"): a string CURTA precisa casar INTEIRA, mas
+   pode sentar em qualquer posição da LONGA — pular o começo e o fim da longa é
+   de graça. Resolve o caso real da bancada (2026-08-27): o dedo do operador
+   tapou o início da marcação e o quadro cortou o fim, então a leitura
+   `5CC512M8EN-` não é prefixo de `NT5CC512M8EN-EK` nem cabe na janela de ±3 de
+   comprimento — o juiz devolvia NADA mesmo com o PN no banco.
+   O `_prefix_candidates` do engine só cobre o lado do sufixo (`startswith`);
+   este cobre os dois lados e o miolo. */
+function vedJanela(a, b){
+  var curta = a.length <= b.length ? a : b;
+  var longa = a.length <= b.length ? b : a;
+  var n = curta.length, m = longa.length, i, j, tmp;
+  if (!n) return 0;
+  if (n + 1 > _bufA.length){
+    _bufA = new Float64Array(n + 1); _bufB = new Float64Array(n + 1); _codA = new Int32Array(n + 1);
+  }
+  var prev = _bufA, curr = _bufB;
+  for (i = 0; i < n; i++) _codA[i] = curta.charCodeAt(i);
+  for (i = 0; i <= n; i++) prev[i] = i;      // coluna 0: consumir a curta custa 1 cada
+  var melhor = prev[n];
+  for (j = 0; j < m; j++){
+    var cb = longa.charCodeAt(j);
+    var base = (cb < 128) ? cb : -1;
+    curr[0] = 0;                              // linha 0: pular a longa é DE GRAÇA
+    for (i = 0; i < n; i++){
+      var ca = _codA[i];
+      var sub = (base >= 0 && ca < 128) ? COSTM[ca*128 + base] : (ca === cb ? 0 : 1);
+      var v = prev[i] + sub;
+      var w = prev[i+1] + 1;   if (w < v) v = w;
+      var z = curr[i] + 1;     if (z < v) v = z;
+      curr[i+1] = v;
+    }
+    if (curr[n] < melhor) melhor = curr[n];   // fim livre: melhor janela vence
+    tmp = prev; prev = curr; curr = tmp;
+  }
+  return melhor;
+}
+
+/* Alinhamento (Levenshtein clássico, custo 1) — devolve os pares substituídos.
+   É o que alimenta o histograma de confusão: 'o OCR leu X onde era Y'. */
+function alinhar(lido, certo){
+  var n = lido.length, m = certo.length, i, j;
+  var d = []; for (i = 0; i <= n; i++){ d.push(new Array(m+1)); d[i][0] = i; }
+  for (j = 0; j <= m; j++) d[0][j] = j;
+  for (i = 1; i <= n; i++) for (j = 1; j <= m; j++){
+    d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1] + (lido[i-1] === certo[j-1] ? 0 : 1));
+  }
+  var subs = [], ins = 0, del = 0;
+  i = n; j = m;
+  while (i > 0 || j > 0){
+    if (i > 0 && j > 0 && d[i][j] === d[i-1][j-1] + (lido[i-1] === certo[j-1] ? 0 : 1)){
+      if (lido[i-1] !== certo[j-1]) subs.push([lido[i-1], certo[j-1]]);
+      i--; j--;
+    } else if (i > 0 && d[i][j] === d[i-1][j] + 1){ del++; i--; }
+    else { ins++; j--; }
+  }
+  return { subs: subs, ins: ins, del: del, total: d[n][m] };
+}
+
+/* ── 3. O ranking ──────────────────────────────────────────────────────── */
+var RX_LIXO = /[^A-Z0-9-]/g;
+var RX_FBGA = /^[A-Z][A-Z0-9]{4}$/;           // chips/engine.py:438
+var CUSTO_FALTA = 0.35;                        // por caractere que falta num prefixo
+var CORTE = 3.5;                               // acima disso não é candidato
+var MAX_FORA = 10;                             // caracteres que podem faltar/sobrar na janela
+
+function limpar(s){ return (s||'').toUpperCase().replace(RX_LIXO, ''); }
+
+/* A linha "parece um PN"? A gramática responde: casa um dos 266 prefixos. */
+function temPrefixo(s){
+  for (var i = 0; i < PFX.length; i++) if (s.indexOf(PFX[i]) === 0) return PFX[i];
+  return null;
+}
+
+/* Índices montados uma vez só. Sem eles o julgamento é O(hipóteses × corpus). */
+var POR_TAM = {};
+var ORDENADO = PNS.slice().sort();
+var COD_FBGA = Object.keys(FBGA);
+PNS.forEach(function(p){ (POR_TAM[p.length] || (POR_TAM[p.length] = [])).push(p); });
+
+/* Índice invertido de TRIGRAMAS. O alinhamento por janela é O(n×m) por
+   candidato — rodá-lo contra o corpus inteiro custava 3,5 s para 12 hipóteses
+   (medido). O trigrama é o filtro barato: só entra na DP quem compartilha ao
+   menos MIN_GRAMAS trigramas com a leitura. Um erro de OCR mata no máximo 3
+   trigramas, então 2 sobrando é uma barra que a leitura real passa e o resto
+   do catálogo não. */
+var TRIGRAMAS = {};
+var MIN_GRAMAS = 2;
+(function(){
+  for (var i = 0; i < PNS.length; i++){
+    var p = PNS[i], vistos = {}, g;
+    for (var j = 0; j + 3 <= p.length; j++){
+      g = p.substr(j, 3);
+      if (vistos[g]) continue;
+      vistos[g] = 1;
+      (TRIGRAMAS[g] || (TRIGRAMAS[g] = [])).push(i);
+    }
+  }
+})();
+
+/* Candidatos que valem a DP: compartilham trigramas suficientes com a leitura. */
+function candidatosPorGrama(h){
+  var conta = new Map(), j, g, lista, q, k;
+  for (j = 0; j + 3 <= h.length; j++){
+    g = h.substr(j, 3);
+    lista = TRIGRAMAS[g];
+    if (!lista) continue;
+    for (q = 0; q < lista.length; q++){
+      k = lista[q];
+      conta.set(k, (conta.get(k) || 0) + 1);
+    }
+  }
+  var out = [];
+  conta.forEach(function(n, i){ if (n >= MIN_GRAMAS) out.push(PNS[i]); });
+  return out;
+}
+
+function inicioPrefixo(p){                     // busca binária em ORDENADO
+  var lo = 0, hi = ORDENADO.length, m;
+  while (lo < hi){ m = (lo + hi) >> 1; if (ORDENADO[m] < p) lo = m + 1; else hi = m; }
+  return lo;
+}
+
+var MAX_HIP = 30;   // 91 linhas de ruído × 26 ms = 2,4 s — teto de segurança
+
+function julgar(hipoteses){
+  /* Prioriza quem casa um prefixo da gramática, depois as mais longas: se o OCR
+     surtar e devolver dezenas de linhas, julgamos as mais promissoras. */
+  if (hipoteses.length > MAX_HIP){
+    hipoteses = hipoteses.slice().sort(function(a,b){
+      var pa = temPrefixo(a) ? 1 : 0, pb = temPrefixo(b) ? 1 : 0;
+      return pb - pa || b.length - a.length;
+    }).slice(0, MAX_HIP);
+  }
+  var melhor = {};
+  function por(pn, score, hip, tipo){
+    if (!melhor[pn] || score < melhor[pn].score) melhor[pn] = { score: score, hip: hip, tipo: tipo };
+  }
+  hipoteses.forEach(function(h){
+    if (h.length < 3) return;
+
+    // (a) FBGA — 5 caracteres, a camada 2 do classify().
+    //     Exato primeiro; se não casar, fuzzy sobre os códigos — espelha o
+    //     _fuzzy_fbga_candidates do engine, que busca em fbga_code e não em
+    //     part_number. Sem isto, UM erro de OCR num FBGA perde o PN inteiro:
+    //     o código tem 5 caracteres e os PNs têm 10-20, então nenhuma outra
+    //     etapa alcança o registro certo. (Medido: 0,8% de recuperação sem o
+    //     fuzzy.)
+    if (RX_FBGA.test(h)){
+      if (FBGA[h]){ por(FBGA[h], 0, h, 'fbga'); return; }
+      for (var fi = 0; fi < COD_FBGA.length; fi++){
+        var cf = COD_FBGA[fi];
+        var df = ved(h, cf, 1.6);
+        if (df <= 1.6) por(FBGA[cf], df, h, 'fbga');
+      }
+    }
+
+    // (b) casamento exato
+    if (INFO[h]) por(h, 0, h, 'exato');
+
+    // (c) prefixo — a hipótese é o começo de um PN maior (leitura truncada)
+    if (h.length >= 6){
+      var i = inicioPrefixo(h);
+      while (i < ORDENADO.length && ORDENADO[i].indexOf(h) === 0){
+        if (ORDENADO[i] !== h) por(ORDENADO[i], (ORDENADO[i].length - h.length) * CUSTO_FALTA, h, 'prefixo');
+        i++;
+      }
+    }
+
+    // (d) visual — só comprimentos próximos, com corte antecipado dentro da DP
+    for (var t = h.length - 3; t <= h.length + 3; t++){
+      var balde = POR_TAM[t]; if (!balde) continue;
+      for (var k = 0; k < balde.length; k++){
+        var c = balde[k];
+        if (c === h) continue;
+        var d = ved(h, c, CORTE);
+        if (d <= CORTE) por(c, d, h, 'visual');
+      }
+    }
+
+    // (e) janela — a leitura é um PEDAÇO do PN: dedo tapando o começo, quadro
+    //     cortando o fim, ou o OCR pegando lixo em volta. Custo = erro dentro
+    //     da janela + o que ficou de fora, a MAX_FORA caracteres de distância.
+    if (h.length >= 7){
+      var cands = candidatosPorGrama(h);
+      for (var kj = 0; kj < cands.length; kj++){
+        var cj = cands[kj];
+        var dif = Math.abs(cj.length - h.length);
+        if (!dif || dif > MAX_FORA) continue;          // igual já foi visto em (d)
+        var falta = dif * CUSTO_FALTA;
+        if (falta > CORTE) continue;
+        var cst = vedJanela(h, cj) + falta;
+        if (cst <= CORTE) por(cj, cst, h, 'janela');
+      }
+    }
+  });
+  return Object.keys(melhor)
+    .map(function(pn){ return { pn: pn, score: melhor[pn].score, hip: melhor[pn].hip, tipo: melhor[pn].tipo }; })
+    .sort(function(a,b){ return a.score - b.score || a.pn.length - b.pn.length || (a.pn < b.pn ? -1 : 1); })
+    .slice(0, 8);
+}
+
+/* ── 4. Fonte de imagem: câmera ou arquivo ─────────────────────────────── */
+var vid = $('vid'), still = $('still'), stream = null, temImagem = false;
+
+function mostrarStage(qual){
+  vid.style.display   = qual === 'cam'  ? 'block' : 'none';
+  still.style.display = qual === 'foto' ? 'block' : 'none';
+  $('stage-empty').style.display = qual ? 'none' : 'block';
+  $('roi').style.display = qual ? 'block' : 'none';
+  temImagem = !!qual;
+  $('b-read').disabled = !(temImagem && motorPronto);
+  $('src-hint').textContent = qual === 'cam' ? 'câmera ao vivo' : (qual === 'foto' ? 'foto carregada' : 'nenhuma');
+  if (qual) posicionarRoi();
+}
+
+async function listarCams(){
+  try{
+    var ds = await navigator.mediaDevices.enumerateDevices();
+    var cams = ds.filter(function(d){ return d.kind === 'videoinput'; });
+    var sel = $('cam'); var atual = sel.value;
+    sel.innerHTML = '';
+    cams.forEach(function(d, i){
+      var o = document.createElement('option');
+      o.value = d.deviceId;
+      o.textContent = d.label || ('câmera ' + (i+1));
+      sel.appendChild(o);
+    });
+    if (!cams.length) sel.innerHTML = '<option value="">nenhuma câmera encontrada</option>';
+    if (atual) sel.value = atual;
+  } catch(e){ /* silencioso: enumerar antes da permissão é normal */ }
+}
+
+async function abrirCam(){
+  try{
+    if (stream) stream.getTracks().forEach(function(t){ t.stop(); });
+    var id = $('cam').value;
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: id ? { deviceId: { exact: id }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+                : { width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    vid.srcObject = stream;
+    await vid.play();
+    await listarCams();
+    if (!$('cam').value){
+      var tr = stream.getVideoTracks()[0];
+      var st = tr && tr.getSettings ? tr.getSettings() : {};
+      if (st.deviceId) $('cam').value = st.deviceId;
+    }
+    mostrarStage('cam');
+    $('b-stop').disabled = false;
+  } catch(e){
+    aviso('<b>Não consegui abrir a câmera:</b> ' + (e && e.message ? e.message : e) +
+          '. Se o microscópio está conectado, confira se outro programa não está usando ele.', true);
+  }
+}
+
+function pararCam(){
+  if (stream) stream.getTracks().forEach(function(t){ t.stop(); });
+  stream = null; vid.srcObject = null;
+  $('b-stop').disabled = true;
+  mostrarStage(null);
+}
+
+$('b-cam').addEventListener('click', abrirCam);
+$('b-stop').addEventListener('click', pararCam);
+$('cam').addEventListener('change', function(){ if (stream) abrirCam(); });
+$('b-file').addEventListener('click', function(){ $('file').click(); });
+$('file').addEventListener('change', function(e){ if (e.target.files[0]) carregarFoto(e.target.files[0]); });
+
+function carregarFoto(f){
+  var img = new Image();
+  img.onload = function(){
+    still.width = img.naturalWidth; still.height = img.naturalHeight;
+    still.getContext('2d').drawImage(img, 0, 0);
+    if (stream) pararCam();
+    mostrarStage('foto');
+    URL.revokeObjectURL(img.src);
+  };
+  img.src = URL.createObjectURL(f);
+}
+['dragover','drop'].forEach(function(ev){
+  document.addEventListener(ev, function(e){
+    e.preventDefault();
+    if (ev === 'drop' && e.dataTransfer.files[0]) carregarFoto(e.dataTransfer.files[0]);
+  });
+});
+
+/* ── 5. ROI — caixa arrastável sobre a imagem ──────────────────────────── */
+var roi = { x: .30, y: .39, w: .40, h: .22 };   // fração do elemento visível
+
+function elemAtivo(){ return stream ? vid : (temImagem ? still : null); }
+
+function posicionarRoi(){
+  var el = elemAtivo(); if (!el) return;
+  var r = el.getBoundingClientRect(), s = $('stage').getBoundingClientRect();
+  var box = $('roi');
+  box.style.left   = (r.left - s.left + roi.x * r.width) + 'px';
+  box.style.top    = (r.top  - s.top  + roi.y * r.height) + 'px';
+  box.style.width  = (roi.w * r.width) + 'px';
+  box.style.height = (roi.h * r.height) + 'px';
+}
+window.addEventListener('resize', posicionarRoi);
+vid.addEventListener('loadedmetadata', posicionarRoi);
+setInterval(posicionarRoi, 700);   // o vídeo muda de tamanho ao trocar de câmera
+
+(function arrastar(){
+  var box = $('roi'), ativo = false, ox = 0, oy = 0;
+  box.addEventListener('pointerdown', function(e){
+    var el = elemAtivo(); if (!el) return;
+    ativo = true; box.classList.add('drag'); box.setPointerCapture(e.pointerId);
+    var r = el.getBoundingClientRect();
+    ox = e.clientX - (r.left + roi.x * r.width);
+    oy = e.clientY - (r.top  + roi.y * r.height);
+  });
+  box.addEventListener('pointermove', function(e){
+    if (!ativo) return;
+    var el = elemAtivo(); if (!el) return;
+    var r = el.getBoundingClientRect();
+    roi.x = Math.max(0, Math.min(1 - roi.w, (e.clientX - ox - r.left) / r.width));
+    roi.y = Math.max(0, Math.min(1 - roi.h, (e.clientY - oy - r.top)  / r.height));
+    posicionarRoi();
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){
+    box.addEventListener(ev, function(){ ativo = false; box.classList.remove('drag'); });
+  });
+})();
+
+function ajusteRoi(){
+  roi.w = +$('rw').value / 100; roi.h = +$('rh').value / 100;
+  roi.x = Math.max(0, Math.min(1 - roi.w, roi.x));
+  roi.y = Math.max(0, Math.min(1 - roi.h, roi.y));
+  $('v-rw').textContent = $('rw').value + '%';
+  $('v-rh').textContent = $('rh').value + '%';
+  posicionarRoi(); previa();
+}
+$('rw').addEventListener('input', ajusteRoi);
+$('rh').addEventListener('input', ajusteRoi);
+$('b-crop').addEventListener('click', function(){
+  $('rw').value = 100; $('rh').value = 100; roi.x = 0; roi.y = 0; ajusteRoi();
+});
+
+/* ── 6. Pré-processo ───────────────────────────────────────────────────── */
+/* Calibrado na 1ª leitura real (chip Foresee, 2026-08-27, marcação a laser em
+   encapsulamento escuro). O que a varredura de 50 combinações mostrou:
+
+   · limiar GLOBAL (Otsu) NÃO serve — a luz do microscópio cai do canto claro
+     pro escuro, e um corte único queima metade da imagem. O que leu o PN foi
+     mediana 3×3 + limiar ADAPTATIVO (média local) + polaridade invertida;
+   · realce de borda ATRAPALHA: amplifica o pontilhado do encapsulamento até
+     virar "texto" (era ligado por padrão — foi o que gerou 91 hipóteses de lixo);
+   · imagem grande não lê melhor, só mais devagar (ROI de 100% × escala 2 num
+     quadro 1080p = 3840 px de largura → 7 s por leitura). Daí o teto abaixo. */
+
+var MAX_LARGURA = 1600;
+var ultimoDiag = null;
+
+function recortar(){
+  var el = elemAtivo(); if (!el) return null;
+  var W = stream ? vid.videoWidth  : still.width;
+  var H = stream ? vid.videoHeight : still.height;
+  if (!W || !H) return null;
+  var sx = Math.round(roi.x * W), sy = Math.round(roi.y * H);
+  var sw = Math.max(8, Math.round(roi.w * W)), sh = Math.max(8, Math.round(roi.h * H));
+  var rot = +$('rot').value, girado = (rot % 2 === 1);
+  var esc = +$('sc').value;
+  var largura = (girado ? sh : sw) * esc;
+  if (largura > MAX_LARGURA) esc = esc * (MAX_LARGURA / largura);   // teto de tamanho
+  var c = document.createElement('canvas');
+  c.width  = Math.max(8, Math.round((girado ? sh : sw) * esc));
+  c.height = Math.max(8, Math.round((girado ? sw : sh) * esc));
+  var g = c.getContext('2d', { willReadFrequently: true });
+  g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+  g.save();
+  g.translate(c.width/2, c.height/2);
+  g.rotate(rot * Math.PI/2);
+  g.drawImage(el, sx, sy, sw, sh, -sw*esc/2, -sh*esc/2, sw*esc, sh*esc);
+  g.restore();
+  return c;
+}
+
+/* Mediana 3×3 — tira o pontilhado brilhante do encapsulamento sem borrar a letra.
+   Blur gaussiano apagaria o traço fino do laser; a mediana não. */
+function mediana3(s, w, h){
+  var d = new Uint8Array(s.length), x, y, i, j, k, v, tmp;
+  var jan = new Uint8Array(9);
+  for (y = 0; y < h; y++){
+    for (x = 0; x < w; x++){
+      if (x === 0 || y === 0 || x === w-1 || y === h-1){ d[y*w+x] = s[y*w+x]; continue; }
+      k = 0;
+      for (j = -1; j <= 1; j++) for (i = -1; i <= 1; i++) jan[k++] = s[(y+j)*w + (x+i)];
+      for (i = 1; i < 9; i++){ v = jan[i]; for (j = i-1; j >= 0 && jan[j] > v; j--) jan[j+1] = jan[j]; jan[j+1] = v; }
+      d[y*w+x] = jan[4];
+    }
+  }
+  return d;
+}
+
+/* Média local por imagem integral — O(n), independente do tamanho do bloco. */
+function mediaLocal(s, w, h, bloco){
+  var ii = new Float64Array((w+1) * (h+1)), x, y;
+  for (y = 0; y < h; y++){
+    var soma = 0;
+    for (x = 0; x < w; x++){
+      soma += s[y*w + x];
+      ii[(y+1)*(w+1) + (x+1)] = ii[y*(w+1) + (x+1)] + soma;
+    }
+  }
+  var r = bloco >> 1, m = new Float64Array(w*h);
+  for (y = 0; y < h; y++){
+    var y0 = Math.max(0, y-r), y1 = Math.min(h-1, y+r);
+    for (x = 0; x < w; x++){
+      var x0 = Math.max(0, x-r), x1 = Math.min(w-1, x+r);
+      var s2 = ii[(y1+1)*(w+1) + (x1+1)] - ii[y0*(w+1) + (x1+1)]
+             - ii[(y1+1)*(w+1) + x0]     + ii[y0*(w+1) + x0];
+      m[y*w + x] = s2 / ((y1-y0+1) * (x1-x0+1));
+    }
+  }
+  return m;
+}
+
+function processar(c){
+  if (!c) return null;
+  var g = c.getContext('2d', { willReadFrequently: true });
+  var im = g.getImageData(0, 0, c.width, c.height), p = im.data;
+  var w = c.width, h = c.height, n = w*h, i;
+  var ct = +$('ct').value, br = +$('br').value;
+  var f = (259 * (ct + 255)) / (255 * (259 - ct));
+
+  // cinza + brilho/contraste, e a conta do reflexo
+  var cinza = new Uint8Array(n), estourados = 0, escuros = 0, soma = 0;
+  for (i = 0; i < n; i++){
+    var o = i*4;
+    var y = 0.299*p[o] + 0.587*p[o+1] + 0.114*p[o+2];
+    if (y >= 250) estourados++;
+    if (y <= 5)   escuros++;
+    y = f * (y - 128) + 128 + br;
+    y = y < 0 ? 0 : (y > 255 ? 255 : y);
+    cinza[i] = y; soma += y;
+  }
+  if ($('med').checked) cinza = mediana3(cinza, w, h);
+
+  if ($('sharp').checked){
+    var src = new Uint8Array(cinza), x, yy;
+    for (yy = 1; yy < h-1; yy++) for (x = 1; x < w-1; x++){
+      var q = yy*w + x;
+      var v = 5*src[q] - src[q-1] - src[q+1] - src[q-w] - src[q+w];
+      cinza[q] = v < 0 ? 0 : (v > 255 ? 255 : v);
+    }
+  }
+
+  var modo = $('th').value, pol = $('pol').value, saida = new Uint8Array(n);
+
+  if (modo === 'none'){
+    for (i = 0; i < n; i++) saida[i] = cinza[i];
+    if (pol === 'clara') for (i = 0; i < n; i++) saida[i] = 255 - saida[i];
+  } else {
+    var corte;
+    if (modo === 'adapt'){
+      var bloco = +$('blk').value | 1;
+      var C = +$('cadj').value;
+      var media = mediaLocal(cinza, w, h, bloco);
+      // conta os dois lados: o texto é sempre a MINORIA dos pixels
+      var claros = 0, escs = 0;
+      for (i = 0; i < n; i++){
+        if (cinza[i] > media[i] + C) claros++;
+        else if (cinza[i] < media[i] - C) escs++;
+      }
+      var textoClaro = (pol === 'auto') ? (claros <= escs) : (pol === 'clara');
+      for (i = 0; i < n; i++){
+        var tinta = textoClaro ? (cinza[i] > media[i] + C) : (cinza[i] < media[i] - C);
+        saida[i] = tinta ? 0 : 255;              // sempre entrega letra PRETA em fundo BRANCO
+      }
+      ultimoDiag = { estourados: estourados/n, escuros: escuros/n, media: soma/n,
+                     tinta: (textoClaro ? claros : escs)/n, polaridade: textoClaro ? 'clara' : 'escura' };
+    } else {
+      if (modo === 'otsu'){
+        var hist = new Uint32Array(256);
+        for (i = 0; i < n; i++) hist[cinza[i]]++;    // histograma DEPOIS de mediana/realce
+        corte = otsu(hist, n);
+        $('v-tv').textContent = corte;
+      } else corte = +$('tv').value;
+      var acimaCorte = 0;
+      for (i = 0; i < n; i++) if (cinza[i] > corte) acimaCorte++;
+      var claro2 = (pol === 'auto') ? (acimaCorte <= n/2) : (pol === 'clara');
+      for (i = 0; i < n; i++){
+        var t2 = claro2 ? (cinza[i] > corte) : (cinza[i] <= corte);
+        saida[i] = t2 ? 0 : 255;
+      }
+      ultimoDiag = { estourados: estourados/n, escuros: escuros/n, media: soma/n,
+                     tinta: (claro2 ? acimaCorte : n-acimaCorte)/n, polaridade: claro2 ? 'clara' : 'escura' };
+    }
+  }
+
+  for (i = 0; i < n; i++){ var o2 = i*4; p[o2] = p[o2+1] = p[o2+2] = saida[i]; p[o2+3] = 255; }
+  g.putImageData(im, 0, 0);
+  return c;
+}
+
+function otsu(hist, total){
+  var soma = 0, i;
+  for (i = 0; i < 256; i++) soma += i * hist[i];
+  var sB = 0, wB = 0, best = 0, lim = 128;
+  for (i = 0; i < 256; i++){
+    wB += hist[i]; if (!wB) continue;
+    var wF = total - wB; if (!wF) break;
+    sB += i * hist[i];
+    var mB = sB / wB, mF = (soma - sB) / wF;
+    var v = wB * wF * (mB - mF) * (mB - mF);
+    if (v > best) { best = v; lim = i; }
+  }
+  return lim;
+}
+
+/* O painel de diagnóstico: é ele que ensina que o problema costuma ser a LUZ. */
+function mostrarDiag(c){
+  var d = ultimoDiag, box = $('diag');
+  if (!d || !c){ box.innerHTML = ''; return; }
+  var itens = [];
+  itens.push('<span>' + c.width + '×' + c.height + ' px</span>');
+  itens.push('<span>marcação ' + d.polaridade + '</span>');
+  var tin = (100*d.tinta).toFixed(1);
+  itens.push('<span class="' + (d.tinta > 0.02 && d.tinta < 0.30 ? 'ok' : 'al') + '">tinta ' + tin + '%'
+             + (d.tinta >= 0.30 ? ' — muito, aumente a sensibilidade' : (d.tinta <= 0.02 ? ' — pouca, diminua' : '')) + '</span>');
+  if (d.estourados > 0.03)
+    itens.push('<span class="al">reflexo em ' + (100*d.estourados).toFixed(0) + '% — a luz está estourando a marcação</span>');
+  if (d.escuros > 0.30)
+    itens.push('<span class="al">' + (100*d.escuros).toFixed(0) + '% preto puro — falta luz</span>');
+  box.innerHTML = itens.join('');
+}
+
+function previa(){
+  var c = processar(recortar());
+  var pv = $('prev');
+  if (!c){ pv.width = 1; pv.height = 1; mostrarDiag(null); return; }
+  pv.width = c.width; pv.height = c.height;
+  pv.getContext('2d').drawImage(c, 0, 0);
+  mostrarDiag(c);
+}
+['sc','ct','br','th','tv','blk','cadj','pol','med','sharp','rot'].forEach(function(id){
+  $(id).addEventListener('input', function(){
+    $('v-sc').textContent   = $('sc').value + '×';
+    $('v-ct').textContent   = $('ct').value;
+    $('v-br').textContent   = $('br').value;
+    $('v-blk').textContent  = $('blk').value;
+    $('v-cadj').textContent = $('cadj').value;
+    $('v-rot').textContent  = (+$('rot').value * 90) + '°';
+    $('wrap-tv').style.display    = $('th').value === 'man'   ? 'block' : 'none';
+    $('wrap-adapt').style.display = $('th').value === 'adapt' ? 'block' : 'none';
+    previa();
+  });
+});
+$('nf').addEventListener('input', function(){ $('v-nf').textContent = $('nf').value; });
+setInterval(function(){ if (temImagem && stream) previa(); }, 900);
+
+/* ── 7. O motor ────────────────────────────────────────────────────────── */
+/* PINADO na 5.1.1 de propósito: o código abaixo usa a API v5
+   (createWorker(lang, oem, opts) + setParameters + recognize). A última do npm
+   hoje é a 7.x, com API diferente — subir sem revisar quebra a leitura.
+   jsdelivr e unpkg servem direto do npm, então a 5.1.1 existe garantido;
+   cdnjs fica por último porque costuma atrasar versões. */
+var CDNS = [
+  'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+  'https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js'
+];
+var worker = null, motorPronto = false;
+
+function carregarScript(urls, i){
+  i = i || 0;
+  return new Promise(function(res, rej){
+    if (i >= urls.length) return rej(new Error('nenhum CDN respondeu'));
+    var s = document.createElement('script');
+    s.src = urls[i];
+    s.onload = res;
+    s.onerror = function(){ carregarScript(urls, i+1).then(res, rej); };
+    document.head.appendChild(s);
+  });
+}
+
+(async function iniciarMotor(){
+  try{
+    await carregarScript(CDNS);
+    $('m-ocr').textContent = 'baixando idioma…';
+    worker = await Tesseract.createWorker('eng', 1, {
+      logger: function(m){
+        if (m.status && m.progress != null && !motorPronto)
+          $('m-ocr').textContent = m.status + ' ' + Math.round(m.progress*100) + '%';
+      }
+    });
+    await worker.setParameters({
+      tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-',
+      tessedit_pageseg_mode: '6',
+      preserve_interword_spaces: '0'
+    });
+    motorPronto = true;
+    $('m-ocr').textContent = 'Tesseract 5 pronto';
+    $('b-read').disabled = !temImagem;
+  } catch(e){
+    $('m-ocr').textContent = 'falhou';
+    aviso('<b>Não consegui carregar o Tesseract.</b> ' + (e.message || e) +
+          ' — ele vem de CDN na primeira vez, então precisa de internet. Depois fica em cache.', true);
+  }
+})();
+
+/* ── 8. Ler ────────────────────────────────────────────────────────────── */
+var ultimo = null;   // { hipoteses, ranking, ms, crop }
+
+async function ler(){
+  if (!motorPronto || !temImagem) return;
+  var btn = $('b-read'); btn.disabled = true; btn.textContent = 'LENDO…';
+  var t0 = performance.now();
+  var nFrames = stream ? +$('nf').value : 1;
+  var rots = $('r4').checked ? [0,1,2,3] : [+$('rot').value];
+  var rotOriginal = $('rot').value;
+  /* Duas segmentações no mesmo frame rendem mais que frames repetidos: com o
+     microscópio parado os frames são quase idênticos, e a 13 ("linha crua")
+     ganhou da 6 em quase toda a varredura sobre a marcação real. */
+  var psms = $('psm').value === 'both' ? ['6','13'] : [$('psm').value];
+  var brutas = [], hipoteses = [], crop = null, passos = 0;
+  var total = nFrames * rots.length * psms.length;
+
+  try{
+    for (var f = 0; f < nFrames; f++){
+      for (var r = 0; r < rots.length; r++){
+        $('rot').value = rots[r];
+        var c = processar(recortar());
+        if (!c) continue;
+        if (!crop) crop = c;
+        for (var q = 0; q < psms.length; q++){
+          passos++;
+          $('ocr-hint').textContent = passos + '/' + total + ' · psm' + psms[q] +
+                                      (rots.length > 1 ? ' · ' + (rots[r]*90) + '°' : '');
+          await worker.setParameters({ tessedit_pageseg_mode: psms[q] });
+          var out = await worker.recognize(c);
+          var txt = (out && out.data && out.data.text) || '';
+          txt.split('\n').forEach(function(ln){
+            var s = limpar(ln);
+            if (s.length >= 3){
+              brutas.push({ txt: s, frame: f+1, rot: rots[r]*90, psm: psms[q], pfx: temPrefixo(s) });
+              if (hipoteses.indexOf(s) < 0) hipoteses.push(s);
+            }
+          });
+        }
+      }
+      if (stream && nFrames > 1) await new Promise(function(r2){ setTimeout(r2, 90); });
+    }
+  } catch(e){
+    aviso('<b>Erro na leitura:</b> ' + (e.message || e), true);
+  }
+  $('rot').value = rotOriginal;
+
+  var ms = Math.round(performance.now() - t0);
+  var ranking = julgar(hipoteses);
+  ultimo = { hipoteses: hipoteses, brutas: brutas, ranking: ranking, ms: ms, crop: crop };
+
+  /* Muitas linhas de saída = o OCR está lendo RUÍDO como texto. Vale avisar,
+     porque a reação certa é mexer no pré-processo, não no motor. */
+  var ruidoso = brutas.length > 12;
+
+  $('raw').innerHTML = brutas.length
+    ? (ruidoso ? '<span class="dim">⚠ ' + brutas.length + ' linhas — isto é ruído lido como texto. ' +
+                 'Aperte o ROI na marcação, ligue a mediana e desligue o realce de bordas.</span>\n\n' : '') +
+      brutas.map(function(b){
+        var tag = '<span class="dim">p' + b.psm + (b.rot ? '/' + b.rot + '°' : '') + '</span>  ';
+        return tag + (b.pfx ? '<span class="hit">' + b.txt + '</span>  <span class="dim">← prefixo ' + b.pfx + '</span>'
+                            : b.txt);
+      }).join('\n')
+    : '';
+  desenharCands(ranking);
+  $('ocr-hint').textContent = ms + ' ms · ' + hipoteses.length + ' hipóteses';
+  $('judge-hint').textContent = ranking.length ? ranking.length + ' candidatos' : 'nenhum candidato';
+  btn.disabled = false; btn.textContent = 'LER CHIP';
+  $('truth').focus();
+}
+
+function difMarcado(pn, hip){
+  if (!hip) return pn;
+  var out = '', i;
+  for (i = 0; i < pn.length; i++){
+    out += (hip[i] === pn[i]) ? pn[i] : '<mark>' + pn[i] + '</mark>';
+  }
+  return out;
+}
+
+function desenharCands(rk){
+  var box = $('cands');
+  if (!rk.length){
+    box.innerHTML = '<div class="empty">nenhum candidato' +
+      '<br><br>Duas causas possíveis, nesta ordem:' +
+      '<br>1 · <b>o PN não está no corpus</b> — são ' + PNS.length + ' PNs de <b>' + C.fonte + '</b>. ' +
+      'O seed cobre 9 marcas; o banco tem 6 mil+. Regere com <b>gerar_corpus.py --from-db</b>.' +
+      '<br>2 · o OCR não leu nada parecido — olhe as hipóteses cruas acima.</div>';
+    return;
+  }
+  box.innerHTML = rk.map(function(c, i){
+    var m = INFO[c.pn] || ['','','',''];
+    var meta = [m[1], m[2], m[3]].filter(Boolean).join(' · ') || '—';
+    return '<button class="cd' + (i === 0 ? ' cd--top' : '') + '" data-pn="' + c.pn + '">' +
+             '<span class="cd__pn">' + difMarcado(c.pn, c.hip) + '</span>' +
+             '<span class="cd__sc">' + c.score.toFixed(2) + '</span>' +
+             '<span class="cd__meta"><span class="badge b-' + c.tipo + '">' + c.tipo + '</span>' + meta +
+               '  <span style="opacity:.65">← ' + c.hip + '</span></span>' +
+           '</button>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.cd'), function(b){
+    b.addEventListener('click', function(){ $('truth').value = b.dataset.pn; $('truth').focus(); });
+  });
+}
+
+$('b-read').addEventListener('click', ler);
+document.addEventListener('keydown', function(e){
+  if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT'){
+    e.preventDefault(); ler();
+  }
+});
+$('truth').addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); registrar(); } });
+$('truth').addEventListener('input', function(){ this.value = this.value.toUpperCase(); });
+
+/* ── 9. Medição ────────────────────────────────────────────────────────── */
+var amostras = [], confusoes = {};
+
+try{
+  var salvo = localStorage.getItem('wtc_ocr_amostras');
+  if (salvo){ amostras = JSON.parse(salvo); amostras.forEach(contarConfusao); }
+} catch(e){ /* sem storage: segue em memória */ }
+
+function persistir(){
+  try{ localStorage.setItem('wtc_ocr_amostras', JSON.stringify(amostras.slice(-500))); }catch(e){}
+}
+
+function contarConfusao(a){
+  if (!a.melhor || !a.verdade) return;
+  var al = alinhar(a.melhor, a.verdade);
+  al.subs.forEach(function(s){
+    var k = s[0] + '→' + s[1];
+    confusoes[k] = (confusoes[k] || 0) + 1;
+  });
+}
+
+function registrar(pulou){
+  var verdade = limpar($('truth').value);
+  if (!pulou && !verdade){ $('truth').focus(); return; }
+  if (!ultimo){ return; }
+
+  // melhor hipótese = a mais próxima da verdade (é o que mede o MOTOR, não o juiz)
+  var melhor = '', dmin = Infinity;
+  ultimo.hipoteses.forEach(function(h){
+    var d = alinhar(h, verdade).total;
+    if (d < dmin){ dmin = d; melhor = h; }
+  });
+  var pos = 0;
+  for (var i = 0; i < ultimo.ranking.length; i++){
+    if (ultimo.ranking[i].pn === verdade){ pos = i + 1; break; }
+  }
+  var a = {
+    n: amostras.length + 1,
+    quando: new Date().toISOString(),
+    verdade: pulou ? '' : verdade,
+    melhor: melhor,
+    proposto: ultimo.ranking.length ? ultimo.ranking[0].pn : '',
+    pos: pos,
+    delta: dmin === Infinity ? '' : dmin,
+    ms: ultimo.ms,
+    hipoteses: ultimo.hipoteses.length,
+    ilegivel: !!pulou,
+    /* Os ajustes vão no CSV: é assim que se descobre qual combinação leu melhor. */
+    ajustes: [$('th').value,
+              $('th').value === 'adapt' ? ('blk'+$('blk').value+'/C'+$('cadj').value) : '',
+              'pol:' + (ultimoDiag ? ultimoDiag.polaridade : $('pol').value),
+              $('med').checked ? 'mediana' : '', $('sharp').checked ? 'realce' : '',
+              $('sc').value+'x', 'ct'+$('ct').value, 'br'+$('br').value,
+              'psm'+$('psm').value, 'f'+$('nf').value, $('r4').checked?'rot4':''
+             ].filter(Boolean).join('|'),
+    reflexo: ultimoDiag ? +(100*ultimoDiag.estourados).toFixed(1) : '',
+    tinta:   ultimoDiag ? +(100*ultimoDiag.tinta).toFixed(1) : ''
+  };
+  amostras.push(a);
+  if (!pulou) contarConfusao(a);
+  if (!pulou && $('savecrop').checked && ultimo.crop) baixarCrop(ultimo.crop, verdade);
+  persistir(); render();
+  $('truth').value = '';
+  $('truth').blur();
+}
+$('b-rec').addEventListener('click', function(){ registrar(false); });
+$('b-skip').addEventListener('click', function(){ registrar(true); });
+
+function baixarCrop(c, pn){
+  c.toBlob(function(b){
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = (pn || 'sem-pn') + '_' + Date.now() + '.png';
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  });
+}
+
+function render(){
+  var val = amostras.filter(function(a){ return !a.ilegivel && a.verdade; });
+  $('k-n').textContent = amostras.length;
+  if (val.length){
+    var t1 = val.filter(function(a){ return a.pos === 1; }).length;
+    var t3 = val.filter(function(a){ return a.pos >= 1 && a.pos <= 3; }).length;
+    var out = val.filter(function(a){ return a.pos === 0; }).length;
+    var er  = val.reduce(function(s,a){ return s + (+a.delta || 0); }, 0) / val.length;
+    var ms  = amostras.reduce(function(s,a){ return s + (+a.ms || 0); }, 0) / amostras.length;
+    $('k-t1').textContent  = (100*t1/val.length).toFixed(0) + '%';
+    $('k-t3').textContent  = (100*t3/val.length).toFixed(0) + '%';
+    $('k-out').textContent = (100*out/val.length).toFixed(0) + '%';
+    $('k-err').textContent = er.toFixed(1);
+    $('k-ms').textContent  = Math.round(ms);
+  } else {
+    ['k-t1','k-t3','k-out','k-err'].forEach(function(i){ $(i).textContent = '—'; });
+    $('k-ms').textContent = amostras.length ? Math.round(amostras.reduce(function(s,a){return s+(+a.ms||0);},0)/amostras.length) : '—';
+  }
+
+  var pares = Object.keys(confusoes).sort(function(a,b){ return confusoes[b] - confusoes[a]; }).slice(0, 24);
+  $('conf').innerHTML = pares.length
+    ? pares.map(function(k){
+        var p = k.split('→'), estaNaMatriz = naMatriz(p[0], p[1]);
+        return '<span class="cpair" title="' + (estaNaMatriz ? 'já está na _CHIP_VISUAL_COST' : 'NÃO está na matriz — candidato a entrar') + '">' +
+               '<b>' + p[0] + '</b>→' + p[1] + ' <i>' + confusoes[k] + (estaNaMatriz ? '' : ' ✦') + '</i></span>';
+      }).join('')
+    : '<span class="note">aparece a partir da 1ª amostra registrada</span>';
+
+  var tb = $('log');
+  if (!amostras.length){
+    tb.innerHTML = '<tr><td colspan="6" style="color:var(--faint);text-align:center;padding:18px">nenhuma amostra</td></tr>';
+  } else {
+    tb.innerHTML = amostras.slice().reverse().slice(0, 120).map(function(a){
+      var mau = !a.ilegivel && a.pos !== 1;
+      return '<tr' + (mau ? ' class="miss"' : '') + '>' +
+        '<td class="n">' + a.n + '</td>' +
+        '<td>' + (a.ilegivel ? '<i style="color:#a2a9b0">ilegível</i>' : a.verdade) + '</td>' +
+        '<td style="color:#697077">' + (a.melhor || '—') + '</td>' +
+        '<td>' + (a.proposto || '—') + '</td>' +
+        '<td class="n">' + (a.ilegivel ? '—' : (a.pos || '✗')) + '</td>' +
+        '<td class="n">' + (a.delta === '' ? '—' : a.delta) + '</td></tr>';
+    }).join('');
+  }
+  $('b-csv').disabled = !amostras.length;
+  $('b-clear').disabled = !amostras.length;
+}
+
+$('b-csv').addEventListener('click', function(){
+  var cols = ['n','quando','verdade','melhor','proposto','pos','delta','ms','hipoteses','ilegivel','reflexo','tinta','ajustes'];
+  var csv = cols.join(',') + '\n' + amostras.map(function(a){
+    return cols.map(function(c){ return '"' + String(a[c] == null ? '' : a[c]).replace(/"/g,'""') + '"'; }).join(',');
+  }).join('\n');
+  var b = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  var el = document.createElement('a');
+  el.href = URL.createObjectURL(b);
+  el.download = 'bancada_ocr_' + new Date().toISOString().slice(0,10) + '.csv';
+  el.click();
+});
+$('b-clear').addEventListener('click', function(){
+  if (!confirm('Apagar as ' + amostras.length + ' amostras? Exporte o CSV antes se quiser guardar.')) return;
+  amostras = []; confusoes = {}; persistir(); render();
+});
+window.addEventListener('beforeunload', function(e){
+  if (amostras.length){ e.preventDefault(); e.returnValue = ''; }
+});
+
+render();
+mostrarStage(null);
+listarCams();
+})();
+</script>
+</body>
+</html>

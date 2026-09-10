@@ -1,0 +1,499 @@
+<meta charset="utf-8">
+<title>Analog Devices · Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html" aria-current="page"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">O que é</a>
+      <ol>
+        <li><a href="#s1a">Uma marca, muitos mundos</a></li>
+        <li><a href="#s1b">Os DSP: SHARC, Blackfin, TigerSHARC</a></li>
+        <li><a href="#s1c">A empresa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">O que faz</a>
+      <ol>
+        <li><a href="#s2a">Por linha</a></li>
+        <li><a href="#s2b">Mercado aberto, firmware do dono</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">Specs que importam na venda</a>
+      <ol>
+        <li><a href="#s3a">Dentro do part number</a></li>
+        <li><a href="#s3b">O Z separa RoHS</a></li>
+        <li><a href="#s3c">Velocidade não se confirma em anúncio</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">Onde são usados</a>
+      <ol>
+        <li><a href="#s4a">Por linha</a></li>
+        <li><a href="#s4b">Onde está o valor</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">Outros detalhes</a>
+      <ol>
+        <li><a href="#s5a">Prefixos herdados de aquisição</a></li>
+        <li><a href="#s5b">Tamanho e tampa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Como decodificar</a>
+      <ol>
+        <li><a href="#s6a">O mapa de prefixos</a></li>
+        <li><a href="#s6b">Estrutura do part number ADSP</a></li>
+        <li><a href="#s6c">Famílias ADSP</a></li>
+        <li><a href="#s6d">Temperatura, package e sufixo</a></li>
+        <li><a href="#s6e">Exemplos decodificados</a></li>
+        <li><a href="#s6f">Sequência na bancada</a></li>
+      </ol>
+    </li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Analog Devices</h1>
+<p class="tagline">A marca com o maior espalhamento de valor do lote — do amplificador de centavos ao transceptor de rádio de milhares de dólares, todos gravados igual.</p>
+
+<div class="infobox">
+  <div class="ttl">Analog Devices</div>
+  <table>
+    <tr><th>Fundada</th><td>1965, Massachusetts</td></tr>
+    <tr><th>Núcleo</th><td>Analógico e sinal misto — conversores, amplificadores, RF</td></tr>
+    <tr><th>DSP</th><td>SHARC · Blackfin · TigerSHARC</td></tr>
+    <tr><th>Prefixos</th><td class="pn">AD · ADSP · ADuC · ADRV · ADAU · ADF · ADG</td></tr>
+    <tr><th>Herdados</th><td class="pn">LT · LTC · LTM · MAX · DS · HMC</td></tr>
+    <tr><th>Aquisições</th><td>Hittite 2014 · Linear Technology 2017 · Maxim 2021</td></tr>
+    <tr><th>Ferramenta</th><td>CrossCore Embedded Studio (DSP)</td></tr>
+    <tr><th>Sufixo RoHS</th><td class="pn">Z</td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. O que é</h2>
+<p class="lead">Analog Devices não é uma marca de um tipo de chip. É um catálogo enorme onde <strong>o prefixo do part number decide em que mundo a peça vive</strong> — e o valor unitário varia em quatro ordens de grandeza dentro da mesma marca.</p>
+
+<h3 id="s1a">1.1 Uma marca, muitos mundos</h3>
+<div class="note w2">
+  <b class="h">O problema de triagem desta marca</b>
+  <p>Um chip marcado <span class="pn">AD8232</span> é um amplificador de alguns dólares. Um marcado <span class="pn">ADRV9009</span> é um transceptor de rádio de estação-base que custa <strong>milhares</strong>. Os dois trazem o mesmo logo e o mesmo prefixo de duas letras.</p>
+  <p>Nas outras marcas da doc, ler a família já dá a ordem de grandeza. <strong>Aqui não.</strong> Aqui é preciso ler o prefixo completo antes de qualquer coisa — ver a tabela em 6.1.</p>
+</div>
+
+<h3 id="s1b">1.2 Os DSP: SHARC, Blackfin, TigerSHARC</h3>
+<p>A linha de processadores de sinal da ADI é o que mais se parece com os DSP da Texas. São três arquiteturas distintas:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Família</th><th>Prefixo</th><th>Arquitetura</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SHARC</strong></td><td class="pn">ADSP-21xxx</td><td>Ponto flutuante de 32 bits com SIMD. É a linha principal — áudio profissional e instrumentação.</td></tr>
+    <tr><td><strong>Blackfin</strong></td><td class="pn">ADSP-BFxxx</td><td>Ponto fixo de 16/32 bits. Mistura DSP e microcontrolador num núcleo só.</td></tr>
+    <tr><td><strong>TigerSHARC</strong></td><td class="pn">ADSP-TSxxx</td><td>Superescalar estático, ponto fixo e flutuante. Alto desempenho, linha descontinuada.</td></tr>
+    <tr><td><strong>SHARC+ com ARM</strong></td><td class="pn">ADSP-SCxxx</td><td>SHARC+ somado a um ARM Cortex-A5 no mesmo die.</td></tr>
+    <tr><td><strong>Cortex-M4 misto</strong></td><td class="pn">ADSP-CMxxx</td><td>ARM Cortex-M4F com periféricos analógicos. Controle de motor e solar.</td></tr>
+    <tr><td><strong>ADSP-21xx legado</strong></td><td class="pn">ADSP-21xx</td><td>Família 2100, 16 bits, dos anos 80 e 90. Só reparo.</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">Cuidado com a semelhança: <span class="pn">ADSP-2189</span> é da família legada de 16 bits; <span class="pn">ADSP-21489</span> é um SHARC moderno. Um dígito a mais muda a geração inteira.</p>
+
+<h3 id="s1c">1.3 A empresa</h3>
+<p>Fundada em 1965, a ADI sempre foi a casa do analógico de precisão — conversores e amplificadores. O portfólio de hoje é resultado de três aquisições grandes: <strong>Hittite Microwave em 2014</strong> (RF e micro-ondas), <strong>Linear Technology em 2017</strong> (gestão de energia) e <strong>Maxim Integrated em 2021</strong>. Por isso convivem prefixos de origens diferentes no mesmo catálogo — ver 5.1.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. O que faz</h2>
+
+<h3 id="s2a">2.1 Por linha</h3>
+<ul>
+  <li><strong>Conversor</strong> — transforma sinal analógico em número e vice-versa. É o produto histórico da casa.</li>
+  <li><strong>Amplificador e condicionamento</strong> — prepara o sinal antes da conversão.</li>
+  <li><strong>DSP</strong> — processa o sinal depois de convertido: filtro, FFT, áudio, controle.</li>
+  <li><strong>Transceptor RF integrado</strong> — junta conversor, mixer e sintetizador num chip só. É o produto mais caro da marca.</li>
+  <li><strong>Gestão de energia</strong> — reguladores, principalmente sob os prefixos herdados da Linear.</li>
+</ul>
+
+<h3 id="s2b">2.2 Mercado aberto, firmware do dono</h3>
+<div class="note">
+  <p>Como a Texas, a ADI é <strong>merchant silicon</strong>: sem trava de SDK, ferramenta acessível (CrossCore Embedded Studio para os DSP), qualquer engenheiro compra e programa.</p>
+  <p>E como na Texas, o DSP recuperado serve para <strong>repor</strong> a peça numa placa que já tem o código — não para projeto novo. Já os conversores e amplificadores são diferentes: são componentes genéricos, então servem para qualquer projeto. Nessas linhas o mercado é mais largo, mas o valor unitário é menor.</p>
+</div>
+
+<!-- 3 -->
+<h2 id="s3">3. Specs que importam na venda</h2>
+
+<h3 id="s3a">3.1 Dentro do part number</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Por que pesa</th><th>Substitui?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Prefixo</strong> <span class="pn">AD · ADSP · ADRV · LT</span></td><td><strong>Decide a ordem de grandeza do preço.</strong> É o campo mais importante da marca.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Família e número</strong></td><td>Define a peça.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Temperatura</strong></td><td>Industrial vale mais que comercial.</td><td class="half">Mão única</td></tr>
+    <tr><td><strong>Package</strong> <span class="pn">SW · BC · BB · ST</span></td><td>Footprint. Duas letras, e a mesma pastilha existe em vários.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Sufixo</strong> <span class="pn">Z</span></td><td><strong>RoHS.</strong> Ver 3.2 — a ausência muda a peça.</td><td class="no">Na prática, não</td></tr>
+    <tr><td><strong>Velocidade</strong></td><td>Em MHz ou em grade (<span class="pn">-3</span>, <span class="pn">-4</span>). Ver 3.3.</td><td class="half">Mão única</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3b">3.2 O Z separa RoHS</h3>
+<div class="note">
+  <p>Na ADI o indicador de RoHS é a letra <span class="pn">Z</span>, colada depois do código de package:</p>
+  <p><span class="pn">ADSP-21469BBC<b>Z</b>-3</span> é RoHS. <span class="pn">ADSP-21469BBC-3</span>, sem o <span class="pn">Z</span>, <strong>não é</strong> — tem chumbo.</p>
+  <p>É o mesmo papel do <span class="pn">N</span>/<span class="pn">G</span> da Altera, do <span class="pn">G</span> da Xilinx e da primeira letra do package na Texas. Cada marca põe num lugar diferente; nesta, é uma letra solta no meio do código que passa despercebida.</p>
+</div>
+
+<h3 id="s3c">3.3 Velocidade não se confirma em anúncio</h3>
+<div class="note w2">
+  <b class="h">Achado concreto</b>
+  <p>Para o <span class="pn">ADSP-21469BBCZ-3</span>, distribuidores diferentes publicam velocidades diferentes: um diz <strong>400 MHz</strong>, outro diz <strong>450 MHz</strong>.</p>
+  <p>Não é erro de digitação isolado — é o tipo de divergência que se propaga entre agregadores. <strong>Em peça recuperada, grade de velocidade só se comprova no datasheet oficial mais teste elétrico</strong>, nunca na ficha do anúncio de onde você comprou ou para onde vai vender.</p>
+</div>
+
+<!-- 4 -->
+<h2 id="s4">4. Onde são usados</h2>
+
+<h3 id="s4a">4.1 Por linha</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Linha</th><th>Equipamento típico</th><th>Encapsulamento</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SHARC</strong> <span class="pn">ADSP-21xxx</span></td><td>Mesa de som, processador de áudio profissional, automotivo premium, instrumentação, sonar</td><td>LQFP 176 (24 mm) ou BGA 324</td></tr>
+    <tr><td><strong>Blackfin</strong> <span class="pn">ADSP-BFxxx</span></td><td>Câmera industrial, medidor, terminal, equipamento de rede, automotivo</td><td>LQFP 176 ou BGA 160 a 297</td></tr>
+    <tr><td><strong>TigerSHARC</strong> <span class="pn">ADSP-TSxxx</span></td><td>Radar, estação-base antiga, defesa, imagem médica</td><td>BGA 576</td></tr>
+    <tr><td><strong>Transceptor RF</strong> <span class="pn">ADRV · AD9xxx</span></td><td><strong>Estação-base celular, rádio definido por software, defesa</strong></td><td>BGA médio a grande</td></tr>
+    <tr><td><strong>Conversor</strong> <span class="pn">AD7xxx · AD5xxx · AD9xxx</span></td><td>Praticamente qualquer placa de aquisição, medição, áudio, vídeo</td><td>Pequeno — SOIC, LFCSP, LQFP</td></tr>
+    <tr><td><strong>Amplificador e interface</strong> <span class="pn">AD8xxx · ADM · ADG</span></td><td>Onipresente. Toda placa analógica tem algum.</td><td>Muito pequeno</td></tr>
+    <tr><td><strong>Áudio</strong> <span class="pn">ADAU · SSM</span></td><td>Equipamento de áudio, automotivo, consumo</td><td>Pequeno a médio</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s4b">4.2 Onde está o valor</h3>
+<div class="note">
+  <p><strong>O dinheiro da ADI está nos transceptores RF e nos DSP grandes</strong>, não nos conversores e amplificadores — esses são baratos, genéricos e vêm em encapsulamento pequeno demais para compensar dessoldar um a um.</p>
+  <p>Regra prática de triagem: se é <strong>pequeno e tem poucas pernas</strong>, é catálogo analógico de baixo valor. Se é <strong>BGA médio ou grande</strong>, é DSP ou RF — e aí vale parar e ler o part number inteiro.</p>
+</div>
+
+<!-- 5 -->
+<h2 id="s5">5. Outros detalhes</h2>
+
+<h3 id="s5a">5.1 Prefixos herdados de aquisição</h3>
+<p>Um chip pode trazer o logo da Analog Devices e um part number que não começa com <span class="pn">AD</span>. Não é peça errada — é linha herdada:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Origem</th><th>O que é</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">LT · LTC · LTM</td><td>Linear Technology, 2017</td><td>Regulador, conversor DC-DC, módulo de energia</td></tr>
+    <tr><td class="pn">MAX · DS</td><td>Maxim Integrated e Dallas, 2021</td><td>Interface, energia, relógio de tempo real, sensor</td></tr>
+    <tr><td class="pn">HMC</td><td>Hittite Microwave, 2014</td><td>RF e micro-ondas — amplificador, mixer, sintetizador</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">Peças antigas dessas linhas ainda trazem o logo da empresa original. Um chip marcado <span class="pn">LINEAR</span> ou <span class="pn">MAXIM</span> é, hoje, Analog Devices — mas o part number continua o mesmo.</p>
+
+<h3 id="s5b">5.2 Tamanho e tampa</h3>
+<p>Nada da linha DSP da ADI é grande na escala dos FPGA. O maior comum é <strong>BGA de 576 bolas no TigerSHARC</strong> e o LQFP de 176 pernas do SHARC, com corpo de <strong>24 × 24 mm</strong>. Não há chapa metálica: são encapsulamentos plásticos.</p>
+<p>Isso é um corte útil: <strong>se a peça tem chapa de aço e é grande, não é ADI</strong> — é Broadcom, Xilinx de topo ou processador de aplicação.</p>
+
+<!-- 6 -->
+<h2 id="s6">6. Como decodificar</h2>
+
+<h3 id="s6a">6.1 O mapa de prefixos</h3>
+<p>Este é o decode que mais importa nessa marca. Leia o prefixo <strong>antes</strong> de procurar preço:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>O que é</th><th>Ordem de valor</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td class="pn">ADRV · AD9xxx (RF)</td><td>Transceptor de rádio integrado</td><td><strong>Muito alto</strong></td></tr>
+    <tr class="hl"><td class="pn">ADSP-</td><td>DSP — SHARC, Blackfin, TigerSHARC</td><td><strong>Médio a alto</strong></td></tr>
+    <tr><td class="pn">HMC</td><td>RF e micro-ondas (ex-Hittite)</td><td>Médio a alto</td></tr>
+    <tr><td class="pn">ADAU · SSM</td><td>Codec e DSP de áudio</td><td>Médio</td></tr>
+    <tr><td class="pn">ADuC</td><td>Microcontrolador com conversor integrado</td><td>Médio</td></tr>
+    <tr><td class="pn">AD7xxx · AD5xxx</td><td>Conversor A/D e D/A</td><td>Baixo a médio</td></tr>
+    <tr><td class="pn">ADF</td><td>Sintetizador e PLL</td><td>Baixo a médio</td></tr>
+    <tr><td class="pn">AD8xxx</td><td>Amplificador operacional e de instrumentação</td><td>Baixo</td></tr>
+    <tr><td class="pn">ADG · ADM</td><td>Chave analógica, multiplexador, interface</td><td>Baixo</td></tr>
+    <tr><td class="pn">LT · LTC · LTM</td><td>Energia (ex-Linear)</td><td>Baixo a médio</td></tr>
+    <tr><td class="pn">MAX · DS</td><td>Interface, energia, sensor (ex-Maxim)</td><td>Baixo</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6b">6.2 Estrutura do part number ADSP</h3>
+<div class="dec">
+  <div class="big">ADSP-<i>21489</i> <i>B</i> <i>SW</i> <i>Z</i> <i>-4</i></div>
+  <table><tbody>
+    <tr><td>ADSP-</td><td>linha de processadores de sinal</td></tr>
+    <tr><td>21489</td><td>família e device — SHARC 2148x</td></tr>
+    <tr><td>B</td><td>temperatura — −40 a +85 °C</td></tr>
+    <tr><td>SW</td><td>package — 176 pernas LQFP com pad exposto, 24 × 24 mm</td></tr>
+    <tr><td>Z</td><td><strong>RoHS</strong> — sem esta letra, a peça tem chumbo</td></tr>
+    <tr><td>-4</td><td>grade de velocidade</td></tr>
+  </tbody></table>
+</div>
+
+<h3 id="s6c">6.3 Famílias ADSP</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Arquitetura</th><th>Faixa numérica</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">ADSP-21xxx</td><td>SHARC — float 32 bits, SIMD</td><td>21060 · 21065 · 21160 · 21161 · 2126x · 2136x · 2137x · 2146x · 2147x · 2148x · 215xx</td></tr>
+    <tr><td class="pn">ADSP-BFxxx</td><td>Blackfin — fixo 16/32 bits</td><td>BF51x · BF52x · BF53x · BF54x · BF56x · BF60x · BF70x</td></tr>
+    <tr><td class="pn">ADSP-TSxxx</td><td>TigerSHARC</td><td>TS101 · TS201 · TS202 · TS203</td></tr>
+    <tr><td class="pn">ADSP-SCxxx</td><td>SHARC+ com ARM Cortex-A5</td><td>SC58x · SC59x</td></tr>
+    <tr><td class="pn">ADSP-CMxxx</td><td>ARM Cortex-M4F com analógico</td><td>CM40x · CM41x</td></tr>
+    <tr><td class="pn">ADSP-21xx</td><td>Família 2100 legada, 16 bits</td><td>2101 · 2105 · 2115</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6d">6.4 Temperatura, package e sufixo</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Código</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="4">Temperatura</td><td class="pn">B</td><td>−40 a +85 °C — confirmado em peças reais</td></tr>
+    <tr><td class="pn">K</td><td>Comercial, 0 a +70 °C — <em>legenda oficial não localizada</em></td></tr>
+    <tr><td class="pn">W</td><td>Automotivo — <em>não confirmado</em></td></tr>
+    <tr><td class="pn">Y</td><td>Industrial estendido — <em>não confirmado</em></td></tr>
+    <tr><td rowspan="5">Package</td><td class="pn">SW</td><td>176 pernas LQFP com pad exposto, 24 × 24 mm</td></tr>
+    <tr><td class="pn">ST</td><td>176 pernas LQFP</td></tr>
+    <tr><td class="pn">BC</td><td>CSP-BGA — 160 bolas 12 × 12 mm, ou 324 bolas</td></tr>
+    <tr><td class="pn">BB</td><td>PBGA — 297 bolas</td></tr>
+    <tr><td class="pn">BP</td><td>BGA 576 bolas — <em>não confirmado</em></td></tr>
+    <tr><td>RoHS</td><td class="pn">Z</td><td>Presente = Pb-free · ausente = com chumbo</td></tr>
+    <tr><td>Velocidade</td><td class="pn">-3 · -4</td><td>Grade (SHARC 2146x) · nos Blackfin vem em MHz literais: 400, 500, 600</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6e">6.5 Exemplos decodificados</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Part number</th><th>Decodificação</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">ADSP-21489BSWZ-4</td><td>SHARC 21489 · −40 a 85 °C · 176-LQFP-EP 24 mm · RoHS · grade 4</td></tr>
+    <tr><td class="pn">ADSP-21469BBCZ-3</td><td>SHARC 21469 · CSP-BGA 324 · RoHS · grade 3 &nbsp;<em>(velocidade divergente entre fontes)</em></td></tr>
+    <tr><td class="pn">ADSP-21469BBC-3</td><td>Mesma peça <strong>sem o Z</strong> — <strong>com chumbo</strong></td></tr>
+    <tr><td class="pn">ADSP-BF533SBBCZ500</td><td>Blackfin BF533 · industrial · CSP-BGA 160 bolas 12 mm · RoHS · 500 MHz</td></tr>
+    <tr><td class="pn">ADSP-BF561SBBZ600</td><td>BF561 de dois núcleos · PBGA 297 · RoHS · 600 MHz</td></tr>
+    <tr><td class="pn">ADSP-BF532SBSTZ400</td><td>BF532 · LQFP 176 · RoHS · 400 MHz</td></tr>
+    <tr><td class="pn">ADSP-TS201SYBPZ050</td><td>TigerSHARC TS201S · BGA 576 · RoHS · 500 MHz</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">O <span class="pn">S</span> fixo em <span class="pn">BF533S…</span> e <span class="pn">TS201S…</span> aparece em todas as variantes daquelas gerações e não tem significado documentado publicamente. Transcreva, não interprete.</p>
+
+<h3 id="s6f">6.6 Sequência na bancada</h3>
+<ul>
+  <li><strong>Leia o prefixo primeiro.</strong> <span class="pn">ADRV</span> e <span class="pn">ADSP</span> valem parar; <span class="pn">AD8</span> e <span class="pn">ADG</span> são catálogo barato.</li>
+  <li>Se o corpo é <strong>pequeno com poucas pernas</strong>, é analógico de baixo valor — não compensa a dessoldagem individual.</li>
+  <li>Procure a letra <span class="pn">Z</span> depois do package. Sem ela, a peça <strong>tem chumbo</strong>.</li>
+  <li><strong>Chapa de aço descarta a marca</strong> — os DSP da ADI são plástico, com no máximo 24 mm.</li>
+  <li>Não confie na velocidade que o anúncio informa. Confirme no datasheet oficial.</li>
+  <li>Part number que não começa com <span class="pn">AD</span> mas tem logo ADI — <span class="pn">LT</span>, <span class="pn">MAX</span>, <span class="pn">HMC</span> — é linha herdada, não peça errada.</li>
+</ul>
+
+<footer>
+  <p>Fontes: estrutura de part number e códigos de package derivados de fichas de distribuidor autorizado (Farnell, Newark) para peças reais das linhas SHARC, Blackfin e TigerSHARC. As letras de temperatura <span class="pn">K</span>, <span class="pn">W</span> e <span class="pn">Y</span>, o código de package <span class="pn">BP</span> e o significado do <span class="pn">S</span> fixo <strong>não foram confirmados em documento oficial da ADI</strong> — estão marcados no texto. Datas de aquisição de Hittite, Linear Technology e Maxim são de domínio público.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>

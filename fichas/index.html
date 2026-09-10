@@ -1,0 +1,484 @@
+<meta charset="utf-8">
+<title>Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">Como usar</a></li>
+    <li><a href="#s2">Marcas</a></li>
+    <li><a href="#s3">Regras comuns</a>
+      <ol>
+        <li><a href="#s3a">As classes de chip</a></li>
+        <li><a href="#s3a2">O mesmo tier, marcas diferentes</a></li>
+        <li><a href="#s3b">O PN é o produto</a></li>
+        <li><a href="#s3c">O que precifica</a></li>
+        <li><a href="#s3d">Speed grade muda de direção</a></li>
+        <li><a href="#s3e">IDCODE JTAG</a></li>
+        <li><a href="#s3f">Pistas visuais</a></li>
+        <li><a href="#s3g">Caracteres que se confundem</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">O que fotografar</a></li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Fichas de marca</h1>
+<p class="tagline">Documentação de trabalho para identificar, classificar e precificar chips lógicos recuperados de PCB.</p>
+
+<div class="infobox">
+  <div class="ttl">Como cada ficha é organizada</div>
+  <table>
+    <tr><th>1</th><td>O que é o chip</td></tr>
+    <tr><th>2</th><td>O que faz</td></tr>
+    <tr><th>3</th><td>Specs que importam na venda</td></tr>
+    <tr><th>4</th><td>Onde são usados</td></tr>
+    <tr><th>5</th><td>Outros detalhes</td></tr>
+    <tr><th>6</th><td>Como decodificar</td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. Como usar</h2>
+<p class="lead">Cada marca tem uma página própria, sempre com as mesmas seis seções. Esta capa reúne o que vale para <strong>todas</strong> elas — as regras que não mudam de marca para marca, e as que mudam e por isso enganam.</p>
+<p>A ordem de leitura na bancada é: identifique a <strong>marca</strong> pelo logo, abra a ficha dela, e siga a seção 6 (Como decodificar). As regras comuns abaixo servem quando o logo está apagado ou quando a peça não bate com nada.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. Marcas</h2>
+<div class="cards">
+  <div class="card">
+    <h4><a href="altera.html">Altera</a></h4>
+    <p>FPGA e CPLD. Cyclone, FLEX, MAX, Arria, Stratix, Agilex.</p>
+    <span class="st ok">ficha pronta</span>
+  </div>
+  <div class="card">
+    <h4><a href="xilinx.html">Xilinx</a></h4>
+    <p>FPGA, CPLD e SoC. Spartan, Artix, Kintex, Virtex, Zynq, UltraScale, Versal.</p>
+    <span class="st ok">ficha pronta</span>
+  </div>
+  <div class="card">
+    <h4><a href="broadcom.html">Broadcom</a></h4>
+    <p>ASIC de rede e SoC. Inclui as linhas SiByte e QAMLink. Quase todas com chapa de aço.</p>
+    <span class="st ok">ficha pronta</span>
+  </div>
+  <div class="card">
+    <h4><a href="ti.html">Texas Instruments</a></h4>
+    <p>DSP da linha TMS320. Logo: o mapa do Texas.</p>
+    <span class="st ok">ficha pronta</span>
+  </div>
+  <div class="card">
+    <h4><a href="adi.html">Analog Devices</a></h4>
+    <p>DSP SHARC, Blackfin e TigerSHARC, conversores, RF. Inclui Linear, Maxim e Hittite.</p>
+    <span class="st ok">ficha pronta</span>
+  </div>
+  <div class="card">
+    <h4><a href="samsung.html">Samsung</a></h4>
+    <p>Processadores de aplicação ARM — S3C, S5P, Exynos. O lado lógica da marca.</p>
+    <span class="st ok">ficha pronta</span>
+  </div>
+  <div class="card">
+    <h4>MediaTek</h4>
+    <p>SoC de consumo e comunicação.</p>
+    <span class="st">próxima</span>
+  </div>
+  <div class="card">
+    <h4>Cisco</h4>
+    <p>ASIC de marca própria.</p>
+    <span class="st">na fila</span>
+  </div>
+</div>
+
+<!-- 3 -->
+<h2 id="s3">3. Regras comuns</h2>
+
+<h3 id="s3a">3.1 As classes de chip</h3>
+<p>Marcas diferentes não vendem a mesma coisa. A classe determina quem compra e se a peça sequer é utilizável fora do dono original.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Classe</th><th>O que é</th><th>Mercado secundário</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CPLD</strong></td><td>Lógica pequena e não-volátil. Cola lógica, power-on, reset.</td><td>Aberto, valor baixo</td></tr>
+    <tr><td><strong>FPGA</strong></td><td>Lógica grande e volátil. Vira o circuito que o projetista desenhou.</td><td><strong>Aberto</strong> — qualquer um programa com a ferramenta do fabricante</td></tr>
+    <tr><td><strong>SoC / SoC FPGA</strong></td><td>Lógica programável + processador ARM no mesmo die.</td><td>Aberto</td></tr>
+    <tr><td><strong>DSP</strong></td><td>Processador especializado em multiplicar-e-acumular. Executa software, hardware fixo.</td><td>Aberto</td></tr>
+    <tr><td><strong>ASIC de rede</strong></td><td>Função fixa, projetado para uma tarefa só.</td><td><strong>Fechado</strong> — precisa de SDK sob contrato; sem ele o silício é inerte</td></tr>
+    <tr><td><strong>ASIC estruturado</strong></td><td>FPGA congelado em máscara. Peça cativa de um cliente.</td><td>Praticamente nulo</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3a2">3.2 O mesmo tier, marcas diferentes</h3>
+<div class="note w2">
+  <b class="h">A confusão mais cara de todas</b>
+  <p><strong>Cyclone e Spartan são a mesma coisa em marcas diferentes: as duas são a linha de BAIXO CUSTO.</strong> Não são opostos, são concorrentes diretos no mesmo degrau.</p>
+  <p>Os nomes não ajudam — "Cyclone", "Stratix", "Spartan", "Virtex" não dizem nada sobre hierarquia para quem não conhece. É preciso decorar.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Degrau</th><th>Altera</th><th>Xilinx</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CPLD</strong><br><span style="font-size:.85em;color:var(--dim)">lógica pequena, não-volátil</span></td><td>MAX 7000 · 3000A · II · V · 10</td><td>XC9500 · CoolRunner</td></tr>
+    <tr class="hl"><td><strong>Baixo custo</strong><br><span style="font-size:.85em;color:var(--dim)">volume, valor unitário baixo</span></td><td><strong>Cyclone</strong> · ACEX</td><td><strong>Spartan</strong> · Artix</td></tr>
+    <tr><td><strong>Médio</strong><br><span style="font-size:.85em;color:var(--dim)">com transceiver rápido</span></td><td>Arria</td><td>Kintex</td></tr>
+    <tr class="hl"><td><strong>Topo</strong><br><span style="font-size:.85em;color:var(--dim)">valor unitário alto, comprador raro</span></td><td><strong>Stratix</strong> · APEX · Mercury</td><td><strong>Virtex</strong></td></tr>
+    <tr><td><strong>Geração atual</strong></td><td>Agilex</td><td>Versal</td></tr>
+    <tr><td><strong>Com ARM embutido</strong></td><td>Cyclone V SE/SX · Arria SX · Stratix SX</td><td>Zynq</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Por que isso muda a estratégia do lote</b>
+  <p><strong>Tier baixo é peça de volume.</strong> Cyclone, Spartan e MAX valem pouco por unidade e o dinheiro vem de acumular quantidade do mesmo part number.</p>
+  <p><strong>Tier alto é peça de valor unitário.</strong> Stratix e Virtex valem muito cada uma, têm poucos compradores, e merecem separação e identificação individual — inclusive JTAG antes de vender.</p>
+  <p><strong>E cuidado com a armadilha do "topo de família":</strong> o <span class="pn">XC3S5000</span> é o maior chip da geração Spartan-3, mas Spartan-3 continua sendo uma família de <em>baixo custo</em>. Topo de uma família barata não é o mesmo que família de topo.</p>
+</div>
+
+<h3 id="s3b">3.3 O part number é o produto</h3>
+<div class="note">
+  <p>Em memória você vende uma <em>categoria</em>: "8 Gb DDR3-1600" é fungível e três fabricantes servem o mesmo soquete.</p>
+  <p><strong>Em lógica programável a substituição é zero.</strong> Dois chips da mesma família e mesmo encapsulamento, com densidades diferentes, não se trocam — pinagem e bitstream são do device exato. Não existe "equivalente".</p>
+  <p>Corolário: <strong>sem part number legível a peça vale metal</strong>, por maior que seja.</p>
+</div>
+
+<h3 id="s3c">3.4 As specs que precificam não estão na peça</h3>
+<p>Densidade, encapsulamento e speed grade estão gravados e definem <em>o que a peça é</em>. Mas o preço vem de fora:</p>
+<ul>
+  <li><strong>Estoque zero simultâneo</strong> em Mouser e DigiKey — é o gatilho real</li>
+  <li><strong>Suporte na ferramenta atual</strong> do fabricante — define se há projeto novo ou só reposição</li>
+  <li><strong>Status de ciclo de vida</strong> — em produção, NRND ou obsoleto</li>
+  <li><strong>Quantidade homogênea</strong> — mesmo date code rende prêmio; misturado rende desconto</li>
+</ul>
+<div class="note w2">
+  <p>Exemplo real: o <span class="pn">EP4CE55F23C8N</span> tem 55.856 elementos lógicos e vale US$ 25–190. O <span class="pn">EP3C40F484C6N</span> tem 39.600 — menos — e vale US$ 224–323. Toda spec de identidade aponta para o primeiro; o preço aponta para o segundo.</p>
+</div>
+
+<h3 id="s3d">3.5 Speed grade muda de direção entre marcas</h3>
+<div class="note w2">
+  <b class="h">A armadilha que mais erra preço</b>
+  <p>Não existe uma convenção única. A mesma peça pode parecer melhor ou pior conforme a marca — e speed grade é justamente o campo que o remarcador adultera, porque muda o preço sem mudar nada visível.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Marca</th><th>Escala</th><th>Mais rápido</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Altera</strong> — FPGA</td><td class="pn">6 · 7 · 8 · 9</td><td class="no">o MENOR</td><td>Arria 10 e Stratix 10 usam 1 · 2 · 3 — ainda menor = mais rápido</td></tr>
+    <tr><td><strong>Altera</strong> — CPLD legado</td><td class="pn">-4 · -5 · -7 · -10 · -15</td><td class="no">o MENOR</td><td>Aqui o número é <em>tempo de propagação em ns</em>, não grau</td></tr>
+    <tr><td><strong>Xilinx</strong></td><td class="pn">-1 · -2 · -3</td><td class="half">o MAIOR</td><td>Spartan-3 usa -4 e -5. Sufixo L = baixo consumo</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3e">3.6 IDCODE JTAG — identidade sem marcação</h3>
+<p>Todo dispositivo com JTAG responde um IDCODE de 32 bits que contém o código do fabricante. Como o código ocupa posição fixa e o bit menos significativo é sempre 1, <strong>os últimos três dígitos hexadecimais identificam a marca</strong> — mesmo com a tampa raspada ou a marcação apagada.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Fabricante</th><th>ID JTAG</th><th>IDCODE termina em</th><th>Exemplos</th></tr></thead>
+  <tbody>
+    <tr><td>Altera</td><td class="pn">0x06E</td><td class="pn"><strong>0DD</strong></td><td class="pn">0x020A50DD · 0x020F40DD</td></tr>
+    <tr><td>Xilinx</td><td class="pn">0x049</td><td class="pn"><strong>093</strong></td><td class="pn">0x03651093 · 0x04008093</td></tr>
+    <tr><td>Texas Instruments</td><td class="pn">0x017</td><td class="pn"><strong>02F</strong></td><td class="pn">0x0B94402F · 0x0B7DF02F</td></tr>
+  </tbody>
+</table></div>
+<p>O IDCODE identifica a <strong>classe de die</strong>, não a peça exata — vários devices de uma família compartilham o mesmo código. Ele confirma o fabricante e restringe o grupo; não substitui o part number.</p>
+<div class="note">
+  <p>Nos PNs de maior valor, ler o IDCODE é o teste mais barato que existe: prova que o silício é da marca certa, que a classe de die bate com o gravado, e que a peça está eletricamente viva depois da dessoldagem. Entre "não testado" e "testado" está o maior salto de preço do mercado.</p>
+</div>
+
+<h3 id="s3f">3.7 Pistas visuais</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>O que você vê</th><th>O que significa</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Tampa metálica</strong></td><td>Flip-chip de alto consumo. Na Altera só aparece no topo (Stratix, Arria); na Xilinx é comum de Virtex-4 em diante; em ASIC de rede é a regra.</td></tr>
+    <tr><td><strong>Epóxi preto liso</strong></td><td>Wire-bond. Tier médio ou baixo, ou geração mais antiga.</td></tr>
+    <tr><td><strong>Face inferior lisa, sem esferas</strong></td><td>LGA — a peça saiu de soquete, não foi dessoldada.</td></tr>
+    <tr><td><strong>Grade hexagonal de bolas</strong></td><td>Só a Altera Agilex usa. Nenhuma outra linha de nenhum fabricante.</td></tr>
+    <tr><td><strong>Logo de família em linha própria</strong></td><td>Típico de FPGA (<span class="pn">Cyclone® V</span>, <span class="pn">Virtex-5</span>). DSP e ASIC de rede raramente fazem isso.</td></tr>
+    <tr><td><strong>Nenhum speed grade gravado</strong></td><td>Se for Xilinx 7 Series ou mais nova, <strong>é normal e de fábrica</strong> — não é remarcação.</td></tr>
+  </tbody>
+</table></div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Perna para fora ou bola por baixo &mdash; a primeira triagem</h4>
+<p>Antes de ler qualquer marcação, olhe a <strong>borda</strong> da peça. É o que separa as duas famílias de encapsulamento, e muda o que o comprador precisa fazer com ela:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>O que você vê na borda</th><th>É</th><th>O que isso significa na venda</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Pernas metálicas finas saindo dos quatro lados</strong> — parece uma aranha vista de cima</td><td><strong>QFP</strong> — PQFP, TQFP, EQFP</td><td>Terminais <strong>visíveis e inspecionáveis</strong>. Perna torta ou quebrada se vê a olho nu. Resolda sem equipamento especial. <strong>Não precisa de reballing.</strong></td></tr>
+    <tr class="hl"><td><strong>Nenhum terminal na borda</strong> — a face inferior tem uma grade de esferas</td><td><strong>BGA</strong> — FBGA, FCBGA, FTBGA</td><td>Terminais <strong>escondidos sob a peça</strong>. Só se inspeciona com raio-X. Exige forno e, na revenda, quase sempre <strong>reballing</strong>.</td></tr>
+    <tr><td><strong>Face inferior lisa, sem esferas e sem pernas</strong></td><td><strong>LGA</strong></td><td>Saiu de soquete, não foi dessoldada. Não precisa de reballing.</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">As pernas do QFP não são defeito</b>
+  <p>Um QFP grande de 208 ou 240 pinos tem <strong>dezenas de pernas de cada lado</strong>, e no microscópio isso lembra fios soldados em volta da peça. <strong>É o encapsulamento normal</strong>, não retrabalho, não conserto de campo, não adulteração.</p>
+  <p>O que <em>seria</em> retrabalho é outra coisa: fio isolado ligando dois pontos que não deveriam se ligar, respingo de solda entre pernas vizinhas, ou perna reposicionada à mão. Isso sim se declara.</p>
+</div>
+<div class="note w2">
+  <p><strong>Não confunda encapsulamento com condição na hora de anunciar.</strong> Descrever um QFP normal como "peça com fios soldados" faz o comprador ler retrabalho e cortar o preço — ou rejeitar o lote na inspeção por descrição divergente.</p>
+</div>
+
+<!-- 4 -->
+<h3 id="s3g">3.8 Caracteres que se confundem &mdash; a regra de digitação</h3>
+<p>É o erro que mais estraga cadastro, e não tem nada a ver com conhecer chip: <strong>a fonte da marcação não distingue bem letra de número.</strong></p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Você lê</th><th>Pode ser</th><th>Onde costuma acontecer</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td class="pn"><strong>1</strong></td><td class="pn"><strong>I</strong> (i maiúsculo)</td><td>Letra de temperatura, sufixo industrial</td></tr>
+    <tr class="hl"><td class="pn"><strong>O</strong></td><td class="pn"><strong>0</strong> (zero)</td><td>Dentro do número do device</td></tr>
+    <tr><td class="pn">S</td><td class="pn">5</td><td>Código de pacote e contagem de pinos</td></tr>
+    <tr><td class="pn">B</td><td class="pn">8</td><td>Código de pacote</td></tr>
+    <tr><td class="pn">Z</td><td class="pn">2</td><td>Sufixo de revisão</td></tr>
+    <tr><td class="pn">G</td><td class="pn">6</td><td>Letra de Pb-free no fim do PN</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">O <span class="pn">I</span> virando <span class="pn">1</span> é o caro</b>
+  <p>Em várias marcas o <span class="pn">I</span> é o <strong>indicador de grau industrial</strong> — o campo que mais valoriza a peça. Transcrever <span class="pn">1</span> no lugar dele <strong>apaga o diferencial</strong> e a peça vira comercial no anúncio.</p>
+  <p>Aconteceu neste inventário: dois <span class="pn">BCM68380<b>I</b>FSBG</span> industriais foram digitados como <span class="pn">BCM6838<b>O1</b>FSBG</span>. Perderam o <span class="pn">I</span> e ganharam um <span class="pn">O</span> no lugar do zero, tudo na mesma string.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Como conferir sem adivinhar</h4>
+<p>Não tente decidir pela forma da letra na foto. <strong>Decida pela posição.</strong> Cada campo do part number só aceita um tipo de caractere:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Só aceita</th><th>Logo</th></tr></thead>
+  <tbody>
+    <tr><td>Número do device</td><td><strong>dígitos</strong></td><td><span class="pn">O</span> ali é <strong>zero</strong></td></tr>
+    <tr><td>Grau de temperatura</td><td><strong>letra</strong> (<span class="pn">K</span>, <span class="pn">I</span>, <span class="pn">C</span>… conforme a marca)</td><td><span class="pn">1</span> ali é <strong>I</strong></td></tr>
+    <tr><td>Código de pacote</td><td><strong>letras</strong> na maioria das marcas</td><td><span class="pn">5</span> ali costuma ser <strong>S</strong></td></tr>
+    <tr><td>Contagem de pinos</td><td><strong>dígitos</strong></td><td><span class="pn">S</span> ali é <strong>5</strong></td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">A conferência final, que vale para qualquer marca</b>
+  <p><strong>O part number que você transcreveu existe como peça em catálogo?</strong> Se não aparece em lugar nenhum, ou só aparece como nome de "série" e "família", a transcrição está errada — não é peça rara.</p>
+  <p>Nome de família parece part number completo e engana: <span class="pn">BCM3384</span> é família, <span class="pn">BCM33843</span> é a peça. <span class="pn">Cyclone IV</span> é família, <span class="pn">EP4CE22F17C6N</span> é a peça.</p>
+</div>
+<div class="note w2">
+  <b class="h">Não deixe o cabeçalho da planilha contaminar a linha</b>
+  <p>Se a coluna de grupo diz <span class="pn">BCM3384</span>, é fácil digitar <span class="pn">BCM3384…</span> na linha e perder um dígito do device. <strong>O grupo é etiqueta sua; a linha é a peça.</strong> Digite a linha olhando para o chip, nunca para o cabeçalho.</p>
+</div>
+
+<h2 id="s4">4. O que fotografar</h2>
+<p>Para identificar uma peça a partir de foto, três imagens resolvem quase tudo:</p>
+<ul>
+  <li><strong>Topo em luz rasante</strong> — luz vindo de lado, quase paralela à superfície. É o que revela marcação apagada e marca-fantasma de remarcação.</li>
+  <li><strong>Peça ao lado de uma régua</strong> — o tamanho do corpo já corta o catálogo em pedaços.</li>
+  <li><strong>Face inferior</strong> — mostra se é BGA ou LGA, se foi rebolado, e permite estimar a contagem de bolas.</li>
+</ul>
+<p>Junto, transcreva <strong>todas as linhas</strong> da marcação na ordem, mesmo as que parecem lixo — o date code e o país estão nelas.</p>
+<div class="note">
+  <p>Ao transcrever, normalize <code>O → 0</code> e <code>I → 1</code>, com uma exceção: o <strong><code>I</code> de Industrial é letra de verdade</strong>. <span class="pn">5CEFA4M13I7N</span> é industrial, não "…1317N".</p>
+</div>
+
+<footer>
+  <p>Documentação interna WhatTheChip. Cada ficha cita as próprias fontes. Preços consultados em agosto de 2026 servem como ordem de grandeza, não como cotação.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>

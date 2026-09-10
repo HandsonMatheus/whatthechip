@@ -1,0 +1,524 @@
+<meta charset="utf-8">
+<title>Texas Instruments · Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html" aria-current="page"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">O que é</a>
+      <ol>
+        <li><a href="#s1a">DSP não é CPU nem FPGA</a></li>
+        <li><a href="#s1b">As linhas TMS320</a></li>
+        <li><a href="#s1c">A empresa e o logo</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">O que faz</a>
+      <ol>
+        <li><a href="#s2a">Funções típicas</a></li>
+        <li><a href="#s2b">Mercado aberto, nicho estreito</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">Specs que importam na venda</a>
+      <ol>
+        <li><a href="#s3a">Dentro do part number</a></li>
+        <li><a href="#s3b">TMX e TMP não são peça de produção</a></li>
+        <li><a href="#s3c">Não existe tabela única de temperatura</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">Onde são usados</a>
+      <ol>
+        <li><a href="#s4a">Por linha</a></li>
+        <li><a href="#s4b">Regra de origem</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">Outros detalhes</a>
+      <ol>
+        <li><a href="#s5a">A marcação física</a></li>
+        <li><a href="#s5b">Revisão de silício</a></li>
+        <li><a href="#s5c">IDCODE JTAG</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Como decodificar</a>
+      <ol>
+        <li><a href="#s6a">Estrutura do part number</a></li>
+        <li><a href="#s6b">A primeira letra do package</a></li>
+        <li><a href="#s6c">Tabela de packages</a></li>
+        <li><a href="#s6d">Exemplos decodificados</a></li>
+        <li><a href="#s6e">Sequência na bancada</a></li>
+      </ol>
+    </li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Texas Instruments</h1>
+<p class="tagline">DSP recuperado de PCB — a marca do mapa do Texas, e a única onde o encapsulamento conta que liga de solda a peça tem.</p>
+
+<div class="infobox">
+  <div class="ttl">Texas Instruments</div>
+  <table>
+    <tr><th>Logo</th><td>Contorno do estado do Texas com as letras TI</td></tr>
+    <tr><th>Tipo</th><td>DSP, microcontrolador, SoC, processador de aplicação</td></tr>
+    <tr><th>Marco</th><td>Jack Kilby inventou o circuito integrado na TI, em 1958</td></tr>
+    <tr><th>Linha DSP</th><td class="pn">TMS320</td></tr>
+    <tr><th>Séries</th><td>C2000 · C5000 · C6000 · DaVinci · KeyStone · OMAP</td></tr>
+    <tr><th>Prefixos</th><td class="pn">TMS · TMP · TMX</td></tr>
+    <tr><th>Ferramenta</th><td>Code Composer Studio</td></tr>
+    <tr><th>IDCODE</th><td>termina em <span class="pn">02F</span></td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. O que é</h2>
+<p class="lead">DSP quer dizer <strong>Digital Signal Processor</strong>: um processador cujo hardware foi desenhado para uma conta específica — multiplicar e somar, milhões de vezes por segundo, sem perder um ciclo.</p>
+
+<h3 id="s1a">1.1 DSP não é CPU nem FPGA</h3>
+<p>Um DSP <strong>executa software</strong>, como qualquer processador. O que o diferencia é o conjunto de instruções: ele faz multiplicação com acumulação em um ciclo, tem endereçamento circular para filtros e laços que não custam nada para repetir. Fazer a mesma coisa num processador comum leva dez vezes mais tempo.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>CPU / MCU</th><th>DSP</th><th>FPGA</th></tr></thead>
+  <tbody>
+    <tr><td><strong>O que executa</strong></td><td>Instruções gerais</td><td>Instruções de sinal</td><td>Nada — vira o circuito</td></tr>
+    <tr><td><strong>O que se programa</strong></td><td>Software</td><td>Software</td><td>Hardware</td></tr>
+    <tr><td><strong>Bom em</strong></td><td>Decisão, controle, sistema operacional</td><td>Filtro, FFT, codec, modulação</td><td>Paralelismo massivo, muitos I/O</td></tr>
+    <tr><td><strong>Hardware</strong></td><td>Fixo</td><td>Fixo</td><td>Reconfigurável</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s1b">1.2 As linhas TMS320</h3>
+<p>Todo DSP clássico da TI começa com <span class="pn">TMS320</span>. A letra e o número depois dizem em qual mundo a peça vive:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Série</th><th>Part number</th><th>O que é</th></tr></thead>
+  <tbody>
+    <tr><td><strong>C2000</strong></td><td class="pn">TMS320F28xxx</td><td>Microcontrolador de controle em tempo real, com flash embarcada. Piccolo e Delfino.</td></tr>
+    <tr><td><strong>C5000</strong></td><td class="pn">TMS320VC54xx · VC55xx</td><td>DSP de baixo consumo, 16 bits. Voz, áudio, portátil.</td></tr>
+    <tr><td><strong>C6000</strong></td><td class="pn">TMS320C62xx · C64xx · C66xx</td><td>DSP de alto desempenho, arquitetura VLIW. É o topo da linha.</td></tr>
+    <tr><td><strong>DaVinci</strong></td><td class="pn">TMS320DM6xx</td><td>DSP dedicado a vídeo digital.</td></tr>
+    <tr><td><strong>KeyStone</strong></td><td class="pn">66AK2xxx · TCI6xxx</td><td>DSP multinúcleo + ARM no mesmo chip. Infraestrutura de telecom.</td></tr>
+    <tr><td><strong>OMAP · Sitara</strong></td><td class="pn">OMAP3xxx · AM3xxx</td><td>Processador de aplicação ARM, com ou sem DSP junto.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s1c">1.3 A empresa e o logo</h3>
+<p>Nasceu em 1930 como empresa de prospecção geofísica e virou Texas Instruments em 1951. Em 1958 <strong>Jack Kilby construiu ali o primeiro circuito integrado</strong> — o que faz da TI, literalmente, a origem de tudo que está nesta documentação.</p>
+<p>O logo gravado é o <strong>contorno do estado do Texas</strong> com as letras TI dentro. É inconfundível e resolve a identificação da marca sem ler nada mais.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. O que faz</h2>
+
+<h3 id="s2a">2.1 Funções típicas</h3>
+<ul>
+  <li><strong>Filtrar sinal</strong> — remover ruído, separar bandas, equalizar. É o trabalho básico.</li>
+  <li><strong>Transformar domínio</strong> — FFT, análise espectral, radar, ultrassom.</li>
+  <li><strong>Codificar e decodificar</strong> — áudio, vídeo, voz, modem.</li>
+  <li><strong>Modular e demodular</strong> — rádio, estação-base, comunicação.</li>
+  <li><strong>Fechar malha de controle</strong> — no C2000: inversor de frequência, fonte chaveada, motor.</li>
+</ul>
+
+<h3 id="s2b">2.2 Mercado aberto, nicho estreito</h3>
+<div class="note">
+  <p>Ao contrário do ASIC de rede da Broadcom, o DSP da TI é <strong>merchant silicon</strong>: a ferramenta (Code Composer Studio) é acessível e qualquer engenheiro compra e programa. Não há trava de SDK.</p>
+  <p>Mas há uma trava de outra natureza: <strong>o DSP só serve se o comprador tiver o firmware</strong>. Um FPGA em branco é útil para qualquer projeto novo; um DSP recuperado quase sempre serve para <em>repor</em> a peça numa placa que já tem o código. O universo é de reposição, não de projeto novo.</p>
+</div>
+
+<!-- 3 -->
+<h2 id="s3">3. Specs que importam na venda</h2>
+
+<h3 id="s3a">3.1 Dentro do part number</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Por que pesa</th><th>Substitui?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Prefixo</strong> <span class="pn">TMS · TMP · TMX</span></td><td>Estágio de produção. Ver 3.2 — muda a categoria da peça.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Device</strong> <span class="pn">C6678</span></td><td>Define núcleo, memória e periféricos.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Revisão de silício</strong> <span class="pn">A · B</span></td><td>Firmware pode exigir uma revisão específica. Some fácil em anúncio ruim.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Package</strong> <span class="pn">CYP · GDP · ZNZ</span></td><td>Footprint <strong>e</strong> liga de solda. Ver 6.2.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Temperatura</strong></td><td>Estendida vale mais. Mas o código muda por família — ver 3.3.</td><td class="half">Mão única</td></tr>
+    <tr><td><strong>Velocidade</strong></td><td>Em MHz ou GHz, no fim do PN. <strong>Diferença de 56% de preço na mesma peça.</strong></td><td class="half">Mão única</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p>Exemplo do peso da velocidade: <span class="pn">TMS320C6678ACYP25</span> (1,25 GHz) cota cerca de <strong>US$ 347</strong>; <span class="pn">TMS320C6678CYP</span> (1,0 GHz, silício rev 1.0) cerca de <strong>US$ 222</strong>. Mesma família, mesmo encapsulamento — <strong>56% de diferença</strong> em dois caracteres no fim do código.</p>
+</div>
+
+<h3 id="s3b">3.2 TMX e TMP não são peça de produção</h3>
+<div class="note w2">
+  <b class="h">Três letras que mudam a categoria</b>
+  <div class="sc" style="margin:.5rem 0"><table class="d">
+    <thead><tr><th>Prefixo</th><th>Definição da TI</th><th>O que significa vender</th></tr></thead>
+    <tbody>
+      <tr><td class="pn"><strong>TMS</strong></td><td>"Fully qualified production device"</td><td>Peça normal, qualificada</td></tr>
+      <tr><td class="pn"><strong>TMP</strong></td><td>"Final silicon die that conforms to the device's electrical specifications but has not completed quality and reliability verification"</td><td>Silício final, <strong>sem qualificação completa</strong></td></tr>
+      <tr><td class="pn"><strong>TMX</strong></td><td>"Experimental device that is not necessarily representative of the final device's electrical specifications"</td><td><strong>Peça de engenharia.</strong> Não representa nem as specs finais.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Nos SoC modernos (AM, DM, OMAP, 66AK) a convenção é outra: prefixo <span class="pn">X</span> = experimental, <span class="pn">P</span> = protótipo, <strong>sem prefixo</strong> = produção qualificada.</p>
+  <p>Vender um <span class="pn">TMX</span> como se fosse produção é o erro mais caro dessa marca. Transcreva sempre as três primeiras letras.</p>
+</div>
+
+<h3 id="s3c">3.3 Não existe tabela única de temperatura</h3>
+<div class="note w2">
+  <p>Esta é a armadilha nº 1 do decode da TI: <strong>cada família define a própria codificação de temperatura</strong>. Não dá para aplicar a regra de uma linha em outra.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Família</th><th>Código</th><th>Faixa</th></tr></thead>
+  <tbody>
+    <tr><td>C6712D · C6455</td><td>em branco / <span class="pn">A</span></td><td>0…90 °C / <strong>−40…105 °C</strong></td></tr>
+    <tr><td>C6472</td><td>em branco / estendida</td><td>0…85 °C / −40…100 °C</td></tr>
+    <tr><td>C6474</td><td>em branco / <span class="pn">A</span></td><td>0…100 °C / <strong>−40…100 °C</strong></td></tr>
+    <tr><td>C6678</td><td>em branco / <span class="pn">A</span></td><td>comercial / <strong>−40…+100 °C</strong></td></tr>
+    <tr><td>C2000 F2833x</td><td><span class="pn">A</span> / <span class="pn">S</span> / <span class="pn">Q</span></td><td>−40…85 / −40…125 / <strong>−40…125 automotivo AEC-Q100</strong></td></tr>
+  </tbody>
+</table></div>
+<p>Repare que no C2000 a letra <span class="pn">A</span> é a faixa <em>mais estreita</em>, enquanto no C6678 a mesma letra é a faixa <em>estendida</em>. Sem saber a família, o código de temperatura não significa nada.</p>
+
+<!-- 4 -->
+<h2 id="s4">4. Onde são usados</h2>
+
+<h3 id="s4a">4.1 Por linha</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Linha</th><th>Equipamento típico</th><th>Tamanho</th></tr></thead>
+  <tbody>
+    <tr><td><strong>C2000</strong> <span class="pn">F28xxx</span></td><td>Inversor de frequência, fonte chaveada, carregador, controle de motor, painel solar, UPS</td><td>Pequeno — LQFP 144/176 ou BGA 179</td></tr>
+    <tr><td><strong>C5000</strong> <span class="pn">VC54xx · VC55xx</span></td><td>Telefonia, aparelho auditivo, gravador, equipamento portátil de áudio</td><td>Pequeno — LQFP 144 ou BGA 144/179</td></tr>
+    <tr><td><strong>C6000</strong> <span class="pn">C62xx · C64xx · C66xx</span></td><td>Estação-base celular, radar, sonar, imagem médica, visão industrial, teste e medição</td><td><strong>Médio a grande — BGA 272 a 841, 23 a 24 mm</strong></td></tr>
+    <tr><td><strong>DaVinci</strong> <span class="pn">DM6xx</span></td><td>Câmera IP, DVR, videoconferência, set-top, processamento de vídeo</td><td>Médio — BGA 361 a 548, 23 a 27 mm</td></tr>
+    <tr><td><strong>KeyStone</strong> <span class="pn">66AK2xxx · TCI6xxx</span></td><td>Estação-base 3G/4G, infraestrutura de telecom, computação embarcada</td><td><strong>Grande — 1517 bolas, 40 × 40 mm</strong></td></tr>
+    <tr><td><strong>OMAP · Sitara</strong> <span class="pn">OMAP3xxx · AM3xxx</span></td><td>Celular antigo, computador embarcado, IHM industrial, terminal</td><td>Médio — BGA 423 a 515, muitos em POP</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s4b">4.2 Regra de origem</h3>
+<p>A linha C6000 e a KeyStone são as que vêm de <strong>equipamento caro</strong> — estação-base, radar, imagem médica — e são as maiores fisicamente. A C2000 e a C5000 vêm de equipamento industrial e de consumo, em volume, com valor unitário baixo.</p>
+<p>Se você mediu <strong>24 mm ou mais</strong> e leu <span class="pn">TMS320</span>, provavelmente é C6000 ou KeyStone. Se é <strong>LQFP com pernas</strong>, é C2000 ou C5000.</p>
+
+<!-- 5 -->
+<h2 id="s5">5. Outros detalhes</h2>
+
+<h3 id="s5a">5.1 A marcação física</h3>
+<p>O padrão moderno da TI tem duas linhas úteis:</p>
+<div class="dec">
+  <div class="big">XAM3352<i>A</i>ZCE</div>
+  <div class="big" style="font-size:.95rem"><i>YM</i><i>LLLL</i><i>S</i> 962 <i>ZCE</i> <i>G1</i></div>
+  <table><tbody>
+    <tr><td>linha 1</td><td>prefixo + part number + revisão + package</td></tr>
+    <tr><td>YM</td><td>ano e mês de fabricação</td></tr>
+    <tr><td>LLLL</td><td><strong>lot trace code</strong> — não é serial único por peça</td></tr>
+    <tr><td>S</td><td>site de montagem</td></tr>
+    <tr><td>ZCE</td><td>designador de package repetido</td></tr>
+    <tr><td>G1</td><td>green / lead-free</td></tr>
+  </tbody></table>
+</div>
+
+<h3 id="s5b">5.2 Revisão de silício</h3>
+<p>A letra depois do número do device é a revisão: <strong>em branco = 1.0, <span class="pn">A</span> = 2.0, <span class="pn">B</span> = 2.1</strong>. Vale para AM335x e para o C6678, entre outros.</p>
+<div class="note w2">
+  <p><strong>Armadilha:</strong> em <span class="pn">TMS320C6678<b>A</b>CYP</span>, o <span class="pn">A</span> <strong>não faz parte do package</strong>. <span class="pn">ACYP</span> não existe como código de encapsulamento — o <span class="pn">A</span> é revisão de silício 2.0 e <span class="pn">CYP</span> é o package. Confirmado pela própria TI.</p>
+</div>
+
+<h3 id="s5c">5.3 IDCODE JTAG</h3>
+<div class="note">
+  <p>O identificador de fabricante da TI é <span class="pn">0x017</span>. Com o bit menos significativo sempre em 1, <strong>todo IDCODE JTAG da TI termina em <code>02F</code></strong> em hexadecimal — por exemplo <span class="pn">0x0B94402F</span> (AM335x) e <span class="pn">0x0B7DF02F</span> (OMAP-L138).</p>
+  <p>Somando às outras marcas da doc: <strong>Altera termina em <code>0DD</code>, Xilinx em <code>093</code>, TI em <code>02F</code></strong>. Um scan JTAG separa as três com a marcação apagada.</p>
+</div>
+
+<!-- 6 -->
+<h2 id="s6">6. Como decodificar</h2>
+
+<h3 id="s6a">6.1 Estrutura do part number</h3>
+<div class="dec">
+  <div class="big"><i>TMS</i> <i>320</i> <i>C</i> <i>6678</i> <i>A</i> <i>CYP</i> <i>A</i> <i>25</i></div>
+  <table><tbody>
+    <tr><td>TMS</td><td>prefixo — produção qualificada</td></tr>
+    <tr><td>320</td><td>linha TMS320, todos os DSP clássicos</td></tr>
+    <tr><td>C</td><td>letra de tecnologia — C, F, VC, LF, DM, DA…</td></tr>
+    <tr><td>6678</td><td>device — C6678, oito núcleos C66x</td></tr>
+    <tr><td>A</td><td><strong>revisão de silício</strong> 2.0</td></tr>
+    <tr><td>CYP</td><td>package — 841 bolas FCBGA, 24 × 24 mm, totalmente Pb-free</td></tr>
+    <tr><td>A</td><td>temperatura estendida, −40 a +100 °C</td></tr>
+    <tr><td>25</td><td>velocidade — 1,25 GHz</td></tr>
+  </tbody></table>
+</div>
+
+<h3 id="s6b">6.2 A primeira letra do package</h3>
+<div class="note">
+  <b class="h">A regra que vale ouro nessa marca</b>
+  <p>O designador de package tem <strong>três letras</strong>, e a primeira <strong>não descreve o formato — descreve a metalurgia da solda</strong>. As duas seguintes é que identificam o corpo mecânico.</p>
+  <div class="sc" style="margin:.5rem 0"><table class="d">
+    <thead><tr><th>1ª letra</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td class="pn">G</td><td>Esferas <strong>com chumbo</strong></td></tr>
+      <tr><td class="pn">Z</td><td>Esferas Pb-free, bump do die com chumbo</td></tr>
+      <tr><td class="pn">C</td><td>Bump <strong>e</strong> esferas Pb-free — totalmente green</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Consequência prática:</strong> <span class="pn">GDP</span> e <span class="pn">ZDP</span> são <em>o mesmo corpo</em> com solda diferente. <span class="pn">GTZ</span>, <span class="pn">ZTZ</span> e <span class="pn">CTZ</span> idem. Isso é o equivalente ao sufixo <span class="pn">N</span>/<span class="pn">G</span> da Altera — só que embutido no código do encapsulamento, onde ninguém procura.</p>
+  <p>E como na Altera: a versão <strong>com chumbo</strong> pode valer mais, porque é a exigida em reparo de placa legada e não se fabrica mais.</p>
+</div>
+
+<h3 id="s6c">6.3 Tabela de packages</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Código</th><th>Corpo</th><th>Aparece em</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">PGE</td><td>144 pinos LQFP</td><td>VC5509A, VC5416</td></tr>
+    <tr><td class="pn">PGF</td><td>176 pinos LQFP</td><td>F28335, VC5502</td></tr>
+    <tr><td class="pn">PTP</td><td>176 pinos HLQFP, térmico melhorado</td><td>F28335</td></tr>
+    <tr><td class="pn">GHH · ZHH</td><td>179 bolas MicroStar BGA</td><td>VC5509A, F2812</td></tr>
+    <tr><td class="pn">ZJZ</td><td>176 bolas BGA</td><td>F28335</td></tr>
+    <tr><td class="pn">ZAY</td><td>179 bolas nFBGA</td><td>F2833x</td></tr>
+    <tr><td class="pn">GDP · ZDP</td><td>272 pinos PBGA</td><td>C6711, C6712, C6713</td></tr>
+    <tr><td class="pn">ZWT</td><td>361 bolas</td><td>DM6446, DM6437, OMAP-L138</td></tr>
+    <tr><td class="pn">CBB · CBC · CUS</td><td>515 ou 423 pinos, POP</td><td>OMAP3530, OMAP3525</td></tr>
+    <tr><td class="pn">GDK · ZDK</td><td>548 bolas FC/CSP, <strong>23 × 23 mm</strong></td><td>DM642</td></tr>
+    <tr><td class="pn">GNZ · ZNZ</td><td>548 bolas FCBGA, <strong>27 × 27 mm</strong></td><td>DM641A, DM642A, DM643A</td></tr>
+    <tr><td class="pn">GUN · CUN · ZUN</td><td>561 pinos BGA, <strong>23 × 23 mm</strong>, pitch 0,8</td><td>C6474</td></tr>
+    <tr><td class="pn">GTZ · CTZ · ZTZ</td><td>697 pinos PBGA, <strong>24 × 24 mm</strong></td><td>C6455</td></tr>
+    <tr><td class="pn">CTZ · ZTZ</td><td>737 pinos BGA, <strong>24 × 24 mm</strong></td><td>C6472</td></tr>
+    <tr class="hl"><td class="pn">CYP</td><td>841 pinos FCBGA, <strong>24 × 24 mm</strong></td><td>C6670, C6674, C6678</td></tr>
+    <tr class="hl"><td class="pn">AAW</td><td>1517 pinos FCBGA, <strong>40 × 40 mm</strong></td><td>66AK2H14, 66AK2H12, 66AK2H06</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6d">6.4 Exemplos decodificados</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Part number</th><th>Decodificação</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">TMS320C6678ACYPA25</td><td>Produção · C6678 · rev 2.0 · 841 FCBGA 24 mm Pb-free · −40 a 100 °C · 1,25 GHz</td></tr>
+    <tr><td class="pn">TMS320C6678CYP</td><td>Mesma peça, <strong>silício 1.0</strong>, comercial, 1,0 GHz</td></tr>
+    <tr><td class="pn">TMS320C6455BGTZ</td><td>rev B · <strong>GTZ</strong> = 697 PBGA com esferas <strong>com chumbo</strong> · comercial · 1 GHz</td></tr>
+    <tr><td class="pn">TMS320C6455BZTZA</td><td>Mesma peça em <strong>ZTZ</strong> (Pb-free) · temperatura estendida</td></tr>
+    <tr><td class="pn">TMS320DM642AGDKA6</td><td>DM642 rev A · GDK 548 bolas 23 mm · estendida · 600 MHz</td></tr>
+    <tr><td class="pn">TMS320DM642AZNZA6</td><td>Mesma pastilha em <strong>ZNZ</strong>, corpo <strong>27 mm</strong> — corpo diferente, mesma peça</td></tr>
+    <tr><td class="pn">TMS320F28335PGFA</td><td>F = flash · C2000 Delfino · 176 LQFP · <strong>A = −40 a 85 °C</strong></td></tr>
+    <tr><td class="pn">TMS320VC5509APGE</td><td>VC = baixa tensão · 5509A · 144 LQFP</td></tr>
+    <tr><td class="pn">TMX320C6472…</td><td><strong>Protótipo experimental</strong> — não é peça de produção</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6e">6.5 Sequência na bancada</h3>
+<ul>
+  <li>Confirme a marca pelo <strong>mapa do Texas</strong> gravado. Resolve sozinho.</li>
+  <li>Leia as <strong>três primeiras letras</strong>: <span class="pn">TMX</span> ou <span class="pn">TMP</span> muda a categoria da peça.</li>
+  <li>Separe a <strong>revisão de silício</strong> do package — em <span class="pn">…6678ACYP</span> o <span class="pn">A</span> é revisão, não parte do <span class="pn">CYP</span>.</li>
+  <li>Leia a <strong>primeira letra do package</strong>: <span class="pn">G</span> tem chumbo, <span class="pn">Z</span> e <span class="pn">C</span> não.</li>
+  <li>Não presuma temperatura sem saber a família — <span class="pn">A</span> significa coisas opostas em C6678 e F2833x.</li>
+  <li>Transcreva os dígitos do fim: são a velocidade, e valem até 56% do preço.</li>
+</ul>
+
+<footer>
+  <p>Fontes: datasheets e erratas da TI — TMS320C6712D, TMS320C6455, TMS320C6472, TMS320C6474, TMS320C6678, TMS320F28335, TMS320VC5509A (SPRZ200F), AM335x (SPRZ360F) — mais fichas de distribuidor autorizado para os pares de package e as faixas de velocidade. Alguns códigos de letra de tecnologia (VC, LC, DA) não têm definição oficial publicada pela TI e foram inferidos do uso.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>

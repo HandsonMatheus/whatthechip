@@ -1,0 +1,843 @@
+<meta charset="utf-8">
+<title>Xilinx · Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html" aria-current="page"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">O que é</a>
+      <ol>
+        <li><a href="#s1a">CPLD, FPGA, SoC e ACAP</a></li>
+        <li><a href="#s1b">Como difere da Altera por dentro</a></li>
+        <li><a href="#s1c">A empresa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">O que faz</a>
+      <ol>
+        <li><a href="#s2a">Funções típicas</a></li>
+        <li><a href="#s2b">A flash de configuração</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">Specs que importam na venda</a>
+      <ol>
+        <li><a href="#s3a">Dentro do part number</a></li>
+        <li><a href="#s3b">O prefixo vale dinheiro</a></li>
+        <li><a href="#s3c">Fora do part number</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">Onde são usados</a>
+      <ol>
+        <li><a href="#s4a">Por família</a></li>
+        <li><a href="#s4b">Regra de origem</a></li>
+        <li><a href="#s4c">A geração Spartan-3</a></li>
+        <li><a href="#s4d">O que o Spartan faz</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">Outros detalhes</a>
+      <ol>
+        <li><a href="#s5a">A peça sem marcação</a></li>
+        <li><a href="#s5b">IDCODE JTAG</a></li>
+        <li><a href="#s5c">Tampa metálica e tamanho</a></li>
+        <li><a href="#s5d">Ciclo de vida e ferramenta</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Como decodificar</a>
+      <ol>
+        <li><a href="#s6a">A regra principal</a></li>
+        <li><a href="#s6b">Exemplos decodificados</a></li>
+        <li><a href="#s6c">Prefixo, speed grade e temperatura</a></li>
+        <li><a href="#s6d">Letra do encapsulamento</a></li>
+        <li><a href="#s6g">Identificar a geração pelo código</a></li>
+        <li><a href="#s6f2">A marcação em três linhas</a></li>
+        <li><a href="#s6e">Sequência na bancada</a></li>
+      </ol>
+    </li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Xilinx</h1>
+<p class="tagline">Lógica programável recuperada de PCB — a irmã direta da Altera, com duas armadilhas que custam dinheiro.</p>
+
+<div class="infobox">
+  <div class="ttl">Xilinx</div>
+  <table>
+    <tr><th>Tipo</th><td>Lógica programável — FPGA, CPLD, SoC, ACAP</td></tr>
+    <tr><th>Fundada</th><td>1984 — <strong>inventou o FPGA</strong> (XC2064, 1985)</td></tr>
+    <tr><th>Situação</th><td>Comprada pela <strong>AMD</strong> em fev/2022. Produtos hoje sob a marca AMD.</td></tr>
+    <tr><th>FPGA</th><td>Spartan · Artix · Kintex · Virtex · UltraScale · UltraScale+ · Versal</td></tr>
+    <tr><th>SoC</th><td>Zynq · Zynq UltraScale+ MPSoC</td></tr>
+    <tr><th>CPLD</th><td>XC9500 · CoolRunner</td></tr>
+    <tr><th>Prefixos</th><td class="pn">XC · XA · XQ · XQR</td></tr>
+    <tr><th>Ferramenta</th><td>ISE (até 2013) · Vivado</td></tr>
+    <tr><th>IDCODE</th><td>termina sempre em <span class="pn">093</span></td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. O que é</h2>
+<p class="lead">A Xilinx faz a mesma coisa que a Altera: <strong>lógica programável</strong>, chip que sai de fábrica sem função e recebe o circuito depois. A diferença está nos detalhes — e os detalhes é que erram o preço.</p>
+
+<h3 id="s1a">1.1 CPLD, FPGA, SoC e ACAP</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Classe</th><th>Famílias</th><th>O que é</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CPLD</strong></td><td>XC9500, CoolRunner</td><td>Lógica pequena, não-volátil. Cola lógica.</td></tr>
+    <tr><td><strong>FPGA</strong></td><td>Spartan, Artix, Kintex, Virtex, UltraScale</td><td>Lógica grande e volátil. Carrega o bitstream de uma flash ao lado.</td></tr>
+    <tr><td><strong>SoC</strong></td><td>Zynq-7000, Zynq UltraScale+ MPSoC</td><td>FPGA <strong>+ processador ARM real</strong> no mesmo die. Roda Linux e lógica ao mesmo tempo.</td></tr>
+    <tr><td><strong>ACAP</strong></td><td>Versal</td><td>FPGA + ARM + motores de IA + rede-em-chip. Topo absoluto, 7 nm.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s1b">1.2 Como difere da Altera por dentro</h3>
+<div class="note w2">
+  <b class="h">Não compare os números das duas marcas</b>
+  <p>A Altera conta <strong>elementos lógicos (LE)</strong>: 1 LUT de <strong>4</strong> entradas + 1 flip-flop.<br>
+  A Xilinx conta <strong>logic cells</strong>, construídos sobre LUT de <strong>6</strong> entradas, agrupados em <em>slices</em> e <em>CLBs</em>.</p>
+  <p>São unidades diferentes. "325K logic cells" da Xilinx <strong>não</strong> equivale a "325K LE" da Altera — a LUT6 faz mais trabalho por célula. Comparar os dois números lado a lado leva a erro de precificação.</p>
+</div>
+
+<h3 id="s1c">1.3 A empresa</h3>
+<p>A Xilinx <strong>inventou o FPGA</strong> em 1984-85 e foi a líder do mercado por quase quarenta anos. Em <strong>fevereiro de 2022</strong> foi comprada pela AMD; os produtos hoje saem sob a marca AMD, e a documentação migrou para <span class="pn">docs.amd.com</span>. Isso importa na bancada porque a marcação gravada mudou junto — veja 5.1.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. O que faz</h2>
+
+<h3 id="s2a">2.1 Funções típicas</h3>
+<ul>
+  <li><strong>Ponte entre chips</strong> — liga componentes que não falam o mesmo protocolo</li>
+  <li><strong>Processamento em tempo real</strong> — vídeo, rádio, imagem, sem latência de software</li>
+  <li><strong>Controle de I/O em massa</strong> — centenas de sinais simultâneos</li>
+  <li><strong>Prototipagem e emulação de ASIC</strong> — nicho onde a Virtex domina</li>
+  <li><strong>Computador completo numa peça</strong> — no Zynq, ARM + lógica no mesmo die</li>
+</ul>
+
+<h3 id="s2b">2.2 A flash de configuração</h3>
+<div class="note">
+  <b class="h">O vizinho obrigatório</b>
+  <p>Como todo FPGA é volátil, há sempre uma flash na mesma placa. Na Xilinx pode ser a <strong>Platform Flash</strong> própria (<span class="pn">XCF…S</span>, <span class="pn">XCF…P</span>) ou, mais comum nas gerações modernas, uma <strong>flash SPI genérica</strong> — Micron <span class="pn">N25Q</span>, Winbond <span class="pn">W25Q</span>, Macronix <span class="pn">MX25</span>, em SOIC-8 ou SOIC-16 plástico.</p>
+  <p>Nenhuma delas vale separar para revenda. Mas achou uma numa placa, o FPGA estava do lado.</p>
+</div>
+
+<!-- 3 -->
+<h2 id="s3">3. Specs que importam na venda</h2>
+<div class="note">
+  <b class="h">A regra é a mesma da Altera</b>
+  <p><strong>O part number é o produto. Substituição é zero.</strong> Pinagem e bitstream são do device exato — não existe "equivalente".</p>
+</div>
+
+<h3 id="s3a">3.1 Dentro do part number</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Por que pesa</th><th>Substitui?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Família e série</strong></td><td>Define ferramenta (ISE ou Vivado), ciclo de vida e tier.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Densidade</strong> (logic cells)</td><td>Muda pinagem e bitstream.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Encapsulamento</strong></td><td>É o footprint da placa. O número é <strong>contagem de pinos</strong>.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Speed grade</strong></td><td><strong>Na Xilinx, MAIOR = mais rápido.</strong> Inverso da Altera.</td><td class="half">Mão única</td></tr>
+    <tr><td><strong>Temperatura</strong> <span class="pn">C/E/I/Q</span></td><td>Industrial e expandido valem mais.</td><td class="half">Mão única</td></tr>
+    <tr><td><strong>Prefixo</strong> <span class="pn">XC/XA/XQ/XQR</span></td><td>Grau de qualificação. Ver 3.2.</td><td class="half">Mão única</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3b">3.2 O prefixo vale dinheiro</h3>
+<p>Diferente da Altera, a Xilinx codifica o grau de qualificação <strong>no início</strong> do part number, não no fim. Isso muda a faixa de preço em ordens de grandeza:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Grau</th><th>Efeito no valor</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">XC</td><td>Padrão — comercial e industrial</td><td>Base. É a esmagadora maioria do que sai de sucata.</td></tr>
+    <tr><td class="pn">XA</td><td>Automotivo, qualificado AEC-Q100</td><td>Acima do XC. Comprador de reposição automotiva não aceita XC no lugar.</td></tr>
+    <tr><td class="pn">XQ</td><td><strong>Defense-grade</strong> — militar/aeroespacial</td><td>Muito acima. Poucos compradores, preço alto, e a peça costuma vir de equipamento de defesa.</td></tr>
+    <tr><td class="pn">XQR</td><td><strong>Tolerante a radiação</strong> — espaço</td><td>O topo. Peça rara; se aparecer no lote, separe e trate individualmente.</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <p>Um <span class="pn">XQ</span> ou <span class="pn">XQR</span> perdido num lote de sucata comum é o achado mais valioso que existe nessa marca — e também o mais fácil de passar batido, porque só duas letras separam ele de um <span class="pn">XC</span> banal.</p>
+</div>
+
+<h3 id="s3c">3.3 Fora do part number</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Fator</th><th>O que decide</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Estoque no autorizado</strong></td><td>O gatilho real do preço. Zero simultâneo em Mouser e DigiKey cria o mercado da peça recuperada.</td></tr>
+    <tr><td><strong>ISE ou Vivado</strong></td><td>Família que só o ISE atende exige toolchain congelada de 2013. Corta o comprador de projeto novo.</td></tr>
+    <tr><td><strong>Marcação legível</strong></td><td><strong>Problema específico da Xilinx.</strong> Ver 5.1 — peça moderna pode chegar sem speed grade nem temperatura gravados.</td></tr>
+    <tr><td><strong>Esferas e teste</strong></td><td>Esferas originais, reboladas ou danificadas. "Testado" contra "não testado" é o maior multiplicador do mercado.</td></tr>
+  </tbody>
+</table></div>
+
+<!-- 4 -->
+<h2 id="s4">4. Onde são usados</h2>
+
+<h3 id="s4a">4.1 Por família</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Família</th><th>Prefixo</th><th>Tier</th><th>Época</th><th>Equipamento típico</th></tr></thead>
+  <tbody>
+    <tr><td><strong>XC9500 · CoolRunner</strong></td><td class="pn">XC95… · XCR3… · XC2C…</td><td>CPLD</td><td>1995 →</td><td>Cola lógica, sequência de power-on. Fica ao lado do chip principal.</td></tr>
+    <tr><td><strong>XC4000 · Spartan · Spartan-XL</strong></td><td class="pn">XC4… · XCS…</td><td>FPGA legado</td><td>1991–2005</td><td>Telecom e industrial dos anos 90. Hoje só reparo.</td></tr>
+    <tr><td><strong>Spartan-II · 3 · 3E · 3A · 6 · 7</strong></td><td class="pn">XC2S… · XC3S… · XC6S… · XC7S…</td><td>Baixo custo</td><td>2000 →</td><td>Painel de LED, câmera, vídeo, industrial, automotivo, consumo, kit de desenvolvimento, POS.</td></tr>
+    <tr><td><strong>Artix-7 · Artix UltraScale+</strong></td><td class="pn">XC7A… · XCAU…</td><td>Baixo custo moderno</td><td>2011 →</td><td>Rádio definido por software, visão de máquina, médico portátil, instrumentação.</td></tr>
+    <tr><td><strong>Kintex-7 · Kintex UltraScale(+)</strong></td><td class="pn">XC7K… · XCKU…</td><td>Médio</td><td>2011 →</td><td>Wireless, vídeo profissional, teste e medição, aquisição de dados, prototipagem.</td></tr>
+    <tr><td><strong>Virtex (todas) · Virtex UltraScale(+)</strong></td><td class="pn">XCV… · XC2V… · XC4V… · XC5V… · XC6V… · XC7V… · XCVU…</td><td>Topo</td><td>1998 →</td><td>Roteador e switch de operadora, estação-base, <strong>prototipagem e emulação de ASIC</strong>, teste de ponta, defesa, trading de alta frequência, datacenter.</td></tr>
+    <tr><td><strong>Zynq-7000 · Zynq UltraScale+</strong></td><td class="pn">XC7Z… · XCZU…</td><td>SoC</td><td>2011 →</td><td>Controle de motor, visão industrial, ADAS, drone, rádio, equipamento médico.</td></tr>
+    <tr><td><strong>Versal</strong></td><td class="pn">XCVC… · XCVM… · XCVP…</td><td>ACAP, 7 nm</td><td>2019 →</td><td>Datacenter, 5G, aceleração de IA.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s4b">4.2 Regra de origem</h3>
+<p>Vale a mesma da Altera: quanto mais alto o tier, mais caro era o equipamento — e <strong>menor o universo de compradores</strong>. Spartan tem muito comprador e preço baixo. Virtex tem preço alto e poucos compradores.</p>
+<p>Uma particularidade da Virtex: ela é <strong>a peça padrão de prototipagem de ASIC</strong>. Isso significa que muita Virtex de topo saiu de placa de laboratório e não de equipamento de campo — peça com pouquíssimas horas de uso, mas também peça que já pode ter sido dessoldada e resoldada mais de uma vez.</p>
+
+<h3 id="s4c">4.3 A geração Spartan-3 em detalhe</h3>
+<div class="note w2">
+  <b class="h">A letra depois do número não é sufixo — é a família</b>
+  <p><span class="pn">XC3S5000</span> e <span class="pn">XC3S1600E</span> parecem "o mesmo chip em dois tamanhos". <strong>Não são.</strong> São <em>famílias diferentes</em>, com arquitetura, encapsulamento e mercado diferentes. O <span class="pn">E</span> final é a designação de família, não um sufixo de variante.</p>
+</div>
+<p>A geração Spartan-3 tem cinco sub-famílias, todas começando com <span class="pn">XC3S</span>:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Sub-família</th><th>Formato do PN</th><th>Otimizada para</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Spartan-3</strong></td><td class="pn">XC3S____</td><td>Alta densidade e alta contagem de pinos — processamento de dados integrado</td></tr>
+    <tr><td><strong>Spartan-3E</strong></td><td class="pn">XC3S____E</td><td>Lógica por dólar — integração lógica, co-processamento DSP, controle embarcado</td></tr>
+    <tr><td><strong>Spartan-3A</strong></td><td class="pn">XC3S____A</td><td>I/O — bridging, sinalização diferencial, interface de memória</td></tr>
+    <tr><td><strong>Spartan-3AN</strong></td><td class="pn">XC3S____AN</td><td>Igual ao 3A, com <strong>flash de configuração interna</strong> — dispensa a flash externa</td></tr>
+    <tr><td><strong>Spartan-3A DSP</strong></td><td class="pn">XC3SD____A</td><td>Com blocos DSP dedicados</td></tr>
+  </tbody>
+</table></div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">O que separa os extremos</h4>
+<div class="sc"><table class="d">
+  <thead><tr><th>Recurso</th><th>XC3S1600E <span style="font-weight:400;color:var(--dim)">(Spartan-3E)</span></th><th>XC3S5000 <span style="font-weight:400;color:var(--dim)">(Spartan-3)</span></th></tr></thead>
+  <tbody>
+    <tr><td>Gates de sistema</td><td>1.600 K</td><td><strong>5.000 K</strong></td></tr>
+    <tr><td>Células lógicas</td><td>33.192</td><td><strong>74.880</strong></td></tr>
+    <tr><td>Block RAM</td><td>648 Kbit</td><td><strong>1.872 Kbit</strong></td></tr>
+    <tr><td>Multiplicadores dedicados</td><td>36</td><td><strong>104</strong></td></tr>
+    <tr><td>DCM (gerenciadores de clock)</td><td><strong>8</strong></td><td>4</td></tr>
+    <tr><td>I/O máximo do die</td><td>376</td><td><strong>784</strong></td></tr>
+    <tr><td>Encapsulamentos típicos</td><td>FG320 · FG400 · FG484</td><td>FG676 · FG900 · FG1156</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">O I/O da tabela é o máximo do die. <strong>O que você realmente tem depende do encapsulamento</strong> — um die grande num package pequeno entrega menos pinos. Repare também que o Spartan-3E ganha em DCM: ele é o mais novo, e a otimização foi outra.</p>
+
+<div class="note">
+  <b class="h">Por que a diferença de tamanho é visível na bancada</b>
+  <p>Não é impressão sua: os corpos são realmente muito diferentes. O Spartan-3E fica nos encapsulamentos de <strong>19 a 23 mm</strong>; o Spartan-3 de topo chega a <strong>35 mm</strong>. <strong>O tamanho físico já separa as duas famílias antes mesmo de ler o part number.</strong></p>
+</div>
+
+<div class="note w2">
+  <b class="h">Não misture no mesmo lote</b>
+  <p>São <strong>itens de linha diferentes</strong>, não variações de um item. Um lote com Spartan-3 e Spartan-3E juntos não é um lote — é um saco sortido, e sacos sortidos são precificados pelo pior item ou recusados.</p>
+  <p><strong>Na embalagem física:</strong> podem ir na mesma caixa, desde que cada part number esteja em saco próprio e identificado. Nunca soltos e misturados — as esferas se danificam e fica impossível conferir.</p>
+  <p><strong>Na cotação:</strong> uma linha por part number, com a quantidade daquele PN. Misturar o <span class="pn">XC3S5000</span>, que é o topo da geração, com peças pequenas é jogar fora o valor da peça grande.</p>
+</div>
+
+<div class="note">
+  <b class="h">Ferramenta e marcação</b>
+  <p><strong>Toda a geração Spartan-3 é território do ISE</strong>, cuja última versão é a 14.7, de outubro de 2013. Comprador de reposição, nunca de projeto novo.</p>
+  <p>Em compensação, essa geração é <strong>anterior à remoção de marcação</strong> descrita em 5.1 — os chips ainda trazem speed grade, temperatura, lote e date code gravados. Aproveite: são as peças Xilinx mais fáceis de identificar por completo que você vai encontrar.</p>
+</div>
+
+<h3 id="s4d">4.4 O que o Spartan faz e onde aparece</h3>
+<p>Spartan é a linha <strong>de baixo custo</strong> da Xilinx — o equivalente direto do Cyclone da Altera. Não é a linha de desempenho, é a linha de volume: aparece onde o projeto precisa de hardware paralelo mas não paga um Virtex nem justifica um ASIC.</p>
+
+<div class="sc"><table class="d">
+  <thead><tr><th>Geração</th><th>Formato do PN</th><th>Núcleo</th><th>Nota</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Spartan</strong></td><td class="pn">XCS____</td><td>5 V</td><td>Primeira geração</td></tr>
+    <tr><td><strong>Spartan-XL</strong></td><td class="pn">XCS____XL</td><td>3,3 V</td><td>I/O tolerante a 5 V</td></tr>
+    <tr><td><strong>Spartan-II</strong></td><td class="pn">XC2S____</td><td>2,5 V</td><td>Primeira com block RAM de verdade</td></tr>
+    <tr><td><strong>Spartan-IIE</strong></td><td class="pn">XC2S____E</td><td>1,8 V</td><td></td></tr>
+    <tr><td><strong>Spartan-3 e derivados</strong></td><td class="pn">XC3S____</td><td>1,2 V</td><td>Cinco sub-famílias — ver 4.3</td></tr>
+    <tr><td><strong>Spartan-6</strong></td><td class="pn">XC6S____</td><td>1,2 V</td><td>Última geração do ISE</td></tr>
+    <tr><td><strong>Spartan-7</strong></td><td class="pn">XC7S____</td><td>1,0 V</td><td>Única da linha que usa Vivado</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <p><strong>Não existe Spartan-4 nem Spartan-5.</strong> A numeração pula de 3 para 6, para alinhar com a geração do Virtex-6. Procurar por eles não leva a lugar nenhum.</p>
+  <p>E cuidado com a leitura: <span class="pn">XCS20XL</span> é <strong>Spartan-XL</strong>, primeira geração. <span class="pn">XC2S20</span> é que seria Spartan-II. O <span class="pn">2</span> depois do <span class="pn">XC</span> é o que marca a segunda geração — não o número da densidade.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">O que ele faz</h4>
+<ul>
+  <li><strong>Processar vídeo e imagem em tempo real</strong> — scaler, conversor de formato, deinterlacer, captura</li>
+  <li><strong>Controlar I/O em massa</strong> — dezenas ou centenas de sinais paralelos que um microcontrolador não daria conta</li>
+  <li><strong>Fazer ponte entre chips</strong> — adaptar barramentos e protocolos que não conversam</li>
+  <li><strong>Substituir uma placa de lógica discreta</strong> — o uso original da primeira geração, trocando dezenas de CIs 74xx por um chip</li>
+  <li><strong>Rodar um processador soft</strong> — MicroBlaze ou PicoBlaze, nas gerações a partir do Spartan-3</li>
+  <li><strong>Prototipar barato</strong> — antes de comprometer o projeto com um Virtex</li>
+</ul>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">Onde aparece</h4>
+<div class="sc"><table class="d">
+  <thead><tr><th>Setor</th><th>Equipamento</th></tr></thead>
+  <tbody>
+    <tr><td>Painel de LED</td><td>Placa receptora e emissora — junto com o Cyclone, é o chip mais comum desse mercado</td></tr>
+    <tr><td>Vídeo e broadcast</td><td>Scaler, conversor, matriz, placa de captura, câmera IP, DVR</td></tr>
+    <tr><td>Industrial</td><td>CLP, controle de motor, CNC, visão de máquina, Ethernet industrial</td></tr>
+    <tr><td>Instrumentação</td><td>Osciloscópio de entrada, analisador lógico, aquisição de dados</td></tr>
+    <tr><td>Telecom de acesso</td><td>Placa de linha, multiplexador, equipamento de borda</td></tr>
+    <tr><td>Consumo e comercial</td><td>Set-top, impressora, POS, máquina de jogo, karaokê</td></tr>
+    <tr><td>Automotivo e médico</td><td>Normalmente na versão industrial ou automotiva do PN</td></tr>
+    <tr><td>Laboratório</td><td>Kit de desenvolvimento e placa de protótipo — daí vem muita peça com retrabalho</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p><strong>Regra de origem:</strong> Spartan é peça de volume e valor unitário baixo, como o Cyclone. O dinheiro vem de <strong>acumular quantidade do mesmo part number</strong>, não de achar uma peça rara. A exceção é o topo de cada geração — um <span class="pn">XC3S5000</span> ou um <span class="pn">XC6SLX150</span> vale muito mais que os irmãos pequenos e merece separação individual.</p>
+</div>
+
+<!-- 5 -->
+<h2 id="s5">5. Outros detalhes</h2>
+
+<h3 id="s5a">5.1 A peça sem marcação — o problema exclusivo da Xilinx</h3>
+<div class="note w2">
+  <b class="h">Isto não é defeito nem falsificação. É de fábrica.</b>
+  <p>A Xilinx removeu deliberadamente parte da marcação gravada. Conforme o FAQ oficial da mudança de top marking:</p>
+  <p>→ <strong>A linha 4 — speed grade, grau de temperatura e SCD — foi removida.</strong><br>
+  → No UltraScale+, <strong>a linha 3 (número de lote) e parte da linha 2 (date code) também deixaram de ser marcadas</strong>.<br>
+  → Afeta <strong>7 Series, Zynq-7000, Zynq UltraScale+, UltraScale e UltraScale+</strong>, nas variantes <span class="pn">XC</span>, <span class="pn">XA</span> e <span class="pn">XQ</span>.</p>
+  <p>Para onde foi a informação? <strong>Para a etiqueta do saco</strong> — que um reciclador nunca recebe. O que sobra gravado no chip é um <strong>código 2D serializado, único por unidade</strong>, e as specs "só podem ser recuperadas usando o número de série através de uma aplicação pela internet".</p>
+  <p><strong>Consequência prática:</strong> num lote de sucata de Xilinx moderna, <strong>speed grade e temperatura chegam perdidos</strong>. A consulta existe, mas é unitária, depende de acesso, e não escala para um lote. Anuncie a peça declarando isso — não invente o grau.</p>
+</div>
+<p>Nas gerações antigas — Spartan-3/6, Virtex-4/5/6 — a marcação completa continua gravada. O problema começa no 7 Series.</p>
+
+<h3 id="s5b">5.2 IDCODE JTAG — o resgate</h3>
+<div class="note">
+  <p>O identificador de fabricante Xilinx é <span class="pn">0x049</span>, e o bit menos significativo do IDCODE é sempre 1. A aritmética disso dá uma regra que vale para toda a linha:</p>
+  <p class="m" style="font-size:1.05rem;color:var(--link);font-weight:600">Todo IDCODE JTAG Xilinx termina em <code>093</code></p>
+  <p>Exemplos reais: <span class="pn">0x03651093</span> (Kintex-7 325T) · <span class="pn">0x0362D093</span> (Artix-7 35T) · <span class="pn">0x04008093</span> (Spartan-6 LX45) · <span class="pn">0x02A56093</span> (Virtex-5 LX50).</p>
+  <p>Comparação: <strong>Altera termina em <code>0DD</code>, Xilinx termina em <code>093</code>.</strong> Um scan JTAG separa as duas marcas mesmo com a tampa raspada — e no caso da Xilinx moderna é a <em>única</em> forma de recuperar a identidade do die.</p>
+</div>
+
+<h3 id="s5c">5.3 Tampa metálica e tamanho</h3>
+<p>Ao contrário da Altera, na Xilinx a <strong>tampa metálica é comum</strong>: todo encapsulamento flip-chip (<span class="pn">FF</span>, <span class="pn">FB</span> e derivados) leva chapa. Virtex-4 em diante, e as UltraScale inteiras. Spartan e Artix wire-bond continuam sendo epóxi preto liso.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Peça</th><th>Encapsulamento</th><th>Corpo</th></tr></thead>
+  <tbody>
+    <tr><td>Versal Premium</td><td class="pn">VSVA5601</td><td><strong>70 × 70 mm</strong> — o maior Xilinx</td></tr>
+    <tr><td>Virtex UltraScale+ VU19P</td><td class="pn">FSVA3824</td><td>65 × 65 mm</td></tr>
+    <tr><td>Virtex UltraScale VU440</td><td class="pn">FLGA2892</td><td>55 × 55 mm</td></tr>
+    <tr><td>Virtex UltraScale+</td><td class="pn">A2577</td><td>52,5 × 52,5 mm</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Corpo de 47,5 mm ou mais só existe em UltraScale, UltraScale+ e Versal.</strong> É um corte de triagem útil: mediu grande e leu Xilinx, já sabe que é geração moderna e de alto valor.</p>
+<div class="note w2">
+  <p><strong>Armadilha de encapsulamento:</strong> <span class="pn">FFG1761</span> tem corpo de <strong>42,5 mm</strong> e <span class="pn">FHG1761</span> tem <strong>45 mm</strong>. Mesma contagem de pinos, corpos diferentes, peças não intercambiáveis. Não presuma o corpo pelo número de pinos.</p>
+</div>
+
+<h3 id="s5d">5.4 Ciclo de vida e ferramenta</h3>
+<div class="note w2">
+  <b class="h">O corte que define o comprador</b>
+  <p>O <strong>ISE 14.7 é a última versão que existe, de outubro de 2013</strong>. A Xilinx declarou que o ISE entrou em "sustaining phase" e não haverá novas versões.</p>
+  <p>Tudo que só o ISE atende — <strong>Spartan-3, Spartan-6, Virtex-4, Virtex-5, Virtex-6, CoolRunner, XC9500</strong> — exige uma toolchain congelada de 2013, com dor de licença e de sistema operacional moderno.</p>
+  <p>Do <strong>7 Series em diante</strong> (Spartan-7, Artix-7, Kintex-7, Virtex-7, Zynq-7000, UltraScale, UltraScale+, Versal) o software é o <strong>Vivado</strong>, que segue atualizado.</p>
+</div>
+<p>Traduzindo para preço: peça de família só-ISE tem comprador de <em>reposição</em>, nunca de projeto novo. Isso comprime a demanda a um nicho — mas dentro desse nicho o preço pode subir, porque não existe alternativa.</p>
+
+<!-- 6 -->
+<h2 id="s6">6. Como decodificar</h2>
+
+<h3 id="s6a">6.1 A regra principal</h3>
+<div class="note">
+  <p><strong>Na Xilinx, o número no código de encapsulamento é SEMPRE contagem de pinos.</strong> Nunca milímetros, em nenhuma geração.</p>
+  <p>É mais simples que a Altera, que tem três gramáticas diferentes. Mas cuidado ao alternar entre as duas marcas no mesmo lote: <span class="pn">FFG900</span> = 900 pinos, enquanto <span class="pn">F29</span> da Altera = 29 milímetros.</p>
+</div>
+
+<h3 id="s6b">6.2 Exemplos decodificados</h3>
+<div class="dec">
+  <div class="big">XC <i>7K</i> <i>325</i> <i>T</i> - <i>2</i> <i>FFG900</i> <i>C</i></div>
+  <table><tbody>
+    <tr><td>XC</td><td>prefixo padrão (comercial/industrial)</td></tr>
+    <tr><td>7K</td><td>série 7, família <strong>Kintex</strong> &nbsp;(7S=Spartan · 7A=Artix · 7K=Kintex · 7V=Virtex · 7Z=Zynq)</td></tr>
+    <tr><td>325</td><td>densidade — 326.080 logic cells</td></tr>
+    <tr><td>T</td><td>variante com transceivers seriais</td></tr>
+    <tr><td>-2</td><td>speed grade 2 — <strong>o 3 seria mais rápido, o 1 mais lento</strong></td></tr>
+    <tr><td>FFG900</td><td>flip-chip BGA · <strong>G</strong> = Pb-free · <strong>900 pinos</strong> &nbsp;← <em>contagem de pinos</em></td></tr>
+    <tr><td>C</td><td>comercial — Tj 0 a +85 °C</td></tr>
+  </tbody></table>
+</div>
+<div class="dec">
+  <div class="big">XC <i>3S</i> <i>500</i> <i>E</i> - <i>4</i> <i>PQG208</i> <i>C</i></div>
+  <table><tbody>
+    <tr><td>XC3S</td><td>Spartan-3</td></tr>
+    <tr><td>500</td><td>densidade — 500 mil <em>system gates</em> (unidade antiga, inflada)</td></tr>
+    <tr><td>E</td><td>variante Spartan-3<strong>E</strong></td></tr>
+    <tr><td>-4</td><td>speed grade 4 — nessa família existe também o 5, que é mais rápido</td></tr>
+    <tr><td>PQG208</td><td>PQFP · <strong>G</strong> = Pb-free · <strong>208 pinos</strong></td></tr>
+    <tr><td>C</td><td>comercial</td></tr>
+  </tbody></table>
+</div>
+
+<h3 id="s6c">6.3 Prefixo, speed grade e temperatura</h3>
+<div class="note w2">
+  <b class="h">A armadilha que mais erra preço</b>
+  <p><strong>Xilinx: MAIOR = mais rápido.</strong> O <span class="pn">-3</span> é mais rápido que o <span class="pn">-2</span>, que é mais rápido que o <span class="pn">-1</span>.</p>
+  <p><strong>Altera: MENOR = mais rápido.</strong> O <span class="pn">6</span> é mais rápido que o <span class="pn">8</span>.</p>
+  <p>As duas escalas convivem no mesmo lote. Trocá-las erra o preço na direção errada, e speed grade é justamente o campo que o remarcador adultera.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Código</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">XC</td><td>Prefixo padrão — comercial e industrial</td></tr>
+    <tr><td class="pn">XA</td><td>Prefixo automotivo — AEC-Q100</td></tr>
+    <tr><td class="pn">XQ</td><td>Prefixo defense-grade — militar e aeroespacial</td></tr>
+    <tr><td class="pn">XQR</td><td>Prefixo tolerante a radiação — espaço</td></tr>
+    <tr><td class="pn">-1 -2 -3</td><td>Speed grade. <strong>Maior = mais rápido.</strong> Spartan-3 usa -4 e -5.</td></tr>
+    <tr><td class="pn">-1L -2L</td><td>Variante de baixo consumo (tensão de núcleo menor)</td></tr>
+    <tr><td class="pn">C</td><td>Comercial — Tj 0 a +85 °C</td></tr>
+    <tr><td class="pn">E</td><td>Estendido — Tj 0 a +100 °C</td></tr>
+    <tr><td class="pn">I</td><td>Industrial — Tj −40 a +100 °C · <strong>vale mais</strong></td></tr>
+    <tr><td class="pn">Q</td><td>Expandido — Tj −40 a +125 °C</td></tr>
+    <tr><td class="pn">G</td><td>Dentro do código de package: <strong>Pb-free</strong>. Sem o G = com chumbo.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6d">6.4 Letra do encapsulamento</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Código</th><th>Tipo</th><th>Tampa</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">FF · FFG</td><td>Flip-chip BGA · pitch 1,0 mm</td><td>Metálica</td></tr>
+    <tr><td class="pn">FB · FBG</td><td>Flip-chip BGA · 1,0 mm</td><td>Metálica</td></tr>
+    <tr><td class="pn">FH · FL · FS · FV</td><td>Variantes flip-chip por tamanho de corpo</td><td>Metálica</td></tr>
+    <tr><td class="pn">FG · FGG</td><td>Fine-pitch BGA wire-bond · 1,0 mm</td><td>Plástico</td></tr>
+    <tr><td class="pn">FT · FTG</td><td>Fine-pitch thin BGA · 1,0 mm</td><td>Plástico</td></tr>
+    <tr><td class="pn">CS · CSG</td><td>Chip-scale BGA · 0,8 mm</td><td>Plástico</td></tr>
+    <tr><td class="pn">CP · CPG</td><td>Chip-scale BGA · 0,5 mm</td><td>Plástico</td></tr>
+    <tr><td class="pn">TQ · TQG</td><td>TQFP</td><td>Plástico</td></tr>
+    <tr><td class="pn">PQ · PQG</td><td>PQFP</td><td>Plástico</td></tr>
+    <tr><td class="pn">VQ · VQG</td><td>VQFP</td><td>Plástico</td></tr>
+    <tr><td class="pn">PC</td><td>PLCC — CPLD legado</td><td>Plástico</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">O <strong>G</strong> no meio do código é o indicador Pb-free, não parte do tipo de encapsulamento. <span class="pn">FF900</span> e <span class="pn">FFG900</span> são o mesmo encapsulamento com acabamentos diferentes — e a versão com chumbo pode valer mais no reparo de placa legada.</p>
+
+<h3 id="s6g">6.5 Identificar a geração pelo código</h3>
+<p>A Xilinx usou <strong>três convenções de nome</strong> ao longo do tempo. O que vem logo depois do <span class="pn">XC</span> diz em qual era a peça está.</p>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.2rem 0 .4rem">Era 1 — sem dígito de geração</h4>
+<p style="font-size:.9rem;color:var(--dim);margin-bottom:.5rem">A primeira família de cada linha. Letra direto depois do <span class="pn">XC</span>.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Família</th><th>Tier</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">XC95… · XC95…XL · XC95…XV</td><td>XC9500</td><td>CPLD</td></tr>
+    <tr><td class="pn">XCR3…</td><td>CoolRunner</td><td>CPLD</td></tr>
+    <tr><td class="pn">XC4…</td><td>XC4000</td><td>FPGA legado</td></tr>
+    <tr class="hl"><td class="pn">XCS…</td><td><strong>Spartan</strong></td><td>Baixo custo</td></tr>
+    <tr class="hl"><td class="pn">XCS…XL</td><td><strong>Spartan-XL</strong></td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XCV…</td><td>Virtex</td><td>Topo</td></tr>
+    <tr><td class="pn">XCV…E</td><td>Virtex-E</td><td>Topo</td></tr>
+  </tbody>
+</table></div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.2rem 0 .4rem">Era 2 — dígito de geração + letra de linha</h4>
+<p style="font-size:.9rem;color:var(--dim);margin-bottom:.5rem"><span class="pn">XC</span> + número da geração + letra da linha. <strong>É onde está a maior parte da sucata.</strong></p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Família</th><th>Tier</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">XC2C…</td><td>CoolRunner-II</td><td>CPLD</td></tr>
+    <tr class="hl"><td class="pn">XC2S…</td><td><strong>Spartan-II</strong></td><td>Baixo custo</td></tr>
+    <tr class="hl"><td class="pn">XC2S…E</td><td><strong>Spartan-IIE</strong></td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XC2V…</td><td>Virtex-II</td><td>Topo</td></tr>
+    <tr><td class="pn">XC2VP…</td><td>Virtex-II Pro</td><td>Topo</td></tr>
+    <tr class="hl"><td class="pn">XC3S…</td><td><strong>Spartan-3</strong></td><td>Baixo custo</td></tr>
+    <tr class="hl"><td class="pn">XC3S…E · …A · …AN</td><td><strong>Spartan-3E · 3A · 3AN</strong></td><td>Baixo custo</td></tr>
+    <tr class="hl"><td class="pn">XC3SD…A</td><td><strong>Spartan-3A DSP</strong></td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XC4V…</td><td>Virtex-4 (LX · SX · FX)</td><td>Topo</td></tr>
+    <tr><td class="pn">XC5V…</td><td>Virtex-5 (LX · LXT · SXT · FXT · TXT)</td><td>Topo</td></tr>
+    <tr class="hl"><td class="pn">XC6S…</td><td><strong>Spartan-6</strong> (LX · LXT)</td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XC6V…</td><td>Virtex-6 (LX · SX · HX · CX)</td><td>Topo</td></tr>
+    <tr><td class="pn">XC7A…</td><td>Artix-7</td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XC7K…</td><td>Kintex-7</td><td>Médio</td></tr>
+    <tr class="hl"><td class="pn">XC7S…</td><td><strong>Spartan-7</strong></td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XC7V…</td><td>Virtex-7</td><td>Topo</td></tr>
+    <tr><td class="pn">XC7Z…</td><td>Zynq-7000</td><td>SoC com ARM</td></tr>
+  </tbody>
+</table></div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.2rem 0 .4rem">Era 3 — duas letras, sem dígito</h4>
+<p style="font-size:.9rem;color:var(--dim);margin-bottom:.5rem">UltraScale em diante. O <span class="pn">P</span> no fim marca o UltraScale<strong>+</strong>.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Família</th><th>Tier</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">XCKU… · XCKU…P</td><td>Kintex UltraScale · UltraScale+</td><td>Médio</td></tr>
+    <tr><td class="pn">XCVU… · XCVU…P</td><td>Virtex UltraScale · UltraScale+</td><td>Topo</td></tr>
+    <tr><td class="pn">XCAU…P</td><td>Artix UltraScale+</td><td>Baixo custo</td></tr>
+    <tr><td class="pn">XCZU…</td><td>Zynq UltraScale+ MPSoC</td><td>SoC com ARM</td></tr>
+    <tr><td class="pn">XCVC… · XCVM… · XCVP…</td><td>Versal AI Core · Prime · Premium</td><td>ACAP, topo absoluto</td></tr>
+  </tbody>
+</table></div>
+
+<div class="note w2">
+  <b class="h">Quatro armadilhas de leitura</b>
+  <p><strong>1. A letra de linha fica no COMEÇO, a de sub-família no FIM.</strong> Em <span class="pn">XC3S1600E</span>: o <span class="pn">3S</span> do começo diz Spartan-3; o <span class="pn">E</span> do fim diz a sub-família. São dois campos diferentes.</p>
+  <p><strong>2. <span class="pn">XCS20XL</span> não é Spartan-II.</strong> Spartan-II seria <span class="pn">XC2S20</span>. O dígito depois do <span class="pn">XC</span> é que marca a geração — não o número da densidade.</p>
+  <p><strong>3. Não existe Spartan-4 nem Spartan-5.</strong> A numeração pula de 3 para 6, para alinhar com o Virtex-6.</p>
+  <p><strong>4. Artix-7 e Spartan-7 convivem.</strong> O Artix-7 substituiu o Spartan-6 no degrau de baixo custo; o Spartan-7 veio depois, mais enxuto. Por isso as duas linhas existem na mesma geração.</p>
+</div>
+
+<h3 id="s6f2">6.6 A marcação: lendo a peça</h3>
+<div class="note w2">
+  <b class="h">Diferença crítica em relação à Altera</b>
+  <p>Na Altera, o part number completo aparece <strong>inteiro numa linha só</strong>. Na Xilinx, <strong>nenhuma linha contém o PN completo</strong> — ele se monta juntando três campos que moram em <em>duas linhas e meia</em>.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.2rem 0 .4rem">O layout</h4>
+<div class="sc"><table class="d">
+  <thead><tr><th>Linha</th><th>Conteúdo</th><th>Serve para</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td><strong>1</strong></td><td>Nome do device</td><td class="half"><strong>Part number</strong></td></tr>
+    <tr class="hl"><td><strong>2</strong> — início</td><td>Encapsulamento e contagem de pinos</td><td class="half"><strong>Part number</strong></td></tr>
+    <tr><td><strong>2</strong> — meio</td><td>Revisão de circuito, código do fab, geometria</td><td>Rastreio</td></tr>
+    <tr><td><strong>2</strong> — fim</td><td><strong>Date code</strong>, 4 dígitos <span class="pn">AASS</span></td><td>Procedência</td></tr>
+    <tr><td><strong>3</strong></td><td>Dez caracteres de montagem, lote e step — termina em <span class="pn">A</span> ou <span class="pn">M</span></td><td>Rastreio · sustenta o <strong>lote homogêneo</strong></td></tr>
+    <tr class="hl"><td><strong>4</strong></td><td><strong>Speed grade e temperatura</strong></td><td class="half"><strong>Part number</strong></td></tr>
+    <tr><td>país</td><td>País de montagem, quando presente</td><td>Procedência</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">O número de linhas <strong>varia com o encapsulamento</strong>. O layout acima é o de encapsulamento grande; em QFP e BGA pequeno a informação vem compactada. <strong>Transcreva todas as linhas, sempre, na ordem — classifique depois.</strong></p>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Onde está o PN, por geração</h4>
+<div class="note w2">
+  <b class="h">A pergunta operacional</b>
+  <p>Quem cadastra a peça precisa saber <strong>quais linhas digitar</strong>. Na Xilinx a resposta muda com a geração <em>e</em> com o tamanho do encapsulamento.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Geração</th><th>Linhas</th><th>Digitar</th><th>Resultado</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Spartan · Spartan-XL · XC4000</strong><br><span style="font-size:.85em;color:var(--dim)">QFP, encapsulamento pequeno</span></td><td>2 a 3</td><td>Device + package + a linha curta de speed/temp, que costuma estar <strong>isolada num canto</strong></td><td class="pn">XCS20XL-4PQG208I</td></tr>
+    <tr><td><strong>Spartan-II · IIE · Virtex · Virtex-E</strong></td><td>3 a 4</td><td>Linha 1 + início da linha 2 + linha de speed/temp</td><td class="pn">XC2S150-5PQ208C</td></tr>
+    <tr class="hl"><td><strong>Spartan-3 (todas) · Spartan-6 · Virtex-II a Virtex-6</strong><br><span style="font-size:.85em;color:var(--dim)">BGA grande</span></td><td>4 a 5 + país</td><td><strong>Linha 1 + início da linha 2 + linha 4</strong></td><td class="pn">XC6SLX25-2FTG256C</td></tr>
+    <tr class="hl"><td><strong>7 Series · Zynq-7000 · UltraScale · UltraScale+</strong></td><td>3 — <strong>a linha 4 foi removida de fábrica</strong></td><td>Linha 1 + início da linha 2. <strong>Speed grade e temperatura não existem na peça</strong></td><td class="pn">XC7K325T-?FFG900?</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p><strong>Em nenhuma geração o PN está numa linha só.</strong> No mínimo são duas — device e package. Isso é o oposto da Altera, da Broadcom, da TI e da ADI, onde o PN completo cabe numa linha.</p>
+  <p><strong>Quando a peça é 7 Series ou mais nova</strong>, o cadastro fica necessariamente incompleto: registre o device e o package, e declare que speed grade e temperatura vieram sem marcação. Não invente e não chute.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Dois exemplos completos</h4>
+<div class="dec">
+  <p class="title" style="font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:.6rem">Virtex-5 · encapsulamento com tampa metálica</p>
+  <table><tbody>
+    <tr><td>logo</td><td>XILINX · VIRTEX-5</td></tr>
+    <tr><td>linha 1</td><td><span class="pn">XC5VLX50T</span> → device · Virtex-5 <strong>LXT</strong> (o <span class="pn">T</span> indica transceptores seriais)</td></tr>
+    <tr><td>linha 2</td><td><span class="pn">FFG665</span> → FCBGA 665 bolas, 27 mm, <strong>Pb-free</strong> · <span class="pn">FGU</span> → fab e geometria · <span class="pn">1129</span> → <strong>2011, semana 29</strong></td></tr>
+    <tr><td>linha 3</td><td><span class="pn">AC4281601A1</span> → lote</td></tr>
+    <tr><td>linha 4</td><td><span class="pn">1I</span> → speed grade <strong>1</strong> · <strong>Industrial</strong></td></tr>
+    <tr><td><strong>PN</strong></td><td><strong class="pn">XC5VLX50T-1FFG665I</strong></td></tr>
+  </tbody></table>
+</div>
+<div class="dec">
+  <p class="title" style="font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:.6rem">Spartan-6 · encapsulamento plástico</p>
+  <table><tbody>
+    <tr><td>logo</td><td>XILINX · SPARTAN-6</td></tr>
+    <tr><td>linha 1</td><td><span class="pn">XC6SLX25</span> → device</td></tr>
+    <tr><td>linha 2</td><td><span class="pn">FTG256</span> → FTBGA 256 bolas, 17 mm, <strong>Pb-free</strong> · <span class="pn">BIV</span> → fab e geometria · <span class="pn">1745</span> → <strong>2017, semana 45</strong></td></tr>
+    <tr><td>linha 3</td><td><span class="pn">D5501946A</span> → lote</td></tr>
+    <tr><td>linha 4</td><td><span class="pn">2C</span> → speed grade <strong>2</strong> · <strong>Comercial</strong></td></tr>
+    <tr><td>país</td><td>TAIWAN</td></tr>
+    <tr><td><strong>PN</strong></td><td><strong class="pn">XC6SLX25-2FTG256C</strong></td></tr>
+  </tbody></table>
+</div>
+<div class="note">
+  <p>Repare no segundo exemplo: a linha 4 são <strong>dois caracteres soltos</strong>, sem contexto nenhum, embaixo de uma linha de lote comprida. <strong>É a linha que mais passa despercebida</strong> — e é uma das três que formam o PN.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">O que torna duas peças diferentes</h4>
+<div class="note w2">
+  <b class="h">A pergunta que decide o item de estoque</b>
+  <p><strong>Duas peças com a linha 1 e o começo da linha 2 idênticos ainda podem ser part numbers diferentes.</strong> O mesmo device no mesmo encapsulamento existe em várias versões de catálogo. Para o <span class="pn">XC6SLX25</span> em FT256, por exemplo:</p>
+  <p class="pn" style="font-size:.9rem;line-height:1.8">-2FTG256C · -2FTG256I · -3FTG256C · -3FTG256I · -L1FTG256C · -2FT256C · -3FT256I</p>
+  <p>Sete part numbers, um único device, um único encapsulamento. O que os separa são <strong>dois campos pequenos</strong>.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>O que muda</th><th>Torna a peça diferente?</th><th>Onde olhar</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Speed grade</strong> — 2 contra 3, ou L1</td><td class="no">SIM — outro PN</td><td>Linha 4</td></tr>
+    <tr><td><strong>Temperatura</strong> — C contra I</td><td class="no">SIM — outro PN</td><td>Linha 4</td></tr>
+    <tr><td><strong>O <span class="pn">G</span> do encapsulamento</strong> — <span class="pn">FTG256</span> contra <span class="pn">FT256</span></td><td class="no">SIM — Pb-free contra com chumbo</td><td>Linha 2, terceira letra</td></tr>
+    <tr><td><strong>Date code</strong> — 1745 contra 1211</td><td class="half">NÃO — mesma peça, outra semana</td><td>Linha 2, fim</td></tr>
+    <tr><td><strong>Lote</strong></td><td class="half">NÃO</td><td>Linha 3</td></tr>
+    <tr><td><strong>Códigos de fab e geometria</strong></td><td class="half">NÃO</td><td>Linha 2, meio</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Mas o date code não é irrelevante</b>
+  <p>Ele não muda a identidade da peça, e muda o valor do lote. <strong>Registre a faixa de date codes</strong> de cada item de estoque.</p>
+  <p>Todas na mesma janela é argumento de <strong>lote homogêneo</strong>, e homogêneo tem prêmio. Date codes espalhados por anos sugerem material agregado de várias procedências, e isso rende desconto pesado ou rejeição na inspeção. <strong>Declarar custa menos que ser descoberto.</strong></p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">O RoHS está na terceira letra do package</h4>
+<div class="note">
+  <p>Texto oficial: <em>"A G in the third letter of a package type indicates a Pb-free RoHS compliant package."</em></p>
+  <p><span class="pn">FG900</span> tem chumbo · <span class="pn">FGG900</span> é Pb-free.<br>
+  <span class="pn">FT256</span> tem chumbo · <span class="pn">FTG256</span> é Pb-free.<br>
+  <span class="pn">PQ208</span> tem chumbo · <span class="pn">PQG208</span> é Pb-free.<br>
+  <span class="pn">FF665</span> tem chumbo · <span class="pn">FFG665</span> é Pb-free.</p>
+  <p><strong>É uma letra só, no meio do código, e muda a peça.</strong> Confira com lupa antes de fechar o item de estoque — e lembre que a versão com chumbo pode valer <em>mais</em>, porque é a exigida em reparo de placa legada e não se fabrica mais.</p>
+</div>
+
+<div class="note w2">
+  <b class="h">Quando a linha 4 não existe</b>
+  <p>Do <strong>7 Series em diante</strong> essa linha foi removida de fábrica — ver 5.1. Nessas peças <strong>o speed grade e a temperatura são irrecuperáveis</strong> a partir da marcação, e o PN completo não pode ser montado.</p>
+  <p>Nas gerações anteriores — Spartan até o 6, Virtex até o 6 — <strong>a linha 4 está lá.</strong> Se você não a encontrou, procure de novo: costuma ser curta, com dois ou três caracteres, num canto do encapsulamento.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Marcação dupla &mdash; a linha 4 com barra</h4>
+<p>Nem sempre a linha 4 traz um grau só. Quando o silício é qualificado em duas combinações, a Xilinx grava as duas, separadas por barra:</p>
+<div class="dec">
+  <div class="big">XC3S400A &nbsp; FGG400AGQ1317 &nbsp; D4559042A &nbsp; <i>5C/4I</i></div>
+  <table><tbody>
+    <tr><td>5C</td><td>speed grade <strong>−5</strong> em temperatura <strong>comercial</strong></td></tr>
+    <tr><td>4I</td><td>speed grade <strong>−4</strong> em temperatura <strong>industrial</strong></td></tr>
+  </tbody></table>
+</div>
+<div class="note">
+  <b class="h">Uma peça, dois part numbers válidos</b>
+  <p>A mesma pastilha pode ser vendida como <span class="pn">XC3S400A-5FGG400C</span> <strong>ou</strong> como <span class="pn">XC3S400A-4FGG400I</span>. Os dois existem em catálogo e os dois descrevem essa peça.</p>
+  <p>É o mesmo mecanismo da <strong>marcação dupla do Altera MAX 3000A</strong>: qualificar um lote nos dois graus e marcar os dois. <strong>Não é adulteração</strong> — é prática de fábrica.</p>
+</div>
+<div class="note w2">
+  <b class="h">Na hora de anunciar, declare os dois</b>
+  <p>Anunciar só o comercial <strong>joga fora o valor do industrial</strong>, que costuma ser o mais caro dos dois. Anunciar só o industrial expõe você a reclamação de quem esperava a peça exclusivamente industrial.</p>
+  <p><strong>Escreva os dois PNs e diga que a peça é de marcação dupla.</strong> O comprador escolhe sob qual comprar.</p>
+</div>
+<div class="note">
+  <p><strong>Como reconhecer:</strong> procure a <strong>barra</strong> na linha 4. Um grau só é <span class="pn">4C</span>, <span class="pn">5C</span>, <span class="pn">1I</span>. Marcação dupla é <span class="pn">5C/4I</span>. Se tem barra, transcreva os dois lados — cada um vira um part number completo.</p>
+</div>
+
+<h3 id="s6e">6.7 Sequência na bancada</h3>
+<ol class="steps" style="list-style:decimal;padding-left:1.3rem">
+  <li>Veja se tem <strong>tampa metálica</strong>: se sim, é flip-chip — Virtex-4 ou mais novo, <strong>tier alto</strong>, separação individual.</li>
+  <li>Meça o corpo. <strong>47,5 mm ou mais só existe em UltraScale, UltraScale+ e Versal.</strong></li>
+  <li>Leia o <strong>prefixo</strong>: <span class="pn">XQ</span> e <span class="pn">XQR</span> mudam a peça de categoria e de faixa de preço.</li>
+  <li>Identifique a <strong>geração pelo código</strong> — ver 6.5. Ela decide ISE ou Vivado, e portanto quem é o comprador.</li>
+  <li><strong>Transcreva todas as linhas da marcação, na ordem.</strong> Não pare na primeira.</li>
+  <li>Monte o PN com <strong>linha 1 + começo da linha 2 + linha 4</strong>.</li>
+  <li>Confira a <strong>terceira letra do encapsulamento</strong>: com <span class="pn">G</span> é Pb-free, sem <span class="pn">G</span> tem chumbo.</li>
+  <li>Ao agrupar peças no mesmo item de estoque, confira <strong>linha 4 e o <span class="pn">G</span></strong> em todas — não só a linha 1.</li>
+  <li>Registre a <strong>faixa de date codes</strong> do lote, mesmo que todas sejam o mesmo PN.</li>
+  <li>Se a peça é 7 Series ou mais nova e <strong>não tem speed grade nem temperatura gravados, isso é normal</strong> — não descarte como remarcada, declare que veio sem.</li>
+  <li>Sem PN legível, rode <strong>JTAG</strong>: IDCODE terminado em <code>093</code> confirma Xilinx.</li>
+  <li>Nas peças de tier alto, rode JTAG <strong>antes de vender</strong> — "testado" contra "não testado" é o maior salto de preço do mercado.</li>
+</ol>
+
+<footer>
+  <p>Fontes: documentação oficial em docs.amd.com, incluindo o FAQ da mudança de top marking do 7 Series/UltraScale/UltraScale+ e a folha de dados DS180 do 7 Series. Direção do speed grade confirmada em fonte secundária de engenharia. Encapsulamentos e corpos em mm levantados na rodada de pesquisa anterior deste projeto.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>

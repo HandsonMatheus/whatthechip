@@ -1,0 +1,620 @@
+<meta charset="utf-8">
+<title>Altera · Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html" aria-current="page"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">O que é</a>
+      <ol>
+        <li><a href="#s1a">CPLD e FPGA</a></li>
+        <li><a href="#s1b">O elemento lógico</a></li>
+        <li><a href="#s1c">A empresa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">O que faz</a>
+      <ol>
+        <li><a href="#s2a">Funções típicas</a></li>
+        <li><a href="#s2b">A flash de configuração</a></li>
+        <li><a href="#s2c">O que o MAX faz numa placa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">Specs que importam na venda</a>
+      <ol>
+        <li><a href="#s3a">Dentro do part number</a></li>
+        <li><a href="#s3b">Fora do part number</a></li>
+        <li><a href="#s3c">Onde a intuição falha</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">Onde são usados</a>
+      <ol>
+        <li><a href="#s4a">Por família</a></li>
+        <li><a href="#s4b">Regra de origem</a></li>
+        <li><a href="#s4c">O MAX no mercado</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">Outros detalhes</a>
+      <ol>
+        <li><a href="#s5a">Logo e marcação</a></li>
+        <li><a href="#s5b">Date code</a></li>
+        <li><a href="#s5c">Encapsulamento e tampa</a></li>
+        <li><a href="#s5d">Ciclo de vida e ferramenta</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Como decodificar</a>
+      <ol>
+        <li><a href="#s6a">As três gramáticas</a></li>
+        <li><a href="#s6z">Onde está o PN — o que digitar</a></li>
+        <li><a href="#s6b">Exemplos decodificados</a></li>
+        <li><a href="#s6c">Letra do encapsulamento</a></li>
+        <li><a href="#s6d">Temperatura e sufixo</a></li>
+        <li><a href="#s6e">Sequência na bancada</a></li>
+      </ol>
+    </li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Altera</h1>
+<p class="tagline">Lógica programável recuperada de PCB — o que é, o que vale e como ler o part number.</p>
+
+<div class="infobox">
+  <div class="ttl">Altera</div>
+  <table>
+    <tr><th>Tipo</th><td>Lógica programável — FPGA e CPLD</td></tr>
+    <tr><th>Fundada</th><td>1983</td></tr>
+    <tr><th>Situação</th><td>Independente. Silver Lake 51%, Intel 49%, desde 15/09/2025</td></tr>
+    <tr><th>FPGA</th><td>FLEX · ACEX · APEX · Cyclone · Arria · Stratix · Agilex</td></tr>
+    <tr><th>CPLD</th><td>MAX</td></tr>
+    <tr><th>Prefixos</th><td class="pn">EP… · 5C · 10C · 5M · 10M · 10AX · 1SG · AGF</td></tr>
+    <tr><th>Ferramenta</th><td>Quartus Prime</td></tr>
+    <tr><th>Logo gravado</th><td class="pn">ALTERA® · INTEL®</td></tr>
+    <tr><th>Maior peça</th><td>70 × 74 mm, 4.938 bolas (Stratix 10 GX 10M)</td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. O que é</h2>
+<p class="lead">A Altera fabrica <strong>lógica programável</strong>: chip que sai de fábrica <em>sem função definida</em>. Quem define o circuito é o cliente, depois de comprar.</p>
+
+<h3 id="s1a">1.1 CPLD e FPGA</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>CPLD</th><th>FPGA</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Famílias</strong></td><td>MAX</td><td>FLEX, Cyclone, Arria, Stratix, Agilex</td></tr>
+    <tr><td><strong>Tamanho</strong></td><td>centenas a milhares de macrocélulas</td><td>milhares a milhões de elementos lógicos</td></tr>
+    <tr><td><strong>Onde fica o programa</strong></td><td>dentro do chip</td><td>fora — numa flash ao lado</td></tr>
+    <tr><td><strong>Liga e funciona?</strong></td><td>sim, é não-volátil</td><td><strong>não</strong> — nasce em branco a cada energização</td></tr>
+    <tr><td><strong>Serve para</strong></td><td>cola lógica, sequência de power-on</td><td>circuito inteiro, processamento paralelo</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s1b">1.2 O elemento lógico</h3>
+<p>Dentro do FPGA a unidade básica é o <strong>Logic Element (LE)</strong>: uma LUT de 4 entradas — tabela-verdade de 16 bits que vira qualquer função lógica — mais um flip-flop de 1 bit. Milhares desses, ligados por uma malha de fios com chaves programáveis. O bitstream configura o conteúdo das LUTs e a posição das chaves.</p>
+<p><strong>Não é CPU:</strong> não executa instruções, vira o circuito. <strong>Não é memória:</strong> tem RAM interna, mas de trabalho — 7 KB a 300 KB nas peças comuns, contra 1 GB num chip de DDR3.</p>
+
+<h3 id="s1c">1.3 A empresa</h3>
+<p>Independente de 1983 a 2015 → Intel PSG de 2015 a 2025 → independente de novo desde <strong>15 de setembro de 2025</strong>, quando a Silver Lake fechou a compra de 51%. A Intel ficou com 49%. Isso importa na bancada porque o <strong>logo gravado mudou duas vezes</strong> — veja 5.1.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. O que faz</h2>
+<p>Vira o circuito que o projetista desenhou, e roda em <strong>paralelo</strong> o que uma CPU faria em série.</p>
+
+<h3 id="s2a">2.1 Funções típicas</h3>
+<ul>
+  <li><strong>Ponte entre chips</strong> — liga dois componentes que não falam o mesmo protocolo</li>
+  <li><strong>Processamento em tempo real</strong> — vídeo, sinal, imagem, sem latência de software</li>
+  <li><strong>Controle de I/O em massa</strong> — dezenas ou centenas de sinais simultâneos</li>
+  <li><strong>Substituto de ASIC</strong> — quando o volume não paga um chip dedicado</li>
+</ul>
+
+<h3 id="s2b">2.2 A flash de configuração</h3>
+<div class="note">
+  <b class="h">O vizinho obrigatório</b>
+  <p>Como o FPGA é volátil, toda placa tem uma <strong>flash de configuração</strong> ao lado dele: <span class="pn">EPCS1…128</span> ou <span class="pn">EPCQ16…512</span>, em <strong>SOIC-8 ou SOIC-16, plástico</strong>, de 4×5 mm a 7,5×10 mm. Sem ela o FPGA liga em branco.</p>
+  <p>São produção corrente e baratas — um <span class="pn">EPCQ64ASI16N</span> custa US$ 34 com 5.334 unidades em estoque. <strong>Não vale separar para revenda.</strong> Mas se você achou uma numa placa, o FPGA estava lá do lado.</p>
+</div>
+
+<h3 id="s2c">2.3 O que o MAX faz numa placa</h3>
+<p>O MAX é a linha de <strong>CPLD</strong> da Altera, e ele não faz o trabalho pesado. Faz o trabalho que <strong>precisa estar pronto antes de todo o resto</strong>.</p>
+<div class="note">
+  <b class="h">A diferença que define tudo</b>
+  <p><strong>O MAX já está programado quando a energia chega</strong> — o programa mora numa flash dentro do próprio chip. No mesmo instante, um FPGA ainda está em branco e vai levar centenas de milissegundos carregando o bitstream de uma flash externa.</p>
+  <p>Quem manda no primeiro segundo de vida da placa, portanto, é o CPLD. É por isso que <strong>quase toda placa com FPGA grande tem um MAX do lado</strong>. Não são concorrentes — são um par.</p>
+</div>
+<p>Os sete trabalhos que ele costuma fazer:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Função</th><th>O que é na prática</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td><strong>Sequenciamento de alimentação</strong></td><td>Liga os trilhos de tensão na ordem certa, com os atrasos certos. Um FPGA não pode fazer isso — ele mesmo depende de estar alimentado e configurado. <strong>É a razão número um do MAX existir na placa.</strong></td></tr>
+    <tr class="hl"><td><strong>Carregar o FPGA</strong></td><td>Em muitas placas é o MAX que lê a flash e injeta o bitstream no FPGA. Ele é o gerenciador de boot da placa.</td></tr>
+    <tr><td><strong>Reset e supervisão</strong></td><td>Gera e distribui reset, monitora watchdog, ordena a partida dos outros chips.</td></tr>
+    <tr><td><strong>Cola lógica</strong></td><td>Substitui uma dúzia de CIs 74xx discretos: decodificação de endereço, seleção de chip, conversão entre níveis lógicos.</td></tr>
+    <tr><td><strong>Interface de painel</strong></td><td>Lê botões com debounce, aciona LED, varre teclado e display de sete segmentos.</td></tr>
+    <tr><td><strong>Tradução de barramento</strong></td><td>Adapta um barramento antigo a um chip novo — o jeito barato de estender a vida de um projeto.</td></tr>
+    <tr><td><strong>Máquina de estados</strong></td><td>Controle simples e determinístico em equipamento industrial, onde o atraso pino-a-pino precisa ser previsível.</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Duas confusões de nome</b>
+  <p><strong>MAX II não é CPLD de verdade por dentro.</strong> O MAX 7000 e o 3000A são arquitetura clássica de macrocélula. O MAX II é uma malha de LUT com flash embutida — arquitetura de FPGA vendida como CPLD. Por isso o <span class="pn">EPM570</span> aparece como "570 elementos lógicos" <em>e</em> como "440 macrocélulas": o segundo número é uma equivalência de marketing, não a arquitetura real.</p>
+  <p><strong>MAX 10 também não é CPLD.</strong> É um FPGA não-volátil — lógica de FPGA, mais flash interna, mais conversor A/D no mesmo chip. Fica na ponte entre as duas categorias.</p>
+</div>
+
+<!-- 3 -->
+<h2 id="s3">3. Specs que importam na venda</h2>
+<div class="note">
+  <b class="h">A regra que organiza tudo</b>
+  <p><strong>O part number é o produto. Substituição é zero.</strong> Não existe "equivalente": dois chips da mesma família e mesmo encapsulamento, com densidades diferentes, não se trocam — pinagem e bitstream são do device exato.</p>
+</div>
+
+<h3 id="s3a">3.1 Dentro do part number</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Por que pesa</th><th>Substitui?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Família e geração</strong></td><td>Define ferramenta, ciclo de vida e tier. Tudo decorre daqui.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Densidade (LE)</strong></td><td>Muda pinagem e bitstream. Maior não cobre menor.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Encapsulamento</strong></td><td>É o footprint da placa do comprador. Errado = peça inútil.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Speed grade</strong></td><td>Mesmo die, binado por timing. <strong>Na Altera, menor = mais rápido.</strong></td><td class="half">Mão única</td></tr>
+    <tr><td><strong>Temperatura</strong> <span class="pn">C/I/A</span></td><td>Industrial vale mais. Aplicação industrial não aceita peça comercial.</td><td class="half">Mão única</td></tr>
+    <tr><td><strong>Sufixo</strong> <span class="pn">N/G</span> ou nenhum</td><td>Pb-free ou com chumbo. Muda o perfil de refluxo. A versão com chumbo pode valer <em>mais</em> (reparo legado).</td><td class="no">Na prática, não</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">Mão única = o mais rápido cobre o mais lento, e o industrial cobre o comercial — nunca o contrário. Mas o comprador de reposição compra contra uma BOM que nomeia o PN exato, então não conte com essa margem para vender.</p>
+
+<h3 id="s3b">3.2 Fora do part number</h3>
+<p>É aqui que o preço realmente se forma — e nada disso está gravado na peça.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Fator</th><th>O que decide</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Estoque no autorizado</strong></td><td><strong>O gatilho real.</strong> Zero simultâneo em Mouser <em>e</em> DigiKey é o que cria mercado para peça recuperada.</td></tr>
+    <tr><td><strong>Suporte no Quartus atual</strong></td><td>Se a ferramenta moderna não programa a peça, o comprador é só reposição — nunca projeto novo.</td></tr>
+    <tr><td><strong>Marcação legível</strong></td><td>Binário. Sem PN legível é valor de metal, por maior que seja o chip.</td></tr>
+    <tr><td><strong>Esferas e teste</strong></td><td>Esferas originais, reboladas ou danificadas. "Testado" contra "não testado" é o maior multiplicador do mercado.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3c">3.3 Onde a intuição falha</h3>
+<div class="note w2">
+  <p>O <span class="pn">EP4CE55F23C8N</span> tem <strong>55.856</strong> elementos lógicos e vale US$ 25–190. O <span class="pn">EP3C40F484C6N</span> tem <strong>39.600</strong> — menos — e vale US$ 224–323.</p>
+  <p>Toda spec de identidade aponta para o primeiro; o preço aponta para o segundo. <strong>As specs que identificam estão gravadas na peça. As que precificam, não.</strong></p>
+</div>
+
+<!-- 4 -->
+<h2 id="s4">4. Onde são usados</h2>
+
+<h3 id="s4a">4.1 Por família</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Família</th><th>Tier</th><th>Época</th><th>Equipamento típico</th></tr></thead>
+  <tbody>
+    <tr><td><strong>MAX</strong><br><span class="pn">EPM… · 5M… · 10M…</span></td><td>CPLD</td><td>1993 →</td><td>Cola lógica em qualquer placa: sequência de power-on, decodificação de endereço, reset. Aparece <em>ao lado</em> do chip principal, não como chip principal.</td></tr>
+    <tr><td><strong>FLEX</strong><br><span class="pn">EPF…</span></td><td>FPGA legado</td><td>1992–2007</td><td>Telecom e industrial dos anos 90, instrumentação, controle. Hoje só reparo de equipamento antigo.</td></tr>
+    <tr><td><strong>Cyclone</strong><br><span class="pn">EP1C…EP4C · 5C · 10C</span></td><td>Baixo custo</td><td>2003 →</td><td>Painel de LED (placas receptoras), kit de desenvolvimento, CLP, controle de motor, CNC, scaler de vídeo, POS, impressora, elevador, máquina de jogo, instrumentação básica.</td></tr>
+    <tr><td><strong>Arria</strong><br><span class="pn">EP1AGX… · 10AX</span></td><td>Médio</td><td>2007 →</td><td>Tem transceiver serial rápido. Placa de linha de telecom, rádio remoto, broadcast profissional, imagem médica.</td></tr>
+    <tr><td><strong>Stratix</strong><br><span class="pn">EP1S…EP4S · 1SG</span></td><td>Topo</td><td>2002 →</td><td>Roteador e switch de operadora, estação-base, teste e medição de ponta, defesa, datacenter, aceleração.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s4b">4.2 Regra de origem</h3>
+<p>Quanto mais alto o tier, mais caro era o equipamento de onde a peça saiu — e <strong>menor o universo de compradores</strong>. Cyclone tem muito comprador e preço baixo. Stratix tem preço alto e poucos compradores, quase todos oficinas de reparo de um equipamento específico.</p>
+
+<h3 id="s4c">4.3 O MAX no mercado de recuperados</h3>
+<p>O MAX é <strong>peça de volume, não de valor unitário</strong>. No canal autorizado custa entre poucos dólares e algumas dezenas — nada perto de um FPGA. Mas aparece em muitíssima placa, então em sucata sai em quantidade, e a quantidade do mesmo part number é o que forma o lote vendável.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Onde aparece</th><th>Fazendo o quê</th></tr></thead>
+  <tbody>
+    <tr><td>Placa de telecom, servidor, storage</td><td>Sequenciamento de alimentação de backplane, boot do FPGA principal</td></tr>
+    <tr><td>Equipamento industrial — CLP, drive, HMI, CNC</td><td>Máquina de estados, cola lógica, painel</td></tr>
+    <tr><td>Instrumentação e equipamento de teste</td><td>Temporização determinística, controle de aquisição</td></tr>
+    <tr><td>Automotivo e médico</td><td>Supervisão e sequenciamento — normalmente na versão industrial</td></tr>
+    <tr><td>Impressora, POS, set-top, máquina de jogo</td><td>Cola lógica e interface</td></tr>
+    <tr><td>Ao lado de qualquer FPGA grande</td><td>Gerenciamento de boot e alimentação</td></tr>
+  </tbody>
+</table></div>
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">Quem compra</h4>
+<div class="sc"><table class="d">
+  <thead><tr><th>Família</th><th>Ferramenta</th><th>Comprador</th></tr></thead>
+  <tbody>
+    <tr><td><strong>MAX 7000 · MAX 3000A</strong></td><td class="no">Nenhuma ferramenta atual</td><td>Só reposição de equipamento industrial de vida longa. Nicho estreito, mas sem alternativa — e por isso com preço firme.</td></tr>
+    <tr><td><strong>MAX II · MAX IIG · MAX IIZ</strong></td><td class="half">Quartus Prime Standard e Lite 25.1</td><td>Reposição <em>e</em> projeto novo. Base instalada enorme.</td></tr>
+    <tr><td><strong>MAX V</strong></td><td class="half">Quartus Prime Standard 25.1</td><td>Idem, e é uma das três famílias com <strong>suporte estendido até 2045</strong>.</td></tr>
+    <tr><td><strong>MAX 10</strong></td><td class="half">Quartus Prime Standard e Lite 25.1</td><td>Corrente. Também na lista de suporte até 2045.</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">O que faz o preço subir num MAX</b>
+  <p><strong>Escassez, não desempenho.</strong> O <span class="pn">EPM240T100C5N</span> custa cerca de US$ 16 no autorizado — mas com <strong>EOL notificado, estoque zero e 39 semanas de prazo</strong>. O <span class="pn">EPM7128SLC84-15</span> tem PDN emitida e disponibilidade restrita.</p>
+  <p>Peça barata com equipamento industrial ainda rodando no campo e sem reposição de fábrica é exatamente o perfil que sustenta preço no mercado de recuperados. <strong>Separe por part number e acumule quantidade</strong> — aqui o lote homogêneo vale mais que a peça isolada.</p>
+</div>
+
+<!-- 5 -->
+<h2 id="s5">5. Outros detalhes</h2>
+
+<h3 id="s5a">5.1 Logo e marcação</h3>
+<p><span class="pn">ALTERA®</span> em Cyclone II–V, Arria II/V/10 e MAX. <span class="pn">INTEL®</span> em Cyclone 10 e Stratix 10. <strong>O logo segue a linha de produto, não o calendário</strong> — logo ALTERA numa peça de 2016 a 2024 não é sinal de falsificação. O contrário é: Cyclone V marcado INTEL contraria a especificação.</p>
+<p>A marca <code>e1</code> (norma J-STD-609) indica esfera SnAgCu com prata acima de 1,5%. Tem que bater com o sufixo <span class="pn">N</span>/<span class="pn">G</span> do PN; se contradiz, é remarcação.</p>
+<div class="note">
+  <b class="h">Marcação dupla no MAX 3000A — é oficial</b>
+  <p>Uma peça pode trazer <strong>dois part numbers diferentes</strong>, um comercial e um industrial, com velocidades diferentes. Exemplo real: <span class="pn">EPM3128ATC144-7N</span> e <span class="pn">EPM3128ATI144-10N</span> na mesma peça.</p>
+  <p>É prática documentada da Altera, não adulteração: <em>"Dual marking will enable Altera to provide an industrial grade device for every qualified −7 ns commercial grade device currently shipping in production."</em> Mesma pastilha, duas qualificações — 7,5 ns na faixa comercial e 10 ns na faixa industrial, porque silício é mais lento quente.</p>
+  <p><strong>Os dois códigos são válidos para a mesma peça física.</strong> No anúncio, mostre as duas linhas: esconder uma parece adulteração, e mostrar as duas alcança os dois tipos de comprador. Nunca combine os campos — <span class="pn">EPM3128ATI144-7N</span> não existe.</p>
+</div>
+
+<h3 id="s5b">5.2 Date code</h3>
+<div class="note">
+  <p>O date code Altera tem resolução de <strong>seis semanas</strong>. O <code>WW</code> gravado só pode assumir <strong>nove valores</strong>:</p>
+  <p class="m" style="font-size:1.02rem;letter-spacing:.05em;color:var(--link);font-weight:600">01 · 07 · 13 · 19 · 25 · 31 · 37 · 43 · 49</p>
+  <p>Qualquer outro valor não saiu da Altera assim. É o teste anti-remarcação mais barato que existe — custa uma olhada, sem equipamento nenhum.</p>
+</div>
+
+<h3 id="s5c">5.3 Encapsulamento e tampa</h3>
+<p><strong>Cyclone, MAX e FLEX nunca têm tampa metálica</strong> — são epóxi preto liso. Tampa de metal só aparece no topo da linha, em Stratix e Arria flip-chip de alto consumo. Chip grande com chapa de aço no seu lote não é Altera de baixo tier.</p>
+<p>O maior encapsulamento Altera que existe é o <span class="pn">NF74</span>: 70 × 74 mm, 4.938 bolas, no Stratix 10 GX 10M. Depois vêm Agilex 7 (56 × 66 mm), Stratix 10 <span class="pn">HF55</span> (55 × 55) e <span class="pn">UF50</span> (50 × 50). <strong>A maior parte do catálogo para em 35 a 45 mm</strong>, e todo o Cyclone fica abaixo de 35 mm.</p>
+<p>Sem PN legível, o <strong>IDCODE JTAG</strong> ainda identifica o fabricante: <strong>todo IDCODE Altera termina em <code>0DD</code></strong> em hexadecimal. Identifica a classe de die, não a peça exata.</p>
+<div class="note">
+  <b class="h">Qual linha é part number e qual é rastreio</b>
+  <p><strong>PN Altera</strong> sempre começa com <span class="pn">EP</span> (EPM, EPF, EP1C, EP4CE…) ou com dígito (<span class="pn">5M</span>, <span class="pn">10M</span>, <span class="pn">5C</span>, <span class="pn">10C</span>, <span class="pn">10AX</span>, <span class="pn">1SG</span>, <span class="pn">AGF</span>), traz letra de encapsulamento no meio e termina em <span class="pn">N</span>/<span class="pn">G</span> ou num dígito.</p>
+  <p><strong>Linha de rastreio</strong> tem blocos de letras sem padrão e um <span class="pn">YYWW</span> de quatro dígitos no meio — por exemplo <span class="pn">N BBN9M1537U</span>, que é o date code de 2015, semanas 37–42. Nunca começa com <span class="pn">EP</span>.</p>
+  <p>Marcação dupla (duas linhas que são <em>ambas</em> PN completo) é exceção, e só se confirma quando as duas começam com <span class="pn">EPM</span>. Nas demais linhas — logo, família, date code, país, lote, tracecode — não há PN nenhum.</p>
+</div>
+
+<h3 id="s5d">5.4 Ciclo de vida e ferramenta</h3>
+<p>Em <strong>abril de 2026</strong> a Altera estendeu suporte até <strong>2045</strong> apenas para <strong>Agilex, MAX 10 e Cyclone V</strong>. Cyclone I a IV, FLEX, Arria e Stratix antigos ficaram de fora — para eles vale "legacy disponível até 2035".</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Ferramenta</th><th>Programa</th><th>Efeito no valor</th></tr></thead>
+  <tbody>
+    <tr><td>Quartus Prime Pro 26.1.1</td><td>Agilex 3/5/7, Stratix 10</td><td>Máximo — projeto novo possível</td></tr>
+    <tr><td>Quartus Prime Standard 25.1</td><td>Cyclone IV/V/10, MAX II/V/10, Arria II/V/10, Stratix IV/V</td><td>Alto — ferramenta corrente</td></tr>
+    <tr><td>Quartus II 13.1 (arquivado)</td><td>+ Cyclone III, Stratix III</td><td>Médio-baixo — exige VM antiga</td></tr>
+    <tr><td><strong>Nenhuma ferramenta atual</strong></td><td>Cyclone I/II, Stratix I/II, FLEX, APEX, ACEX, MAX 7000/3000</td><td>Baixo — só reposição de sistema legado</td></tr>
+  </tbody>
+</table></div>
+
+<!-- 6 -->
+<h2 id="s6">6. Como decodificar</h2>
+
+<h3 id="s6a">6.1 As três gramáticas</h3>
+<p>Existem três, e a diferença é <strong>o que significa o número depois da letra do encapsulamento</strong>.</p>
+<div class="note w2">
+  <b class="h">A fronteira não é onde parece</b>
+  <p>Não é "<code>EP</code> = pinos, começa com dígito = milímetros". A troca aconteceu na geração de 40/60 nm, <strong>ainda dentro do prefixo <code>EP</code></strong>:</p>
+  <p><strong>Milímetros:</strong> Cyclone IV, Arria II, Stratix IV, Cyclone V, Arria V, Stratix V, Arria 10, Stratix 10.<br>
+  <strong>Contagem de pinos:</strong> Cyclone I/II/III, Stratix I/II/III, Arria GX, FLEX, APEX, ACEX, MAX 7000/3000 — <em>e também</em> MAX II, MAX V e MAX 10, que começam com dígito.<br>
+  <strong>Contagem de bolas, grade hexagonal:</strong> Agilex 7 / 5 / 3.</p>
+</div>
+
+<h3 id="s6z">6.2 Onde está o PN — o que digitar</h3>
+<div class="note w2">
+  <b class="h">A pergunta operacional</b>
+  <p>Quem cadastra a peça precisa saber <strong>qual linha da marcação digitar</strong>. Na Altera a resposta é simples na maioria dos casos — e tem duas exceções que enganam.</p>
+</div>
+<div class="note">
+  <p><strong>Regra geral: o part number completo está numa linha só</strong> — a linha do nome do device, logo abaixo do logo da família. Digite ela inteira, do primeiro caractere ao último.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Família</th><th>Linhas da marcação</th><th>Onde está o PN</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Cyclone II a V</strong></td><td>7</td><td><strong>Linha 3.</strong> A 1 é o logo ALTERA, a 2 é o logo da família, a 4 é date code, a 5 é o país, 6 e 7 são lote e tracecode</td></tr>
+    <tr><td><strong>Cyclone 10 · Stratix 10</strong></td><td>6</td><td><strong>Linha 3.</strong> Logo INTEL. No Stratix 10 a linha 4 é um Unique Intel ID</td></tr>
+    <tr><td><strong>Arria II · V · 10</strong></td><td>7</td><td><strong>Linha 3</strong>, igual ao Cyclone</td></tr>
+    <tr><td><strong>MAX 10</strong></td><td>5 a 7, varia por package</td><td><strong>Linha do device.</strong> Em VBGA/YBGA aparecem também coordenadas de die e bin number, que não são PN</td></tr>
+    <tr class="hl"><td><strong>MAX II · MAX V</strong></td><td>5 ou 7</td><td>Linha do device — <strong>mas em QFP e TQFP pequeno o PN QUEBRA EM DUAS LINHAS.</strong> Concatene as duas antes de digitar</td></tr>
+    <tr class="hl"><td><strong>MAX 7000 · MAX 3000A</strong></td><td>varia</td><td>Linha do device — <strong>mas pode haver DUAS linhas que são ambas PN completo</strong>. Ver abaixo</td></tr>
+  </tbody>
+</table></div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">Exceção 1 — o PN quebrado em duas linhas</h4>
+<p>Nos encapsulamentos pequenos do MAX II e MAX V (PQFP e T/EQFP até 10 × 10 mm, e MBGA de 64 a 100 pinos), a marcação não tem largura para o PN inteiro. Ele sai <strong>partido entre a linha 2 e a linha 3</strong>. As duas juntas formam um part number só — digite concatenado, sem espaço.</p>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">Exceção 2 — marcação dupla no MAX 3000A</h4>
+<div class="note">
+  <p>Duas linhas, <strong>ambas part number completo e válido</strong>, uma comercial e uma industrial. Exemplo real:</p>
+  <p class="pn" style="font-size:.95rem;line-height:1.8">EPM3128ATC144-7N<br>EPM3128ATI144-10N</p>
+  <p>É prática oficial da Altera, não adulteração. Mesma pastilha qualificada duas vezes — 7,5 ns na faixa comercial, 10 ns na industrial.</p>
+  <p><strong>Como cadastrar:</strong> o industrial como PN canônico, o comercial como equivalente da mesma peça física. <strong>Duas chaves de busca, um item de estoque.</strong> E nunca combine os campos: <span class="pn">EPM3128ATI144-7N</span> não existe.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.3rem 0 .4rem">Como saber se a linha é PN ou rastreio</h4>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>Part number</th><th>Rastreio</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Começa com</strong></td><td class="pn">EP… · 5M · 10M · 5C · 10C · 10AX · 1SG · AGF</td><td>Qualquer outra coisa</td></tr>
+    <tr><td><strong>Contém</strong></td><td>Letra de encapsulamento no meio</td><td>Blocos de letras sem padrão + <span class="pn">AASS</span> de 4 dígitos</td></tr>
+    <tr><td><strong>Termina em</strong></td><td class="pn">N · G · ou um dígito</td><td>Letra solta</td></tr>
+    <tr><td><strong>Exemplo</strong></td><td class="pn">EPM570GT144C5N</td><td class="pn">N BBN9M1537U</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">As demais linhas — logo da empresa, logo da família, date code, país, FPO/lote, tracecode — <strong>nunca contêm PN</strong>. Registre como procedência e rastreio, não digite no campo de part number.</p>
+
+<h3 id="s6b">6.3 Exemplos decodificados</h3>
+<div class="dec">
+  <div class="big">EP4CE<i>115</i> <i>F29</i> <i>C7</i> <i>N</i></div>
+  <table><tbody>
+    <tr><td>EP4CE</td><td>Cyclone IV, variante E (enhanced logic)</td></tr>
+    <tr><td>115</td><td>densidade — 114.480 elementos lógicos</td></tr>
+    <tr><td>F29</td><td>FineLine BGA · <strong>29 × 29 mm</strong> = 780 bolas &nbsp;← <em>milímetros</em></td></tr>
+    <tr><td>C7</td><td>comercial (Tj 0–85 °C), speed grade 7</td></tr>
+    <tr><td>N</td><td>Pb-free</td></tr>
+  </tbody></table>
+</div>
+<div class="dec">
+  <div class="big">EP2C<i>35</i> <i>F672</i> <i>C6</i> <i>N</i></div>
+  <table><tbody>
+    <tr><td>EP2C</td><td>Cyclone II</td></tr>
+    <tr><td>35</td><td>densidade — 33.216 elementos lógicos</td></tr>
+    <tr><td>F672</td><td>FineLine BGA · <strong>672 pinos</strong> (corpo 27 mm) &nbsp;← <em>contagem de pinos</em></td></tr>
+    <tr><td>C6</td><td>comercial, speed grade 6 — o mais rápido do Cyclone II</td></tr>
+    <tr><td>N</td><td>Pb-free</td></tr>
+  </tbody></table>
+</div>
+
+<h3 id="s6c">6.4 Letra do encapsulamento</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Letra</th><th>Tipo</th><th>Onde aparece</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">F</td><td>FineLine BGA · pitch 1,0 mm</td><td>a maioria dos FPGA médios e grandes</td></tr>
+    <tr><td class="pn">U</td><td>Ultra FineLine BGA · 0,8 mm</td><td>Cyclone V/10, MAX 10, Arria 10</td></tr>
+    <tr><td class="pn">M</td><td>Micro FineLine BGA · 0,5 mm</td><td>Cyclone IV/V, MAX 10/V</td></tr>
+    <tr><td class="pn">E</td><td>Enhanced QFP</td><td>MAX 10, Cyclone 10 LP, Cyclone IV E — 144 pinos, 22 mm</td></tr>
+    <tr><td class="pn">T</td><td>Thin QFP</td><td>Cyclone I/II, MAX II/V</td></tr>
+    <tr><td class="pn">Q / R</td><td>PQFP / RQFP</td><td>Cyclone I–III, legado</td></tr>
+    <tr><td class="pn">L</td><td><strong>PLCC</strong> — não é "J"</td><td>MAX 7000 — <span class="pn">EPM7128SLC84</span></td></tr>
+    <tr><td class="pn">H</td><td>Hybrid FBGA</td><td>Arria V GZ, Arria II GZ, Stratix 10</td></tr>
+    <tr><td class="pn">K N R S U</td><td>variantes de FBGA por tile</td><td>Stratix IV <span class="pn">KF40</span>, Arria 10 <span class="pn">NF45</span>, Stratix 10 <span class="pn">UF50</span></td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6d">6.5 Temperatura e sufixo</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Código</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">C</td><td>Comercial — Tj 0 °C a 85 °C</td></tr>
+    <tr><td class="pn">I</td><td>Industrial — Tj −40 °C a 100 °C · <strong>vale mais</strong></td></tr>
+    <tr><td class="pn">A</td><td>Automotivo — Tj −40 °C a 125 °C</td></tr>
+    <tr><td class="pn">6 7 8 9</td><td>Speed grade. <strong>Menor = mais rápido.</strong> Arria 10 e Stratix 10 usam 1/2/3.</td></tr>
+    <tr><td class="pn">N</td><td>Pb-free — era <code>EP…</code>, MAX V, Cyclone V</td></tr>
+    <tr><td class="pn">G</td><td>Pb-free — era moderna: MAX 10, Cyclone 10, Arria 10, Stratix 10</td></tr>
+    <tr><td class="pn">(nenhum)</td><td><strong>Com chumbo</strong> (85Sn:15Pb). Não se fabrica mais — pode valer <em>mais</em>.</td></tr>
+    <tr><td class="pn">ES</td><td>Engineering sample — peça não qualificada</td></tr>
+    <tr><td class="pn">SC</td><td>SEU internal scrubbing (Cyclone V)</td></tr>
+    <tr><td class="pn">-15</td><td>Nos CPLD legados o número é <strong>tempo de propagação em ns</strong>, não speed grade</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Os CPLD legados seguem outra convenção</b>
+  <p><strong>A ordem dos campos muda.</strong> No MAX 7000/3000 a temperatura vem <em>antes</em> da contagem de pinos:<br>
+  <span class="pn">EPM3128A</span> · <span class="pn">T</span> (TQFP) · <span class="pn">C</span> (comercial) · <span class="pn">144</span> (pinos) · <span class="pn">-7</span> (7,5 ns) · <span class="pn">N</span> (Pb-free).<br>
+  Nos FPGA a temperatura vem <em>depois</em> do package: <span class="pn">EP4CE115</span>·<span class="pn">F29</span>·<span class="pn">C7</span>·<span class="pn">N</span>.</p>
+  <p><strong>E a faixa de temperatura é ambiente (TA), não junção (Tj).</strong> No MAX 3000A: comercial <strong>TA 0 a 70 °C</strong> (TJ 0 a 90), industrial <strong>TA −40 a 85 °C</strong> (TJ −40 a 105). Comparar o TA de um CPLD com o Tj de um FPGA leva a conclusão errada.</p>
+</div>
+
+<h3 id="s6e">6.6 Sequência na bancada</h3>
+<ul>
+  <li>Meça o corpo com paquímetro — só o encapsulamento, sem a solda.</li>
+  <li>Leia a <strong>linha do logo da família</strong> antes do PN: <span class="pn">Cyclone® V</span>, <span class="pn">Stratix® 10</span>. Salva a triagem quando a linha do PN está apagada.</li>
+  <li>Transcreva normalizando <code>O→0</code> e <code>I→1</code> — <strong>exceto</strong> o <code>I</code> de Industrial, que é letra de verdade.</li>
+  <li>Confira o encapsulamento contra a física: se o PN diz <code>F29</code>, o corpo tem que medir 29 mm.</li>
+  <li>Valide o date code contra as nove semanas.</li>
+  <li>Nos PNs caros, leia o <strong>IDCODE por JTAG</strong> antes de vender.</li>
+</ul>
+
+<footer>
+  <p>Fontes: documentação oficial em docs.altera.com e <em>Product Marking Information</em> em altera.com/quality. Preços de distribuidor autorizado consultados em agosto de 2026 — ordem de grandeza, não cotação.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>

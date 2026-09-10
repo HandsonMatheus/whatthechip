@@ -1,0 +1,464 @@
+<meta charset="utf-8">
+<title>Samsung · Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html" aria-current="page"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">O que é</a>
+      <ol>
+        <li><a href="#s1a">Duas Samsungs na mesma bancada</a></li>
+        <li><a href="#s1b">As linhas de lógica</a></li>
+        <li><a href="#s1c">A empresa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">O que faz</a>
+      <ol>
+        <li><a href="#s2a">O que é um processador de aplicação</a></li>
+        <li><a href="#s2b">Package-on-Package</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">Specs que importam na venda</a>
+      <ol>
+        <li><a href="#s3a">A inversão: o antigo vale mais</a></li>
+        <li><a href="#s3b">Dentro do part number</a></li>
+        <li><a href="#s3c">Documentação</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">Onde são usados</a>
+      <ol>
+        <li><a href="#s4a">Por linha</a></li>
+        <li><a href="#s4b">Quem compra</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">Outros detalhes</a>
+      <ol>
+        <li><a href="#s5a">O catálogo de prefixos</a></li>
+        <li><a href="#s5b">Tamanho e tampa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Como decodificar</a>
+      <ol>
+        <li><a href="#s6a">O prefixo separa tudo</a></li>
+        <li><a href="#s6b">As gerações de lógica</a></li>
+        <li><a href="#s6c">Exemplos</a></li>
+        <li><a href="#s6d">Sequência na bancada</a></li>
+      </ol>
+    </li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Samsung</h1>
+<p class="tagline">Processador de aplicação recuperado de PCB — a marca que você já conhece pela memória, vista pelo outro lado.</p>
+
+<div class="infobox">
+  <div class="ttl">Samsung — lógica</div>
+  <table>
+    <tr><th>Divisão</th><td>System LSI</td></tr>
+    <tr><th>Memória</th><td>Prefixo <span class="pn">K</span> — coberta no <span class="pn">SAMSUNG.md</span></td></tr>
+    <tr><th>Lógica</th><td>Prefixo <span class="pn">S</span></td></tr>
+    <tr><th>Linhas AP</th><td class="pn">S3C · S5P · S5E / Exynos</td></tr>
+    <tr><th>Outras</th><td class="pn">S5K · S6D · S6E · S2M · S5M · Shannon</td></tr>
+    <tr><th>Encapsulamento</th><td>BGA plástico, muitos em <strong>PoP</strong></td></tr>
+    <tr><th>Datasheet</th><td>Público até o S5P · <strong>Exynos não tem</strong></td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. O que é</h2>
+<p class="lead">Do ponto de vista da bancada, a Samsung são <strong>duas empresas diferentes</strong> com o mesmo logo — e o primeiro caractere do part number diz qual delas você tem na mão.</p>
+
+<h3 id="s1a">1.1 Duas Samsungs na mesma bancada</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>Memória</th><th>Lógica (System LSI)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Prefixo</strong></td><td class="pn">K…</td><td class="pn">S…</td></tr>
+    <tr><td><strong>Produtos</strong></td><td>DRAM, NAND, eMMC, eMCP, LPDDR</td><td>Processador de aplicação, sensor de imagem, driver de display, PMIC, modem</td></tr>
+    <tr><td><strong>Mercado</strong></td><td>Commodity — fungível, cotação de bolsa</td><td>Peça única, sem equivalente</td></tr>
+    <tr><td><strong>Onde está documentado</strong></td><td><span class="pn">SAMSUNG.md</span> do projeto</td><td>Esta ficha</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p>A regra que já está no projeto continua valendo: <strong>prefixo <span class="pn">K</span> em BGA é memória Samsung</strong>, e o teste é a marcação do encapsulamento. Esta ficha trata do outro lado, o prefixo <span class="pn">S</span> — onde a lógica de commodity não se aplica: <strong>não existe "equivalente" de um processador de aplicação.</strong></p>
+</div>
+
+<h3 id="s1b">1.2 As linhas de lógica</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Linha</th><th>Época</th><th>Núcleo</th><th>Vendida para terceiros?</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">S3C</td><td>1999 – 2010</td><td>ARM7, ARM9, ARM11</td><td class="half"><strong>Sim, amplamente</strong></td></tr>
+    <tr><td class="pn">S5P · S5PC · S5PV</td><td>2008 – 2012</td><td>Cortex-A8, Cortex-A9</td><td class="half">Sim, em parte</td></tr>
+    <tr><td class="pn">S5E · Exynos</td><td>2011 →</td><td>Cortex-A / núcleos próprios</td><td class="no">Quase só Samsung</td></tr>
+    <tr><td class="pn">S5L</td><td>2006 – 2010</td><td>ARM11, Cortex-A8</td><td>Fabricados <strong>para a Apple</strong> — iPod e iPhone antigos</td></tr>
+  </tbody>
+</table></div>
+<p>A continuidade é direta: o <span class="pn">S5PC110</span> (Hummingbird) foi <strong>renomeado</strong> para Exynos 3 Single 3110. É a mesma peça com dois nomes — dependendo da época, o chip pode estar marcado de um jeito ou de outro.</p>
+
+<h3 id="s1c">1.3 A empresa</h3>
+<p>A divisão System LSI é a parte não-memória da Samsung Semiconductor. Ela faz silício para os produtos da própria Samsung e, historicamente, também vendeu para o mercado aberto — inclusive fabricando os primeiros processadores da Apple, marcados <span class="pn">S5L</span>.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. O que faz</h2>
+
+<h3 id="s2a">2.1 O que é um processador de aplicação</h3>
+<p>Um AP é o cérebro de um aparelho: roda o sistema operacional, o Android ou o Linux embarcado. Junta num die só os núcleos ARM, a GPU, os controladores de memória, vídeo, câmera e periféricos.</p>
+<p>Não é DSP (não é otimizado para matemática de sinal), não é FPGA (não vira circuito), não é ASIC de rede (não é função fixa). <strong>É um computador inteiro num chip</strong>, e por isso depende de firmware, bootloader e sistema operacional para fazer qualquer coisa.</p>
+
+<h3 id="s2b">2.2 Package-on-Package</h3>
+<div class="note w2">
+  <b class="h">O detalhe que muda a dessoldagem</b>
+  <p>A maioria dos AP de celular vem em <strong>PoP — Package-on-Package</strong>: o chip de memória LPDDR fica <strong>empilhado e soldado em cima</strong> do processador. São duas peças, dois andares, um conjunto só.</p>
+  <p>Três consequências práticas:</p>
+  <p>→ <strong>A marcação que você lê no topo pode ser a da memória, não a do processador.</strong> Um empilhado com <span class="pn">K3RG…</span> gravado em cima não é "um chip de memória" — é memória sentada sobre um AP.</p>
+  <p>→ Separar os dois andares exige um segundo ciclo térmico e <strong>costuma inutilizar pelo menos um deles</strong>.</p>
+  <p>→ A face superior do AP não tem marcação: tem os pads onde a memória se apoia. <strong>Sem separar, o part number do processador não é legível.</strong></p>
+</div>
+<p>Nos AP de equipamento industrial e embarcado — a linha <span class="pn">S3C</span>, principalmente — o encapsulamento é BGA comum, com a marcação normal no topo. Esses não têm o problema.</p>
+
+<!-- 3 -->
+<h2 id="s3">3. Specs que importam na venda</h2>
+
+<h3 id="s3a">3.1 A inversão: o antigo vale mais</h3>
+<div class="note w2">
+  <b class="h">A regra comercial desta marca</b>
+  <p>O <span class="pn">S3C2440</span>, de 2004, foi <strong>vendido para o mercado aberto</strong> e virou padrão em terminal industrial, HMI, GPS, POS, equipamento médico e placa embarcada Linux. Essa base instalada existe até hoje e ainda quebra. <strong>Há demanda real de reposição.</strong></p>
+  <p>Um <span class="pn">Exynos</span> moderno é <strong>cativo</strong>: sai quase só em aparelho Samsung. Ninguém projeta com ele, ninguém compra avulso para um produto novo. O único comprador é uma <strong>oficina fazendo reparo em nível de placa naquele modelo exato de celular</strong>.</p>
+  <p><strong>O chip "obsoleto" tem mercado mais largo que o moderno.</strong> É a mesma lógica da Broadcom, por outro caminho: lá é a trava de SDK, aqui é a captividade da peça.</p>
+</div>
+
+<h3 id="s3b">3.2 Dentro do part number</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Por que pesa</th><th>Substitui?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Prefixo</strong> <span class="pn">K</span> ou <span class="pn">S</span></td><td>Separa memória de lógica. Decide toda a triagem.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Linha</strong> <span class="pn">S3C · S5P · Exynos</span></td><td>Decide se a peça é merchant ou cativa — ou seja, se existe comprador.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Device</strong></td><td>Define a peça.</td><td class="no">Não</td></tr>
+    <tr><td><strong>PoP ou BGA comum</strong></td><td>Define se a peça é vendável inteira ou precisa separar.</td><td class="no">Não</td></tr>
+    <tr><td><strong>Modelo de aparelho de origem</strong></td><td>No caso do Exynos, <strong>é o que o comprador procura</strong> — mais que o part number.</td><td>—</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3c">3.3 Documentação</h3>
+<div class="note">
+  <p><strong>S3C e S5P têm manual de usuário completo e público.</strong> É justamente por isso que viraram padrão na comunidade embarcada — dava para projetar com eles sem contrato.</p>
+  <p><strong>Exynos não tem datasheet público.</strong> A Samsung não publica documentação técnica dessas peças. Como na Broadcom: <strong>a ausência de datasheet não é sinal de falsificação</strong> — é a política da linha.</p>
+</div>
+
+<!-- 4 -->
+<h2 id="s4">4. Onde são usados</h2>
+
+<h3 id="s4a">4.1 Por linha</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Linha</th><th>Exemplos</th><th>Equipamento</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td class="pn">S3C</td><td>S3C2410 · S3C2440 · S3C6410</td><td><strong>Terminal industrial, HMI, GPS, POS, leitor de código, equipamento médico, PDA, placa embarcada Linux.</strong> A linha com mais base instalada fora da Samsung.</td></tr>
+    <tr><td class="pn">S5P</td><td>S5PC100 · S5PC110 · S5PV210</td><td>Smartphone e tablet do início dos anos 2010, set-top box, módulo embarcado, single-board computer</td></tr>
+    <tr><td class="pn">Exynos 3/4/5</td><td>3110 · 4210 · 4412 · 5250 · 5422</td><td>Galaxy S2 a S5, Galaxy Note, tablets, Chromebook, algumas placas de desenvolvimento</td></tr>
+    <tr><td class="pn">Exynos 7/8/9</td><td>7420 · 8890 · 9810 · 9820 · 990</td><td>Galaxy S6 a S20, Note. Também alguns aparelhos Meizu e Vivo</td></tr>
+    <tr><td class="pn">Exynos 4 dígitos</td><td>1280 · 1380 · 2100 · 2200 · 2400</td><td>Galaxy S e A recentes</td></tr>
+    <tr><td class="pn">S5L</td><td>S5L8900 · S5L8920</td><td>iPhone e iPod dos primeiros anos</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s4b">4.2 Quem compra</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Peça</th><th>Comprador</th><th>Largura do mercado</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pn">S3C</span> em BGA comum</td><td>Manutenção de equipamento industrial e comercial</td><td class="half">Largo</td></tr>
+    <tr><td><span class="pn">S5P</span></td><td>Reparo de set-top, módulo embarcado, placa de desenvolvimento</td><td>Médio</td></tr>
+    <tr><td><span class="pn">Exynos</span> em PoP</td><td>Oficina de reparo de placa de celular, do modelo exato</td><td class="no">Muito estreito</td></tr>
+    <tr><td><span class="pn">S5K</span>, <span class="pn">S6D</span>, <span class="pn">S2M</span></td><td>Reparo de celular</td><td>Estreito, valor baixo</td></tr>
+  </tbody>
+</table></div>
+
+<!-- 5 -->
+<h2 id="s5">5. Outros detalhes</h2>
+
+<h3 id="s5a">5.1 O catálogo de prefixos</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>O que é</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td class="pn">K</td><td><strong>Memória</strong> — DRAM, NAND, eMMC, eMCP, LPDDR</td></tr>
+    <tr class="hl"><td class="pn">S3C · S5P · S5E</td><td><strong>Processador de aplicação</strong></td></tr>
+    <tr><td class="pn">S5L</td><td>AP fabricado para a Apple</td></tr>
+    <tr><td class="pn">S5K</td><td>Sensor de imagem — linha ISOCELL</td></tr>
+    <tr><td class="pn">S6D · S6E</td><td>Driver de display</td></tr>
+    <tr><td class="pn">S2M · S5M</td><td>Gestão de energia (PMIC)</td></tr>
+    <tr><td class="pn">Shannon</td><td>Modem celular</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">Numa placa de celular Samsung desmontada é comum encontrar quatro ou cinco desses ao mesmo tempo. Só o primeiro grupo — <span class="pn">K</span> e o AP — costuma justificar a recuperação.</p>
+
+<h3 id="s5b">5.2 Tamanho e tampa</h3>
+<p><strong>Nada aqui é grande e nada tem chapa de aço.</strong> São BGA plásticos, tipicamente entre 12 e 20 mm, muitos abaixo disso. Um AP de celular em PoP é pequeno e alto; um <span class="pn">S3C</span> industrial é um BGA quadrado comum.</p>
+<div class="note">
+  <p>Corte de triagem: <strong>peça grande com chapa metálica não é AP Samsung.</strong> Se leu <span class="pn">S3C</span> ou <span class="pn">Exynos</span> e a peça é grande e com tampa, reveja a leitura — é outra marca.</p>
+</div>
+
+<!-- 6 -->
+<h2 id="s6">6. Como decodificar</h2>
+
+<h3 id="s6a">6.1 O prefixo separa tudo</h3>
+<div class="note">
+  <p>Não existe uma gramática de campos como a da Altera ou da Xilinx. Na Samsung o decode é <strong>por reconhecimento de prefixo</strong>: o começo do part number diz a categoria, e o resto é o número do device.</p>
+  <p><strong>Primeira decisão, sempre: <span class="pn">K</span> ou <span class="pn">S</span>.</strong> Memória segue a documentação de memória do projeto; lógica segue esta ficha.</p>
+</div>
+
+<h3 id="s6b">6.2 As gerações de lógica</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Formato</th><th>Geração</th><th>Como aparece gravado</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">S3Cxxxx</td><td>ARM7 / ARM9 / ARM11</td><td>Part number direto no topo</td></tr>
+    <tr><td class="pn">S5PCxxx · S5PVxxx</td><td>Cortex-A8 / A9</td><td>Part number direto</td></tr>
+    <tr><td class="pn">S5Exxxx</td><td>Exynos — código interno</td><td>Às vezes o interno, às vezes o nome comercial</td></tr>
+    <tr><td class="pn">Exynos NNNN</td><td>Exynos — nome comercial</td><td>Nome gravado por extenso</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <p><strong>Armadilha de nomes:</strong> a mesma peça pode aparecer com dois nomes. O <span class="pn">S5PC110</span> virou <strong>Exynos 3 Single 3110</strong> depois do rebrand de 2011. Procurar por um dos dois nomes e não achar nada não significa que a peça não existe.</p>
+  <p>E a numeração do Exynos <strong>não é crescente no tempo</strong>: a partir de 2020 a Samsung passou a usar números menores (1280, 2100) do que os da geração anterior (9820, 990). <strong>Número maior não quer dizer mais novo nem melhor.</strong></p>
+</div>
+
+<h3 id="s6c">6.3 Exemplos</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Marcação</th><th>O que é</th><th>Leitura comercial</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">S3C2440</td><td>AP ARM9, 2004, merchant</td><td class="half">Reposição industrial — mercado real</td></tr>
+    <tr><td class="pn">S3C6410</td><td>AP ARM11, merchant</td><td class="half">Reposição industrial</td></tr>
+    <tr><td class="pn">S5PV210</td><td>Cortex-A8 — mesmo die do S5PC110 / Exynos 3110</td><td>Módulo embarcado e set-top</td></tr>
+    <tr><td class="pn">Exynos 5422</td><td>Exynos 5 Octa</td><td>Galaxy e placas de desenvolvimento</td></tr>
+    <tr><td class="pn">Exynos 9820</td><td>Exynos 9</td><td class="no">Reparo de placa de celular, modelo exato</td></tr>
+    <tr><td class="pn">K3RG…</td><td><strong>Memória LPDDR</strong></td><td>Se está em cima de outro chip, é o andar de cima de um PoP</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s6d">6.4 Sequência na bancada</h3>
+<ul>
+  <li>Leia o <strong>primeiro caractere</strong>: <span class="pn">K</span> vai para a documentação de memória, <span class="pn">S</span> fica aqui.</li>
+  <li>Olhe a peça <strong>de lado</strong>. Se tem dois andares, é <strong>PoP</strong> — a marcação de cima é da memória, e o processador está embaixo, sem marcação acessível.</li>
+  <li>Identifique a linha: <span class="pn">S3C</span> e <span class="pn">S5P</span> têm mercado de reposição industrial; <span class="pn">Exynos</span> só tem oficina de celular.</li>
+  <li>No Exynos, <strong>anote de que aparelho saiu</strong> — é o que o comprador procura, mais que o part number.</li>
+  <li>Não descarte Exynos por falta de datasheet: <strong>não existe datasheet público dessa linha.</strong></li>
+  <li>Chapa de aço ou corpo grande <strong>descarta a marca</strong> — reveja a leitura.</li>
+</ul>
+
+<footer>
+  <p>Fontes: histórico de nomenclatura e renomeação das linhas S3C, S5P e Exynos a partir da documentação pública da Samsung Semiconductor e do registro consolidado da família Exynos; catálogos de produto S5PC110/S5PV210. Dimensões de encapsulamento e faixas de preço não foram levantadas em fonte primária nesta rodada — o texto fala em ordens de grandeza, não em cotas. A regra do prefixo <span class="pn">K</span> para memória já está estabelecida na documentação de memória do projeto.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>

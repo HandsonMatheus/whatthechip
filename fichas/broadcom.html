@@ -1,0 +1,989 @@
+<meta charset="utf-8">
+<title>Broadcom · Fichas WhatTheChip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --page:#F6F7F8; --paper:#FFFFFF; --soft:#F5F6F7; --soft2:#EAECEF;
+  --ink:#1D2022; --dim:#54595D; --faint:#72777D;
+  --rule:#C6CBD1; --rule2:#A5ACB3;
+  --link:#2E5FA3; --linkbg:#E8EFF8;
+  --warn:#8E3620; --warnbg:#F7E7E2;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+    --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+    --rule:#2C3438; --rule2:#3D474C;
+    --link:#7FAEE3; --linkbg:#16232F;
+    --warn:#E08D74; --warnbg:#2A1712;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0E1113; --paper:#15191B; --soft:#1B2023; --soft2:#232A2E;
+  --ink:#E6EAEC; --dim:#A6AEB2; --faint:#828B90;
+  --rule:#2C3438; --rule2:#3D474C;
+  --link:#7FAEE3; --linkbg:#16232F;
+  --warn:#E08D74; --warnbg:#2A1712;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+code,.m,.pn{font-family:"IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- shell ---- */
+.shell{display:grid; grid-template-columns:1fr; gap:0; max-width:80rem; margin:0 auto}
+@media(min-width:60rem){ .shell{grid-template-columns:16rem 1fr} }
+
+/* ---- sidebar ---- */
+aside{
+  background:var(--page); border-right:1px solid var(--rule);
+  padding:1.5rem 1rem 2rem;
+}
+@media(min-width:60rem){
+  aside{position:sticky; top:0; height:100vh; overflow-y:auto}
+}
+aside .brand{
+  font-family:"Source Serif 4",Georgia,serif; font-size:1.35rem; font-weight:600;
+  padding-bottom:.5rem; margin-bottom:.4rem; border-bottom:1px solid var(--rule);
+}
+aside .sub{font-size:.78rem; color:var(--faint); margin-bottom:1.2rem}
+aside .tochead{
+  font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+  margin-bottom:.5rem; font-weight:600;
+}
+aside ol{list-style:none; margin:0; padding:0; counter-reset:s}
+aside > nav > ol > li{counter-increment:s; margin-bottom:.15rem}
+aside > nav > ol > li > a::before{content:counter(s) ". "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+aside a{
+  display:block; padding:.2rem .45rem; border-radius:2px; font-size:.9rem;
+  color:var(--ink); line-height:1.35;
+}
+aside a:hover{background:var(--soft2); text-decoration:none}
+aside a.on{background:var(--linkbg); color:var(--link); font-weight:600}
+aside ol ol{margin:.1rem 0 .35rem .7rem; padding-left:.55rem; border-left:1px solid var(--rule); counter-reset:t}
+aside ol ol li{counter-increment:t}
+aside ol ol a{font-size:.83rem; color:var(--dim); padding:.13rem .4rem}
+aside ol ol a::before{content:counter(s) "." counter(t) " "; color:var(--faint); font-family:"IBM Plex Mono",monospace; font-size:.82em}
+
+/* ---- article ---- */
+main{background:var(--paper); padding:2rem clamp(1rem,4vw,2.5rem) 4rem; min-width:0}
+h1{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.15; margin:0 0 .1rem;
+  padding-bottom:.35rem; border-bottom:1px solid var(--rule2);
+}
+.tagline{color:var(--dim); font-size:.98rem; margin:.5rem 0 1.4rem; max-width:42rem}
+h2{
+  font-family:"Source Serif 4",Georgia,serif; font-weight:400;
+  font-size:1.55rem; line-height:1.2; margin:2.2rem 0 .7rem;
+  padding-bottom:.28rem; border-bottom:1px solid var(--rule);
+  scroll-margin-top:1rem;
+}
+h3{font-size:1.06rem; font-weight:600; margin:1.5rem 0 .45rem; scroll-margin-top:1rem}
+p{margin:0 0 .8rem; max-width:44rem}
+ul{margin:0 0 .85rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.28rem}
+.lead{font-size:1.04rem}
+
+/* ---- infobox ---- */
+.infobox{
+  background:var(--soft); border:1px solid var(--rule); border-radius:3px;
+  font-size:.83rem; margin:0 0 1.2rem; width:100%; overflow:hidden;
+}
+@media(min-width:52rem){
+  .infobox{float:right; width:19rem; margin:0 0 1rem 1.6rem}
+}
+.infobox .ttl{
+  background:var(--soft2); padding:.5rem .7rem; font-weight:700; text-align:center;
+  border-bottom:1px solid var(--rule); font-size:.92rem;
+}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th{
+  text-align:left; vertical-align:top; padding:.35rem .7rem; width:8.5rem;
+  color:var(--dim); font-weight:600; border-bottom:1px solid var(--rule);
+}
+.infobox td{padding:.35rem .7rem; vertical-align:top; border-bottom:1px solid var(--rule)}
+.infobox tr:last-child th,.infobox tr:last-child td{border-bottom:0}
+
+/* ---- tables ---- */
+.sc{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; margin:1rem 0; background:var(--paper); clear:both}
+table.d{border-collapse:collapse; width:100%; font-size:.87rem}
+table.d th,table.d td{padding:.45rem .7rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--rule)}
+table.d thead th{
+  background:var(--soft); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--dim); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--rule2);
+}
+table.d tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--warn); font-weight:600; white-space:nowrap}
+td.half{color:var(--link); font-weight:600; white-space:nowrap}
+.pn{white-space:nowrap}
+code{background:var(--soft2); padding:.05em .3em; border-radius:2px; font-size:.87em}
+
+/* ---- notes ---- */
+.note{border:1px solid var(--rule); border-left:4px solid var(--link); background:var(--linkbg);
+  padding:.7rem .95rem; margin:1rem 0; border-radius:0 3px 3px 0; clear:both}
+.note.w2{border-left-color:var(--warn); background:var(--warnbg)}
+.note p{margin:0; max-width:none; font-size:.93rem}
+.note p+p{margin-top:.45rem}
+.note b.h{display:block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:.28rem}
+
+/* ---- decoder ---- */
+.dec{border:1px solid var(--rule); border-radius:3px; padding:.8rem .95rem; margin:1rem 0; background:var(--soft); overflow-x:auto}
+.dec .big{font-family:"IBM Plex Mono",monospace; font-size:1.1rem; font-weight:600; letter-spacing:.03em; margin-bottom:.45rem; white-space:nowrap}
+.dec .big i{font-style:normal; color:var(--link)}
+.dec table{border-collapse:collapse; font-size:.83rem}
+.dec td{padding:.12rem .8rem .12rem 0; vertical-align:top}
+.dec td:first-child{font-family:"IBM Plex Mono",monospace; color:var(--link); font-weight:600; white-space:nowrap}
+
+footer{border-top:1px solid var(--rule); margin-top:2.5rem; padding-top:.9rem; font-size:.82rem; color:var(--faint)}
+footer p{max-width:44rem}
+:focus-visible{outline:2px solid var(--link); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- brand switcher ---- */
+aside .home{display:block; font-family:"Source Serif 4",Georgia,serif; font-size:1.3rem;
+  font-weight:600; color:var(--ink); padding-bottom:.45rem; margin-bottom:.35rem;
+  border-bottom:1px solid var(--rule)}
+aside .home:hover{text-decoration:none; color:var(--link)}
+aside .sub{font-size:.75rem; color:var(--faint); margin-bottom:1.1rem}
+nav.brands{margin-bottom:1.3rem}
+nav.brands ul{list-style:none; margin:0; padding:0}
+nav.brands a{display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+  padding:.26rem .45rem; border-radius:2px; font-size:.92rem; font-weight:600; color:var(--ink)}
+nav.brands a:hover{background:var(--soft2); text-decoration:none}
+nav.brands a[aria-current="page"]{background:var(--link); color:#fff}
+nav.brands a[aria-current="page"] .st{color:rgba(255,255,255,.75)}
+nav.brands a.soon{color:var(--faint); font-weight:400; cursor:default; pointer-events:none}
+nav.brands .st{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--faint); font-weight:400}
+
+/* ---- index cards ---- */
+.cards{display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); margin:1.1rem 0; clear:both}
+.card{border:1px solid var(--rule); border-radius:3px; padding:.85rem .95rem; background:var(--soft)}
+.card h4{margin:0 0 .3rem; font-size:1.05rem; font-weight:700}
+.card h4 a{color:var(--ink)}
+.card h4 a:hover{color:var(--link)}
+.card p{margin:0; font-size:.87rem; color:var(--dim); max-width:none}
+.card .st{display:inline-block; margin-top:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; padding:.08rem .4rem;
+  border-radius:2px; border:1px solid var(--rule2); color:var(--dim)}
+.card .st.ok{border-color:var(--link); color:var(--link); background:var(--linkbg)}
+
+</style>
+
+<div class="shell">
+
+<aside>
+  <a class="home" href="index.html">WhatTheChip</a>
+  <div class="sub">Fichas de marca · chips de PCB</div>
+  <nav class="brands" aria-label="Marcas"><ul>
+<li><a href="altera.html"><span>Altera</span><span class="st">pronta</span></a></li>
+<li><a href="xilinx.html"><span>Xilinx</span><span class="st">pronta</span></a></li>
+<li><a href="broadcom.html" aria-current="page"><span>Broadcom</span><span class="st">pronta</span></a></li>
+<li><a href="ti.html"><span>Texas Instruments</span><span class="st">pronta</span></a></li>
+<li><a href="adi.html"><span>Analog Devices</span><span class="st">pronta</span></a></li>
+<li><a href="samsung.html"><span>Samsung</span><span class="st">pronta</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>MediaTek</span><span class="st">próxima</span></a></li>
+<li><a class="soon" aria-disabled="true"><span>Cisco</span><span class="st">fila</span></a></li>
+</ul></nav>
+  <div class="tochead">Nesta página</div>
+  <nav aria-label="Índice">
+  <ol>
+    <li><a href="#s1">O que é</a>
+      <ol>
+        <li><a href="#s1a">Não é FPGA</a></li>
+        <li><a href="#s1b">As linhas que caem em sucata</a></li>
+        <li><a href="#s1c">A empresa</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">O que faz</a>
+      <ol>
+        <li><a href="#s2a">As três funções</a></li>
+        <li><a href="#s2b">O SDK — o chip é inerte sem ele</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">Specs que importam na venda</a>
+      <ol>
+        <li><a href="#s3a">O que dá para saber</a></li>
+        <li><a href="#s3b">O datasheet não é público</a></li>
+        <li><a href="#s3c">A inversão de valor</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">Onde são usados</a>
+      <ol>
+        <li><a href="#s4a">Por família</a></li>
+        <li><a href="#s4b">SiByte e QAMLink</a></li>
+        <li><a href="#s4c">Cronologia — o ano de cada geração</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">Outros detalhes</a>
+      <ol>
+        <li><a href="#s5a">BCM9 não é chip</a></li>
+        <li><a href="#s5b">Tampa de aço e tamanho</a></li>
+        <li><a href="#s5c">Preço e spread</a></li>
+        <li><a href="#s5d">Nome de linha não é etiqueta</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Como decodificar</a>
+      <ol>
+        <li><a href="#s6a">Estrutura do part number</a></li>
+        <li><a href="#s6z">Onde está o PN — o que digitar</a></li>
+        <li><a href="#s6y">Validar a transcrição</a></li>
+        <li><a href="#s6b">Mapa dos prefixos — triagem, não cadastro</a></li>
+        <li><a href="#s6c">Nome de produto x part number</a></li>
+        <li><a href="#s6d">Sequência na bancada</a></li>
+      </ol>
+    </li>
+  </ol>
+  </nav>
+</aside>
+
+<main>
+<h1>Broadcom</h1>
+<p class="tagline">ASIC de rede recuperado de PCB — a marca onde o silício perfeito pode não valer nada.</p>
+
+<div class="infobox">
+  <div class="ttl">Broadcom</div>
+  <table>
+    <tr><th>Tipo</th><td>ASIC de função fixa, SoC, PHY, controlador</td></tr>
+    <tr><th>Fundada</th><td>1991. Hoje Broadcom Inc., após a fusão com a Avago em 2016.</td></tr>
+    <tr><th>Linha datacenter</th><td>StrataXGS — Trident, Tomahawk</td></tr>
+    <tr><th>Linha operadora</th><td>StrataDNX — Jericho, Qumran</td></tr>
+    <tr><th>Prefixo</th><td class="pn">BCM</td></tr>
+    <tr><th>Encapsulamento</th><td>Chapa metálica quase sempre</td></tr>
+    <tr><th>Datasheet</th><td><strong>Público e incompleto</strong> — sem dimensões nem ordering info</td></tr>
+    <tr><th>Trava</th><td><strong>SDK sob contrato</strong></td></tr>
+  </table>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. O que é</h2>
+<p class="lead">Broadcom não é lógica programável. É <strong>ASIC de função fixa</strong> — um chip projetado para fazer uma coisa só, decidida na fábrica e imutável depois. É o oposto conceitual da Altera e da Xilinx, e isso muda tudo na hora de vender.</p>
+
+<h3 id="s1a">1.1 Não é FPGA</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>FPGA (Altera, Xilinx)</th><th>ASIC de rede (Broadcom)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Função</strong></td><td>Definida pelo comprador, depois</td><td>Definida na máscara, na fábrica</td></tr>
+    <tr><td><strong>Reprogramável?</strong></td><td>Sim, infinitas vezes</td><td>Não. Só recebe firmware e configuração.</td></tr>
+    <tr><td><strong>Ferramenta</strong></td><td>Quartus, Vivado — download livre</td><td><strong>SDK sob contrato com a Broadcom</strong></td></tr>
+    <tr><td><strong>Documentação</strong></td><td>Datasheet completo e público</td><td>Datasheet público <strong>incompleto</strong></td></tr>
+    <tr><td><strong>Mercado secundário</strong></td><td><strong>Aberto</strong> — qualquer um usa</td><td><strong>Fechado</strong> — só quem já tem contrato</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s1b">1.2 As linhas que caem em sucata</h3>
+<p>A Broadcom vende centenas de linhas. Em sucata de PCB aparecem basicamente cinco tipos, e eles não valem a mesma coisa:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Tipo</th><th>Prefixo</th><th>De onde vem</th><th>Valor</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ASIC de switch datacenter</strong></td><td class="pn">BCM56xxx · BCM78xxx</td><td>Switch de rack, spine, leaf</td><td>Alto por unidade, comprador raro</td></tr>
+    <tr><td><strong>ASIC de roteador de operadora</strong></td><td class="pn">BCM88xxx</td><td>Roteador de borda e core</td><td>Alto, comprador raríssimo</td></tr>
+    <tr><td><strong>Processador de rede</strong></td><td class="pn">BCM1xxx (SiByte)</td><td>Appliance de rede dos anos 2000</td><td>Médio-baixo, legado</td></tr>
+    <tr><td><strong>PHY e switch pequeno</strong></td><td class="pn">BCM54xx · BCM53xx · BCM8xxx</td><td>Qualquer placa com Ethernet</td><td>Baixo, alto volume</td></tr>
+    <tr><td><strong>SoC de banda larga e consumo</strong></td><td class="pn">BCM33xx · BCM43xx · BCM63xx</td><td>Modem, roteador doméstico, set-top</td><td>Baixo, altíssimo volume</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s1c">1.3 A empresa</h3>
+<p>A Broadcom de hoje é resultado de aquisições empilhadas: SiByte (2000), <strong>BroadLight (2012, PON de fibra)</strong>, a própria Broadcom Corporation absorvida pela Avago em 2016 sob o nome Broadcom Inc., mais LSI, PLX e Brocade. Por isso o catálogo é heterogêneo — <span class="pn">PEX</span> de PCIe e controladoras SAS convivem com <span class="pn">BCM</span> de rede, e as convenções de marcação variam entre linhas herdadas.</p>
+
+<!-- 2 -->
+<h2 id="s2">2. O que faz</h2>
+
+<h3 id="s2a">2.1 As três funções</h3>
+<ul>
+  <li><strong>Comutar pacotes</strong> — o ASIC de switch recebe quadros Ethernet em dezenas de portas e decide para onde vão, em nanossegundos e em hardware. É o coração de um switch.</li>
+  <li><strong>Fazer a camada física</strong> — o PHY converte o sinal elétrico ou óptico do cabo em dados. Aparece em toda placa que tem porta Ethernet.</li>
+  <li><strong>Terminar um modem ou gateway</strong> — o SoC de banda larga junta demodulador, processador e periféricos num chip só.</li>
+</ul>
+
+<h3 id="s2b">2.2 O SDK — o chip é inerte sem ele</h3>
+<div class="note w2">
+  <b class="h">O fato mais importante desta ficha</b>
+  <p>Um ASIC de switch Broadcom <strong>não faz nada sozinho</strong>. Ele precisa de software de controle que só existe no SDK da Broadcom, distribuído <strong>sob contrato</strong>.</p>
+  <p>As alternativas abertas não resolvem: o <strong>SDKLT foi arquivado em novembro de 2024</strong> e cobria só o BCM56960; o <strong>OpenNSL</strong> é um invólucro sobre binário fechado; e <strong>SAI/SONiC</strong> ainda depende de uma biblioteca binária do fabricante por baixo.</p>
+  <p><strong>Consequência:</strong> não existe "monte seu switch com peça recuperada". O comprador de um Tomahawk avulso é <strong>uma oficina consertando um switch que já é licenciado</strong>. Ponto. Isso reduz o universo de compradores a uma fração do que existe para um FPGA.</p>
+</div>
+
+<!-- 3 -->
+<h2 id="s3">3. Specs que importam na venda</h2>
+
+<h3 id="s3a">3.1 O que dá para saber</h3>
+<p>A regra do part number continua valendo — substituição zero, o PN é o produto. Mas aqui você tem menos campos para trabalhar:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Por que pesa</th><th>Dá para verificar?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Device base</strong> <span class="pn">BCM56980</span></td><td>Define a geração e o equipamento compatível. É quase tudo.</td><td>Sim, gravado</td></tr>
+    <tr><td><strong>Stepping</strong> <span class="pn">B0</span></td><td>Revisão de silício. Firmware pode exigir um stepping específico.</td><td>Sim, gravado</td></tr>
+    <tr><td><strong>Temperatura</strong> <span class="pn">K</span> / <span class="pn">I</span></td><td>Comercial ou industrial.</td><td>Sim, gravado</td></tr>
+    <tr><td><strong>Encapsulamento</strong> <span class="pn">FSB · FLG · FEB · FB</span></td><td>Footprint. E <span class="pn">FLG</span> avisa que é LGA, sem esferas.</td><td>Sim, gravado</td></tr>
+    <tr><td><strong>Dimensões em mm</strong></td><td>Confirmar o encapsulamento contra a física</td><td class="no">Não — Broadcom não publica</td></tr>
+    <tr><td><strong>Ordering information</strong></td><td>Saber quais variantes existem</td><td class="no">Não — Broadcom não publica</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s3b">3.2 O datasheet não é público</h3>
+<div class="note">
+  <p>A Broadcom <strong>retém sistematicamente</strong> os capítulos "Mechanical Information" e "Ordering Information" dos datasheets que publica. Não é falha de busca: é política da marca.</p>
+  <p><strong>Consequência de triagem:</strong> não achar datasheet completo de um <span class="pn">BCM</span> <strong>não é sinal de peça falsa</strong> — é o normal. Aplicar aqui o mesmo critério que se aplica a Altera ou Xilinx leva a descartar peça boa.</p>
+  <p>Corolário: o teste "mede o corpo e confere contra o package do PN", que funciona tão bem na Altera, <strong>não tem contra o que conferir</strong> nessa marca.</p>
+</div>
+
+<h3 id="s3c">3.3 A inversão de valor</h3>
+<div class="note w2">
+  <b class="h">Aqui a intuição se inverte de novo — e ao contrário da Altera</b>
+  <p>Na Altera, peça velha e escassa vale mais. Na Broadcom, o que manda é <strong>base instalada</strong>: quantos equipamentos existem no campo precisando daquela peça de reposição.</p>
+  <p>Um <span class="pn">BCM56850</span> (Trident2, de 2013) está em milhares de switches ainda em operação, com muitas oficinas licenciadas para consertá-los. Um chip de 2024 está em pouquíssimos equipamentos, todos ainda em garantia, com a trava de SDK ainda mais apertada.</p>
+  <p><strong>Chip mais novo pode ter menos liquidez que chip antigo.</strong> Separe pensando em base instalada, não em geração.</p>
+</div>
+
+<!-- 4 -->
+<h2 id="s4">4. Onde são usados</h2>
+
+<h3 id="s4a">4.1 Por família</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>Linha</th><th>Equipamento</th><th>Tamanho típico</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">BCM56xxx</td><td><strong>StrataXGS</strong> — Trident, Tomahawk</td><td>Switch de datacenter: leaf, spine, top-of-rack</td><td>Grande, 45 mm ou mais</td></tr>
+    <tr><td class="pn">BCM78xxx</td><td>StrataXGS geração recente</td><td>Switch de datacenter de alta capacidade</td><td>Grande</td></tr>
+    <tr><td class="pn">BCM88xxx</td><td><strong>StrataDNX</strong> — Jericho, Qumran</td><td>Roteador de operadora, borda e core</td><td>Grande</td></tr>
+    <tr><td class="pn">BCM1xxx</td><td><strong>SiByte</strong> — MIPS SB-1</td><td>Appliance de rede, roteador corporativo (2000–2007)</td><td>Médio</td></tr>
+    <tr><td class="pn">BCM53xx</td><td>RoboSwitch</td><td>Switch pequeno gerenciado, roteador corporativo</td><td>Até 35 mm</td></tr>
+    <tr><td class="pn">BCM54xx · BCM8xxx</td><td>Ethernet PHY</td><td>Qualquer placa com porta Ethernet</td><td>Até 37,5 mm</td></tr>
+    <tr><td class="pn">BCM57xx</td><td>NetXtreme</td><td>Placa de rede de servidor</td><td>Médio</td></tr>
+    <tr><td class="pn">BCM33xx</td><td><strong>QAMLink</strong> — DOCSIS</td><td>Cable modem, set-top box de cabo</td><td>Médio</td></tr>
+    <tr class="hl"><td class="pn">BCM70xx · BCM73xx</td><td><strong>SoC de set-top box</strong> — vídeo, PVR, satélite</td><td>Receptor de satélite, decodificador de TV paga, gravador PVR</td><td>Médio a grande, tampa de aço</td></tr>
+    <tr><td class="pn">BCM43xx</td><td>Wi-Fi e combo wireless</td><td>Roteador doméstico, notebook, celular</td><td>Pequeno</td></tr>
+    <tr><td class="pn">BCM63xx</td><td>SoC de banda larga</td><td>Modem DSL, gateway doméstico</td><td>Médio</td></tr>
+    <tr><td class="pn">BCM68xx · BCM68xxx</td><td><strong>xPON</strong> — GPON, EPON</td><td>ONT e ONU de fibra na casa do assinante</td><td>Médio</td></tr>
+    <tr><td class="pn">BCM58xxx</td><td><strong>StrataGX · Northstar</strong> — CPU ARM Cortex-A</td><td>Appliance de rede, NAS, roteador corporativo, storage</td><td>Médio</td></tr>
+    <tr><td class="pn">PEX8xxx · PEX9xxx</td><td>PLX — switch PCIe</td><td>Servidor, placa de expansão, storage</td><td>Até 37,5 mm</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="s4b">4.2 SiByte e QAMLink</h3>
+<p>Duas marcas registradas que aparecem gravadas na peça e confundem quem não conhece — nenhuma das duas é o part number.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Marca gravada</th><th>O que é</th><th>Part numbers</th><th>De onde saiu</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">SiByte</td><td>Empresa comprada pela Broadcom em 2000. Processadores de rede <strong>MIPS64 de núcleo SB-1</strong> — CPU de verdade, não switch.</td><td class="pn">BCM1125 · <strong>BCM1125H</strong> · BCM1250 · BCM1255 · BCM1280 · BCM1480</td><td>Appliance de rede, roteador corporativo, storage e servidor embarcado dos anos 2000</td></tr>
+    <tr><td class="pn">QAMLink®</td><td>Marca da linha <strong>DOCSIS</strong> de cabo. São SoC de cable modem — demodulador QAM, MAC e processador num chip.</td><td class="pn">BCM3116 · BCM3348 · BCM3349 · BCM33xx em geral</td><td>Cable modem e set-top box de TV a cabo</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p><strong>Leitura comercial:</strong> um <span class="pn">QAMLink</span> saiu de equipamento de consumo produzido aos milhões. Volume enorme, valor unitário baixo, e a geração DOCSIS 2.0 já é obsoleta em rede moderna. Não é onde está o dinheiro do lote.</p>
+  <p>Um <span class="pn">SiByte</span> é peça de equipamento profissional, mas de uma arquitetura (MIPS) que saiu do mercado. Valor de reposição de sistema legado, comprador estreito.</p>
+  <p><strong>Tem um na bancada:</strong> <span class="pn">BCM1125HA4K500</span> — SB-1 MIPS64 a 500 MHz, 2 × Gigabit, HyperTransport, BGA de 31 mm, <strong>com chumbo</strong>, de 2005. Decodificação completa em 6.2.</p>
+</div>
+
+<h3 id="s4c">4.3 Cronologia &mdash; o ano de cada geração</h3>
+<p>A Broadcom não põe nome de geração na maioria das linhas. <strong>A geração se lê pelo número e pelo date code</strong>, não por um nome gravado. Esta tabela é a régua:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Faixa</th><th>Linha</th><th>Época</th><th>O que marca o período</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">BCM1xxx</td><td><strong>SiByte</strong></td><td><strong>2000 – 2007</strong></td><td>SiByte comprada em 2000. BCM1250 (2 núcleos) primeiro, BCM1125/1125H (1 núcleo) depois, BCM1280/1480 por último. Linha encerrada — MIPS saiu do mercado</td></tr>
+    <tr><td class="pn">BCM33xx</td><td><strong>QAMLink</strong> DOCSIS</td><td><strong>1999 – 2015</strong></td><td>DOCSIS 1.x até ~2002 · 2.0 até ~2008 · <strong>3.0 de 2009 (BCM3380)</strong> · 3.1 depois</td></tr>
+    <tr><td class="pn">BCM43xx</td><td>Wi-Fi</td><td><strong>2003 – hoje</strong></td><td>802.11g → n → ac → ax. Geração de Wi-Fi acompanha o número</td></tr>
+    <tr><td class="pn">BCM53xx</td><td>RoboSwitch</td><td><strong>2001 – hoje</strong></td><td>Switch pequeno integrado. Linha longeva, pouco valor unitário</td></tr>
+    <tr><td class="pn">BCM63xx</td><td>Banda larga DSL</td><td><strong>2000 – hoje</strong></td><td>ADSL nos anos 2000 · VDSL por volta de 2010</td></tr>
+    <tr><td class="pn">BCM68xx</td><td><strong>xPON</strong> — fibra</td><td><strong>2012 – hoje</strong></td><td>A série <span class="pn">BCM6838x</span> é a geração de ONT que substituiu o DSL na ponta</td></tr>
+    <tr><td class="pn">BCM58xxx</td><td><strong>StrataGX · Northstar</strong></td><td><strong>2012 – hoje</strong></td><td>Cortex-A9 (BCM58525, ~2013) → <strong>ARMv8 Cortex-A57 de 4 núcleos a 2 GHz (BCM58712, 2016)</strong>. É o sucessor ARM do que o SiByte fazia em MIPS</td></tr>
+    <tr class="hl"><td class="pn">BCM7xxx</td><td><strong>Set-top box</strong> — sem nome de linha</td><td><strong>2004 – hoje</strong></td><td><strong>BCM7335 é de janeiro de 2008, 65 nm.</strong> Dentro da faixa, número maior = mais novo</td></tr>
+    <tr><td class="pn">BCM56xxx</td><td><strong>StrataXGS</strong> — Trident, Tomahawk</td><td><strong>2009 – hoje</strong></td><td>Ver a tabela de gerações em 6.4 — é a linha cara</td></tr>
+    <tr><td class="pn">BCM88xxx</td><td><strong>StrataDNX</strong> — Jericho, Qumran</td><td><strong>2014 – hoje</strong></td><td>Roteador de operadora</td></tr>
+    <tr><td class="pn">BCM78xxx</td><td>StrataXGS recente</td><td><strong>2022 – hoje</strong></td><td>Tomahawk 5 e Trident 5 migraram para essa faixa</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Como usar isso na bancada</b>
+  <p><strong>O date code tem que fazer sentido com a época da linha.</strong> Um <span class="pn">BCM1xxx</span> SiByte com date code de 2015 seria estranho — a linha acabou por volta de 2007. Um <span class="pn">BCM56xxx</span> com date code de 2005 é impossível: a StrataXGS não existia.</p>
+  <p>É a checagem mais barata que existe contra remarcação, e não precisa de equipamento nenhum.</p>
+</div>
+
+<!-- 5 -->
+<h2 id="s5">5. Outros detalhes</h2>
+
+<h3 id="s5a">5.1 BCM9 não é chip</h3>
+<div class="note w2">
+  <p>Part number começando em <span class="pn">BCM9</span> seguido de cinco dígitos — <span class="pn">BCM956980</span>, <span class="pn">BCM9583X</span> — <strong>é uma placa de referência, não um componente</strong>. É a placa de avaliação que a Broadcom vende para quem vai projetar com aquele chip.</p>
+  <p>É a armadilha número um da marca: procurar o "chip BCM9…" não leva a lugar nenhum, e uma listagem que mistura os dois está confusa ou é desonesta.</p>
+</div>
+
+<h3 id="s5b">5.2 Tampa de aço e tamanho</h3>
+<p>Praticamente todo ASIC de rede Broadcom de porte é <strong>flip-chip com tampa metálica</strong>. Isso é normal e esperado — diferente da Altera, onde a tampa só aparece no topo da linha.</p>
+<div class="note">
+  <b class="h">Corte de triagem por tamanho</b>
+  <p><strong>PHY, RoboSwitch, PLX PCIe e controladora SAS param em 35 a 37,5 mm.</strong></p>
+  <p>Se você mediu <strong>45 mm ou mais</strong> e leu <span class="pn">BCM</span>, não é PHY nem switch pequeno — é <strong>ASIC de switch ou roteador de datacenter</strong>, ou seja, a categoria cara e de comprador raro. Separe essas antes de qualquer outra coisa.</p>
+</div>
+
+<div class="note w2">
+  <b class="h">O corte de tamanho só vale nas linhas de rede</b>
+  <p>Um <span class="pn">BCM7xxx</span> de set-top box também é flip-chip de tampa metálica e também é grande — e <strong>não vale nada perto de um Trident</strong>. Peça grande com tampa de aço não é sinônimo de peça cara.</p>
+  <p>Leia a faixa numérica <strong>antes</strong> de aplicar a régua do tamanho: 56xxx/78xxx/88xxx grande = datacenter, caro. 7xxx grande = eletrônico de consumo, barato.</p>
+</div>
+
+<h3 id="s5c">5.3 Preço e spread</h3>
+<div class="sc"><table class="d">
+  <thead><tr><th>Referência</th><th>Valor</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pn">BCM56870A0KFSBG</span> em distribuidor autorizado (Avnet)</td><td>US$ 4.375</td></tr>
+    <tr><td>O mesmo PN em broker</td><td><strong>US$ 8,31</strong></td></tr>
+    <tr><td>Placa completa no eBay "for chip recovery" com 3 × Tomahawk</td><td>US$ 300 — cerca de US$ 100 por peça ainda soldada</td></tr>
+  </tbody>
+</table></div>
+<p>O spread de <strong>500 vezes</strong> entre autorizado e broker não é logística. É a diferença entre um preço de catálogo que quase ninguém paga e o preço real de um mercado onde a peça só serve para quem tem contrato. <strong>Use o preço de broker como referência, nunca o do autorizado.</strong></p>
+
+<h3 id="s5d">5.4 Nome de linha não é etiqueta</h3>
+<p>Algumas peças trazem uma marca de linha gravada — <span class="pn">SIBYTE™</span>, <span class="pn">QAMLink®</span>, <span class="pn">StrataXGS</span>. Outras não trazem nada além do part number. <strong>As duas situações são normais</strong>, e nenhuma das duas serve de etiqueta.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Marca gravada</th><th>Quantos chips diferentes ela cobre</th><th>Serve de etiqueta?</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">SIBYTE™</td><td>BCM1125, BCM1125H, BCM1250, BCM1255, BCM1280, BCM1480 — <strong>seis ou mais</strong></td><td class="no">Não</td></tr>
+    <tr><td class="pn">QAMLink®</td><td>Toda a faixa BCM33xx — <strong>dezenas</strong></td><td class="no">Não</td></tr>
+    <tr><td class="pn">StrataXGS</td><td>Todo o BCM56xxx — <strong>dezenas</strong></td><td class="no">Não</td></tr>
+    <tr class="hl"><td><strong>Nada gravado</strong></td><td>Normal na faixa <span class="pn">BCM7xxx</span> — <strong>a família nunca teve marca de linha</strong></td><td class="half">Não é defeito</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Ausência de marca de linha não é marcação apagada</b>
+  <p>A Broadcom criou nome comercial para DOCSIS (QAMLink), switch (StrataXGS, StrataDNX) e roteador (Trident, Tomahawk, Jericho). <strong>Para set-top box, nunca criou.</strong> Vendia pelo part number puro.</p>
+  <p>Então um <span class="pn">BCM7335</span> sem nada escrito além do PN está <strong>correto</strong>. Não confunda isso com peça lixada ou remarcada — ali o sinal é outro (ver 6.2).</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">O que vai na etiqueta do saco</h4>
+<p><strong>Um saco = um part number exato.</strong> A primeira linha é sempre o PN, porque é por ele que o comprador procura. O resto é apoio.</p>
+<div class="dec">
+  <table><tbody>
+    <tr><td>linha 1</td><td><strong>o part number, inteiro</strong> — nada mais</td></tr>
+    <tr><td>linha 2</td><td>marca + o que é, em palavras</td></tr>
+    <tr><td>linha 3</td><td>as specs que a peça declara (clock, portas, pacote)</td></tr>
+    <tr><td>linha 4</td><td>date code · <strong>chumbo ou Pb-free</strong> · quantidade</td></tr>
+  </tbody></table>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Peça com marca de linha</th><th>Peça sem marca de linha</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="pn"><strong>BCM1125HA4K500</strong><br>Broadcom SiByte · CPU MIPS64<br>500 MHz · 2× GbE · HyperTransport · BGA 31 mm<br>DC 2005 s26 · <strong>COM CHUMBO</strong> · 1 un</span></td>
+      <td><span class="pn"><strong>BCM7335RKFSBA35G</strong><br>Broadcom · SoC set-top box satélite HD/PVR<br>MIPS 450 MHz · 2× DVB-S2 · 2× SATA-2<br>DC 2014 s46 · Pb-free · 1 un</span></td>
+    </tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p><strong>Nunca escreva só "SiByte" ou só "QAMLink" no saco.</strong> Diz tão pouco quanto escrever "Cyclone" num saco de Altera — o comprador não sabe o que tem dentro e não consegue cotar.</p>
+</div>
+
+<!-- 6 -->
+<h2 id="s6">6. Como decodificar</h2>
+
+<h3 id="s6a">6.1 Estrutura do part number</h3>
+<p>Todo part number Broadcom de chip de rede tem a mesma <strong>cauda</strong>. A cabeça varia; a cauda não. É isso que torna a leitura possível sem ordering information:</p>
+<div class="dec">
+  <div class="big">BCM <i>device</i> <i>[stepping]</i> <i>K|I</i> <i>pacote</i> <i>G</i></div>
+  <table><tbody>
+    <tr><td>device</td><td>o número — <strong>4 ou 5 dígitos, não dá para prever</strong></td></tr>
+    <tr><td>[stepping]</td><td>revisão de silício — <strong>opcional</strong>. Uma letra, duas, ou letra+dígito</td></tr>
+    <tr><td>K | I</td><td><strong>K</strong> = comercial &nbsp;·&nbsp; <strong>I</strong> = industrial</td></tr>
+    <tr><td>pacote</td><td>3 letras — <span class="pn">FSB</span>, <span class="pn">FEB</span>, <span class="pn">FLG</span> (LGA, sem esferas)</td></tr>
+    <tr><td>G</td><td>green / Pb-free</td></tr>
+  </tbody></table>
+</div>
+<div class="note">
+  <b class="h">A regra de leitura: comece pelo FIM</b>
+  <p>Da direita para a esquerda a estrutura é rígida: <strong><span class="pn">G</span> → três letras de pacote → <span class="pn">K</span> ou <span class="pn">I</span></strong>. Depois de achar esses três campos, <strong>tudo que sobra à esquerda é device + stepping</strong>.</p>
+  <p>Funciona porque a cauda nunca muda. Contar dígitos do device não funciona — <strong>a mesma faixa tem device de 4 e de 5 dígitos</strong>.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Part number da bancada</th><th>device</th><th>stepping</th><th>temp</th><th>pacote</th><th>green</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">BCM3380GKFSBG</td><td class="pn">3380 <em>(4)</em></td><td class="pn">G</td><td class="pn">K</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+    <tr class="hl"><td class="pn">BCM33843MKFSBG</td><td class="pn"><strong>33843 <em>(5)</em></strong></td><td class="pn">M</td><td class="pn">K</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+    <tr><td class="pn">BCM68380IFSBG</td><td class="pn">68380 <em>(5)</em></td><td class="no">—</td><td class="pn">I</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+    <tr><td class="pn">BCM68380FKFSBG</td><td class="pn">68380 <em>(5)</em></td><td class="pn">F</td><td class="pn">K</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+    <tr><td class="pn">BCM68385IFSBG</td><td class="pn">68385 <em>(5)</em></td><td class="no">—</td><td class="pn">I</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+    <tr class="hl"><td class="pn">BCM84722MAIFSBG</td><td class="pn">84722 <em>(5)</em></td><td class="pn"><strong>MA</strong></td><td class="pn">I</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+    <tr><td class="pn">BCM56870A0KFSBG</td><td class="pn">56870 <em>(5)</em></td><td class="pn">A0</td><td class="pn">K</td><td class="pn">FSB</td><td class="pn">G</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Duas exceções que quebram a forma</b>
+  <p><span class="pn">BCM7335RKFSBA35G</span> — tem um bloco extra entre pacote e green (ver <a href="#s6z">6.2</a>).</p>
+  <p><span class="pn">BCM1125HA4K500</span> — SiByte: <strong>não tem pacote nem <span class="pn">G</span></strong>, e o número final é o clock em MHz.</p>
+  <p>Por isso a regra de cadastro continua sendo <strong>transcrever a linha inteira</strong>. A forma acima serve para conferir a leitura, não para recortar campos.</p>
+</div>
+<div class="note w2">
+  <b class="h">O bloco de stepping tem tamanho variável — não presuma uma letra</b>
+  <p>Já apareceram <span class="pn">A0</span>, <span class="pn">B1</span>, <span class="pn">A4</span>, <span class="pn">G</span>, <span class="pn">Z</span>, <span class="pn">M</span>, <span class="pn">F</span>, <span class="pn">GU</span>, <span class="pn">ZU</span>, <span class="pn">NP</span>, <span class="pn">ZZ</span>, <span class="pn">MA</span> — e em alguns PN <strong>não há bloco nenhum</strong> (<span class="pn">BCM68380IFSBG</span>).</p>
+  <p>Prova de que o tamanho varia dentro do mesmo device: existem em catálogo <span class="pn">BCM84722<b>A</b>IFSBG</span> e, na bancada, <span class="pn">BCM84722<b>MA</b>IFSBG</span>. <strong>São dois itens de estoque.</strong> É mais uma razão para não recortar campos no cadastro.</p>
+</div>
+<div class="note">
+  <b class="h">O stepping não é detalhe</b>
+  <p>Firmware costuma exigir um stepping específico, e <span class="pn">A0</span> contra <span class="pn">B0</span> pode ser a diferença entre a peça funcionar ou não na placa do comprador. <strong>Transcreva sempre</strong> — é o campo que mais some em anúncio mal feito.</p>
+  <p>E atenção ao <span class="pn">FLG</span>: <strong>LGA não tem esferas</strong>. A face inferior é lisa. Se veio de soquete, não foi dessoldada — e não precisa de reballing.</p>
+</div>
+<div class="note">
+  <b class="h">K e I — o campo que mais vale e menos aparece em anúncio</b>
+  <p><span class="pn">K</span> = comercial · <span class="pn">I</span> = <strong>industrial</strong>, faixa de temperatura mais larga. <strong>Industrial vale mais no mesmo device.</strong></p>
+  <p>Na bancada: <span class="pn">BCM3380<b>K</b></span>, <span class="pn">BCM33843<b>K</b></span>, <span class="pn">BCM7335<b>K</b></span>, <span class="pn">BCM68380F<b>K</b></span> são comerciais; <span class="pn">BCM68380<b>I</b></span> e <span class="pn">BCM68385<b>I</b></span> são industriais. <strong>Mesmo device pode vir nos dois graus</strong> — os dois BCM68380 provam. Sempre declare.</p>
+</div>
+<div class="note">
+  <b class="h">A ausência do G é informação, não falha de leitura</b>
+  <p>PN que <strong>termina sem <span class="pn">G</span></strong> é peça <strong>com chumbo</strong>, anterior ao RoHS (julho de 2006). Confirme pelo date code: se for de 2006 ou antes, bate.</p>
+  <p>Prova na própria família: existem <span class="pn">BCM1125HA4K800<b>G</b></span> em catálogo e <span class="pn">BCM1125HA4K500</span> sem <span class="pn">G</span> na bancada. <strong>Na venda para reparo legado a versão com chumbo costuma valer mais</strong> — não se fabrica mais e o perfil de refusão é outro.</p>
+</div>
+
+<h3 id="s6z">6.2 Onde está o PN — o que digitar</h3>
+<div class="note">
+  <b class="h">A regra é simples aqui</b>
+  <p><strong>O part number inteiro está numa linha só: a que começa com <span class="pn">BCM</span>.</strong> Digite ela do primeiro ao último caractere.</p>
+  <p>Nisso a Broadcom se parece com a Altera e a TI, e é o oposto da Xilinx — onde o PN precisa ser montado de três linhas diferentes.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Linha</th><th>Conteúdo</th><th>É PN?</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Logo <span class="pn">BROADCOM®</span></td><td class="no">Não</td></tr>
+    <tr><td>2</td><td>Marca da linha — <span class="pn">QAMLink®</span>, StrataXGS, SiByte</td><td class="no">Não — é logo de família</td></tr>
+    <tr class="hl"><td>3</td><td>Part number, começando em <span class="pn">BCM</span></td><td class="half"><strong>SIM, inteiro</strong></td></tr>
+    <tr><td>4</td><td>Date code + código de processo</td><td class="no">Não — procedência</td></tr>
+    <tr><td>5</td><td>Lote + código de site de montagem</td><td class="no">Não — rastreio</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">O número de linhas varia — a posição não importa</b>
+  <p>Nem toda peça tem as cinco. Um <span class="pn">BCM3380</span> traz logo e marca de linha antes do PN; um <span class="pn">BCM7335</span> começa direto no <span class="pn">BCM</span> e tem só três linhas.</p>
+  <p><strong>Não conte linhas — procure a que começa com <span class="pn">BCM</span>.</strong> Ela é o part number, esteja em que altura estiver.</p>
+</div>
+<div class="note w2">
+  <p><strong><span class="pn">QAMLink</span>, <span class="pn">StrataXGS</span>, <span class="pn">StrataDNX</span> e <span class="pn">SiByte</span> são marcas registradas de linha, não part numbers.</strong> É o mesmo papel do "Cyclone V" na Altera e do "SPARTAN-6" na Xilinx. Procurar por elas em catálogo não leva a peça nenhuma — procure pelo <span class="pn">BCM</span>.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Exemplo trabalhado — duas peças reais</h4>
+<p>Três <span class="pn">BCM3380</span> recuperados, lidos no microscópio. O <strong>BCM3380 é um SoC de cable modem DOCSIS 3.0</strong>, anunciado em 2009, que faz <em>channel bonding</em> de até 8 canais de descida e 4 de subida, passando de 300 Mbps. Serve modem de dados e gateway de voz. Saiu de cable modem ou EMTA de operadora.</p>
+<div class="dec">
+  <table><tbody>
+    <tr><td>linha 1</td><td>BROADCOM ®</td></tr>
+    <tr><td>linha 2</td><td>QAMLink ® &nbsp;→ marca da linha DOCSIS</td></tr>
+    <tr><td>linha 3</td><td><strong class="pn">BCM3380GKFSBG</strong> &nbsp;→ <strong>o part number</strong></td></tr>
+    <tr><td>linha 4</td><td><span class="pn">TN1214</span> → date code, <strong>2012 semana 14</strong> &nbsp;·&nbsp; <span class="pn">P11</span> → processo</td></tr>
+    <tr><td>linha 5</td><td><span class="pn">196727</span> → lote &nbsp;·&nbsp; <span class="pn">N3E</span> → site de montagem</td></tr>
+  </tbody></table>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>Peça A</th><th>Peça B</th><th>Peça C</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td><strong>Part number</strong></td><td class="pn">BCM3380<strong>G</strong>KFSBG</td><td class="pn">BCM3380<strong>G</strong>KFSBG</td><td class="pn">BCM3380<strong>Z</strong>KFSBG</td></tr>
+    <tr><td>Date code</td><td class="pn">TN1214 → 2012 s14</td><td class="pn">TN1209 → 2012 s09</td><td class="pn">TN1318 → 2013 s18</td></tr>
+    <tr><td>Lote</td><td class="pn">196727</td><td class="pn">189720</td><td class="pn">286031</td></tr>
+    <tr><td>Processo · site</td><td class="pn">P11 · N3E</td><td class="pn">P11 · N3E</td><td class="pn">P11 · N3E</td></tr>
+    <tr><td><strong>Item de estoque</strong></td><td colspan="2" class="half"><strong>Um só — A e B são a mesma peça</strong></td><td class="no"><strong>Outro item</strong></td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Uma letra, outro part number</b>
+  <p>A peça C difere das outras duas em <strong>um único caractere</strong>: <span class="pn">Z</span> no lugar de <span class="pn">G</span>, logo depois do número do device. Isso <strong>não é variação de lote</strong> — é outro item de catálogo.</p>
+  <p>Prova: <span class="pn">BCM3380GKFSBG</span> e <span class="pn">BCM3380ZKFSBG</span> têm <strong>páginas e códigos de produto separados em distribuidor autorizado</strong>. São duas peças distintas.</p>
+  <p>E a posição é sistemática — na mesma família aparecem <span class="pn">BCM3380<b>G</b></span>, <span class="pn">BCM3380<b>Z</b></span>, <span class="pn">BCM3390<b>Z</b></span>, <span class="pn">BCM3383<b>D</b></span>. O campo de encapsulamento também varia: <span class="pn">FSB</span> num, <span class="pn">FEB</span> noutro.</p>
+</div>
+<div class="note">
+  <b class="h">A regra prática que decorre disso</b>
+  <p>Como a Broadcom <strong>não publica ordering information</strong>, você nunca vai ter certeza do que cada letra significa. Então a regra de cadastro é mecânica:</p>
+  <p><strong>String diferente = item de estoque diferente.</strong> Não interprete, não agrupe "porque parece a mesma coisa". Compare o part number caractere por caractere e separe ao menor desvio.</p>
+  <p>É mais conservador do que o necessário em alguns casos — e custa nada. Juntar duas peças diferentes num lote é o erro que faz o comprador rejeitar o lote inteiro na inspeção.</p>
+</div>
+
+<p>Repare que o código de processo (<span class="pn">P11</span>) e o de site (<span class="pn">N3E</span>) são idênticos nas três — não variam dentro da mesma linha de produção. O que varia entre A e B é só date code e lote, e isso <strong>não muda a identidade</strong>. O que muda a identidade é a letra do part number.</p>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">A geração seguinte do mesmo QAMLink</h4>
+<p>Na mesma bancada apareceu um <span class="pn">BCM33843</span> — <strong>quatro gerações depois do BCM3380</strong>, e um caso didático de leitura.</p>
+<div class="dec">
+  <table><tbody>
+    <tr><td>linha 1</td><td>BROADCOM ®</td></tr>
+    <tr><td>linha 2</td><td><span class="pn">QAMLink ®</span> → marca da linha</td></tr>
+    <tr><td>linha 3</td><td><strong class="pn">BCM33843MKFSBG</strong> &nbsp;→ <strong>o part number</strong></td></tr>
+    <tr><td>linha 4</td><td><span class="pn">CA1638</span> → <strong>2016 semana 38</strong> &nbsp;·&nbsp; <span class="pn">P20</span> → processo</td></tr>
+    <tr><td>linha 5</td><td><span class="pn">620929-19</span> → lote &nbsp;·&nbsp; <span class="pn">N3A1</span> → site</td></tr>
+  </tbody></table>
+</div>
+<div class="note w2">
+  <b class="h">A armadilha: BCM3384 parece um part number completo</b>
+  <p>O device é <span class="pn">BCM33843</span>, com <strong>cinco</strong> dígitos. <span class="pn">BCM3384</span> — quatro dígitos — é o <strong>nome da família</strong>, não uma peça.</p>
+  <p>Aplicando a regra de <a href="#s6a">6.1</a>, de trás para frente: <span class="pn">G</span> → pacote <span class="pn">FSB</span> → temperatura <span class="pn">K</span> → sobra <span class="pn">33843</span> + stepping <span class="pn">M</span>. <strong>Fecha.</strong> Se você tivesse lido <span class="pn">BCM3384MKFSBG</span>, sobraria <span class="pn">3384</span> + <span class="pn">M</span> — que também "fecha" na forma, mas não existe em catálogo.</p>
+  <p><strong>Por isso a conferência final é sempre a mesma: o PN que você leu existe como peça?</strong> Se só aparece como "série" ou "família", falta dígito.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>BCM3380</th><th>BCM33843</th></tr></thead>
+  <tbody>
+    <tr><td>Geração</td><td>DOCSIS 3.0, 2009</td><td><strong>4ª geração DOCSIS 3.0, jan/2013</strong></td></tr>
+    <tr><td>Canais</td><td>8 × 4</td><td><strong>até 24 × 8</strong></td></tr>
+    <tr><td>Velocidade</td><td>acima de 300 Mbps</td><td><strong>1 Gbps de descida</strong></td></tr>
+    <tr><td>O que é</td><td>SoC de cable modem</td><td><strong>SoC de gateway</strong> — Wi-Fi dual band, voz DECT 6.0, Full-Band Capture, PA de subida integrado</td></tr>
+    <tr><td>Steppings vistos</td><td class="pn">G · Z</td><td class="pn">E · G · GU · Z · ZU · M</td></tr>
+    <tr><td>Na bancada</td><td class="pn">…GKFSBG · …ZKFSBG</td><td class="pn">…MKFSBG · 2016 s38</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Leitura comercial</b>
+  <p>O <span class="pn">BCM33843</span> é <strong>pin-compatível com o BCM3383</strong>, o que a Broadcom vendeu como caminho de migração fácil. Isso amplia o comprador: serve placa desenhada para os dois.</p>
+  <p>E gateway DOCSIS 3.0 de 2016 <strong>ainda está em operação em massa</strong>. Liquidez melhor que a do BCM3380, que é modem puro de 2009. <strong>Não jogue os dois no mesmo saco</strong> — são gerações e preços diferentes.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Exemplo trabalhado 2 &mdash; a peça que quebra o parse</h4>
+<p>Um <span class="pn">BCM7335</span> recuperado, maior que os BCM3380 e também de tampa de aço. O <strong>BCM7335 é um SoC de receptor de satélite com PVR</strong> — anunciado em janeiro de 2008, fabricado em 65 nm. Não é chip de rede: é o cérebro inteiro de um decodificador de TV por satélite.</p>
+<div class="dec">
+  <table><tbody>
+    <tr><td>linha 1</td><td><strong class="pn">BCM7335RKFSBA35G</strong> &nbsp;→ <strong>o part number, inteiro</strong></td></tr>
+    <tr><td>linha 2</td><td><span class="pn">UA1446</span> → date code, <strong>2014 semana 46</strong> &nbsp;·&nbsp; <span class="pn">P20</span> → processo</td></tr>
+    <tr><td>linha 3</td><td><span class="pn">432051-06</span> → lote &nbsp;·&nbsp; <span class="pn">N4A</span> → site de montagem</td></tr>
+  </tbody></table>
+</div>
+<div class="note">
+  <b class="h">A leitura confere com o catálogo</b>
+  <p><span class="pn">BCM7335RKFSBA35G</span> existe como part number completo em distribuidor. A peça está lida corretamente — inclusive o trecho <span class="pn">35G</span> que o microscópio cortou.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Qual variante é a sua</h4>
+<p>O <span class="pn">BCM7335</span> tem <strong>pelo menos oito variantes em catálogo</strong>. Elas são o mesmo device e fazem a mesma coisa, mas são <strong>oito itens de estoque diferentes</strong>. A peça da bancada é a <span class="pn">R</span>:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Variante</th><th>Part number</th><th>Pacote</th><th>Nº final</th><th>De onde vem</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td><strong>R</strong></td><td class="pn"><strong>BCM7335<b>R</b>K<b>FSBA</b><b>35</b>G</strong></td><td class="pn">FSBA</td><td class="pn">35</td><td class="half"><strong>a peça da bancada</strong></td></tr>
+    <tr><td>Q</td><td class="pn">BCM7335<b>Q</b>K<b>FSBA</b><b>1</b>G</td><td class="pn">FSBA</td><td class="pn">1</td><td class="no">só catálogo</td></tr>
+    <tr><td>P</td><td class="pn">BCM7335<b>P</b>K<b>FSBA</b><b>33</b>G</td><td class="pn">FSBA</td><td class="pn">33</td><td class="no">só catálogo</td></tr>
+    <tr><td>A</td><td class="pn">BCM7335<b>A</b>K<b>FEBB</b><b>1</b>G</td><td class="pn">FEBB</td><td class="pn">1</td><td class="no">só catálogo</td></tr>
+    <tr><td>T</td><td class="pn">BCM7335<b>T</b>K<b>FEBB</b><b>3</b>G</td><td class="pn">FEBB</td><td class="pn">3</td><td class="no">só catálogo</td></tr>
+    <tr><td>Z</td><td class="pn">BCM7335<b>Z</b>K<b>FEB</b><b>3</b>G</td><td class="pn">FEB</td><td class="pn">3</td><td class="no">só catálogo</td></tr>
+    <tr><td>ZZ</td><td class="pn">BCM7335<b>ZZ</b>K<b>FEB</b><b>3</b>G</td><td class="pn">FEB</td><td class="pn">3</td><td class="no">só catálogo</td></tr>
+    <tr><td>NP</td><td class="pn">BCM7335<b>NP</b>K<b>FEB</b><b>3</b>G</td><td class="pn">FEB</td><td class="pn">3</td><td class="no">só catálogo</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Essa tabela não é a marcação da peça</b>
+  <p>Só a <strong>primeira linha</strong> está gravada no chip da bancada. As outras sete são part numbers do mesmo device puxados de catálogo de distribuidor — estão aqui para mostrar <strong>o que varia de uma variante para outra</strong>, e para avisar que peças aparentemente idênticas na gaveta podem não ser.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Por que aqui não se parseia campo</h4>
+<p>Esse part number <em>não</em> encaixa no modelo de campos que funciona no BCM3380 e no BCM56870. Tem <strong>um bloco a mais</strong>, e o corte é ambíguo:</p>
+<div class="dec">
+  <div class="big">BCM7335 <i>R</i> K <i>FSBA</i> <i>35</i> G &nbsp;&nbsp;ou&nbsp;&nbsp; BCM7335 <i>R</i> K <i>FSB</i> <i>A35</i> G</div>
+  <table><tbody>
+    <tr><td>corte 1</td><td>pacote de 4 letras <span class="pn">FSBA</span> + número <span class="pn">35</span></td></tr>
+    <tr><td>corte 2</td><td>pacote de 3 letras <span class="pn">FSB</span> + bloco <span class="pn">A35</span></td></tr>
+  </tbody></table>
+</div>
+<div class="note w2">
+  <b class="h">Não há como decidir — e é esse o ponto</b>
+  <p>Os dois cortes explicam a tabela igualmente bem. A Broadcom não publica ordering information, então nenhum dos dois é confirmável.</p>
+  <p>Duas pistas de que o campo é <strong>sistemático da marca</strong>, e não invenção do 7335: existe <span class="pn">BCM7362<b>DRK</b>FEB<b>A35</b>G</span> — <strong>outro device com o mesmo <span class="pn">A35</span></strong>; e a revisão nem sempre é uma letra só — aparecem <span class="pn">NP</span> e <span class="pn">ZZ</span>.</p>
+  <p><strong>É exatamente por isso que a regra desta ficha é transcrever a linha inteira.</strong> Quem tentar cortar em campos vai errar o corte em metade das peças e cadastrar coisa errada.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">O que o BCM7335 é, em specs</h4>
+<div class="sc"><table class="d">
+  <tbody>
+    <tr><td>Categoria</td><td><strong>SoC de receptor de satélite HD com PVR</strong> — não é FPGA, não é switch</td></tr>
+    <tr><td>CPU</td><td>MIPS dual-thread a 450 MHz · 32 KB I/D cache · 128 KB L2 · MMU e FPU</td></tr>
+    <tr><td>Vídeo</td><td>MPEG-2, MPEG-4 Part 2, MPEG-4 Part 10 (AVC/H.264), VC-1, DivX, Xvid</td></tr>
+    <tr><td>Sintonia</td><td>Dois tuners de silício integrados + dois demoduladores <strong>DVB-S2 / 8PSK</strong>, DiSEqC 2.x</td></tr>
+    <tr><td>Memória</td><td>DDR2 a 400 MHz de clock (800 MT/s), modo UMA e não-UMA</td></tr>
+    <tr><td>Periféricos</td><td>2 × SATA-2 com eSATA · 2 × Ethernet 10/100 com PHY · 3 × USB 2.0 · NAND e NOR</td></tr>
+    <tr><td>Segurança</td><td>Processador de segurança no chip (acesso condicional da operadora)</td></tr>
+    <tr><td>Processo</td><td>65 nm · anunciado em janeiro de 2008</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Leitura comercial</b>
+  <p>Os dois SATA e o PVR dizem tudo: essa peça saiu de um <strong>gravador de satélite</strong>, o tipo de caixa que a operadora instala na casa do assinante. Produzido aos milhões, como o QAMLink. <strong>Volume alto, valor unitário baixo.</strong></p>
+  <p>O date code de <strong>2014</strong> num chip anunciado em <strong>2008</strong> é a informação útil: seis anos de produção significam base instalada grande e conserto ainda acontecendo. O comprador aqui é <strong>reparo de decodificador legado</strong>, não projeto novo.</p>
+  <p>Chip de operadora tem outra armadilha: o <strong>acesso condicional é pareado com a caixa</strong>. Ninguém compra esse SoC para construir equipamento — compra para substituir o que queimou. Isso limita o preço e limita quem compra.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Exemplo trabalhado 3 &mdash; SiByte, a peça que carrega spec no PN</h4>
+<p>Um <span class="pn">BCM1125H</span> da linha <span class="pn">SiByte</span>, tampa metálica clara. Esse exemplo é o mais valioso da ficha, porque <strong>contraria a regra de que o PN Broadcom não diz nada de performance</strong>.</p>
+<div class="dec">
+  <table><tbody>
+    <tr><td>linha 1</td><td><span class="pn">SIBYTE ™</span> → marca da linha, <strong>não é PN</strong></td></tr>
+    <tr><td>linha 2</td><td><strong class="pn">BCM1125HA4K500</strong> &nbsp;→ <strong>o part number, inteiro</strong></td></tr>
+    <tr><td>linha 3</td><td><span class="pn">TN0526</span> → date code, <strong>2005 semana 26</strong> &nbsp;·&nbsp; <span class="pn">P14</span> → processo</td></tr>
+    <tr><td>linha 4</td><td><span class="pn">747932</span> → lote &nbsp;·&nbsp; <span class="pn">N</span> → site de montagem</td></tr>
+  </tbody></table>
+</div>
+<div class="dec">
+  <div class="big">BCM1125H <i>A4</i> <i>K</i> <i>500</i></div>
+  <table><tbody>
+    <tr><td>BCM1125H</td><td>device — SiByte SB-1 MIPS64, núcleo único, com HyperTransport</td></tr>
+    <tr><td>A4</td><td><strong>stepping</strong> — existe também <span class="pn">B0</span> em catálogo</td></tr>
+    <tr><td>K</td><td>temperatura comercial</td></tr>
+    <tr><td>500</td><td><strong>clock em MHz.</strong> A família foi vendida de 400 a 800 MHz</td></tr>
+    <tr><td>(nada)</td><td><strong>sem <span class="pn">G</span> = peça com chumbo</strong>, pré-RoHS</td></tr>
+  </tbody></table>
+</div>
+<div class="note">
+  <b class="h">Como esse parse foi confirmado</b>
+  <p>Existem em catálogo <span class="pn">BCM1125H<b>B0</b>K<b>800</b>G</span> e <span class="pn">BCM1125H<b>A4</b>K<b>800</b>G</span>. Comparando os três, cada campo varia isoladamente — stepping, clock e a letra de green. <strong>Aqui o parse não é inferência: é leitura por variação controlada.</strong></p>
+  <p>Note também que <strong>não há campo de encapsulamento</strong>. A família tem um pacote só — BGA de 31 mm — então a Broadcom simplesmente omite o campo. <strong>Campo ausente não é campo apagado.</strong></p>
+</div>
+<div class="note w2">
+  <b class="h">Duas leituras que valem dinheiro</b>
+  <p><strong>500 MHz é o grau mais baixo da faixa</strong> (400–800). É o bin barato da família. Um <span class="pn">…K800G</span> da mesma linha é outra peça e outro preço.</p>
+  <p><strong>A ausência do <span class="pn">G</span> é a informação mais rara do lote.</strong> Peça com chumbo de 2005, de uma linha descontinuada, é exatamente o perfil em que o comprador de reparo legado paga acima do Pb-free equivalente.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">O que o BCM1125H é, em specs</h4>
+<div class="sc"><table class="d">
+  <tbody>
+    <tr><td>Categoria</td><td><strong>Processador de rede MIPS64</strong> — CPU de verdade, não switch e não FPGA</td></tr>
+    <tr><td>Núcleo</td><td>SB-1 MIPS64, quad-issue in-order, <strong>um núcleo</strong> (o BCM1250 tem dois)</td></tr>
+    <tr><td>Cache</td><td>32 KB instrução + 32 KB dados · <strong>256 KB L2 com ECC</strong>, 4 vias</td></tr>
+    <tr><td>Clock</td><td>400 a 800 MHz conforme o PN — <strong>a peça da bancada é 500 MHz</strong></td></tr>
+    <tr><td>Memória</td><td>DDR SDRAM / SGRAM / FCRAM, barramento de 64 bits <strong>com ECC</strong>, até 400 Mbps</td></tr>
+    <tr><td>Rede</td><td><strong>2 × MAC 10/100/1000</strong> (Gigabit Ethernet)</td></tr>
+    <tr><td>Expansão</td><td>PCI 2.2 32 bits 33/66 MHz · <strong>HyperTransport</strong> 8 bits, 19,2 Gbps de pico</td></tr>
+    <tr><td>Processo · pacote</td><td>TSMC 0,13 µm · <strong>BGA de 31 mm</strong> · ~4 W a 400 MHz</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Leitura comercial</b>
+  <p>ECC na memória, dois Gigabit e HyperTransport dizem que a placa de origem era <strong>equipamento profissional</strong> — appliance de rede, roteador corporativo, storage embarcado — e não eletrônico de consumo. É o oposto do BCM7335.</p>
+  <p>Mas a arquitetura MIPS saiu do mercado. <strong>Não existe projeto novo com essa peça.</strong> O comprador é reposição de sistema legado: estreito, mas é justamente quem paga pelo chumbo.</p>
+</div>
+
+<div class="note w2">
+  <b class="h">Tampa brilhante não é spec — mas olhe a gravação</b>
+  <p>Acabamento de tampa varia por época e por fábrica de montagem. Uma tampa mais clara ou mais escura <strong>não muda a peça e não entra no cadastro</strong>.</p>
+  <p>O que importa é outra coisa: <strong>tampa que parece polida junto com marcação que parece impressa por cima é bandeira vermelha de remarcação.</strong> Em peça genuína os caracteres estão <strong>gravados a laser dentro</strong> do metal — dá pra ver o grão e os riscos atravessando a letra. Confira também se o date code é coerente com a presença ou ausência do <span class="pn">G</span>.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Exemplo trabalhado 4 &mdash; dois xPON e o que eles provaram</h4>
+<p>Dois <span class="pn">BCM6838x</span> da bancada, <strong>tamanhos físicos diferentes</strong>. São processadores <strong>xPON — GPON e EPON</strong>: o SoC de ONT de fibra, a caixinha que fica na casa do assinante na ponta da fibra.</p>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>Peça maior</th><th>Peça menor</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td><strong>Part number</strong></td><td class="pn">BCM68<strong>380</strong>IFSBG</td><td class="pn">BCM68<strong>385</strong>IFSBG</td></tr>
+    <tr><td>Device</td><td class="pn">68380 — <strong>versão FE</strong> (Fast Ethernet)</td><td class="pn">68385</td></tr>
+    <tr><td>Temperatura</td><td class="half"><strong>I — industrial</strong></td><td class="half"><strong>I — industrial</strong></td></tr>
+    <tr><td>Date code</td><td class="pn">TN1519 → 2015 s19</td><td class="pn">TA1411 → 2014 s11</td></tr>
+    <tr><td>Processo</td><td class="pn">P20</td><td class="pn">P20</td></tr>
+    <tr><td>Lote · site</td><td class="pn">508172-98 · P3</td><td class="pn">365339-04 · Z3</td></tr>
+    <tr><td><strong>Item de estoque</strong></td><td class="no"><strong>Um</strong></td><td class="no"><strong>Outro</strong></td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Primeira peça industrial do lote</b>
+  <p>Todo Broadcom anterior desta ficha é <span class="pn">K</span> — comercial. Estes dois são <span class="pn">I</span>, <strong>industrial</strong>: faixa de temperatura mais larga. Faz sentido para ONT, que fica em poste, caixa de rua e prédio sem climatização.</p>
+  <p><strong>Industrial vale mais que comercial no mesmo device.</strong> É diferencial de anúncio e some se não for escrito.</p>
+</div>
+<div class="note w2">
+  <b class="h">O código de encapsulamento não é um tamanho</b>
+  <p>Os dois dizem <span class="pn">FSB</span> e <strong>têm corpos de tamanhos diferentes</strong>. Logo <span class="pn">FSB</span> é <strong>família de encapsulamento, não medida</strong>.</p>
+  <p>Duas consequências: <strong>não infira tamanho pelo código de pacote</strong>, e <strong>não presuma que dois chips de mesmo código têm a mesma pegada</strong>. Meça sempre.</p>
+</div>
+<div class="note">
+  <b class="h">O que a linha 2 é — provado por três peças da bancada</b>
+  <p><span class="pn">BCM7335</span>, <span class="pn">BCM68380</span> e <span class="pn">BCM68385</span> são devices completamente diferentes e <strong>todos trazem <span class="pn">P20</span></strong>. O código <span class="pn">P</span> é <strong>a linha de processo</strong> — não identifica a peça.</p>
+  <p><strong>Mas não é relógio.</strong> O <span class="pn">BCM84722</span> da bancada é <span class="pn">TA1433</span> — 2014, mesmo ano do BCM68385 (<span class="pn">TA1411</span>) — e traz <span class="pn">P10</span>, não P20. Peças da mesma época saem em processos diferentes porque são fabricadas em nós diferentes: um PHY não usa o mesmo nó de um SoC. <strong>Não use o código P como conferência de data.</strong></p>
+  <p>E o par de letras do date code varia dentro do mesmo ano — <span class="pn">TA</span>1411 e <span class="pn">UA</span>1446 são ambos 2014. <strong>As letras não são o ano; o ano são os quatro dígitos, no formato <span class="pn">YYWW</span>.</strong></p>
+</div>
+<div class="note w2">
+  <b class="h">De onde veio essa faixa</b>
+  <p>Não é linhagem Broadcom. A Broadcom <strong>comprou a BroadLight em março de 2012 por US$ 195 milhões</strong> — empresa israelense de processadores PON. Por isso o <span class="pn">BCM68xxx</span> é faixa separada do <span class="pn">BCM63xx</span> de DSL, e por isso a época começa em 2012.</p>
+  <p>Mesmo padrão do SiByte, comprada em 2000 e transformada no <span class="pn">BCM1xxx</span>. <strong>Na Broadcom, faixa numérica nova quase sempre significa aquisição.</strong></p>
+</div>
+<div class="note">
+  <b class="h">Leitura comercial</b>
+  <p>Equipamento de operadora, produzido em volume. Mas fibra de 2014–2015 <strong>ainda está em campo</strong> em muito lugar, e ONT queima — existe mercado de reparo real.</p>
+  <p>E o perfil do seu lote é bom: <strong>vários iguais, industriais, com date codes próximos</strong>. Homogeneidade tem prêmio. Separe por PN exato e informe a faixa de date code.</p>
+</div>
+
+<h3 id="s6y">6.3 Validar a transcrição antes de cadastrar</h3>
+<p>A cauda rígida de <a href="#s6a">6.1</a> não serve só para entender o PN — serve para <strong>provar que você o leu certo</strong>. Três conferências, nesta ordem:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>#</th><th>Conferência</th><th>Se falhar</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Termina em <span class="pn">G</span>?</td><td>Ou é peça <strong>com chumbo</strong> (confirme com date code ≤ 2006), ou você comeu o último caractere</td></tr>
+    <tr><td>2</td><td>Antes do <span class="pn">G</span>, <strong>três letras</strong> de pacote?</td><td>Releia — <span class="pn">5</span> ali costuma ser <span class="pn">S</span></td></tr>
+    <tr class="hl"><td>3</td><td>Antes do pacote, <strong><span class="pn">K</span> ou <span class="pn">I</span></strong>?</td><td class="no"><strong>Se tiver um número ali, a leitura está errada.</strong> Esse campo nunca é dígito</td></tr>
+  </tbody>
+</table></div>
+<div class="note w2">
+  <b class="h">Os três erros reais deste inventário — todos pegos pela conferência 3</b>
+  <p>Transcrições que pareciam plausíveis e estavam erradas:</p>
+</div>
+<div class="dec">
+  <table><tbody>
+    <tr><td>errado</td><td><span class="pn">BCM6838<b>O1</b>FSBG</span> → G · FSB · <strong>"1"</strong> ← inválido &nbsp;&nbsp;→ certo: <strong class="pn">BCM68380IFSBG</strong></td></tr>
+    <tr><td>errado</td><td><span class="pn">BCM68385<b>1</b>FSBG</span> → G · FSB · <strong>"1"</strong> ← inválido &nbsp;&nbsp;→ certo: <strong class="pn">BCM68385IFSBG</strong></td></tr>
+    <tr><td>errado</td><td><span class="pn">BCM3384MKF<b>BG</b></span> → G · KFB · <strong>"M"</strong> ← inválido &nbsp;&nbsp;→ certo: <strong class="pn">BCM33843MKFSBG</strong></td></tr>
+  </tbody></table>
+</div>
+<div class="note w2">
+  <b class="h">O <span class="pn">I</span> virando <span class="pn">1</span> é o erro caro</b>
+  <p>Nos dois primeiros o que se perdeu foi o <span class="pn">I</span> — <strong>o indicador de industrial</strong>. Duas peças industriais viraram peças sem grau declarado. É o campo que mais valoriza e o mais fácil de destruir na digitação.</p>
+  <p>E no mesmo PN o zero de <span class="pn">68380</span> virou letra <span class="pn">O</span>. <strong>Dentro do número do device só existem dígitos</strong> — <span class="pn">O</span> ali é sempre zero.</p>
+</div>
+<div class="note">
+  <b class="h">Decida pela posição, não pela forma da letra</b>
+  <p>Não adianta forçar a vista na foto. Cada campo só aceita um tipo de caractere:</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Campo</th><th>Só aceita</th><th>Logo</th></tr></thead>
+  <tbody>
+    <tr><td>device</td><td><strong>dígitos</strong></td><td><span class="pn">O</span> ali é <strong>zero</strong></td></tr>
+    <tr><td>stepping</td><td>letras e dígitos, 0 a 2 caracteres</td><td>ambíguo — é o campo que exige melhor foto</td></tr>
+    <tr class="hl"><td><strong>temperatura</strong></td><td><strong><span class="pn">K</span> ou <span class="pn">I</span></strong></td><td><span class="pn">1</span> ali é <strong>I</strong></td></tr>
+    <tr><td>pacote</td><td><strong>3 letras</strong></td><td><span class="pn">5</span> ali é <strong>S</strong>, <span class="pn">8</span> é <strong>B</strong></td></tr>
+    <tr><td>green</td><td><span class="pn">G</span> ou nada</td><td><span class="pn">6</span> ali é <strong>G</strong></td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">A quarta conferência: existe?</b>
+  <p>Passou nas três, ainda falta uma: <strong>o PN que você transcreveu existe como peça em catálogo?</strong> Se só aparece como nome de "série" ou "família", falta dígito — ver <a href="#s6b">6.4</a>.</p>
+  <p><span class="pn">BCM3384MKFSBG</span> passaria nas três conferências de forma e mesmo assim está errado, porque <span class="pn">BCM3384</span> é nome de família. Por isso essa quarta existe.</p>
+</div>
+<div class="note w2">
+  <b class="h">Não deixe o cabeçalho da planilha contaminar a linha</b>
+  <p>Se a coluna de grupo diz <span class="pn">BCM3384</span>, é fácil digitar <span class="pn">BCM3384…</span> na linha e perder um dígito. <strong>O grupo é etiqueta sua; a linha é a peça.</strong> Digite olhando para o chip, nunca para o cabeçalho.</p>
+</div>
+
+<h3 id="s6b">6.4 Mapa dos prefixos &mdash; triagem, não cadastro</h3>
+<div class="note w2">
+  <b class="h">Esta tabela responde uma pergunta só</b>
+  <p><strong>"Que mundo é esse chip?"</strong> — isso o prefixo responde. <span class="pn">BCM68…</span> é PON, sempre. Dois dígitos bastam.</p>
+  <p><strong>"Que chip exatamente é esse?"</strong> — isso o prefixo <strong>nunca</strong> responde. <span class="pn">BCM68380</span> e <span class="pn">BCM68385</span> são os dois PON e são produtos diferentes, com preços diferentes.</p>
+  <p>São dois usos distintos, e confundi-los é o erro clássico:</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th></th><th>Triagem na bancada</th><th>Cadastro na plataforma</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Pergunta</strong></td><td>Em que pilha essa peça vai?</td><td>Que peça é essa?</td></tr>
+    <tr class="hl"><td><strong>O que usa</strong></td><td class="half"><strong>2 dígitos — o prefixo</strong></td><td class="half"><strong>a linha inteira</strong></td></tr>
+    <tr><td><strong>Ferramenta</strong></td><td>esta tabela</td><td>a marcação da peça</td></tr>
+    <tr><td><strong>Exemplo</strong></td><td class="pn">BCM68 → pilha xPON</td><td class="pn">BCM68380IFSBG</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <p><strong>O operador da plataforma nunca digita prefixo.</strong> Ele digita a linha inteira. A tabela abaixo é ferramenta de quem separa na bancada — não da tela de cadastro.</p>
+</div>
+
+<div class="note w2">
+  <b class="h">Correção — não conte dígitos</b>
+  <p>Uma versão anterior desta ficha trazia aqui uma coluna dizendo quantos dígitos o device tem em cada faixa. <strong>Estava errado.</strong> A mesma faixa tem device de 4 e de 5 dígitos: na <span class="pn">BCM33</span> existem <span class="pn">BCM3380</span> (4) e <span class="pn">BCM33843</span> (5) — os dois na bancada.</p>
+  <p>Para conferir a leitura use a regra de <a href="#s6a">6.1</a>: <strong>leia o PN de trás para frente</strong>. A cauda é rígida, a cabeça não.</p>
+</div>
+<div class="note">
+  <b class="h">O nome de família tem 4 dígitos; o device costuma ter 5</b>
+  <p>É o padrão da marca: <span class="pn">BCM3384</span> é o nome da família e <span class="pn">BCM33843</span> é a peça. <span class="pn">BCM6838</span> é a família e <span class="pn">BCM68380</span> é a peça.</p>
+  <p><strong>Se o que você leu bate com um nome de família mas não existe como part number, você comeu um dígito.</strong> É a armadilha mais fácil da marca — o nome de família parece um part number completo.</p>
+</div>
+<div class="sc"><table class="d">
+  <thead><tr><th>Prefixo</th><th>O que é</th><th>Época</th></tr></thead>
+  <tbody>
+    <tr><td class="pn">BCM1x</td><td>SiByte — processador de rede MIPS &nbsp;<span style="color:var(--link)">ex. BCM1125H</span></td><td class="pn">2000–2007</td></tr>
+    <tr><td class="pn">BCM33</td><td>QAMLink — DOCSIS, cable modem e gateway &nbsp;<span style="color:var(--link)">ex. BCM3380, BCM33843</span></td><td class="pn">1999–2015</td></tr>
+    <tr><td class="pn">BCM43</td><td>Wi-Fi e combo wireless</td><td class="pn">2003–hoje</td></tr>
+    <tr><td class="pn">BCM47</td><td>SoC de roteador doméstico</td><td class="pn">2002–hoje</td></tr>
+    <tr><td class="pn">BCM53</td><td>RoboSwitch — switch pequeno integrado &nbsp;<span style="color:var(--link)">ex. BCM5389</span></td><td class="pn">2001–hoje</td></tr>
+    <tr><td class="pn">BCM54</td><td>Ethernet PHY</td><td class="pn">2000–hoje</td></tr>
+    <tr class="hl"><td class="pn">BCM56</td><td><strong>StrataXGS — switch de datacenter (Trident, Tomahawk)</strong></td><td class="pn"><strong>2009–hoje</strong></td></tr>
+    <tr><td class="pn">BCM57</td><td>NetXtreme — controladora de placa de rede</td><td class="pn">2001–hoje</td></tr>
+    <tr><td class="pn">BCM58</td><td><strong>StrataGX · Northstar</strong> — CPU ARM Cortex-A para appliance e roteador corporativo</td><td class="pn">2012–hoje</td></tr>
+    <tr><td class="pn">BCM63</td><td>SoC de banda larga — DSL, gateway doméstico</td><td class="pn">2000–hoje</td></tr>
+    <tr class="hl"><td class="pn">BCM68</td><td><strong>xPON — GPON e EPON.</strong> SoC de ONT de fibra &nbsp;<span style="color:var(--link)">ex. BCM68380, BCM68385</span></td><td class="pn">2012–hoje</td></tr>
+    <tr><td class="pn">BCM70</td><td>Decodificador de vídeo dedicado</td><td class="pn">2004–2012</td></tr>
+    <tr><td class="pn">BCM72 · BCM73</td><td>SoC completo de set-top box — cabo, satélite, IPTV, PVR &nbsp;<span style="color:var(--link)">ex. BCM7335</span></td><td class="pn">2004–hoje</td></tr>
+    <tr><td class="pn">BCM78</td><td>StrataXGS de geração recente (Trident5, Tomahawk5)</td><td class="pn">2022–hoje</td></tr>
+    <tr><td class="pn">BCM8x</td><td>PHY de alta velocidade e óptica</td><td class="pn">2005–hoje</td></tr>
+    <tr class="hl"><td class="pn">BCM88</td><td><strong>StrataDNX — roteador de operadora (Jericho, Qumran)</strong></td><td class="pn"><strong>2014–hoje</strong></td></tr>
+    <tr><td class="pn">BCM9</td><td><strong>Placa de referência — não é chip</strong></td><td class="pn">—</td></tr>
+    <tr><td class="pn">PEX8 · PEX9</td><td>PLX — switch PCIe</td><td class="pn">2005–hoje</td></tr>
+  </tbody>
+</table></div>
+<div class="note">
+  <b class="h">Use a coluna Época contra o date code</b>
+  <p>A faixa diz o que a peça é; a <strong>época diz se o date code faz sentido</strong>. SiByte com date code de 2015 é estranho — a linha acabou em 2007. StrataXGS com date code de 2005 é impossível — a linha não existia.</p>
+  <p>Detalhe do que marcou cada período em <a href="#s4c">4.3</a>. Gerações Trident e Tomahawk ano a ano em <a href="#s6c">6.5</a>.</p>
+</div>
+<div class="note w2">
+  <b class="h">Nome de família não é número de peça</b>
+  <p>A Broadcom chama a linha de <strong>"série BCM6838x"</strong>, mas <span class="pn">BCM6838</span> sozinho não é peça nenhuma — os devices são <span class="pn">BCM68380</span>, <span class="pn">BCM68381</span>, <span class="pn">BCM68385</span>, <span class="pn">BCM68389</span>, <span class="pn">BCM68360</span>. É o mesmo papel de <span class="pn">SiByte</span> e <span class="pn">QAMLink</span> (ver <a href="#s5d">5.4</a>): <strong>rótulo de família, não part number</strong>.</p>
+</div>
+
+<h4 style="font-size:.95rem;font-weight:600;margin:1.4rem 0 .4rem">Como organizar o estoque com isso</h4>
+<div class="dec">
+  <table><tbody>
+    <tr><td>grupo</td><td><span class="pn">BCM68</span> &nbsp;→ 2 dígitos, é a pilha</td></tr>
+    <tr><td>item</td><td><span class="pn">BCM68380IFSBG</span> &nbsp;→ string inteira, é o saco</td></tr>
+    <tr><td>item</td><td><span class="pn">BCM68385IFSBG</span> &nbsp;→ outro saco, mesmo grupo</td></tr>
+    <tr><td>quantidade</td><td>contada por item, nunca por grupo</td></tr>
+  </tbody></table>
+</div>
+<p style="font-size:.9rem;color:var(--dim)">Exceção única: na faixa SiByte os devices são <span class="pn">BCM11xx</span>, <span class="pn">BCM12xx</span> e <span class="pn">BCM14xx</span> — todos a mesma família. Ali use <span class="pn">BCM1x</span> como grupo, para não espalhar a família em três pilhas.</p>
+
+<h3 id="s6c">6.5 Nome de produto x part number</h3>
+<p>A Broadcom vende pelo nome comercial, mas grava o part number. Quem procura "Tomahawk" no chip não acha nada — o chip diz <span class="pn">BCM56980</span>. Estes são os pares que mais aparecem:</p>
+<div class="sc"><table class="d">
+  <thead><tr><th>Nome comercial</th><th>Part number</th><th>Ano</th><th>Capacidade</th></tr></thead>
+  <tbody>
+    <tr><td>Trident</td><td class="pn">BCM56840</td><td>2009</td><td>640 Gbps</td></tr>
+    <tr><td>Trident2</td><td class="pn">BCM56850</td><td>2012</td><td>1,28 Tbps</td></tr>
+    <tr><td>Trident2+</td><td class="pn">BCM56860</td><td>2014</td><td>1,28 Tbps</td></tr>
+    <tr><td>Trident3</td><td class="pn">BCM56870</td><td>2017</td><td>até 3,2 Tbps</td></tr>
+    <tr><td>Trident4</td><td class="pn">BCM56880</td><td>2019</td><td>12,8 Tbps</td></tr>
+    <tr><td>Trident5</td><td class="pn">BCM78800</td><td>2023</td><td>16 Tbps</td></tr>
+    <tr><td>Tomahawk</td><td class="pn">BCM56960</td><td>2014</td><td>3,2 Tbps</td></tr>
+    <tr><td>Tomahawk2</td><td class="pn">BCM56970</td><td>2016</td><td>6,4 Tbps</td></tr>
+    <tr><td>Tomahawk3</td><td class="pn">BCM56980</td><td>2018</td><td>12,8 Tbps</td></tr>
+    <tr><td>Tomahawk4</td><td class="pn">BCM56990</td><td>2020</td><td>25,6 Tbps</td></tr>
+    <tr><td>Tomahawk5</td><td class="pn">BCM78900</td><td>2022</td><td>51,2 Tbps</td></tr>
+    <tr><td>Jericho2</td><td class="pn">BCM88690</td><td>2018</td><td>StrataDNX — roteador</td></tr>
+  </tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--dim)">O padrão é regular: dentro do 56xxx, a dezena sobe a cada geração. Trident na casa dos 568xx, Tomahawk na dos 569xx. <strong>Da geração 5 em diante a linha migrou para a faixa 78xxx.</strong> Use o ano para cruzar com o date code — peça marcada Tomahawk3 com date code de 2015 é impossível.</p>
+
+<h3 id="s6d">6.6 Sequência na bancada</h3>
+<ul>
+  <li>Meça o corpo. <strong>45 mm ou mais = ASIC de datacenter</strong>, a categoria cara. Até 37,5 mm = PHY, switch pequeno ou PCIe.</li>
+  <li>Vire a peça. <strong>Sem esferas = LGA</strong> (código <span class="pn">FLG</span>) — saiu de soquete, não foi dessoldada.</li>
+  <li>Transcreva o PN <strong>inteiro, com o stepping</strong>. <span class="pn">A0</span> e <span class="pn">B0</span> não são intercambiáveis.</li>
+  <li><strong>Valide a transcrição pela cauda</strong> (6.3) antes de cadastrar: <span class="pn">G</span> → 3 letras de pacote → <span class="pn">K</span> ou <span class="pn">I</span>. Número no campo de temperatura = leitura errada.</li>
+  <li>Confirme que o PN <strong>existe como peça</strong>, não só como nome de família.</li>
+  <li>Leia a faixa numérica na tabela 6.3 antes de procurar preço — ela já diz se a peça vale US$ 5 ou US$ 500.</li>
+  <li><strong>Não descarte por falta de datasheet.</strong> Nessa marca a ausência é o normal.</li>
+  <li>Ao cotar, use preço de <strong>broker</strong>, nunca de distribuidor autorizado.</li>
+</ul>
+
+<footer>
+  <p>Fontes: páginas de produto da Broadcom para as séries BCM56850, BCM56860, BCM56880, BCM56980 e BCM88690; datasheets públicos da linha QAMLink (BCM3116, BCM3349); product brief do BCM1125H e user manual BCM1250/BCM1125/BCM1125H; product brief do BCM7335. Estrutura de part number derivada de exemplos reais de distribuidor. Dimensões em milímetros e preços de broker vêm da rodada de pesquisa anterior deste projeto — a Broadcom não publica cotas mecânicas.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside a[href^="#"]'));
+  var map = {};
+  links.forEach(function(a){ var el = document.getElementById(a.getAttribute('href').slice(1)); if(el) map[el.id]=a; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+  var active = null;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(active) active.classList.remove('on');
+        active = map[e.target.id];
+        if(active) active.classList.add('on');
+      }
+    });
+  }, {rootMargin:'0px 0px -75% 0px', threshold:0});
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>
