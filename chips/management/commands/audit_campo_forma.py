@@ -171,9 +171,6 @@ class Command(BaseCommand):
         parser.add_argument("--so-prosa", action="store_true",
                             help="Só PROSA e AMBÍGUO — esconde o que está OK.")
         parser.add_argument("--csv", default="", help="Grava a dívida num CSV.")
-        parser.add_argument("--portao", action="store_true",
-                            help="Lista SÓ o que o portão (2026-08-26) rejeitaria hoje — "
-                                 "a lista de trabalho, agrupada por marca. Read-only.")
         parser.add_argument("--limite", type=int, default=40,
                             help="Máx. de linhas detalhadas por campo (default 40).")
 
@@ -196,70 +193,6 @@ class Command(BaseCommand):
                 "\n⚠ ZERO known_parts varridos. Isso NÃO quer dizer 'catálogo limpo' — "
                 "quer dizer que a varredura não enxergou nada.\n"
                 "  Confira o banco-alvo e o --brand antes de concluir qualquer coisa."))
-            return
-
-        # ── MODO PORTÃO ──────────────────────────────────────────────────────
-        #  A classificação do auditor (PROSA/AMBÍGUO/NULO) é mais LARGA que o
-        #  portão de propósito: ela aponta o que está feio, ele barra só o que é
-        #  AMBÍGUO PARA O ENGINE. Quem quer a lista de TRABALHO — o que precisa
-        #  de conserto porque hoje não entraria — pede este modo. Fonte única:
-        #  o MESMO `measure_field_problem` que o `clean()` e o Pydantic usam,
-        #  para o relatório nunca prometer o que o portão não cumpre.
-        if o["portao"]:
-            from chips.knowledge.convention import MEASURE_FIELDS, measure_field_problem
-            porta = []
-            for kp in qs.iterator():
-                for campo in MEASURE_FIELDS:
-                    valor = (getattr(kp, campo, "") or "").strip()
-                    msg = measure_field_problem(campo, valor)
-                    if msg:
-                        porta.append((kp, campo, valor, msg))
-            w("")
-            if not porta:
-                w(self.style.SUCCESS(
-                    f"  ✅ NENHUM dos {total} registros seria rejeitado pelo portão de forma.\n"
-                    "     (Isso NÃO quer dizer catálogo perfeito — o auditor sem --portao\n"
-                    "      continua apontando o que está feio mas o engine lê sem ambiguidade.)"))
-                return
-            por_marca = {}
-            for kp, campo, valor, msg in porta:
-                por_marca.setdefault(kp.brand.name if kp.brand else "(sem marca)", []).append(
-                    (kp, campo, valor, msg))
-            w(self.style.ERROR(
-                f"  {len(porta)} campo(s) em {len({id(a[0]) for a in porta})} registro(s) "
-                f"NÃO entrariam pelo portão de hoje:"))
-            w("")
-            for marca in sorted(por_marca, key=lambda m: -len(por_marca[m])):
-                itens = por_marca[marca]
-                w(self.style.MIGRATE_HEADING(f"  ── {marca} · {len(itens)} campo(s)"))
-                for kp, campo, valor, msg in itens[:o["limite"]]:
-                    w(f"     {kp.part_number:<26} {campo:<12} {valor[:58]!r}")
-                    w(f"     {'':<26} └─ {msg.split(' — ')[-1][:90]}")
-                if len(itens) > o["limite"]:
-                    w(f"     … e mais {len(itens) - o['limite']} (suba o --limite)")
-                w("")
-            if o["csv"]:
-                import csv as _csv
-                with open(o["csv"], "w", newline="", encoding="utf-8") as fh:
-                    wr = _csv.writer(fh)
-                    wr.writerow(["marca", "part_number", "campo", "valor_atual", "motivo"])
-                    for kp, campo, valor, msg in porta:
-                        wr.writerow([kp.brand.name if kp.brand else "", kp.part_number,
-                                     campo, valor, msg])
-                w(self.style.SUCCESS(f"  CSV: {o['csv']}"))
-            w(self.style.WARNING(
-                "\n  COMO CONSERTAR — pelo caminho que já existe, não por UPDATE na mão:\n"
-                "    1. mande a fatia da marca pro chat dela (o CSV acima, --brand <marca>);\n"
-                "       o conserto é PESQUISA, não regex: só quem tem a fonte sabe se\n"
-                "       'moviNAND ~1GB + OneNAND 1GB' vira nand='2GB' ou nand='1GB'.\n"
-                "    2. o chat devolve submissions/<marca>_<algo>.yaml com o valor limpo;\n"
-                "    3. `submit_known_parts <arquivo>` → como o registro está APROVADO com\n"
-                "       valor diferente, o painel mostra CONFLITO e grava <arquivo>.conflitos.yaml;\n"
-                "    4. `resolve_conflicts --brand <marca>` (dry-run) → confira o diff campo a\n"
-                "       campo → `--commit`. Campo de medida é classe PREÇO: a submissão vence.\n"
-                "       Ele grava pelo `save()`, então o portão novo garante que o valor que\n"
-                "       ENTRA é limpo — e reporta o PN que ele rejeitar em vez de morrer.\n"
-                "    5. `--revert var/reverts/resolve_conflicts_*.json` desfaz se precisar."))
             return
 
         achados, contagem = [], {c: {} for c in _CAMPOS}

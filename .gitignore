@@ -58,7 +58,3 @@ _to_delete/
 chips/knowledge/_guardtest.yaml
 # Reverts gerados pelos comandos durante a suíte — artefato, não fonte.
 /var/reverts/
-# Dumps de PRODUÇÃO (alinhamento das vendas eMiner, 2026-08-31). Um dump traz
-# hash de senha, token de sessão e o que houver de chave guardada em tabela —
-# nada disso pode entrar no histórico do git, nem por engano de outra sessão.
-/var/dump/
