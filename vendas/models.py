@@ -1112,3 +1112,247 @@ class PaymentReceipt(models.Model):
             self.company_id = Payment.all_companies.values_list(
                 'company_id', flat=True).get(pk=self.payment_id)
         return super().save(*args, **kwargs)
+
+
+# ═══ PROVA DA CONFERÊNCIA — o defeito com foto (dono, 2026-09-10) ═══════════
+#
+# O comprador já fazia isto, só que no WeChat: fotografa o chip na bancada,
+# etiqueta a foto de vermelho com o defeito, e manda. As palavras dele se
+# repetem — 缺角 (canto lascado), 划痕 (risco), 起泡 (empolamento), balls
+# faltando — e é isso que torna o defeito VOCABULÁRIO e não texto livre.
+#
+# Duas consequências que decidiram o desenho:
+#
+# · TRADUZ SOZINHO. Ele escreve em chinês, o cliente lê espanhol. Etiqueta com
+#   rótulo por idioma atravessa o balcão sem ninguém traduzir à mão. Texto
+#   livre não atravessa.
+# · CONTA. "40 cantos lascados neste lote" só existe se o defeito for um
+#   registro. Em texto livre, é leitura humana de parágrafo.
+
+
+class DefeitoTipo(models.Model):
+    """O vocabulário de defeitos — GLOBAL, curado pelo dono no admin.
+
+    Sem ``company`` e sem RLS, pelo mesmo motivo da ``PoliticaOrigemTipo``: é
+    vocabulário da plataforma, não dado de empresa. Duas empresas-cliente
+    conferindo o mesmo chip têm de ler o mesmo nome de defeito.
+
+    ⚠ **Os rótulos são COLUNAS, não gettext.** Parece errado num projeto que
+      tem i18n, e é deliberado: o dono disse *"a lista de defeitos é criada por
+      mim e se ele quiser mais defeitos eu adiciono"*. Com gettext, adicionar
+      um defeito exigiria mexer no .po, compilar e fazer deploy — ou seja, ele
+      NÃO adicionaria, pediria para alguém. Em coluna, ele adiciona no admin às
+      duas da manhã e o comprador vê na hora. A regra do projeto é que
+      vocabulário fechado mora no modelo (CLAUDE.md §7); esta é a mesma regra.
+
+    ``severidade`` é a única coisa que o sistema INTERPRETA, e ela existe
+    porque separa as duas conversas que hoje viram uma só:
+
+    · ``recusa``   — o chip não serve. Balls faltando, empolamento,
+      superaquecido: não solda ou não liga. Justifica unidade recusada.
+    · ``desconto`` — o chip serve e vale menos. Risco, canto lascado: cosmético.
+      Justifica PREÇO menor, não recusa.
+
+    É a ponte com a repactuação de 09/09: até aqui o comprador baixava preço
+    sem motivo declarado, e o dono ficava sem argumento com o cliente. Um
+    defeito de ``desconto`` na mesma linha da setinha vermelha é o argumento.
+    """
+
+    SEV_RECUSA, SEV_DESCONTO = 'recusa', 'desconto'
+    SEVERIDADES = [(SEV_RECUSA, 'Recusa — o chip não serve'),
+                   (SEV_DESCONTO, 'Desconto — serve, vale menos')]
+
+    codigo = models.SlugField(max_length=40, unique=True,
+                              verbose_name='Código')
+    nome_pt = models.CharField(max_length=60, verbose_name='Nome (português)')
+    nome_es = models.CharField(max_length=60, blank=True, default='',
+                               verbose_name='Nome (espanhol)')
+    nome_zh = models.CharField(max_length=60, blank=True, default='',
+                               verbose_name='Nome (chinês)')
+    nome_en = models.CharField(max_length=60, blank=True, default='',
+                               verbose_name='Nome (inglês)')
+    severidade = models.CharField(max_length=10, choices=SEVERIDADES,
+                                  default=SEV_DESCONTO,
+                                  verbose_name='Severidade')
+    ordem = models.PositiveSmallIntegerField(default=100,
+                                             verbose_name='Ordem na tela')
+    ativo = models.BooleanField(default=True, verbose_name='Ativo')
+
+    #: ⚠ SEM manager escopado — o manager padrão do Django, como na
+    #:   `PoliticaOrigemTipo` e no `ProfitabilityConfig`. Tabela global não tem
+    #:   `company_id` para o `CompanyScopedManager` filtrar, então ele só
+    #:   conseguiria explodir por falta de escopo numa tabela que não é de
+    #:   ninguém. (Testado: com `PlatformSharedManager` aqui, ler o vocabulário
+    #:   fora de um `company_scope` levantava `CompanyScopeMissing`.)
+
+    class Meta:
+        verbose_name = 'Tipo de defeito'
+        verbose_name_plural = 'Tipos de defeito'
+        ordering = ['ordem', 'codigo']
+
+    def __str__(self):
+        return self.nome_pt
+
+    def rotulo(self, idioma=None):
+        """O nome no idioma pedido, caindo para o português.
+
+        ⚠ Cai para o PT e não para o código: um cliente vendo `canto_lascado`
+          em vez de "Canto lascado" é pior do que vê-lo no idioma errado —
+          código de banco vazando na cara de quem paga.
+        """
+        idioma = (idioma or '').lower()
+        if idioma.startswith('es'):
+            return self.nome_es or self.nome_pt
+        if idioma.startswith('zh'):
+            return self.nome_zh or self.nome_pt
+        if idioma.startswith('en'):
+            return self.nome_en or self.nome_pt
+        return self.nome_pt
+
+
+class Prova(models.Model):
+    """Uma observação de conferência COM classificação — e, quando houver,
+    fotos.
+
+    Pendura na LINHA, não na compra, e é a decisão central desta feature. O
+    comprador não está narrando: está justificando um número. A pergunta que o
+    cliente faz é *"por que você recusou 40 do meu eMMC 64GB?"* e a resposta
+    tem de estar na linha em que ele a faz — não num apêndice de fotos soltas
+    que ele correlaciona sozinho.
+
+    ``line`` é NULO quando a observação é do LOTE inteiro ("a caixa chegou
+    molhada"): existe, mas é o caso raro. A ``order`` é sempre preenchida,
+    inclusive quando há linha, porque toda consulta da tela parte da compra e
+    um JOIN a menos por foto importa quando são vinte.
+
+    ⚠ Só entra ANTES do fechamento (dono, 2026-09-10: *"a prova entra antes do
+      fechamento"*), a mesma janela do lápis do preço. Depois da fatura, o
+      papel já foi para o cliente — prova que aparece depois do documento
+      emitido faria o PDF mudar debaixo de quem já o recebeu.
+    """
+
+    order = models.ForeignKey(SalesOrder, on_delete=models.CASCADE,
+                              related_name='provas',
+                              verbose_name='Ordem de venda')
+    line = models.ForeignKey(SalesOrderLine, on_delete=models.CASCADE,
+                             null=True, blank=True, related_name='provas',
+                             verbose_name='Linha')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    defeitos = models.ManyToManyField(DefeitoTipo, blank=True,
+                                      related_name='provas',
+                                      verbose_name='Defeitos')
+    # A nota fica, mesmo com o vocabulário: etiqueta diz O QUE, e às vezes ele
+    # precisa dizer QUANTO ou ONDE ("só no lado de baixo da caixa"). O que a
+    # etiqueta tira é a obrigação de escrever para dizer o óbvio.
+    nota = models.TextField(blank=True, default='', verbose_name='Observação')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Registrada em')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Autor')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Prova da conferência'
+        verbose_name_plural = 'Provas da conferência'
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+        ordering = ['created_at', 'pk']
+
+    def __str__(self):
+        return f'Prova #{self.pk} de {self.order_id}'
+
+    def clean(self):
+        if self.line_id and self.order_id and self.line.order_id != self.order_id:
+            raise ValidationError({'line': 'A linha não é desta ordem.'})
+
+    def save(self, *args, **kwargs):
+        if self.order_id and not self.company_id:
+            self.company_id = SalesOrder.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.order_id)
+        return super().save(*args, **kwargs)
+
+
+class _FotoManager(models.Manager):
+    """Manager que ESQUECE o blob grande por padrão.
+
+    A tela lista as fotos de uma compra a cada visita; `data` tem centenas de
+    KB e `thumb`, dezenas. Um `.all()` distraído arrastaria megabytes por
+    request — e a diferença entre "arrasta" e "não arrasta" é invisível no
+    código, o que é exatamente o tipo de defeito que só aparece em produção.
+
+    Aqui o caminho seguro é o PADRÃO: quem precisa dos bytes grandes pede
+    explicitamente (`ProvaFoto.com_dados.get(...)`). O mesmo raciocínio da
+    `PaymentReceipt`, que resolveu isso com tabela separada; aqui a `thumb`
+    precisa vir na lista de qualquer jeito, então uma tabela só com o campo
+    grande adiado sai mais simples — e tem teste cravando que ele não vem.
+    """
+
+    def get_queryset(self):
+        return super().get_queryset().defer('data')
+
+
+class ProvaFoto(models.Model):
+    """A foto, em duas resoluções, DENTRO do Postgres.
+
+    ⚠ Não vai para o disco. O filesystem da Render é EFÊMERO — um deploy
+      apaga — e é o mesmo motivo pelo qual o comprovante de pagamento virou
+      `BinaryField` em 2026-08 (ver `PaymentReceipt`). Prova de recusa é
+      justamente o que não pode evaporar num deploy: ela existe para sustentar
+      um número que o cliente vai contestar.
+
+    DUAS resoluções, e ambas são derivadas — o original NÃO é guardado:
+
+    · ``data``  — o que vai ao PDF e à tela ampliada. Reduzida para caber em
+      1600px e recomprimida em JPEG; uma foto de celular sai de 3–8 MB para
+      ~300 KB. Sem isso, vinte fotos por lote seriam 160 MB no banco.
+    · ``thumb`` — a miniatura da grade, ~200px e poucos KB.
+
+    O EXIF sai na reamostragem, e isso é de propósito duas vezes: encolhe o
+    arquivo e tira a geolocalização do celular de quem fotografou, que não tem
+    por que atravessar o balcão junto com a foto do chip.
+    """
+
+    prova = models.ForeignKey(Prova, on_delete=models.CASCADE,
+                              related_name='fotos', verbose_name='Prova')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    data  = models.BinaryField(verbose_name='Bytes da foto (1600px)')
+    thumb = models.BinaryField(verbose_name='Bytes da miniatura')
+    mime  = models.CharField(max_length=32, default='image/jpeg',
+                             verbose_name='MIME')
+    filename = models.CharField(max_length=160, blank=True, default='',
+                                verbose_name='Nome original')
+    size   = models.PositiveIntegerField(default=0,
+                                         verbose_name='Tamanho (bytes)')
+    width  = models.PositiveSmallIntegerField(default=0, verbose_name='Largura')
+    height = models.PositiveSmallIntegerField(default=0, verbose_name='Altura')
+    ordem  = models.PositiveSmallIntegerField(default=0, verbose_name='Ordem')
+    uploaded_at = models.DateTimeField(auto_now_add=True,
+                                       verbose_name='Anexada em')
+
+    objects       = _FotoManager()          # sem `data`
+    com_dados     = models.Manager()        # com `data`, sob demanda
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Foto da prova'
+        verbose_name_plural = 'Fotos da prova'
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+        ordering = ['ordem', 'pk']
+
+    def __str__(self):
+        return f'Foto #{self.pk} da prova {self.prova_id}'
+
+    def save(self, *args, **kwargs):
+        if self.prova_id and not self.company_id:
+            self.company_id = Prova.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.prova_id)
+        return super().save(*args, **kwargs)

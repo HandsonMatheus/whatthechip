@@ -5,7 +5,8 @@ o NOME do comprador aparece, por decisão de sigilo)."""
 
 from django.contrib import admin
 
-from .models import DocSequence, SalesOrder, SalesOrderLine, Wallet
+from .models import (DefeitoTipo, DocSequence, SalesOrder, SalesOrderLine,
+                     Wallet)
 
 
 class PlatformScopedAdmin(admin.ModelAdmin):
@@ -75,3 +76,38 @@ class WalletAdmin(PlatformScopedAdmin):
     list_display = ('owner', 'company', 'net', 'addr', 'active', 'updated_at')
     list_filter = ('active', 'net', 'company')
     search_fields = ('owner', 'addr')
+
+
+@admin.register(DefeitoTipo)
+class DefeitoTipoAdmin(admin.ModelAdmin):
+    """O VOCABULÁRIO de defeitos da conferência — curado pelo dono, aqui.
+
+    Dono, 2026-09-10: *"a lista de defeitos é criada por mim e se ele quiser
+    mais defeitos eu adiciono"*. Esta tela é o "eu adiciono": defeito novo
+    entra aqui e aparece na bancada do comprador na hora, sem deploy. Foi por
+    isso que os rótulos são COLUNAS e não gettext — com gettext, adicionar um
+    defeito seria mexer no .po e subir versão.
+
+    ⚠ `admin.ModelAdmin` puro, sem `PlatformScopedAdmin`: a tabela é GLOBAL,
+      não tem `company` para escopar. Mesmo caso da PoliticaOrigemTipo.
+
+    ⚠ Para APOSENTAR um defeito, desmarque `ativo` — não apague. Apagar leva
+      junto a classificação das provas antigas (o M2M cai), e uma conferência
+      de três meses atrás passaria a dizer que o chip não tinha defeito
+      nenhum. `ativo=False` some da bancada e preserva o histórico.
+    """
+
+    list_display = ('nome_pt', 'codigo', 'severidade', 'nome_zh', 'nome_es',
+                    'ordem', 'ativo')
+    list_editable = ('severidade', 'ordem', 'ativo')
+    list_filter = ('severidade', 'ativo')
+    search_fields = ('codigo', 'nome_pt', 'nome_es', 'nome_zh', 'nome_en')
+    ordering = ('ordem', 'codigo')
+    fieldsets = (
+        (None, {'fields': ('codigo', 'severidade', 'ordem', 'ativo')}),
+        ('Como aparece em cada idioma', {
+            'fields': ('nome_pt', 'nome_es', 'nome_zh', 'nome_en'),
+            'description': 'O comprador marca no idioma dele; o cliente lê no '
+                           'dele. Sem tradução aqui, o rótulo cai para o '
+                           'português — nunca para o código.'}),
+    )
