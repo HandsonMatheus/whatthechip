@@ -478,6 +478,26 @@ def _detalhe(so):
         # não uma segunda conta a partir da OV.
         'total_perda_rmb': sum((g['perda_rmb'] for g in grupos),
                                Decimal('0.00')),
+        # ── O RESTO DO RODAPÉ (dono, 2026-09-10) ─────────────────────────
+        # Estes três eram CRAVADOS no template como "nada recusado ainda":
+        # recusados `0`, aprovados `{{ total_qty }}`, resultado
+        # `¥ {{ so.total_rmb }}`. Quem os corrigia era o JavaScript, enquanto
+        # o comprador digitava.
+        #
+        # ⚠ E o JavaScript não roda quando não há o que digitar. Com o
+        #   resultado FECHADO a tela perde os campos, o `recalcular()` não tem
+        #   o que percorrer, e o rodapé congelava mentindo: dizia 0 recusados
+        #   e 9.980 aprovados numa compra com 3.259 recusas, e repetia o
+        #   ESPERADO na coluna do RESULTADO. Foi o dono que viu, comparando o
+        #   rodapé com o cartão do topo.
+        #
+        # Vindo do servidor eles nascem certos nos DOIS casos — e, de quebra,
+        # a tela com rascunho salvo passa a abrir com o rodapé correto antes
+        # de o JavaScript rodar, em vez de piscar o valor cheio.
+        'total_rej': sum(g['rejected'] for g in grupos),
+        'total_ace': sum(g['accepted'] for g in grupos),
+        'total_pago_rmb': sum((g['pago_rmb'] for g in grupos),
+                              Decimal('0.00')),
         # Câmbio: TRAVADO no fechamento do lote (PLANO_FX fase C) — a OV
         # herda essa taxa, e é ela que converte o ¥ dele em US$.
         'fx_rate': so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None),

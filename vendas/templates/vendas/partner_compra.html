@@ -690,13 +690,13 @@
               <td class="n hide-lg"></td>
               <td class="n"><small>{% trans "Enviados" %}</small>{{ total_qty }}</td>
               {% if pode_acertar or tem_resultado %}
-              <td class="n hr" id="t-rej"><small>{% trans "Recusados" %}</small>0</td>
+              <td class="n hr" id="t-rej"><small>{% trans "Recusados" %}</small>{{ total_rej }}</td>
               {% comment %} Coluna nova = célula nova NO RODAPÉ também, senão
                  as colunas saem do prumo daqui para baixo. E já que ela existe,
                  mostra o total: a coluna inteira fica lendo a mesma coisa em
                  três alturas (linha, faixa, rodapé). {% endcomment %}
               <td class="n hr rv" id="t-rejv"><small>{% trans "Recusados" %} ¥</small>{% localize off %}{% if total_perda_rmb %}−¥ {{ total_perda_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
-              <td class="n hg" id="t-ace"><small>{% trans "Aprovados" %}</small>{{ total_qty }}</td>
+              <td class="n hg" id="t-ace"><small>{% trans "Aprovados" %}</small>{{ total_ace }}</td>
               {% endif %}
               <td class="n"><small>{% trans "Esperado" %}</small>{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
               {% if pode_acertar or tem_resultado %}
@@ -704,7 +704,7 @@
                  `escreverNumero` escreve no ÚLTIMO nó de TEXTO da célula, e o
                  `<small>` do rótulo vem antes — sem o `<b>` ele acabaria
                  sobrescrevendo o rótulo em vez do número. {% endcomment %}
-              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}<b id="t-pagar-rmb">¥ {{ so.total_rmb }}</b>{% endlocalize %}</td>
+              <td class="n hb" id="t-pagar"><small>{% trans "Resultado" %}</small>{% localize off %}<b id="t-pagar-rmb">{% if total_pago_rmb %}¥ {{ total_pago_rmb }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}</b>{% endlocalize %}</td>
               {% endif %}
             </tr>
           </tfoot>
