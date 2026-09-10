@@ -1,0 +1,197 @@
+# Submissão known_parts — Winbond, cluster DDR3/DDR3L "Specialty DRAM" W631/W632/W634 (2026-09-01).
+# PN pesquisado pelo dono: W631GG6KB-12. Instrução do dono: pesquisar sempre Tier-1 e o MÁXIMO de
+# PNs possível (nunca só 1) — este arquivo cobre as 3 densidades da família (1Gb/2Gb/4Gb), x8 e x16,
+# 1.5V (GG/DDR3) e 1.35V (GU/DDR3L): 11 known_parts no total.
+#
+# Fonte Tier-1 direta (winbond.com): as páginas de produto (?partNo=...) e os PDFs em
+# /resource-files/*.pdf existem e foram localizados via busca, mas o fetch automatizado foi recusado
+# pelo robots.txt do site em ambos os caminhos — não contornado (ver notes de cada known_part pra
+# qual evidência Tier-1 sobrou: existência de página oficial indexada e/ou título do datasheet
+# oficial, que já confirma tipo+densidade pela própria nomenclatura do arquivo). Specs detalhadas
+# vieram de espelhos/agregadores Tier-2 com ≥1 fonte independente por PN (a maioria ≥2): Alldatasheet,
+# JLCPCB, DigiKey, Octopart, NAC Semi, TECHDesign.
+#
+# Família: DDR3 SDRAM "Specialty DRAM" da Winbond (winbond.com/hq/product/specialty-dram/ddr3-sdram).
+# Confirmado Tier-1 (texto da própria categoria oficial): "1Gb to 4Gb DDR3/3L SDRAM ... up to
+# 1600Mbps". NÃO é a linha mobile/LPDDR (essa é outra categoria oficial, "Low Power DDR3 SDRAM") nem
+# PSRAM/HyperRAM — checei as duas hipóteses antes de decidir, não presumi pelo prefixo "W6xx".
+#
+# Convenção Winbond (WINBOND.md golden #6): nomenclatura da marca é em BIT; capacity aqui é SEMPRE
+# byte (Gb÷8), density_gbit é o valor em bit literal. Aritmética mostrada em cada `notes`.
+# Grade decodificada (confirmada cruzando os PNs desta família, não por analogia externa):
+#   "GG" = 1.5V padrão → chip_type DDR3.   "GU" = 1.35V baixo consumo → chip_type DDR3L
+#   (confirmado explicitamente no texto do datasheet do alvo, que chama o irmão GU de "DDR3L variant").
+#   dígito "6" = organização x16.   dígito "8" = organização x8
+#   (confirmado nas duas densidades — 2Gb e 4Gb — onde as duas variantes aparecem lado a lado).
+#
+# ATENÇÃO sufixo de pacote (aviso ao dono, não bloqueante): a mesma densidade/organização aparece com
+# sufixos de pacote diferentes conforme a fonte — "KB"/"MB" nos 1Gb, "NB" nos 2Gb/4Gb, e a TECHDesign
+# lista ainda um "RB" para 1Gb/2Gb x16 que NÃO entrou neste arquivo (specs de velocidade
+# incompatíveis com os demais — precisaria de checagem à parte). Não achei documentação Tier-1
+# explicando KB vs MB vs NB (pode ser revisão de pacote/fab ao longo do tempo) — tratado aqui como
+# detalhe físico que não muda capacity/chip_type, mas cada PN foi mantido literal como a fonte
+# gravou (identidade ≠ specs derivadas, golden #10 do WINBOND.md).
+#
+# Confiança: "confirmed" só para o PN pesquisado e o irmão citado NO PRÓPRIO texto do datasheet dele
+# (≥3 fontes independentes convergentes). Os demais 9 PNs (achados em tabelas de
+# distribuidor/agregador e/ou páginas oficiais indexadas, mas sem o texto completo do datasheet
+# lido) ficam como "distributor" — dentro do vocabulário do sistema, para o dono revisar no
+# four-eyes antes de aprovar.
+#
+# Rodar (o DONO):
+#   python manage.py submit_known_parts submissions/winbond_ddr3_w63x_2026-09-01.yaml               # dry-run = portão
+#   python manage.py submit_known_parts submissions/winbond_ddr3_w63x_2026-09-01.yaml --commit        # grava (submitted) → aprovar no admin
+#
+# PRÉ-REQUISITO (winbond.yaml): a Brand "Winbond" precisa existir no banco antes do dry-run acima
+# funcionar (a checagem do submit_known_parts dispara mesmo em dry-run). Se faltar:
+#   python manage.py load_brands --brand winbond --commit
+brand: "Winbond"
+known_parts:
+  - part_number: "W631GG6KB-12"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      PN pesquisado pelo dono. DDR3 SDRAM, 1Gbit (confirmado pelo próprio título do datasheet
+      oficial indexado — "W631GG6KB 8M 8 BANKS 16 BIT DDR3 SDRAM" — 8M x 16bit x 8banks =
+      1.073.741.824 bits = 1Gbit). Byte: 1Gbit ÷ 8 = 134.217.728 bytes = 128MB. Compatível com
+      DDR3-1600 (11-11-11); sufixo "-12" = grade de velocidade. VDD/VDDQ = 1.5V ±0.075V. Pacote
+      WBGA/TFBGA-96 (9x13mm). Temp comercial 0~95C. Confirmado de forma consistente em 3 fontes
+      independentes que espelham o datasheet oficial: Alldatasheet, JLCPCB (C2894333) e DigiKey
+      (3124551). Existe também "-TR" (tape&reel): W631GG6KB-12TR (JLCPCB C20514213) — mesma
+      densidade/capacidade, não listado como known_part separado aqui por ser só empacotamento.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/511935/WINBOND/W631GG6KB-12.html"
+  - part_number: "W631GU6KB-12-TR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Variante DDR3L (1.35V, baixo consumo) do W631GG6KB-12 — citada explicitamente no texto do
+      datasheet oficial (mirror Alldatasheet do PN pesquisado) como "DDR3L variant". Mesma
+      densidade/organização do irmão 1.5V: 1Gbit = 8M x16 x8banks; byte: 1Gbit ÷ 8 = 128MB.
+      "-TR" = tape & reel (empacotamento em bobina, não afeta capacidade). Sufixo "-12" = mesma
+      grade de velocidade DDR3-1600 do irmão GG.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/511935/WINBOND/W631GG6KB-12.html"
+  - part_number: "W631GG6MB12"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Listado na própria página Octopart do PN pesquisado (W631GG6KB-12) como "alternate part" —
+      mesma família 1Gbit x16 DDR3, sufixo de pacote "MB" em vez de "KB" (com preço/estoque
+      próprios, ou seja, P/N distinto de verdade, não sinônimo). Densidade idêntica ao irmão KB:
+      1Gbit ÷ 8 = 128MB. Grafado SEM hífen na fonte ("W631GG6MB12"); os demais irmãos confirmados
+      usam sufixo de velocidade com hífen (-12) — pode ser só formatação do distribuidor, não
+      confirmado no PN oficial exato (dono: revisar se achar a unidade física em mãos).
+    source_url: "https://octopart.com/w631gg6kb-12-winbond-22488647"
+  - part_number: "W632GG6NB"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Irmão de maior densidade (2Gb) na mesma família. Existência e título do datasheet oficial
+      confirmados via indexação de busca em winbond.com: "W632GG6NB 16M 8 BANKS 16 BIT DDR3
+      SDRAM" (16M x16bit x8banks = 2.147.483.648 bits = 2Gbit; byte: 2Gbit ÷ 8 = 256MB) — fetch
+      direto do PDF bloqueado por robots.txt, título e matemática de bits conferem. Corroborado
+      pela tabela da distribuidora NAC Semi (2Gb, x16, 2133/1866/1600/1333Mbps).
+    source_url: "https://www.winbond.com/resource-files/w632gg6nb_a01.pdf"
+  - part_number: "W632GG8NB"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Mesma densidade do W632GG6NB (2Gb ÷ 8 = 256MB), organização x8 em vez de x16 (dígito "8" no
+      PN, eixo confirmado nas duas densidades onde x16/x8 aparecem lado a lado na mesma tabela).
+      Página oficial indexada em winbond.com com este partNo exato ("W632GG8NB - DDR3 SDRAM -
+      Specialty DRAM - Winbond") — fetch direto recusado (site dinâmico), existência da página é
+      confirmação Tier-1. Corroborado na tabela NAC Semi (256Mbitx8).
+    source_url: "https://www.winbond.com/hq/product/specialty-dram/ddr3-sdram/index.html?__locale=uk&partNo=W632GG8NB"
+  - part_number: "W632GU6NB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante DDR3L (1.35V) do W632GG6NB — mesma densidade/organização (2Gb x16 ÷ 8 = 256MB).
+      Página oficial indexada em winbond.com com este partNo exato (confirmação Tier-1 de
+      existência) e listado também na tabela da distribuidora NAC Semi (128Mbitx16,
+      2133/1866/1600/1333Mbps).
+    source_url: "https://www.winbond.com/hq/product/specialty-dram/ddr3-sdram/?__locale=en&partNo=W632GU6NB"
+  - part_number: "W632GU8NB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Variante DDR3L + organização x8 do mesmo tier de 2Gb (2Gb ÷ 8 = 256MB). Página oficial
+      indexada em winbond.com com este partNo exato. Corroborado na tabela NAC Semi (256Mbitx8).
+    source_url: "https://www.winbond.com/hq/product/specialty-dram/ddr3-sdram/index.html?__locale=en&partNo=W632GU8NB"
+  - part_number: "W634GG6NB"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Maior densidade confirmada da família: 4Gbit; byte: 4Gbit ÷ 8 = 536.870.912 bytes = 512MB.
+      Confirmado apenas na tabela da distribuidora NAC Semi (256Mbitx16, 667/800/933/1066MHz) —
+      ÚNICA fonte para este PN pontual (não achei página winbond.com indexada nem datasheet-title
+      específico para este, ao contrário dos demais 2Gb/4Gb desta lista). A categoria oficial
+      Winbond confirma o teto de "até 4Gb" na linha DDR3/3L, mas este PN individual fica com
+      confiança mais baixa — recomendo conferir contra unidade física ou 2a fonte antes de aprovar.
+    source_url: "https://www.nacsemi.com/products/winbond/ddr3-sdram/"
+  - part_number: "W634GG8NB"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      4Gb x8 (mesma aritmética: 4Gb ÷ 8 = 512MB). Página oficial indexada em winbond.com com este
+      partNo exato ("W634GG8NB - DDR3 SDRAM - Specialty DRAM - Winbond") + tabela NAC Semi
+      (512Mbitx8) + tabela TECHDesign (4Gb, x8, 667/800/933/1066MHz) — 3 fontes convergentes.
+    source_url: "https://www.winbond.com/hq/product/specialty-dram/ddr3-sdram/?__locale=en&partNo=W634GG8NB"
+  - part_number: "W634GU6NB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante DDR3L do W634GG6NB (4Gb ÷ 8 = 512MB). Confirmado apenas na tabela NAC Semi
+      (256Mbitx16, 667/800/933/1066MHz) — mesma ressalva do irmão GG6NB: única fonte para este PN
+      pontual, sem página winbond.com indexada nem datasheet-title encontrados nesta rodada.
+    source_url: "https://www.nacsemi.com/products/winbond/ddr3-sdram/"
+  - part_number: "W634GU8NB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Variante DDR3L + x8 do W634GG8NB (4Gb ÷ 8 = 512MB). Confirmado na tabela NAC Semi
+      (512Mbitx8, 667/800/933/1066MHz).
+    source_url: "https://www.nacsemi.com/products/winbond/ddr3-sdram/"

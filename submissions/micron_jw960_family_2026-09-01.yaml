@@ -1,0 +1,114 @@
+# Submissão de known_parts — Micron, FBGA JW960 + família MT29RZ4C2D (2026-09-01)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JW960
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: JW960 -> MT29RZ4C2DZZHGSK-18 W.80E. Micron "MassFlash": part-name
+# da API = "MASSFLASH/LPDDR2 6G WFBGA", sub-category "obsolete-nand-mcp-catalog".
+#
+# ⚠ CHIP_TYPE = "MCP" (NAO eMCP) — ACHADO DE CLASSIFICACAO, NAO SO DE SPEC.
+# O pacote combina NAND FLASH CRU (interface async/paralela padrao — comandos
+# READ ID/RESET/PROGRAM PAGE, igual NAND discreto, NADA de protocolo eMMC) +
+# LPDDR2 SDRAM, confirmado pelo datasheet OFICIAL Micron da subfamilia irma
+# "MT29RZ4B2D" (mesma raiz "MT29RZ", mesmo padrao "4_2D", so a letra de rev.
+# difere: B vs C) — titulo do doc: "NAND Flash with Mobile LPDDR2 162-Ball
+# MCP", secao "NAND Flash-Specific Features" descreve interface paralela
+# pura, "Separate NAND Flash and LPDDR2 interfaces" (não integrado/gerenciado).
+# Isso e ESTRUTURALMENTE diferente do JZ050 (MT29TZZZ, ja resolvido nesta
+# sessao) — aquele SIM e eMMC+LPDDR (eMCP de verdade, protocolo MMC 5.0
+# confirmado). O proprio chips/chip_types.py deste projeto JA distingue os
+# dois: "eMCP"/"uMCP" (is_emcp=True, commercial=True) vs "MCP" generico
+# (catalog, commercial=False, profit_family="dead" -- mesma classe de NOR
+# Flash/ePoP, decisao do dono 2026-07-14, "sem liquidez B2B"). Apliquei o
+# chip_type ja existente no vocabulario, nao criei nada novo. Sinalizado
+# explicitamente ao dono na entrega desta familia (muda o veredito comercial
+# de toda a familia MT29RZ para NAO RENTAVEL por TIPO, independente de
+# capacidade) -- avisar se a intencao for outra.
+#
+# SPECS — confirmadas em 2 fontes independentes, convergentes:
+# (1) Datasheet oficial Micron (162ball_nand_lpddr_j84f.pdf, Farnell, familia
+#     irma MT29RZ4B2D) -- Figura 2 "Part Number Chart": "4B = 4Gb, x8"
+#     [codigo NAND] e "2D = 2Gb, x32" [codigo LPDDR]; titulo do doc "4Gb: x8
+#     NAND with 2Gb: x32 LPDDR2 MCP"; "29R = LPDDR2-S4 + SLC NAND" (produto
+#     family -- SLC confirmado p/ toda a raiz MT29RZ, inclusive o alvo).
+#     O PN do alvo repete o MESMO padrao posicional ("MT29RZ" + "4C" + "2D" +
+#     ...) -- "4C"=4Gb NAND (letra de rev C em vez de B), "2D"=2Gb LPDDR2
+#     (identico ao irmao).
+# (2) Octopart, PN EXATO do alvo (MT29RZ4C2DZZHGSK-18 W.80E): "Multichip
+#     Packages, NAND-Based MCP, 4Gb, LPDDR2 2Gb, 1.8V, 162-ball WFBGA" --
+#     bate exatamente com a leitura do datasheet oficial.
+# Aritmetica: NAND 4Gb / 8bit = 0.5GB = 512MB. LPDDR2 2Gb / 8bit = 0.25GB =
+# 256MB. Total (bate com o "6G" do part-name da propria Micron): 4Gb+2Gb=6Gb.
+#
+# CONVENCAO DE CAMPO (tipo catalog/dead, CLAUDE.md chip_types.py linha 166 --
+# "subtype e DESCRITIVO" p/ tipos catalog, ex. NOR Flash "Raw MCP — NAND
+# 512MB + mDDR1 256MB"): chip_type=MCP; subtype = prosa dupla NAND+RAM (NAO
+# e campo de medida, entao nao viola a regra de "uma medida por campo" --
+# essa regra e so p/ capacity/emcp_ram/emcp_nand/density_gb); capacity e
+# emcp_ram/emcp_nand ficam VAZIOS de proposito (nao ha uma unica medida que
+# represente o pacote sem juntar duas grandezas diferentes, e o portao
+# endurecido de 2026-08-26 bloqueia isso nesses campos especificos).
+#
+# ES: forward-lookup no prefixo "MT29RZ4C2D" devolveu 8 PNs; 4 excluidos por
+# Engineering Sample -- MAS com um padrao de pontuacao NOVO (nao pego pelo
+# regex padrao desta sessao, que exige "ES" seguido de espaco/fim/dois-pontos):
+# aqui "ES" vem seguido de PONTO, ex. "MT29RZ4C2DZZHGMM-25 I ES.42S" (produção
+# irma sem ES: "...-25 I.42S"). Excluido por comparacao estrutural direta
+# (mesmo sufixo ".42S"/".80E", mesma speed grade, so com " ES" inserido antes
+# do ponto) -- 3º padrao de pontuacao de ES visto nesta sessao (espaco+fim,
+# concatenado sem espaco em NW986, agora espaco+ponto aqui). Reforca o sinal
+# já registrado em memoria de generalizar o regex de ES no futuro.
+# Excluidos: JY570, JY608 (nota: "-33" na API, nao "-3" -- mantive litteral,
+# nao "corrigi"), JY949, JY960.
+#
+# Sobraram 4 PNs de producao, todos com a MESMA chave "4C2D" (so package/
+# temp/speed mudam -- campos nao rastreados neste schema, confirmados
+# ortogonais a densidade pelo Figura 2 do datasheet citado).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisao de
+# part_number_norm dentro da propria lista (checado programaticamente).
+# Sem sobreposicao com nenhuma submissao anterior (grep em submissions/*.yaml
+# -- so ha mencao em comentario de esmt_fm6_2026-08-24.yaml, comparavel,
+# nenhum known_part real colidindo).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jw960_family_2026-09-01.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_jw960_family_2026-09-01.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT29RZ4C2DZZHGSK-18 W.80E'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND SLC 512MB + LPDDR2 256MB'
+  interface: ''
+  capacity: ''
+  fbga_code: JW960
+  confidence: confirmed
+  source_url: 'https://www.farnell.com/datasheets/3151619.pdf'
+  notes: 'ALVO da investigacao. Identidade via API FBGA oficial da Micron (reverse+forward lookup, 2026-09-01, delegado por bloqueio WAF): JW960 -> MT29RZ4C2DZZHGSK-18 W.80E. chip_type=MCP (nao eMCP) -- pacote combina NAND cru (interface paralela/async, SEM protocolo eMMC) + LPDDR2, ver cabecalho do arquivo pro raciocinio completo e o achado de classificacao. NAND: 4Gb SLC, x8 = 512MB. LPDDR2: 2Gb, x32 = 256MB. Confirmado via datasheet oficial Micron da subfamilia irma MT29RZ4B2D (mesmo padrao "4_2D", source_url) + Octopart (PN exato do alvo: "NAND-Based MCP, 4Gb, LPDDR2 2Gb, 1.8V, 162-ball WFBGA").'
+- part_number: 'MT29RZ4C2DZZHGSK-25 W.80E'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND SLC 512MB + LPDDR2 256MB'
+  interface: ''
+  capacity: ''
+  fbga_code: JW949
+  confidence: confirmed
+  source_url: 'https://www.farnell.com/datasheets/3151619.pdf'
+  notes: 'Irmao de familia (forward-lookup MT29RZ4C2D, 2026-09-01), mesmo package "HGSK" do alvo, speed grade -25 em vez de -18. Mesma chave de densidade "4C2D" = NAND 4Gb SLC (512MB) + LPDDR2 2Gb (256MB). Ver notes do alvo (JW960) e cabecalho do arquivo pra fonte e raciocinio completos.'
+- part_number: 'MT29RZ4C2DZZHGMM-25 I.42S'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND SLC 512MB + LPDDR2 256MB'
+  interface: ''
+  capacity: ''
+  fbga_code: JW570
+  confidence: confirmed
+  source_url: 'https://www.farnell.com/datasheets/3151619.pdf'
+  notes: 'Irmao de familia (forward-lookup MT29RZ4C2D, 2026-09-01), package "HGMM" (diferente do alvo "HGSK" -- campo nao rastreado neste schema) e temp "I" em vez de "W", speed -25. Mesma chave de densidade "4C2D" = NAND 4Gb SLC (512MB) + LPDDR2 2Gb (256MB), ortogonal a package/temp/speed (confirmado no Figura 2 do datasheet oficial, source_url). Ver notes do alvo (JW960) e cabecalho do arquivo.'
+- part_number: 'MT29RZ4C2DZZHGMM-3 I.42S'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND SLC 512MB + LPDDR2 256MB'
+  interface: ''
+  capacity: ''
+  fbga_code: JW721
+  confidence: confirmed
+  source_url: 'https://www.farnell.com/datasheets/3151619.pdf'
+  notes: 'Irmao de familia (forward-lookup MT29RZ4C2D, 2026-09-01), package "HGMM", temp "I", speed -3. Mesma chave de densidade "4C2D" = NAND 4Gb SLC (512MB) + LPDDR2 2Gb (256MB). Ver notes do alvo (JW960) e cabecalho do arquivo.'

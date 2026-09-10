@@ -1,0 +1,134 @@
+# Submissão known_parts — ISOCOM, família MEMA0xxG (eMMC), 2026-09-01.
+# Chat de marca ISOCOM. Disparado pelo PN físico MEMA032G pedido pelo dono ("comece pesquisando e
+# criando o submissions para este PN... pesquisar sempre em tier 1 e o maximo de pNs possivel").
+#
+# ── IDENTIDADE DA MARCA: resolvida nesta rodada com uma descoberta que muda tudo ──
+# Rodadas anteriores desta mesma sessão já tinham contradito a atribuição de distribuidor
+# "Isocom Components" (catálogo oficial de 60pp + site oficial isocom.com não citam "MEMA" em lugar
+# nenhum) e obtido confirmação física do dono (pacote BGA; "ISOCOM" e "MEMA032G" impressos no chip).
+# O dono então trouxe 2 fontes novas (digipart.com/part/MEMA032G e um anúncio Alibaba cujo título é
+# literalmente "MEMA032G-Longbo-32GB-ISOCOM-eMMC-flash") pedindo pra eu terminar o serviço. Pesquisei
+# essas fontes MAIS a fundo e achei o elo que faltava:
+#
+# **"ISOCOM" pra memória é uma marca da Shenzhen Longsys Electronics Co., Ltd.** — a MESMA empresa
+# dona da FORESEE (já onboardada neste projeto, ver foresee.yaml/FORESEE.md) e da LEXAR. Evidência:
+#   - USPTO serial 88496930: Longsys registrou pedido de marca "ISOCOM" em 01/07/2019, classe 009,
+#     especificamente pra "Electronic chips...Integrated circuits; Semiconductor chips" (uso real) e
+#     "USB flash drives; Computer memory modules; SD Memory Cards; Solid state drives" (intenção de
+#     uso) — ou seja, a PRÓPRIA Longsys declarou à USPTO que "ISOCOM" era pra produtos de memória.
+#   - TTAB case nº 91256263: "Isocom Components 2004 Limited v. Shenzhen Longsys Electronics Co.,
+#     Ltd." — oposição movida pela Isocom Components (a fabricante britânica de optoacopladores,
+#     dona histórica do nome) em 09/06/2020. A oposição foi MANTIDA e o pedido da Longsys foi
+#     ABANDONADO em 26/10/2020 (trademarkelite.com, registro específico e datado).
+#   - Isso explica o mistério inteiro: são DUAS empresas reais brigando pelo mesmo nome. A Isocom
+#     Components ganhou nos EUA (por isso o catálogo oficial dela não tem "MEMA" — não é produto
+#     dela). A Longsys aparentemente continuou fabricando/exportando sob "ISOCOM" fora do registro
+#     americano (comum no ecossistema de Shenzhen quando a disputa não atinge outros mercados) — daí
+#     as fábricas/distribuidores asiáticos (Alibaba, digipart, ic-components, ariat-tech) venderem
+#     chips MEMA0xxG "ISOCOM" normalmente, enquanto a RS Components (distribuidor estruturado/
+#     autorizado) só lista os optoacopladores genuínos da Isocom Components sob essa marca — zero
+#     memória lá, reforçando que os dois catálogos são de fato coisas diferentes.
+#   - Uma listagem agregada de marcas da Longsys (justia.com/trademarks) confirma "ISOCOM" entre as
+#     ~31 marcas associadas à empresa, ao lado de LEXAR/FORESEE/LONGFORCE (todas reais e verificáveis)
+#     — não é um nome solto, é um nome de marca que a Longsys de fato usa/usou.
+# ⚠ Nuance honesta: o registro AMERICANO da marca foi abandonado após a disputa — não é uma marca
+# limpa/vitoriosa da Longsys nos EUA. Isso não muda a classificação técnica do chip (é eMMC de
+# memória, não optoacoplador), mas é o motivo de tanta confusão de atribuição entre distribuidores.
+#
+# ── CAPACIDADE E PROTOCOLO — fontes e limite de confiança ──
+# MEMA032G: anúncio Alibaba com título "MEMA032G-Longbo-32GB-ISOCOM-eMMC-flash" (32GB + eMMC
+# explícitos no próprio título do anúncio — "Longbo" não identificado com certeza, provável
+# revendedor/trading company, não necessariamente a fabricante). NÃO consegui renderizar o corpo da
+# página via fetch automatizado (Alibaba é fortemente JS, retornou só metadata) — o título é tudo
+# que confirmei nesta fonte especificamente. digipart.com/part/MEMA032G confirma marca "ISOCOM" e
+# pacote BGA, mas NÃO mostra capacidade nem protocolo. ic-components.com/.../MEMA032G.jsp confirma
+# BGA "Case 869" (mas a descrição ao redor é texto de marketing genérico/templated, baixa confiança
+# nesse número de case específico — não usado como device abaixo). Padrão de família MEMA016G/032G/
+# 064G (progressão 16/32/64) é consistente com a leitura de 32GB.
+# MEMA064G: anúncio Alibaba com título "MEMA064G-M0S00-EMMC-64GB-153FBGA-Memory" — confirma 64GB +
+# eMMC + pacote 153-Pin FBGA, E confirma que a marcação "M0S00" (vista também no chip físico do dono
+# pro MEMA032G) é uma marcação compartilhada da família, não específica de uma capacidade (reforça
+# que são a mesma linha de produto). Mesma limitação: só o título do anúncio, corpo da página não
+# renderizou via fetch automatizado.
+# MEMA016G: EXCLUÍDO desta entrega — achei o PN existir (ariat-tech.com/parts/isocom-components/
+# MEMA016G-IC), mas NENHUMA fonte que consultei mostra a capacidade dele explicitamente (ao contrário
+# das duas irmãs acima, ambas confirmadas por título de anúncio). O padrão da família sugere 16GB com
+# bastante força, mas por regra de ouro #13 (nunca adivinhar spec essencial) não incluí sem fonte
+# própria — mesmo padrão de exclusão já usado no cluster Kingston KE4 (ver
+# kingston_emmc_ke4_2026-08-20.yaml, "Tentei e não achei (excluído)").
+#
+# Versão exata do eMMC (4.5, 5.0, 5.1...) — NÃO encontrada em nenhuma fonte pra nenhum PN desta
+# família. Campo `interface` deixado vazio (não preenchi "eMMC" bare pra não conflitar com a
+# convenção de vocabulário fechado do campo — chip_type="eMMC" já carrega a classificação).
+#
+# CONFIDENCE = manual (não "confirmed") pros dois PNs abaixo — decisão explícita: a fonte mais forte
+# que tenho por PN é UM anúncio de marketplace (Alibaba, título apenas, corpo não verificado) + a
+# confirmação física do dono cobre IDENTIDADE/pacote (BGA, "ISOCOM"+PN impressos) mas não testou a
+# capacidade real do chip. Isso é mais fraco que o padrão "3 fontes de engenharia" que este projeto
+# usa pra `confirmed` (ex.: cluster Kingston KE4, RS Components + Octopart cruzados). "manual" aqui
+# significa: dono está confiante o suficiente pra pedir a submissão com o que se sabe hoje, registrado
+# com toda a cadeia de evidência nas notes — não é capacidade inventada, é capacidade com fonte única
+# fraca + fisico parcial, sinalizado como tal. Se o dono conseguir uma leitura direta do chip
+# (programador/adaptador eMMC) ou achar um datasheet real da Longsys, isso vira `confirmed`.
+#
+# Rodar (o DONO):
+#   python manage.py submit_known_parts submissions/isocom_mema_2026-09-01.yaml               # dry-run = portão
+#   python manage.py submit_known_parts submissions/isocom_mema_2026-09-01.yaml --commit        # grava (submitted) → aprovar no admin
+#
+# PRÉ-REQUISITO: a Brand "ISOCOM" precisa existir no banco antes do dry-run funcionar —
+#   python manage.py load_brands --brand isocom
+#   python manage.py load_brands --brand isocom --commit
+# (chips/knowledge/isocom.yaml já existe, bloco `brand` apenas, code="ISC" — troque antes do
+# --commit se preferir outro código.)
+
+brand: ISOCOM
+
+known_parts:
+  - part_number: MEMA032G
+    chip_type: eMMC
+    subtype: ''
+    interface: ''
+    capacity: 32GB
+    device: BGA
+    confidence: manual
+    notes: >
+      PN físico do dono (pediu pesquisa+submissão em 2026-09-01) — pacote BGA e marcação "ISOCOM" +
+      "MEMA032G" impressos no próprio chip, confirmados fisicamente pelo dono via 2 perguntas diretas
+      nesta sessão. Marca "ISOCOM" pra memória é da Shenzhen Longsys Electronics Co., Ltd. (mesma
+      dona da Foresee/Lexar já onboardadas) — NÃO é a Isocom Components britânica de optoacopladores
+      (catálogo oficial de 60pp + site oficial dela não citam "MEMA" em nenhum lugar; confirmado por
+      disputa de marca real na USPTO: TTAB case 91256263, Isocom Components venceu a oposição e o
+      pedido de marca da Longsys foi abandonado em 26/10/2020 — trademarkelite.com serial 88496930).
+      Capacidade 32GB e protocolo eMMC vêm do título do anúncio Alibaba "MEMA032G-Longbo-32GB-ISOCOM-
+      eMMC-flash" (corpo da página não renderizou via fetch automatizado, só o título foi verificado).
+      digipart.com/part/MEMA032G confirma marca ISOCOM + pacote BGA, sem capacidade. Padrão de família
+      MEMA016G/032G/064G (16/32/64GB) reforça a leitura. Pacote exato (contagem de pinos) não
+      confirmado — "BGA" genérico; um ic-components.com cita "Case 869" mas em texto claramente
+      templated/genérico, não usei. Sibling MEMA064G confirmado nesta mesma rodada (ver known_part
+      abaixo) com marcação "M0S00" idêntica à vista no chip físico deste PN — mesma linha de produto.
+      confidence=manual porque a fonte de capacidade é um único anúncio de marketplace (não datasheet
+      nem distribuidor estruturado tipo RS/DigiKey/LCSC) somado à confirmação física parcial do dono
+      (identidade/pacote, não teste de capacidade) — ver cabeçalho do arquivo pra rationale completo.
+    source_url: https://www.alibaba.com/product-detail/MEMA032G-Longbo-32GB-ISOCOM-eMMC-flash_1601927048288.html
+
+  - part_number: MEMA064G
+    chip_type: eMMC
+    subtype: ''
+    interface: ''
+    capacity: 64GB
+    device: 153-Pin FBGA
+    confidence: manual
+    notes: >
+      Irmã de capacidade do MEMA032G acima (mesma família ISOCOM/Longsys, ver known_part acima pro
+      relato completo de identidade da marca). Capacidade 64GB, protocolo eMMC e pacote 153-Pin FBGA
+      vêm do título do anúncio Alibaba "MEMA064G-M0S00-EMMC-64GB-153FBGA-Memory" (corpo da página não
+      renderizou via fetch automatizado, só o título foi verificado). Marcação "M0S00" no título bate
+      exatamente com a marcação física vista no chip MEMA032G do dono — mesma linha de produto,
+      reforça que a família é consistente. Não confirmado fisicamente pelo dono (só o MEMA032G foi
+      inspecionado fisicamente nesta sessão) — incluído por ser sibling direto de capacidade com fonte
+      própria, não por analogia pura. Uma página de teardown dedicada (reverse-costing.com/teardowns/
+      components/isocom_mema064g/) existe e sugere que é um chip real encontrado em produto de
+      consumo, mas deu 403 (bloqueada), não consegui ler o conteúdo. confidence=manual pelo mesmo
+      motivo do MEMA032G (fonte única de marketplace, sem confirmação física direta deste PN
+      específico) — ver cabeçalho do arquivo.
+    source_url: https://www.alibaba.com/product-detail/MEMA064G-M0S00-EMMC-64GB-153FBGA-Memory_1601235333568.html

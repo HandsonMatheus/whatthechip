@@ -1,0 +1,64 @@
+# Submissão known_parts — ISOCOM, MEMD forma BARE (2026-09-02).
+# Chat de marca ISOCOM. Disparado por: (1) PN `MEMDNN064G` (bare, sem sufixo de order code)
+# aparecendo ao vivo no debug de estoque do dono nesta mesma rodada; (2) o dono corrigindo minha
+# decisão inicial de NÃO criar known_part pra essa forma bare — "esse não tem o sufixo no final,
+# pode criar o known part".
+#
+# ── POR QUE ISSO MUDA A DECISÃO ANTERIOR ──
+# Minha reticência inicial foi: a ÚNICA evidência da string bare específica é o próprio scan de
+# estoque, sem fonte externa citável confirmando "MEMDNN064G" (sem sufixo) como PN válido —
+# capacidade vinha só por herança da gramática + do known_part irmão MEMDNN064G-M1D03 (que TEM
+# sufixo).
+#
+# O dono está certo em corrigir isso, e o precedente já existe NESTE MESMO PROJETO: `MEMA016G`
+# (isocom_mema_r2_2026-09-01.yaml) foi registrado como known_part BARE usando exatamente essa mesma
+# lógica — capacidade vinda da lista Rockchip (que lista "MEMA016G-M0T00", COM sufixo), traduzida pra
+# forma bare porque a convenção de marcação física bare da família MEMA já tinha sido confirmada
+# (dono viu "MEMA032G" impresso sem sufixo no chip físico, rodada 2).
+#
+# Pra MEMD, a submissão r2 dizia explicitamente: "ao contrário da MEMA, não há evidência física de
+# como um chip MEMD é marcado de verdade" — por isso os 2 known_parts de MEMD ficaram COM sufixo
+# (única forma observada até então). O scan ao vivo desta rodada (MEMDNN064G, 10 chars, sem sufixo,
+# in_review_queue=false) é EXATAMENTE a evidência que faltava: primeira vez que se vê a forma bare
+# desta família na prática, e bate com o padrão da MEMA. Preenche a lacuna, mesma régua já usada.
+#
+# CONFIDENCE = distributor (mesmo nível do known_part irmão MEMDNN064G-M1D03 e do MEMA016G bare) —
+# capacidade/interface vêm da mesma fonte técnica única (Rockchip/Radxa), não cruzada com 2ª fonte
+# independente nem confirmação física direta do dono PARA ESTE PN especificamente (o "ISOCOM" +
+# "193419081168" que o dono confirmou fisicamente é de um chip DIFERENTE, MDXC2024G-M4 — não deste).
+#
+# NÃO incluí `MEMDNN032G` (bare) nesta submissão — só a forma 064G foi vista ao vivo até agora; a
+# forma 032G bare continua sem gatilho próprio (mesma disciplina já aplicada: MEMA016G só virou
+# known_part quando apareceu ao vivo, não por analogia preventiva).
+#
+# Rodar (o DONO):
+#   python manage.py load_brands --brand isocom                                          # dry-run = portão
+#   python manage.py load_brands --brand isocom --commit                                 # grava pn_length=10 (rodada 6) na gramática MEMD, se ainda não tiver rodado
+#   python manage.py submit_known_parts submissions/isocom_memd_2026-09-02.yaml           # dry-run = portão
+#   python manage.py submit_known_parts submissions/isocom_memd_2026-09-02.yaml --commit  # grava (submitted) → aprovar no admin
+
+brand: ISOCOM
+
+known_parts:
+  - part_number: MEMDNN064G
+    chip_type: eMMC
+    subtype: ''
+    interface: 'eMMC 5.1'
+    capacity: 64GB
+    device: FBGA 11.5x13mm
+    confidence: distributor
+    notes: >
+      Forma BASE (bare, sem sufixo de order code) do known_part irmão MEMDNN064G-M1D03
+      (isocom_mema_r2_2026-09-01.yaml). Apareceu ao vivo no debug de estoque do dono (2026-09-02,
+      in_review_queue=false — engine já classificava certo via gramática/fuzzy_suggestions antes
+      desta submissão). Capacidade/interface confirmadas pela mesma lista de fornecedores aprovados
+      de eMMC da Rockchip usada pro known_part irmão (RKeMMCSupportList Ver1.84, dl.radxa.com):
+      "MEMDNN064G-M1D03", 512Gb TLC×1, 3D, eMMC 5.1, FBGA 11.5x13mm, fabricante ISOCOM. O order code
+      completo do fabricante tem sufixo ("-M1D03"); este known_part registra a forma BASE porque esta
+      rodada trouxe a primeira evidência de campo de que o chip físico desta família é marcado sem
+      sufixo — mesmo padrão já confirmado na família MEMA (ver MEMA016G em
+      isocom_mema_r2_2026-09-01.yaml pro precedente idêntico: capacidade herdada de entrada COM
+      sufixo da mesma lista Rockchip, registrada sob a forma bare). confidence=distributor: fonte
+      única (Rockchip/Radxa), técnica e nomeada, não cruzada com 2ª fonte independente nem
+      confirmação física direta do dono para este PN específico.
+    source_url: https://dl.radxa.com/rock5/hw/RKeMMCSupportList%20Ver1.84_20240815.pdf

@@ -1,0 +1,135 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5AD512M16A4-GZ"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145463/NANYA/NT5AD512M16A4-GZ.html"
+    notes: >
+      Debug ao vivo do estoque, 27/08/2026 15:35:34, PN "NT5AD512M16A4" -- gramatica ja
+      reconhecia (familia NT5AD/DDR4) mas known_exact=false, capacity=null,
+      profitable=INDETERMINADO. Aritmetica: 512M x 16bit = 8192Mbit = 8Gb -- mesma
+      organizacao/densidade do irmao "A3" ja confirmado na rodada 1 desta sessao
+      (NT5AD512M16A3-GZI, 8Gb x16, RENTAVEL). Die "A4" (nao "A3"): indice do Alldatasheet
+      pro bucket NT5AD512M16 (22 resultados, TODOS die "A", reconciliado exato: 10x A3 +
+      10x A4, sem sobra) confirma AMBOS os dies como reais e paralelos -- mesmo padrao ja
+      visto nesta familia com D3/D4 (rodada 1) e E4 (rodada 17, "die mais novo"). Cada
+      datasheet e documento OFICIAL do fabricante (hospedado no Alldatasheet, "Direct
+      Link: http://www.nanya.com", verificado abrindo a pagina do PDF, nao so o titulo).
+      Grade "-GZ": "Commercial and Industrial DDR4 8Gb SDRAM" (296 paginas). Corroborado
+      tambem por Octopart com estoque real em 2 distribuidores (Aztech, Worldway
+      Electronics). Rodada com FONTE TIER-1 SISTEMATICA (o indice do fabricante lista
+      todos os sufixos de uma vez) -- esgotei o cluster: submeti as 9 variantes com
+      datasheet oficial confirmado (GZ/GZI/GZNA/GZT/HR/HRA/HRH/HRI/HRK). EXCLUIDA: "-IX"
+      (aparece so no Octopart, sem estoque real e sem datasheet no indice do Alldatasheet
+      -- evidencia insuficiente, mesmo padrao de exclusao da rodada 23). NAO submeti a
+      forma "A4" pura sem sufixo -- os 2 resultados "bare" no indice do Alldatasheet sao
+      o MESMO padrao de documento-de-familia ja identificado na rodada 18 (nao SKU
+      vendavel isolado); nenhum distribuidor no Octopart lista "NT5AD512M16A4" sem
+      sufixo. PN exato da bancada (sem sufixo) nao resolve mesmo apos aprovacao --
+      ressalva de sempre nesta familia.
+  - part_number: "NT5AD512M16A4-GZI"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145469/NANYA/NT5AD512M16A4-GZI.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-GZI": "Commercial and Industrial DDR4 8Gb SDRAM" (296
+      paginas), datasheet oficial Nanya no indice do Alldatasheet. Octopart lista
+      "GZI-TR"/"GZITR" sem estoque atual (so revendedores nao-autorizados), mas o
+      datasheet oficial confirma a existencia do PN independente de estoque no momento.
+  - part_number: "NT5AD512M16A4-GZNA"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145482/NANYA/NT5AD512M16A4-GZNA.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-GZNA": "Commercial and Industrial DDR4 8Gb SDRAM" (296
+      paginas), datasheet oficial Nanya no indice do Alldatasheet -- mesmo padrao de
+      sufixo "NA" ja visto em NT5AD512M16A3-GZNA (irmao da die "A3", ja indexado).
+  - part_number: "NT5AD512M16A4-GZT"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145475/NANYA/NT5AD512M16A4-GZT.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-GZT": "Commercial and Industrial DDR4 8Gb SDRAM" (296
+      paginas), datasheet oficial Nanya no indice do Alldatasheet. Octopart lista
+      "GZT" sem estoque atual (so revendedores nao-autorizados), mas o datasheet oficial
+      confirma a existencia do PN.
+  - part_number: "NT5AD512M16A4-HR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145464/NANYA/NT5AD512M16A4-HR.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-HR": "Commercial and Industrial DDR4 8Gb SDRAM" (296
+      paginas), datasheet oficial Nanya no indice do Alldatasheet (pagina aberta e
+      verificada: "Direct Link http://www.nanya.com"). Corroborado por 8 distribuidores
+      independentes com estoque real: Weyland, Win Source, ICPartonline, Worldway, ODG,
+      Fmall, Chipsmall, Anlinkda -- variante mais fortemente confirmada do cluster.
+  - part_number: "NT5AD512M16A4-HRA"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145462/NANYA/NT5AD512M16A4-HRA.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-HRA": "Automotive DDR4 8Gb SDRAM" (294 paginas,
+      diferente das grades "Commercial and Industrial" acima) -- datasheet oficial Nanya
+      no indice do Alldatasheet, listado como "Similar Part No." direto na pagina do
+      "-HR". Mesma densidade/organizacao (8Gb x16), so grade de qualificacao automotiva
+      diferente -- nao muda specs de capacidade/rentabilidade.
+  - part_number: "NT5AD512M16A4-HRH"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145460/NANYA/NT5AD512M16A4-HRH.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-HRH": "Automotive DDR4 8Gb SDRAM" (294 paginas),
+      datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5AD512M16A4-HRI"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145470/NANYA/NT5AD512M16A4-HRI.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-HRI": "Commercial and Industrial DDR4 8Gb SDRAM" (296
+      paginas), datasheet oficial Nanya no indice do Alldatasheet. Corroborado por 5+
+      distribuidores independentes com estoque real: Win Source, Fmall, Worldway,
+      Abacus, Aztech, Chipsmall -- mesmo padrao de sufixo "-HRI" ja confirmado no irmao
+      NT5AD512M16A3-HRI (die "A3", rodada 1).
+  - part_number: "NT5AD512M16A4-HRK"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145458/NANYA/NT5AD512M16A4-HRK.html"
+    notes: >
+      Mesmo cluster/debug que NT5AD512M16A4-GZ (ver notes daquele known_part para o
+      contexto completo). Grade "-HRK": "Automotive DDR4 8Gb SDRAM" (294 paginas),
+      datasheet oficial Nanya no indice do Alldatasheet -- mesmo padrao de sufixo "-HRK"
+      ja confirmado no irmao NT5AD512M16A3-HRK (die "A3", rodada 1).

@@ -1,0 +1,70 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB128M16BP-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=NT5CB128M16BP-DI"
+    notes: >
+      Debug ao vivo do estoque, 27/08/2026 14:50:22, PN "NT5CB128M16BP" 100% em branco
+      (known:false, in_review_queue:true). fuzzy_suggestions do motor: NT5CB128M16,
+      NT5CB128M16JR, NT5CC128M16FP, NT5CC128M16IP -- nenhum e o PN real com sufixo.
+      Organizacao 128M16 = 128M x 16bit = 2048Mbit = 2Gb (mesma aritmetica confirmada
+      dezenas de vezes nesta sessao). Die "B" (1a letra do sufixo de 2 chars): confirmado
+      ausente do crawl do Alldatasheet para NT5CB128M16 (mesmo padrao de "B-die ausente"
+      ja visto em NT5CB512M8 na rodada 21 e NT5CB512M8xx anteriores) -- por isso a busca
+      via Octopart/distribuidores diretamente, nao via Alldatasheet. -DI confirmado por
+      Octopart (resultado exato, "DDR3 Dram, 128MX16, 0.225NS, Cmos, PBGA96", datasheet +
+      manufacturer page linkados) com 5 distribuidores independentes com estoque/preco
+      real: Win Source (WS-NT5CB128M16BP-DI), ICPartonline, Worldway Electronics,
+      Anlinkda, SHENGYU Electronics. Corroborado tambem por pagina de spec detalhada da AB
+      Sunshine, que cruza com o irmao NT5CB128M16HP-DI (mesma familia, die "H", ja
+      confirmado na rodada 14) e com equivalentes FFFE de outros fabricantes (Alliance
+      Memory AS4C128M16D3-12BCN, Kingston D1216MCABXGGBS, SK Hynix H5TQ2G63BFR-12C /
+      H5TQ2G63DFR-12C) -- 1600MBPS, 1.5V, VFBGA-96/PBGA96. chip_type=subtype=DDR3 (nao
+      DDR3L): familia NT5CB e sempre 1.5V, nunca DDR3L, padrao confirmado repetidas vezes
+      nesta sessao.
+  - part_number: "NT5CB128M16BP-BE"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=NT5CB128M16BP-BE"
+    notes: >
+      Mesmo debug/cluster que NT5CB128M16BP-DI (ver notes daquele known_part para o
+      contexto completo do gatilho e a aritmetica da organizacao 128M16=2Gb). Sufixo
+      "-BE" = grade de velocidade DDR3-1066 CL7-7-7 (mais lento que -DI e -CG dentro do
+      mesmo die "B"). Confirmado por Octopart (resultado exato, "DDR3 Dram, 128MX16,
+      0.3NS, Cmos, PBGA96", datasheet + manufacturer page linkados) com 3 distribuidores
+      independentes com estoque/preco real: ICPartonline, Worldway Electronics, SHENGYU
+      Electronics. chip_type=subtype=DDR3 (nao DDR3L): mesmo padrao de toda a familia
+      NT5CB (1.5V).
+  - part_number: "NT5CB128M16BP-CG"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=NT5CB128M16BP-CG"
+    notes: >
+      Mesmo debug/cluster que NT5CB128M16BP-DI (ver notes daquele known_part para o
+      contexto completo do gatilho e a aritmetica da organizacao 128M16=2Gb). Sufixo
+      "-CG" = grade de velocidade DDR3-1333 CL9-9-9 (confirmado por pagina de spec
+      tecnica dedicada da Kynix). Confirmado tambem por Octopart (resultado exato,
+      datasheet + manufacturer page linkados) com 5 distribuidores independentes com
+      estoque/preco real: Weyland Electronics Group, Win Source, ICPartonline, Fmall,
+      Worldway Electronics. chip_type=subtype=DDR3 (nao DDR3L): mesmo padrao de toda a
+      familia NT5CB (1.5V).
+      EXCLUIDOS desta submissao (evidencia insuficiente, disciplina de nao inventar):
+      "-CN" -- existe como stub reconhecido no catalogo do Octopart (Results:1, sem
+      nenhuma linha de distribuidor, sem datasheet, sem spec) mas Findchips retornou
+      "No results were found for NT5CB128M16BP-CN" -- zero fonte com specs reais
+      (velocidade/timing), abaixo da barra desta sessao (precedente rodada 15). "-CGI"
+      -- verificado DIRETO no Octopart (nao via WebSearch, que deu resposta generica
+      nao confiavel/possivelmente fabricada por sintese de IA): busca exata retorna ZERO
+      resultado, cai em fuzzy fallback sugerindo "NT5CB128M16HP-CGI" (organizacao/die
+      DIFERENTE, HP e nao BP) -- "-CGI" para o die "BP" nao existe em fonte nenhuma
+      verificada.

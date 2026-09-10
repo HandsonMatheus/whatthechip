@@ -1,0 +1,211 @@
+# Submissão known_parts — Winbond, cluster DDR3/DDR3L "Specialty DRAM", PACOTE "KB" (2026-09-01).
+# Origem: debug do estoque com PN de bancada "W632GG6KB" (known=false, in_review_queue=true, sem
+# sufixo de velocidade — ver JSON colado pelo dono, 21:22:17; fuzzy_suggestions só achou irmãos NB:
+# W632GG6NB/W632GG8NB/W632GU6NB/W634GG6NB).
+#
+# MESMA FAMÍLIA já mapeada em winbond_ddr3_w63x_2026-09-01.yaml (ver [[wtc-winbond-ddr3-w63x-specialty-dram]]):
+# DDR3/DDR3L "Specialty DRAM", W631=1Gb / W632=2Gb / W634=4Gb, "GG"=1.5V/DDR3 / "GU"=1.35V/DDR3L,
+# dígito "6"=x16 / "8"=x8. NÃO é família nova. O pacote "KB" JÁ tinha 2 PNs no arquivo original
+# (W631GG6KB-12, o PN pedido pelo dono na 3ª rodada, e W631GU6KB-12-TR) — mas só pra densidade W631
+# (1Gb); W632/W634 só tinham entrado com pacote "NB". Mesmo padrão exato já visto na família DDR2 W97x
+# nesta mesma sessão (pacote "JB" ausente da fonte sistemática original, ver
+# [[wtc-winbond-ddr2-w97x-specialty-dram]]): este arquivo fecha a lacuna do "KB" pra W632.
+#
+# MAXIMIZAÇÃO NESTA RODADA: ao confirmar "KB" pra W632 (densidade do PN de bancada), busquei também
+# W634 (4Gb) e mais variantes de W631 que a 1ª leva não tinha pego (só tinha 1 speed grade de cada).
+# W634+KB: busquei em 2 rodadas de busca dedicadas, ZERO citação encontrada — não incluído (excluir,
+# não adivinhar). W631+KB: achei 3 PNs novos que a rodada 3 não tinha pego (só tinha a velocidade -12
+# de GG6 e GU6-TR). W632+KB: achei 9 PNs novos (GG e GU, x16 e x8, múltiplas velocidades e a variante
+# industrial "I"). Total: 12 known_parts novos.
+#
+# PN de bancada SEM sufixo de velocidade — 2º caso seguido nesta marca (ver aviso já registrado em
+# winbond_ddr2_w97x_jb_2026-09-01.yaml pro PN "W971GG6JB"): todo PN físico desta família carrega
+# sufixo (-11/-12/-15, e variante industrial "I"). O candidato mais provável pra "W632GG6KB" é
+# `W632GG6KB-12` — não só é o mais citado (3 fontes), mas "-12" é a MESMA velocidade que o dono
+# confirmou fisicamente na 3ª rodada pro irmão de outra densidade desta família (W631GG6KB-12, PN que
+# o PRÓPRIO DONO digitou por completo, não um scan automático) — precedente mais forte que os casos
+# anteriores desta marca. Mesmo assim, NÃO decidido sozinho: sinalizado aqui e na nota do PN. Padrão
+# se repetindo (2/2): vale considerar com o dono se o scanner/leitura de bancada está cortando
+# especificamente o sufixo de velocidade nesta linha "Specialty DRAM" (não aconteceu no PN da linha
+# móvel LPDDR2, que veio completo com X2E incluso).
+#
+# EXCLUÍDO desta rodada (buscado, não confirmado — excluir, não adivinhar):
+#   - Pacote "KB" em W634 (4Gb): 2 buscas dedicadas, zero citação em qualquer fonte.
+#   - "W631GU8KB"/"W631GU6KB" com organização x8: só achei "W631GU8NB12I" (pacote NB, não KB).
+#   - Sufixo de velocidade "-18" em KB (existe pra pacote "MB" da mesma família — W632GG6MB-18 — mas
+#     não achei "...KB-18" em nenhuma fonte; famílias de pacote não compartilham necessariamente a
+#     mesma grade de velocidade, não presumido).
+#   - Variante industrial "I" em W631+KB (só achei em W632+KB).
+#
+# Fonte: mistura de distribuidor direto (DigiKey/Mouser/Arrow — várias com página própria de produto)
+# + agregadores (Alldatasheet/Octopart/Lisleapex/Utmel/FindIC/GNS-IC/JAK Electronics/DigiPart/
+# Microchip USA/TrustedParts) batendo densidade/organização/tensão entre si. Datasheet oficial próprio
+# existe pro W632GU6KB (winbond.com/resource-files/w632gu6kb_a08.pdf, título "W632GU6KB 16M 8 BANKS 16
+# BIT DDR3L SDRAM" confere com a aritmética) — bloqueado por robots.txt pro fetch, mesma limitação já
+# documentada nesta marca.
+#
+# Convenção Winbond (WINBOND.md golden #6): nomenclatura da marca é em BIT; capacity/density_gb aqui
+# são SEMPRE byte (Gb÷8). Aritmética mostrada em cada `notes`. Densidades aqui (1Gb/2Gb) são ≥1Gb —
+# sem risco do bug de fração sub-1Gb — mas a verificação mecânica (grep+`_GBIT_RE`) foi rodada mesmo
+# assim, por disciplina permanente (ver [[wtc-density-gbit-subgb-precisa-fracionario]]).
+#
+# Rodar (o DONO):
+#   python manage.py submit_known_parts submissions/winbond_ddr3_w63x_kb_2026-09-01.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/winbond_ddr3_w63x_kb_2026-09-01.yaml --commit     # grava (submitted) → aprovar no admin
+#
+# PRÉ-REQUISITO (winbond.yaml): a Brand "Winbond" já existe no banco (rodadas anteriores desta marca).
+brand: "Winbond"
+known_parts:
+  - part_number: "W631GG6KB-11"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Irmão de velocidade do PN já aprovado W631GG6KB-12 (mesma densidade/pacote, grade "-11" em vez
+      de "-12"). 1Gbit ÷ 8 = 128MB. Confirmado em 5 fontes independentes: Octopart, DigiKey (produto
+      próprio, ID 4037353), Microchip USA, TrustedParts e Lisleapex.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W631GG6KB-11/4037353"
+  - part_number: "W631GG6KB-15"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Mesma densidade/pacote, grade de velocidade "-15". 1Gbit ÷ 8 = 128MB. Confirmado via Avaq,
+      1 fonte.
+    source_url: "https://www.avaq.com/chip/w631gg6kb-15"
+  - part_number: "W631GG8KB-12"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: confirmed
+    notes: >
+      Mesma densidade do W631GG6KB-12 já aprovado, organização x8 em vez de x16 (dígito "8" no PN;
+      capacidade total não muda: 1Gbit ÷ 8 = 128MB). Confirmado em 2 fontes independentes: Utmel
+      (2 páginas de comparação distintas citando o mesmo PN) e FindIC.
+    source_url: "https://www.utmel.com/compare/W631GG8KB-12--1769060-vs-W631GG6KB-11--1769036"
+  - part_number: "W631GU6KB-12"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante DDR3L do W631GG6KB-12, forma SEM "-TR" (o irmão "W631GU6KB-12-TR" já está aprovado —
+      esta é a mesma grade de velocidade, mas SKU/ID de produto distinto na fonte, não confundido
+      com o já existente). 1Gbit ÷ 8 = 128MB. Confirmado via DigiKey (produto próprio, ID
+      W631GU6KB-12-ND), 1 fonte.
+    source_url: "https://www.digikey.com/product-detail/en/winbond-electronics/W631GU6KB-12/W631GU6KB-12-ND/5154828"
+  - part_number: "W632GG6KB-12"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      PROVÁVEL IDENTIDADE REAL DO PN DE BANCADA DO DONO ("W632GG6KB", sem sufixo de velocidade — ver
+      aviso no cabeçalho do arquivo; CONFIRMAR na marcação física antes de aprovar). 2Gbit ÷ 8 =
+      268.435.456 bytes = 256MB. "-12" é a mesma grade de velocidade que o dono confirmou fisicamente
+      pro irmão de 1Gb desta família (W631GG6KB-12, já aprovado). Confirmado em 3 fontes
+      independentes: Alldatasheet (PDF próprio), Octopart e Lisleapex.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/673938/WINBOND/W632GG6KB-12.html"
+  - part_number: "W632GG6KB-15"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Mesma densidade/pacote do W632GG6KB-12, grade de velocidade "-15". 2Gbit ÷ 8 = 256MB.
+      Confirmado em 2 fontes independentes: Alldatasheet (PDF próprio) e Octopart.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/673940/WINBOND/W632GG6KB-15.html"
+  - part_number: "W632GG6KB12I"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante industrial (sufixo "I" colado sem hífen) do W632GG6KB-12. 2Gbit ÷ 8 = 256MB.
+      Confirmado via Mouser (produto próprio), 1 fonte.
+    source_url: "https://www.mouser.com/ProductDetail/Winbond/W632GG6KB12I"
+  - part_number: "W632GG6KB15I"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante industrial do W632GG6KB-15. 2Gbit ÷ 8 = 256MB. Fonte cita "W632GG6KB15I TR" — "TR"
+      removido (embalagem, não marcação). Confirmado via DigiPart, 1 fonte.
+    source_url: "https://www.digipart.com/part/W632GG6KB15I%20TR"
+  - part_number: "W632GG8KB-15"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Mesma densidade do W632GG6KB-15, organização x8. 2Gbit ÷ 8 = 256MB. Confirmado via JAK
+      Electronics, 1 fonte.
+    source_url: "https://www.jakelectronics.com/pdf/pcnpackaging/winbondelectronics-w29n02gvsiaa-pcnpackaging-8034?product=winbondelectronics-w632gg8kb15-9479856"
+  - part_number: "W632GU6KB-12"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Variante DDR3L do W632GG6KB-12 (2Gbit ÷ 8 = 256MB). Datasheet oficial próprio existe
+      (winbond.com/resource-files/w632gu6kb_a08.pdf, título "W632GU6KB 16M 8 BANKS 16 BIT DDR3L
+      SDRAM" — 16M x16bit x8banks = 2.147.483.648 bits = 2Gbit, bate; bloqueado por robots.txt pro
+      fetch, título+matemática conferem). Confirmado em 4 fontes independentes: DigiKey (produto
+      próprio, ID 5154833), Alldatasheet, Arrow (REEL) e o próprio título do datasheet oficial.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W632GU6KB-12/5154833"
+  - part_number: "W632GU6KB12I"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante industrial do W632GU6KB-12. 2Gbit ÷ 8 = 256MB. Confirmado via Alldatasheet, 1 fonte.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/673946/WINBOND/W632GU6KB12I.html"
+  - part_number: "W632GU8KB-12"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: confirmed
+    notes: >
+      Mesma densidade do W632GU6KB-12, organização x8. 2Gbit ÷ 8 = 256MB. Confirmado em 3 fontes
+      independentes: DigiKey (produto próprio, ID 5154837), GNS Components e Lisleapex.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W632GU8KB-12/5154837"

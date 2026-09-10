@@ -1,0 +1,75 @@
+# Submissão de known_parts — Micron, FBGA NW986 + família MT29F512G08EBLD (2026-08-28)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA NW986
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: NW986 → MT29F512G08EBLDEH6-M:D. Família MT29F (NAND Flash cru),
+# organização "512G08" (512Gb totais, x8). CAPACIDADE: 512Gb ÷ 8bit = 64GB —
+# bem corroborada por múltiplas fontes independentes que concordam entre si
+# (Number Of Words "64G" + Bit Organization "x8" + Density "512G", todos
+# batendo com o próprio texto do PN "512G08").
+#
+# ⚠ TIPO DE CÉLULA — CASO DE OVERRIDE AUTORIZADO PELO DONO (não é
+# precedente geral, ver wtc-override-tier1-fontes-comunidade). Pesquisa
+# exaustiva Tier-1: a API oficial da Micron (reverse + forward lookup)
+# devolveu SÓ identidade (part-name/sub-category vazios pros 4 PNs desta
+# família — Micron não tem página de catálogo viva pra "EBLD"). Busca
+# externa achou página PRÓPRIA da Micron pra 3 códigos VIZINHOS da mesma
+# família "EBL_" — EBLC e EBLE ("3D NAND Flash Memory part detail"), EBLG
+# ("TLC NAND Flash Memory part detail") — nenhum MLC. NENHUMA fonte
+# Tier-1/2 (Micron/Octopart/DigiKey) cobre "EBLD" especificamente. A ÚNICA
+# fonte que cobre o código EXATO é um distribuidor — AB Sunshine
+# (absunshine.com/en/parts/MT29F512G08EBLDEH6-M-D-MICRON-5525065) — que
+# diz "64GX8 NAND MLC", com campos de organização batendo exato (Number Of
+# Words 64G, Bit Organization x8, Density 512G, Package VBGA-152,
+# 3.3V, Async only). Sinalizei a divergência explicitamente ao dono (a
+# Micron confirma os vizinhos como TLC/3D NAND, não MLC) — ele autorizou
+# aceitar a leitura do distribuidor pra este PN específico ("pode
+# confirmar como o distribuidor", 2026-08-28). confidence=distributor
+# (não confirmed/manual — reflete a fonte real, não Tier-1; ver
+# wtc-override-tier1-fontes-comunidade regra #3: nunca maquiar fonte
+# fraca como se fosse Tier-1). Interface "Async/ONFI" — convenção já
+# usada em NAND cru paralelo nesta marca (precedente NW301, 2026-08-24).
+#
+# Forward-lookup no PREFIXO DE PN "MT29F512G08EBLD" (2026-08-28, delegado
+# — WAF do micron.com bloqueado nesta sessão) devolveu 4 PNs: o alvo
+# (-M), 1 irmão de produção (-R, NW989) e 2 com "ES" CONCATENADO sem
+# espaço ao código de grau — "-RES" (NX903) e "-MES" (NX921). Achado
+# NOVO de padrão: o filtro ES padrão desta sessão (regex `(?:^| )ES(?:$|
+# [ :])`, exige espaço antes do "ES") NÃO pegaria esses dois
+# automaticamente — mas "R"/"M" são os dois graus de produção confirmados
+# aqui (nos 2 PNs sem ES), e "RES"/"MES" são exatamente esses dois graus
+# + "ES" concatenado sem espaço, não códigos independentes. Tratado como
+# Engineering Sample por padrão estrutural (mesmo grau + ES), EXCLUÍDO
+# por julgamento, não pela regex literal — sinalizado aqui pra revisão
+# (pode exigir generalizar a regra de ES pra cobrir concatenação sem
+# espaço em investigações futuras).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_nw986_family_2026-08-28.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_nw986_family_2026-08-28.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT29F512G08EBLDEH6-M:D'
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: Async/ONFI
+  capacity: 64GB
+  fbga_code: NW986
+  confidence: distributor
+  source_url: 'https://www.absunshine.com/en/parts/MT29F512G08EBLDEH6-M-D-MICRON-5525065'
+  notes: 'ALVO da investigação. Identidade via API FBGA oficial da Micron (reverse lookup, 2026-08-28, delegado por bloqueio WAF): NW986 -> MT29F512G08EBLDEH6-M:D. Tipo de celula (MLC) SEM confirmacao Tier-1 direta para o codigo exato "EBLD" -- override autorizado pelo dono (2026-08-28), ver cabecalho do arquivo. Fonte: AB Sunshine ("64GX8 NAND MLC", Package VBGA-152, 3.3V, Async only, Number Of Words 64G, Bit Organization x8, Density 512G). Aritmetica: 512Gb / 8bit = 64GB, bate com "512G08" do proprio PN.'
+- part_number: 'MT29F512G08EBLDEH6-R:D'
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: Async/ONFI
+  capacity: 64GB
+  fbga_code: NW989
+  confidence: distributor
+  source_url: 'https://www.absunshine.com/en/parts/MT29F512G08EBLDEH6-M-D-MICRON-5525065'
+  notes: 'Irmao de familia (forward-lookup MT29F512G08EBLD, 2026-08-28), mesmo codigo base do alvo NW986 (so grau "-R" em vez de "-M"). Sem part-name proprio na API Micron -- specs herdadas do alvo (mesma organizacao "512G08" no proprio PN + mesmo override de tipo de celula autorizado pelo dono, ver cabecalho do arquivo e notes do alvo). 512Gb / 8bit = 64GB.'

@@ -1,0 +1,405 @@
+# Submissão de known_parts — Micron, FBGA JW263 + família MT29C1G56MA (2026-09-02)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JW263
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: JW263 -> MT29C1G56MACFAJC-75 IT. Prefixo MT29C = "NAND + LPDRAM
+# MCP" (legend oficial do part number, mesma familia do JW500/JW960 ja
+# resolvidos nesta sessao) -- NAO e eMMC unificado por padrao, interfaces
+# SEPARADAS (NAND assincrono + LPDRAM). chip_type = MCP (catalog,
+# commercial=False, mesma classe de NOR Flash/ePoP -- chips/chip_types.py),
+# NAO eMCP, seguindo o mesmo precedente ja aplicado a JW500/JW960.
+#
+# ⚠ DENSIDADE "56M" NAO ESTA em nenhuma tabela oficial que eu consegui
+# achar (o chart do "152-Ball MT29C Family" Rev.E so lista LPDRAM ate 48M;
+# o "130-Ball" e doc totalmente separado, tabela de exemplo cobre outra
+# organizacao). Resolvido por TRIANGULACAO -- 3 fontes independentes
+# convergem pro mesmo numero:
+#   1. Part-name OFICIAL da propria API Micron, 4 irmaos da MESMA chave
+#      "1G56M" (JW664/JW680/JW684/JW685, todos "MASSFLASH/MOBILE DDR 1.25G
+#      VFB"): total NAND+RAM = 1.25Gb. Com NAND=1Gb (codigo "1G" e LITERAL
+#      no chart oficial: "1G = 1Gb"), sobra RAM = 0.25Gb = 256Mb.
+#   2. Octopart/Avnet, PN vizinho na MESMA leva de config (MT29C1G56MACEAJC
+#      -6IT, 1 letra de distancia do alvo): descricao estruturada
+#      "128MX8/16M16" = NAND 128M x8 = 1024Mbit = 1Gb; LPDRAM 16M x16 =
+#      256Mbit = 256Mb. Bate exato com a triangulacao (1).
+#   3. GlobalSpec/distribuidor (ERSAELECTRONICS), o PROPRIO PN alvo
+#      (MT29C1G56MACFAJC-75 IT): titulo direto "MCP NAND 1Gb + LPDDR
+#      256Mb Ind" -- bate exato com (1) e (2), e confirma "MCP NAND" (nao
+#      eMMC) especificamente pro alvo.
+# NAND = 1Gb = 128MB. RAM = 256Mb = 32MB, geracao "Mobile DDR" (= LPDDR1
+# no vocabulario canonico deste projeto -- ver sessao anterior D9HSS/
+# MT46H64M16LFCK). Densidade fica no INICIO do part number (antes das
+# letras de config/pacote/voltagem), por isso vale pra TODA a familia
+# "1G56M" independente da leva de letras que segue (confirmado: mesmo
+# "1.25G" total aparece tanto nos MCP raw quanto nos eMMC-based abaixo).
+#
+# ⚠ ACHADO IMPORTANTE — a familia "1G56M" NAO e uniformemente MCP raw: 2
+# PNs (JW680, JW685) tem sub-category OFICIAL da API "obsolete-emmc-based-
+# mcp" (os outros confirmados, JW664/JW684, sao "obsolete-nand-mcp-
+# catalog"). Isso e distincao de INTERFACE (NAND assincrono vs protocolo
+# eMMC), independente da densidade -- mesmo padrao ja documentado no
+# MICRON.md pra MT29VZZZ ("a distincao vem do source_url da API: emmc-
+# based vs ufs-based"). JW680/JW685 = chip_type eMCP de verdade (subtype=
+# LPDDR1, emcp_nand/emcp_ram estruturados), NAO MCP catalog.
+#
+# EXCLUIDOS deste envio (4 PNs, mesma leva de 7 letras dos 4 confirmados,
+# mas SEM part-name/sub-category proprios e com padrao de letra que nao
+# bate com nenhum dos dois grupos confirmados -- JW682/JW683 tem sufixo
+# "AKC" [nenhum confirmado usa esse sufixo] e JW689/JW691 tem "V" numa
+# posicao que nao aparece em nenhum dos 4 confirmados): JW682, JW683,
+# JW689, JW691. Ambiguidade genuina MCP-vs-eMCP, sinalizado ao dono.
+#
+# ES: 39 excluidos (todos os "JY*", padrao ES da API sem sufixo especial
+# desta vez -- so o prefixo FBGA muda de JW para JY).
+#
+# Sobraram 42 PNs de producao: 40 MCP (raw NAND+LPDRAM) + 2 eMCP
+# (eMMC+LPDRAM). Sem PN duplicado, sem fbga_code duplicado, sem colisao de
+# part_number_norm dentro da propria lista (checado programaticamente).
+# Sem sobreposicao com submissao anterior.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jw263_family_2026-09-02.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_jw263_family_2026-09-02.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT29C1G56MACFAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW263
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'ALVO da investigacao. Identidade via API FBGA oficial da Micron (reverse+forward lookup, 2026-09-02, delegado por bloqueio WAF): JW263 -> MT29C1G56MACFAJC-75 IT. Densidade resolvida por triangulacao de 3 fontes independentes (part-name oficial de irmaos na mesma chave "1G56M" + Octopart/Avnet + GlobalSpec, este ultimo direto no PN alvo: "MCP NAND 1Gb + LPDDR 256Mb"). Ver cabecalho do arquivo pro raciocinio completo.'
+- part_number: 'MT29C1G56MACFAHZ-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW170
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MACFAHZ-8 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW172
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MADFAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW265
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUZAKD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW269
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUZAKD-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW270
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MADEAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW287
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MADEAJC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW288
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MACEAJC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW341
+  confidence: confirmed
+  source_url: 'https://octopart.com/mt29c1g56maceajc-6it-micron-59177456'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Confirmado tambem via Octopart/Avnet ("128MX8/16M16 Mcp..."). Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUZAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW378
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUZAJC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW379
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVZAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW380
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVZAJC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW381
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUAAAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW387
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUAAAJC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW388
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAAAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW389
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAAAJC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW390
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MACEAJC-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW424
+  confidence: confirmed
+  source_url: 'https://octopart.com/mt29c1g56maceajc-6it-micron-59177456'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUAVAKD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW468
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAAAJH-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW470
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAAAJH-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW471
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAUAKD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW472
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAVAKD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW474
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAAAMD-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW478
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAUAMD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW479
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAUAMD-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW480
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUAVAMD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW481
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAVAMD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW482
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUAAAMD-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW523
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUAAAMD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW524
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVZAMD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW525
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAUZAMD-75 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW526
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAAAJC-5 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW538
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAVAUAMD-5 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW628
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAADAAAMD-5 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW664
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g56maadaaamd-5-it'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02). CONFIRMADO diretamente: part-name oficial da API = "MASSFLASH/MOBILE DDR 1.25G VFB", sub-category = "obsolete-nand-mcp-catalog" (raw NAND, nao eMMC). Base da triangulacao de densidade -- ver cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAACZAKC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW672
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAADZAKC-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW681
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAACAAAMD-5 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW684
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g56macaaamd-5-it'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02). CONFIRMADO diretamente: part-name oficial da API = "MASSFLASH/MOBILE DDR 1.25G VFB", sub-category = "obsolete-nand-mcp-catalog" (raw NAND, nao eMMC). Base da triangulacao de densidade -- ver cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAACZAMD-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW690
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAADZAMD-6 IT'
+  chip_type: MCP
+  subtype: 'Raw MCP — NAND 128MB + mDDR1 32MB'
+  interface: ''
+  fbga_code: JW692
+  confidence: confirmed
+  source_url: 'https://datasheets.globalspec.com/ds/micron-technology/mt29c1g56macfajc-75-it/3279f5b5-63e1-4707-aa93-69bc088beaf4'
+  notes: 'Irmao de familia (forward-lookup MT29C1G56MA, 2026-09-02), mesma chave "1G56M" do alvo. Ver notes do alvo (JW263) e cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAACAUAMD-5 IT'
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  emcp_nand: 128MB
+  emcp_ram: 'LPDDR1 32MB'
+  fbga_code: JW680
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-emmc/part-catalog/part-detail/mt29c1g56maacauamd-5-it'
+  notes: '⚠ DIFERENTE dos outros desta leva: sub-category OFICIAL da API = "obsolete-emmc-based-mcp" (nao "obsolete-nand-mcp-catalog"). Interface eMMC + LPDRAM = eMCP de verdade (nao MCP catalog). Mesma densidade total confirmada (part-name "MASSFLASH/MOBILE DDR 1.25G VFB", identico ao par raw JW664/JW684) -- so a INTERFACE muda, nao a capacidade. Ver cabecalho do arquivo.'
+- part_number: 'MT29C1G56MAADAUAMD-5 IT'
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  emcp_nand: 128MB
+  emcp_ram: 'LPDDR1 32MB'
+  fbga_code: JW685
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-emmc/part-catalog/part-detail/mt29c1g56maadauamd-5-it'
+  notes: '⚠ DIFERENTE dos outros desta leva: sub-category OFICIAL da API = "obsolete-emmc-based-mcp" (nao "obsolete-nand-mcp-catalog"). Interface eMMC + LPDRAM = eMCP de verdade (nao MCP catalog). Mesma densidade total confirmada (part-name "MASSFLASH/MOBILE DDR 1.25G VFB", identico ao par raw JW664/JW684) -- so a INTERFACE muda, nao a capacidade. Ver cabecalho do arquivo.'

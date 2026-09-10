@@ -1,0 +1,26 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB512M8BH"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145485/NANYA/NT5CB512M8CN-DI.html"
+    notes: >
+      PN exato do debug ao vivo do estoque (27/08/2026 13:50:59): "NT5CB512M8BH" (sem sufixo).
+      ⚠ "BH" NAO TEM NENHUMA fonte publica Tier-1/Tier-2 -- busca exaustiva (Alldatasheet: bucket
+      512M8 = 133 = C34+D40+E59, ZERO "B*"; Octopart: busca propria cai em fallback fuzzy, zero
+      match exato; 4 WebSearches dirigidas) nao achou NENHUM resultado. Levantei a hipotese de
+      misread de "NT5CB512M8BN" (mesma organizacao, "B-die" confirmado, submetido na rodada 12) --
+      o dono CONFIRMOU que NAO e misread (PN real, 27/08/2026) e autorizou explicitamente submeter
+      "com as mesmas specs dele" (specs de NT5CB512M8BN). Specs espelhadas do known_part irmao mais
+      proximo, mesma organizacao/familia: chip_type=DDR3 (NT5CB e sempre 1.5V, nao DDR3L -- padrao
+      estabelecido em toda a familia), density_gbit=4Gb, interface=x8 (aritmetica: 512M x 8bit =
+      4096Mbit = 4Gb, igual a todas as dies desta organizacao: CN/DN/EN/EQ/BN). confidence=manual
+      (nao "confirmed"): fonte e confirmacao direta do dono, nao datasheet publico para "BH" em si
+      -- consistente com a convencao de que "manual" e igualmente autoritativo, so com proveniencia
+      diferente (mesmo padrao do NT5CD256M16DP, rodada 19). NAO inventei sufixo -- zero evidencia de
+      qualquer variante de sufixo pra "BH" em qualquer fonte; submeti so o PN exato observado.
+      source_url aponta pro known_part irmao (NT5CB512M8CN-DI) so como referencia de especificacao
+      da organizacao/familia, nao como fonte direta do PN "BH".

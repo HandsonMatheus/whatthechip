@@ -1,0 +1,385 @@
+# submissions/winbond_lpddr2_w97xh_2026-09-01.yaml
+#
+# Origem: debug do estoque colado pelo dono — PN de bancada W978H6KBVX2E veio known=false,
+# in_review_queue=true, todos os campos vazios.
+#
+# FAMÍLIA NOVA para a chat Winbond: "Mobile DRAM > Low Power DDR2 SDRAM" (nome oficial
+# winbond.com), datasheet chama de "LPDDR2-S4B" — é a linha "LPDDR–LPDDR4X: DRAM móvel padrão"
+# que o WINBOND.md §3.1 tinha como placeholder "[A CONFIRMAR em Tier-1]". Prefixo confirmado:
+# W97xH, onde x = 8/9/A/B decodifica a densidade (8=256Mb, 9=512Mb, A=1Gb, B=2Gb) — sequência
+# hexadecimal confirmada via datasheet oficial + 3 distribuidores concordando.
+#
+# Decodificação do PN (fonte primária: datasheet oficial Winbond "W979H6KB / W979H2KB LPDDR2-S4B
+# 512Mb", winbond.com/resource-files/w979hxkb_datasheet_pkg_a01-003_20160218.pdf — bloqueado por
+# robots.txt no fetch direto, espelho lido via Mouser:
+# mouser.com/datasheet/2/949/w979hxkb_datasheet_pkg_a01-003_20160218-1489754.pdf):
+#   W97[8/9/A/B]H [6/2] KBV [X1/X2] [E/I]
+#     978H/979H/97AH/97BH = densidade (256Mb/512Mb/1Gb/2Gb)
+#     6 = x16 · 2 = x32                              (organização/interface)
+#     KBV = pacote 134-VFBGA 10x11.5mm (o "V" final)  ("Q" = 168-WFBGA, pacote DIFERENTE — existe
+#                                                       pra 97AH, ver escopo abaixo, NÃO incluído)
+#     X1 = 533MHz · X2 = 400MHz                        (grade de velocidade — bench é X2/400MHz)
+#     E = Extended -25°C~85°C · I = Industrial -40°C~85°C
+#   Tabela oficial confirma "16 valid part numbers" pra 512Mb = 2(org) x 1(pacote V, neste doc) x
+#   2(speed) x 2(temp) x [+ variante pacote Q noutro doc] — a matriz é ORTOGONAL (todo cruzamento é
+#   válido), não um catálogo arbitrário de combinações soltas.
+#
+# ESCOPO desta entrega — só pacote KBV (134-VFBGA), só 256Mb/512Mb/1Gb (3 densidades):
+#   - 97BH (2Gb) EXISTE (confirmado via TECHDesign, pacote "MBV") mas usa sufixo de velocidade
+#     "A1/A2" em vez de "X1/X2" — não achei o datasheet específico pra confirmar se A1/A2 mapeia
+#     pra 533/400MHz na mesma ordem de X1/X2 (não presumido, ver nota nas entradas). Excluído desta
+#     rodada; posso voltar se o dono quiser ou se aparecer um PN de bancada "97BH...MBV...".
+#   - 97AH também existe em pacote "KBQ" (168-WFBGA, confirmado via RS Online) — pacote FÍSICO
+#     diferente do que está na bancada (KBV). Não incluído — mesma lógica.
+#   - "TR" (tape & reel) é só embalagem de remessa, não uma marcação de die distinta — não vira
+#     known_part próprio (mesmo critério já usado nas famílias DDR3 W63x/DDR2 W97x).
+#
+# Confidence: "confirmed" nas 3 combinações que bateram em 2+ fontes independentes concordando
+# ponto a ponto (density_gbit_num CONFERIDO abaixo pra todas, sub-1Gb sempre em fração de Gb —
+# checagem mecânica rodada, ver rodapé).
+#
+# VERIFICAÇÃO MECÂNICA (rodada antes de entregar, dono pediu que virasse padrão permanente):
+#   grep -nE 'density_gbit:.*[0-9]+\s*Mb' submissions/winbond_lpddr2_w97xh_2026-09-01.yaml
+#     → vazio
+#   python3 (mesmo regex do engine, _GBIT_RE = r'(\d+(?:\.\d+)?)\s*Gb\b') → todas as 24 batem.
+#
+# chip_type/subtype: "LPDDR2" (confirmado em chips/chip_types.py linha 89 — tipo JÁ REGISTRADO,
+# category="dram_mobile", kind="lpddr", carries_generation=True — NÃO é tipo novo, não precisa
+# decisão comercial do dono, ao contrário do caso PSRAM/HyperRAM).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/winbond_lpddr2_w97xh_2026-09-01.yaml
+#   python manage.py submit_known_parts submissions/winbond_lpddr2_w97xh_2026-09-01.yaml --commit
+
+brand: Winbond
+
+known_parts:
+  # ══════════════════ 256Mb (W978H) — bench PN é desta densidade ══════════════════
+  - part_number: "W978H6KBVX1E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA. Matemática: 256Mbit ÷ 8 =
+      32.000.000 bytes = 32MB. Sufixo X1 = 533MHz, E = Extended -25°C~85°C (decodificação via
+      datasheet oficial W979HxKB, mesma família/pacote — ver cabeçalho do arquivo). Fonte:
+      tabela sistemática NAC Semi (único distribuidor encontrado para esta combinação específica
+      de velocidade/temperatura).
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W978H6KBVX1I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA. 256Mbit ÷ 8 = 32MB. X1 =
+      533MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W978H6KBVX2E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: "confirmed"
+    notes: >
+      PN EXATO do debug de bancada do dono (01/09/2026). Low Power DDR2 SDRAM (LPDDR2-S4B)
+      256Mbit, pacote 134-VFBGA (10x11.5mm), x16. Matemática: 256Mbit ÷ 8 = 32.000.000 bytes =
+      32MB. X2 = 400MHz, E = Extended -25°C~85°C. Confirmado em 2 fontes independentes com specs
+      idênticas: DigiKey (parametric direto: "Mobile LPDDR2 SDRAM, 256 Mbit, 134-VFBGA
+      10x11.5mm") e tabela sistemática NAC Semi.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W978H6KBVX2E/5154793"
+
+  - part_number: "W978H6KBVX2I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA. 256Mbit ÷ 8 = 32MB. X2 =
+      400MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W978H2KBVX1E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA, x32. 256Mbit ÷ 8 = 32MB. X1 =
+      533MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W978H2KBVX1I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA, x32. 256Mbit ÷ 8 = 32MB. X1 =
+      533MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W978H2KBVX2E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA, x32. 256Mbit ÷ 8 = 32MB. X2 =
+      400MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W978H2KBVX2I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 256Mbit, pacote 134-VFBGA, x32. 256Mbit ÷ 8 = 32MB. X2 =
+      400MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  # ══════════════════════════ 512Mb (W979H) ══════════════════════════
+  - part_number: "W979H6KBVX1E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA. 512Mbit ÷ 8 = 64MB. X1 =
+      533MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi + datasheet oficial
+      confirma a estrutura da família (16 PNs válidos, org x pacote x speed x temp).
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W979H6KBVX1I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA. 512Mbit ÷ 8 = 64MB. X1 =
+      533MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W979H6KBVX2E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA. 512Mbit ÷ 8 = 64MB. X2 =
+      400MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W979H6KBVX2I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: "confirmed"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA (10x11.5mm), x16. 512Mbit ÷ 8
+      = 64MB. X2 = 400MHz, I = Industrial -40°C~85°C. Confirmado em 2 fontes independentes com
+      specs idênticos: RS Components ("SDRAM 512Mbit Surface Mount, 400MHz, 134-Pin VFBGA") e
+      tabela sistemática NAC Semi; estrutura da família (ordering info: dígito org, pacote,
+      speed, temp) confirmada no datasheet oficial Winbond (mirror Mouser, ver cabeçalho).
+    source_url: "https://uk.rs-online.com/web/p/sdram/1882590"
+
+  - part_number: "W979H2KBVX1E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA, x32. 512Mbit ÷ 8 = 64MB. X1 =
+      533MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W979H2KBVX1I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA, x32. 512Mbit ÷ 8 = 64MB. X1 =
+      533MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W979H2KBVX2E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA, x32. 512Mbit ÷ 8 = 64MB. X2 =
+      400MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi + Mouser lista o PN
+      irmão W979H2KBVX2I diretamente (mesma densidade/pacote/org, temp diferente).
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W979H2KBVX2I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 512Mbit, pacote 134-VFBGA, x32. 512Mbit ÷ 8 = 64MB. X2 =
+      400MHz, I = Industrial -40°C~85°C. Fonte: Mouser (listagem direta do PN) + tabela
+      sistemática NAC Semi.
+    source_url: "https://www.mouser.com/ProductDetail/Winbond/W979H2KBVX2I"
+
+  # ══════════════════════════ 1Gb (W97AH) ══════════════════════════
+  - part_number: "W97AH6KBVX1E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA. 1Gbit ÷ 8 = 128MB. X1 = 533MHz,
+      E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W97AH6KBVX1I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA. 1Gbit ÷ 8 = 128MB. X1 = 533MHz,
+      I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W97AH6KBVX2E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA. 1Gbit ÷ 8 = 128MB. X2 = 400MHz,
+      E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W97AH6KBVX2I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: "confirmed"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA, x16. 1Gbit ÷ 8 = 128MB. X2 =
+      400MHz, I = Industrial -40°C~85°C. Confirmado em 2 fontes independentes com specs
+      idênticos: RS Components ("SDRAM 1Gbit Surface Mount, 400MHz, 134-Pin VFBGA") e tabela
+      sistemática NAC Semi. (Existe também variante em pacote 168-WFBGA/"KBQ" — PN
+      W97AH2KBQX2I, RS Components — pacote FÍSICO diferente, não incluído nesta rodada.)
+    source_url: "https://uk.rs-online.com/web/p/sdram/1882791"
+
+  - part_number: "W97AH2KBVX1E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA, x32. 1Gbit ÷ 8 = 128MB. X1 =
+      533MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W97AH2KBVX1I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA, x32. 1Gbit ÷ 8 = 128MB. X1 =
+      533MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W97AH2KBVX2E"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA, x32. 1Gbit ÷ 8 = 128MB. X2 =
+      400MHz, E = Extended -25°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"
+
+  - part_number: "W97AH2KBVX2I"
+    chip_type: "LPDDR2"
+    subtype: "LPDDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x32"
+    confidence: "distributor"
+    notes: >
+      Low Power DDR2 SDRAM (LPDDR2-S4B) 1Gbit, pacote 134-VFBGA, x32. 1Gbit ÷ 8 = 128MB. X2 =
+      400MHz, I = Industrial -40°C~85°C. Fonte: tabela sistemática NAC Semi.
+    source_url: "https://www.nacsemi.com/products/winbond/low-power-ddr2-sdram/"

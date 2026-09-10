@@ -1,0 +1,90 @@
+# Submissão de known_parts — Micron, FBGA D9PNQ + família MT42L192M32 (2026-09-01)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9PNQ
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9PNQ -> MT42L192M32D3LE-25 IT:A. Familia MT42L (LPDDR2 mobile,
+# standalone/avulso). Organizacao "192M32" = 192Meg x 32bit = 6144Mb / 1024 =
+# 6Gb (binario, mesma aritmetica usada no proprio datasheet oficial Micron
+# pra validar configs irmas: "256M16"=256x16=4096Mb=4Gb, "128M32"=128x32=
+# 4096Mb=4Gb — bate exato). Byte: 6Gb / 8bit = 0.75GB = 768MB.
+#
+# ARMADILHA INVESTIGADA E DESCARTADA — "D<n>" NAO E GERACAO NESTA FAMILIA:
+# o forward-lookup no prefixo "MT42L192M32" devolveu 2 die-codes pra MESMA
+# organizacao "192M32" — "D3LE" (alvo) e "D2KQ" (irmao). Isso ecoa a
+# armadilha ja documentada em D9RJV (mesma organizacao, die-code diferente,
+# risco de geracao/densidade divergente). Aqui foi POSSIVEL resolver com
+# certeza, em vez de assumir: o datasheet OFICIAL da Micron pra familia
+# 4Gb LPDDR2 (MT42L256M16D1/MT42L128M32D1/MT42L256M32D2/MT42L128M64D2/
+# MT42L512M32D4/MT42L192M64D3/MT42L256M64D4 — hospedado via Mouser, ver
+# source_url) tem uma secao "Device type" EXPLICITA na Figura 1 (Part
+# Numbering): "D1"=LPDDR2-S4 1 die no pacote, "D2"=2 dies, "D3"=3 dies,
+# "D4"=4 dies — TODOS sob o mesmo LPDDR2-S4, e completamente ORTOGONAL ao
+# campo "Configuration" (que e onde mora a densidade/largura, ex. "192M32").
+# Ou seja: D2KQ e D3LE sao a MESMA densidade logica (6Gb x32), empacotada
+# com contagem diferente de dies fisicos (2 vs 3) — decisao de manufatura/
+# yield da Micron, nao mudanca de geracao nem de capacidade. Confirmado
+# tambem que AMBOS sao LPDDR2 (nao LPDDR3, apesar do digito "3" em "D3LE")
+# via Octopart: 7 listagens de distribuidor independentes (Worldway,
+# Microchip USA, Esaler, Fmall, Aztech, Suntronic, SHENGYU), TODAS com a
+# mesma descricao literal "DRAM Chip Mobile LPDDR2 SDRAM 6G-Bit 192Mx32
+# 1.8V 168-Pin FBGA" pros dois speed grades do alvo (-25 e -3). Convergencia
+# de fonte Tier-1 (principio do numbering) + Tier-2 (numero exato, 7x
+# corroborado) — nao e extensao por semelhanca, e confirmacao direta dos
+# DOIS die-codes.
+#
+# ES: forward-lookup devolveu 8 PNs no total; 4 excluidos por "ES" (padrao
+# com espaco, regex padrao desta sessao pega direto): Z9PNP
+# ("...IT ES:A"), Z9PNR ("...IT ES:A", speed -3), Z9QMW ("...WT ES"),
+# Z9QMZ ("...WT ES", speed -3) — Engineering Sample, nao produção.
+#
+# Convencao de campo (LPDDR avulso, CLAUDE.md §6): chip_type/subtype =
+# geracao ("LPDDR2"), capacity = pacote em GB/MB (NAO density_gbit — esse
+# campo e so pra DDR/GDDR/SDRAM/RDRAM discreta). interface = largura (x32).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisao de
+# part_number_norm dentro da propria lista (checado programaticamente).
+# Sem sobreposicao com nenhuma submissao anterior (grep em
+# submissions/*.yaml, zero match pra "MT42L192M32"/D9PNQ/D9PNS/D9QMX/D9QNB).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9pnq_family_2026-09-01.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9pnq_family_2026-09-01.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT42L192M32D3LE-25 IT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x32
+  capacity: 768MB
+  fbga_code: D9PNQ
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/12/MT42L128M32D1TJ_25_ITA_4Gb_mobile_lpddr2_u80m_Micr-3474829.pdf'
+  notes: 'ALVO da investigacao. Identidade via API FBGA oficial da Micron (reverse+forward lookup, 2026-09-01, delegado por bloqueio WAF): D9PNQ -> MT42L192M32D3LE-25 IT:A. Organizacao "192M32" = 192Meg x 32bit = 6144Mb / 1024 = 6Gb; 6Gb / 8bit = 0.75GB = 768MB. Geracao LPDDR2 (nao LPDDR3, apesar do "D3" em "D3LE") confirmada em 2 niveis: (1) datasheet oficial Micron 4Gb LPDDR2 (hospedado Mouser, este source_url) define "D<n>" = numero de dies no pacote (D1..D4), ortogonal a geracao -- TODOS os D-codes desse datasheet sao LPDDR2-S4; (2) Octopart, 7 listagens de distribuidor independentes, mesma descricao literal "DRAM Chip Mobile LPDDR2 SDRAM 6G-Bit 192Mx32 1.8V 168-Pin FBGA" pra este PN exato. Ver cabecalho do arquivo pro raciocinio completo (mesma armadilha de D9RJV, resolvida com fonte em vez de suposicao).'
+- part_number: 'MT42L192M32D3LE-3 IT:A'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x32
+  capacity: 768MB
+  fbga_code: D9PNS
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/12/MT42L128M32D1TJ_25_ITA_4Gb_mobile_lpddr2_u80m_Micr-3474829.pdf'
+  notes: 'Irmao de familia (forward-lookup MT42L192M32, 2026-09-01), mesmo die-code do alvo (D3LE), speed grade -3 em vez de -25 (nao afeta capacidade/tipo). Octopart confirma a mesma descricao "LPDDR2 SDRAM 6G-Bit 192Mx32" tambem pro speed grade -3 (mesmas 7 listagens de distribuidor). Ver notes do alvo (D9PNQ) e cabecalho do arquivo pra aritmetica e fonte completas.'
+- part_number: 'MT42L192M32D2KQ-25 WT'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x32
+  capacity: 768MB
+  fbga_code: D9QMX
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/12/MT42L128M32D1TJ_25_ITA_4Gb_mobile_lpddr2_u80m_Micr-3474829.pdf'
+  notes: 'Irmao de familia (forward-lookup MT42L192M32, 2026-09-01), die-code DIFERENTE do alvo (D2KQ vs D3LE) mas MESMA organizacao/configuracao "192M32" = mesma densidade logica 6Gb x32 = 768MB. D2/D3 = numero de dies no pacote (2 vs 3), NAO geracao -- ver datasheet oficial Micron citado no source_url (secao "Device type", Figura 1) e explicacao completa no cabecalho do arquivo. Nao e extensao por semelhanca: o principio de numeracao que separa "Configuration" (densidade) de "Device type" (contagem de dies) e Tier-1, direto do fabricante.'
+- part_number: 'MT42L192M32D2KQ-3 WT'
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: x32
+  capacity: 768MB
+  fbga_code: D9QNB
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/12/MT42L128M32D1TJ_25_ITA_4Gb_mobile_lpddr2_u80m_Micr-3474829.pdf'
+  notes: 'Irmao de familia (forward-lookup MT42L192M32, 2026-09-01), die-code D2KQ (como D9QMX), speed grade -3 em vez de -25. Mesma organizacao "192M32" = 768MB. Ver notes de D9QMX e cabecalho do arquivo pro raciocinio completo sobre D2 vs D3 = contagem de dies, nao geracao.'

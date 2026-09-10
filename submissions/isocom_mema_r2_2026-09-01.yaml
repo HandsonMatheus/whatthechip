@@ -1,0 +1,118 @@
+# Submissão known_parts — ISOCOM, 2ª rodada (2026-09-01) — MEMA016G + família-irmã MEMDNNxxxG.
+# Chat de marca ISOCOM. Disparado pelo PN físico MEMA016G aparecendo AO VIVO no debug de estoque do
+# dono (`in_review_queue=true`, fuzzy-match do próprio engine já apontava MEMA032G/MEMA064G — os 2
+# known_parts da 1ª submissão, isocom_mema_2026-09-01.yaml, que continua intocada/em separado).
+#
+# ── POR QUE UM ARQUIVO NOVO, NÃO EDITEI O ANTERIOR ──
+# Mesmo padrão já usado pela ESMT neste projeto (esmt_m15t_x8_2026-08-05.yaml, rodada 2 separada da
+# 1ª): o arquivo anterior pode já estar em revisão/aprovação do dono; um arquivo novo por rodada
+# mantém histórico de diff limpo e nunca risca reabrir uma decisão já tomada.
+#
+# ── O QUE MUDOU NESTA RODADA ──
+# O dono deu um feedback direto na rodada anterior: "SEMPRE procure o máximo possível de PNs...".
+# Antes de resolver `MEMA016G` só via gramática (regra posicional já validada, mas SEM fonte própria
+# de capacidade pra esse PN específico — teria ficado só "derivado", não confirmado), fui atrás de
+# uma fonte de verdade pra ele. Achei uma **lista de fornecedores aprovados de eMMC da Rockchip**
+# (`RKeMMCSupportList Ver1.84`, hospedada em dl.radxa.com — Radxa é fabricante real de placas
+# (ROCK5) baseadas em SoC Rockchip; a lista é um documento técnico de qualificação de hardware, não
+# marketplace nem distribuidor — mais forte que um título de anúncio, mais fraco que um datasheet
+# oficial do próprio fabricante do chip). A tabela confirma, lado a lado, na MESMA linha de produto
+# ISOCOM:
+#   MEMA016G-M0T00   | 128Gb TLC×1 | 16GB | 3D | eMMC 5.1 | FBGA 11.5×13mm
+#   MEMA032G-M0D01   | 256Gb TLC×1 | 32GB | 3D | eMMC 5.1 | FBGA 11.5×13mm
+#   MEMDNN032G-M1S07 | 256Gb TLC×1 | 32GB | 3D | eMMC 5.1 | FBGA 11.5×13mm
+#   MEMDNN064G-M1D03 | 512Gb TLC×1 | 64GB | 3D | eMMC 5.1 | FBGA 11.5×13mm
+#
+# Isso resolve DUAS coisas de uma vez: (1) confirma `MEMA016G`=16GB de forma independente (deixa de
+# ser só derivação de regra) E revela a versão eMMC exata (5.1) que faltava também pro MEMA032G já
+# submetido (ver isocom_mema_2026-09-01.yaml — aquele arquivo fica com `interface` vazio mesmo assim,
+# não editado retroativamente; o dono pode atualizar depois de aprovar, se quiser); (2) revela um
+# prefixo NOVO, `MEMDNN`, que eu não conhecia — estrutura IDÊNTICA à família FEMD da Foresee (prefixo
+# 4 chars + grade "NN" + capacidade literal + "G"), com specs (32GB/64GB, eMMC 5.1, 3D TLC, mesmo
+# tamanho de pacote) IDÊNTICAS às já conhecidas MEMA032G/MEMA064G. Não ignorei essa 2ª família por
+# estar fora do pedido original — mesmo princípio do feedback do dono, pesquisar o máximo possível.
+#
+# ⚠ Relação MEMA↔MEMD NÃO confirmada: podem ser o mesmo produto sob dois nomes (marcação física curta
+# vs. order code completo do fabricante) ou dois SKUs distintos com a mesma especificação comercial.
+# Documentado como observação em ISOCOM.md §3.2, não tratado como fato — não muda a classificação de
+# nenhum dos dois PNs (cada um decodifica certo pela sua própria família/known_part).
+#
+# CONFIDENCE = distributor (não `manual`, não `confirmed`) pros 3 PNs abaixo — a fonte é uma lista
+# técnica de terceiro (Rockchip/Radxa), estruturada e nomeada, mas UMA fonte só, não cruzada ainda com
+# uma 2ª fonte independente nem com confirmação física do dono (nenhum destes 3 PNs foi inspecionado
+# fisicamente nesta sessão). Mais forte que um título de marketplace (por isso não é `manual`/mesmo
+# nível dos 2 known_parts da 1ª rodada), mas abaixo da barra de 3 fontes de engenharia cruzadas que
+# este projeto usa pra `confirmed`.
+#
+# Rodar (o DONO), depois de já ter rodado a 1ª submissão OU em paralelo (não depende uma da outra):
+#   python manage.py submit_known_parts submissions/isocom_mema_r2_2026-09-01.yaml               # dry-run = portão
+#   python manage.py submit_known_parts submissions/isocom_mema_r2_2026-09-01.yaml --commit        # grava (submitted) → aprovar no admin
+#
+# PRÉ-REQUISITO: a Brand "ISOCOM" precisa existir no banco (mesmo pré-requisito da 1ª submissão) —
+#   python manage.py load_brands --brand isocom
+#   python manage.py load_brands --brand isocom --commit
+# Esta rodada TAMBÉM atualizou chips/knowledge/isocom.yaml (2 famílias novas, MEMA e MEMD) — rodar o
+# load_brands acima de novo depois de revisar o yaml aplica a gramática nova também.
+
+brand: ISOCOM
+
+known_parts:
+  - part_number: MEMA016G
+    chip_type: eMMC
+    subtype: ''
+    interface: 'eMMC 5.1'
+    capacity: 16GB
+    device: FBGA 11.5x13mm
+    confidence: distributor
+    notes: >
+      PN real escaneado ao vivo no estoque do dono (2026-09-01, in_review_queue=true) — o próprio
+      fuzzy-match do engine já associava a MEMA032G/MEMA064G (já known_parts confirmados na rodada
+      anterior). Capacidade, versão eMMC e arquitetura confirmadas pela lista de fornecedores
+      aprovados de eMMC da Rockchip (RKeMMCSupportList Ver1.84, dl.radxa.com — documento técnico de
+      qualificação de hardware, não marketplace): "MEMA016G-M0T00", 128Gb TLC×1, 3D, eMMC 5.1, FBGA
+      11.5x13mm. O order code completo do fabricante tem sufixo ("-M0T00"); o part_number aqui é a
+      forma BASE sem sufixo (o que o dono de fato escaneia/o chip real mostra — ver MEMA032G físico
+      na 1ª submissão para o precedente de marcação sem sufixo). Mesma marca ISOCOM = provavelmente
+      Shenzhen Longsys Electronics (ver isocom_mema_2026-09-01.yaml cabeçalho / ISOCOM.md §3.1 pro
+      relato completo da identidade). confidence=distributor: fonte única (Rockchip/Radxa), técnica e
+      nomeada, mas não cruzada com 2ª fonte independente nem confirmação física do dono para este PN
+      específico.
+    source_url: https://dl.radxa.com/rock5/hw/RKeMMCSupportList%20Ver1.84_20240815.pdf
+
+  - part_number: MEMDNN032G-M1S07
+    chip_type: eMMC
+    subtype: ''
+    interface: 'eMMC 5.1'
+    capacity: 32GB
+    device: FBGA 11.5x13mm
+    confidence: distributor
+    notes: >
+      Prefixo NOVO (família MEMD, ver chips/knowledge/isocom.yaml), achado na mesma lista Rockchip
+      que resolveu o MEMA016G (RKeMMCSupportList Ver1.84, dl.radxa.com): "MEMDNN032G-M1S07", 256Gb
+      TLC×1, 3D, eMMC 5.1, FBGA 11.5x13mm, fabricante ISOCOM. Estrutura do PN é idêntica à família
+      FEMD da Foresee (prefixo 4 chars terminado em D + grade "NN" + capacidade literal em GB + "G")
+      — reforça a hipótese de que ISOCOM é Shenzhen Longsys Electronics (mesma dona da Foresee, ver
+      ISOCOM.md §3.1). Specs (32GB, eMMC 5.1, 3D TLC, mesmo tamanho de pacote) são IDÊNTICAS ao
+      MEMA032G já confirmado (1ª submissão) — relação exata entre os dois PNs (mesmo produto sob 2
+      nomes, ou 2 SKUs distintos) NÃO confirmada, documentada como observação em ISOCOM.md §3.2, não
+      tratada como fato. part_number inclui o sufixo do order code ("-M1S07") porque essa foi a ÚNICA
+      forma observada pra esta família — ao contrário da MEMA, não há evidência física de como um
+      chip MEMD é marcado de verdade. confidence=distributor: fonte única (Rockchip/Radxa), técnica e
+      nomeada, não cruzada com 2ª fonte independente nem confirmação física do dono.
+    source_url: https://dl.radxa.com/rock5/hw/RKeMMCSupportList%20Ver1.84_20240815.pdf
+
+  - part_number: MEMDNN064G-M1D03
+    chip_type: eMMC
+    subtype: ''
+    interface: 'eMMC 5.1'
+    capacity: 64GB
+    device: FBGA 11.5x13mm
+    confidence: distributor
+    notes: >
+      Irmã de capacidade do MEMDNN032G-M1S07 acima (mesma família nova MEMD, ver known_part acima
+      pro relato completo). Lista Rockchip (RKeMMCSupportList Ver1.84, dl.radxa.com): "MEMDNN064G-
+      M1D03", 512Gb TLC×1, 3D, eMMC 5.1, FBGA 11.5x13mm, fabricante ISOCOM. Specs idênticas ao
+      MEMA064G já confirmado (1ª submissão, via título Alibaba) — mesma nuance de relação
+      MEMA↔MEMD não confirmada (ver known_part MEMDNN032G-M1S07 acima e ISOCOM.md §3.2).
+      confidence=distributor pelo mesmo motivo dos outros 2 PNs desta submissão.
+    source_url: https://dl.radxa.com/rock5/hw/RKeMMCSupportList%20Ver1.84_20240815.pdf

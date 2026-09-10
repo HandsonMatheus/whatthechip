@@ -1,0 +1,40 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "256X8DDR3"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: manual
+    source_url: ""
+    notes: >
+      Debug ao vivo do estoque, 27/08/2026 15:40:46, PN "256X8DDR3" -- 100% em branco,
+      fuzzy_suggestions aponta pro sibling ja confirmado "256X16DDR3" (rodada 22, mesma
+      sessao, chip com marcacao GENERICA/literal sem PN de catalogo: "NANYA"+"WZX" +
+      "256X16"+"DDR3" gravados no encapsulamento, foto do dono). O dono sinalizou "outro
+      caso desses" ao colar este debug -- reconhecendo o MESMO padrao de marcacao
+      generica, desta vez organizacao 256M x8 (nao x16). Aritmetica: 256M x 8bit =
+      2048Mbit = 2Gb (densidade DIFERENTE do sibling x16, que e 4Gb).
+      PESQUISA EXAUSTIVA (mesmo rigor da rodada 22): Octopart = ZERO resultado exato pra
+      "256X8DDR3". Alldatasheet = ZERO resultado real (o unico "1 Results" retornado e um
+      falso-positivo, PN "256X" da Tyco Electronics/MACOM, um rele de protecao -- nao tem
+      NADA a ver com DRAM). WebSearch geral: achei UMA unica referencia, "256X8DDR3 WT"
+      atribuido a um "fabricante" chamado "COLDCON" em agregadores de corretor de baixo
+      nivel (DigiPart/Zeano) -- sem NENHUMA especificacao real, sem estoque/preco
+      genuino, campos vazios/placeholder na 2a listagem. Investiguei "COLDCON" via
+      WebSearch dedicado: NAO existe como fabricante real de DRAM em nenhuma fonte
+      (Micron/Samsung/Hynix/ChangXin/Winbond sao os fabricantes reais citados, "COLDCON"
+      nao aparece em lugar nenhum confiavel) -- tratado como o MESMO padrao de
+      contaminacao de corretor de baixo nivel ja identificado varias vezes nesta sessao
+      (digchip/datasheets360/prodisknetwork), possivelmente o proprio corretor
+      descrevendo genericamente um chip sem marca/sem PN (o mesmo fenomeno que estamos
+      documentando aqui), nao uma fonte independente. NAO tratei como confirmacao.
+      DECISAO: apliquei o MESMO precedente da rodada 22 (dono ja decidiu: usar a string
+      LITERAL como part_number, confidence=manual, sem source_url). chip_type=subtype=
+      DDR3 (marcacao literal diz "DDR3", mesmo padrao do sibling x16). ATENCAO/DIFERENCA
+      da rodada 22: desta vez NAO recebi foto nova confirmando a marcacao fisica exata
+      deste chip especifico -- a decisao de tratar como "outro caso do mesmo padrao" se
+      apoia no comentario do dono ("outro caso desses") + o formato identico ao sibling
+      ja resolvido + a ausencia total de qualquer PN de catalogo alternativo mais
+      plausivel. Sinalizado explicitamente ao dono no chat para confirmar/corrigir se
+      necessario.

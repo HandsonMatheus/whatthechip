@@ -1,0 +1,189 @@
+# Submissão known_parts — Winbond, cluster DDR3/DDR3L "Specialty DRAM", PACOTE "NB" em W631 (2026-09-02).
+# Origem: debug do estoque com PN de bancada "W631GU6NB" (known=false, in_review_queue=true, sem
+# sufixo de velocidade — ver JSON colado pelo dono, 02/09/2026 11:29:47; fuzzy_suggestions só achou
+# irmãos NB de OUTRAS densidades: W632GU6NB/W634GU6NB/W632GG6NB/W632GU8NB/W634GG6NB — confirmando que
+# o sistema não tinha NENHUM PN "W631"+"NB" cadastrado).
+#
+# MESMA FAMÍLIA já mapeada em winbond_ddr3_w63x_2026-09-01.yaml e winbond_ddr3_w63x_kb_2026-09-01.yaml
+# (ver [[wtc-winbond-ddr3-w63x-specialty-dram]]): DDR3/DDR3L "Specialty DRAM", W631=1Gb / W632=2Gb /
+# W634=4Gb, "GG"=1.5V/DDR3 / "GU"=1.35V/DDR3L, dígito "6"=x16 / "8"=x8. NÃO é família nova.
+#
+# LACUNA ESPELHADA (imagem de espelho da rodada "KB" de ontem): o pacote "NB" JÁ tinha 11 PNs no
+# arquivo original, mas TODOS em W632/W634 — ZERO em W631 (1Gb). É o padrão inverso exato da rodada
+# anterior desta mesma sessão, onde "KB" existia em W631 mas faltava em W632. Mesma lição, 3ª vez
+# hoje (1ª: pacote "JB" ausente na família DDR2 W97x; 2ª: pacote "KB" ausente em W632 na família DDR3
+# W63x): fonte sistemática ≠ fonte completa — o distribuidor original só não listou/carregou esta
+# combinação densidade×pacote, não significa que o fabricante não produziu.
+#
+# MAXIMIZAÇÃO NESTA RODADA: busquei "NB" em W631 nas duas organizações (GG=x16/x8, GU=x16/x8) e nas
+# grades de velocidade disponíveis, incluindo variante industrial "I". Total: 10 known_parts novos.
+#
+# PN de bancada SEM sufixo de velocidade — 3º CASO SEGUIDO nesta marca, sempre na linha "Specialty
+# DRAM" (ver avisos já registrados em winbond_ddr2_w97x_jb_2026-09-01.yaml pro PN "W971GG6JB" e em
+# winbond_ddr3_w63x_kb_2026-09-01.yaml pro PN "W632GG6KB"): todo PN físico desta família carrega
+# sufixo (-09/-11/-12, e variante industrial "I"). O candidato mais provável pra "W631GU6NB" é
+# `W631GU6NB-11` — não só é o mais citado (4 fontes independentes: SnapEDA/SnapMagic, DigiKey ID
+# 14290030, Arrow TRAY, Mouser), como é a MESMA família/organização (GU6, DDR3L x16) do PN de
+# bancada. NÃO decidido sozinho: sinalizado aqui e na nota do PN, pra confirmação física do dono.
+# Padrão se repetindo agora 3/3 nesta sessão — reforça a suspeita já registrada de que o scanner/
+# leitura de bancada pode estar cortando especificamente o sufixo de velocidade nesta linha
+# "Specialty DRAM" (não aconteceu no único PN da linha móvel LPDDR2 lido hoje, que veio completo
+# com X2E incluso). Vale considerar com o dono uma checagem no processo de leitura/OCR desta linha.
+#
+# EXCLUÍDO desta rodada (buscado, não confirmado — excluir, não adivinhar):
+#   - Grade PLANA (sem "I") de "W631GG8NB": 2 buscas dedicadas (incluindo 1 excluindo "-12I"/"-11I"
+#     explicitamente), só apareceu a variante industrial "W631GG8NB12I" (RS Online, múltiplos
+#     espelhos de país). Nenhuma fonte cita "W631GG8NB-XX" sem o "I".
+#   - W631+NB com sufixo de velocidade "-15": existe pra outros pacotes desta família (ex.:
+#     W631GG6KB-15), mas não achei "...NB-15" em nenhuma fonte pra W631 — não presumido.
+#
+# Fonte: mistura de distribuidor direto (DigiKey — várias regionais/.com/.at/.cn — Mouser, Arrow,
+# SZComponents, SnapEDA/SnapMagic, Avnet APAC, todos com página própria de produto) + agregadores
+# (LCSC, Octopart, Xecor, Xonelec, TECHDesign, ssfkg.com, Fusion WW, Lovechip, Lisleapex, RS Online)
+# batendo densidade/organização/tensão/velocidade entre si. Nenhum datasheet oficial Winbond.com
+# encontrado pra estas grades específicas (diferente da rodada KB, que achou 2).
+#
+# Convenção Winbond (WINBOND.md golden #6): nomenclatura da marca é em BIT; capacity/density_gb aqui
+# são SEMPRE byte (Gb÷8). Aritmética mostrada em cada `notes`. Densidade aqui (1Gb) é ≥1Gb — sem
+# risco do bug de fração sub-1Gb — mas a verificação mecânica (grep+`_GBIT_RE`) foi rodada mesmo
+# assim, por disciplina permanente (ver [[wtc-density-gbit-subgb-precisa-fracionario]]).
+#
+# Rodar (o DONO):
+#   python manage.py submit_known_parts submissions/winbond_ddr3_w63x_nb_2026-09-02.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/winbond_ddr3_w63x_nb_2026-09-02.yaml --commit     # grava (submitted) → aprovar no admin
+#
+# PRÉ-REQUISITO (winbond.yaml): a Brand "Winbond" já existe no banco (rodadas anteriores desta marca).
+brand: "Winbond"
+known_parts:
+  - part_number: "W631GG6NB-12"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Pacote "NB" na densidade W631 (1Gb) — mesma família/organização do irmão já aprovado
+      W631GG6KB-12, pacote diferente. 1Gbit ÷ 8 = 128MB. Confirmado em 5 fontes independentes:
+      DigiKey (produto próprio, ID 14204748), LCSC (C17452711), Avnet, Mouser e IBS Electronics.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W631GG6NB-12/14204748"
+  - part_number: "W631GG6NB12I"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante industrial (sufixo "I" colado sem hífen) do W631GG6NB-12. 1Gbit ÷ 8 = 128MB.
+      Confirmado via RS Online (mesma ficha espelhada em vários domínios de país), 1 fonte.
+    source_url: "https://kr.rs-online.com/web/p/sdram/2420768"
+  - part_number: "W631GG8NB12I"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Mesma densidade/pacote/velocidade do W631GG6NB12I, organização x8 em vez de x16 (dígito "8" no
+      PN; capacidade total não muda: 1Gbit ÷ 8 = 128MB). Só achei a variante industrial "I" — 2
+      buscas dedicadas não encontraram grade plana "W631GG8NB-XX". Confirmado via RS Online, 1 fonte.
+    source_url: "https://ph.rs-online.com/web/p/sdram/2420770"
+  - part_number: "W631GU6NB-09"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante DDR3L do pacote NB em W631, grade de velocidade "-09" (mais rápida que "-11"/"-12"
+      desta mesma organização). 1Gbit ÷ 8 = 128MB. Confirmado via TECHDesign (produto próprio),
+      1 fonte.
+    source_url: "https://www.techdesign.com/market/winbond/product-detail/wec000297/w631gu6nb-09"
+  - part_number: "W631GU6NB-11"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      PROVÁVEL IDENTIDADE REAL DO PN DE BANCADA DO DONO ("W631GU6NB", sem sufixo de velocidade — ver
+      aviso no cabeçalho do arquivo; CONFIRMAR na marcação física antes de aprovar). 1Gbit ÷ 8 =
+      128MB. Confirmado em 4 fontes independentes: SnapEDA/SnapMagic (footprint+símbolo), DigiKey
+      (produto próprio, ID 14290030), Arrow (TRAY) e Mouser.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W631GU6NB-11/14290030"
+  - part_number: "W631GU6NB-12"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Mesma organização do W631GU6NB-11, grade de velocidade "-12" (mesma grade que o dono confirmou
+      fisicamente pro pacote KB desta densidade, W631GG6KB-12/W631GU6KB-12). 1Gbit ÷ 8 = 128MB.
+      Confirmado em 6 fontes independentes: LCSC (C17328916), Fusion WW, Octopart, DigiKey regional
+      .cn (ID 14290031), TECHDesign e ssfkg.com.
+    source_url: "https://www.digikey.cn/en/products/detail/winbond-electronics/W631GU6NB-12/14290031"
+  - part_number: "W631GU6NB11I"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Variante industrial (sufixo "I" colado sem hífen) do W631GU6NB-11. 1Gbit ÷ 8 = 128MB. Fontes
+      citam também como "W631GU6NB11I-TR" ("TR" removido — embalagem, não marcação). Confirmado em
+      5 fontes independentes: DigiKey regional .at (produto próprio, ID 15182067), Avnet APAC,
+      Mouser, Xecor e Lisleapex.
+    source_url: "https://www.digikey.at/en/products/detail/winbond-electronics/W631GU6NB11I/15182067"
+  - part_number: "W631GU6NB12I"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante industrial do W631GU6NB-12 (grade "-12", distinta da "W631GU6NB11I" acima, que é
+      grade "-11"). 1Gbit ÷ 8 = 128MB. Confirmado via RS Online (mesma ficha espelhada em vários
+      domínios de país: jp/kr/pt/it), 1 fonte.
+    source_url: "https://jp.rs-online.com/web/p/sdram/2420773P"
+  - part_number: "W631GU8NB-11"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: confirmed
+    notes: >
+      Mesma grade de velocidade do W631GU6NB-11, organização x8 em vez de x16 (capacidade total não
+      muda: 1Gbit ÷ 8 = 128MB). Confirmado em 3 fontes independentes: Mouser (produto próprio),
+      Arrow (TRAY) e SZComponents.
+    source_url: "https://www.szcomponents.com/product-detail/winbond/w631gu8nb-11/1789151"
+  - part_number: "W631GU8NB-12"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: confirmed
+    notes: >
+      Mesma grade de velocidade do W631GU6NB-12, organização x8 (1Gbit ÷ 8 = 128MB). Confirmado em
+      3 fontes independentes: DigiKey (produto próprio, ID 14290021; existe também variante "-TR"
+      só de embalagem, ID 15181883, não usada aqui), Mouser e Lovechip.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W631GU8NB-12/14290021"

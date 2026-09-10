@@ -1,0 +1,161 @@
+# Submissão de known_parts — Micron, FBGA D9SFS + família MT41K256M4 (2026-09-02)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9SFS
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9SFS -> MT41K256M4DA-107:J. Organizacao "256M4" = 256Meg x4bit =
+# 1024Mbit = 1Gb (bate com part-name da API: "DDR3 1G X4 TFBGA").
+#
+# ⚠ DDR3 vs DDR3L — MESMA ARMADILHA JA DOCUMENTADA EM D9MPK (2026-08-27,
+# ver submissions/micron_d9mpk_family_2026-08-27.yaml): o part-name
+# abreviado da propria API diz so "DDR3", omitindo o "L". Confirmado via
+# datasheet OFICIAL Micron ("1.35V DDR3L SDRAM Addendum", ic-components.com,
+# 1Gb_1_35V_DDR3L.pdf Rev.F): titulo cobre EXATAMENTE "MT41K256M4 -- 32 Meg
+# x 4 x 8 banks" (meu alvo) JUNTO com "MT41K64M16" -- a MESMA organizacao ja
+# confirmada DDR3L em D9MPK, mesmo documento cobrindo os dois. chip_type =
+# DDR3L, nao DDR3.
+#
+# Forward-lookup no PREFIXO "MT41K256M4" (2026-09-02, delegado -- WAF do
+# micron.com bloqueado nesta sessao) devolveu 24 PNs, em 3 grupos de
+# pacote/revisao: "HX" (rev D), "JP" (rev F/G -- o MESMO codigo de pacote
+# documentado no addendum oficial, marcacao "JP" = 78-ball FBGA x4/x8) e
+# "DA" (rev J, pacote do alvo -- mais novo que o addendum Rev.F cobre, mas
+# MESMA organizacao "256M4", confirmada pelo part-name proprio da API pro
+# alvo). Addendum afirma explicitamente: "DDR3L SDRAM meets the functional
+# and timing specifications listed in the equivalent density DDR3 SDRAM
+# data sheet" -- pacote/revisao sao ortogonais a densidade/tipo (mesmo
+# padrao ja visto repetidas vezes nesta sessao).
+#
+# ⚠ ANOMALIA: 1 PN ("MT41K256M4HX-15E:D") tem fbga_code "K9KPD" -- prefixo
+# "K9" em vez do "D9" padrao desta leva (ou "Z9" de ES). Nunca visto antes
+# nesta sessao. Mesma organizacao/pacote/revisao dos irmaos "HX:D"
+# (D9KHB, D9KHD), so speed grade diferente ("15E") -- tratado como
+# producao normal (sem sinal de problema), sinalizado aqui por
+# transparencia.
+#
+# ES: 12 excluidos (padrao "ES" com espaco, regex padrao pegou) -- 3 "HX"
+# (Z9KHC, Z9KHF, Z9KPC), 7 "JP" (Z9KQV, Z9KQX, Z9KRB, Z9KRD, Z9MMT, Z9MPG,
+# Z9MPV), 2 "DA" (Z9RDF, Z9RJS).
+#
+# Sobraram 12 PNs de producao, todos com a MESMA chave "256M4" = DDR3L,
+# x4, 1Gb.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisao de
+# part_number_norm dentro da propria lista (checado programaticamente).
+# Sem sobreposicao com nenhuma submissao anterior (grep em submissions/*.yaml
+# -- so mencao em comentario do arquivo D9MPK, sem known_part real
+# colidindo).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9sfs_family_2026-09-02.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9sfs_family_2026-09-02.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT41K256M4DA-107:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9SFS
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'ALVO da investigacao. Identidade + part-name direto da API FBGA oficial da Micron (reverse+forward lookup, 2026-09-02, delegado por bloqueio WAF): D9SFS -> MT41K256M4DA-107:J, part-name "DDR3 1G X4 TFBGA". Organizacao 256M4 = 256Meg x4 = 1024Mbit = 1Gb. ⚠ Part-name da API diz so "DDR3" -- confirmado DDR3L (nao DDR3) via datasheet oficial Micron "1.35V DDR3L SDRAM Addendum" que cobre EXATAMENTE esta organizacao "MT41K256M4" (mesma armadilha ja documentada em D9MPK, mesmo documento cobrindo as duas organizacoes). Ver cabecalho do arquivo pro raciocinio completo.'
+- part_number: 'MT41K256M4DA-125:J'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9RDD
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), mesmo pacote "DA" do alvo, speed -125 em vez de -107. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-15E:F'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KQW
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP" -- o MESMO codigo de pacote confirmado diretamente no datasheet oficial pra esta organizacao. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-187E:F'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KQZ
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP", speed -187E. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-125:F'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KRC
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP", speed -125. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-25:F'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KRF
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP", speed -25. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-15E:G'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9MPF
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP", revisao ":G" (o proprio source_url e a pagina desta revisao especifica). Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-125:G'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9MPP
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP", revisao ":G", speed -125. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4JP-187E:G'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9MPT
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "JP", revisao ":G", speed -187E. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4HX-25:D'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KHB
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "HX" (revisao :D, mais antiga que a "JP" documentada no addendum, mesma organizacao "256M4"). Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4HX-187E:D'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: D9KHD
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "HX", speed -187E. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'
+- part_number: 'MT41K256M4HX-15E:D'
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: x4
+  density_gbit: 1Gb
+  fbga_code: K9KPD
+  confidence: confirmed
+  source_url: 'https://www.ic-components.com/files/3d/MT41K256M4JP-15E-G.pdf'
+  notes: 'Irmao de familia (forward-lookup MT41K256M4, 2026-09-02), pacote "HX", speed -15E. ⚠ fbga_code com prefixo "K9" (nao "D9" como o resto da leva) -- anomalia sinalizada no cabecalho do arquivo, sem sinal de problema alem do prefixo em si. Ver notes do alvo (D9SFS) e cabecalho do arquivo.'

@@ -1,0 +1,239 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC256M16DP-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145494/NANYA/NT5CC256M16DP-DI.html"
+    notes: >
+      Debug ao vivo do estoque, 27/08/2026 16:00:53, PN "NT5CC256M16DP" -- gramatica ja
+      reconhecia (familia NT5CC/DDR3L) mas known_exact=false, capacity=null,
+      profitable=INDETERMINADO. Aritmetica: 256M x 16bit = 4096Mbit = 4Gb. **Este exato
+      sufixo ("-DI") ja tinha sido PESQUISADO na rodada 19 desta sessao (2026-08-26) como
+      um dos DOIS candidatos na investigacao do PN ambiguo "NT5CD256M16DP"** (o outro
+      candidato era NT5CB256M16DP-EK, DDR3 1.5V) -- na epoca, confirmado por 8+ fontes
+      incl. voltagem explicita (1.35V), mas NUNCA submetido como known_part porque o PN
+      exato daquele debug era "NT5CD" (prefixo diferente, confirmado pelo dono como
+      terceiro prefixo real e distinto). Agora o debug pede "NT5CC" diretamente (sem
+      ambiguidade de prefixo -- a gramatica ja resolve NT5CC=DDR3L de forma inequivoca),
+      entao completei a pesquisa que ficou pendente. Indice do Alldatasheet pro bucket
+      "NT5CC256M16D" (38 resultados totais) reconcilia EXATO: DN(18)+DP(20)=38, sem
+      sobra -- die "DP" (a do debug) tem 20 sufixos, TODOS documentados por datasheet
+      OFICIAL da Nanya (pagina aberta e verificada: cada uma mostra "Manufacturer NANYA
+      [Nanya Technology Corporation.]", mesmo documento de 163 paginas/4Mb, descricao
+      "Commercial, Industrial and Automotive DDR3(L) 4Gb SDRAM" identica nas 20).
+      Corroborado tambem por Octopart com estoque real em 5 distribuidores: Weyland, Win
+      Source, ICPartonline, IC Components, Worldway. **Rodada com FONTE TIER-1
+      SISTEMATICA (indice completo do fabricante) -- esgotei o cluster "DP": submeti as
+      20 variantes com datasheet oficial confirmado.** Die irmã "DN" (18 sufixos, mesmo
+      bucket "256M16D") NAO foi pedida neste debug -- fica de backlog, nao submetida
+      agora. PN exato da bancada (sem sufixo) nao resolve mesmo apos aprovacao --
+      ressalva de sempre nesta familia.
+  - part_number: "NT5CC256M16DP-DIA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145532/NANYA/NT5CC256M16DP-DIA.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet. Octopart:
+      estoque real em 5 distribuidores (Weyland, Win Source, ICPartonline, Fmall,
+      Worldway).
+  - part_number: "NT5CC256M16DP-DIB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145493/NANYA/NT5CC256M16DP-DIB.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-DIH"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145522/NANYA/NT5CC256M16DP-DIH.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet. Octopart:
+      estoque real em 5 distribuidores (Weyland, Win Source, ICPartonline, YIC
+      International, IC Components).
+  - part_number: "NT5CC256M16DP-DII"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145504/NANYA/NT5CC256M16DP-DII.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet. Octopart
+      mostra descricao tecnica detalhada e independente: "DRAM Chip DDR3L SDRAM 4Gbit
+      256Mx16 1.35V 96-Pin VFBGA" -- confirma aritmetica E voltagem (1.35V=DDR3L)
+      diretamente. Estoque real em 5 distribuidores (Weyland, Win Source, ICPartonline,
+      YIC International, IC Components).
+  - part_number: "NT5CC256M16DP-DINA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145542/NANYA/NT5CC256M16DP-DINA.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-DIT"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145513/NANYA/NT5CC256M16DP-DIT.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-EK"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145496/NANYA/NT5CC256M16DP-EK.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet. Octopart:
+      estoque real em 5 distribuidores (Win Source, ICPartonline, Fmall, Worldway,
+      SHENGYU Electronics).
+  - part_number: "NT5CC256M16DP-EKA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145534/NANYA/NT5CC256M16DP-EKA.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-EKB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145630/NANYA/NT5CC256M16DP-EKB.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-EKH"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145524/NANYA/NT5CC256M16DP-EKH.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-EKI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145506/NANYA/NT5CC256M16DP-EKI.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet. Octopart
+      mostra 1 distribuidor com estoque real (Worldway Electronics); titulo generico do
+      Octopart diz "DDR3 4GB 256MX16 933MHZ BGA96" (categorizacao propria do agregador,
+      inconsistente com "DDR3L" -- o datasheet oficial do fabricante e a fonte que
+      prevalece, mesma familia/documento das outras 19 variantes).
+  - part_number: "NT5CC256M16DP-EKNA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145550/NANYA/NT5CC256M16DP-EKNA.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-EKT"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145515/NANYA/NT5CC256M16DP-EKT.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-FLA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145616/NANYA/NT5CC256M16DP-FLA.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-FLB"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145638/NANYA/NT5CC256M16DP-FLB.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-FLH"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145602/NANYA/NT5CC256M16DP-FLH.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-FLI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145588/NANYA/NT5CC256M16DP-FLI.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-FLNA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145558/NANYA/NT5CC256M16DP-FLNA.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet.
+  - part_number: "NT5CC256M16DP-FLT"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145574/NANYA/NT5CC256M16DP-FLT.html"
+    notes: >
+      Mesmo cluster/debug que NT5CC256M16DP-DI (ver notes daquele known_part para o
+      contexto completo). Datasheet oficial Nanya no indice do Alldatasheet. Ultimo
+      sufixo confirmado do cluster "DP" -- os 20 do bucket foram todos submetidos nesta
+      rodada.

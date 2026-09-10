@@ -1,0 +1,262 @@
+# Submissão de known_parts — Micron, FBGA D9HSS + família MT46H64M16LF (2026-09-02)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9HSS
+# (não identificado na bancada, fila de revisão).
+#
+# ACHADO: D9HSS -> MT46H64M16LFCK-6 IT:A. Micron "Mobile DDR" / "Mobile
+# LPDDR" -- JEDEC "LPDDR" original (primeira geracao, sem numero -- hoje
+# chamada retroativamente de LPDDR1, antecessora da LPDDR2). Organizacao
+# "64M16" = 64Meg x 16bit = 1024Mb / 1024 = 1Gb; 1Gb / 8bit = 0.125GB =
+# 128MB. Interface x16.
+#
+# FONTES (2 independentes, convergentes):
+# (1) Datasheet oficial Micron (1gb_ddr_mobile_sdram_t68m.pdf, Mouser) --
+#     titulo "Mobile Low-Power DDR SDRAM", capa "MT46H64M16LF -- 16 Meg x
+#     16 x 4 banks"; Figura 1 "1Gb Mobile LPDDR Part Numbering": "46 =
+#     Mobile LPDDR" (produto), "64M16" = Configuration, "LF" = Addressing
+#     JEDEC-standard, package/temp/speed/revisao SEPARADOS (ortogonais a
+#     densidade -- mesmo padrao ja visto nos datasheets LPDDR2 e MCP desta
+#     sessao).
+# (2) Octopart, PN exato do alvo: "DRAM Chip Mobile LPDDR SDRAM 1G-Bit
+#     64Mx16 1.8V 60-Pin VFBGA" -- bate exato.
+# (3) A propria API FBGA da Micron devolveu part-name direto pra 8 dos 23
+#     PNs desta leva (incl. o alvo): "MOBILE DDR 1G X16 VFBGA", IDENTICO
+#     em TODOS -- span os dois grupos de pacote (CK e BF) e varios sufixos
+#     (plain, "L", "AIT", "AAT") -- confirma que os sufixos nao mudam
+#     densidade/tipo, so atributo de producao (temp/power/lead-free etc.).
+#
+# ⚠ EXCLUIDO por CAUTELA -- variante "LGCK" (addressing "LG", nao "LF"):
+# 3 PNs de producao (D9HRL, D9HRN, D9HRQ) tem a MESMA organizacao "64M16"
+# mas endereçamento DIFERENTE ("LG" em vez de "LF"). O datasheet oficial
+# encontrado SO documenta "LF = JEDEC-standard" -- nao define "LG"
+# especificamente, e NENHUM dos 3 PNs "LGCK" veio com part-name preenchido
+# na API (diferente dos 8 confirmados acima). Sem confirmacao direta de
+# que "LG" e eletricamente equivalente, optei por NAO estender -- fica de
+# fora desta leva, sinalizado pro dono decidir se vale pesquisa dedicada.
+#
+# ES: 9 excluidos (padrao "ES" com espaco, regex padrao pegou) -- 3 LGCK
+# (Z9HRM, Z9HRP, Z9HRR) + 4 LFCK (Z9HSR, Z9HST, Z9HSV, Z9HSZ) + 2 LFBF
+# (Z9LRC, Z9LRF).
+#
+# Sobraram 23 PNs de producao (15 "LFCK" + 8 "LFBF"), todos com a MESMA
+# chave "64M16LF" = LPDDR1, x16, 128MB -- package (CK=60-ball VFBGA vs
+# BF=60-ball VFBGA, revisoes de pacote diferentes mas mesma forma fisica
+# per Octopart) e demais sufixos nao rastreados neste schema.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisao de
+# part_number_norm dentro da propria lista (checado programaticamente).
+# Sem sobreposicao com nenhuma submissao anterior (grep em submissions/*.yaml,
+# zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9hss_family_2026-09-02.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9hss_family_2026-09-02.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT46H64M16LFCK-6 IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9HSS
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'ALVO da investigacao. Identidade + part-name direto da API FBGA oficial da Micron (reverse+forward lookup, 2026-09-02, delegado por bloqueio WAF): D9HSS -> MT46H64M16LFCK-6 IT:A, part-name "MOBILE DDR 1G X16 VFBGA". Organizacao 64M16 = 64Meg x16 = 1024Mb = 1Gb; 1Gb/8bit=128MB. Confirmado via datasheet oficial Micron (Mouser, source_url) + Octopart (PN exato: "Mobile LPDDR SDRAM 1G-Bit 64Mx16 1.8V 60-Pin VFBGA"). Ver cabecalho do arquivo pro raciocinio completo, incl. a exclusao cautelar da variante "LGCK".'
+- part_number: 'MT46H64M16LFCK-6:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9HSQ
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), mesmo package "CK" do alvo, sem "IT" (temp comercial em vez de industrial). Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-75 IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9HSX
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), mesma chave "64M16LFCK", speed grade -75 em vez de -6. Part-name proprio vazio na API -- capacidade estendida pela MESMA chave de organizacao/addressing (64M16LF), confirmada em 8 PNs irmaos com part-name direto identico. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-75:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9JHS
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -75, sem "IT". Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-5:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9JXB
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -5. Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-75 L IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9KFV
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -75, sufixo "L" (atributo de producao nao decodificado -- confirmado NAO mudar densidade via PN irmao MT46H64M16LFCK-5 L IT:A, part-name identico). Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-5 L IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9KLL
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -5, sufixo "L". Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA" -- prova que o sufixo "L" nao muda densidade/tipo. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-6 AT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9KMV
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), temp "AT" = Automotive (-40C a +105C, documentado no datasheet oficial). Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-5 IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9KNC
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -5, IT. Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-6 L IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9KRP
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -6, sufixo "L", IT. Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-5N:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LHF
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -5, sufixo "N" (atributo de producao nao decodificado, mesmo posicionamento estrutural de "L"/"AT" ja confirmados neutros pra densidade). Part-name proprio vazio na API -- capacidade estendida pela mesma chave "64M16LFCK". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-5N IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LHG
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -5, sufixo "N", IT. Ver notes de D9LHF e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-6N:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LHH
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -6, sufixo "N". Ver notes de D9LHF e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-6N IT:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LHJ
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -6, sufixo "N", IT. Ver notes de D9LHF e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFCK-6R:A'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LWB
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), speed -6, sufixo "R" (atributo de producao nao decodificado, mesmo tratamento de "L"/"N" acima). Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-6 IT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LRD
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF" = 60-ball VFBGA (documentado no datasheet oficial, mesma forma fisica do "CK" do alvo per Octopart), revisao ":B" (Second generation, documentada no datasheet). Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-5 IT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LRG
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed -5, revisao ":B". Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-5 AT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LZD
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed -5, temp "AT"=Automotive, revisao ":B". Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-6 AT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9LZF
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed -6, temp "AT", revisao ":B". Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-48 IT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9PJP
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed grade "-48" (nao documentada no datasheet lido, mas mesma chave de organizacao/addressing "64M16LF" -- so velocidade de clock, nao afeta densidade). Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-5 AIT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9QGX
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed -5, sufixo temp "AIT" (variante nao documentada explicitamente, mas part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA" -- prova que nao muda densidade). Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-5 ITN:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9QPT
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed -5, sufixo "ITN" (variante nao documentada, mesmo tratamento estrutural das demais). Part-name proprio vazio na API. Ver notes do alvo (D9HSS) e cabecalho do arquivo.'
+- part_number: 'MT46H64M16LFBF-5 AAT:B'
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: x16
+  capacity: 128MB
+  fbga_code: D9QRJ
+  confidence: confirmed
+  source_url: 'https://www.mouser.com/datasheet/2/671/T68M_1Gb_mobile_lpddr_sdram-1283717.pdf'
+  notes: 'Irmao de familia (forward-lookup MT46H64M16, 2026-09-02), package "BF", speed -5, sufixo temp "AAT". Part-name proprio confirmado na API: "MOBILE DDR 1G X16 VFBGA". Ver notes do alvo (D9HSS) e cabecalho do arquivo.'

@@ -1,0 +1,260 @@
+# Submissão known_parts — Winbond, cluster DDR2 SDRAM "Specialty DRAM", PACOTE "JB" (2026-09-01).
+# Origem: debug do estoque com PN de bancada "W971GG6JB" (known=false, in_review_queue=true, sem
+# sufixo de velocidade — ver JSON colado pelo dono, 20:36:18).
+#
+# MESMA FAMÍLIA já mapeada em winbond_ddr2_w97x_2026-09-01.yaml (ver [[wtc-winbond-ddr2-w97x-specialty-dram]]):
+# DDR2 SDRAM "Specialty DRAM", W9712G=128Mb / W9725G=256Mb / W9751G=512Mb / W971GG=1Gb / W972GG=2Gb,
+# dígito "6"=x16 / "8"=x8. NÃO é família nova — é um PACOTE ("JB") que a fonte sistemática usada na
+# rodada anterior (tabela NAC Semi) simplesmente NÃO CARREGA/LISTA, então ficou de fora inteiro da
+# 1ª entrega (só W9751G6JB-25, achado por outra via, tinha entrado). Este arquivo fecha essa lacuna.
+#
+# ATENÇÃO — PN de bancada NÃO confirmado literal (golden #10/#12, nunca decidir PN ambíguo sozinho,
+# mesmo padrão já visto no PN de bancada da rodada anterior "W9751G6JBB25"→W9751G6JB-25): "W971GG6JB"
+# (sem sufixo de velocidade) não bate string exata de nenhum chip real — TODO PN físico desta família
+# carrega sufixo de velocidade (-25/-18/-3) e às vezes temperatura (25I). O candidato mais bem
+# documentado (7+ fontes independentes: Alldatasheet, Octopart, Arrow, IC-Components, Lisleapex,
+# Datasheets.com, TechInsights, DigiPart) e o ÚNICO sufixo de velocidade usado em TODOS os 12
+# known_parts já submetidos desta família é "-25" — então `W971GG6JB-25` é o candidato mais provável
+# pra identidade real do PN de bancada (sufixo de velocidade não lido/colado). NÃO decidido sozinho:
+# sinalizado aqui e na nota do PN, pedindo confirmação física do dono antes de aprovar.
+#
+# MAXIMIZAÇÃO NESTA RODADA (regra permanente — esgotar a fonte sistemática): ao pesquisar "JB" pra
+# fechar a lacuna de W971GG (1Gb, o PN de bancada), descobri que o pacote "JB" é uma linha PARALELA
+# completa às linhas KB/NB/SB/SS/KS já submetidas — existe (com fonte direta confirmada) nas outras
+# 4 densidades também (128Mb/256Mb/512Mb/2Gb), em x16 E x8 (x8 só confirmado em 1Gb). Mapeei tudo que
+# consegui confirmar por citação direta nesta mesma rodada em vez de deixar pra próximas: 15 known_parts
+# novos (W9751G6JB-25 da rodada anterior NÃO é reincluído aqui, já está no arquivo original).
+#
+# Sufixos de velocidade confirmados por citação direta: "-25" (praticamente universal), "-18" (5
+# densidades* citadas), "-3" (timing mais rápido, ~0.45ns/667MHz por Octopart — NÃO é duplicata de
+# "-25", specs distintas), "-25I" (variante industrial do "-25", sufixo "I" colado sem hífen — mesma
+# convenção dos pacotes KB/NB/SB já na família). "TR" (tape-reel) tratado como embalagem de remessa,
+# não marcação do chip — sempre removido do PN registrado (mesma convenção já usada nos arquivos
+# anteriores desta marca).
+#
+# EXCLUÍDO desta rodada (buscado, não confirmado o suficiente — excluir, não adivinhar):
+#   - Sufixo "25A" (ex.: "W971GG6JB25A", "W9712G6JB-25A") — aparece em 2 fontes esparsas (ic37, um 2º
+#     PDF ID distinto no Alldatasheet) sem diferenciação de spec clara frente ao "-25" simples; pode
+#     ser artefato de revisão de datasheet ("Rev. A") em vez de sufixo real de marcação — não submetido.
+#   - "-18"/"-3"/"-25I" em W9712G (128Mb): busquei explicitamente, só "-25" tem citação.
+#   - "-25I" em W972GG (2Gb): busquei explicitamente, não achei citação.
+#   - Organização x8 do pacote JB ("...8JB") em W9712G/W9725G/W972GG: busquei, só confirmei em W971GG
+#     (1Gb) — "-25" e "-18". "-3"/"-25I" do x8 em W971GG também buscados e não encontrados.
+#   - "-18"/"-3"/"-25I" adicionais em W9751G (512Mb) que a rodada anterior já tinha aberto com só
+#     "-25": aqui SIM confirmei e incluí "-18"/"-3"/"-25I" novos pra essa densidade (não é exclusão,
+#     é o mapeamento completo do pacote JB nela).
+#
+# Fonte: mistura de distribuidor direto (DigiKey/Arrow — várias com página própria de produto, Tier-2
+# forte) + agregadores (Alldatasheet/Octopart/IC-Components/Veswin/Jotrin/Datasheet4u) batendo
+# densidade/organização entre si. winbond.com (Tier-1 direto) confirma a EXISTÊNCIA do PN-base (páginas
+# oficiais .../specialty-dram/ddr2-sdram/?partNo=W971GG6JB etc., achadas via busca) mas bloqueia fetch
+# por robots.txt — mesma limitação já documentada nesta marca.
+#
+# Convenção Winbond (WINBOND.md golden #6): nomenclatura da marca é em BIT; capacity/density_gb aqui
+# são SEMPRE byte (Gb÷8). Aritmética mostrada em cada `notes`. density_gbit sempre fração de Gb pra
+# sub-1Gb (regra permanente pós-incidente, ver [[wtc-density-gbit-subgb-precisa-fracionario]]) —
+# verificação mecânica rodada antes de entregar.
+#
+# Rodar (o DONO):
+#   python manage.py submit_known_parts submissions/winbond_ddr2_w97x_jb_2026-09-01.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/winbond_ddr2_w97x_jb_2026-09-01.yaml --commit     # grava (submitted) → aprovar no admin
+#
+# PRÉ-REQUISITO (winbond.yaml): a Brand "Winbond" já existe no banco (rodadas anteriores desta marca).
+brand: "Winbond"
+known_parts:
+  - part_number: "W9712G6JB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "16MB"
+    density_gbit: "0.125Gb"
+    density_gb: "16MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Menor densidade da família com pacote JB: 128Mbit ÷ 8 = 16.777.216 bytes = 16MB. Mesma família
+      DDR2 Specialty DRAM já mapeada (W9712G=128Mb), pacote "JB" em vez de "KB" (já submetido).
+      Confirmado via distribuidor Ariat-Tech, 1 fonte — specs consistentes com o resto da família
+      (mesma densidade/organização x16 do W9712G6KB-25 já aprovado).
+    source_url: "https://www.ariat-tech.com/parts/winbond-electronics-corporation/W9712G6JB-25-IC"
+  - part_number: "W9725G6JB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      256Mbit ÷ 8 = 33.554.432 bytes = 32MB. Pacote "JB" (irmão do W9725G6KB-25 já aprovado, mesma
+      densidade/organização). Confirmado via distribuidor Veswin, 1 fonte.
+    source_url: "https://www.veswin.com/product-w9725g6jb-25.html"
+  - part_number: "W9725G6JB-18"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Mesma densidade/pacote do W9725G6JB-25 acima, sufixo de velocidade "-18" (grade distinta, não
+      duplicata). 256Mbit ÷ 8 = 32MB. Confirmado via distribuidor AviationOrbit, 1 fonte.
+    source_url: "https://www.aviationorbit.com/computer-memory/rfq/winbond-electronics/w9725g6jb-18/"
+  - part_number: "W9725G6JB-3"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Mesma densidade/pacote, sufixo de velocidade "-3" (timing mais rápido, grade distinta de "-25"/
+      "-18"). 256Mbit ÷ 8 = 32MB. Fonte cita "W9725G6JB-3TR" — "TR" é embalagem (tape-reel), removido
+      do PN registrado (convenção já usada nesta marca). Confirmado via Arrow.com, 1 fonte.
+    source_url: "https://www.arrow.com/en/products/w9725g6jb-3tr/winbond-electronics"
+  - part_number: "W9725G6JB-25I"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Variante industrial do "-25" (sufixo "I" colado sem hífen, mesma convenção dos pacotes KB/NB/SB
+      já na família). 256Mbit ÷ 8 = 32MB. Confirmado em 2 fontes independentes: Alldatasheet (PDF
+      próprio) e DigiKey (produto próprio, ID W9725G6JB25I-ND).
+    source_url: "https://www.digikey.com/product-detail/en/winbond-electronics/W9725G6JB25I/W9725G6JB25I-ND/3124557"
+  - part_number: "W9751G6JB-18"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Mesma densidade do W9751G6JB-25 já aprovado (512Mbit ÷ 8 = 64MB), sufixo de velocidade "-18"
+      (grade distinta). Confirmado em 3 fontes independentes: Veswin, Avaq (comparador de spec) e
+      DFSales.
+    source_url: "https://www.veswin.com/product-W9751G6JB-18.html"
+  - part_number: "W9751G6JB-3"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Mesma densidade, sufixo de velocidade "-3" (timing mais rápido). 512Mbit ÷ 8 = 64MB. Confirmado
+      em 2 fontes independentes: Alldatasheet e IC-Components.
+    source_url: "https://www.ic-components.com/products/Winbond-Electronics-Corporation/W9751G6JB-3.jsp"
+  - part_number: "W9751G6JB-25I"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Variante industrial do "-25" pra esta densidade. 512Mbit ÷ 8 = 64MB. Confirmado via
+      IC-Components, 1 fonte.
+    source_url: "https://www.ic-components.com/products/Winbond-Electronics-Corporation/W9751G6JB-25I.jsp"
+  - part_number: "W971GG6JB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      PROVÁVEL IDENTIDADE REAL DO PN DE BANCADA DO DONO ("W971GG6JB", sem sufixo de velocidade — ver
+      aviso no cabeçalho do arquivo; CONFIRMAR na marcação física antes de aprovar). 1Gbit ÷ 8 =
+      134.217.728 bytes = 128MB. "-25" é o sufixo de velocidade universal desta família (usado em
+      TODOS os 12 known_parts já aprovados). Confirmado em 7+ fontes independentes: Alldatasheet,
+      Octopart, Arrow (TRAY), IC-Components, Lisleapex, Datasheets.com, TechInsights (relatório de
+      engenharia reversa do processo de fabricação) e DigiPart. Datasheet oficial próprio existe em
+      winbond.com/resource-files/w971gg6jb_a10.pdf (bloqueado por robots.txt, título confere:
+      "W971GG6JB 8M 8 BANKS 16 BIT DDR2 SDRAM"). Status distribuidor: Obsoleto (esperado — geração
+      antiga, coerente com achado em bancada de e-waste).
+    source_url: "https://www.arrow.com/en/products/w971gg6jb-25-tray/winbond-electronics"
+  - part_number: "W971GG6JB-3"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Mesma densidade/pacote do W971GG6JB-25, sufixo "-3" — timing mais rápido (0.45ns/667MHz vs a
+      grade "-25"), specs distintas o suficiente pra não ser duplicata/erro de digitação. 1Gbit ÷ 8 =
+      128MB. Confirmado via Octopart, 1 fonte.
+    source_url: "https://octopart.com/w971gg6jb-3-winbond-23841019"
+  - part_number: "W971GG6JB-25I"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Variante industrial do "-25" pra esta densidade. 1Gbit ÷ 8 = 128MB. Confirmado em 2 fontes
+      independentes: Octopart e IC-Components (PDF próprio).
+    source_url: "https://octopart.com/w971gg6jb-25i-winbond-22024073"
+  - part_number: "W971GG8JB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: confirmed
+    notes: >
+      Mesma densidade do W971GG6JB-25, organização x8 em vez de x16 (dígito "8" no PN — capacidade
+      total não muda: 1Gbit ÷ 8 = 128MB). Confirmado em 4 fontes independentes: DigiKey (produto
+      próprio, ID 3529608), Arrow (TRAY), Alldatasheet e Kynix.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W971GG8JB-25/3529608"
+  - part_number: "W971GG8JB-18"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Mesma densidade/organização x8 do W971GG8JB-25, sufixo de velocidade "-18". 1Gbit ÷ 8 = 128MB.
+      Confirmado via Alldatasheet, 1 fonte.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/555599/WINBOND/W971GG8JB-18.html"
+  - part_number: "W972GG6JB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Maior densidade da família com pacote JB: 2Gbit ÷ 8 = 268.435.456 bytes = 256MB. Confirmado em
+      6 fontes independentes: DigiKey (produto próprio, ID 4037443), Alldatasheet, Octopart, Veswin,
+      Datasheet4u e Jotrin.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W972GG6JB-25/4037443"
+  - part_number: "W972GG6JB-18"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Mesma densidade/pacote do W972GG6JB-25, sufixo de velocidade "-18". 2Gbit ÷ 8 = 256MB. Fonte
+      cita "W972GG6JB-18-TR" — "TR" removido (embalagem, não marcação). Confirmado via Alldatasheet,
+      1 fonte.
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/933137/WINBOND/W972GG6JB-18-TR.html"

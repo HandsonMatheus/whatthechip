@@ -1,0 +1,206 @@
+# Submissão known_parts — Winbond, cluster DDR2 SDRAM "Specialty DRAM" W9712/W9725/W9751/W971GG/W972GG
+# (2026-09-01). Origem: debug do estoque com PN de bancada "W9751G6JBB25" (known=false,
+# in_review_queue=true, ver JSON colado pelo dono). Regra permanente: pesquisar cluster inteiro, não só
+# 1 PN — este arquivo cobre as 5 densidades da família (128Mb/256Mb/512Mb/1Gb/2Gb), x8 e x16: 12
+# known_parts.
+#
+# ATENÇÃO — PN de bancada NÃO confirmado literal (golden #10/#12, nunca decidir PN ambíguo sozinho):
+# "W9751G6JBB25" (com "BB" duplo) NÃO aparece em nenhuma fonte que consultei (Alldatasheet, Octopart,
+# DigiKey, LCSC, Findchips, DigiPart, Avnet, comparadores de spec, NAC Semi, TECHDesign) — todas mostram
+# sufixo de pacote de 2 letras (JB/KB/NB/SB/SS/IB), nunca "JBB". O que EXISTE e bate 100% com a
+# densidade/organização/pacote/tensão de um PN "W975...JB..." é `W9751G6JB-25` (confirmado em 2+ fontes
+# independentes). NÃO submeti "W9751G6JBB25" como known_part — seria inventar identidade sem fonte. A
+# leitura de bancada quase certamente é W9751G6JB-25 com um "B" a mais (erro de leitura/OCR), mas isso
+# fica pro dono confirmar na marcação física do chip (ver nota de cada known_part relevante).
+#
+# Fonte Tier-1 direta (winbond.com): PDFs em /resource-files/*.pdf e páginas de documentação/produto
+# bloqueados por robots.txt para fetch automatizado (não contornado). EXCEÇÃO que funcionou: o artigo de
+# notícia oficial "Winbond Introduces Products...256Mb, 512Mb, 1Gb DDR2 SDRAM" (winbond.com, Tier-1
+# direto, fetch OK) confirma a faixa de densidade, pacote WBGA-84, x16, Vdd 1.7~1.9V — mas cita só as
+# séries "IB" sem sufixo de velocidade exato, por isso NÃO virou known_part aqui (string incompleta não
+# bate marcação real, ver known_part-string-exata). Specs detalhadas dos demais PNs vieram da tabela
+# sistemática da distribuidora NAC Semi (matemática bit→Mb conferida uma a uma, todas batem) + Alldatasheet
+# (mirror do datasheet oficial do PN pesquisado).
+#
+# Família: DDR2 SDRAM "Specialty DRAM" da Winbond — geração ANTERIOR à W631/632/634 (DDR3) já submetida
+# em winbond_ddr3_w63x_2026-09-01.yaml. Mapa de densidade confirmado nesta rodada (prefixos NÃO seguem
+# um único eixo numérico simples como no DDR3 — cada prefixo é uma família de datasheet própria):
+#   W9712G = 128Mb   W9725G = 256Mb   W9751G = 512Mb   W971GG = 1Gb   W972GG = 2Gb
+# dígito "6" = x16, dígito "8" = x8 (mesma convenção do DDR3). Tensão padrão 1.8V±0.1V em toda a família
+# — NÃO achei variante "DDR2L"/baixo-consumo pra esta linha (ao contrário do DDR3 GG/GU). Sufixo de
+# pacote (JB/KB/NB/SB/SS/IB) varia por fonte/geração e NÃO decodificado — mesma situação já documentada
+# no cluster DDR3 (detalhe físico, não muda capacity/chip_type).
+#
+# Convenção Winbond (WINBOND.md golden #6): nomenclatura da marca é em BIT; capacity aqui é SEMPRE byte
+# (Gb÷8). Aritmética mostrada em cada `notes`.
+#
+# Rodar (o DONO):
+#   python manage.py submit_known_parts submissions/winbond_ddr2_w97x_2026-09-01.yaml               # dry-run = portão
+#   python manage.py submit_known_parts submissions/winbond_ddr2_w97x_2026-09-01.yaml --commit        # grava (submitted) → aprovar no admin
+#
+# CORREÇÃO 2026-09-01 (pós-entrega, achado por auditoria de OUTRA marca que revelou regra geral): o
+# `_GBIT_RE` do engine (`chips/engine.py`) só casa o sufixo literal "Gb" — sub-1Gb escrito como "512Mb"/
+# "256Mb"/"128Mb" NÃO tem "Gb" na string e vira `density_gbit_num=None` em silêncio (sem erro no
+# dry-run, `density_gbit` não está em MEASURE_FIELDS). Corrigido pra fração de Gb: 512Mb→0.5Gb,
+# 256Mb→0.25Gb, 128Mb→0.125Gb. `capacity` (byte) não muda, só `density_gbit` (bit). Aproveitei e
+# populei `density_gb` (mesmo valor de `capacity`) em todos os 12, por recomendação do achado original
+# (deixa `dram_density` legível como "0.5Gb = 64MB por die [✓]" em vez de só a fração crua).
+#
+# PRÉ-REQUISITO (winbond.yaml): a Brand "Winbond" precisa existir no banco antes do dry-run funcionar.
+brand: "Winbond"
+known_parts:
+  - part_number: "W9751G6JB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: confirmed
+    notes: >
+      Provável identidade real do PN de bancada do dono ("W9751G6JBB25", com "BB" duplo — ver aviso no
+      cabeçalho do arquivo; CONFIRMAR na marcação física antes de aprovar). DDR2 SDRAM, 512Mbit
+      (8.388.608 words x 4 banks x 16 bits = 536.870.912 bits = 512Mbit); byte: 512Mbit ÷ 8 =
+      67.108.864 bytes = 64MB. VDD/VDDQ = 1.8V ±0.1V. Pacote WBGA 84-ball (8x12.5mm). "-25" = DDR2-800
+      (5-5-5/6-6-6 timing, clock 400MHz). Confirmado em 2 fontes independentes que espelham o datasheet
+      oficial: Alldatasheet e Octopart (ambos com specs idênticas).
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/503324/WINBOND/W9751G6JB-25.html"
+  - part_number: "W9712G6KB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "16MB"
+    density_gbit: "0.125Gb"
+    density_gb: "16MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Menor densidade confirmada da família: 128Mbit (8Mbitx16, conforme tabela NAC Semi) ÷ 8 = 16MB.
+      Mesma família DDR2 Specialty DRAM, sufixo de pacote "KB". Confirmado na tabela sistemática da
+      distribuidora NAC Semi (333/400MHz).
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W9725G6KB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      256Mbit (16Mbitx16, tabela NAC Semi) ÷ 8 = 32MB. Confirmado também por listagem de distribuidor
+      terceiro (RS Online) citando W9725G6KB-25 como "DDR2 SDRAM Memory 256Mbit, 800MHz, 84-Pin WBGA".
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W9725G8KB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    density_gbit: "0.25Gb"
+    density_gb: "32MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Mesma densidade do W9725G6KB-25 (256Mbit ÷ 8 = 32MB), organização x8 em vez de x16 (dígito "8" no
+      PN, eixo confirmado em todas as densidades onde x16/x8 aparecem lado a lado). Tabela NAC Semi
+      (32Mbitx8, 333/400/533MHz).
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W9751G6KB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Irmão de sufixo de pacote do PN pesquisado (KB em vez de JB, mesma densidade/organização/pacote
+      elétrico: 512Mbit ÷ 8 = 64MB). Extremamente bem documentado — LCSC, DigiKey, Avnet, Amazon
+      (listagem confirma "SDRAM - DDR2 Memory IC 512Mb (32M x 16) Parallel 400MHz 400ps 84-WBGA
+      (8x12.5)") e tabela NAC Semi convergem.
+    source_url: "https://www.lcsc.com/product-detail/DDR_Winbond-Elec-W9751G6KB-25_C50253.html"
+  - part_number: "W9751G8KB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      Mesma densidade do W9751G6KB-25 (512Mbit ÷ 8 = 64MB), organização x8. Tabela NAC Semi (64Mbitx8,
+      333/400/533MHz).
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W9751G6NB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Outro irmão de sufixo de pacote do PN pesquisado (NB em vez de JB/KB, mesma densidade/organização:
+      512Mbit ÷ 8 = 64MB). Confirmado via DigiKey (produto próprio, ID 11656258) + tabela NAC Semi.
+    source_url: "https://www.digikey.com/en/products/detail/winbond-electronics/W9751G6NB-25/11656258"
+  - part_number: "W9751G8NB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    density_gbit: "0.5Gb"
+    density_gb: "64MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      512Mbit x8 (mesma aritmética: 512Mbit ÷ 8 = 64MB). Confirmado na tabela NAC Semi (64Mbitx8) e
+      citado também na tabela da TECHDesign (512Mb).
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W971GG6SB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      1Gbit (64Mbitx16, tabela NAC Semi — 64M x16bit x8banks = 1.073.741.824 bits, confirmado também
+      pelo título do datasheet oficial indexado "W971GG6SB 8M 8 BANKS 16 BIT DDR2 SDRAM" [8M
+      por-banco x16bit x8banks = mesma conta]); byte: 1Gbit ÷ 8 = 128MB. Fetch direto do PDF bloqueado
+      por robots.txt, mas título+matemática batem com a tabela do distribuidor.
+    source_url: "https://www.winbond.com/resource-files/w971gg6sb_a05.pdf"
+  - part_number: "W971GG8SS-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      1Gbit x8 (128Mbitx8 ÷ 8 = 128MB, tabela NAC Semi). Sufixo de pacote "SS" — ÚNICA fonte encontrada
+      pra este PN pontual (TECHDesign lista um "W971GG8NB" pro mesmo slot 1Gb-x8, sufixo diferente;
+      tratado como PN separado, não confundido, já que não confirmei os dois apontando pro mesmo
+      pacote físico). Confiança mais baixa que os demais desta lista — recomendo checar contra unidade
+      física se possível.
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W972GG6KB-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: distributor
+    notes: >
+      Maior densidade confirmada da família: 2Gbit (128Mbitx16, tabela NAC Semi) ÷ 8 = 256MB.
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"
+  - part_number: "W972GG8KS-25"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: distributor
+    notes: >
+      2Gbit x8 (256Mbitx8 ÷ 8 = 256MB, tabela NAC Semi). Sufixo de pacote "KS".
+    source_url: "https://www.nacsemi.com/products/winbond/ddr2-sdram/"

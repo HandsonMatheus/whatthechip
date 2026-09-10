@@ -1,0 +1,149 @@
+# Submissão de known_parts — Micron, FBGA D9TGQ + família MT40A256M16GE (2026-09-02)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9TGQ
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9TCQ, D9FGQ, D9LGQ, D9NGQ, D9PGQ) IGNORADO por
+# construção — já são KnownPart aprovado ou família não relacionada.
+#
+# ACHADO: D9TGQ -> MT40A256M16GE-083E:B. Familia MT40A (DDR4 SDRAM --
+# mesmo prefixo ja resolvido nesta sessao em D9TGJ/MT40A512M8, ver
+# submissions/micron_d9tgj_family_2026-08-24.yaml), organizacao "256M16"
+# (depth 256M x width 16 = 4096Mbit = 4Gb -- mesmo padrao aritmetico ja
+# usado no arquivo D9TGJ pra outra largura da MESMA familia de die: 512M x8
+# tambem = 4Gb; DDR4 4Gb comercializado em x4/x8/x16, confirmado via
+# Alldatasheet: "MT40A256M16GE-062E ... 4Gb x4, x8, x16 DDR4 SDRAM").
+#
+# Part-name da propria API veio vazio para o alvo, mas 6 de 12 irmaos da
+# MESMA organizacao (span dois speed grades -083E/-075E e quatro variantes
+# de temp/qualificacao IT/AIT/AAT/AUT) vieram com part-name direto da
+# Micron: "DDR4 4G X16 TFBGA" -- confirma "256M16"=4Gb, formula-extendida
+# pros 6 sem part-name proprio (mesmo padrao de extensao ja usado em
+# D9TGJ/D9LGD/D9LJJ/D9GBM/D9GKW/D9LGK nesta sessao).
+#
+# Forward-lookup no PREFIXO "MT40A256M16GE" (2026-09-02, delegado -- WAF
+# do micron.com bloqueado nesta sessao) devolveu 17 PNs. ES: 5 excluidos
+# (Z9TGR, Z9TGT, Z9THF, Z9TZG -- padrao espaco antes de "ES", regex padrao
+# pegou; Z9TNF tambem ES mas com speed grade "-068E" que NAO aparece em
+# nenhum PN de producao desta leva -- pode ser um grade que nunca chegou a
+# producao, ou so existiu como ES; nao pesquisado a parte, fora de escopo).
+# Sobraram 12 PNs de producao, todos com a MESMA chave "256M16GE".
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisao de
+# part_number_norm dentro da propria lista (checado programaticamente).
+# Sem sobreposicao com nenhuma submissao anterior (grep em submissions/*.yaml,
+# zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9tgq_family_2026-09-02.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9tgq_family_2026-09-02.yaml --commit --fill-empty
+#
+brand: Micron
+known_parts:
+- part_number: 'MT40A256M16GE-083E:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TGQ
+  confidence: confirmed
+  source_url: 'https://www.alldatasheet.com/datasheet-pdf/pdf/928169/MICRON/MT40A256M16GE-075E.html'
+  notes: 'ALVO da investigacao. Identidade via API FBGA oficial da Micron (reverse+forward lookup, 2026-09-02, delegado por bloqueio WAF): D9TGQ -> MT40A256M16GE-083E:B. Part-name da propria API vazio para este PN especifico; capacidade formula-extendida a partir de 6 irmaos da MESMA organizacao "256M16GE" com part-name direto da Micron ("DDR4 4G X16 TFBGA") -- ver cabecalho do arquivo. Aritmetica: 256M x16bit = 4096Mbit = 4Gb (4096/1024=4). Cross-check independente via Alldatasheet: "MT40A256M16GE-062E ... 4Gb x4,x8,x16 DDR4 SDRAM". Mesmo prefixo/familia ja confirmado em D9TGJ (organizacao irma 512M8, mesma densidade total 4Gb).'
+- part_number: 'MT40A256M16GE-075E:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TGS
+  confidence: confirmed
+  source_url: 'https://www.alldatasheet.com/datasheet-pdf/pdf/928169/MICRON/MT40A256M16GE-075E.html'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -075E em vez de -083E. Part-name proprio vazio na API -- mesma chave de organizacao do alvo. Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-083E IT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9THB
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-083e-it-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), temp IT. Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-075E IT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9THC
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-075e-it-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -075E, temp IT. Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-062E:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TVF
+  confidence: confirmed
+  source_url: 'https://www.alldatasheet.com/datasheet-pdf/pdf/928169/MICRON/MT40A256M16GE-075E.html'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -062E. Part-name proprio vazio na API -- mesma chave de organizacao do alvo. Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-062E IT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TWP
+  confidence: confirmed
+  source_url: 'https://www.alldatasheet.com/datasheet-pdf/pdf/928169/MICRON/MT40A256M16GE-075E.html'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -062E, temp IT. Part-name proprio vazio na API. Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-075E AIT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TWV
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-075e-ait-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -075E, temp AIT (automotive). Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-075E AAT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TWW
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-075e-aat-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -075E, temp AAT. Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-075E AUT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9TWX
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-075e-aut-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -075E, temp AUT. Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-083E AIT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9VWB
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-083e-ait-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -083E, temp AIT. Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-083E AAT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9VWC
+  confidence: confirmed
+  source_url: 'https://www.micron.com/products/obsolete/obsolete-ddr4-sdram/part-catalog/part-detail/mt40a256m16ge-083e-aat-b'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -083E, temp AAT. Part-name proprio confirmado na API: "DDR4 4G X16 TFBGA". Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
+- part_number: 'MT40A256M16GE-083E AUT:B'
+  chip_type: DDR4
+  subtype: DDR4
+  interface: x16
+  density_gbit: 4Gb
+  fbga_code: D9VWD
+  confidence: confirmed
+  source_url: 'https://www.alldatasheet.com/datasheet-pdf/pdf/928169/MICRON/MT40A256M16GE-075E.html'
+  notes: 'Irmao de familia (forward-lookup MT40A256M16GE, 2026-09-02), speed -083E, temp AUT. Part-name proprio vazio na API -- mesma chave de organizacao do alvo. Ver notes do alvo (D9TGQ) e cabecalho do arquivo.'
