@@ -88,6 +88,11 @@ FOUNDING_TABLE = (
     ('emmc', '', '4',    'GB', 5),
     ('emmc', '', '16',   'GB', 6),
     ('emmc', '', '64',   'GB', 7),
+    ('emmc', '', '1024', 'GB', 8),   # AUTO-CUNHADA na bancada de PROD —
+                                     # registrada aqui a posteriori, como
+                                     # manda a regra do append. (O audit
+                                     # de 2026-09-09 a apontou como
+                                     # 'legítima FORA da convenção'.)
     # C — uMCP (v3.1: SÓ pelo NAND — gen vazio; renumerou pré-deploy)
     ('umcp', '', '128', 'GB', 1),
     ('umcp', '', '512', 'GB', 2),
@@ -147,6 +152,16 @@ FOUNDING_TABLE = (
                                            # 2026-07-24 (K4E2E304EA, LPDDR3
                                            # 1.5GB) — registrada aqui a posteriori,
                                            # como manda a regra do append
+    # ⚠ O BURACO 20–24 É DE PROPÓSITO E NÃO SE FECHA. Os números F-20..F-24
+    #   existem no banco e estão APOSENTADOS: são LPDDR1/LPDDR2 nascidos do bug
+    #   de 2026-08-18 (o render do card cunhava categoria), sucata que a régua
+    #   reprova. Ficam fora desta tabela porque a tabela é a convenção VIVA —
+    #   mas os números seguem queimados para sempre.
+    #   ❌ NUNCA renumere F-25 para F-20 "para não ter buraco": o número é
+    #   ETERNO e pode já estar escrito numa etiqueta. Buraco na sequência é o
+    #   sintoma correto de um número aposentado.
+    ('lpddr', 'LPDDR3', '6',  'GB', 25),   # AUTO-CUNHADA na bancada de PROD —
+                                           # registrada aqui a posteriori.
     # G — SSD BGA/NVMe (2026-07-24): capacidades REAIS descobertas no estoque;
     #     novas capacidades anexam na aprovação (preço é linear ¥/GB — a caixa
     #     separa por capacidade como todo o resto).

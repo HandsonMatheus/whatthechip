@@ -2748,9 +2748,18 @@ class AuditCategoryCodesTests(TestCase):
                                                tier_value=Decimal('1'),
                                                tier_unit='Gb', code=16)
         # Legítimo mas AUSENTE da tabela fundadora (precisa ser anexado lá).
+        # ⚠ Capacidade PROPOSITALMENTE absurda (99999GB), e a razão é uma lição
+        # de 2026-09-09: este teste usava `emmc 1024GB = B-08`, que era um buraco
+        # REAL da convenção. Quando o buraco foi tapado (o audit em prod apontou
+        # B-08 e F-25, e as duas foram anexadas em convention.py), o teste caiu —
+        # ele estava preso a um DADO que existia para ser consertado.
+        # Fixture não pode depender de defeito que a gente pretende corrigir:
+        # o dia em que o defeito some, o teste vira alarme falso e alguém
+        # "conserta" o teste em vez de comemorar. Uma capacidade que nunca vai
+        # existir no mundo real nunca vai ser anexada à convenção.
         cls.novo = CategoryCode.objects.create(kind='emmc', gen='',
-                                               tier_value=Decimal('1024'),
-                                               tier_unit='GB', code=8)
+                                               tier_value=Decimal('99999'),
+                                               tier_unit='GB', code=99)
 
     def _run(self, **opts):
         from io import StringIO
@@ -2772,7 +2781,7 @@ class AuditCategoryCodesTests(TestCase):
     def test_aponta_legitimo_fora_da_convencao(self):
         saida = self._run()
         self.assertIn('legítimo(s) FORA da convenção', saida)
-        self.assertIn('B-08', saida)          # emmc 1024GB não está na fundadora
+        self.assertIn('B-99', saida)          # emmc 99999GB não está na fundadora
         self.assertNotIn('B-06,', saida)      # esse está — não entra na lista
 
     def test_conta_lancamentos_atras_do_codigo(self):
