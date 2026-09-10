@@ -686,7 +686,10 @@ class CabecalhoInformativoTests(_Base):
         usd = ws.cell(row=5, column=C_HERO_RES).value
         self.assertTrue(str(rmb).startswith('='), rmb)
         self.assertIn('%s%d' % (LET_RES, ws.max_row), rmb)
-        self.assertIn('SUMPRODUCT', str(usd))
+        # Era `SUMPRODUCT(aprovados, unitário)` até 10/09 — a conta antiga
+        # viva dentro do Excel. Agora soma a coluna do VALOR de cada linha.
+        self.assertIn('SUM(', str(usd))
+        self.assertNotIn('SUMPRODUCT', str(usd))
 
     def test_o_esperado_do_topo_NAO_se_move(self):
         """É o congelado da ordem — o número que o cliente tinha na mão
@@ -699,25 +702,38 @@ class CabecalhoInformativoTests(_Base):
                          float(self.so.total_usd))
 
     def test_o_dolar_NAO_e_o_yuan_vezes_a_taxa(self):
-        """⚠ A armadilha. Na tela o US$ é a soma dos unitários CONGELADOS, e
-        não ¥ × taxa — as duas contas diferem em alguns dólares. Por isso a
-        planilha carrega o unitário em US$ numa coluna escondida e soma por
-        `SUMPRODUCT`: derivar da taxa daria um número que discorda da tela sem
-        nada dizendo qual está certo."""
+        """⚠ INVERTIDO EM 10/09. Ele proibia derivar da taxa: a planilha
+        guardava o unitário CONGELADO numa coluna escondida e somava com
+        `SUMPRODUCT(aprovados, unitário)`. Era a conta antiga rodando dentro
+        do Excel, recalculando errado a cada recusa digitada.
+
+        Agora a coluna escondida guarda o VALOR DA LINHA — uma fórmula,
+        `ROUND(aprovados × ¥unitário × taxa, 2)` — e o topo é a soma dela. O
+        que continua proibido é converter o TOTAL de uma vez; o que passou a
+        ser exigido é converter POR LINHA, arredondando no fim.
+        """
         ws = self._wb()['Resumo']
         self.assertIn(_LETRA_USD,
                       str(ws.cell(row=5, column=C_HERO_RES).value))
         self.assertTrue(ws.column_dimensions[_LETRA_USD].hidden,
-                        'a coluna do US$ unitário ficou visível')
-        # a coluna escondida traz o CONGELADO da linha, não uma conta
-        self.assertEqual(ws.cell(row=L_1, column=C_USD).value,
-                         float(self.so.lines.all()[0].unit_usd))
+                        'a coluna do US$ ficou visível')
+        # a coluna escondida é FÓRMULA do valor da linha, e não mais um número
+        celula = str(ws.cell(row=L_1, column=C_USD).value)
+        self.assertTrue(celula.startswith('='), celula)
+        self.assertIn('ROUND(', celula)
+        self.assertIn('$4', celula, 'a taxa tem de ser referência ABSOLUTA')
 
     def test_sem_nenhum_unitario_em_dolar_o_topo_diz_TRAVESSAO(self):
-        """Ordem legada, ou rascunho sem taxa: o `SUMPRODUCT` daria ZERO, e
-        "US$ 0.00" é um preço — ausência de preço não é. A tela faz o mesmo."""
+        """Ordem legada, ou rascunho sem taxa: a soma daria ZERO, e "US$ 0.00"
+        é um preço — ausência de preço não é. A tela faz o mesmo.
+
+        ⚠ O gatilho mudou em 10/09. Era apagar o `unit_usd`; agora é apagar o
+          `unit_rmb`, porque é o ¥ que faz a conta — sem ele não há o que
+          converter. Apagar só o dólar de exibição não deixa mais a planilha
+          sem número, e essa é justamente a mudança.
+        """
         with company_scope(self.emp.id):
-            self.so.lines.all().update(unit_usd=None)
+            self.so.lines.all().update(unit_rmb=None, unit_usd=None)
         self.assertEqual(
             self._wb()['Resumo'].cell(row=5, column=C_HERO_RES).value, '—')
 

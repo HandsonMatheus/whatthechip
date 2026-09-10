@@ -128,6 +128,49 @@ def draft_totals(pairs):
     return total_rmb, total_usd, pending
 
 
+def usd_da_linha(unit_rmb, quantidade, taxa):
+    """¥ → US$ de UMA LINHA. O único lugar do sistema que faz esta conta.
+
+    Dono, 2026-09-10, com a calculadora na mão: *"se 71323×0.1482 são 10.515
+    USD, porque o resultado está dando US$ 10487.16? bug?"*. Não era bug, era
+    a conta arredondando cedo demais — e a diferença naquela OV foi US$ 28,67.
+
+    O DEFEITO era arredondar o UNITÁRIO e só então multiplicar::
+
+        ¥3 × 0,1482 = 0,4446 → congela 0,44 → × 3.192 un = US$ 1.404,48
+
+    Meio centavo jogado fora POR UNIDADE. Numa linha de 3.192 peças isso é
+    US$ 14,68, e o lote inteiro perdia 0,27% — sempre contra a casa, porque o
+    ¥3 (o DDR3 commodity) é o preço mais comum e cai para baixo.
+
+    O CERTO é multiplicar primeiro e arredondar o valor da LINHA::
+
+        ¥3 × 3.192 = ¥9.576 → × 0,1482 = US$ 1.419,16
+
+    Aí o erro fica preso em meio centavo POR LINHA, não por unidade: na mesma
+    OV, US$ 0,05 em 105 linhas contra os US$ 28,67 de antes.
+
+    ⚠ CONTINUA POR LINHA, e isso não é detalhe: a regra de ouro do dinheiro
+      aqui é que o total é a SOMA DO QUE ESTÁ VISÍVEL na tabela. Converter
+      `total_rmb × taxa` de uma vez daria um número ainda mais próximo da
+      calculadora e quebraria a tabela — foi o bug grave de 07/09, em que o
+      dólar do herói SUBIA quando o comprador recusava chips.
+
+    ⚠ E é a fonte ÚNICA de propósito. Até 10/09 esta conta existia em quatro
+      lugares — `confirm`, `settlement_totals`, a tela/papel e o JavaScript do
+      herói — e eles já divergiam de centavos, com um comentário no código
+      admitindo a divergência. Quatro implementações da mesma conta é como o
+      parcial de hoje e o final de amanhã dizem valores diferentes para as
+      MESMAS recusas.
+
+    Devolve ``None`` quando não há preço ou não há taxa: inventar zero ali
+    diria que a linha não vale nada, que é diferente de "não sei quanto vale".
+    """
+    if unit_rmb is None or taxa is None:
+        return None
+    return (unit_rmb * quantidade * taxa).quantize(_CENT, ROUND_HALF_UP)
+
+
 def confirm(so, user, unmasked=False):
     """Draft → CONFIRMADA: congela ¥ unitário + taxa + US$ linha a linha.
     Exige TODAS as linhas cotadas (pendência = erro listando o que falta —
@@ -169,10 +212,12 @@ def confirm(so, user, unmasked=False):
             line.unit_usd = (line.unit_rmb * rate).quantize(_CENT, ROUND_HALF_UP)
             line.save()
             total_rmb += line.unit_rmb * line.quantity
-            # Total US$ = SOMA das linhas congeladas (estilo fatura: quem
-            # confere a conta linha a linha tem que chegar no total) — NÃO
-            # total_rmb × taxa, que divergiria por arredondamento por linha.
-            total_usd += line.unit_usd * line.quantity
+            # Total US$ = SOMA do valor de cada LINHA (`usd_da_linha`), e não
+            # do unitário congelado × quantidade. O `unit_usd` acima continua
+            # existindo, mas virou EXIBIÇÃO: ele mostra "quanto custa um",
+            # arredondado em centavos porque é assim que se escreve dinheiro.
+            # Quem manda na conta é o ¥, que é a moeda em que a compra fecha.
+            total_usd += usd_da_linha(line.unit_rmb, line.quantity, rate)
         so.fx_usd_rate = rate
         so.total_rmb = total_rmb.quantize(_CENT, ROUND_HALF_UP)
         so.total_usd = total_usd.quantize(_CENT, ROUND_HALF_UP)
@@ -686,8 +731,13 @@ def _monta_documento(so, *, recusas, fx, settled_at, total_rmb, total_usd,
         #   · repactuado → o acerto muda o ¥ (`new_unit_rmb`) e não tem par em
         #     US$ para mudar junto; aí, e só aí, o dólar é DERIVADO da taxa
         #     travada. É a única linha do documento em que ele não é congelado.
+        # ⚠ Este ramo tinha um defeito: o `(novo_unit * fx)` saía SEM
+        #   `.quantize`, então a linha repactuada no papel não batia com a
+        #   mesma linha na fatura. Agora o unitário é só EXIBIÇÃO (2 casas) e
+        #   quem faz a conta é o `usd_da_linha`, igual em todo lugar.
         if novo_unit is not None:
-            unit_usd = (novo_unit * fx) if fx else None
+            unit_usd = ((novo_unit * fx).quantize(_CENT, ROUND_HALF_UP)
+                        if fx else None)
         else:
             unit_usd = line.unit_usd
         linhas.append({
@@ -703,7 +753,7 @@ def _monta_documento(so, *, recusas, fx, settled_at, total_rmb, total_usd,
             'unit_rmb': unit,
             'total_rmb': (unit * n_ace) if unit is not None else None,
             'unit_usd': unit_usd,
-            'total_usd': (unit_usd * n_ace) if unit_usd is not None else None,
+            'total_usd': usd_da_linha(unit, n_ace, fx),
             # A REPACTUAÇÃO, para o PAPEL desenhar a seta e o preço antigo
             # (dono, 2026-09-09: "preciso que o sistema de setas seja aplicado
             # tambem no PDF"). O documento é a prestação de contas que o
@@ -774,12 +824,12 @@ def settlement_totals(lines, adjustments, rate):
     MESMAS recusas — e aí a discussão que o parcial existe para começar vira
     uma discussão sobre o sistema.
 
-    ⚠ O US$ aqui é DERIVADO da taxa e quantizado POR LINHA
-      (`(unit × rate).quantize(_CENT)` × qtd), e NÃO é o `line.unit_usd`
-      congelado que a tabela do documento exibe. Os dois podem diferir de
-      centavos numa OV com muitas linhas — é assim desde o F10 e não é
-      correção deste commit; o que este commit garante é que parcial e final
-      façam a MESMA conta, seja ela qual for.
+    ⚠ O US$ sai do `usd_da_linha`, a fonte única (10/09). Antes esta função
+      tinha a conta dela — `(unit × rate).quantize(_CENT)` × qtd — e a tela
+      lia o `line.unit_usd` congelado, então as duas divergiam de centavos
+      numa OV com muitas linhas. O comentário que estava aqui ADMITIA a
+      divergência e dizia que não era correção daquele commit. É correção
+      deste.
 
     `lines` vem pronto de propósito: o `settle_and_invoice` já tem a lista
     carregada e a percorre para gravar as `SettlementLine`, então passar a
@@ -791,9 +841,8 @@ def settlement_totals(lines, adjustments, rate):
         rej, novo = adjustments.get(line.pk, (0, None))
         qty = line.quantity - rej
         unit = novo if novo is not None else line.unit_rmb
-        unit_usd = (unit * rate).quantize(_CENT, ROUND_HALF_UP)
         total_rmb += unit * qty
-        total_usd += unit_usd * qty          # soma por linha (F10, fatura)
+        total_usd += usd_da_linha(unit, qty, rate) or Decimal('0.00')
     return (total_rmb.quantize(_CENT, ROUND_HALF_UP),
             total_usd.quantize(_CENT, ROUND_HALF_UP))
 
@@ -2042,8 +2091,17 @@ def result_rows(so, com_rascunho=False):
         else:
             cong, cong_usd, estimado = line.unit_rmb, line.unit_usd, False
         total = (cong * line.quantity) if cong is not None else None
-        total_usd = ((cong_usd * line.quantity)
-                     if cong_usd is not None else None)
+        # ⚠ ESPERADO em US$: `usd_da_linha` do CONGELADO, não `cong_usd ×
+        #   quantidade`. O `cong_usd` é o unitário de exibição, arredondado em
+        #   centavos; multiplicá-lo é o defeito de 10/09 (US$ 28,67 numa OV).
+        #   ⚠ No RASCUNHO a taxa da OV ainda não existe — ali o `cong_usd` vem
+        #     da cotação viva e continua sendo a base, porque não há o que
+        #     congelar ainda.
+        if estimado:
+            total_usd = ((cong_usd * line.quantity)
+                         if cong_usd is not None else None)
+        else:
+            total_usd = usd_da_linha(cong, line.quantity, so.fx_usd_rate)
         sl = recusas.get(line.pk)
         rej = sl.qty_rejected if sl else 0
         novo = getattr(sl, 'new_unit_rmb', None) if sl is not None else None
@@ -2060,6 +2118,10 @@ def result_rows(so, com_rascunho=False):
             unit_usd = ((novo * so.fx_usd_rate).quantize(_CENT, ROUND_HALF_UP)
                         if so.fx_usd_rate else None)
         ace = line.quantity - rej
+        # PAGO em US$ pela mesma fonte única — é o número que tem de fechar
+        # com a fatura, e a fatura usa o `usd_da_linha`.
+        pago_usd = (((unit_usd * ace) if unit_usd is not None else None)
+                    if estimado else usd_da_linha(unit, ace, so.fx_usd_rate))
         g['lines'].append({
             'pk': line.pk,
             'type': line.type_label,
@@ -2099,7 +2161,7 @@ def result_rows(so, com_rascunho=False):
             'tier_unit': line.tier_unit,
             # ¥/US$ do que foi ACEITO — é o que virou dinheiro de verdade.
             'pago_rmb': (unit * ace) if unit is not None else None,
-            'pago_usd': (unit_usd * ace) if unit_usd is not None else None,
+            'pago_usd': pago_usd,
             'estimado': estimado,
             'sem_preco': unit is None,
             'tem_resultado': inv is not None,
@@ -2112,13 +2174,19 @@ def result_rows(so, com_rascunho=False):
             g['rmb'] += total
             g['pago_rmb'] += (unit * ace)
             g['perda_rmb'] += (unit * rej)
-        if cong_usd is not None:
-            # Condição PRÓPRIA, e não o `else` do ¥: o par pode ter ¥ sem US$
-            # (rascunho com cotação viva sem taxa). Pendurar o US$ no mesmo
-            # `if` faria o grupo somar zero em silêncio nesse caso.
-            g['usd'] += (cong_usd * line.quantity)
-        if unit_usd is not None:
-            g['pago_usd'] += (unit_usd * ace)
+        # ⚠ A FAIXA soma os MESMÍSSIMOS valores que as linhas mostram — os
+        #   locais `total_usd` e `pago_usd`, não uma segunda conta a partir do
+        #   unitário. É o que garante que a banda da marca feche com o que
+        #   está escrito embaixo dela; recalcular aqui era como o PDF acabava
+        #   com faixas que não somavam o total (defeito de 10/09).
+        #
+        #   Condição PRÓPRIA, e não o `else` do ¥: o par pode ter ¥ sem US$
+        #   (rascunho com cotação viva sem taxa). Pendurar o US$ no mesmo `if`
+        #   faria o grupo somar zero em silêncio nesse caso.
+        if total_usd is not None:
+            g['usd'] += total_usd
+        if pago_usd is not None:
+            g['pago_usd'] += pago_usd
         if cong_usd is None:
             g['sem_preco'] += line.quantity
     for g in grupos.values():

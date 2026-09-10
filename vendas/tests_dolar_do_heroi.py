@@ -100,13 +100,32 @@ class _Base(TestCase):
     """
 
     UNIT_RMB, FX = D('3.00'), D('0.1481')
-    UNIT_USD = D('0.44')          # (3.00 × 0.1481).quantize(.01) — congelado
+    #: O unitário de EXIBIÇÃO: (3,00 × 0,1481).quantize(.01) = 0,4443 → 0,44.
+    #: Desde 10/09 ele NÃO é mais insumo de conta nenhuma — só mostra "quanto
+    #: custa um". Quem multiplica é o ¥.
+    UNIT_USD = D('0.44')
     QTD = 10000
 
-    #: O que a conta ERRADA daria, sem recusa nenhuma. Escrito por extenso
-    #: para o teste falhar dizendo o número, e não uma expressão.
-    USD_PELA_TAXA = D('4443.00')
-    USD_CONGELADO = D('4400.00')
+    #: ⚠ ESTES DOIS NOMES TROCARAM DE LADO EM 10/09, e o histórico fica aqui
+    #:   porque quem ler o arquivo daqui a um ano vai estranhar.
+    #:
+    #:   Até 09/09 a conta certa era congelar o UNITÁRIO em centavos e
+    #:   multiplicar (0,44 × 10.000 = 4.400,00), e os 4.443,00 eram "a conta
+    #:   errada". Em 10/09 o dono conferiu na calculadora — *"se 71323×0.1482
+    #:   são 10.515 USD, porque o resultado está dando US$ 10487.16? bug?"* —
+    #:   e a resposta foi que arredondar o unitário joga fora meio centavo POR
+    #:   UNIDADE. Num lote de 10 mil peças isso é US$ 43.
+    #:
+    #:   Agora a conta é ¥ × quantidade × taxa, arredondada NO FIM, e o número
+    #:   certo é 4.443,00. O 4.400,00 virou o defeito.
+    #:
+    #:   ⚠ O que NÃO mudou: continua sendo POR LINHA. `total_rmb × taxa` do
+    #:     pedido inteiro segue proibido — é o que faria o rodapé discordar da
+    #:     soma da tabela, o bug grave de 07/09. Neste cenário de UMA linha os
+    #:     dois coincidem, e é por isso que o `AsDuasContasDivergemTests`
+    #:     abaixo prova a separação com um cenário próprio.
+    USD_DA_LINHA = D('4443.00')          # ¥30.000 × 0,1481, arredondado no fim
+    USD_UNITARIO_VEZES_QTD = D('4400.00')      # 0,44 × 10.000 — o defeito
 
     def setUp(self):
         self.emp = Company.objects.create(name='eMiner', slug='eminer', code='')
@@ -125,7 +144,7 @@ class _Base(TestCase):
                 lot=self.lot, buyer=self.buyer, status=STATUS_CONFIRMED,
                 fx_usd_rate=self.FX,
                 total_rmb=self.UNIT_RMB * self.QTD,
-                total_usd=self.UNIT_USD * self.QTD,
+                total_usd=self.USD_DA_LINHA,
                 shipped_at=date(2026, 8, 18),
                 received_at=timezone.now(),
                 number=DocSequence.next_number(self.emp, SEQ_SO))
@@ -150,18 +169,37 @@ class AsDuasContasDivergemTests(_Base):
     prova de que o cenário montado acima realmente separa as duas.
     """
 
-    def test_a_soma_congelada_nao_e_o_yuan_vezes_a_taxa(self):
-        pela_taxa = (self.so.total_rmb * self.FX).quantize(
+    def test_as_duas_ORDENS_de_conta_dao_numeros_diferentes(self):
+        """Arredondar o unitário e multiplicar × multiplicar e arredondar."""
+        pelo_unitario = self.UNIT_USD * self.QTD
+        pela_linha = (self.UNIT_RMB * self.QTD * self.FX).quantize(
             D('0.01'), ROUND_HALF_UP)
-        self.assertEqual(pela_taxa, self.USD_PELA_TAXA)
-        self.assertEqual(self.so.total_usd, self.USD_CONGELADO)
+        self.assertEqual(pelo_unitario, self.USD_UNITARIO_VEZES_QTD)
+        self.assertEqual(pela_linha, self.USD_DA_LINHA)
         self.assertNotEqual(
-            self.so.total_usd, pela_taxa,
-            'o cenário não separa as duas contas — o teste ficaria cego')
+            pelo_unitario, pela_linha,
+            'o cenário não separa as duas ordens — o teste ficaria cego')
 
     def test_o_erro_e_grande_o_bastante_para_doer(self):
-        """US$ 43 num lote de US$ 4.400. Não é resíduo de centavo."""
-        self.assertGreater(self.USD_PELA_TAXA - self.so.total_usd, D('40'))
+        """US$ 43 num lote de US$ 4.400. Não é resíduo de centavo — é meio
+        centavo por unidade, vezes dez mil unidades."""
+        self.assertGreater(self.USD_DA_LINHA - self.USD_UNITARIO_VEZES_QTD,
+                           D('40'))
+
+    def test_o_TOTAL_da_OV_bate_com_a_calculadora(self):
+        """O teste que teria evitado a pergunta de 10/09.
+
+        Quem pega o ¥ do rodapé, multiplica pela taxa e compara com o US$ do
+        rodapé tem de chegar no mesmo lugar. Não ao centavo — o arredondamento
+        por linha deixa um resíduo —, mas perto o bastante para ninguém abrir
+        um chamado. A folga é de UM DÓLAR: com a conta antiga a diferença
+        naquela OV foi de US$ 28,67 em US$ 10.487, e aqui seriam US$ 43.
+        """
+        pela_taxa = (self.so.total_rmb * self.FX).quantize(
+            D('0.01'), ROUND_HALF_UP)
+        self.assertLess(
+            abs(self.so.total_usd - pela_taxa), D('1.00'),
+            'o total em US$ se afastou do ¥ × taxa — é o defeito de 10/09')
 
     def test_recusar_pela_conta_errada_ainda_ficava_ACIMA_do_esperado(self):
         """O sintoma que ele viu, reproduzido em números.
@@ -178,13 +216,18 @@ class AsDuasContasDivergemTests(_Base):
         cenário não provava o que dizia provar.
         """
         rej = 50
-        certo = self.UNIT_USD * (self.QTD - rej)                  # 4.378,00
-        errado = (self.UNIT_RMB * (self.QTD - rej) * self.FX).quantize(
+        # A conta de HOJE (10/09), com o ESPERADO na mesma régua: cai.
+        certo = (self.UNIT_RMB * (self.QTD - rej) * self.FX).quantize(
             D('0.01'), ROUND_HALF_UP)                             # 4.420,79
-        self.assertLess(certo, self.so.total_usd)          # recusa faz CAIR
-        self.assertGreater(errado, self.so.total_usd,      # …mas subia
+        # A conta de 07/09: ESPERADO pelo unitário congelado (4.400,00) e
+        # RESULTADO pela taxa (4.420,79) — réguas DIFERENTES nas duas metades
+        # do cartão, e é a diferença de régua que fazia o dólar "subir".
+        esperado_de_entao = self.USD_UNITARIO_VEZES_QTD
+        self.assertLess(certo, self.so.total_usd,
+                        'recusar tem de fazer o dólar CAIR')
+        self.assertGreater(certo, esperado_de_entao,
                            'a reprodução falhou: o cenário não mostra o '
-                           'resultado ficando ACIMA do esperado')
+                           'resultado ficando ACIMA do esperado de então')
 
 
 class OScriptTests(TestCase):
@@ -220,18 +263,25 @@ class OScriptTests(TestCase):
                 'TOTAL em ¥ multiplicado pela taxa — a conta que o '
                 '`services.confirm` proíbe (bug de 2026-09-07)')
 
-    def test_a_derivacao_da_linha_repactuada_arredonda_em_CENTAVOS(self):
-        """A metade que autoriza, e a condição que a torna segura.
+    def test_o_dolar_da_linha_MULTIPLICA_antes_de_arredondar(self):
+        """A forma exata da conta no navegador, espelhando o servidor.
 
-        O `settlement_totals` faz `(unit * rate).quantize(_CENT)` e SÓ ENTÃO
-        multiplica pela quantidade. Se a tela multiplicar primeiro e arredondar
-        depois, ela e a fatura divergem em centavos numa linha de milhares de
-        unidades — que é a divergência silenciosa de sempre, pelo outro lado.
+        ⚠ ESTE TESTE INVERTEU EM 10/09. Ele exigia o contrário —
+          `(unit × taxa).quantize` e só então × quantidade — porque era o que
+          o `settlement_totals` fazia. Os dois estavam errados juntos, o que
+          é a única coisa pior que estarem errados separados: a tela batia com
+          a fatura, e as duas ficavam US$ 28,67 abaixo do ¥ × taxa.
+
+        Agora a linha multiplica primeiro e arredonda no fim, dos dois lados.
+        A forma é fixa e reconhecível de propósito — a varredura de templates
+        (`test_nenhum_template_converte_um_TOTAL_pela_taxa`) libera esta e
+        reprova qualquer outra, inclusive uma que só troque a ordem.
         """
-        self.assertIn('Math.round(novo * fx * 100) / 100', self.js)
+        self.assertIn('Math.round(unit * ok * fx * 100) / 100', self.js)
         # e o total continua sendo SOMA de linhas, não uma conta própria
         self.assertIn('pagarUsd += valUsd', self.js)
-        self.assertIn('valUsd = ok * unitUsd', self.js)
+        # a ordem ANTIGA não pode voltar por descuido
+        self.assertNotIn('valUsd = ok * unitUsd', self.js)
 
     def test_a_taxa_existe_no_escopo_e_isso_esta_JUSTIFICADO(self):
         """Ela saiu em 07/09 e voltou em 09/09. Um comentário no código
@@ -257,14 +307,20 @@ class OScriptTests(TestCase):
         self.assertNotIn("elPagarUsd", self.js)
 
     def test_o_total_em_usd_e_somado_linha_a_linha(self):
-        self.assertIn('valUsd = ok * unitUsd', self.js)
+        """O total é SOMA de linhas — o que muda em 10/09 é como cada linha
+        se calcula, não que o total seja uma soma."""
+        self.assertIn('var valUsd = fx ? Math.round(unit * ok * fx * 100) / 100',
+                      self.js)
         self.assertIn('pagarUsd += valUsd', self.js)
 
     def test_linha_sem_usd_congelado_vira_travessao_e_nao_zero(self):
         """§2.7: número que falta não se chuta — e muito menos se soma como 0,
         que sairia MENOR que a verdade, calado e plausível."""
         self.assertIn('var temUsd = true', self.js)
-        self.assertIn('if (!(unitUsd > 0)) temUsd = false', self.js)
+        # ⚠ A condição passou a olhar a TAXA e o ¥ (10/09), e não o unitário
+        #   em US$: ele deixou de ser insumo da conta, então "não tem dólar"
+        #   virou "não tem taxa ou não tem preço".
+        self.assertIn('if (!(fx > 0) || !(unit > 0)) temUsd = false', self.js)
         self.assertIn("temUsd ? 'US$ ' + pagarUsd.toFixed(2) : '—'", self.js)
 
 
@@ -274,14 +330,14 @@ class OServidorTests(_Base):
     def test_o_esperado_do_heroi_e_a_soma_congelada(self):
         with company_scope(self.emp.id):
             r = self.client.get(reverse('compras:detail', args=[self.so.pk]))
-        self.assertEqual(r.context['esperado_usd'], self.USD_CONGELADO)
+        self.assertEqual(r.context['esperado_usd'], self.USD_DA_LINHA)
 
     def test_o_html_abre_com_o_valor_congelado_nos_DOIS_lugares(self):
         """Herói e rodapé têm de nascer iguais. Se já nascem diferentes, o JS
         não tem como consertar depois."""
         html = self._html()
-        self.assertIn('US$ 4400.00', html)
-        self.assertNotIn('US$ 4443.00', html)
+        self.assertIn('US$ 4443.00', html)
+        self.assertNotIn('US$ 4400.00', html)
 
 
 class VarreduraTests(TestCase):
@@ -293,12 +349,19 @@ class VarreduraTests(TestCase):
 
     def test_o_total_da_OV_e_a_soma_das_linhas_congeladas(self):
         fonte = _ler(os.path.join(settings.BASE_DIR, 'vendas', 'services.py'))
-        self.assertIn('total_usd += line.unit_usd * line.quantity', fonte)
+        # O `confirm` congela pela fonte única (10/09).
+        self.assertIn(
+            'total_usd += usd_da_linha(line.unit_rmb, line.quantity, rate)',
+            fonte)
+        # A ordem ANTIGA — unitário congelado × quantidade — não pode voltar.
+        self.assertNotIn('total_usd += line.unit_usd * line.quantity', fonte)
         self.assertNotIn('so.total_usd = (total_rmb *', fonte)
 
     def test_a_fatura_soma_por_linha_e_nao_o_total_pela_taxa(self):
         fonte = _ler(os.path.join(settings.BASE_DIR, 'vendas', 'services.py'))
-        self.assertIn('total_usd += unit_usd * qty', fonte)
+        # A fatura chama a fonte ÚNICA (10/09) em vez de ter a conta dela.
+        self.assertIn('total_usd += usd_da_linha(unit, qty, rate)', fonte)
+        # …e o proibido continua proibido: total do pedido × taxa.
         self.assertNotIn('total_usd = (total_rmb * rate)', fonte)
 
     def test_a_planilha_soma_o_usd_congelado_coluna_por_coluna(self):
@@ -313,15 +376,20 @@ class VarreduraTests(TestCase):
         `_rmb_de` e a caixa de pagamento fazem o caminho INVERSO (US$ → ¥) e
         são leitura derivada declarada (§2.4): dividem, não multiplicam.
 
-        ⚠ A ÚNICA multiplicação pela taxa permitida em template é a do
-          UNITÁRIO da linha repactuada, e ela tem forma fixa e reconhecível:
-          `Math.round(novo * fx * 100) / 100` — arredonda em centavos ANTES de
-          multiplicar pela quantidade, como o `settlement_totals`. Qualquer
-          outra forma cai aqui, inclusive uma que só troque a ordem dos
-          fatores: a ordem É a diferença entre bater com a fatura e divergir
-          em centavos.
+        ⚠ DUAS formas são permitidas, ambas fixas e reconhecíveis, e ambas
+          POR LINHA:
+
+          · `Math.round(unit * ok * fx * 100) / 100` — o VALOR da linha, que
+            multiplica primeiro e arredonda no fim (10/09).
+          · `Math.round(novo * fx * 100) / 100` — o UNITÁRIO de exibição da
+            linha repactuada, que é mostrado e não somado.
+
+          Qualquer outra forma cai aqui, inclusive uma que só troque a ordem
+          dos fatores: a ordem É a diferença entre bater com a calculadora e
+          ficar US$ 28,67 abaixo dela.
         """
-        PERMITIDA = 'Math.round(novo * fx * 100) / 100'
+        PERMITIDAS = ('Math.round(unit * ok * fx * 100) / 100',   # o VALOR
+                      'Math.round(novo * fx * 100) / 100')        # o unitário
         raiz = os.path.join(settings.BASE_DIR, 'vendas', 'templates')
         achados = []
         for dirpath, _dirs, arquivos in os.walk(raiz):
@@ -331,7 +399,7 @@ class VarreduraTests(TestCase):
                 caminho = os.path.join(dirpath, nome)
                 for n, linha in enumerate(_sem_comentarios(
                         _ler(caminho)).split('\n'), 1):
-                    if PERMITIDA in linha:
+                    if any(p in linha for p in PERMITIDAS):
                         continue
                     if re.search(r'\*\s*fx\b|\bfx\s*\*', linha):
                         achados.append('%s:%d' % (nome, n))
@@ -418,7 +486,7 @@ class NavegadorTests(_Base):
         o que o servidor disse.
         """
         antes = self._rodar({})['antes']
-        self.assertEqual(antes['kUsd'], 'US$ 4400.00')
+        self.assertEqual(antes['kUsd'], 'US$ 4443.00')
         self.assertEqual(antes['kRmb'], '¥ 30000.00')
 
     def test_o_heroi_e_o_rodape_dizem_o_MESMO_yuan(self):
@@ -454,7 +522,9 @@ class NavegadorTests(_Base):
         self.assertLess(depois, self.so.total_usd,
                         'recusar chips AUMENTOU o resultado em US$ — é o bug '
                         'de 2026-09-07 de volta')
-        self.assertEqual(depois, D('4378.00'))       # 0,44 × 9.950
+        # ¥3 × 9.950 × 0,1481 = 4.420,785 → 4.420,79 (arredonda no FIM).
+        # Era 4.378,00 (0,44 × 9.950) até 10/09 — a ordem antiga.
+        self.assertEqual(depois, D('4420.79'))
 
     def test_o_script_roda_INTEIRO_sem_estourar(self):
         """A armadilha mais cara desta tela, e ela já aconteceu.

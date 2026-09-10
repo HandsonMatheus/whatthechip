@@ -1424,9 +1424,9 @@
 
   function recalcular() {
     var rej = 0, aceitos = 0, enviados = 0, pagar = 0, pagarUsd = 0;
-    // TODA linha de OV confirmada tem `unit_usd` congelado (o `confirm` se
-    // recusa a fechar sem taxa). Isto é para o registro legado, em que não
-    // tem: aí o total em US$ não existe, e dizer isso é melhor que somar 0.
+    // TODA OV confirmada tem TAXA travada (o `confirm` se recusa a fechar sem
+    // ela). Isto é para o registro legado, em que não tem: aí o total em US$
+    // não existe, e dizer isso é melhor que somar 0.
     var temUsd = true;
     var perdaTotal = 0;
     // Subtotais POR MARCA. A faixa do grupo tem de somar exatamente as linhas
@@ -1436,7 +1436,10 @@
     campos.forEach(function (i) {
       var qtd = parseInt(i.dataset.qty, 10) || 0;
       var base = parseFloat(i.dataset.unit) || 0;          // ¥ CONGELADO
-      var baseUsd = parseFloat(i.dataset.unitUsd) || 0;    // US$ CONGELADO
+      // ⚠ O `data-unit-usd` continua no HTML mas o herói NÃO o usa mais para
+      //   somar (10/09): ele é o unitário de EXIBIÇÃO, em centavos. Quem faz
+      //   a conta é o ¥ da linha × taxa. O atributo fica porque a coluna do
+      //   unitário ainda pode querer mostrá-lo.
       // ── A REPACTUAÇÃO DA LINHA ──────────────────────────────────────────
       // Campo vazio, zero ou igual ao congelado NÃO é repactuação — é a
       // mesma regra do `_recusas_do_post`, e ela mora nos dois lugares
@@ -1446,12 +1449,6 @@
       var novo = campoP ? parseFloat(campoP.value) : NaN;
       var repact = !isNaN(novo) && novo > 0 && novo !== base;
       var unit = repact ? novo : base;
-      // ⚠ ARREDONDA EM CENTAVOS ANTES de multiplicar pela quantidade. É o
-      //   `.quantize(_CENT)` do `settlement_totals`, e sem ele a tela e a
-      //   fatura divergem em centavos numa linha de milhares de unidades.
-      var unitUsd = repact
-        ? (fx ? Math.round(novo * fx * 100) / 100 : 0)
-        : baseUsd;
       var r = parseInt(i.value, 10);
       if (isNaN(r) || r < 0) r = 0;
       if (r > qtd) r = qtd;
@@ -1477,8 +1474,14 @@
       //   linha, então a linha certa e o total velho conviviam na tela).
       //   Pego olhando a tabela renderizada, não lendo o diff.
       var tr = i.closest('tr');
-      if (!(unitUsd > 0)) temUsd = false;
-      var ok = qtd - r, val = ok * unit, valUsd = ok * unitUsd;
+      if (!(fx > 0) || !(unit > 0)) temUsd = false;
+      // ⚠ US$ = ¥ da LINHA × taxa, arredondado no FIM — nunca `ok × unitUsd`.
+      //   O `unitUsd` é exibição (2 casas): multiplicá-lo joga fora meio
+      //   centavo por unidade, e o herói ficava US$ 28,67 abaixo da fatura
+      //   numa OV de 10 mil peças (dono, 10/09). Espelha o `usd_da_linha` do
+      //   servidor; se os dois discordarem, o `tests_dolar_do_heroi` quebra.
+      var ok = qtd - r, val = ok * unit;
+      var valUsd = fx ? Math.round(unit * ok * fx * 100) / 100 : 0;
       rej += r; enviados += qtd; aceitos += ok; pagar += val; pagarUsd += valUsd;
       perdaTotal += r * unit;
 

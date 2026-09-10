@@ -50,6 +50,20 @@ ORDEM = 'SO/004/08/26'
 #: O que o dono registrou na tela, e o que produção tem de receber igual.
 DESPACHO = dict(carrier='DHL', tracking='2486463965', data=date(2026, 8, 18))
 #: O que o congelamento TEM de produzir. Não é decoração: é o portão.
+#:
+#: ⚠ ESTE US$ É HISTÓRICO E NÃO SE ATUALIZA. Ele é a impressão digital do que
+#:   produção congelou em 18/08 — e é assim que o comando sabe que o trabalho
+#:   JÁ FOI FEITO e não precisa refazer (ver o `and so.total_usd == ...`
+#:   abaixo). Trocar o número faria o comando achar que falta despachar.
+#:
+#:   Rodado hoje, do zero, o `confirm` NÃO daria 11.694,91: desde 10/09 o
+#:   dólar de cada linha multiplica antes de arredondar, e daria ~11.722.
+#:   A diferença de US$ 28 é exatamente o defeito que a mudança corrigiu —
+#:   ¥79.102 × 0,1482 = 11.722,92, e o congelado ficou 28 abaixo.
+#:
+#:   Esta OV está FECHADA E PAGA, então o `realinhar_dolar_por_linha` não
+#:   encosta nela: o número emitido é o que fica. Por isso a constante
+#:   também fica.
 ESPERADO = dict(fx=D('0.1482'), total_rmb=D('79102.00'),
                 total_usd=D('11694.91'))
 REVERT = os.path.join(str(settings.BASE_DIR), 'var', 'reverts',

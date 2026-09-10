@@ -35,7 +35,7 @@ import io
 import os
 import re
 from datetime import date
-from decimal import Decimal as D
+from decimal import Decimal as D, ROUND_HALF_UP
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -161,15 +161,22 @@ class ODolarDaLinhaRepactuadaTests(_Base):
         # 2.55 × 0.1481 = 0.377655 → 0.38
         self.assertEqual(l['unit_usd'], D('0.38'))
 
-    def test_arredonda_em_CENTAVOS_antes_de_multiplicar(self):
-        """0,38 × 10.000 = 3.800,00. Multiplicar primeiro daria
-        2,55 × 0,1481 × 10.000 = 3.776,55 — R$ 23 de diferença numa linha só,
-        e a tela discordaria da fatura."""
+    def test_MULTIPLICA_antes_de_arredondar(self):
+        """⚠ Invertido em 10/09, e o nome antigo era
+        `test_arredonda_em_CENTAVOS_antes_de_multiplicar`.
+
+        Ele exigia 0,38 × 10.000 = 3.800,00 e chamava de defeito os 3.776,55
+        de multiplicar primeiro. Estava de cabeça para baixo: 2,55 × 0,1481 =
+        0,377655, e congelar isso em 0,38 INFLA o unitário em quase um
+        centavo — vezes 10.000 unidades, US$ 23 a mais do que o chip vale.
+
+        Agora: ¥2,55 × 10.000 × 0,1481 = 3.776,55, arredondado no fim. Os
+        mesmos US$ 23, agora do lado certo.
+        """
         self._fechar({self.l1.pk: (0, D('2.55'))})
         l = self._linhas()[self.l1.pk]
-        self.assertEqual(l['pago_usd'], D('3800.00'))
-        self.assertNotEqual(l['pago_usd'],
-                            (D('2.55') * self.FX * self.Q1))
+        self.assertEqual(l['pago_usd'], D('3776.55'))
+        self.assertNotEqual(l['pago_usd'], D('3800.00'))
 
     def test_a_tela_e_a_FATURA_dizem_o_mesmo_numero(self):
         """O fecho do arco de 07/09: o que ele lê enquanto confere tem de ser
@@ -185,7 +192,13 @@ class ODolarDaLinhaRepactuadaTests(_Base):
     def test_o_ESPERADO_em_usd_tambem_fica_parado(self):
         self._fechar({self.l1.pk: (0, D('2.55'))})
         l = self._linhas()[self.l1.pk]
-        self.assertEqual(l['total_usd'], self.U1_USD * self.Q1)
+        # ESPERADO = ¥ CONGELADO × quantidade × taxa, arredondado no fim
+        # (10/09). Era `U1_USD × Q1` — o unitário congelado vezes a
+        # quantidade. O que este teste guarda não mudou: o esperado NÃO anda
+        # quando o comprador repactua.
+        self.assertEqual(l['total_usd'],
+                         (self.U1 * self.Q1 * self.FX).quantize(
+                             D('0.01'), ROUND_HALF_UP))
         self.assertEqual(l['congelado_usd'], self.U1_USD)
 
 

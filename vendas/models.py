@@ -437,9 +437,17 @@ class SalesOrderLine(models.Model):
 
     @property
     def total_usd(self):
-        if self.unit_usd is None:
-            return None
-        return (self.unit_usd * self.quantity).quantize(Decimal('0.01'))
+        """O valor da linha em US$ — ¥ × quantidade × taxa, arredondado NO FIM.
+
+        ⚠ Não é `unit_usd × quantidade`. O `unit_usd` é o unitário de
+          EXIBIÇÃO, arredondado em centavos; multiplicá-lo joga fora meio
+          centavo por unidade e, numa linha de milhares de peças, isso vira
+          dezenas de dólares (dono, 10/09: US$ 28,67 numa OV só). A conta
+          mora no `services.usd_da_linha`, fonte única.
+        """
+        from .services import usd_da_linha
+        taxa = self.order.fx_usd_rate if self.order_id else None
+        return usd_da_linha(self.unit_rmb, self.quantity, taxa)
 
     def save(self, *args, **kwargs):
         if self.order_id and not self.company_id:

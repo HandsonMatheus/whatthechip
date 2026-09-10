@@ -293,18 +293,23 @@ def _cabecalho_da_compra(ws, so, ctx, e, acerto, ultima_linha):
           float(so.total_usd) if so.total_usd else '—', fmt_esp, False)
     if acerto:
         # O ¥ vem do rodapé; o US$ vem da coluna escondida — `SUMPRODUCT` de
-        # aprovados × unitário congelado. As faixas entram no intervalo e
-        # contribuem ZERO, porque a coluna do US$ é vazia nelas.
+        # SOMA da coluna escondida, que já traz o VALOR de cada linha em US$
+        # (ver `_linha_do_chip`). Era um `SUMPRODUCT(aprovados, unitário)` —
+        # a conta antiga rodando dentro do Excel. As faixas entram no
+        # intervalo e contribuem ZERO, porque a coluna é vazia nelas.
         #
-        # ⚠ Sem NENHUM unitário em US$ (ordem legada, rascunho sem taxa) o
-        #   `SUMPRODUCT` daria zero, e "US$ 0.00" é um preço — ausência de
-        #   preço não é. Aí sai travessão, como a tela faz.
-        tem_usd = any(l['unit_usd'] is not None
-                      for g in ctx['grupos'] for l in g['lines'])
+        # ⚠ Sem TAXA (ordem legada, rascunho sem câmbio) a coluna nem é
+        #   escrita e a soma daria zero — e "US$ 0.00" é um preço, enquanto
+        #   ausência de preço não é. Aí sai travessão, como a tela faz.
+        # Precisa de taxa E de pelo menos um ¥: sem taxa não há conversão, e
+        # sem nenhum preço a soma daria zero — e "US$ 0.00" é um preço,
+        # enquanto ausência de preço não é (§2.7). A tela faz o mesmo.
+        tem_usd = bool(ctx.get('_taxa_na_celula')) and any(
+            l['unit_rmb'] is not None
+            for g in ctx['grupos'] for l in g['lines'])
         _hero(CAB_RES, _('Resultado').upper(),
               '=%s%d' % (_L(COL_RES), ultima_linha),
-              '=SUMPRODUCT(%s%d:%s%d,%s%d:%s%d)' % (
-                  _L(COL_ACE), LINHA_1, _L(COL_ACE), ultima_linha - 1,
+              '=ROUND(SUM(%s%d:%s%d),2)' % (
                   _L(COL_USD), LINHA_1, _L(COL_USD), ultima_linha - 1)
               if tem_usd else '—',
               FMT_RMB, True)
@@ -393,6 +398,13 @@ COL_ESP_SEM_ACERTO = 6
 #:   coluna nenhuma, e escondida porque é insumo, não leitura.
 COL_NUM1 = COL_UNIT
 COL_USD = 11
+#: A célula da TAXA, em referência absoluta — o `_campo` a escreve na linha 4
+#: da coluna `CAB_TAXA`. Ela é o multiplicador de toda linha em US$, então
+#: precisa ser absoluta: relativa, o Excel a deslocaria linha a linha e cada
+#: chip seria convertido por uma taxa diferente (e, abaixo da linha 4, por
+#: célula vazia — zero).
+def _cel_taxa():
+    return '$%s$4' % _L(CAB_TAXA)
 
 #: ⚠ O CABEÇALHO tem o layout DELE, e de propósito não reaproveita as
 #:   constantes da tabela: os cinco blocos do topo (três campos + dois
@@ -421,6 +433,15 @@ def _aba_resumo(ws, so, ctx):
 
     e = _estilos()
     ws.title = _('Resumo')
+    # ⚠ AQUI, no começo, e não junto do cabeçalho: o `_cabecalho_da_compra`
+    #   roda por ÚLTIMO (ele precisa saber onde a tabela terminou), e as
+    #   linhas são escritas antes. Definir a chave lá deixava toda linha sem
+    #   fórmula de US$ — descoberto pelo teste, com a célula vindo `None`.
+    #
+    #   É a MESMA taxa que vai para a célula do cabeçalho (`so.fx_usd_rate`) e
+    #   NÃO o `ctx['fx_rate']`, que cai para a taxa do lote: a fórmula
+    #   multiplica pela CÉLULA, então quem manda é o que está escrito nela.
+    ctx['_taxa_na_celula'] = so.fx_usd_rate
     acerto = ctx['pode_acertar'] or ctx['tem_resultado']
     editavel = ctx['pode_acertar']
     legado = ctx['registro_legado']
@@ -608,10 +629,23 @@ def _linha_do_chip(ws, r, l, e, acerto, editavel, legado, ctx):
     _num(ws, r, COL_REJV, FMT_RMB_NEG)
     _num(ws, r, COL_ACE, FMT_QTD)
     _num(ws, r, COL_RES, FMT_RMB)
-    # O insumo ESCONDIDO do US$ do cabeçalho: o unitário CONGELADO da
-    # linha, que é de onde a tela tira o dólar — e não de ¥ × taxa.
-    if l['unit_usd'] is not None:
-        ws.cell(row=r, column=COL_USD, value=float(l['unit_usd']))
+    # O insumo ESCONDIDO do US$ do cabeçalho. Até 10/09 esta célula guardava
+    # o UNITÁRIO em US$ e o cabeçalho fazia `SUMPRODUCT(aprovados, unitário)`
+    # — a conta antiga, viva dentro do Excel, recalculando errado a cada
+    # recusa que o comprador digitava. Agora ela é o VALOR DA LINHA:
+    #
+    #     ROUND(aprovados × ¥unitário × taxa, 2)
+    #
+    # Arredonda no fim, como o `services.usd_da_linha`, e continua sendo
+    # fórmula — que é o que faz o número acompanhar o que ele digita.
+    # ⚠ A guarda é `_taxa_na_celula`, e NÃO o `ctx['fx_rate']`: aquele cai
+    #   para a taxa do LOTE quando a OV não tem a dela, enquanto a célula do
+    #   cabeçalho leva só a da OV. Guardar pelo `ctx` escreveria uma fórmula
+    #   que multiplica por um travessão — `#VALUE!` em toda linha.
+    if ctx.get('_taxa_na_celula'):
+        ws.cell(row=r, column=COL_USD).value = (
+            '=IF(ISNUMBER(%s),ROUND(%s*%s*%s,2),"")'
+            % (u, ace, u, _cel_taxa()))
 
 
 def _faixa_da_marca(ws, r, g, i, e, acerto, legado, ctx, a, b,

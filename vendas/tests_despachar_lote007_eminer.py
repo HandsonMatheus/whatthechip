@@ -37,13 +37,16 @@ _DIR = tempfile.mkdtemp(prefix='desp7-')
 _REVERT = os.path.join(_DIR, 'despachar_lote007_eminer_revert.json')
 
 #: 5 eMMC × ¥15 = ¥75; em US$, arredondando POR UNIDADE a 0,1482:
-#: 15 × 0,1482 = 2,223 → 2,22 · 5 × 2,22 = 11,10.
+#: ⚠ RECALCULADO EM 10/09. Era `15 × 0,1482 = 2,223 → 2,22 · 5 × 2,22 =
+#:   11,10` — arredondava o unitário e multiplicava. Agora multiplica antes:
+#:   `15 × 5 × 0,1482 = 11,115 → 11,12`. Dois centavos aqui; US$ 28,67 na OV
+#:   de verdade que motivou a mudança.
 #: ⚠ `com_emcp=False` de propósito: o eMCP do fixture entra com
 #: `price_gen='LPDDR4X'` e a linha do grid é genérica (`gen=''`), então ele
 #: fica SEM cotação e o `confirm()` recusa a ordem inteira — o mesmo motivo
 #: pelo qual o `VendasGateTests` também o desliga.
 FX = D('0.1482')
-ESPERADO = dict(fx=FX, total_rmb=D('75.00'), total_usd=D('11.10'))
+ESPERADO = dict(fx=FX, total_rmb=D('75.00'), total_usd=D('11.12'))
 DESPACHO = dict(carrier='DHL', tracking='2486463965', data=date(2026, 8, 18))
 
 

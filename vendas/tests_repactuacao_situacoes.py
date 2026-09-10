@@ -322,14 +322,23 @@ class OPapelEAPlanilhaTests(_Base):
         linha = next(l for l in doc['lines'] if l['unit_rmb'] == D('2.55'))
         self.assertEqual(linha['total_rmb'], D('2.55') * 10000)
 
-    def test_o_PDF_deriva_o_dolar_da_linha_repactuada(self):
-        """Ela não tem par em US$ congelado — é a única linha do documento em
-        que o dólar não vem congelado, e o `_monta_documento` diz isso."""
+    def test_o_PDF_ARREDONDA_o_unitario_da_linha_repactuada(self):
+        """⚠ Este teste PRENDIA UM DEFEITO, e o defeito saiu em 10/09.
+
+        Ele exigia `2,55 × 0,1481` cru — 0,377655, com seis casas — porque era
+        o que o `_monta_documento` fazia: aquele ramo era o único do sistema
+        sem `.quantize`. Resultado: a linha repactuada no PAPEL não batia com
+        a mesma linha na FATURA, que arredondava.
+
+        Agora o unitário do papel é dinheiro de verdade, em centavos, como em
+        todo lugar. E ele é só exibição — quem faz a conta é o ¥ da linha.
+        """
         _st, inv = self._fechar({self.ls[0].pk: (0, D('2.55'))})
         with company_scope(self.emp.id):
             doc = services.result_document(self.so, inv)
         linha = next(l for l in doc['lines'] if l['unit_rmb'] == D('2.55'))
-        self.assertEqual(linha['unit_usd'], D('2.55') * self.FX)
+        self.assertEqual(linha['unit_usd'], D('0.38'))
+        self.assertNotEqual(linha['unit_usd'], D('2.55') * self.FX)
 
     def test_o_PDF_desenha_a_SETA_e_o_preco_riscado(self):
         """Dono, 2026-09-09: *"preciso que o sistema de setas seja aplicado
@@ -502,13 +511,22 @@ class DepoisDeFecharTests(_Base):
 class OsCentavosTests(_Base):
     """Arredondamento — onde tela e fatura se separam sem ninguém ver."""
 
-    def test_o_dolar_arredonda_por_LINHA_antes_de_multiplicar(self):
-        """2,55 × 0,1481 = 0,377655 → 0,38 → × 10.000 = 3.800,00.
-        Multiplicar primeiro daria 3.776,55: R$ 23 numa linha só."""
+    def test_o_dolar_MULTIPLICA_antes_de_arredondar(self):
+        """⚠ Invertido em 10/09, junto com o nome.
+
+        Ele exigia 0,38 × 10.000 = 3.800,00 e chamava 3.776,55 de defeito.
+        Estava ao contrário: 2,55 × 0,1481 = 0,377655, e congelar em 0,38
+        INFLA o unitário em quase um centavo — vezes 10.000, US$ 23 a mais do
+        que o chip vale.
+
+        O unitário de EXIBIÇÃO continua 0,38 (dinheiro se escreve em
+        centavos); o que mudou é que ele deixou de ser insumo da conta.
+        """
         self._fechar({self.ls[0].pk: (0, D('2.55'))})
         l = self._linhas()[self.ls[0].pk]
-        self.assertEqual(l['unit_usd'], D('0.38'))
-        self.assertEqual(l['pago_usd'], D('3800.00'))
+        self.assertEqual(l['unit_usd'], D('0.38'))     # exibição
+        self.assertEqual(l['pago_usd'], D('3776.55'))  # a conta
+        self.assertNotEqual(l['pago_usd'], D('3800.00'))
 
     def test_preco_que_arredonda_para_BAIXO(self):
         """2,50 × 0,1481 = 0,370250 → 0,37."""

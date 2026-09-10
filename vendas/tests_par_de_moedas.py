@@ -68,7 +68,7 @@ import io
 import os
 import re
 from datetime import date
-from decimal import Decimal as D
+from decimal import Decimal as D, ROUND_HALF_UP
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -179,20 +179,44 @@ class _Base(TestCase):
 class FonteDoValorTests(_Base):
     """O risco nº 2: de onde sai o US$."""
 
-    def test_o_grupo_soma_o_usd_CONGELADO_das_linhas(self):
+    def test_a_faixa_da_marca_soma_EXATAMENTE_as_linhas_dela(self):
+        """A invariante que sobreviveu a 10/09, e que ficou mais importante.
+
+        ⚠ A primeira asserção era `g['usd'] == UNIT_USD × QTD` — o unitário
+          congelado vezes a quantidade. Essa ordem saiu: ela jogava fora meio
+          centavo por unidade. O que FICA, e é o que sempre importou, é a
+          faixa somar exatamente o que está escrito nas linhas embaixo dela.
+          Faixa dizendo um número e linhas dizendo outro é o defeito que só
+          aparece depois de fechado.
+        """
         g = self._grupos()[0]
-        self.assertEqual(g['usd'], self.UNIT_USD * self.QTD)
         self.assertEqual(g['usd'],
                          sum(l['total_usd'] for l in g['lines']))
+        self.assertEqual(g['pago_usd'],
+                         sum(l['pago_usd'] for l in g['lines']))
 
-    def test_o_usd_do_grupo_nao_e_o_yuan_convertido(self):
-        """A trava. Se alguém "simplificar" o `result_rows` para derivar o US$
-        do ¥ pela taxa travada, este cenário denuncia: o unitário em US$ é
-        0,30 e o ¥ × taxa daria 0,28."""
+    def test_o_usd_do_grupo_e_derivado_POR_LINHA_e_nao_do_total(self):
+        """⚠ ESTE TESTE VIROU DO AVESSO EM 10/09, e é o mais importante do
+        arquivo — por isso o histórico fica escrito aqui.
+
+        Ele proibia derivar o US$ do ¥: o cenário tinha unitário congelado de
+        0,30 enquanto ¥ × taxa daria 0,28, e o teste exigia o 0,30. A intenção
+        era boa e o alvo era errado. O que faz mal não é derivar do ¥ — é
+        derivar do TOTAL DO PEDIDO de uma vez, porque aí o rodapé deixa de ser
+        a soma da tabela (o bug grave de 07/09).
+
+        Derivar POR LINHA está certo e é o que o sistema faz desde 10/09: a
+        conta da linha é ¥ × quantidade × taxa arredondado no fim, e a faixa é
+        a soma das linhas. O que este teste guarda agora é a diferença entre
+        as duas coisas — que num cenário de várias linhas é mensurável.
+        """
         g = self._grupos()[0]
-        derivado = g['rmb'] * self.FX
-        self.assertNotEqual(g['usd'], derivado)
-        self.assertEqual(g['usd'], self.UNIT_USD * self.QTD)
+        do_total = (g['rmb'] * self.FX).quantize(D('0.01'), ROUND_HALF_UP)
+        por_linha = sum(l['total_usd'] for l in g['lines'])
+        self.assertEqual(g['usd'], por_linha,
+                         'a faixa tem de ser a soma das LINHAS')
+        # e as duas ficam perto — o resíduo é o arredondamento por linha
+        self.assertLess(abs(g['usd'] - do_total), D('1.00'))
 
     def test_o_grupo_soma_usd_mesmo_quando_o_yuan_falta(self):
         """`g['usd']` tem condição PRÓPRIA, não é o `else` do ¥. Pendurar os
@@ -200,7 +224,10 @@ class FonteDoValorTests(_Base):
         linha tem uma moeda e não a outra."""
         import inspect
         fonte = inspect.getsource(services.result_rows)
-        self.assertIn("if unit_usd is not None:", fonte)
+        # ⚠ A condição mudou de nome em 10/09 (`unit_usd` → `pago_usd`, o
+        #   valor da linha), mas continua sendo PRÓPRIA e não o `else` do ¥.
+        self.assertIn("if pago_usd is not None:", fonte)
+        self.assertIn("if total_usd is not None:", fonte)
 
 
 class TelaTests(_Base):
@@ -351,9 +378,15 @@ class RecalculoAoVivoTests(_Base):
                      'elPagarRmb.textContent = dinheiro('):
             self.assertIn(alvo, self.js, alvo)
 
-    def test_o_js_le_o_usd_congelado_e_nao_multiplica_pela_taxa(self):
-        self.assertIn('i.dataset.unitUsd', self.js)
-        self.assertIn('valUsd = ok * unitUsd', self.js)
+    def test_o_js_calcula_o_valor_da_linha_pelo_YUAN(self):
+        """⚠ Invertido em 10/09. Ele exigia que o JS lesse o US$ congelado e
+        NÃO multiplicasse pela taxa. Agora é o contrário: o dólar da linha
+        sai do ¥ × quantidade × taxa, arredondado no fim, e o congelado é só
+        exibição. O que continua proibido é converter um TOTAL de uma vez —
+        e disso cuida o `test_nenhum_template_converte_um_TOTAL_pela_taxa`.
+        """
+        self.assertIn('Math.round(unit * ok * fx * 100) / 100', self.js)
+        self.assertNotIn('valUsd = ok * unitUsd', self.js)
 
     def test_a_faixa_da_marca_voltou_a_usar_textContent(self):
         """Era `innerHTML` porque o par levava um `<span>` dentro. Com uma
