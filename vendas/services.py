@@ -665,7 +665,14 @@ def _monta_documento(so, *, recusas, fx, settled_at, total_rmb, total_usd,
     desenho."""
     from pricing.models import CategoryCode
     linhas, env, rej, ace = [], 0, 0, 0
-    for line in so.lines.all().order_by('brand'):
+    # ⚠ A MESMA ordem da tela (dono, 2026-09-10). O `order_by('brand')` sozinho
+    #   descarta o `Meta.ordering` do modelo, então dentro da marca a ordem era
+    #   a que o banco quisesse devolver — e o papel saía numa ordem, a tela
+    #   noutra e a planilha numa terceira. Ordenar aqui em Python, com a mesma
+    #   `_grandeza`, é o que mantém as três superfícies dizendo a mesma coisa.
+    for line in sorted(so.lines.all(),
+                       key=lambda l: (l.brand or '', l.type_label,
+                                      _grandeza(l.tier_value, l.tier_unit))):
         n_rej, novo_unit = recusas.get(line.pk, (0, None))
         n_ace = line.quantity - n_rej
         unit = novo_unit if novo_unit is not None else line.unit_rmb
@@ -1908,6 +1915,35 @@ def clear_draft(so) -> None:
     so._state.fields_cache.pop('settlement_draft', None)
 
 
+_BITS_POR_BYTE = Decimal('8')
+
+
+def _grandeza(tier_value, tier_unit):
+    """A capacidade em BYTES — serve para ORDENAR, nunca para mostrar.
+
+    Dono, 2026-09-10: *"agora está o eMMC 128 na primeira linha e abaixo dele
+    o de 16GB, está uma bagunça"*. A ordem saía de `sort(key=(type, capacity))`
+    e `capacity` é o RÓTULO — texto. No alfabeto, '128GB' < '16GB' < '8GB', que
+    é exatamente a bagunça que ele viu.
+
+    ⚠ E NÃO BASTA ler o número do rótulo: o vocabulário tem DUAS unidades, e o
+      `pricing/models.py:86` já carrega o aviso de que a diferença é
+      case-sensitive — `GB` é gigaBYTE e `Gb` é gigaBIT. Em produção (dump de
+      31/08) são 618 linhas em GB e 166 em Gb: um `2Gb` de DDR3 é 0,25GB, e
+      ordenar os dois pelo número cru poria um die de 2Gb à frente de um
+      pacote de 1GB. Normalizar em bytes é o que faz a comparação ser entre
+      capacidades de verdade.
+
+    Sem unidade é a chave PLANA (K9, `tier_value=1`/`tier_unit=''` de
+    propósito): o tipo não TEM capacidade, então ele fica na frente em vez de
+    fingir um tamanho.
+    """
+    if not tier_unit:
+        return Decimal('-1')
+    valor = tier_value if tier_value is not None else Decimal('0')
+    return valor / _BITS_POR_BYTE if tier_unit == 'Gb' else valor
+
+
 def result_rows(so, com_rascunho=False):
     """``[{'brand': str, 'lines': [...], 'qty', 'rmb'}]`` — o que a tela do
     resultado desenha.
@@ -2056,6 +2092,11 @@ def result_rows(so, com_rascunho=False):
             'novo_rmb': novo,
             'congelado_rmb': cong,
             'congelado_usd': cong_usd,
+            # Os dois campos CRUS da capacidade, para a ordenação (`_grandeza`)
+            # não ter de reparsear o rótulo — e para a planilha e o papel
+            # ordenarem pela MESMA conta que a tela.
+            'tier_value': line.tier_value,
+            'tier_unit': line.tier_unit,
             # ¥/US$ do que foi ACEITO — é o que virou dinheiro de verdade.
             'pago_rmb': (unit * ace) if unit is not None else None,
             'pago_usd': (unit_usd * ace) if unit_usd is not None else None,
@@ -2081,7 +2122,11 @@ def result_rows(so, com_rascunho=False):
         if cong_usd is None:
             g['sem_preco'] += line.quantity
     for g in grupos.values():
-        g['lines'].sort(key=lambda r: (r['type'], r['capacity']))
+        # Tipo em ordem alfabética; dentro do tipo, capacidade CRESCENTE — em
+        # bytes, não no rótulo (ver `_grandeza`).
+        g['lines'].sort(key=lambda r: (r['type'],
+                                       _grandeza(r['tier_value'],
+                                                 r['tier_unit'])))
     return sorted(grupos.values(), key=lambda g: g['brand'])
 
 
