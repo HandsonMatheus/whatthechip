@@ -25,6 +25,17 @@ Excecao 2 (2026-08-28): GERACAO NO LUGAR CERTO — KnownPart eMCP/uMCP cujo
 (do subtype canonicalizavel, senao de dentro do `emcp_ram`). FILL-ONLY, deny by
 default (`is_ram_generation`), so KnownPart (familia pode ser multi-geracao).
 Sem isso, limpar o `emcp_ram` derruba 105 chips de RENTAVEL p/ INDETERMINADO.
+Excecao 3 (2026-09-19): LARGURA NO LUGAR CERTO — KnownPart cuja `interface`
+carrega LARGURA DE BARRAMENTO ('x16', 'x16 @ 800MHz') tem a largura movida para
+o campo proprio `bus_width` e a velocidade para as `notes` ('Speed: ...'); a
+`interface` volta a ser so PROTOCOLO (eMMC 5.1 / UFS 3.1). Sao 3.539 registros
+medidos na Fase 0 do PLANO_BUS_WIDTH.md. FILL-ONLY em `bus_width`; a `interface`
+SO e esvaziada quando tudo que havia nela teve destino (invariante I5 — mover
+nunca apaga); `notes` so cresce. NAO toca em ChipFamily: a largura de familia
+vem do yaml (Fase 4) e o proximo `load_brands` desfaria. Tres motivos de NAO
+migrar, todos reportados com a lista COMPLETA de PNs: SOBRA SEM DESTINO
+('x16 (2 dies)'), CONTRADICAO (ja tem outra largura em `bus_width`) e CLASSE NAO
+PERMITE (eMMC/eMCP, onde largura de dados nao identifica o dispositivo).
 Comportamento (label/rentabilidade) NAO muda — so o chip_type/subtype ARMAZENADO vira
 canonico (o engine ja resolvia em tempo real via canonical_chip_type).
 """
@@ -32,13 +43,23 @@ import collections
 import json
 import re
 
-from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from chips.chip_types import canonical_chip_type, is_generic, label_kind
 from chips.conventions import canonical_gen, is_ram_generation
-from chips.knowledge.convention import DENSITY_KINDS, RX_DENSITY_BARE
+from chips.knowledge.convention import (
+    DENSITY_KINDS, RX_DENSITY_BARE, bus_width_problem, notes_com_speed,
+    notes_tem_outra_speed, split_bus_width)
 from chips.models import ChipFamily, KnownPart
+from core.safe_command import SafeWriteCommand
+
+#: Baldes de NAO MIGRADOS (excecao 3). Sao ROTULOS DE RELATORIO e tambem as
+#: chaves que os testes leem — constantes para nao divergirem de um lado e de
+#: outro na primeira alteracao.
+NM_SOBRA = "SOBRA SEM DESTINO"
+NM_CONTRA = "CONTRADICAO"
+NM_CLASSE = "CLASSE NAO PERMITE"
+NM_BALDES = (NM_SOBRA, NM_CONTRA, NM_CLASSE)
 
 # Kingston nao fabrica silicio; familias DRAM "KF/KVR/ACR" sao bogus (ver memoria
 # k-prefix-bga-is-samsung). KVR=ValueRAM=modulos; ACR=marking de modulo.
@@ -94,7 +115,12 @@ def _canon_subtype(canon_ct: str, subtype: str) -> str:
 
 
 def _plan(obj):
-    """Mudancas {campo: [old, new]} — APENAS chip_type (ou {} se nada muda).
+    """Devolve ``(mudancas, motivo)``: ``{campo: [old, new]}`` e, quando a largura
+    NAO migra, o balde do relatorio (`NM_*`) — string vazia quando nada impede.
+
+    ⚠ A assinatura virou tupla na excecao 3: o `motivo` NAO pode entrar no dict de
+    mudancas (viraria campo a gravar) nem descartar o resto do plano — um registro
+    que nao migra a largura ainda pode ter chip_type/densidade/geracao a corrigir.
 
     Migra SO o chip_type (o campo critico e persistido no estoque). O subtype NAO e
     migrado: e canonicalizado em tempo de LEITURA por canonical_gen (gateway/engine),
@@ -159,30 +185,78 @@ def _plan(obj):
                         elif atual.upper().replace(" ", "") != proto.upper().replace(" ", ""):
                             ch.pop("subtype")
                     break
-    return ch
+    # ── Excecao 3 (2026-09-19): LARGURA NO LUGAR CERTO ────────────────────
+    # `isinstance`, nao `hasattr("bus_width")`: desde a Fase 1 a ChipFamily
+    # TAMBEM tem o campo, e o `hasattr` que o plano sugeriu deixaria a familia
+    # entrar. Ela nao entra — a largura de familia vem do yaml (Fase 4) e o
+    # proximo `load_brands` desfaria o que este comando escrevesse (dossie §5.1).
+    motivo = ""
+    if isinstance(obj, KnownPart):
+        bw, sp, sobra = split_bus_width(obj.interface)
+        if bw and sobra:
+            # 'x16 (2 dies)': migrar so a largura APAGARIA o '(2 dies)'. I5.
+            motivo = NM_SOBRA
+        elif bw or sp:
+            atual = (obj.bus_width or "").strip().lower()
+            if bw and bus_width_problem(canon, bw):
+                motivo = NM_CLASSE
+            elif bw and atual and atual != bw:
+                motivo = NM_CONTRA
+            else:
+                # FILL-ONLY: largura ja identica nao vira "mudanca" (a licao do
+                # MIGRA4 — reescrita no-op suja o relatorio e o JSON de reversao).
+                if bw and not atual:
+                    ch["bus_width"] = [obj.bus_width, bw]
+                # So aqui a `interface` e esvaziada: tudo que havia nela teve
+                # destino (largura -> bus_width, velocidade -> notes).
+                ch["interface"] = [obj.interface, ""]
+                if sp:
+                    novo = notes_com_speed(obj.notes, sp)
+                    if novo != (obj.notes or ""):
+                        ch["notes"] = [obj.notes, novo]
+    return ch, motivo
 
 
-class Command(BaseCommand):
-    help = "Migra chip_type/subtype para a convencao canonica (reversivel, dry-run por padrao)."
+#: Nome historico do JSON de reversao. `chips/tests.py` depende dele; o runbook
+#: SEMPRE passa `--out normalize_convention_revert_<BANCO>_<AAAAMMDD>.json`, que e
+#: o padrao do `backfill_doc_codes_revert_PROD_20260902.json` — dois bancos e duas
+#: rodadas no mesmo dia nao podem compartilhar arquivo de reversao.
+REVERT_DEFAULT = "normalize_convention_revert.json"
+
+
+class Command(SafeWriteCommand):
+    """⚠ `SafeWriteCommand`, nao `BaseCommand` (2026-09-19): este comando GRAVA em
+    catalogo global e nao imprimia o banco-alvo. O dossie §10.3 registra uma rodada
+    em producao feita achando que era local. O banner sai sempre; a confirmacao
+    digitada so no `--commit` interativo."""
+
+    help = "Migra chip_type/subtype/largura para a convencao canonica (reversivel, dry-run por padrao)."
 
     def add_arguments(self, parser):
         parser.add_argument("--commit", action="store_true", help="Aplica (senao, dry-run).")
         parser.add_argument("--revert", type=str, default="", help="JSON de reversao a desfazer.")
+        parser.add_argument("--out", type=str, default=REVERT_DEFAULT,
+                            help=f"Caminho do JSON de reversao (default: {REVERT_DEFAULT}).")
 
     # ── revert ────────────────────────────────────────────────────────────────
     def _revert(self, path):
         log = json.load(open(path))
+        # ⚠ `.update()`, NAO `save()` (2026-09-19). Reverter e RESTAURAR um estado
+        # que estava no banco ha um minuto, nao escrever dado novo — e o `save()`
+        # roda o normalizador de write-time POR CIMA da reversao e a desfaz em
+        # silencio. Dois casos reais: `interface='x16'` restaurada e RECUSADA pelo
+        # portao de largura (I2, e com razao: o valor mudou), e `interface='DDR3'`
+        # restaurada seria APAGADA pela regra 3 do `apply_kp_convention`. O
+        # `.update()` e o mesmo caminho por onde o legado entrou. Em Postgres os
+        # gatilhos do pghistory capturam o `.update()` — a auditoria nao se perde.
+        n_ok = 0
         with transaction.atomic():
             for e in log:
                 Model = ChipFamily if e["model"] == "chipfamily" else KnownPart
-                try:
-                    obj = Model.objects.get(pk=e["pk"])
-                except Model.DoesNotExist:
-                    continue
-                for field, (old, _new) in e["changes"].items():
-                    setattr(obj, field, old)
-                obj.save(update_fields=list(e["changes"].keys()))
-        self.stdout.write(f"↩ revertido de {path} ({len(log)} registros).")
+                campos = {f: old for f, (old, _new) in e["changes"].items()}
+                n_ok += Model.objects.filter(pk=e["pk"]).update(**campos)
+        self.stdout.write(f"↩ revertido de {path} ({n_ok}/{len(log)} registros; "
+                          "o que faltar ja nao existe no banco).")
 
     # ── handle ──────────────────────────────────────────────────────────────
     def handle(self, *args, **opts):
@@ -193,12 +267,23 @@ class Command(BaseCommand):
         ct_moves = collections.Counter()
         st_moves = collections.Counter()
         if_moves = collections.Counter()
+        bw_moves = collections.Counter()        # excecao 3: FORMA do movimento
+        bw_marca = collections.Counter()        # excecao 3: por marca
+        # ⚠ A excecao 1 (DENSIDADE, 2026-07-11) nunca teve contador: o relatorio
+        # somava esses registros no total e nao os mostrava em lugar nenhum. Achado
+        # em 2026-09-20, quando o dry-run do backfill de largura deu 3682 e os
+        # baldes visiveis so explicavam 3539+161+2. Um `--commit` nao pode ter
+        # linha invisivel — o dono assina o que ve.
+        dg_moves = collections.Counter()        # excecao 1: densidade
+        ct_kp = 0                               # chip_type SO de KnownPart
+        nao_migrados = collections.defaultdict(list)
+        notas_contraditorias = []
         samples = []
 
         # Familias
         n_fam = n_deact = 0
         for f in ChipFamily.objects.select_related("brand"):
-            ch = _plan(f)
+            ch, _motivo = _plan(f)     # familia nunca migra largura (§4 F3)
             if ch:
                 n_fam += 1
                 revert_log.append({"model": "chipfamily", "pk": f.pk, "changes": ch})
@@ -213,16 +298,45 @@ class Command(BaseCommand):
         # KnownParts
         n_kp = 0
         for kp in KnownPart.objects.select_related("family").iterator(chunk_size=1000):
-            ch = _plan(kp)
+            ch, motivo = _plan(kp)
+            if motivo:
+                nao_migrados[motivo].append(
+                    f"{kp.part_number[:28]:28s} interface={kp.interface!r}"
+                    + (f"  bus_width={kp.bus_width!r}" if (kp.bus_width or "") else "")
+                    + f"  [{kp.chip_type or '?'}]")
             if ch:
                 n_kp += 1
                 revert_log.append({"model": "knownpart", "pk": kp.pk, "changes": ch})
                 if "chip_type" in ch:
                     ct_moves[f"{ch['chip_type'][0]!r} -> {ch['chip_type'][1]!r}"] += 1
+                    ct_kp += 1
+                if "density_gbit" in ch:
+                    dg_moves[f"(vazio) -> {ch['density_gbit'][1]!r}"] += 1
                 if "subtype" in ch:
                     st_moves[f"{(ch['subtype'][0] or '(vazio)')!r} -> {ch['subtype'][1]!r}"] += 1
-                if "interface" in ch:
+                # A `interface` muda por DOIS motivos diferentes: a excecao 2
+                # ESCREVE o protocolo resgatado do subtype, a excecao 3 ESVAZIA
+                # porque a largura foi para o campo proprio. Separar pelo valor
+                # NOVO e o que mantem os dois numeros legiveis no relatorio — o
+                # dono precisa ver quanto e largura antes de digitar --commit.
+                if "interface" in ch and ch["interface"][1] != "":
                     if_moves[f"{(ch['interface'][0] or '(vazio)')!r} -> {ch['interface'][1]!r}"] += 1
+                elif "interface" in ch:
+                    velho = ch["interface"][0] or ""
+                    bw_, sp_, _ = split_bus_width(velho)
+                    if bw_ and sp_:
+                        forma = f"{bw_} @ <velocidade>"
+                        destino = "bus_width + notes 'Speed:'"
+                    elif bw_:
+                        forma, destino = bw_, "bus_width"
+                    else:
+                        forma, destino = "@ <velocidade>", "notes 'Speed:'"
+                    bw_moves[f"{forma:<22} ->  {destino}"] += 1
+                    bw_marca[kp.brand.name if kp.brand_id else "(sem marca)"] += 1
+                    if sp_ and notes_tem_outra_speed(kp.notes, sp_):
+                        notas_contraditorias.append(
+                            f"{kp.part_number[:28]:28s} notes={(kp.notes or '')[:60]!r}"
+                            f"  +Speed: {sp_}")
                 if len(samples) < 12:
                     samples.append((kp.part_number, ch))
 
@@ -243,6 +357,56 @@ class Command(BaseCommand):
                               f"({sum(if_moves.values())} KnownPart):")
             for k, c_ in if_moves.most_common(20):
                 self.stdout.write(f"    [{c_:5d}x] {k}")
+        if dg_moves:
+            self.stdout.write("\n  density_gbit — DENSIDADE NO LUGAR CERTO "
+                              f"({sum(dg_moves.values())} KnownPart):")
+            for k, c_ in dg_moves.most_common(20):
+                self.stdout.write(f"    [{c_:5d}x] {k}")
+        if bw_moves:
+            self.stdout.write("\n  bus_width — LARGURA NO LUGAR CERTO "
+                              f"({sum(bw_moves.values())} KnownPart):")
+            for k, c_ in bw_moves.most_common(20):
+                self.stdout.write(f"    [{c_:5d}x] {k}")
+            self.stdout.write("    por marca:")
+            for k, c_ in bw_marca.most_common(40):
+                self.stdout.write(f"      [{c_:5d}x] {k}")
+        else:
+            self.stdout.write("\n  bus_width — LARGURA NO LUGAR CERTO (0 KnownPart).")
+        if notas_contraditorias:
+            self.stdout.write("\n  ⚠ notes que JA declaram outra velocidade "
+                              f"({len(notas_contraditorias)}) — a nova entra ao lado, "
+                              "nada e apagado (I5); confira depois:")
+            for ln in notas_contraditorias:
+                self.stdout.write(f"       {ln}")
+        total_nm = sum(len(v) for v in nao_migrados.values())
+        if total_nm:
+            self.stdout.write(f"\n  ⚠ NAO MIGRADOS ({total_nm} KnownPart) — decisao "
+                              "humana; a largura destes fica onde esta:")
+            for balde in NM_BALDES:
+                linhas = nao_migrados.get(balde, [])
+                if not linhas:
+                    continue
+                self.stdout.write(f"    -- {balde} ({len(linhas)}) --")
+                for ln in linhas:      # LISTA COMPLETA, nunca amostra: sao os
+                    self.stdout.write(f"       {ln}")   # casos que precisam de gente
+        else:
+            self.stdout.write("  NAO MIGRADOS: 0")
+        # CONFERENCIA — o total nao e a soma dos baldes: um mesmo registro pode
+        # estar em dois (ex.: eMCP que ganha geracao no `subtype` E tem velocidade
+        # na `interface`). Mostrar os dois numeros e a diferenca e o que permite
+        # conferir o dry-run sem abrir o banco.
+        soma = (ct_kp + sum(dg_moves.values()) + sum(st_moves.values())
+                + sum(if_moves.values()) + sum(bw_moves.values()))
+        self.stdout.write("\n  conferencia dos baldes (KnownPart):")
+        self.stdout.write(f"    chip_type canonico        {ct_kp:6d}")
+        self.stdout.write(f"    densidade (excecao 1)     {sum(dg_moves.values()):6d}")
+        self.stdout.write(f"    geracao/subtype (exc. 2)  {sum(st_moves.values()):6d}")
+        self.stdout.write(f"    protocolo resgatado       {sum(if_moves.values()):6d}")
+        self.stdout.write(f"    largura (excecao 3)       {sum(bw_moves.values()):6d}")
+        self.stdout.write(f"    soma dos baldes           {soma:6d}")
+        self.stdout.write(f"    REGISTROS distintos       {n_kp:6d}"
+                          + (f"   ({soma - n_kp} em mais de um balde)"
+                             if soma != n_kp else "   (nenhum em dois baldes)"))
         self.stdout.write("\n  amostra (KnownPart):")
         for pn, ch in samples:
             self.stdout.write(f"    {pn[:26]:26s} {ch}")
@@ -259,7 +423,7 @@ class Command(BaseCommand):
                     setattr(obj, field, new)
                 obj.save(update_fields=list(e["changes"].keys()))
 
-        path = "normalize_convention_revert.json"
+        path = opts["out"] or REVERT_DEFAULT
         json.dump(revert_log, open(path, "w"), ensure_ascii=False, indent=0)
         self.stdout.write(f"\n✅ aplicado ({len(revert_log)} mudancas). Reversivel: {path}")
         self.stdout.write("   ↻ O cache do engine recarrega sozinho (catalog_version, passo 1B).")

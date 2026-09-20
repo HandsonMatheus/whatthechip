@@ -41,6 +41,15 @@ class DecodeLenTests(SimpleTestCase):
         fam.decode_gen_map  = gen_map
         fam.decode_gen_len  = gen_len   # precisa ser int: o engine faz pos+gen_len (senão MagicMock vaza)
         fam.decode_density_type = ''
+        # ── Largura (2026-09) — MESMA armadilha do gen_len acima, e é por isso
+        #    que estes três estão aqui: um MagicMock responde QUALQUER atributo,
+        #    então `decode_width_pos` viria truthy, o engine entraria no bloco de
+        #    decode e `pos + len` explodiria com TypeError. O mock tem de espelhar
+        #    os DEFAULTS do modelo real (null=True / default=1 / '').
+        fam.decode_width_pos = None
+        fam.decode_width_len = 1
+        fam.decode_width_map = ''
+        fam.bus_width        = ''
         fam.is_emcp         = is_emcp
         fam.chip_type       = 'eMCP' if is_emcp else 'eMMC'
         fam.subtype         = ''
@@ -2552,8 +2561,18 @@ class KnowledgeSchemaTests(TestCase):
         from chips.knowledge.schema import FamilySpec
         f = FamilySpec(prefix="H5AN", chip_type="DDR4", subtype="DDR4", interface="DDR4")
         self.assertEqual(f.interface, "")       # interface não carrega geração
-        g = FamilySpec(prefix="K4B", chip_type="DDR3", interface="x16")
-        self.assertEqual(g.interface, "x16")    # largura de barramento fica
+        # ⚠ ESPEC INVERTIDA EM 2026-09-19 (PLANO_BUS_WIDTH, I2/D3). Até aqui a
+        # largura MORAVA no `interface` e o teste provava que ela ficava. Agora
+        # `interface` é só protocolo e largura tem campo próprio — o portão
+        # REJEITA em vez de consertar em silêncio, para o chat de marca ver a
+        # mensagem no dry-run e trocar a chave no yaml (não é regressão).
+        from pydantic import ValidationError as _VE
+        with self.assertRaises(_VE) as ctx:
+            FamilySpec(prefix="K4B", chip_type="DDR3", interface="x16")
+        self.assertIn("bus_width", str(ctx.exception))   # a mensagem ensina o conserto
+        g = FamilySpec(prefix="K4B", chip_type="DDR3", bus_width="x16")
+        self.assertEqual(g.bus_width, "x16")
+        self.assertEqual(g.interface, "")
 
     def test_ativa_com_tipo_generico_irreducivel_e_rejeitada(self):
         from pydantic import ValidationError
@@ -2907,7 +2926,7 @@ class SugestaoPrefixoRankingTests(TestCase):
         for pn in cls.curtos + cls.longos:
             KnownPart.objects.create(
                 brand=cls.brand, part_number=pn, chip_type='DDR3',
-                subtype='DDR3', density_gbit='4Gb', interface='x16',
+                subtype='DDR3', density_gbit='4Gb', bus_width='x16',
                 confidence='confirmed', review_status='approved',
                 notes='fixture de teste',
             )
@@ -3733,12 +3752,16 @@ class NormalizeGeracaoNoLugarCertoTests(TestCase):
         """Contradição é decisão humana. E limpar só o subtype seria pior que
         não fazer nada: perderia a versão para ficar com um campo bonito."""
         from chips.models import KnownPart
-        self._kp("PROTO3", emcp_ram="", subtype="LPDDR3 + eMMC 5.1", interface="x16")
+        # ⚠ EXEMPLO TROCADO EM 2026-09-19: o valor ocupante era "x16", que o portão
+        # agora recusa em `interface` (largura tem campo próprio). Trocado por outro
+        # PROTOCOLO, diferente do que a migração quereria escrever — a regra testada
+        # ("contradição é decisão humana") é a mesma.
+        self._kp("PROTO3", emcp_ram="", subtype="LPDDR3 + eMMC 5.1", interface="UFS 2.1")
         self._roda(commit=True)
         kp = KnownPart.objects.get(part_number="PROTO3")
         self.assertEqual(kp.subtype, "LPDDR3 + eMMC 5.1",
                          "limpou o subtype e jogou fora a versão do protocolo")
-        self.assertEqual(kp.interface, "x16", "sobrescreveu a interface")
+        self.assertEqual(kp.interface, "UFS 2.1", "sobrescreveu a interface")
 
     def test_interface_ja_diz_o_MESMO_so_limpa_o_subtype(self):
         from chips.models import KnownPart
@@ -3761,6 +3784,286 @@ class NormalizeGeracaoNoLugarCertoTests(TestCase):
         self.assertEqual(self._sub("MIGRA8"), "")
         if os.path.exists("normalize_convention_revert.json"):
             os.remove("normalize_convention_revert.json")
+
+
+class NormalizeLarguraNoLugarCertoTests(TestCase):
+    """`normalize_convention` — 3ª exceção: A LARGURA NO LUGAR CERTO (2026-09-19).
+
+    Trigêmea da DENSIDADE (2026-07-11) e da GERAÇÃO (2026-08-28): o dado está no
+    campo errado e a migração o MOVE — não inventa nada, tira de dentro do mesmo
+    registro. Aqui são **3.539 KnownPart** com largura de barramento morando no
+    `interface`, que é campo de PROTOCOLO (medido na Fase 0 do PLANO_BUS_WIDTH.md).
+    Enquanto não migram, o `bus_width` nasce vazio e a bancada segue sem enxergar
+    x4/x8/x16 — que é a coisa inteira que esta tarefa existe para resolver.
+
+    ⚠ O legado entra por `.update()` DE PROPÓSITO: o portão do `clean()` (I2) já
+    recusa `interface='x16'` em registro novo. Uma fixture que passasse pelo
+    `save()` não estaria testando o legado — estaria testando o portão, e passaria
+    verde com a migração inteira arrancada.
+    """
+
+    def _kp(self, pn, chip_type="DDR3", **campos):
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name="Samsung", defaults={"code": "SAM"})
+        kp = KnownPart.objects.create(
+            brand=b, part_number=pn, chip_type=chip_type,
+            subtype=chip_type if chip_type.startswith("DDR") else "",
+            capacity="2Gb" if chip_type.startswith("DDR") else "16GB",
+            confidence="confirmed", review_status="approved", notes="")
+        if campos:          # legado entra por .update() — sem clean()/convenção
+            KnownPart.objects.filter(pk=kp.pk).update(**campos)
+        return kp
+
+    def setUp(self):
+        # ⚠ O `--commit` SEMPRE grava um JSON de reversão, e o nome default é
+        # relativo: rodar a suíte deixava `normalize_convention_revert.json` na
+        # raiz do repo de quem a rodou. O `--out` para um diretório temporário
+        # mantém a trava do encanamento (o JSON é escrito e lido de verdade) sem
+        # a suíte sujar a pasta de trabalho de ninguém.
+        import tempfile
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+
+    def _roda(self, commit=False, extra=()):
+        import os
+        from io import StringIO
+        from django.core.management import call_command
+        extra = list(extra)
+        if commit and "--out" not in extra:
+            extra += ["--out", os.path.join(self._tmp.name, "revert.json")]
+        out = StringIO()
+        call_command("normalize_convention", *(["--commit"] if commit else []),
+                     *extra, stdout=out)
+        return out.getvalue()
+
+    def _get(self, pn):
+        from chips.models import KnownPart
+        return KnownPart.objects.get(part_number=pn)
+
+    # ── o move em si ──────────────────────────────────────────────────────
+    def test_largura_pura_sai_da_interface_para_o_bus_width(self):
+        self._kp("LARG1", interface="x16")
+        saida = self._roda()                       # dry-run anuncia…
+        self.assertIn("LARGURA NO LUGAR CERTO", saida)
+        self.assertEqual(self._get("LARG1").interface, "x16", "dry-run GRAVOU")
+        self._roda(commit=True)
+        kp = self._get("LARG1")
+        self.assertEqual(kp.bus_width, "x16")
+        self.assertEqual(kp.interface, "", "a largura ficou em DOIS campos")
+
+    def test_largura_mais_velocidade_reparte_em_bus_width_e_notes(self):
+        """I5 — mover nunca apaga. A velocidade da Micron é o pedaço que a 1ª
+        versão de toda migração assim descarta: ela não cabe no `bus_width`, e o
+        caminho mais curto é jogá-la fora junto com a `interface`."""
+        self._kp("LARG2", interface="x16 @ 800MHz (1600MTPS)", notes="Voltage: 1.5V")
+        self._roda(commit=True)
+        kp = self._get("LARG2")
+        self.assertEqual(kp.bus_width, "x16")
+        self.assertEqual(kp.interface, "")
+        self.assertEqual(kp.notes, "Voltage: 1.5V | Speed: 800MHz (1600MTPS)",
+                         "a velocidade evaporou junto com a interface")
+
+    def test_so_velocidade_tambem_sai_da_interface(self):
+        """D4: 123 registros têm SÓ velocidade na `interface` ('@ 1866MHz'). Não
+        têm largura para mover, mas também não é protocolo — e `notes` vazio
+        recebe 'Speed: …' sem o separador pendurado na frente (regra (c))."""
+        self._kp("LARG3", interface="@ 1866MHz")
+        self._roda(commit=True)
+        kp = self._get("LARG3")
+        self.assertEqual(kp.interface, "")
+        self.assertEqual(kp.bus_width, "")
+        self.assertEqual(kp.notes, "Speed: 1866MHz")
+
+    def test_protocolo_com_numero_fica_intacto(self):
+        """A regra é `match` na largura, não `search` num número qualquer. Se
+        'eMMC 5.1' virasse largura, a versão do eMMC — que o dono chama de
+        'informação que vale dinheiro' — sumiria do catálogo inteiro."""
+        self._kp("LARG4", chip_type="eMMC", interface="eMMC 5.1")
+        self._roda(commit=True)
+        kp = self._get("LARG4")
+        self.assertEqual(kp.interface, "eMMC 5.1")
+        self.assertEqual(kp.bus_width, "")
+
+    # ── idempotência ──────────────────────────────────────────────────────
+    def test_rodar_duas_vezes_nao_planeja_nada_na_segunda(self):
+        """⚠ A asserção é sobre o PLANO, não sobre o valor final (lição de
+        2026-08-28): sem fill-only o comando reescreve 'x16' por 'x16' — no-op no
+        dado, entrada FALSA no relatório e no JSON de reversão. Um backfill que
+        se anuncia com 3.539 mudanças na segunda rodada não é auditável."""
+        self._kp("LARG5", interface="x16")
+        self._kp("LARG6", interface="x32 @ 1866MHz")
+        self._roda(commit=True)
+        segunda = self._roda()
+        self.assertIn("KnownParts a migrar:      0", segunda,
+                      "a 2ª rodada ainda planeja mexer — não é idempotente")
+
+    def test_largura_ja_no_lugar_nao_entra_no_plano_mas_a_interface_esvazia(self):
+        """FILL-ONLY com um detalhe que o teste acima não pega: a largura JÁ está
+        no `bus_width` e repetida na `interface`. Escrever de novo é no-op; mas
+        deixar a `interface` suja seria deixar a mesma medida em dois campos — a
+        colisão silenciosa que esta tarefa inteira existe para acabar."""
+        from chips.management.commands.normalize_convention import _plan
+        kp = self._kp("LARG7", interface="x16", bus_width="x16")
+        kp.refresh_from_db()
+        ch, motivo = _plan(kp)
+        self.assertEqual(motivo, "")
+        self.assertNotIn("bus_width", ch, "reescreveu largura idêntica — não é fill-only")
+        self.assertEqual(ch.get("interface"), ["x16", ""])
+
+    # ── os três baldes de NÃO MIGRADOS ────────────────────────────────────
+    def test_sobra_desconhecida_nao_migra_e_aparece_no_relatorio(self):
+        """'x16 (2 dies)': migrar a largura apagaria o '(2 dies)'. O comando não
+        escolhe entre mover e preservar — ele reporta e deixa para uma pessoa."""
+        self._kp("LARG8", interface="x16 (2 dies)")
+        saida = self._roda(commit=True)
+        kp = self._get("LARG8")
+        self.assertEqual(kp.interface, "x16 (2 dies)", "migrou e perdeu '(2 dies)'")
+        self.assertEqual(kp.bus_width, "")
+        self.assertIn("SOBRA SEM DESTINO", saida)
+        self.assertIn("LARG8", saida, "não migrou e também não avisou — pior dos dois")
+
+    def test_largura_diferente_da_que_ja_existe_nao_e_arbitrada(self):
+        self._kp("LARG9", interface="x16", bus_width="x8")
+        saida = self._roda(commit=True)
+        kp = self._get("LARG9")
+        self.assertEqual(kp.bus_width, "x8", "sobrescreveu a largura que já estava lá")
+        self.assertEqual(kp.interface, "x16")
+        self.assertIn("CONTRADICAO", saida)
+        self.assertIn("LARG9", saida)
+
+    def test_classe_que_nao_tem_largura_nao_recebe_largura(self):
+        """eMMC: a largura é MODO do host (JESD84, EXT_CSD[183]) — todo eMMC
+        suporta 1/4/8 bits. Gravar 'x8' ali seria transformar uma configuração de
+        runtime em identidade do chip, e o painel do comprador passaria a separar
+        preço por um atributo que não existe."""
+        self._kp("LARG10", chip_type="eMMC", interface="x8")
+        saida = self._roda(commit=True)
+        kp = self._get("LARG10")
+        self.assertEqual(kp.bus_width, "")
+        self.assertEqual(kp.interface, "x8")
+        self.assertIn("CLASSE NAO PERMITE", saida)
+        self.assertIn("LARG10", saida)
+
+    def test_lista_de_nao_migrados_e_COMPLETA_nunca_amostra(self):
+        """Os NÃO MIGRADOS são exatamente os casos que precisam de gente. Uma
+        amostra de 5 esconde o 6º — e o 6º é o que fica errado para sempre."""
+        for i in range(9):
+            self._kp(f"SOBRA{i}", interface="x16 (2 dies)")
+        saida = self._roda()
+        for i in range(9):
+            self.assertIn(f"SOBRA{i}", saida, "o relatório cortou a lista numa amostra")
+
+    # ── fronteiras ────────────────────────────────────────────────────────
+    def test_familia_nao_e_tocada(self):
+        """A largura de família vem do yaml (Fase 4). Se este comando a escrevesse,
+        o próximo `load_brands` desfaria — e o banco passaria a oscilar entre duas
+        fontes de verdade a cada deploy."""
+        from chips.models import Brand, ChipFamily
+        b, _ = Brand.objects.get_or_create(name="Samsung", defaults={"code": "SAM"})
+        f = ChipFamily.objects.create(brand=b, prefix="ZZLARG", chip_type="DDR3")
+        ChipFamily.objects.filter(pk=f.pk).update(interface="x16")
+        self._roda(commit=True)
+        f.refresh_from_db()
+        self.assertEqual(f.interface, "x16", "o comando mexeu na FAMÍLIA")
+        self.assertEqual(f.bus_width, "")
+
+    def test_registro_submetido_e_dado_tambem_e_migra(self):
+        """`submitted` não é 'sem valor' — é 'sem autoridade'. O backfill move
+        dado; não promove ninguém. `confidence` e `review_status` ficam como
+        estavam."""
+        self._kp("LARG11", interface="x16", review_status="submitted",
+                 confidence="distributor")
+        self._roda(commit=True)
+        kp = self._get("LARG11")
+        self.assertEqual(kp.bus_width, "x16")
+        self.assertEqual(kp.review_status, "submitted", "o backfill APROVOU um registro")
+        self.assertEqual(kp.confidence, "distributor")
+
+    # ── o relatório não pode ter linha invisível ──────────────────────────
+    def test_densidade_da_excecao_1_aparece_no_relatorio(self):
+        """A 1ª exceção (densidade, 2026-07-11) nunca teve contador: esses
+        registros entravam no total e não apareciam em balde nenhum. Só se
+        percebeu em 2026-09-20, quando o dry-run do backfill deu 3.682 e os
+        baldes visíveis somavam 3.702 — a conta não fechava para os dois lados.
+        Um `--commit` não pode ter linha invisível: o dono assina o que vê."""
+        self._kp("DENS1", density_gbit="", capacity="2G")
+        saida = self._roda()
+        self.assertIn("DENSIDADE NO LUGAR CERTO", saida,
+                      "a exceção 1 voltou a migrar registro sem aparecer no relatório")
+        self.assertIn("'2Gb'", saida)
+
+    def test_conferencia_denuncia_registro_em_DOIS_baldes(self):
+        """O total de registros NÃO é a soma dos baldes, e fingir que é esconde
+        justamente o caso que merece olho: um eMCP que ganha geração no `subtype`
+        (exceção 2) E tem velocidade na `interface` (exceção 3) é contado duas
+        vezes. São 18 registros assim no banco do dono. A conferência imprime as
+        duas contas e a diferença — quem lê o dry-run consegue fechar a aritmética
+        sem abrir o banco."""
+        self._kp("DOISBALDES", chip_type="eMCP", emcp_ram="LPDDR3 2GB",
+                 subtype="", interface="@ 1866MHz")
+        saida = self._roda()
+        self.assertIn("conferencia dos baldes", saida)
+        self.assertIn("soma dos baldes                2", saida)
+        self.assertIn("REGISTROS distintos            1", saida)
+        self.assertIn("(1 em mais de um balde)", saida)
+        # e o registro migra pelos DOIS caminhos, sem um atropelar o outro
+        self._roda(commit=True)
+        kp = self._get("DOISBALDES")
+        self.assertEqual(kp.subtype, "LPDDR3")
+        self.assertEqual(kp.interface, "")
+        self.assertEqual(kp.notes, "Speed: 1866MHz")
+        self.assertEqual(kp.bus_width, "", "eMCP não tem largura de dados (I3)")
+
+    def test_sem_cruzamento_a_conferencia_diz_isso(self):
+        self._kp("SOLO1", interface="x16")
+        saida = self._roda()
+        self.assertIn("(nenhum em dois baldes)", saida)
+
+    # ── ida e volta ───────────────────────────────────────────────────────
+    def test_ida_e_volta_devolve_os_tres_campos(self):
+        """⚠ O revert quase não funcionou. Ele fazia `save()`, e o `save()` passa
+        pelo `full_clean()`: restaurar `interface='x16'` é uma MUDANÇA, e o portão
+        de largura (I2) a recusa — com razão. Um comando reversível cujo revert
+        estoura no meio do caminho é pior que um irreversível, porque o dono só
+        descobre depois de gravar. Hoje o revert usa `.update()`: restaurar não é
+        escrever dado novo."""
+        import os
+        import tempfile
+        from django.core.management import call_command
+        from io import StringIO
+        # ⚠ Caminho ABSOLUTO em diretório temporário, não um nome solto: com nome
+        # solto o JSON nasce no cwd — a raiz do repo — e a suíte passa a sujar a
+        # pasta de quem a roda. `*_revert.json` está no .gitignore, mas
+        # `*_revert_TESTE.json` não estava: o lixo aparecia no `git status`.
+        with tempfile.TemporaryDirectory() as tmp:
+            alvo = os.path.join(tmp, "revert_ida_e_volta.json")
+            self._kp("VOLTA1", interface="x16 @ 800MHz", notes="Voltage: 1.5V")
+            self._roda(commit=True, extra=["--out", alvo])
+            kp = self._get("VOLTA1")
+            self.assertEqual((kp.bus_width, kp.interface), ("x16", ""))
+            self.assertIn("Speed: 800MHz", kp.notes)
+            call_command("normalize_convention", "--revert", alvo, stdout=StringIO())
+            kp = self._get("VOLTA1")
+            self.assertEqual(kp.interface, "x16 @ 800MHz", "a interface não voltou")
+            self.assertEqual(kp.bus_width, "", "a largura não voltou")
+            self.assertEqual(kp.notes, "Voltage: 1.5V", "as notes não voltaram")
+
+    def test_out_escreve_onde_foi_pedido(self):
+        """Dois bancos e duas rodadas no mesmo dia não podem dividir o mesmo
+        arquivo de reversão — foi por isso que o `backfill_doc_codes` já nomeia o
+        dele com banco e data."""
+        import os
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            alvo = os.path.join(tmp, "revert_com_nome_proprio.json")
+            self._kp("VOLTA2", interface="x8")
+            self._roda(commit=True, extra=["--out", alvo])
+            self.assertTrue(os.path.exists(alvo), "--out foi ignorado")
+            import json as _json
+            log = _json.load(open(alvo))
+            self.assertEqual([e["changes"]["interface"] for e in log
+                              if e["model"] == "knownpart"], [["x8", ""]],
+                             "o JSON de reversão não guarda o valor ANTIGO da interface")
 
 
 class BaselineTresColunasTests(TestCase):
