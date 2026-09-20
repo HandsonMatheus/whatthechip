@@ -1,0 +1,7 @@
+PN_PREFIXO,LARGURA,ORGANIZACAO,NIVEL,FONTE,CITACAO,QUEM,DATA
+K4A8G165WC,x16,512Mx16,datasheet-fabricante,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""512Mx16(K4A8G165WC-BC##)*4""",claude,2026-09-19
+K4A8G085WC,x8,1Gx8,datasheet-fabricante,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""1Gx8(K4A8G085WC-BC##)*8"" e ""*16""",claude,2026-09-19
+K4A4G045WD,x4,1Gx4,datasheet-fabricante,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""1Gx4(K4A4G045WD-BC##)*18"" e ""*36""",claude,2026-09-19
+K4A4G085WD,x8,512Mx8,datasheet-fabricante,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""512Mx8(K4A4G085WD-BC##)*18""",claude,2026-09-19
+K4RAH086VB,x8,2Gx8,octopart,https://octopart.com/search?q=K4RAH086VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""DDR5-4800 2GX8"". Nao basta sozinha para provar familia.",claude,2026-09-19
+K4RAH165VB,x16,1Gx16,octopart,https://octopart.com/search?q=K4RAH165VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""1GX16"", 16 Gbit, FBGA-106. ATENCAO: o ""(16GB)"" da pagina esta errado — 1G x 16 = 16 Gbit, nao 16 GB.",claude,2026-09-19

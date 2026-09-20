@@ -28,6 +28,10 @@ baseline*.json
 
 # Reverts e backups dos comandos dry-run/--revert (Problema 4.3c: nunca na raiz)
 *_revert.json
+normalize_convention_revert_*.json
+# ^ o runbook nomeia o revert com BANCO e DATA (normalize_convention_revert_
+#   LOCAL_20260920.json), e esse nome NÃO casa com `*_revert.json`. Apareceu
+#   no `git status` em 2026-09-20.
 *_revert.json.*
 *.bak
 *.done

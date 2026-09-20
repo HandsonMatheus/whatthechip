@@ -246,7 +246,7 @@ families:
 - prefix: F60C
   chip_type: DDR3L
   subtype: 'DDR3L'
-  interface: 'x16'
+  bus_width: 'x16'
   is_emcp: false
   active: true
   priority: 50

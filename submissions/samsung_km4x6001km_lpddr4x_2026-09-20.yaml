@@ -1,0 +1,59 @@
+# submissions/samsung_km4x6001km_lpddr4x_2026-09-20.yaml
+#
+# UM registro. Correção de dado ANTIGO que o backfill de largura (Fase 3 do
+# PLANO_BUS_WIDTH.md) tornou visível — não é dado novo pesquisado agora.
+#
+# O QUE ACONTECEU
+# ---------------
+# Em 2026-07-04 o yaml da família KM4 foi CORRIGIDO de LPDDR4 para LPDDR4X, com
+# fonte Tier-1, e o comentário dessa correção cita justamente este part number:
+#
+#   samsung.yaml, família KM4 — tip: "⚠ subtype CORRIGIDO 2026-07-04: era LPDDR4,
+#   é LPDDR4X (Preduo: Sub-Type 'eMMC+LPDDR4x'; página oficial Samsung
+#   KM4X6001KM-B321 = 16Gb LPDDR4X a 0.6V — 0.6V é assinatura de LPDDR4X)."
+#
+# A correção arrumou a GRAMÁTICA e deixou o REGISTRO para trás: o `emcp_ram` do
+# KM4X6001KM continuou dizendo "LPDDR4 2GB". Enquanto o `subtype` do registro
+# estava vazio, a tela lia a geração da família (LPDDR4X) e ninguém percebeu.
+#
+# Em 2026-09-20 o `normalize_convention` (exceção 2, geração no lugar certo)
+# promoveu o "LPDDR4" de dentro do `emcp_ram` para o `subtype` — e registro vence
+# gramática. A tela passou a mostrar LPDDR4. O `--diff` do `characterize_baseline`
+# pegou: 1 PN com 'LPDDR4X' → 'LPDDR4'. Foi a ÚNICA regressão de exibição entre
+# as 2.145 linhas que mudaram, e `dest_label`/`profitable`/`price_key` não
+# mudaram em nenhuma (o valor comercial não muda; a informação, sim).
+#
+# A LIÇÃO, que vale mais que o registro: corrigir a família não corrige o que já
+# está escrito no known_part. Enquanto o campo do registro está vazio a gramática
+# tapa o buraco, e o erro fica invisível até alguém preencher o campo.
+#
+# O QUE ESTA SUBMISSÃO FAZ
+# ------------------------
+# Põe o registro de acordo com a fonte Tier-1 que já está documentada no yaml:
+#   subtype   'LPDDR4'      → 'LPDDR4X'
+#   emcp_ram  'LPDDR4 2GB'  → 'LPDDR4X 2GB'     (a capacidade, 2GB, não muda)
+#
+# Os dois são CONFLITO (o banco tem valor diferente, não vazio), então o
+# `submit_known_parts` NÃO aplica — quem aplica é o `resolve_conflicts`, onde
+# ambos os campos são da classe "preço" e a política é "a submissão vence".
+# Rodar com `--fields subtype,emcp_ram` para não tocar em mais nada — em
+# particular, `confidence` fica como está: isto é correção de DADO, não promoção
+# de autoridade.
+#
+# EM PRODUÇÃO: aplicar ANTES do backfill da Fase 3 rodar lá. Assim o `emcp_ram`
+# já está certo quando a exceção 2 o promover, e a regressão nunca acontece.
+
+brand: Samsung
+
+known_parts:
+  - part_number: "KM4X6001KM"
+    subtype: "LPDDR4X"
+    emcp_ram: "LPDDR4X 2GB"
+    notes: >
+      Geração da RAM corrigida de LPDDR4 para LPDDR4X em 2026-09-20, alinhando o
+      registro à correção que a família KM4 já tinha recebido em 2026-07-04. A
+      capacidade (2GB = 16Gb) não muda. Fonte Tier-1, a mesma citada no
+      samsung.yaml: página oficial Samsung do KM4X6001KM-B321 (16Gb LPDDR4X,
+      0.6V — 0.6V é assinatura de LPDDR4X, LPDDR4 é 1.1V) e tabela de specs da
+      Preduo (Type eMCP, Sub-Type "eMMC+LPDDR4x", Density 32+16).
+    source_url: "https://semiconductor.samsung.com/estorage/emcp/"

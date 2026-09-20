@@ -1,3 +1,9 @@
+# ⚠ PLANILHA, NUNCA BANCO (2026-09-20). Este script serve para OLHAR a largura
+#   dos K4B, não para gravá-la. A largura de catálogo mora em `KnownPart.bus_width`
+#   (era `interface` até 2026-09) e só entra por fonte Tier-1 da marca —
+#   datasheet ou decodificador oficial de part number — pelo `submit_known_parts
+#   --fill-empty`. Decodificar o PN aqui e escrever no banco é a circularidade do
+#   HANDOFF_largura_barramento.md §3: a regra passa a concordar com ela mesma.
 from chips.models import KnownPart
 import csv
 

@@ -479,8 +479,12 @@ em fontes Tier-1 e escreve — você **não inventa**. Regras invioláveis:
 
 **Convenção que o portão força** (idêntica a §6): `chip_type` canônico (geração pra DRAM discreta;
 ❌ nunca `RAM`/`DDR` genérico em família **ativa** → rejeita); `subtype` = só geração/célula (sem
-Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x8`/`x16`) ou vazio;
-`emcp_ram` = `'LPDDR{n} {cap}GB'` (tipo **antes**).
+Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); **`interface` = VERSÃO DE
+PROTOCOLO (`eMMC 5.1`, `UFS 3.1`) ou vazio — NUNCA largura**; **`bus_width` = largura
+do barramento de dados (`x4`/`x8`/`x16`/`x32`/`x64`), só de datasheet/decodificador
+oficial da marca, NUNCA deduzida do PN pelo chat** (2026-09, PLANO_BUS_WIDTH.md — o
+portão rejeita `interface: x16` em registro novo); `emcp_ram` = `'LPDDR{n} {cap}GB'`
+(tipo **antes**).
 
 **Checklist de handoff (rode LOCAL; NÃO toque em prod — quem publica é o dono):**
 - [ ] Só mexi na MINHA marca (yaml e/ou submissão); não toquei em mapa global de outra.
@@ -586,7 +590,17 @@ os campos abaixo. **Alimente os campos certos; não mexa no gateway.** Modelo: `
   pré-LPDDR de 2008). Geração fora do vocabulário (ex.: `mDDR`) é decisão de
   domínio do chat da marca, não conserto silencioso
 - `subtype` = **SOMENTE** célula (NAND) ou geração (RAM) — nunca densidade, bus width, voltagem, "Mobile", "Multi-Channel", "paralela industrial"
-- `interface` = bus width (`"x8"`, `"x16"`) para DDR/GDDR; vazio para LPDDR eMCP
+- `interface` = **VERSÃO DE PROTOCOLO** (`"eMMC 5.1"`, `"UFS 3.1"`, `"Async/ONFI"`) ou
+  vazio. **NUNCA largura** — desde 2026-09 isso é campo próprio, e o portão recusa
+- `bus_width` = largura do barramento de DADOS (`"x4"`, `"x8"`, `"x16"`, `"x32"`,
+  `"x64"`), vazio quando não se sabe. Só existe em DRAM e NAND cru: em eMMC/UFS a
+  largura é MODO do host (JESD84, EXT_CSD[183]) e em eMCP/uMCP há DOIS barramentos —
+  ali o campo fica vazio e o portão rejeita se você insistir.
+  ⚠ **Fonte:** datasheet da marca, ou o DECODIFICADOR OFICIAL DE PART NUMBER que a
+  marca publica (o dono aceitou os dois como Tier-1 em 2026-09-20). **Nunca** a
+  gramática do nosso yaml: ela serve para dar um palpite rápido sobre PN novo na
+  bancada e não é régua para preço nem para catálogo. A tela mostra a procedência —
+  largura de gramática aparece etiquetada "lido do PN"
 - `emcp_ram` = `"LPDDR{n} {cap}GB"` — tipo **antes** da capacidade (ex.: `"LPDDR3 1GB"`, nunca `"1GB LPDDR3"`)
 - `density_gbit` é o campo modelo do `KnownPart` para densidade DDR (em Gb); `dram_density` é campo calculado pelo engine — não confundir
 - Tudo que sobrar (temperatura, organização, variante, ECC) vai no `tip`/`notes`
@@ -1198,8 +1212,8 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   bloqueado: ele é lido pela CUNHAGEM do código de caixa (F12) e código de
   caixa é ETERNO — chip que não vai entrar não pode queimar um número.
   ⚠ **RAM e as origens LEGADAS (MIXED/K9) nascem 100% ABERTAS**: RAM é fase 2
-  (depende da largura de barramento, que vive no `interface` — outro eixo, não
-  um item a mais na tabela) e as legadas só rotulam o passado importado; semear
+  (depende da largura de barramento, que desde 2026-09 vive no `bus_width` — outro
+  eixo, não um item a mais na tabela) e as legadas só rotulam o passado importado; semear
   qualquer uma fechada mudaria comportamento HOJE sem regra pronta. E a
   mensagem **só sugere origem que o gerente PODE ABRIR** (`origin_choices_novas`)
   — mandar o operador pôr o chip num lote MIXED, que nem aparece na tela de

@@ -1,0 +1,965 @@
+﻿PART NUMBER,FAMILIA,TIPO,CLASSE,LARGURA,ORGANIZACAO,PROVA,EMPILHADO,CAPACIDADE,CONFIDENCE,REVIEW,FONTE,OBS
+K3KL3L30DM,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,8GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL4L40DM,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,12GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL4L40DMBGCT,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,12GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL7L70EMMUCU,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,3GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL8L80CM,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,4GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL8L80DMMGCU,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,2GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL9L90DMMFCU,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,8GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL9L90DMMHCU,K3K,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,8GB,manual,approved,,familia K3K sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL1L10GM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL2L20DM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL3L30CM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL3L30CMBGCU,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL4L40DMBGCU,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL4L40FM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL5L50CM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,16GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL5L50DM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,16GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL5L50DMBGCU,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,16GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL5L50DMJUCU,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,16GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL6L60GM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL7L70DM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL8L80DM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL8L80EM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KL9L90DM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KLDLD0EM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3KLDLD0FM,K3KL,LPDDR5X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3KL sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK2K20CM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK2K20CMBGCP,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK2K20CMJHCP,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK3K3,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK3K30EM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK4K40BM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK4K40BMCGCN,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK4K40CM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK6K60BM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,16GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK7K70BM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK7K70BMJHCP,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LKCKC0BM,K3L,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3L sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK2K20BMBGCN,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK3K30EMBGCN,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK4K40CMBGCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK4K40CMJFCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,12GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK6K60BMJGCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,16GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LK7K70BMJGCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LKBKB0BMMGCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LKCKC0BMMFCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3LKDKD0CMBGCP,K3LK,LPDDR5,dram_mobile,,,NAO IDENTIFICADO,,18GB,confirmed,approved,,familia K3LK sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3MF8F80DMMGCE,K3MF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3MF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3MF9F90MMMGCE,K3MF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3MF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3PE0E00QMBGC2,K3P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3PE0E00QMCGC2,K3P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3PE4E400A,K3P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K3P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3PE7E700B,K3P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3PE7E70QMBGC2,K3P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3PE7E70QMCGC2,K3P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F100G,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10DM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10DM-AGCE,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10DM-BGCE,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10DM-BGCF,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10EM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,distributor,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10EM-AGCF,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F200A,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,distributor,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F200B,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,distributor,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F200C,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,distributor,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F200E,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,distributor,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20DA,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20DE,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,manual,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20DM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20EM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF3F30BM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF4F40BM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF4F40CM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF5F50AMEGCE,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,distributor,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF5F50MM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60AMQGCF,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60MMFGCF,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60MMJGCE,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60MMQGCF,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF7F70DM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QFAFA0CM,K3Q,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3Q sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF1F10EMAGCE,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20BMAGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20EMAGCE,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20EMFGCE,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF2F20EMQGCE,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF3F30BMAGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF3F30BMAGCG,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF3F30BMFGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF4F40BMAGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF4F40BMFGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF4F40CMAGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60AMFGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60MMFGCE,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QF6F60MMQGCE,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3QFAFA0CMAGCF,K3QF,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3QF sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG1G1,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG1G10BMMGCH,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G2,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BM,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BM0G0J,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BMAGCH,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BMCGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BMDGCH,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BMMGCH,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20BMMGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20CAMGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20CMCGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,manual,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG2G20CMFGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG3G3,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG4G4,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG4G40MMMGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG4G40MMMGCJT00E,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG5G5,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,distributor,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG5G50MMFGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,distributor,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG6G6,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG6G60MMMGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG8G8,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3RG8G80MMMGCJ,K3R,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K3R sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH5H5,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,manual,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH5H50AM,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH5H50MMNGCJ,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH6H6,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,manual,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH6H60AMNGCJ,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH6H60AMTHCL,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH6H60BMAGCL,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH6H60BMEGCL,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH6M6,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K3UH7H7,K3U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,8GB,manual,approved,,familia K3U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4A4G045WDBC,K4A,DDR4,dram_pc,x4,1Gx4,datasheet-fabricante,,512MB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""1Gx4(K4A4G045WD-BC##)*18"" e ""*36"""
+K4A4G045WDBCPB,K4A,DDR4,dram_pc,x4,1Gx4,datasheet-fabricante,,512MB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""1Gx4(K4A4G045WD-BC##)*18"" e ""*36"""
+K4A4G045WDBCRC,K4A,DDR4,dram_pc,x4,1Gx4,datasheet-fabricante,,512MB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""1Gx4(K4A4G045WD-BC##)*18"" e ""*36"""
+K4A4G085WDBC,K4A,DDR4,dram_pc,x8,512Mx8,datasheet-fabricante,,512MB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""512Mx8(K4A4G085WD-BC##)*18"""
+K4A4G085WDBCPB,K4A,DDR4,dram_pc,x8,512Mx8,datasheet-fabricante,,512MB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""512Mx8(K4A4G085WD-BC##)*18"""
+K4A4G085WDBCRC,K4A,DDR4,dram_pc,x8,512Mx8,datasheet-fabricante,,512MB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf,"Samsung DDR4 4Gb D-die RDIMM Rev1.8: ""512Mx8(K4A4G085WD-BC##)*18"""
+K4A4G085WE,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WEBCPB,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WEBCTD,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WEBITD,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WF,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WFBCTD,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WFBCWE,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WG,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G085WGBCWE,K4A,DDR4,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WDBC,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WDBCPB,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WDBCRC,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WE,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WEBCRC,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WEBCTD,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WEBCWE,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WF,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WFBCTD,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WFBCWE,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WG,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A4G165WGBCWE,K4A,DDR4,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G045WBBC,K4A,DDR4,dram_pc,x4,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G045WBBCPB,K4A,DDR4,dram_pc,x4,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G045WBBCRC,K4A,DDR4,dram_pc,x4,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WB,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WBBC,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WBBCPB,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WBBCRC,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WBBCTD,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WC,K4A,DDR4,dram_pc,x8,1Gx8,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""1Gx8(K4A8G085WC-BC##)*8"" e ""*16"""
+K4A8G085WCBCRC,K4A,DDR4,dram_pc,x8,1Gx8,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""1Gx8(K4A8G085WC-BC##)*8"" e ""*16"""
+K4A8G085WCBCTD,K4A,DDR4,dram_pc,x8,1Gx8,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""1Gx8(K4A8G085WC-BC##)*8"" e ""*16"""
+K4A8G085WCBCWE,K4A,DDR4,dram_pc,x8,1Gx8,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""1Gx8(K4A8G085WC-BC##)*8"" e ""*16"""
+K4A8G085WG,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G085WGBCWE,K4A,DDR4,dram_pc,x8,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G165WB,K4A,DDR4,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G165WBBCPB,K4A,DDR4,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G165WBBCRC,K4A,DDR4,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G165WBBITD,K4A,DDR4,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G165WC,K4A,DDR4,dram_pc,x16,512Mx16,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""512Mx16(K4A8G165WC-BC##)*4"""
+K4A8G165WCBCRC,K4A,DDR4,dram_pc,x16,512Mx16,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""512Mx16(K4A8G165WC-BC##)*4"""
+K4A8G165WCBCTD,K4A,DDR4,dram_pc,x16,512Mx16,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""512Mx16(K4A8G165WC-BC##)*4"""
+K4A8G165WCBCWE,K4A,DDR4,dram_pc,x16,512Mx16,datasheet-fabricante,,1GB,confirmed,approved,https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf,"Samsung DDR4 8Gb C-die Unbuffered DIMM Rev1.4 Tab.1: ""512Mx16(K4A8G165WC-BC##)*4"""
+K4A8G165WG,K4A,DDR4,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4A8G165WGBCWE,K4A,DDR4,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG085WA,K4A,DDR4,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG085WABCTD,K4A,DDR4,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG085WABCWE,K4A,DDR4,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG085WC,K4A,DDR4,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG085WCBCWE,K4A,DDR4,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG165WA,K4A,DDR4,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG165WABCTD,K4A,DDR4,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG165WABCWE,K4A,DDR4,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG165WB,K4A,DDR4,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4AAG165WBMCTD,K4A,DDR4,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4A corroborada por 14 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446D,K4B,DDR3,dram_pc,x4,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411806/SAMSUNG/K4B1G0446D.html,campo interface do KnownPart = 'x4'
+K4B1G0446D-HCH9,K4B,DDR3,dram_pc,x4,,banco,,128MB,confirmed,approved,https://www.datasheets.com/,campo interface do KnownPart = 'x4'
+K4B1G0446F,K4B,DDR3,dram_pc,x4,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347880/SAMSUNG/K4B1G0446F.html,campo interface do KnownPart = 'x4'
+K4B1G0446GBC,K4B,DDR3,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBCH9,K4B,DDR3,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBCK0,K4B,DDR3,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBCMA,K4B,DDR3,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBY,K4B,DDR3L,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBYF8,K4B,DDR3L,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBYH9,K4B,DDR3L,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0446GBYK0,K4B,DDR3L,dram_pc,x4,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846D,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411807/SAMSUNG/K4B1G0846D.html,campo interface do KnownPart = 'x8'
+K4B1G0846E,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347878/SAMSUNG/K4B1G0846E.html,campo interface do KnownPart = 'x8'
+K4B1G0846E-HCF8,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,https://www.datasheets360.com/part/detail/k4b1g0846e-hcf8/-2032437245228984059/,campo interface do KnownPart = 'x8'
+K4B1G0846F,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347881/samsung/k4b1g0846f.html,campo interface do KnownPart = 'x8'
+K4B1G0846F-HCF8,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347881/samsung/k4b1g0846f.html,campo interface do KnownPart = 'x8'
+K4B1G0846F-HCH9,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,https://www.datasheets360.com/,campo interface do KnownPart = 'x8'
+K4B1G0846GBC,K4B,DDR3,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846GBCH9,K4B,DDR3,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846GBCK0,K4B,DDR3,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846GBCMA,K4B,DDR3,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846GBY,K4B,DDR3L,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846GBYH9,K4B,DDR3L,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846GBYK0,K4B,DDR3L,dram_pc,x8,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G0846I,K4B,DDR3,dram_pc,x8,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x8'
+K4B1G0846IBCK0,K4B,DDR3,dram_pc,x8,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B1G0846IBYK0,K4B,DDR3L,dram_pc,x8,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B1G0846IBYMA,K4B,DDR3L,dram_pc,x8,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B1G0846IBYNB,K4B,DDR3L,dram_pc,x8,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B1G1646C,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/211291/SAMSUNG/K4B1G1646C-CF8.html,campo interface do KnownPart = 'x16'
+K4B1G1646C-CF8,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/211291/SAMSUNG/K4B1G1646C-CF8.html,campo interface do KnownPart = 'x16'
+K4B1G1646C-ZCF7,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/211288/SAMSUNG/K4B1G1646C-ZCF7.html,campo interface do KnownPart = 'x16'
+K4B1G1646C-ZCG9,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/211294/SAMSUNG/K4B1G1646C-ZCG9.html,campo interface do KnownPart = 'x16'
+K4B1G1646D,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411816/SAMSUNG/K4B1G1646D-HCF8.html,campo interface do KnownPart = 'x16'
+K4B1G1646D-HCF8,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411816/SAMSUNG/K4B1G1646D-HCF8.html,campo interface do KnownPart = 'x16'
+K4B1G1646D-HCH9,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411817/SAMSUNG/K4B1G1646D-HCH9.html,campo interface do KnownPart = 'x16'
+K4B1G1646E,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347879/SAMSUNG/K4B1G1646E.html,campo interface do KnownPart = 'x16'
+K4B1G1646E-HCF7,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.jotrin.com/product/parts/K4B1G1646E_HCF7,campo interface do KnownPart = 'x16'
+K4B1G1646E-HCF8,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://octopart.com/k4b1g1646e-hcf8-samsung-28559440,campo interface do KnownPart = 'x16'
+K4B1G1646E-HCH9,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://octopart.com/k4b1g1646e-hch9-samsung-18711819,campo interface do KnownPart = 'x16'
+K4B1G1646E-HCK0,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://octopart.com/search?q=K4B1G1646E-HCK0,campo interface do KnownPart = 'x16'
+K4B1G1646G,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/1425675/SAMSUNG/K4B1G1646G-BC.html,campo interface do KnownPart = 'x16'
+K4B1G1646G-BCF8,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf,campo interface do KnownPart = 'x16'
+K4B1G1646GBC,K4B,DDR3,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBCH9,K4B,DDR3,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBCK0,K4B,DDR3,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBCMA,K4B,DDR3,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBCNB,K4B,DDR3,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBQK0,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,https://www.bdtic.com/DataSheet/SAMSUNG/K4B1G1646G_commercial.pdf,campo interface do KnownPart = 'x16'
+K4B1G1646GBY,K4B,DDR3L,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBYH9,K4B,DDR3L,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646GBYK0,K4B,DDR3L,dram_pc,x16,,regra,,128MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B1G1646I,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B1G1646IBCK0,K4B,DDR3,dram_pc,x16,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G0446B,K4B,DDR3,dram_pc,x4,,banco,,256MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347882/SAMSUNG/K4B2G0446B.html,campo interface do KnownPart = 'x4'
+K4B2G0446B-HCH9,K4B,DDR3,dram_pc,x4,,banco,,256MB,confirmed,approved,https://www.absunshine.com/en/parts/K4B2G0446B-HCH9-SAMSUNG-3939704,campo interface do KnownPart = 'x4'
+K4B2G0446C,K4B,DDR3,dram_pc,x4,,banco,,,confirmed,approved,,campo interface do KnownPart = 'x4'
+K4B2G0446D,K4B,DDR3,dram_pc,x4,,banco,,,confirmed,approved,,campo interface do KnownPart = 'x4'
+K4B2G0446QBC,K4B,DDR3,dram_pc,x4,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0446QBCK0,K4B,DDR3,dram_pc,x4,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0446QBCMA,K4B,DDR3,dram_pc,x4,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0446QBY,K4B,DDR3L,dram_pc,x4,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0446QBYK0,K4B,DDR3L,dram_pc,x4,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0846C,K4B,DDR3,dram_pc,x8,,banco,,256MB,confirmed,approved,https://octopart.com/k4b2g0846c-hch9-samsung-27952999,campo interface do KnownPart = 'x8'
+K4B2G0846CHCH9,K4B,DDR3,dram_pc,x8,,banco,,256MB,confirmed,approved,https://octopart.com/k4b2g0846c-hch9-samsung-27952999,campo interface do KnownPart = 'x8'
+K4B2G0846CHYH9,K4B,DDR3L,dram_pc,x8,,banco,,256MB,confirmed,approved,https://www.jotrin.com/product/parts/K4B2G0846C_HYH9.html,campo interface do KnownPart = 'x8'
+K4B2G0846D,K4B,DDR3,dram_pc,x8,,banco,,256MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411718/SAMSUNG/K4B2G0846D.html,campo interface do KnownPart = 'x8'
+K4B2G0846D-HCH9,K4B,DDR3,dram_pc,x8,,banco,,256MB,confirmed,approved,https://octopart.com/k4b2g0846d-hch9-samsung,campo interface do KnownPart = 'x8'
+K4B2G0846D-HYH9,K4B,DDR3,dram_pc,x8,,banco,,256MB,confirmed,approved,https://www.datasheets360.com/,campo interface do KnownPart = 'x8'
+K4B2G0846D-HYK0,K4B,DDR3,dram_pc,x8,,banco,,256MB,confirmed,approved,https://www.datasheets360.com/,campo interface do KnownPart = 'x8'
+K4B2G0846F,K4B,DDR3L,dram_pc,x8,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B2G0846FBYMA,K4B,DDR3L,dram_pc,x8,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B2G0846QBC,K4B,DDR3,dram_pc,x8,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0846QBCK0,K4B,DDR3,dram_pc,x8,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0846QBCMA,K4B,DDR3,dram_pc,x8,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0846QBY,K4B,DDR3L,dram_pc,x8,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0846QBYK0,K4B,DDR3L,dram_pc,x8,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G0846QBYMA,K4B,DDR3L,dram_pc,x8,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646B,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,https://www.digipart.com/part/K4B2G1646B-HCK0,campo interface do KnownPart = 'x16'
+K4B2G1646B-HCH9,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,https://www.jotrin.com/product/parts/K4B2G1646B_HCH9,campo interface do KnownPart = 'x16'
+K4B2G1646B-HCK0,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,https://www.digipart.com/part/K4B2G1646B-HCK0,campo interface do KnownPart = 'x16'
+K4B2G1646C,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/347917/SAMSUNG/K4B2G1646C.html,campo interface do KnownPart = 'x16'
+K4B2G1646CHCH9,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,https://www.win-source.net/products/detail/samsung/k4b2g1646c-hch9.html,campo interface do KnownPart = 'x16'
+K4B2G1646CHCK0,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,https://datasheet.ciiva.com/26786/k4b2g1646c-hck0-26786973.pdf,campo interface do KnownPart = 'x16'
+K4B2G1646E,K4B,DDR3,dram_pc,x16,,banco,,,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646F,K4B,DDR3L,dram_pc,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646FBCK0,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646FBCMA,K4B,DDR3,dram_pc,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646FBYMA,K4B,DDR3L,dram_pc,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646FBYNB,K4B,DDR3L,dram_pc,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646Q,K4B,DDR3,dram_pc,x16,,banco,,,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B2G1646QBC,K4B,DDR3,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646QBCK0,K4B,DDR3,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646QBCMA,K4B,DDR3,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646QBCNB,K4B,DDR3,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646QBY,K4B,DDR3L,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646QBYK0,K4B,DDR3L,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B2G1646QBYMA,K4B,DDR3L,dram_pc,x16,,regra,,256MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0446B,K4B,DDR3,dram_pc,x4,,banco,,512MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411809/SAMSUNG/K4B4G0446B.html,campo interface do KnownPart = 'x4'
+K4B4G0446B-HYH9,K4B,DDR3,dram_pc,x4,,banco,,512MB,confirmed,approved,http://datasheet.iiic.cc/samsung/K4B4G0446B-HYH9.pdf,campo interface do KnownPart = 'x4'
+K4B4G0446B-HYK0,K4B,DDR3,dram_pc,x4,,banco,,512MB,confirmed,approved,https://octopart.com/k4b4g0446b-hyk0-samsung-30947690,campo interface do KnownPart = 'x4'
+K4B4G0446B-MCF8,K4B,DDR3,dram_pc,x4,,banco,,512MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411812/SAMSUNG/K4B4G0446B-MCF8.html,campo interface do KnownPart = 'x4'
+K4B4G0446D,K4B,DDR3,dram_pc,x4,,banco,,512MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/1975720/SAMSUNG/K4B4G0446D.html,campo interface do KnownPart = 'x4'
+K4B4G0446DBYK0,K4B,DDR3L,dram_pc,x4,,banco,,512MB,confirmed,approved,https://www.win-source.net/products/detail/samsung/k4b4g0446d-byk0.html,campo interface do KnownPart = 'x4'
+K4B4G0446QHC,K4B,DDR3,dram_pc,x4,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0446QHCK0,K4B,DDR3,dram_pc,x4,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0446QHCMA,K4B,DDR3,dram_pc,x4,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0446QHY,K4B,DDR3L,dram_pc,x4,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0446QHYK0,K4B,DDR3L,dram_pc,x4,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846B,K4B,DDR3,dram_pc,x8,,banco,,512MB,confirmed,approved,https://html.alldatasheet.com/html-pdf/411810/SAMSUNG/K4B4G0846B/1509/5/K4B4G0846B.html,campo interface do KnownPart = 'x8'
+K4B4G0846B-HCH9,K4B,DDR3,dram_pc,x8,,banco,,512MB,confirmed,approved,https://www.absunshine.com/en/parts/K4B4G0846B-HCH9-SAMSUNG-4044457,campo interface do KnownPart = 'x8'
+K4B4G0846B-MCF8,K4B,DDR3,dram_pc,x8,,banco,,512MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/411810/SAMSUNG/K4B4G0846B/1509/5/K4B4G0846B.html,campo interface do KnownPart = 'x8'
+K4B4G0846D,K4B,DDR3L,dram_pc,x8,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846DBC,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846DBCK0,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846DBCMA,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846DBCNB,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846DBY,K4B,DDR3L,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846DBYK0,K4B,DDR3L,dram_pc,x8,,banco,,512MB,confirmed,approved,psg_2h2014:K4B4G0846D-BYK0,campo interface do KnownPart = 'x8'
+K4B4G0846DBYNB,K4B,DDR3L,dram_pc,x8,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846E,K4B,DDR3,dram_pc,x8,,banco,,512MB,manual,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846EBCK0,K4B,DDR3,dram_pc,x8,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846EBCNB,K4B,DDR3,dram_pc,x8,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846EBYK0,K4B,DDR3L,dram_pc,x8,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846EBYMA,K4B,DDR3L,dram_pc,x8,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B4G0846QHC,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846QHCK0,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846QHCMA,K4B,DDR3,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846QHY,K4B,DDR3L,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G0846QHYK0,K4B,DDR3L,dram_pc,x8,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646B,K4B,DDR3,dram_pc,x16,,banco,,,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646D,K4B,DDR3L,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646DBC,K4B,DDR3L,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646DBCK0,K4B,DDR3,dram_pc,x16,,banco,,512MB,confirmed,approved,psg_2h2014:K4B4G1646D-BCK0,campo interface do KnownPart = 'x16'
+K4B4G1646DBCMA,K4B,DDR3L,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646DBCNB,K4B,DDR3,dram_pc,x16,,banco,,512MB,confirmed,approved,psg_2h2014:K4B4G1646D-BCNB,campo interface do KnownPart = 'x16'
+K4B4G1646DBY,K4B,DDR3L,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646DBYK0,K4B,DDR3L,dram_pc,x16,,banco,,512MB,confirmed,approved,psg_2h2014:K4B4G1646D-BYK0,campo interface do KnownPart = 'x16'
+K4B4G1646DBYMA,K4B,DDR3L,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646DBYNB,K4B,DDR3L,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646E,K4B,DDR3,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646EBCK0,K4B,DDR3,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646EBCMA,K4B,DDR3,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646EBYK0,K4B,DDR3L,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646EBYMA,K4B,DDR3L,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646Q,K4B,DDR3L,dram_pc,x16,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B4G1646QHC,K4B,DDR3,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646QHCK0,K4B,DDR3,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646QHCMA,K4B,DDR3,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646QHY,K4B,DDR3L,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B4G1646QHYK0,K4B,DDR3L,dram_pc,x16,,regra,,512MB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B8G0446D,K4B,DDR3,dram_pc,x4,,banco,,1GB,confirmed,approved,https://www.datasheets.com/samsung/k4b2g0446d-hck0,campo interface do KnownPart = 'x4'
+K4B8G0446D-MCH9,K4B,DDR3,dram_pc,x4,,banco,,1GB,confirmed,approved,https://www.alibaba.com/,campo interface do KnownPart = 'x4'
+K4B8G0446D-MYK0,K4B,DDR3,dram_pc,x4,,banco,,1GB,confirmed,approved,https://www.datasheets.com/samsung/k4b2g0446d-hck0,campo interface do KnownPart = 'x4'
+K4B8G0846D,K4B,DDR3,dram_pc,x8,,banco,,1GB,manual,approved,,campo interface do KnownPart = 'x8'
+K4B8G0846DMCK0,K4B,DDR3,dram_pc,x8,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B8G0846DMCMA,K4B,DDR3,dram_pc,x8,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B8G0846DMCNB,K4B,DDR3,dram_pc,x8,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B8G0846DMYK0,K4B,DDR3L,dram_pc,x8,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x8'
+K4B8G1646D,K4B,DDR3L,dram_pc,x16,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B8G1646DMMK0,K4B,DDR3L,dram_pc,x16,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B8G1646DMMMA,K4B,DDR3L,dram_pc,x16,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B8G1646DMYK0,K4B,DDR3L,dram_pc,x16,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B8G1646DMYMA,K4B,DDR3L,dram_pc,x16,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B8G1646Q,K4B,DDR3,dram_pc,x16,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4B8G1646QMY,K4B,DDR3L,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4B8G1646QMYK0,K4B,DDR3L,dram_pc,x16,,regra,,1GB,confirmed,approved,,"regra posicional — familia K4B corroborada por 100 concordancia(s), 0 divergencias, larguras x16,x4,x8"
+K4D263238KFC40,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,16MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4D263238KFC50,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,16MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4D551638FTC33,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4D551638FTC40,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4D551638FTC50,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4D551638FTC60,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4D553235FGC25,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4D553235FGC2A,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4D553235FGC33,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4D553235FVC33,K4D,GDDR2,dram_gpu,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4D sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4E2E304EA,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E2E304EAAGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E2E304EEAGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E4E164EB,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4E4E164EB-EGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4E4E324ED-EGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4E4E324EEEGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4E6E30,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,manual,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EB,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EBAGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EBEGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EBEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EC,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304ECEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304ED,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EDEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EEAGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E6E304EEEGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304ED,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304ED-AGCC,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304ED-AGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304ED-EGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304EE-EGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304EEAGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E304EEEGCE,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4E8E324EBAGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4E8E324EBEGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4E8E324EBEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4E8E324EDEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4EBE304EB,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EBE304EBEGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EBE304EBEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EBE304EC,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EBE304ECEGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,manual,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EBE304ECEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EBE304EDEGCG,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EHE30,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,manual,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EHE304EAAGCF,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4EHE304EC,K4E,LPDDR3,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4E sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HAGFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HAGHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HAGUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HAMGCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HATFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HATHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HATUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F2E3S4HMMHCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F4E3S4HFGUCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E304HBMGCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,manual,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S4HMGFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S4HMGHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S4HMGUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S4HMMGCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S4HMTFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F6E3S4HMTHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E304HBMGCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3D,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,manual,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3S4HBMFCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3S4HBMHCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3S4HDGFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3S4HDGHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3S4HDGUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4F8E3S4HDMGCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HBKFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HBKHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HBKUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HMAGCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HMGFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HMGHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HMGUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HMTHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FBE3D4HMTUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HAGFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HAGUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HATFCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HATHCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HATUCL,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HMMFCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4FHE3D4HMMHCJ,K4F,LPDDR4,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4F sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4G10325FE,K4G,GDDR5,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G10325FG,K4G,GDDR5,dram_gpu,x32,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4G10325FGHC03,K4G,GDDR5,dram_gpu,x32,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4G10325FGHC04,K4G,GDDR5,dram_gpu,x32,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4G10325FGHC05,K4G,GDDR5,dram_gpu,x32,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4G20325FD,K4G,GDDR5,dram_gpu,x32,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G20325FDFC04,K4G,GDDR5,dram_gpu,x32,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G41325FE,K4G,GDDR5,dram_gpu,x32,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G41325FEHC25,K4G,GDDR5,dram_gpu,x32,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G41325FEHC28,K4G,GDDR5,dram_gpu,x32,,banco,,512MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FB,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FBHC22,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FBHC25,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FBHC28,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FC,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FCHC22,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4G80325FCHC25,K4G,GDDR5,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4H510438G,K4H,DDR1,dram_pc,,,NAO IDENTIFICADO,,64MB,manual,approved,,familia K4H sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x4
+K4H510838G,K4H,DDR1,dram_pc,,,NAO IDENTIFICADO,,64MB,manual,approved,,familia K4H sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x8
+K4H511638G,K4H,DDR1,dram_pc,,,NAO IDENTIFICADO,,64MB,manual,approved,,familia K4H sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4H561638D,K4H,DDR1,dram_pc,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4H sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4H561638DTCB3,K4H,DDR1,dram_pc,,,NAO IDENTIFICADO,,32MB,confirmed,approved,,familia K4H sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4J10324KE,K4J,GDDR3,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J10324KEBC14,K4J,GDDR3,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J10324KEHC14,K4J,GDDR3,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J10324KEHC1A,K4J,GDDR3,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J10324QD,K4J,GDDR3,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J10324QDHC12,K4J,GDDR3,dram_gpu,x32,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J52324QH,K4J,GDDR3,dram_gpu,x32,,banco,,64MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J52324QHHJ08,K4J,GDDR3,dram_gpu,x32,,banco,,64MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J52324QHHJ1A,K4J,GDDR3,dram_gpu,x32,,banco,,64MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J55323QF,K4J,GDDR3,dram_gpu,x32,,banco,,32MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4J55323QFGC16,K4J,GDDR3,dram_gpu,x32,,banco,,32MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4J55323QG,K4J,GDDR3,dram_gpu,x32,,banco,,32MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4J55323QGBC14,K4J,GDDR3,dram_gpu,x32,,banco,,32MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4N51163Q7,K4N,GDDR2,dram_gpu,x32,,banco,,64MB,manual,approved,,campo interface do KnownPart = 'x32'
+K4N51163QC,K4N,GDDR2,dram_gpu,x32,,banco,,64MB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4P2E304EQAGC2,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4P4G324EQAGC2,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4P4G324EQFGC2,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,512MB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x32
+K4P8G304EQ,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4P8G304EQAGC2,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4P8G304EQPGC2,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,1GB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4PAG304EQAGC2,K4P,LPDDR2,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4P sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4RAH086VB,K4R,DDR5,dram_pc,x8,2Gx8,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH086VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""DDR5-4800 2GX8"". Nao basta sozinha para provar familia."
+K4RAH086VBBCQK,K4R,DDR5,dram_pc,x8,2Gx8,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH086VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""DDR5-4800 2GX8"". Nao basta sozinha para provar familia."
+K4RAH086VBBIQK,K4R,DDR5,dram_pc,x8,2Gx8,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH086VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""DDR5-4800 2GX8"". Nao basta sozinha para provar familia."
+K4RAH086VBBIWM,K4R,DDR5,dram_pc,x8,2Gx8,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH086VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""DDR5-4800 2GX8"". Nao basta sozinha para provar familia."
+K4RAH086VE,K4R,DDR5,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RAH086VEBCWM,K4R,DDR5,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RAH086VP,K4R,DDR5,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RAH086VPBCWM,K4R,DDR5,dram_pc,x8,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RAH165VB,K4R,DDR5,dram_pc,x16,1Gx16,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH165VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""1GX16"", 16 Gbit, FBGA-106. ATENCAO: o ""(16GB)"" da pagina esta errado — 1G x 16 = 16 Gbit, nao 16 GB."
+K4RAH165VBBCQK,K4R,DDR5,dram_pc,x16,1Gx16,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH165VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""1GX16"", 16 Gbit, FBGA-106. ATENCAO: o ""(16GB)"" da pagina esta errado — 1G x 16 = 16 Gbit, nao 16 GB."
+K4RAH165VBBCWM,K4R,DDR5,dram_pc,x16,1Gx16,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH165VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""1GX16"", 16 Gbit, FBGA-106. ATENCAO: o ""(16GB)"" da pagina esta errado — 1G x 16 = 16 Gbit, nao 16 GB."
+K4RAH165VBBIQK,K4R,DDR5,dram_pc,x16,1Gx16,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH165VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""1GX16"", 16 Gbit, FBGA-106. ATENCAO: o ""(16GB)"" da pagina esta errado — 1G x 16 = 16 Gbit, nao 16 GB."
+K4RAH165VBBIWM,K4R,DDR5,dram_pc,x16,1Gx16,octopart,,2GB,confirmed,approved,https://octopart.com/search?q=K4RAH165VB,"Octopart (fonte SECUNDARIA, nao datasheet): ""1GX16"", 16 Gbit, FBGA-106. ATENCAO: o ""(16GB)"" da pagina esta errado — 1G x 16 = 16 Gbit, nao 16 GB."
+K4RAH165VP,K4R,DDR5,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RAH165VPBCWM,K4R,DDR5,dram_pc,x16,,regra,,2GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RBH046VM,K4R,DDR5,dram_pc,x4,,regra,,4GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RBH046VMBCCP,K4R,DDR5,dram_pc,x4,,regra,,4GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RBH046VMBCWM,K4R,DDR5,dram_pc,x4,,regra,,4GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RCH046VM,K4R,DDR5,dram_pc,x4,,regra,,4GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RCH046VM2CCM,K4R,DDR5,dram_pc,x4,,regra,,4GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4RCH046VM2CLP,K4R,DDR5,dram_pc,x4,,regra,,4GB,confirmed,approved,,"regra posicional — familia K4R corroborada por 9 concordancia(s), 0 divergencias, larguras x16,x8"
+K4T1G083QJ,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x8
+K4T1G083QJBI,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x8
+K4T1G084QJ,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x8
+K4T1G163QJ,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T1G163QJBI,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T1G164QJ,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T1G164QJBFF8,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T1G164QJBHF8,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,128MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T51083QN,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,64MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x8
+K4T51083QNBI,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,64MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x8
+K4T51163QN,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,64MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T51163QNBFF8,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,64MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T51163QNBHF8,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,64MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4T51163QNBI,K4T,DDR2,dram_pc,,,NAO IDENTIFICADO,,64MB,confirmed,approved,,familia K4T sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4U6E3S4AAMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4AAMGCR,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4ABKFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4ABKHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4ABKUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4ABMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4AMGFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4AMGHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U6E3S4AMGUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U8E3S4ADGHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4U8E3S4ADGUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,1.5GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,manual,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AAMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AAMGCR,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4ABKHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4ABKUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4ABMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AMGFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AMGHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AMMGCJ,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,distributor,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AMTFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3D4AMTHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UBE3S4AMMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,4GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UCE3Q4AAMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UCE3Q4ABKUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,8GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3D,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,manual,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3D4AAGFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3D4AAGHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3D4AAGUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,2GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3D4ABMGCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,manual,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3S,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,manual,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3S4AAKHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UHE3S4AAKUCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,3GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UJE3D4AAKFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UJE3Q4AATFCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UJE3Q4AATHCL,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4UJE3T,K4U,LPDDR4X,dram_mobile,,,NAO IDENTIFICADO,,6GB,confirmed,approved,,familia K4U sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+K4W1G1646D,K4W,GDDR3,dram_gpu,x16,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x16'
+K4W1G1646DEC12,K4W,GDDR3,dram_gpu,x16,,banco,,128MB,manual,approved,,campo interface do KnownPart = 'x16'
+K4W1G1646E,K4W,GDDR3,dram_gpu,x16,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4W1G1646EHC12,K4W,GDDR3,dram_gpu,x16,,banco,,128MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4W1G1646G,K4W,GDDR3,dram_gpu,x16,,banco,,128MB,confirmed,approved,https://datasheet.ciiva.com/26786/k4w1g1646g-bc11-26786980.pdf,campo interface do KnownPart = 'x16'
+K4W1G1646GBC11,K4W,GDDR3,dram_gpu,x16,,banco,,128MB,confirmed,approved,https://datasheet.ciiva.com/26786/k4w1g1646g-bc11-26786980.pdf,campo interface do KnownPart = 'x16'
+K4W2G1646B,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,https://www.alldatasheet.com/html-pdf/347885/SAMSUNG/K4W2G1646B/600/2/K4W2G1646B.html,campo interface do KnownPart = 'x16'
+K4W2G1646BHC12,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,https://www.alldatasheet.com/html-pdf/347885/SAMSUNG/K4W2G1646B/600/2/K4W2G1646B.html,campo interface do KnownPart = 'x16'
+K4W2G1646C,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4W2G1646CHC11,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,manual,approved,,campo interface do KnownPart = 'x16'
+K4W2G1646CHC12,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,,campo interface do KnownPart = 'x16'
+K4W2G1646E,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,https://www.censtry.com/product/samsung/k4w2g1646e.html,campo interface do KnownPart = 'x16'
+K4W2G1646EBC1A,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,https://www.censtry.com/product/samsung/k4w2g1646e.html,campo interface do KnownPart = 'x16'
+K4W2G1646P,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,distributor,approved,https://www.digipart.com/part/K4W2G1646P-HC12,campo interface do KnownPart = 'x16'
+K4W2G1646PHC12,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,distributor,approved,https://www.digipart.com/part/K4W2G1646P-HC12,campo interface do KnownPart = 'x16'
+K4W2G1646Q,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,distributor,approved,https://www.jotrin.com/product/parts/K4W2G1646Q_BC1A,campo interface do KnownPart = 'x16'
+K4W2G1646QBC1A,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,distributor,approved,https://www.jotrin.com/product/parts/K4W2G1646Q_BC1A,campo interface do KnownPart = 'x16'
+K4W2G1646S,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,https://www.digipart.com/part/K4W2G1646S-BC12,campo interface do KnownPart = 'x16'
+K4W2G1646SBC12,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,confirmed,approved,https://www.digipart.com/part/K4W2G1646S-BC12,campo interface do KnownPart = 'x16'
+K4W2G1646T,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,distributor,approved,https://www.digipart.com/part/K4W2G1646T-BC11,campo interface do KnownPart = 'x16'
+K4W2G1646TBC11,K4W,GDDR3,dram_gpu,x16,,banco,,256MB,distributor,approved,https://www.digipart.com/part/K4W2G1646T-BC11,campo interface do KnownPart = 'x16'
+K4W4G1646B,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,manual,approved,,campo interface do KnownPart = 'x16'
+K4W4G1646BHC11,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,distributor,approved,https://octopart.com/part/samsung/K4W4G1646B-HC11,campo interface do KnownPart = 'x16'
+K4W4G1646BHC12,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,distributor,approved,https://octopart.com/part/samsung/K4W4G1646B-HC11,campo interface do KnownPart = 'x16'
+K4W4G1646BHC1A,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,distributor,approved,https://octopart.com/part/samsung/K4W4G1646B-HC11,campo interface do KnownPart = 'x16'
+K4W4G1646D,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,manual,approved,,campo interface do KnownPart = 'x16'
+K4W4G1646DBC1A,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,distributor,approved,https://octopart.com/k4w4g1646d-bc1a-samsung-70760918,campo interface do KnownPart = 'x16'
+K4W4G1646E,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/1425713/SAMSUNG/K4W4G1646E-BC.html,campo interface do KnownPart = 'x16'
+K4W4G1646EBC1A,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,confirmed,approved,https://www.alldatasheet.com/datasheet-pdf/pdf/1425713/SAMSUNG/K4W4G1646E-BC.html,campo interface do KnownPart = 'x16'
+K4W4G1646Q,K4W,GDDR3,dram_gpu,x16,,banco,,512MB,manual,approved,,campo interface do KnownPart = 'x16'
+K4Y50164UC,K4Y,RDRAM,dram_legacy,,,NAO IDENTIFICADO,,512Mb,confirmed,approved,,familia K4Y sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4Y50164UE,K4Y,RDRAM,dram_legacy,,,NAO IDENTIFICADO,,512Mb,confirmed,approved,,familia K4Y sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras); a regra sugere x16
+K4Z80325BC,K4Z,GDDR6,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4Z80325BCHC12,K4Z,GDDR6,dram_gpu,x32,,banco,,1GB,confirmed,approved,https://semiconductor.samsung.com/us/dram/gddr/gddr6/k4z80325bc-hc12,campo interface do KnownPart = 'x32'
+K4Z80325BCHC14,K4Z,GDDR6,dram_gpu,x32,,banco,,1GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4Z80325BCHC16,K4Z,GDDR6,dram_gpu,x32,,banco,,1GB,confirmed,approved,https://semiconductor.samsung.com/dram/gddr/gddr6/k4z80325bc-hc16/,campo interface do KnownPart = 'x32'
+K4ZAF325BC,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,manual,approved,,campo interface do KnownPart = 'x32'
+K4ZAF325BCSC14,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc14/,campo interface do KnownPart = 'x32'
+K4ZAF325BCSC16,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc16/,campo interface do KnownPart = 'x32'
+K4ZAF325BM,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4ZAF325BMHC14,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4ZAF325BMHC16,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4ZAF325BMHC18,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K4ZAF325BMSC14,K4Z,GDDR6,dram_gpu,x32,,banco,,2GB,confirmed,approved,,campo interface do KnownPart = 'x32'
+K524G2GACB,K52,MCP,catalog,,,fora do alvo,,NAND 512MB + mDDR1 256MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K524G2GACH,K52,MCP,catalog,,,fora do alvo,,NAND 512MB + mDDR1 256MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K524G2GACI,K52,MCP,catalog,,,fora do alvo,,NAND 512MB + mDDR1 256MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K524G2GACJ,K52,MCP,catalog,,,fora do alvo,,NAND 512MB + mDDR1 256MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K5D5657ACB,K5D,OneNAND,catalog,,,fora do alvo,,256Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K5W1G12ACM,K5W,NOR Flash,catalog,,,fora do alvo,,128MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K7R161884B,K7R,SRAM,catalog,,,fora do alvo,,18Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K7R163684B,K7R,SRAM,catalog,,,fora do alvo,,18Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K7R320982C,K7R,SRAM,catalog,,,fora do alvo,,36Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K7R321882C,K7R,SRAM,catalog,,,fora do alvo,,36Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K7R641884M,K7R,SRAM,catalog,,,fora do alvo,,72Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+K7R643684M,K7R,SRAM,catalog,,,fora do alvo,,72Mb,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KB100D00WA,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,estimated,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KB100D00WB,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,estimated,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KB100D00WM,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,distributor,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KB100D00YA,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,estimated,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KB100D00YB,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,estimated,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KB100D00YM,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,distributor,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KB100D00ZM,KB1,LPDDR1,dram_mobile,,,NAO IDENTIFICADO,,512MB,estimated,approved,,familia KB1 sem corroboracao suficiente (precisa de 5 concordancias e 2 larguras)
+KF98G16Q4X,KF9,NAND Flash,nand_raw,x16,,banco,,1GB,confirmed,approved,https://octopart.com/kf98g16q4x-beb0-samsung-52061167,campo interface do KnownPart = 'x16'
+KFG1216Q2M-DEB,KFG,OneNAND,catalog,,,fora do alvo,,64MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFG1216U2M-DIB,KFG,OneNAND,catalog,,,fora do alvo,,64MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFG1G16U2C,KFG,OneNAND,catalog,,,fora do alvo,,128MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFG1G16U2C-AIB6,KFG,OneNAND,catalog,,,fora do alvo,,128MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFG1G16U2D-HIB6,KFG,OneNAND,catalog,,,fora do alvo,,128MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFG1G16U2M-DEB,KFG,OneNAND,catalog,,,fora do alvo,,128MB,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFM4G16Q4B,KFM,OneNAND,catalog,,,fora do alvo,,,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFM4G16Q4B-BEB1,KFM,OneNAND,catalog,,,fora do alvo,,,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFW4G16Q2M,KFW,OneNAND,catalog,,,fora do alvo,,,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFW4G16Q2M-DEB5,KFW,OneNAND,catalog,,,fora do alvo,,,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KFW4G16Q2M-DEB6,KFW,OneNAND,catalog,,,fora do alvo,,,confirmed,approved,,classe 'catalog' — largura nao se aplica
+KLM2G1DEDD,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1DEDDA101,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1DEFD,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1DEFDA301,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1DEHE,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1DEHEB101,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1HE3F,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM2G1HE3FB001,KLM,eMMC,managed_nand,,,fora do alvo,,2GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FE3B,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FEAC,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FEAC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FEPD,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FEPDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FETE,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1FETE-B041,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1YE4C,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1YE4C-B001000,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1YEMD,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G1YEMD-C031,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEDD,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEDDA101,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEFD,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEFDA301,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEHE,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEHEB101,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEJE,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM4G2DEJEA001,KLM,eMMC,managed_nand,,,fora do alvo,,4GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GEAC,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GEAC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GEME,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GEND,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GENDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GESD,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GETF,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GETP,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1GEUF,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1WE4A,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1WE4A-A001,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1WEB,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1WEMB,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1WEPD,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G1WEPDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G2FE3B,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G2FEJA,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G2YE4C,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLM8G2YE4C-C001,KLM,eMMC,managed_nand,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMA1JEMB,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMA1JETD,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG1JENB,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG1JETD,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG1JFTD,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GE2A,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GE4A,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GE4AA001,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GEAC,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GEAC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GEND,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GENDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GESD-B03P,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GESD-B03Q,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GESD-B04P,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2GESD-B04Q,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2WE4A-A001,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2WEMB,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2WEMB-B031,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2WEPD,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG2WEPDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FE3BA001,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FE4B,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FEAB,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FEABB002,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FEACB002,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FEJAA001,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FEJAA002,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG4FEJAB001,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,distributor,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG8DEFD,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMAG8DEFDA301,KLM,eMMC,managed_nand,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMB2JENB,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG2JENB,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG2JETD,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4GEAC,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4GEAC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4GEND,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4GENDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4WE4A-A001,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4WEBD,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4WEBDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4WEMC,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMBG4WEMC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG1RCTE,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG2KCTA,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG2KETM,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG2KTM,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG2UCTA,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG2UCTB,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG4JENB,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG4JETD,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8GE4A-A001,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8GEAC,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8GEAC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8GEND,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8GENDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8WEBD,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8WEBDB03100,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8WEMC,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMCG8WEMC-B031,KLM,eMMC,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDG2RCTE,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDG4UCTA,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDG4UCTB,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDG4UERM,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDG8JENB,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDGAGEAC,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMDGAGEAC-B001,KLM,eMMC,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMEG4RCTE,KLM,eMMC,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLMEG8UERM,KLM,eMMC,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUBG4G1BD,KLU,UFS,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG8G1BD,KLU,UFS,managed_nand,,,fora do alvo,,64GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG8G1BDB0B1,KLU,UFS,managed_nand,,,fora do alvo,,64GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG8G1BDE0B1,KLU,UFS,managed_nand,,,fora do alvo,,64GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4U1EA,KLU,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUBG461BD,KLUBG,UFS,managed_nand,,,fora do alvo,,32GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLUBG4G1BE,KLUBG,UFS,managed_nand,,,fora do alvo,,32GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLUBG4G1CE,KLUBG,UFS,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUBG4G1ZF,KLUBG,UFS,managed_nand,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG1R1VF,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG2K1EA,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG2U1DC,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG2U1YB,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG2UHYB,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG4J1BB,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG4J1CB,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG4J1ED,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG4J1ZD,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUCG4JTED,KLUCG,UFS,managed_nand,,,fora do alvo,,64GB,manual,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG2R1DE,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4U1FB,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4U1YB,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4UHDB,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4UHDC,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4UHGC,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG4UHYB,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG8J1BB,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG8J1CB,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG8J1ZD,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUDG8V1EE,KLUDG,UFS,managed_nand,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG4R1DE,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG4R1VF,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG4RHHD,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG4RHHF,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG4RHUF,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG8U1EA,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG8U1EM,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG8U1YB,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG8UHDB,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG8UHDC,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEG8UHYB,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUEGAJ1ZD,KLUEG,UFS,managed_nand,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG4LHGC,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG4NHHB,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8R1EM,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHDA,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHDB,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHHD,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHHF,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHKF,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHUF,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFG8RHYE,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUFGAUHYB,KLUFG,UFS,managed_nand,,,fora do alvo,,512GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUGG8NHHB,KLUGG,UFS,managed_nand,,,fora do alvo,,1TB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUGGAR1FA,KLUGG,UFS,managed_nand,,,fora do alvo,,1TB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUGGARHDA,KLUGG,UFS,managed_nand,,,fora do alvo,,1TB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUGGARHHD,KLUGG,UFS,managed_nand,,,fora do alvo,,1TB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUGGARHUF,KLUGG,UFS,managed_nand,,,fora do alvo,,1TB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KLUGGGRHKF,KLUGG,UFS,managed_nand,,,fora do alvo,,1TB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KMBV6001DA,KM,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KM2H7001CM,KM2,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM2L9001CM,KM2,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM2V7001CM,KM2,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM2V8001CM,KM2,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM2P8001CM,KM2P,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM2P9001CM,KM2P,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM3V6001CM,KM3,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM3H6001CA,KM3H,eMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM3P6001CM,KM3P,eMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM4X60002M,KM4,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM4X6001KM,KM4,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5C7001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5H7001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5H80018M,KM5,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5L9000CM,KM5,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5L9001DA,KM5,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5L9001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5P8001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5P9001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5V7001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM5V8001DM,KM5,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F8001JA,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F8001JM,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F8001LM,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F8001MM,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F9001JA,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F9001JM,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8F9001MM,KM8,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8L9001JA,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8L9001JM,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8V7001JA,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8V7001JM,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8V8001JM,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8V8001LM,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KM8V9001JM,KM8,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMAKG0000M,KMA,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KMAKG0000M-B998,KMA,eMMC,managed_nand,,,fora do alvo,,2GB,confirmed,approved,,classe 'managed_nand' — largura nao se aplica
+KMAG9001PM,KMAG,uMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMAS9001PM,KMAS,uMCP,managed_mcp,,,fora do alvo,,256GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDC6001DM,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDD60018M,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDD6001BM,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDH6001DA,KMD,eMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDH6001DM,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDL6001DA,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDP60018M,KMD,eMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDP6001DA,KMD,eMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDP6001DB,KMD,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDV6001DA,KMD,eMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDV6001DB,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDV6001DM,KMD,eMCP,managed_mcp,,,fora do alvo,,128GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDX60018M,KMD,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMDX6001BM,KMD,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMF310012M,KMF,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMF5X0005C,KMF,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMF7200012M,KMF,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMF720012M,KMF,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMF72001M,KMF,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMF820012M,KMF,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFE10012M,KMF,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFE60012A,KMF,eMCP,managed_mcp,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFE60012M,KMF,eMCP,managed_mcp,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFE660012M,KMF,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFJ20005A,KMF,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFJ20007M,KMF,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFJW0007M,KMF,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFN10012A,KMF,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFN10012M,KMF,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFN60012B,KMF,eMCP,managed_mcp,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFN60012M,KMF,eMCP,managed_mcp,,,fora do alvo,,8GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMFNX0012M,KMF,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMGD6001BM,KMG,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMGP6001BA,KMG,eMCP,managed_mcp,,,fora do alvo,,64GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMGP6001BM,KMG,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMGX6001BA,KMG,eMCP,managed_mcp,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMGX6001BM,KMG,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMI2U000MA,KMI,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMI2U000MAB800,KMI,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMKLL000UN,KMK,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KML5U000HM,KML,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KML7U000HM,KML,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KML7X000HM,KML,uMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMMLL000QM,KMM,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMN5X000ZM,KMN,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMNJ2000ZM,KMN,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ310006A,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ310006B,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ310006G,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ310006M,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ31000SM,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ3100138,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ310013B,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ310013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ4Z0013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ72000SM,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ72000SMB316,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ7200SM,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ7X000SA,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ820013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQ8X000SA,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQD60013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQE10013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQE60006M,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQE60013B,KMQ,eMCP,managed_mcp,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQE60013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,16GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN10006A,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN10006B,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN10006M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN1000GB,KMQ,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN1000SM,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN1000SMB316,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN10013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQN10013M-B318,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQNW000SM,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQNWC00SM,KMQ,eMCP,managed_mcp,,,fora do alvo,,None,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQX10013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQX10013M-B419,KMQ,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQX60013A,KMQ,eMCP,managed_mcp,,,fora do alvo,,32GB,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMQX60013M,KMQ,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR210008M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR21000BM,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR310001M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR310008M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR31000BA,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR31000BM,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR4Z0001A,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR4Z0001M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR7X0001M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR820001M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR8X0001A,KMR,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMR8X0001M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRC1000BM,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRC10014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRC10014MB809,KMR,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRC10014MB809007,KMR,eMCP,managed_mcp,,,fora do alvo,,,manual,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRD60014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRE1000BM,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRH60014A,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRH60014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRNW0001M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRP60014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRV50014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRX1000BM,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRX10014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMRX60014M,KMR,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMV3W000LW,KMV,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMYFE0B0CA,KMY,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMYFE0B0CA-D300,KMY,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMYFG0C0CM,KMY,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica
+KMYFG0C0CM-D302,KMY,eMCP,managed_mcp,,,fora do alvo,,,confirmed,approved,,classe 'managed_mcp' — largura nao se aplica

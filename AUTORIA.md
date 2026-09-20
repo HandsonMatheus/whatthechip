@@ -54,14 +54,16 @@ capacidade. Uma família conserta/quebra **todos** os PNs dela de uma vez — po
 poderosa e a mais perigosa.
 
 ### 3.1 Anatomia de uma família (no yaml)
-`prefix` · `chip_type`/`subtype`/`interface` · `pn_length` · `is_emcp` · `active` · `priority` ·
+`prefix` · `chip_type`/`subtype`/`interface`/`bus_width` · `pn_length` · `is_emcp` · `active` · `priority` ·
 `decode_cap_pos`/`decode_cap_len`/`decode_cap_map` · `decode_gen_pos`/`decode_gen_map` ·
 `decode_density_type` · `suffix_rules` · `tip` · `reasoning`.
 
 ### 3.2 O portão rejeita ANTES de gravar (o que ele pega)
 Rodar `load_brands --brand <marca>` (dry-run) É o portão. Ele **rejeita com erro acionável** se:
 - **Convenção:** `chip_type` genérico (`RAM`/`DDR`) em família ativa; `subtype` sujo (com
-  Mobile/Multi-Channel/densidade/tensão); `interface` carregando geração de RAM.
+  Mobile/Multi-Channel/densidade/tensão); `interface` carregando geração de RAM
+  **ou LARGURA** (desde 2026-09 a largura tem campo próprio, `bus_width`, e o
+  portão recusa `interface: x16` em registro novo — PLANO_BUS_WIDTH.md).
 - **Estrutura do decode (F2/E):** `decode_cap_pos` setado **sem** `cap_map` nem `density_type`
   (não há como decodificar); posição `pos+len` **passa do `pn_length`** (lê fora do PN).
 - **Regra de ouro #5:** família KM com dígito na 3ª posição sem `decode_gen_pos: null`.
@@ -214,7 +216,9 @@ Panorama de TODAS as marcas de uma vez (read-only): `python manage.py audit_subm
 A 1ª varredura em produção achou **147 conflitos** (contra 2 campos vazios): o registro tinha
 valor das **pipelines de import** (Micron API, Samsung PSG), virou `approved`, e a submissão
 Tier-1 que ia corrigir foi pulada. Aplicar tudo em bloco seria pior — em vários campos o BANCO
-é melhor (`interface: 'x16 @ 800MHz (1600MTPS)'` no banco contra `'x16'` no arquivo).
+é melhor (`interface: 'e.MMC 4.41 (JESD84-A441)'` no banco contra `'eMMC 4.41'` no
+arquivo). ⚠ O exemplo clássico disto era `'x16 @ 800MHz'` × `'x16'` — não vale mais:
+desde 2026-09 largura e velocidade saíram do `interface` (Fase 3 do PLANO_BUS_WIDTH.md).
 
 Política (decisão do dono), aplicada por `python manage.py resolve_conflicts`:
 
@@ -223,6 +227,7 @@ Política (decisão do dono), aplicada por `python manage.py resolve_conflicts`:
 | **preço** | `chip_type` `subtype` `capacity` `density_gbit` `density_gb` `emcp_ram` `emcp_nand` | a **submissão** vence — é o que mexe no valor do lote, revise o diff do dry-run |
 | **identidade** | `device` `fbga_code` | a **submissão** vence |
 | **interface** | `interface` | fica o **mais específico** (o mais longo) |
+| **largura** | `bus_width` | a **submissão vence** (classe preço). ⚠ NUNCA na regra do "mais longo": `'DDR4'` tem 4 chars e `'x8'` tem 2 — o mais longo seria o errado |
 | **texto** | `notes` | **merge** — o import tem Voltage/Package, a submissão tem o raciocínio Tier-1 |
 | | `source_url` | mantém a do banco e registra a da submissão dentro do `notes` (o campo é UMA url) |
 

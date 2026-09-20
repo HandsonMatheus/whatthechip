@@ -14,7 +14,7 @@ families:
   - prefix: M15T1G1664A
     chip_type: DDR3L
     subtype: DDR3L
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -29,7 +29,7 @@ families:
   - prefix: M15T2G16128A
     chip_type: DDR3L
     subtype: DDR3L
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -40,7 +40,7 @@ families:
   - prefix: M15T4G16256A
     chip_type: DDR3L
     subtype: DDR3L
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -51,7 +51,7 @@ families:
   - prefix: M15T8G16512A
     chip_type: DDR3L
     subtype: DDR3L
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -62,7 +62,7 @@ families:
   - prefix: M15T2G8256A
     chip_type: DDR3L
     subtype: DDR3L
-    interface: x8
+    bus_width: x8
     priority: 100
     active: true
     reasoning: >
@@ -81,7 +81,7 @@ families:
   - prefix: M15T4G8512A
     chip_type: DDR3L
     subtype: DDR3L
-    interface: x8
+    bus_width: x8
     priority: 100
     active: true
     reasoning: >
@@ -106,7 +106,7 @@ families:
   - prefix: M14D128168A
     chip_type: DDR2
     subtype: DDR2
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
@@ -121,7 +121,7 @@ families:
   - prefix: M14D2561616A
     chip_type: DDR2
     subtype: DDR2
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
@@ -136,7 +136,7 @@ families:
   - prefix: M14D5121632A
     chip_type: DDR2
     subtype: DDR2
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
@@ -152,7 +152,7 @@ families:
   - prefix: M14F5121632A
     chip_type: DDR2
     subtype: DDR2
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR2 SDRAM ESMT (PC/desktop legado), variante 1.55V do M14D5121632A. Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade.'
@@ -169,7 +169,7 @@ families:
   - prefix: M14D1G1664A
     chip_type: DDR2
     subtype: DDR2
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
@@ -184,7 +184,7 @@ families:
   - prefix: M14D1G8128A
     chip_type: DDR2
     subtype: DDR2
-    interface: x8
+    bus_width: x8
     priority: 100
     active: true
     tip: 'DDR2 SDRAM ESMT (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade (chips/engine.py, mesma regra do NT5TU da Nanya).'
@@ -213,7 +213,7 @@ families:
   - prefix: M15F1G1664A
     chip_type: DDR3
     subtype: DDR3
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -231,7 +231,7 @@ families:
   - prefix: M15F2G16128A
     chip_type: DDR3
     subtype: DDR3
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -247,7 +247,7 @@ families:
   - prefix: M15F4G16256A
     chip_type: DDR3
     subtype: DDR3
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -271,7 +271,7 @@ families:
   - prefix: M15F5121632A
     chip_type: DDR3
     subtype: DDR3
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     reasoning: >
@@ -381,7 +381,7 @@ families:
   - prefix: M16U4G16256A
     chip_type: DDR4
     subtype: DDR4
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR4 SDRAM ESMT -- geracao atual (ddr_gen=4 >= ddr_min_gen), NAO e chip legado. Familia magra sem decode de capacidade -- fica INDETERMINADO honesto na gramatica pura (nao NAO RENTAVEL); density_gbit=4Gb real confirmado via known_parts (submissions/esmt_m16u_2026-08-26.yaml), que resolve o veredito para RENTAVEL apos aprovacao (4Gb >= ddr4plus_min_gbit).'
@@ -405,7 +405,7 @@ families:
   - prefix: M16U4G8512A
     chip_type: DDR4
     subtype: DDR4
-    interface: x8
+    bus_width: x8
     priority: 100
     active: true
     tip: 'DDR4 SDRAM ESMT -- par x8 do M16U4G16256A, mesma densidade (4Gb). Mesma nota de rentabilidade: magra na gramatica (INDETERMINADO), resolvida para RENTAVEL via known_parts apos aprovacao.'
@@ -445,7 +445,7 @@ families:
   - prefix: M13S128324A
     chip_type: DDR1
     subtype: DDR1
-    interface: x32
+    bus_width: x32
     priority: 100
     active: true
     tip: 'DDR SDRAM ESMT (DDR1, geracao mais antiga que o M14D/DDR2 -- geracao=1). SEMPRE NAO RENTAVEL independente de capacidade (chips/engine.py: _ddr_generation("DDR")=1 < ddr_min_gen(3), mesmo mecanismo do M14D/DDR2 desta marca, um degrau mais obsoleto ainda).'
@@ -476,7 +476,7 @@ families:
   - prefix: M13S2561616A
     chip_type: DDR1
     subtype: DDR1
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR SDRAM ESMT (DDR1). SEMPRE NAO RENTAVEL independente de capacidade (mesma regra do M13S128324A desta familia).'
@@ -490,7 +490,7 @@ families:
   - prefix: M13S5121632A
     chip_type: DDR1
     subtype: DDR1
-    interface: x16
+    bus_width: x16
     priority: 100
     active: true
     tip: 'DDR SDRAM ESMT (DDR1). SEMPRE NAO RENTAVEL independente de capacidade (mesma regra do M13S128324A desta familia).'

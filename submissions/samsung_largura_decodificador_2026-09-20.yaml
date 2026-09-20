@@ -1,0 +1,1549 @@
+# submissions/samsung_largura_decodificador_2026-09-20.yaml
+#
+# Largura de barramento da DRAM Samsung, pelo DECODIFICADOR OFICIAL DO FABRICANTE.
+# Gerado por GERAR_submissao_samsung_largura.py em 2026-09-20. Nada foi gravado no banco.
+#
+# FONTE DA REGRA — Samsung, "Component DRAM Ordering Information": o part number
+# tem 11 campos e o CAMPO 5 e "Bit Organization". Legenda oficial completa:
+#   02: x2 · 04: x4 · 06: x4 Stack (Flexframe) · 07: x8 Stack (Flexframe) ·
+#   08: x8 · 15: x16 (2CS) · 16: x16 · 26: x4 Stack (JEDEC) · 27: x8 Stack (JEDEC) ·
+#   30: x32 (2CS, 2CKE) · 31: x32 (2CS) · 32: x32
+# Em K4B2G0846D: K(1) 4(2) B(3) 2G(4) 08(5) -> x8.
+#
+# FONTE DE CADA CODIGO — datasheet do dominio da Samsung, um por codigo em uso:
+#   04 -> K4A4G045WD → "1Gx4(K4A4G045WD-BC##)"
+#         https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_4Gb_D_die_Registered_DIMM_Rev1_8_Aug_16-0.pdf
+#   08 -> K4A8G085WC → "1Gx8(K4A8G085WC-BC##)"
+#         https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf
+#   16 -> K4A8G165WC → "512Mx16(K4A8G165WC-BC##)"
+#         https://download.semiconductor.samsung.com/resources/data-sheet/DDR4_8Gb_C_die_Unbuffered_DIMM_Rev1.4_Apr.18.pdf
+#
+# ESCOPO: so DRAM comercial (DDR/DDR2/DDR3/DDR3L/DDR4/DDR5/SDRAM). LPDDR fora
+# (o dono nao diferencia largura nela), GDDR fora (fora do negocio), RDRAM fora
+# (K4Y usa outro esquema de PN). So os codigos de largura SIMPLES entram —
+# empilhados e "2CS" descrevem o pacote e ficaram no relatorio.
+#
+# COMO APLICAR (o dono roda; os registros ja sao 'approved', entao isto e
+# COMPLEMENTO — preenche campo vazio, nunca sobrescreve, nunca muda status):
+#   python manage.py submit_known_parts submissions/samsung_largura_decodificador_2026-09-20.yaml
+#   python manage.py submit_known_parts submissions/samsung_largura_decodificador_2026-09-20.yaml --fill-empty --commit
+#
+# ⚠ Depois disto, o COLETAR_largura_bits.py NAO pode usar o catalogo Samsung DDR
+#   como prova independente da regra posicional (circularidade, HANDOFF §3) — e
+#   nao precisa: a regra esta provada por documento do fabricante.
+
+brand: Samsung
+
+known_parts:
+  - part_number: "K4A4G045WDBC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G045WDBCPB"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G045WDBCRC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WDBC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WDBCPB"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WDBCRC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WEBCPB"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WEBCTD"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WEBITD"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WF"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WFBCTD"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WFBCWE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WG"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G085WGBCWE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WDBC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WDBCPB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WDBCRC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WEBCRC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WEBCTD"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WEBCWE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WF"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WFBCTD"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WFBCWE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WG"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A4G165WGBCWE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G045WBBC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G045WBBCPB"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G045WBBCRC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WB"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WBBC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WBBCPB"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WBBCRC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WBBCTD"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WCBCRC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WCBCTD"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WCBCWE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WG"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G085WGBCWE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WBBCPB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WBBCRC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WBBITD"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WCBCRC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WCBCTD"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WCBCWE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WG"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4A8G165WGBCWE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG085WA"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG085WABCTD"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG085WABCWE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG085WC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG085WCBCWE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG165WA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG165WABCTD"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG165WABCWE"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG165WB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4AAG165WBMCTD"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBCH9"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBCK0"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBCMA"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBY"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBYF8"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBYH9"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0446GBYK0"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBCH9"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBCK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBCMA"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBY"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBYH9"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G0846GBYK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBCH9"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBCK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBCMA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBCNB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBY"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBYH9"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B1G1646GBYK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0446QBC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0446QBCK0"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0446QBCMA"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0446QBY"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0446QBYK0"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0846QBC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0846QBCK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0846QBCMA"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0846QBY"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0846QBYK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G0846QBYMA"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBCK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBCMA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBCNB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBY"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBYK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B2G1646QBYMA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0446QHC"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0446QHCK0"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0446QHCMA"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0446QHY"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0446QHYK0"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846DBC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846DBCK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846DBCMA"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846DBCNB"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846DBY"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846QHC"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846QHCK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846QHCMA"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846QHY"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G0846QHYK0"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646DBC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646DBCMA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646DBY"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646DBYMA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646QHC"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646QHCK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646QHCMA"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646QHY"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B4G1646QHYK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B8G1646QMY"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4B8G1646QMYK0"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4H510438G"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4H510838G"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4H511638G"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4H561638D"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4H561638DTCB3"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VB"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VBBCQK"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VBBIQK"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VBBIWM"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VE"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VEBCWM"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VP"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH086VPBCWM"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VB"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VBBCQK"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VBBCWM"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VBBIQK"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VBBIWM"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VP"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RAH165VPBCWM"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RBH046VM"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RBH046VMBCCP"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RBH046VMBCWM"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RCH046VM"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RCH046VM2CCM"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4RCH046VM2CLP"
+    bus_width: "x4"
+    confidence: "confirmed"
+    notes: >
+      Largura x4 lida do campo 5 ("Bit Organization") do part number,
+      codigo "04", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "04" confirmado em datasheet Samsung:
+      K4A4G045WD → "1Gx4(K4A4G045WD-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G083QJ"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G083QJBI"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G084QJ"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G163QJ"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G163QJBI"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G164QJ"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G164QJBFF8"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T1G164QJBHF8"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T51083QN"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T51083QNBI"
+    bus_width: "x8"
+    confidence: "confirmed"
+    notes: >
+      Largura x8 lida do campo 5 ("Bit Organization") do part number,
+      codigo "08", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "08" confirmado em datasheet Samsung:
+      K4A8G085WC → "1Gx8(K4A8G085WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T51163QN"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T51163QNBFF8"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T51163QNBHF8"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
+  - part_number: "K4T51163QNBI"
+    bus_width: "x16"
+    confidence: "confirmed"
+    notes: >
+      Largura x16 lida do campo 5 ("Bit Organization") do part number,
+      codigo "16", pelo decodificador oficial Samsung "Component DRAM
+      Ordering Information". Codigo "16" confirmado em datasheet Samsung:
+      K4A8G165WC → "512Mx16(K4A8G165WC-BC##)". Capacidade e demais campos intactos.
+
