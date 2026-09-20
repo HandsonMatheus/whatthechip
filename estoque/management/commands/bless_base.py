@@ -44,6 +44,7 @@ from django.utils import timezone
 from core.safe_command import SafeWriteCommand
 from chips.models import Brand, KnownPart
 from estoque.models import InventoryEntry, Lot
+from chips.knowledge.convention import interface_sem_largura as _interface_sem_largura
 
 
 def _norm(pn):
@@ -196,7 +197,14 @@ class Command(SafeWriteCommand):
                     capacity=e.capacity or "",
                     emcp_ram=e.emcp_ram or "",
                     emcp_nand=e.emcp_nand or "",
-                    interface=e.interface or "",
+                    # ⚠ LARGURA NÃO SOBE (PLANO_BUS_WIDTH I4/E3). O lote pode ter
+                    # largura vinda da GRAMÁTICA ou da revisão por foto; levá-la
+                    # ao catálogo lavaria dado deduzido/observado para dentro da
+                    # testemunha independente e mataria o cruzamento do coletor.
+                    # Só o `interface` legado é limpo da largura — e o valor é
+                    # DESCARTADO: se ele existia no catálogo, o backfill da F3 já
+                    # o moveu lá; se não existia, a bancada não é fonte de catálogo.
+                    interface=_interface_sem_largura(e.interface),
                     confidence=conf,
                     notes=f"Avalizado pela base do operador (carga inicial) via bless_base em {since_date}.",
                 )

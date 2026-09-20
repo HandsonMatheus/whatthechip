@@ -32,7 +32,7 @@ from core.safe_command import SafeWriteCommand
 
 AI = {"ai_high", "ai_medium", "ai_low"}
 FIELDS = ["chip_type", "subtype", "capacity", "density_gbit", "density_gb",
-          "emcp_ram", "emcp_nand", "interface", "fbga_code", "device",
+          "emcp_ram", "emcp_nand", "interface", "bus_width", "fbga_code", "device",
           "notes", "source_url"]
 
 

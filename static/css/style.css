@@ -1161,6 +1161,18 @@ a.pr-row:visited { color: inherit; }
   flex-shrink: 0;
   white-space: nowrap;
 }
+/* PROCEDÊNCIA DA LARGURA (2026-09-20). A tela tem de dizer de onde veio: o
+   valor do registro sai limpo, o que foi lido do PN ou herdado da família sai
+   com esta etiqueta apagada. Regra do dono: gramática não é régua, e um
+   palpite não pode parecer datasheet. */
+.bw-src {
+  font-size: .72em;
+  font-weight: 400;
+  opacity: .62;
+  font-style: italic;
+  white-space: nowrap;
+}
+
 .dc2-spec-val {
   font-size: 15px;
   font-weight: 600;

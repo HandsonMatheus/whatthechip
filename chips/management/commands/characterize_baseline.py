@@ -68,6 +68,11 @@ def _characterize_one(pn: str, contextos=()) -> dict:
         "density_gbit":          r.get("density_gbit") or "",
         "dram_density":          r.get("dram_density") or "",
         "interface":             r.get("interface") or "",
+        # Largura e SUA PROCEDÊNCIA (E2/E7). A procedência é o que separa
+        # "mudou porque o datasheet diz" de "mudou porque a gramática deduziu" —
+        # sem ela o diff da Parte 2 não sabe de quem é a culpa.
+        "bus_width":             r.get("bus_width") or "",
+        "bus_width_source":      r.get("bus_width_source") or "",
         "is_emcp":               bool(r.get("is_emcp")),
         "classification_source": r.get("classification_source") or "",
         "confidence":            r.get("confidence") or "",

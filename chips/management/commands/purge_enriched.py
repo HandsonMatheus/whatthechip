@@ -128,7 +128,7 @@ class Command(SafeWriteCommand):
             rows = list(qs.values(
                 "part_number", "confidence", "chip_type", "subtype", "capacity",
                 "density_gbit", "density_gb", "emcp_ram", "emcp_nand", "interface",
-                "fbga_code", "device", "notes", "source_url",
+                "bus_width", "fbga_code", "device", "notes", "source_url",
             ))
             with open(path, "w", encoding="utf-8") as fh:
                 json.dump({"ts": datetime.now().isoformat(), "deleted": rows},

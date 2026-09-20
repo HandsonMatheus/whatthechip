@@ -42,12 +42,18 @@ class ChipFamilyAdmin(admin.ModelAdmin):
     autocomplete_fields = ("doc_page",)
     fieldsets = (
         ("Identificação", {
-            "fields": ("brand", "prefix", "chip_type", "subtype", "interface", "is_emcp", "active", "priority"),
+            "fields": ("brand", "prefix", "chip_type", "subtype", "interface", "bus_width",
+                       "is_emcp", "active", "priority"),
             "description": (
-                "<strong>interface</strong>: versão do padrão de armazenamento da família — "
-                "ex: 'eMMC 5.1', 'UFS 3.1'. "
-                "Para eMCP, é a versão do NAND interno (ex: 'eMMC 5.1'). "
-                "Deixe em branco se desconhecido."
+                "<strong>interface</strong> e <strong>bus_width</strong> são coisas "
+                "DIFERENTES, separadas em 2026-09.<br>"
+                "<strong>interface</strong> = versão do PROTOCOLO — 'eMMC 5.1', 'UFS 3.1' "
+                "(em eMCP, a versão do NAND interno). Nunca largura.<br>"
+                "<strong>bus_width</strong> = LARGURA do barramento de dados — x4/x8/x16/"
+                "x32/x64 — e só quando é FIXA na família. Família multi-largura (a K4B tem "
+                "x4, x8 e x16) fica vazia: quem sabe é o registro, ou a gramática "
+                "(decode_width_*, abaixo). Vazio obrigatório em eMMC/UFS/eMCP/uMCP.<br>"
+                "Deixe em branco se desconhecido — vazio é honesto, chute não é."
             ),
         }),
         ("Decodificação do Part Number", {
@@ -55,6 +61,7 @@ class ChipFamilyAdmin(admin.ModelAdmin):
                 "decode_cap_pos", "decode_cap_len", "decode_cap_map",
                 "decode_gen_pos", "decode_gen_map",
                 "decode_density_type",
+                "decode_width_pos", "decode_width_len", "decode_width_map",
                 "suffix_rules",
             ),
             "classes": ("collapse",),
@@ -62,6 +69,11 @@ class ChipFamilyAdmin(admin.ModelAdmin):
                 "Campos de anatomia do PN. "
                 "<b>cap_pos + cap_len + cap_map</b>: decodifica capacidade (eMMC/NAND) ou par NAND+RAM (eMCP). "
                 "<b>gen_pos + gen_map</b>: decodifica geração ou tipo RAM. "
+                "<b>width_pos + width_len + width_map</b>: decodifica a LARGURA — e só "
+                "preencha em família PROVADA pelo coletor (≥5 acordos independentes, 0 "
+                "divergências, ≥2 larguras). A regra posicional acerta quase sempre e erra "
+                "em família específica: a K4N decodifica x16 e o datasheet diz x32. Sem a "
+                "prova, a regra concorda consigo mesma e ninguém percebe. "
                 "Todos os índices são 0-based (K=0, M=1, R=2, …)."
             ),
         }),
@@ -123,7 +135,8 @@ class KnownPartAdmin(admin.ModelAdmin):
             "fields": ("brand", "family", "part_number", "fbga_code", "confidence", "source", "source_url")
         }),
         ("Dados do Chip", {
-            "fields": ("chip_type", "subtype", "interface", "capacity", "density_gbit", "density_gb")
+            "fields": ("chip_type", "subtype", "interface", "bus_width", "capacity",
+                       "density_gbit", "density_gb")
         }),
         ("eMCP / uMCP", {
             "fields": ("emcp_ram", "emcp_nand"),

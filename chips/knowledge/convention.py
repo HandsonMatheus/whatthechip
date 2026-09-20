@@ -20,7 +20,8 @@ import re
 CONFIDENCE_VOCAB = {"confirmed", "manual", "distributor", "estimated"}
 
 _NONE_STRINGS = {"None", "none", "NONE"}
-_CLEAN_FIELDS = ("capacity", "emcp_ram", "emcp_nand", "density_gbit", "density_gb", "interface")
+_CLEAN_FIELDS = ("capacity", "emcp_ram", "emcp_nand", "density_gbit", "density_gb",
+                 "interface", "bus_width")
 
 #: Densidade "pelada" em Gigabit: '2G' (convenção da caixa/bless_base) ou '2Gb'.
 #: Case-sensitive de propósito — 'GB' é BYTE de pacote, NUNCA densidade (Gb≠GB).
@@ -143,6 +144,10 @@ def apply_kp_convention(obj):
        o que o bless_base grava da caixa) ganha `density_gbit='<n>Gb'`. FILL-ONLY:
        o `capacity` fica como está (snapshot/labels o leem); 'GB' nunca entra
        (byte de pacote ≠ densidade).
+    5. `bus_width` normalizado para a forma canônica minúscula ('X8' → 'x8').
+       Valor FORA do vocabulário NÃO é apagado nem corrigido: fica como está
+       para o `clean()`/portão REJEITAREM com mensagem. Normalizador não
+       levanta exceção e não engole erro — ele só arruma o que é arrumável.
     """
     from chips.chip_types import canonical_chip_type, label_kind, spec_for
     from chips.conventions import canonical_gen, is_ram_generation
@@ -160,6 +165,10 @@ def apply_kp_convention(obj):
     if is_ram_generation(getattr(obj, "interface", "") or ""):
         setattr(obj, "interface", "")
 
+    bw = (getattr(obj, "bus_width", "") or "").strip().lower()
+    if bw != (getattr(obj, "bus_width", "") or ""):
+        setattr(obj, "bus_width", bw)
+
     ct = getattr(obj, "chip_type", "") or ""
     if ct and not (getattr(obj, "density_gbit", "") or "").strip():
         kind = label_kind(canonical_chip_type(ct, getattr(obj, "subtype", "") or ""))
@@ -169,6 +178,160 @@ def apply_kp_convention(obj):
                 setattr(obj, "density_gbit", f"{m.group(1)}Gb")
 
     return obj
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# LARGURA × PROTOCOLO — separados em 2026-09 (PLANO_BUS_WIDTH.md)
+# ─────────────────────────────────────────────────────────────────────────
+#: Largura NO INÍCIO da string, com o que sobra. `match`, não `search`: 'eMMC
+#: 5.1' não pode virar largura por conter um número, e 'x16 @ 800MHz' tem de
+#: ser reconhecido inteiro (é a forma que o import_micron_catalog grava).
+RX_BUS_WIDTH_LEAD = re.compile(r"^\s*(x(?:4|8|16|32|64))\b\s*(.*)$", re.I)
+#: O resto quando é VELOCIDADE: '@ 800MHz (1600MTPS)' → '800MHz (1600MTPS)'.
+RX_SPEED = re.compile(r"^@\s*(\S.*)$")
+
+#: Classes em que largura de barramento de dados EXISTE como atributo do
+#: dispositivo (PLANO_BUS_WIDTH §3.2, decisão D5). DENY BY DEFAULT: classe
+#: fora daqui rejeita. eMMC/UFS ficam de fora porque lá a largura é MODO
+#: escolhido pelo host (JESD84, EXT_CSD[183]: todo eMMC suporta 1/4/8 bits);
+#: eMCP/uMCP porque o pacote tem DOIS barramentos e um campo só seria ambíguo.
+BUS_WIDTH_CLASSES = ("dram_pc", "dram_mobile", "dram_gpu", "dram_legacy",
+                     "dram_unknown", "nand_raw")
+#: Exceção nominal: NOR paralela tem x8/x16 de verdade, mas o repo a classifica
+#: em 'catalog'. SPI NOR NÃO entra (x1/x2/x4 são linhas de comando, não
+#: organização — isso é `interface: SPI`).
+BUS_WIDTH_CHIP_TYPES = ("NOR Flash",)
+
+
+def split_bus_width(interface: str) -> tuple[str, str, str]:
+    """Reparte um `interface` legado em ``(bus_width, speed, resto)``.
+
+    É a fonte ÚNICA do move largura→`bus_width`: usada pelo backfill
+    (`normalize_convention`), pelo `bless_base`, pelo `import_samsung_psg`, pelo
+    `_clean_interface` do estoque e pelo censo. Uma só implementação porque duas
+    divergem na primeira alteração.
+
+        'x16'                    → ('x16', '',                    '')
+        'x16 @ 800MHz (1600MTPS)'→ ('x16', '800MHz (1600MTPS)',   '')
+        '@ 1866MHz'              → ('',    '1866MHz',             '')
+        'x16 (2 dies)'           → ('x16', '',                    '(2 dies)')
+        'eMMC 5.1'               → ('',    '',                    'eMMC 5.1')
+
+    ⚠ `resto` NÃO VAZIO com largura presente é o caso "SOBRA SEM DESTINO": quem
+    chama **não migra** e reporta. Migrar e descartar a sobra é o erro que o
+    CLAUDE.md §7 chama de "dado apagado em silêncio".
+    """
+    txt = (interface or "").strip()
+    if not txt:
+        return ("", "", "")
+    m = RX_BUS_WIDTH_LEAD.match(txt)
+    if m:
+        largura, resto = m.group(1).lower(), m.group(2).strip()
+        ms = RX_SPEED.match(resto)
+        return (largura, ms.group(1).strip(), "") if ms else (largura, "", resto)
+    ms = RX_SPEED.match(txt)
+    return ("", ms.group(1).strip(), "") if ms else ("", "", txt)
+
+
+def interface_sem_largura(interface: str) -> str:
+    """Devolve o `interface` SEM a largura — e DESCARTA a largura de propósito.
+
+    É o que o `bless_base` e a aprovação de pendência usam ao promover uma
+    entrada de lote a KnownPart: o protocolo sobe, a largura NÃO (I4/E3). Não é
+    perda de dado — se aquela largura existia no catálogo, o backfill já a moveu
+    para `bus_width`; se não existia, a bancada não é fonte de catálogo.
+
+        'x16'            → ''
+        'x16 @ 800MHz'   → ''
+        'eMMC 5.1'       → 'eMMC 5.1'
+        'x16 (2 dies)'   → '(2 dies)'
+    """
+    largura, velocidade, resto = split_bus_width(interface or "")
+    return resto if (largura or velocidade) else (interface or "")
+
+
+def notes_com_speed(notes: str, speed: str) -> str:
+    """Acrescenta ``Speed: <v>`` às `notes`, no formato ``k: v | k: v`` da Micron.
+
+    É a outra metade do move da §3.4: `split_bus_width` diz o que SAI do
+    `interface`, esta diz onde a VELOCIDADE entra. Uma implementação só porque o
+    backfill (`normalize_convention`) e o `import_micron_catalog` têm de produzir
+    a MESMA string — duas que divergem viram nota duplicada na segunda rodada.
+
+        ('',              '1866MHz')  → 'Speed: 1866MHz'
+        ('Voltage: 1.5V', '800MHz')   → 'Voltage: 1.5V | Speed: 800MHz'
+        ('Speed: 800MHz', '800MHz')   → 'Speed: 800MHz'        (idempotente)
+        ('Speed: 1600MHz','800MHz')   → 'Speed: 1600MHz | Speed: 800MHz'
+
+    ⚠ A idempotência é POR VALOR, não por presença da chave (regra (b) da §3.4).
+    O último exemplo é feio de propósito: duas velocidades contraditórias no
+    mesmo registro é dado ruim, e a regra da casa é que mover nunca apaga (I5).
+    Ficar visível na nota é pior de ler e melhor de auditar do que escolher uma
+    em silêncio — e o relatório do backfill conta esses casos à parte.
+    """
+    base = (notes or "").strip()
+    sp = (speed or "").strip()
+    if not sp:
+        return notes or ""
+    pedaco = f"Speed: {sp}"
+    if pedaco in [p.strip() for p in base.split("|")]:
+        return notes or ""
+    return f"{base} | {pedaco}" if base else pedaco
+
+
+def notes_tem_outra_speed(notes: str, speed: str) -> bool:
+    """True se `notes` já declara um ``Speed:`` DIFERENTE do que vai entrar.
+
+    Só para o RELATÓRIO do backfill — não bloqueia nada. Quem decide o que fazer
+    com a contradição é o dono, olhando a lista.
+    """
+    sp = (speed or "").strip()
+    pedacos = [p.strip() for p in (notes or "").split("|")]
+    outras = [p for p in pedacos if p.lower().startswith("speed:")]
+    return bool(outras) and f"Speed: {sp}" not in outras
+
+
+def bus_width_problem(chip_type: str, bus_width: str) -> str | None:
+    """Mensagem ACIONÁVEL se `bus_width` é inválido para este `chip_type`; senão None.
+
+    Dois invariantes: vocabulário fechado (I1) e classe permitida (I3). FAIL-OPEN
+    em `chip_type` vazio (identity-only defere à gramática), igual ao
+    `family_type_conflict`.
+    """
+    from chips.conventions import BUS_WIDTH_VOCAB, is_bus_width
+    bw = (bus_width or "").strip()
+    if not bw:
+        return None
+    if not is_bus_width(bw):
+        return (f"`bus_width={bw!r}` fora do vocabulário "
+                f"{{{', '.join(BUS_WIDTH_VOCAB)}}} — use só o token da largura, "
+                f"sem velocidade nem unidade (velocidade vai em `notes`).")
+    ct = (chip_type or "").strip()
+    if not ct or ct in BUS_WIDTH_CHIP_TYPES:
+        return None
+    from chips.chip_types import spec_for
+    sp = spec_for(ct)
+    if sp is None or sp.category in BUS_WIDTH_CLASSES:
+        return None
+    return (f"`bus_width={bw!r}` não se aplica a {ct}: ali a largura de dados não "
+            f"identifica o dispositivo (em eMMC é modo do host — JESD84 EXT_CSD[183]; "
+            f"em eMCP/uMCP há dois barramentos). Deixe vazio.")
+
+
+def interface_problem(interface: str) -> str | None:
+    """Mensagem ACIONÁVEL se `interface` carrega LARGURA; senão None (I2).
+
+    É o que o chat de marca lê no dry-run quando manda `interface: x16` depois da
+    separação (decisão D3). Não rejeita protocolo com número ('eMMC 5.1') porque
+    o casamento é ancorado no início e no vocabulário fechado de largura.
+    """
+    largura, speed, _ = split_bus_width(interface or "")
+    if not largura:
+        return None
+    return (f"largura de barramento vai em `bus_width`, não em `interface` "
+            f"(`interface` = versão de protocolo: eMMC 5.1, UFS 3.1). "
+            f"Mova {largura!r} para `bus_width`"
+            + (f" e a velocidade {speed!r} para `notes` (Speed: …)." if speed else "."))
 
 
 def family_type_conflict(part_number: str, chip_type: str) -> str | None:

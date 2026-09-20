@@ -53,6 +53,71 @@ def is_ram_generation(text: str) -> bool:
     return bool(t) and bool(_RAM_GEN_RE.fullmatch(t))
 
 
+# ─────────────────────────────────────────────────────────────────────────
+# LARGURA DE BARRAMENTO (bus_width) — vocabulário fechado, FONTE ÚNICA
+# ─────────────────────────────────────────────────────────────────────────
+# Separada de `interface` em 2026-09 (PLANO_BUS_WIDTH.md): `interface` é VERSÃO
+# DE PROTOCOLO (eMMC 5.1, UFS 3.1) e `bus_width` é a LARGURA DO BARRAMENTO DE
+# DADOS do dispositivo. Os dois são ortogonais — NAND paralela tem os dois.
+#
+# ⚠ NINGUÉM escreve esta lista em outro lugar. Constraint do banco, portão
+# Pydantic, censo e coletor TODOS importam daqui. É a lição das quatro quebras
+# da origem do lote (CLAUDE.md §7): vocabulário fechado tem UM dono.
+BUS_WIDTH_VOCAB = ("x4", "x8", "x16", "x32", "x64")
+
+# Classe de largura — o eixo COMERCIAL (o comprador paga por classe, não por
+# largura exata): x4/x8 = 'narrow' (78 bolas) · x16 = 'wide' (96 bolas).
+# Mora aqui por ora para que o schema do lote (F1) tenha uma fonte única; na
+# Parte 2 o `pricing/convention.py` importa daqui em vez de redeclarar.
+WIDTH_CLASS_VOCAB = ("", "narrow", "wide")
+
+# De ONDE veio a largura que o resultado mostra. Vale ouro no diagnóstico:
+# separa "o datasheet disse" de "a gramática deduziu" — e é o que impede a
+# circularidade do coletor de passar despercebida.
+BUS_WIDTH_SOURCE_VOCAB = ("", "banco", "familia", "gramatica", "revisao")
+
+_BUS_WIDTH_RE = re.compile(r"x(4|8|16|32|64)", re.I)
+
+
+def width_class_of(bus_width: str) -> str:
+    """Classe COMERCIAL da largura: x4/x8 → 'narrow' (78 bolas) · x16 → 'wide'
+    (96 bolas) · resto (x32/x64/vazio/lixo) → '' (desconhecida/não se aplica).
+
+    O comprador paga por CLASSE, não por largura exata: ele conta as bolas do
+    encapsulamento e não lê part number. x32/x64 devolvem '' porque não existem
+    no mercado deste catálogo em DDR discreta (GDDR é sucata por tipo, LPDDR tem
+    kind próprio) — dar classe a eles seria inventar mercado.
+
+    ⚠ '' significa DESCONHECIDA no lote, distinto de 'wide'. Na Parte 2 o eixo do
+    preço/caixa usa outro vocabulário, mais estreito, porque lá '' quer dizer
+    "o que sempre foi" (código de caixa é eterno) — são dois vocabulários de
+    propósito.
+    """
+    bw = (bus_width or "").strip().lower()
+    if bw in ("x4", "x8"):
+        return "narrow"
+    if bw == "x16":
+        return "wide"
+    return ""
+
+
+def is_bus_width(text: str) -> bool:
+    """True se `text` é PURAMENTE um token de largura de barramento.
+
+    `fullmatch` contra lista fechada, nunca `search` — é a regra que este
+    projeto pagou três vezes para aprender (CLAUDE.md §7): para DECIDIR se uma
+    string é um token de vocabulário, `fullmatch`; `search` só serve para
+    EXTRAIR de string já validada. 'x8' → True · 'x8 @ 800MHz' → False ·
+    'x2' → False · 'DDR4' → False.
+
+    Tolerante a caixa e espaço na LEITURA ('  X8 ' → True) porque a regra 5 do
+    `apply_kp_convention` normaliza para 'x8' antes de gravar; o banco só
+    aceita a forma canônica (CheckConstraint).
+    """
+    t = (text or "").strip()
+    return bool(t) and bool(_BUS_WIDTH_RE.fullmatch(t))
+
+
 def canonical_gen(subtype: str, chip_type: str = "") -> str:
     """
     Reduz `subtype` ao token canônico de geração/célula para o label da caixa.

@@ -42,7 +42,7 @@ from chips.normalize import normalize_pn
 # 'confidence' fora do confronto de campos: nunca é vazio (default 'confirmed'),
 # então divergência ali é decisão de AUTORIDADE — reportada à parte.
 _CAMPOS = ["chip_type", "subtype", "capacity", "density_gbit", "density_gb",
-           "emcp_ram", "emcp_nand", "interface", "fbga_code", "device",
+           "emcp_ram", "emcp_nand", "interface", "bus_width", "fbga_code", "device",
            "notes", "source_url"]
 
 _BALDES = ["AUSENTE", "PENDENTE", "COMPLETA", "CONFLITO", "OK"]
@@ -56,6 +56,9 @@ _CLASSE = {
     "density_gbit": "preço", "density_gb": "preço",
     "emcp_ram": "preço", "emcp_nand": "preço",
     "fbga_code": "identidade", "device": "identidade",
+    # Largura é fato sobre QUAL peça é — não muda preço na Parte 1, mas é
+    # identidade do dispositivo, não descrição.
+    "bus_width": "identidade",
     "interface": "texto", "notes": "texto", "source_url": "texto",
 }
 

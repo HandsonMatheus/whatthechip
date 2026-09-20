@@ -189,7 +189,9 @@ class Command(SafeWriteCommand):
                     "part_number": e.part_number, "quantity": e.quantity,
                     "chip_type": e.chip_type, "brand": e.brand, "capacity": e.capacity,
                     "emcp_ram": e.emcp_ram, "emcp_nand": e.emcp_nand, "is_emcp": e.is_emcp,
-                    "interface": e.interface, "classification_source": e.classification_source,
+                    "interface": e.interface, "bus_width": e.bus_width,
+                    "width_class": e.width_class, "bus_width_source": e.bus_width_source,
+                    "classification_source": e.classification_source,
                     "added_at": e.added_at.isoformat(), "last_updated": e.last_updated.isoformat(),
                 })
                 e.delete()
@@ -226,6 +228,9 @@ class Command(SafeWriteCommand):
                         "capacity": rec["capacity"], "emcp_ram": rec["emcp_ram"],
                         "emcp_nand": rec["emcp_nand"], "is_emcp": rec["is_emcp"],
                         "interface": rec["interface"],
+                        "bus_width": rec.get("bus_width", ""),
+                        "width_class": rec.get("width_class", ""),
+                        "bus_width_source": rec.get("bus_width_source", ""),
                         "classification_source": rec["classification_source"],
                         "quantity": rec["quantity"],
                     },

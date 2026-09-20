@@ -109,6 +109,10 @@
       {% else %}
         <div class="spec spec--hi"><div class="spec__l">{% trans "Capacidade" %}</div><div class="spec__v">{{ display_cap|default:"—" }}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Interface" %}</div><div class="spec__v">{{ result.interface|default:"—" }}</div></div>
+        {% comment %} Largura (2026-09). Só aqui, no ramo NÃO-eMCP: em eMCP/uMCP
+           o pacote tem DOIS barramentos e o campo é vazio por regra. O token
+           (x8/x16) NUNCA traduz — é valor canônico; só o rótulo traduz. {% endcomment %}
+        <div class="spec"><div class="spec__l">{% trans "Largura" %}</div><div class="spec__v">{{ result.bus_width|default:"—" }}{% if result.bus_width_source == "gramatica" %}<span class="bw-src" title="{% trans 'Largura lida do part number, não de datasheet. Não vale como preço.' %}"> {% trans "lido do PN" %}</span>{% elif result.bus_width_source == "familia" %}<span class="bw-src" title="{% trans 'Largura fixa da família, não deste registro.' %}"> {% trans "da família" %}</span>{% endif %}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Tipo" %}</div><div class="spec__v">{{ result.chip_type|default:"—" }}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Fonte" %}</div><div class="spec__v">{{ result.classification_source|default:"—" }}</div></div>
       {% endif %}

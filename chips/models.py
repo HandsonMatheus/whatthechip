@@ -19,6 +19,8 @@ import pghistory
 from django.conf import settings
 from django.db import models
 
+from chips.conventions import BUS_WIDTH_VOCAB
+
 
 class Brand(models.Model):
     name = models.TextField(unique=True)
@@ -72,7 +74,15 @@ class ChipFamily(models.Model):
     prefix              = models.TextField(db_index=True, help_text="Prefixo do PN, ex: KLM, K4B, H5AN. Único GLOBAL (constraint em Meta): um prefixo pertence a uma marca só; o engine casa PN→família por prefixo.")
     chip_type           = models.TextField(help_text="Ex: eMMC, RAM, eMCP, UFS")
     subtype             = models.TextField(blank=True, default="", help_text="Ex: DDR3 SDRAM, LPDDR4X")
-    interface           = models.TextField(blank=True, default="")
+    interface           = models.TextField(blank=True, default="",
+                              help_text="VERSÃO DE PROTOCOLO da família (eMMC 5.1, UFS 3.1, "
+                                        "Async/ONFI) ou vazio. NUNCA largura de barramento — "
+                                        "isso é `bus_width`.")
+    bus_width           = models.TextField(blank=True, default="",
+                              help_text="Largura do barramento de DADOS quando é fixa na "
+                                        "família (x4/x8/x16/x32/x64) — ou vazio. Família "
+                                        "multi-largura (K4B tem x4/x8/x16) deixa VAZIO: quem "
+                                        "sabe é o registro, ou a gramática (decode_width_*).")
     decode_cap_pos      = models.IntegerField(null=True, blank=True,
                               help_text="Índice (0-based) do 1º char que codifica a capacidade. "
                                         "Ex: KLM[C]G0016A → pos=3")
@@ -93,6 +103,19 @@ class ChipFamily(models.Model):
                                         "Use 2 para eMCP com chaves de 2 chars como 'AC', 'AD', 'A8'.")
     decode_density_type = models.TextField(blank=True, default="",
                               help_text="'pc' ou 'mobile' — ativa decode de densidade DRAM")
+    # ── Largura pela GRAMÁTICA (a válvula de escape da largura) ────────────
+    # O banco (datasheet) vence; a gramática cobre a cauda longa em LEITURA e
+    # NUNCA volta ao catálogo (circularidade — PLANO_BUS_WIDTH I4). Só família
+    # PROVADA pelo coletor declara: >=5 acordos independentes, 0 divergências,
+    # >=2 larguras distintas, com o relatório citado no `reasoning`.
+    decode_width_pos    = models.IntegerField(null=True, blank=True,
+                              help_text="Índice (0-based) do 1º char que codifica a largura. "
+                                        "Ex: Samsung K4B2G[08]46D → pos=5. Exige decode_width_map.")
+    decode_width_len    = models.IntegerField(default=1,
+                              help_text="Nº de chars da chave de largura (padrão=1; Samsung usa 2).")
+    decode_width_map    = models.TextField(blank=True, default="",
+                              help_text="Nome do DecodeMap de largura (val_primary = 'x4'…'x64'). "
+                                        "SÓ preencher em família provada pelo coletor.")
     pn_length           = models.IntegerField(null=True, blank=True,
                               help_text="Comprimento canônico do PN (sem sufixo opcional após hífen). "
                                         "Ex: KLM8G1GETF = 10. Usado pela UI de PIN para detectar "
@@ -131,7 +154,40 @@ class ChipFamily(models.Model):
             # (e NÃO `unique=True` no campo) de propósito — assim não é espelhado no event
             # table do pghistory, que é append-only (várias linhas, mesmo prefixo).
             models.UniqueConstraint(fields=["prefix"], name="uniq_chipfamily_prefix"),
+            # Vocabulário fechado de largura, garantido no BANCO (sobrevive a
+            # .update()/bulk/SQL cru/admin). Espelha BUS_WIDTH_VOCAB — nunca
+            # reescreva a lista aqui, importe.
+            models.CheckConstraint(
+                condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
+                name="chipfamily_bus_width_vocab"),
         ]
+
+    def clean(self):
+        """PORTÃO mínimo da família (2026-09). Ela não tinha `clean()`: o portão
+        Pydantic do `load_brands` cobria o yaml e mais nada — o admin escrevia
+        direto. Só as duas regras de largura, com o mesmo grandfather do
+        KnownPart no `interface` (as 25 famílias com `xN` só migram na F4)."""
+        from django.core.exceptions import ValidationError
+        from chips.knowledge.convention import bus_width_problem, interface_problem
+        bw = (self.bus_width or "").strip().lower()
+        if bw != (self.bus_width or ""):
+            self.bus_width = bw
+        prob = bus_width_problem(self.chip_type, self.bus_width)
+        if prob:
+            raise ValidationError({"bus_width": prob})
+        if self.decode_width_pos is not None and not (self.decode_width_map or "").strip():
+            raise ValidationError({"decode_width_map":
+                "decode_width_pos sem decode_width_map: a posição sozinha não decodifica "
+                "nada. Declare o mapa, ou deixe os dois vazios."})
+        prob_if = interface_problem(self.interface)
+        if prob_if:
+            mudou = True
+            if self.pk:
+                antes = (type(self).objects.filter(pk=self.pk)
+                         .values_list("interface", flat=True).first())
+                mudou = antes is None or (self.interface or "") != (antes or "")
+            if mudou:
+                raise ValidationError({"interface": prob_if})
 
     def __str__(self):
         return f"{self.prefix} — {self.chip_type} ({self.brand.name})"
@@ -212,7 +268,16 @@ class KnownPart(models.Model):
     density_gb   = models.TextField(blank=True, default="", help_text="Ex: 512MB (por die)")
     emcp_ram     = models.TextField(blank=True, default="", help_text="Ex: LPDDR4X 4GB")
     emcp_nand    = models.TextField(blank=True, default="", help_text="Ex: eMMC 5.1 64GB")
-    interface    = models.TextField(blank=True, default="")
+    interface    = models.TextField(blank=True, default="",
+                                    help_text="VERSÃO DE PROTOCOLO (eMMC 5.1, UFS 3.1) ou "
+                                              "interface física de NAND/NOR (Async/ONFI, SPI). "
+                                              "NUNCA largura — isso é `bus_width`.")
+    bus_width    = models.TextField(blank=True, default="",
+                                    help_text="Largura do barramento de dados: x4/x8/x16/x32/x64 "
+                                              "ou vazio. Vem de datasheet/Tier-1 — NUNCA deduzida "
+                                              "do part number (a dedução é do coletor, e deixá-la "
+                                              "entrar aqui faria a regra concordar consigo mesma). "
+                                              "Vazio obrigatório em eMMC/UFS/eMCP/uMCP.")
     fbga_code    = models.CharField(
         max_length=10,
         blank=True,
@@ -276,6 +341,10 @@ class KnownPart(models.Model):
                     & models.Q(approved_by=models.F("submitted_by"))
                 ),
                 name="knownpart_four_eyes"),
+            # Espelho de BUS_WIDTH_VOCAB (mesma razão da família).
+            models.CheckConstraint(
+                condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
+                name="knownpart_bus_width_vocab"),
         ]
 
     def __str__(self):
@@ -291,7 +360,7 @@ class KnownPart(models.Model):
         from django.core.exceptions import ValidationError
         from chips.knowledge.convention import (
             apply_kp_convention, family_type_conflict, CONFIDENCE_VOCAB,
-            MEASURE_FIELDS, measure_problems)
+            MEASURE_FIELDS, measure_problems, bus_width_problem, interface_problem)
         apply_kp_convention(self)
         # FORMA do campo de medida (2026-08-26). Até aqui `capacity`/`emcp_*` eram
         # str livre em TODO caminho de escrita — foi por onde entrou a prosa do
@@ -316,6 +385,24 @@ class KnownPart(models.Model):
         conflito = family_type_conflict(self.part_number, self.chip_type)
         if conflito:
             raise ValidationError({"chip_type": conflito})
+        # LARGURA (2026-09). `bus_width` é campo NOVO: sem legado a perdoar, valida
+        # sempre. `interface` é o inverso — 3.539 registros ainda têm largura ali
+        # esperando o backfill, então vale o MESMO grandfather das medidas: só
+        # rejeita quando o valor MUDOU. Sem isso o re-save de qualquer legado
+        # (resnapshot, bless_base, e o próprio backfill) quebraria antes de a
+        # migração acontecer. Depois da F5 a CheckConstraint fecha o resto.
+        prob_bw = bus_width_problem(self.chip_type, self.bus_width)
+        if prob_bw:
+            raise ValidationError({"bus_width": prob_bw})
+        prob_if = interface_problem(self.interface)
+        if prob_if:
+            mudou = True
+            if self.pk:
+                antes = (type(self).objects.filter(pk=self.pk)
+                         .values_list("interface", flat=True).first())
+                mudou = antes is None or (self.interface or "") != (antes or "")
+            if mudou:
+                raise ValidationError({"interface": prob_if})
         if self.confidence not in CONFIDENCE_VOCAB:
             raise ValidationError({"confidence":
                 f"confidence '{self.confidence}' inválido — use um de {sorted(CONFIDENCE_VOCAB)}."})

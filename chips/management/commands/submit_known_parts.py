@@ -77,8 +77,8 @@ from django.db import transaction
 from core.safe_command import SafeWriteCommand
 
 _FIELDS = ["chip_type", "subtype", "capacity", "density_gbit", "density_gb", "emcp_ram",
-           "emcp_nand", "interface", "fbga_code", "device", "notes", "source_url",
-           "confidence"]
+           "emcp_nand", "interface", "bus_width", "fbga_code", "device", "notes",
+           "source_url", "confidence"]
 
 # Campos que o --fill-empty pode PREENCHER. `confidence` fica de fora de propósito: ele
 # nunca é vazio (default 'confirmed'), então mudá-lo é decisão de AUTORIDADE, não

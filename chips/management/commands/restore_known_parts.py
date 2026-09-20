@@ -19,7 +19,8 @@ from django.db import transaction
 _CONF_RANK = {"confirmed": 3, "manual": 2, "distributor": 1, "estimated": 0}
 _BRAND_ALIAS = {"Toshiba": "Toshiba-Kioxia", "Kioxia": "Toshiba-Kioxia", "KIOXIA": "Toshiba-Kioxia"}
 _FIELDS = ("chip_type", "subtype", "capacity", "density_gbit", "density_gb", "emcp_ram",
-           "emcp_nand", "interface", "device", "notes", "source_url", "fbga_code")
+           "emcp_nand", "interface", "bus_width", "device", "notes", "source_url",
+           "fbga_code")
 
 
 class Command(BaseCommand):

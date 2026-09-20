@@ -2807,8 +2807,8 @@ msgid ""
 "Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMIN\"). "
 "Vazio também vale — o documento sai sem prefixo."
 msgstr ""
-"Invalid company code: use 2 to 4 UPPERCASE letters (e.g. \"EMIN\"). Empty is "
-"fine too — the document comes out with no prefix."
+"Invalid company code: use 2 to 4 UPPERCASE letters (e.g. \"EMIN\"). Empty is"
+" fine too — the document comes out with no prefix."
 
 #. vendas/ (F11.6 — comprador congela)
 msgid "Congelar"
@@ -4215,24 +4215,20 @@ msgstr ""
 
 #: estoque/templates/estoque/estoque.html:1387
 #, python-format
-msgid "O número <strong>%(numero)s</strong> voltará a ficar disponível para o próximo lote."
-msgstr "Number <strong>%(numero)s</strong> will become available again for the next lot."
+msgid ""
+"O número <strong>%(numero)s</strong> voltará a ficar disponível para o "
+"próximo lote."
+msgstr ""
+"Number <strong>%(numero)s</strong> will become available again for the next "
+"lot."
 
 #. Painel do comprador: de que bancada a caixa veio (2026-09-02).
 #: vendas/templates/vendas/partner_compras.html:132
 msgid "Origem"
 msgstr "Origin"
 
-#~ msgid ""
-#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
-#~ " em US$. Muda só quando o contrato mudar."
-#~ msgstr ""
-#~ "Contract rate with WhatTheChip — the rate used to convert your ¥ into US$. "
-#~ "It changes only when the contract changes."
-
 #: vendas/templates/vendas/partner_compra.html
-#: vendas/templates/vendas/partner_compras.html
-#: vendas/views_partner.py
+#: vendas/templates/vendas/partner_compras.html vendas/views_partner.py
 msgid "Em trânsito"
 msgstr "In transit"
 
@@ -4241,54 +4237,60 @@ msgid "Recebido em"
 msgstr "Received on"
 
 #: vendas/templates/vendas/partner_compra.html
-msgid "Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
-msgstr "Confirm the box has arrived. The receipt is recorded with today's date."
+msgid ""
+"Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
+msgstr ""
+"Confirm the box has arrived. The receipt is recorded with today's date."
 
 #: vendas/templates/vendas/partner_compra.html
-msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
-msgstr "The first date is the one that counts: marking again will not correct it, and there is no screen to change it later."
+msgid ""
+"A primeira data vale: marcar de novo não a corrige, e não há tela para "
+"alterá-la depois."
+msgstr ""
+"The first date is the one that counts: marking again will not correct it, "
+"and there is no screen to change it later."
 
 #: vendas/templates/vendas/partner_compra.html
 msgid "Unitário"
 msgstr "Unit price"
 
-#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
 #. "Faturado" era o ponto de vista de quem EMITE. Quem lê esta tela é
 #. quem RECEBE a fatura (dono, 2026-09-04): o fato é que ele deve.
+#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
 msgid "A pagar"
 msgstr "Payable"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Rótulo do rodapé de coluna: diz de quantas compras é a soma.
+#: vendas/templates/vendas/partner_compras.html
 msgid "Total · %(n)s compra"
 msgid_plural "Total · %(n)s compras"
 msgstr[0] "Total · %(n)s purchase"
 msgstr[1] "Total · %(n)s purchases"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Esperado ¥"
 msgstr "Expected ¥"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Esperado US$"
 msgstr "Expected US$"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Marcar todas as linhas desta página"
 msgstr "Select all rows on this page"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Selecionar %(c)s"
 msgstr "Select %(c)s"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Rodapé de coluna quando há linhas marcadas. As DUAS formas são
 #. renderizadas em data- e o JS escolhe: gettext decide o plural no
 #. render, então a forma tem de vir pronta do servidor.
+#: vendas/templates/vendas/partner_compras.html
 msgid "Selecionada · %(n)s compra"
 msgid_plural "Selecionadas · %(n)s compras"
 msgstr[0] "Selected · %(n)s purchase"
@@ -4297,23 +4299,31 @@ msgstr[1] "Selected · %(n)s purchases"
 # ── Política origem × tipo: cada origem de lote só aceita certos tipos
 #    de chip (dono, 2026-09-02). A mensagem tem que ser ACIONÁVEL: diz
 #    onde o chip ENTRA, não só que ali não serve.
-
-msgid "%(tipo)s não entra em lote de %(origem)s. Este chip vai em: %(aceitam)s."
-msgstr "%(tipo)s does not go in a %(origem)s lot. This chip goes in: %(aceitam)s."
+msgid ""
+"%(tipo)s não entra em lote de %(origem)s. Este chip vai em: %(aceitam)s."
+msgstr ""
+"%(tipo)s does not go in a %(origem)s lot. This chip goes in: %(aceitam)s."
 
 msgid "%(tipo)s não entra em nenhum tipo de lote no momento."
 msgstr "%(tipo)s does not go in any lot type right now."
 
-msgid "Este lote tem uma origem desconhecida (%(origem)s) — nenhum chip pode ser lançado nele até a origem ser corrigida."
-msgstr "This lot has an unknown origin (%(origem)s) — no chip can be entered into it until the origin is fixed."
+msgid ""
+"Este lote tem uma origem desconhecida (%(origem)s) — nenhum chip pode ser "
+"lançado nele até a origem ser corrigida."
+msgstr ""
+"This lot has an unknown origin (%(origem)s) — no chip can be entered into it"
+" until the origin is fixed."
 
-msgid "Tipo %(tipo)s ainda não tem regra definida para lotes de %(origem)s. Fale com o gestor."
-msgstr "Type %(tipo)s has no rule defined yet for %(origem)s lots. Talk to the manager."
+msgid ""
+"Tipo %(tipo)s ainda não tem regra definida para lotes de %(origem)s. Fale "
+"com o gestor."
+msgstr ""
+"Type %(tipo)s has no rule defined yet for %(origem)s lots. Talk to the "
+"manager."
 
 # ── O aviso TOMA O LUGAR do cartão de destino (dono, 2026-09-09): mesmo
 #    desenho, conteúdo oposto. O rótulo grande é PRA ONDE O CHIP VAI —
 #    a única coisa acionável na tela.
-
 msgid "%(tipo)s não entra em lote de %(origem)s"
 msgstr "%(tipo)s does not go in a %(origem)s lot"
 
@@ -4326,6 +4336,36 @@ msgstr "Not for this lot"
 # ── A recusa que o OPERADOR lê (dono, 2026-09-09): não diz o TIPO nem o
 #    lote de destino. A frase completa é da PLATAFORMA — a máscara do
 #    `is_unmasked` vale aqui como no resto da bancada.
-
 msgid "Este chip não pode ser enviado com este lote. Comunique ao seu gestor."
 msgstr "This chip cannot be shipped with this lot. Tell your manager."
+
+# ── LARGURA DE BARRAMENTO (2026-09, PLANO_BUS_WIDTH F2) ──────────────────
+#    Rótulo da linha nova no card da bancada e no card de decode. O VALOR
+#    ('x8', 'x16') é canônico e NUNCA traduz — só este rótulo.
+msgid "Largura"
+msgstr "Bus width"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "lido do PN"
+msgstr "read from the PN"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "da família"
+msgstr "from the family"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "Largura lida do part number, não de datasheet. Não vale como preço."
+msgstr ""
+"Width read from the part number, not from a datasheet. Not valid for "
+"pricing."
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "Largura fixa da família, não deste registro."
+msgstr "Fixed width of the family, not of this record."
+
+#~ msgid ""
+#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+#~ " em US$. Muda só quando o contrato mudar."
+#~ msgstr ""
+#~ "Contract rate with WhatTheChip — the rate used to convert your ¥ into US$. "
+#~ "It changes only when the contract changes."

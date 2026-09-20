@@ -39,6 +39,8 @@ from chips.engine import assess_profitability, classify, is_dead_by_generation
 from chips.models import UnknownChip, Brand
 
 from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry, SubmitToken
+from chips.knowledge.convention import split_bus_width
+from chips.conventions import width_class_of as _width_class_of
 
 logger = logging.getLogger(__name__)
 
@@ -125,14 +127,21 @@ def _size_for_entry(result: dict) -> str:
 
 
 def _clean_interface(result: dict) -> str:
-    """`interface` no estoque = bus width (x16) ou versão (eMMC 5.1) — NUNCA a
-    geração (essa vive no chip_type/subtype/label). Remove a geração espelhada
-    (DDR3, LPDDR4X, GDDR5…) para o campo ficar CONSISTENTE entre os tipos (era a
-    origem do 'alguns espelham, outros não'). Não afeta o label da caixa, que usa
-    o `result` cru, não este campo gravado."""
+    """`interface` no estoque = VERSÃO de protocolo (eMMC 5.1) — nunca a geração
+    e, desde 2026-09, nunca a LARGURA (essa tem campo próprio, `bus_width`).
+
+    Remove a geração espelhada (DDR3, LPDDR4X, GDDR5…) porque ela vive no
+    chip_type/subtype/label, e remove a largura porque o campo foi separado
+    (PLANO_BUS_WIDTH, I2). Efeito prático: a partir daqui, lote NOVO nunca mais
+    grava 'x16' no `interface` — nem na janela em que alguma família ainda
+    trouxer largura pelo caminho antigo. Não afeta o label da caixa, que lê o
+    `result` cru, não este campo."""
     ifc = (result.get("interface") or "").strip()
     if ifc and re.fullmatch(r"(LP)?DDR\d[A-Z]?|GDDR\d", ifc, re.I):
         return ""
+    largura, velocidade, resto = split_bus_width(ifc)
+    if largura or velocidade:
+        return resto          # '' nos casos 'x16' e 'x16 @ 800MHz'
     return ifc
 
 
@@ -154,6 +163,13 @@ def _snapshot(result: dict) -> dict:
         "emcp_nand":             result.get("emcp_nand") or "",
         "is_emcp":               bool(result.get("is_emcp")),
         "interface":             _clean_interface(result),
+        # Largura (2026-09). `width_class` é materialização para o preço/caixa da
+        # Parte 2; na Parte 1 ninguém lê. `bus_width_source` preserva a
+        # procedência — é ela que vai permitir auditar, depois, se alguma largura
+        # deduzida vazou para onde não devia.
+        "bus_width":             (result.get("bus_width") or "").strip(),
+        "bus_width_source":      result.get("bus_width_source") or "",
+        "width_class":           _width_class_of(result.get("bus_width")),
         "classification_source": _display_source(result),
         "confidence":            result.get("confidence") or "",
     }
@@ -1156,7 +1172,8 @@ def preview_chip(request, lot_pk):
     # digitar o prefixo de um PN em fila de revisão (2026-08-05). Garante as chaves-padrão
     # (fill-only: não altera um resultado já completo, só preenche o reduzido com '').
     for _k in ('chip_type', 'subtype', 'capacity', 'dram_density', 'interface', 'brand',
-               'emcp_ram', 'emcp_nand', 'classification_source', 'device', 'fbga_code'):
+               'emcp_ram', 'emcp_nand', 'classification_source', 'device', 'fbga_code',
+               'bus_width', 'bus_width_source'):
         result.setdefault(_k, '')
     has_cap = _has_capacity(result)
 

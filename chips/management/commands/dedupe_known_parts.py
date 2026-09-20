@@ -36,8 +36,8 @@ _REVERT = os.path.join(_REVERT_DIR, "dedupe_known_parts_revert.json")
 # Campos do registro a salvar para o revert (recriar o apagado). Sem FKs além de brand.
 _FIELDS = [
     "part_number", "chip_type", "subtype", "capacity", "density_gbit", "density_gb",
-    "emcp_ram", "emcp_nand", "interface", "fbga_code", "device", "notes",
-    "confidence", "source_url",
+    "emcp_ram", "emcp_nand", "interface", "bus_width", "fbga_code", "device",
+    "notes", "confidence", "source_url",
 ]
 
 

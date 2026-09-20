@@ -226,13 +226,28 @@ class ResolveConflictsTests(TestCase):
         self.assertEqual(kp.review_status, "approved")   # não sai do ar
 
     def test_interface_fica_o_mais_especifico(self):
-        """O caso real: o banco tinha 'x16 @ 800MHz (1600MTPS)' e o arquivo 'x16'
-        — aplicar a submissão PERDERIA a velocidade."""
-        kp, _ = self._par({"chip_type": "DDR3", "interface": "x16 @ 800MHz (1600MTPS)"},
-                          {"chip_type": "DDR3", "interface": "x16"})
+        """Protocolo mais detalhado vence o menos detalhado.
+
+        ⚠ EXEMPLO TROCADO EM 2026-09-19 (PLANO_BUS_WIDTH): o caso original usava
+        'x16 @ 800MHz (1600MTPS)' × 'x16' — largura, que o portão agora REJEITA em
+        `interface`. A política "o mais específico vence" continua valendo; o que
+        mudou foi o que pode morar no campo.
+        """
+        kp, _ = self._par({"chip_type": "eMMC", "interface": "eMMC 5.1"},
+                          {"chip_type": "eMMC", "interface": "eMMC 5.1 (JESD84-B51)"})
         self._roda(commit=True)
         kp.refresh_from_db()
-        self.assertEqual(kp.interface, "x16 @ 800MHz (1600MTPS)")   # banco mantido
+        self.assertEqual(kp.interface, "eMMC 5.1 (JESD84-B51)")     # o mais longo
+
+    def test_bus_width_o_arquivo_vence(self):
+        """Largura é IDENTIDADE (qual peça é), não texto: o arquivo manda.
+        ⚠ NUNCA pode cair em _MAIS_ESPECIFICO — 'DDR4' (legado no interface) tem
+        4 chars e 'x8' tem 2; o mais longo seria o errado."""
+        kp, _ = self._par({"chip_type": "DDR3", "bus_width": "x16"},
+                          {"chip_type": "DDR3", "bus_width": "x8"})
+        self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.bus_width, "x8")
 
     def test_interface_aceita_quando_o_arquivo_e_mais_especifico(self):
         kp, _ = self._par({"chip_type": "eMMC", "interface": "eMMC 4.41"},

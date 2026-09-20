@@ -65,7 +65,12 @@ from chips.management.commands.audit_submissions import _CAMPOS, _CLASSE, _vazio
 
 # Política por campo (derivada da classe — ver o cabeçalho).
 _ARQUIVO_VENCE = {"chip_type", "subtype", "capacity", "density_gbit", "density_gb",
-                  "emcp_ram", "emcp_nand", "device", "fbga_code"}
+                  "emcp_ram", "emcp_nand", "device", "fbga_code", "bus_width"}
+# ⚠ `interface` é "o mais longo vence" porque 'x16 @ 800MHz' ganhava de 'x16'.
+# Depois da separação da largura isso perde o motivo, mas fica: protocolo mais
+# detalhado ('e.MMC 4.41 (JESD84-A441)' × 'eMMC 4.41') ainda é o melhor.
+# ⚠ NUNCA ponha `bus_width` aqui: 'DDR4' (legado no interface) tem 4 chars e
+# 'x8' tem 2 — o mais longo seria o ERRADO.
 _MAIS_ESPECIFICO = {"interface"}
 _MERGE = {"notes"}
 _FONTE_NO_NOTES = {"source_url"}

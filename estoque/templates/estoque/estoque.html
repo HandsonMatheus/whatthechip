@@ -1727,6 +1727,8 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
       lines.push('Capacidade:  ' + (d.capacity     || '—'));
       lines.push('DRAM:        ' + (d.dram_density  || '—'));
       lines.push('Interface:   ' + (d.interface     || '—'));
+      lines.push('Largura:     ' + (d.bus_width     || '—') +
+                 (d.bus_width_source ? '  (' + d.bus_width_source + ')' : ''));
       lines.push('Dispositivo: ' + (d.device        || '—'));
     }
     lines.push('Sufixo:      ' + (d.suffix_note   || '—'));

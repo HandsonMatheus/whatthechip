@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.db.models import F
 from django.utils import timezone
 
+from chips.knowledge.convention import interface_sem_largura as _interface_sem_largura
+
 from .models import (InventoryEntry, Lot, PendingEntry,
                      PoliticaOrigemTipo, RejectedEntry)
 
@@ -34,7 +36,10 @@ def _confirm_as_knownpart(pend):
                 brand=brand, family=family, confidence="manual",
                 chip_type=pend.chip_type or "", capacity=pend.capacity or "",
                 emcp_ram=pend.emcp_ram or "", emcp_nand=pend.emcp_nand or "",
-                interface=pend.interface or "",
+                # ⚠ o 25º canal de escrita — e ele NÃO leva largura para o
+                # catálogo, pela mesma razão do bless_base (I4/E3): o que a
+                # bancada observou fica no lote e na revisão.
+                interface=_interface_sem_largura(pend.interface),
                 notes="Confirmado pelo gestor via fila de conferência (estoque).",
             ),
         )
@@ -73,7 +78,7 @@ class LotAdmin(PlatformScopedAdmin):
 
 @admin.register(InventoryEntry)
 class InventoryEntryAdmin(PlatformScopedAdmin):
-    list_display  = ("part_number", "company", "lot", "chip_type", "display_capacity", "interface", "quantity", "last_updated")
+    list_display  = ("part_number", "company", "lot", "chip_type", "display_capacity", "interface", "bus_width", "quantity", "last_updated")
     list_filter   = ("chip_type", "is_emcp", "company", "lot__operator")
     search_fields = ("part_number", "chip_type")
     readonly_fields = ("added_at", "last_updated")
@@ -106,7 +111,9 @@ class PendingEntryAdmin(PlatformScopedAdmin):
                 defaults=dict(
                     chip_type=p.chip_type, brand=p.brand, capacity=p.capacity,
                     emcp_ram=p.emcp_ram, emcp_nand=p.emcp_nand, is_emcp=p.is_emcp,
-                    interface=p.interface, classification_source="banco de dados",
+                    interface=p.interface, bus_width=p.bus_width,
+                    width_class=p.width_class, bus_width_source=p.bus_width_source,
+                    classification_source="banco de dados",
                     quantity=p.quantity,
                 ),
             )
@@ -139,7 +146,8 @@ class RejectedEntryAdmin(PlatformScopedAdmin):
     ordering      = ("-created_at",)
     readonly_fields = (
         "lot", "part_number", "quantity", "chip_type", "brand", "capacity",
-        "emcp_ram", "emcp_nand", "is_emcp", "interface", "classification_source",
+        "emcp_ram", "emcp_nand", "is_emcp", "interface", "bus_width", "width_class",
+        "bus_width_source", "classification_source",
         "confidence", "rejection_reason", "operator", "created_at",
     )
 

@@ -88,6 +88,18 @@
       <span class="dc2-spec-val">{{ result.interface }}</span>
     </div>
     {% endif %}
+    {% if result.bus_width %}
+    <div class="dc2-spec-col">
+      <span class="dc2-spec-label">{% trans "Largura" %}</span>
+      {% comment %} PROCEDÊNCIA (2026-09-20, regra do dono): a tela TEM de dizer
+         de onde veio a largura. Sem isto um palpite lido do PN aparece idêntico
+         a um datasheet, e o operador não tem como distinguir. Só `banco` vai sem
+         marca — é o valor do registro, o único que vale preço.
+         ⚠ `{# #}` NÃO serve aqui: é comentário de UMA linha, e o portão
+         TemplateMultilineCommentTests reprova (pegou esta mesma edição). {% endcomment %}
+      <span class="dc2-spec-val">{{ result.bus_width }}{% if result.bus_width_source == "gramatica" %}<span class="bw-src" title="{% trans 'Largura lida do part number, não de datasheet. Não vale como preço.' %}"> {% trans "lido do PN" %}</span>{% elif result.bus_width_source == "familia" %}<span class="bw-src" title="{% trans 'Largura fixa da família, não deste registro.' %}"> {% trans "da família" %}</span>{% endif %}</span>
+    </div>
+    {% endif %}
   </div>
   {% else %}
   <div class="dc2-specs">
@@ -107,6 +119,18 @@
     <div class="dc2-spec-col">
       <span class="dc2-spec-label">{% trans "Interface" %}</span>
       <span class="dc2-spec-val">{{ result.interface }}</span>
+    </div>
+    {% endif %}
+    {% if result.bus_width %}
+    <div class="dc2-spec-col">
+      <span class="dc2-spec-label">{% trans "Largura" %}</span>
+      {% comment %} PROCEDÊNCIA (2026-09-20, regra do dono): a tela TEM de dizer
+         de onde veio a largura. Sem isto um palpite lido do PN aparece idêntico
+         a um datasheet, e o operador não tem como distinguir. Só `banco` vai sem
+         marca — é o valor do registro, o único que vale preço.
+         ⚠ `{# #}` NÃO serve aqui: é comentário de UMA linha, e o portão
+         TemplateMultilineCommentTests reprova (pegou esta mesma edição). {% endcomment %}
+      <span class="dc2-spec-val">{{ result.bus_width }}{% if result.bus_width_source == "gramatica" %}<span class="bw-src" title="{% trans 'Largura lida do part number, não de datasheet. Não vale como preço.' %}"> {% trans "lido do PN" %}</span>{% elif result.bus_width_source == "familia" %}<span class="bw-src" title="{% trans 'Largura fixa da família, não deste registro.' %}"> {% trans "da família" %}</span>{% endif %}</span>
     </div>
     {% endif %}
     {% if result.device %}

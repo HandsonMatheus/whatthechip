@@ -72,6 +72,9 @@ def _specs_from_classify(pn):
         emcp_nand=r.get("emcp_nand", "") or "",
         is_emcp=bool(r.get("is_emcp")),
         interface=r.get("interface", "") or "",
+        bus_width=r.get("bus_width", "") or "",
+        width_class=r.get("width_class", "") or "",
+        bus_width_source=r.get("bus_width_source", "") or "",
         classification_source=r.get("classification_source", "") or "",
     )
     return fields, confirmed
@@ -82,7 +85,9 @@ def _snapshot(e):
         pk=e.pk, part_number=e.part_number, quantity=e.quantity,
         chip_type=e.chip_type, brand=e.brand, capacity=e.capacity,
         emcp_ram=e.emcp_ram, emcp_nand=e.emcp_nand, is_emcp=e.is_emcp,
-        interface=e.interface, classification_source=e.classification_source,
+        interface=e.interface, bus_width=e.bus_width, width_class=e.width_class,
+        bus_width_source=e.bus_width_source,
+        classification_source=e.classification_source,
         added_at=e.added_at.isoformat(), last_updated=e.last_updated.isoformat(),
     )
 
@@ -255,7 +260,10 @@ class Command(SafeWriteCommand):
                 part_number=snap["part_number"], quantity=snap["quantity"],
                 chip_type=snap["chip_type"], brand=snap["brand"], capacity=snap["capacity"],
                 emcp_ram=snap["emcp_ram"], emcp_nand=snap["emcp_nand"], is_emcp=snap["is_emcp"],
-                interface=snap["interface"], classification_source=snap["classification_source"],
+                interface=snap["interface"], bus_width=snap.get("bus_width", ""),
+                width_class=snap.get("width_class", ""),
+                bus_width_source=snap.get("bus_width_source", ""),
+                classification_source=snap["classification_source"],
                 last_updated=snap["last_updated"])
 
         n = 0
@@ -275,7 +283,10 @@ class Command(SafeWriteCommand):
                         defaults=dict(quantity=w["quantity"], chip_type=w["chip_type"],
                                       brand=w["brand"], capacity=w["capacity"], emcp_ram=w["emcp_ram"],
                                       emcp_nand=w["emcp_nand"], is_emcp=w["is_emcp"],
-                                      interface=w["interface"], classification_source=w["classification_source"]))
+                                      interface=w["interface"], bus_width=w.get("bus_width", ""),
+                                      width_class=w.get("width_class", ""),
+                                      bus_width_source=w.get("bus_width_source", ""),
+                                      classification_source=w["classification_source"]))
                     if created:
                         InventoryEntry.objects.filter(pk=obj.pk).update(
                             added_at=w["added_at"], last_updated=w["last_updated"])

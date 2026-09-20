@@ -3980,7 +3980,9 @@ msgstr "本次采购您直接支付给 %(titular)s，不经过 WhatTheChip。发
 
 #: estoque/templates/estoque/estoque.html:1387
 #, python-format
-msgid "O número <strong>%(numero)s</strong> voltará a ficar disponível para o próximo lote."
+msgid ""
+"O número <strong>%(numero)s</strong> voltará a ficar disponível para o "
+"próximo lote."
 msgstr "编号 <strong>%(numero)s</strong> 将重新可用于下一批次。"
 
 #. Painel do comprador: de que bancada a caixa veio (2026-09-02).
@@ -3988,14 +3990,8 @@ msgstr "编号 <strong>%(numero)s</strong> 将重新可用于下一批次。"
 msgid "Origem"
 msgstr "来源"
 
-#~ msgid ""
-#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
-#~ " em US$. Muda só quando o contrato mudar."
-#~ msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"
-
 #: vendas/templates/vendas/partner_compra.html
-#: vendas/templates/vendas/partner_compras.html
-#: vendas/views_partner.py
+#: vendas/templates/vendas/partner_compras.html vendas/views_partner.py
 msgid "Em trânsito"
 msgstr "运输中"
 
@@ -4004,55 +4000,58 @@ msgid "Recebido em"
 msgstr "收货日期"
 
 #: vendas/templates/vendas/partner_compra.html
-msgid "Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
+msgid ""
+"Confirme que a caixa chegou. O recebimento é gravado com a data de hoje."
 msgstr "确认箱子已到达。收货将以今天的日期记录。"
 
 #: vendas/templates/vendas/partner_compra.html
-msgid "A primeira data vale: marcar de novo não a corrige, e não há tela para alterá-la depois."
+msgid ""
+"A primeira data vale: marcar de novo não a corrige, e não há tela para "
+"alterá-la depois."
 msgstr "以第一个日期为准：再次标记不会更正它，之后也没有界面可以修改。"
 
 #: vendas/templates/vendas/partner_compra.html
 msgid "Unitário"
 msgstr "单价"
 
-#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
 #. 应付 — o termo contábil de "a pagar" (应付账款 = contas a pagar).
 #. SIMPLIFICADO: esta locale é zh_Hans. O PDF do resultado usa 繁體,
 #. que é outro público — não copie um do outro.
+#: vendas/views_partner.py vendas/templates/vendas/partner_compras.html
 msgid "A pagar"
 msgstr "应付"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Rótulo do rodapé de coluna: diz de quantas compras é a soma.
+#: vendas/templates/vendas/partner_compras.html
 msgid "Total · %(n)s compra"
 msgid_plural "Total · %(n)s compras"
 msgstr[0] "合计 · %(n)s 笔采购"
 msgstr[1] "合计 · %(n)s 笔采购"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Esperado ¥"
 msgstr "预期 ¥"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Esperado US$"
 msgstr "预期 US$"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Marcar todas as linhas desta página"
 msgstr "选择本页全部行"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Cabeçalho da tabela de compras — seleção de linhas e colunas (2026-09-04).
+#: vendas/templates/vendas/partner_compras.html
 msgid "Selecionar %(c)s"
 msgstr "选择 %(c)s"
 
-#: vendas/templates/vendas/partner_compras.html
 #. Rodapé de coluna quando há linhas marcadas. As DUAS formas são
 #. renderizadas em data- e o JS escolhe: gettext decide o plural no
 #. render, então a forma tem de vir pronta do servidor.
+#: vendas/templates/vendas/partner_compras.html
 msgid "Selecionada · %(n)s compra"
 msgid_plural "Selecionadas · %(n)s compras"
 msgstr[0] "已选 · %(n)s 笔采购"
@@ -4061,23 +4060,26 @@ msgstr[1] "已选 · %(n)s 笔采购"
 # ── Política origem × tipo: cada origem de lote só aceita certos tipos
 #    de chip (dono, 2026-09-02). A mensagem tem que ser ACIONÁVEL: diz
 #    onde o chip ENTRA, não só que ali não serve.
-
-msgid "%(tipo)s não entra em lote de %(origem)s. Este chip vai em: %(aceitam)s."
+msgid ""
+"%(tipo)s não entra em lote de %(origem)s. Este chip vai em: %(aceitam)s."
 msgstr "%(tipo)s 不能放入 %(origem)s 批次。此芯片应放入：%(aceitam)s。"
 
 msgid "%(tipo)s não entra em nenhum tipo de lote no momento."
 msgstr "%(tipo)s 目前不能放入任何类型的批次。"
 
-msgid "Este lote tem uma origem desconhecida (%(origem)s) — nenhum chip pode ser lançado nele até a origem ser corrigida."
+msgid ""
+"Este lote tem uma origem desconhecida (%(origem)s) — nenhum chip pode ser "
+"lançado nele até a origem ser corrigida."
 msgstr "此批次来源未知（%(origem)s）——在更正来源之前，任何芯片都不能录入。"
 
-msgid "Tipo %(tipo)s ainda não tem regra definida para lotes de %(origem)s. Fale com o gestor."
+msgid ""
+"Tipo %(tipo)s ainda não tem regra definida para lotes de %(origem)s. Fale "
+"com o gestor."
 msgstr "类型 %(tipo)s 尚未为 %(origem)s 批次定义规则。请联系管理员。"
 
 # ── O aviso TOMA O LUGAR do cartão de destino (dono, 2026-09-09): mesmo
 #    desenho, conteúdo oposto. O rótulo grande é PRA ONDE O CHIP VAI —
 #    a única coisa acionável na tela.
-
 msgid "%(tipo)s não entra em lote de %(origem)s"
 msgstr "%(tipo)s 不能放入 %(origem)s 批次"
 
@@ -4090,6 +4092,32 @@ msgstr "不属于此批次"
 # ── A recusa que o OPERADOR lê (dono, 2026-09-09): não diz o TIPO nem o
 #    lote de destino. A frase completa é da PLATAFORMA — a máscara do
 #    `is_unmasked` vale aqui como no resto da bancada.
-
 msgid "Este chip não pode ser enviado com este lote. Comunique ao seu gestor."
 msgstr "此芯片不能随此批次发出。请告知您的主管。"
+
+# ── LARGURA DE BARRAMENTO (2026-09, PLANO_BUS_WIDTH F2) ──────────────────
+#    Rótulo da linha nova no card da bancada e no card de decode. O VALOR
+#    ('x8', 'x16') é canônico e NUNCA traduz — só este rótulo.
+msgid "Largura"
+msgstr "位宽"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "lido do PN"
+msgstr "从料号读出"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "da família"
+msgstr "来自系列"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "Largura lida do part number, não de datasheet. Não vale como preço."
+msgstr "位宽由料号推读，非来自数据手册。不作价格依据。"
+
+#: chips/templates/chips/partials/decode_card.html:98
+msgid "Largura fixa da família, não deste registro."
+msgstr "该系列的固定位宽，非本条记录。"
+
+#~ msgid ""
+#~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+#~ " em US$. Muda só quando o contrato mudar."
+#~ msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"

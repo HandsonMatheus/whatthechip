@@ -32,7 +32,7 @@ from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 from .chip_types import canonical_chip_type, label_kind, profit_family
-from .conventions import canonical_gen, is_ram_generation
+from .conventions import canonical_gen, is_bus_width, is_ram_generation
 from .knowledge.convention import (DENSITY_KINDS, RX_DENSITY_BARE, RX_DIE_GB,
                                    RX_DIE_MB)
 from .normalize import normalize_pn
@@ -481,6 +481,10 @@ def _result_from_family(pn: str, fam) -> dict:
         "chip_type":     fam.chip_type,
         "subtype":       fam.subtype,
         "interface":     fam.interface,
+        # Largura: o valor FIXO da família (quando ela tem um só). Pode ser
+        # sobrescrito abaixo pela gramática e, no merge, pelo registro.
+        "bus_width":       fam.bus_width,
+        "bus_width_source": "familia" if fam.bus_width else "",
         "family_prefix": fam.prefix,
         "brand":         fam.brand.name,
         "is_emcp":       fam.is_emcp,
@@ -521,6 +525,30 @@ def _result_from_family(pn: str, fam) -> dict:
                 _decoded_gen = entry[0]  # ex: "LPDDR4/4X", "eMMC 5.1", "LPDDR3 4GB"
                 if not fam.is_emcp:
                     r["interface"] = _decoded_gen  # eMMC/UFS: seta interface direto
+
+    # ── LARGURA DE BARRAMENTO decodificada do PN (2026-09) ───────────────────
+    # A "válvula de escape" da largura, igual à densidade: o BANCO (datasheet)
+    # vence, a gramática cobre a cauda longa em LEITURA. Genérico, zero `if` por
+    # marca — quem diz a posição e o mapa é o yaml da família.
+    #
+    # ⚠ SÓ família PROVADA pelo coletor declara `decode_width_*`: >=5 acordos
+    # independentes, 0 divergências, >=2 larguras distintas. A regra posicional
+    # ACERTA quase sempre e erra em família específica — o K4N da Samsung
+    # decodifica x16 e o datasheet diz x32. Sem a barra, a regra concordaria
+    # consigo mesma e ninguém perceberia (HANDOFF §3, circularidade).
+    #
+    # ⚠ E isto NUNCA volta para o catálogo: o resultado carrega
+    # `bus_width_source='gramatica'` justamente para que o backfill, o
+    # `bless_base` e a aprovação de pendência saibam recusá-lo.
+    if fam.decode_width_pos is not None and fam.decode_width_map:
+        w_map = _load_decode_map(fam.decode_width_map)
+        w_pos = fam.decode_width_pos
+        w_len = (fam.decode_width_len or 1)
+        if len(pn) >= w_pos + w_len:
+            entry = w_map.get(pn[w_pos:w_pos + w_len])
+            if entry and is_bus_width(entry[0]):
+                r["bus_width"] = entry[0].strip().lower()
+                r["bus_width_source"] = "gramatica"
 
     # ── Capacidade eMMC / UFS / NAND (não-eMCP) ──────────────────────────────
     if fam.decode_cap_pos is not None and fam.decode_cap_map and not fam.is_emcp:
@@ -960,6 +988,16 @@ def _result_from_known(pn: str, known, fam) -> dict:
     # e confidence=confirmed/manual.
     if human_verified and known.subtype:
         r["subtype"] = known.subtype
+
+    # Largura: dado do REGISTRO é mais específico que o da família e que a
+    # gramática — mas só verificado por humano VENCE. `distributor`/`estimated`
+    # apenas COMPLEMENTA o que está vazio, a mesma doutrina da capacidade
+    # (regra de ouro #2/#6: visibilidade não é autoridade).
+    # Precedência final: banco confirmado > gramática > família > banco não
+    # confirmado > vazio.
+    if known.bus_width and (human_verified or not r.get("bus_width")):
+        r["bus_width"] = known.bus_width
+        r["bus_width_source"] = "banco"
 
     # classification_source reflete qual camada dominou o resultado.
     if grammar_wins:
@@ -1479,6 +1517,8 @@ def _classify_impl(pn_raw: str) -> dict:
             "doc_url":      None,
             "fuzzy_suggestions": [],
             "interface":         "",
+            "bus_width":         "",
+            "bus_width_source":  "",
             "family_prefix":     "",
             "family_undocumented": False,
         }
@@ -1542,6 +1582,8 @@ def _classify_impl(pn_raw: str) -> dict:
                 "doc_url":      None,
                 "fuzzy_suggestions": [],
                 "interface":         known.interface,
+                "bus_width":         known.bus_width,
+                "bus_width_source":  "banco" if known.bus_width else "",
                 "family_prefix":     "",
                 # Sem família não há como saber se é não documentada — assume False.
                 "family_undocumented": False,
@@ -1589,6 +1631,8 @@ def _classify_impl(pn_raw: str) -> dict:
                 "doc_url":      None,
                 "fuzzy_suggestions": [],
                 "interface":         known.interface,
+                "bus_width":         known.bus_width,
+                "bus_width_source":  "banco" if known.bus_width else "",
                 "family_prefix":     "",
                 "family_undocumented": False,
             }
@@ -1642,6 +1686,8 @@ def _classify_impl(pn_raw: str) -> dict:
                     "doc_url":       None,
                     "fuzzy_suggestions":  [],
                     "interface":          known_fbga.interface,
+                    "bus_width":          known_fbga.bus_width,
+                    "bus_width_source":   "banco" if known_fbga.bus_width else "",
                     "family_prefix":      "",
                     "family_undocumented": False,
                     # Lê density_gbit/density_gb do KnownPart — preenchidos pelo
@@ -1686,6 +1732,8 @@ def _classify_impl(pn_raw: str) -> dict:
                     "tip": known_fbga.notes or "", "reasoning": [], "from_web": False,
                     "doc_url": None, "fuzzy_suggestions": [],
                     "interface": known_fbga.interface, "family_prefix": "",
+                    "bus_width": known_fbga.bus_width,
+                    "bus_width_source": "banco" if known_fbga.bus_width else "",
                     "family_undocumented": False, "suffix_note": None,
                     "dram_density": (
                         f"{known_fbga.density_gbit} = {known_fbga.density_gb} por die [✓]"

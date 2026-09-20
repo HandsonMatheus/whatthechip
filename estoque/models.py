@@ -7,6 +7,9 @@ Modelo de inventário por lote.
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+
+from chips.conventions import (
+    BUS_WIDTH_VOCAB, WIDTH_CLASS_VOCAB, BUS_WIDTH_SOURCE_VOCAB)
 from django.utils.translation import gettext_lazy as _lazy
 
 from tenancy.scope import CompanyScopedManager
@@ -542,6 +545,17 @@ class InventoryEntry(CompanyBoundByLot):
     emcp_nand   = models.CharField(max_length=100, blank=True, default='', verbose_name='NAND (eMCP)')
     is_emcp     = models.BooleanField(default=False, verbose_name='É eMCP/uMCP')
     interface   = models.CharField(max_length=100, blank=True, default='', verbose_name='Interface')
+    # ── LARGURA DE BARRAMENTO (2026-09, PLANO_BUS_WIDTH F1/D6) ─────────
+    # Só daqui pra frente: migration ADITIVA, sem backfill. Linha antiga fica
+    # com o 'x16' no `interface` — histórico de lote não se reescreve.
+    bus_width   = models.CharField(max_length=8, blank=True, default='', verbose_name='Largura')
+    # Classe COMERCIAL (o comprador paga por classe, não por largura exata).
+    # Vazio = desconhecida — distinto de 'wide'. Na Parte 1 é só materialização;
+    # quem lê é o preço/caixa da Parte 2.
+    width_class = models.CharField(max_length=8, blank=True, default='', verbose_name='Classe de largura')
+    # De onde veio a largura. Separa "datasheet disse" de "gramática deduziu" —
+    # sem isso não dá pra auditar a circularidade depois.
+    bus_width_source = models.CharField(max_length=12, blank=True, default='', verbose_name='Origem da largura')
     classification_source = models.CharField(max_length=50, blank=True, default='', verbose_name='Fonte')
     # Passo 2: edição do catálogo sob a qual este snapshot foi calculado. Se for <
     # CatalogVersion.current(), a entrada está DEFASADA (resnapshot_lote/on-read revaluam).
@@ -580,7 +594,16 @@ class InventoryEntry(CompanyBoundByLot):
             models.UniqueConstraint(
                 fields=['lot', 'part_number'],
                 name='unique_lot_pn',
-            )
+            ),
+            models.CheckConstraint(
+                condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
+                name='inventoryentry_bus_width_vocab'),
+            models.CheckConstraint(
+                condition=models.Q(width_class__in=WIDTH_CLASS_VOCAB),
+                name='inventoryentry_width_class_vocab'),
+            models.CheckConstraint(
+                condition=models.Q(bus_width_source__in=BUS_WIDTH_SOURCE_VOCAB),
+                name='inventoryentry_bw_source_vocab'),
         ]
         indexes = [
             # §5.2: consultas lideradas por company (busca de PN e por lote).
@@ -630,6 +653,17 @@ class PendingEntry(CompanyBoundByLot):
     emcp_nand   = models.CharField(max_length=100, blank=True, default='', verbose_name='NAND (eMCP)')
     is_emcp     = models.BooleanField(default=False, verbose_name='É eMCP/uMCP')
     interface   = models.CharField(max_length=100, blank=True, default='', verbose_name='Interface')
+    # ── LARGURA DE BARRAMENTO (2026-09, PLANO_BUS_WIDTH F1/D6) ─────────
+    # Só daqui pra frente: migration ADITIVA, sem backfill. Linha antiga fica
+    # com o 'x16' no `interface` — histórico de lote não se reescreve.
+    bus_width   = models.CharField(max_length=8, blank=True, default='', verbose_name='Largura')
+    # Classe COMERCIAL (o comprador paga por classe, não por largura exata).
+    # Vazio = desconhecida — distinto de 'wide'. Na Parte 1 é só materialização;
+    # quem lê é o preço/caixa da Parte 2.
+    width_class = models.CharField(max_length=8, blank=True, default='', verbose_name='Classe de largura')
+    # De onde veio a largura. Separa "datasheet disse" de "gramática deduziu" —
+    # sem isso não dá pra auditar a circularidade depois.
+    bus_width_source = models.CharField(max_length=12, blank=True, default='', verbose_name='Origem da largura')
     classification_source = models.CharField(max_length=50, blank=True, default='', verbose_name='Fonte')
     confidence  = models.CharField(max_length=20, blank=True, default='', verbose_name='Confiança')
 
@@ -650,7 +684,16 @@ class PendingEntry(CompanyBoundByLot):
             models.UniqueConstraint(
                 fields=['lot', 'part_number'],
                 name='unique_pending_lot_pn',
-            )
+            ),
+            models.CheckConstraint(
+                condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
+                name='pendingentry_bus_width_vocab'),
+            models.CheckConstraint(
+                condition=models.Q(width_class__in=WIDTH_CLASS_VOCAB),
+                name='pendingentry_width_class_vocab'),
+            models.CheckConstraint(
+                condition=models.Q(bus_width_source__in=BUS_WIDTH_SOURCE_VOCAB),
+                name='pendingentry_bw_source_vocab'),
         ]
 
     def __str__(self):
@@ -708,6 +751,17 @@ class RejectedEntry(CompanyBoundByLot):
     emcp_nand   = models.CharField(max_length=100, blank=True, default='', verbose_name='NAND (eMCP)')
     is_emcp     = models.BooleanField(default=False, verbose_name='É eMCP/uMCP')
     interface   = models.CharField(max_length=100, blank=True, default='', verbose_name='Interface')
+    # ── LARGURA DE BARRAMENTO (2026-09, PLANO_BUS_WIDTH F1/D6) ─────────
+    # Só daqui pra frente: migration ADITIVA, sem backfill. Linha antiga fica
+    # com o 'x16' no `interface` — histórico de lote não se reescreve.
+    bus_width   = models.CharField(max_length=8, blank=True, default='', verbose_name='Largura')
+    # Classe COMERCIAL (o comprador paga por classe, não por largura exata).
+    # Vazio = desconhecida — distinto de 'wide'. Na Parte 1 é só materialização;
+    # quem lê é o preço/caixa da Parte 2.
+    width_class = models.CharField(max_length=8, blank=True, default='', verbose_name='Classe de largura')
+    # De onde veio a largura. Separa "datasheet disse" de "gramática deduziu" —
+    # sem isso não dá pra auditar a circularidade depois.
+    bus_width_source = models.CharField(max_length=12, blank=True, default='', verbose_name='Origem da largura')
     classification_source = models.CharField(max_length=50, blank=True, default='', verbose_name='Fonte')
     confidence  = models.CharField(max_length=20, blank=True, default='', verbose_name='Confiança')
 
@@ -724,6 +778,17 @@ class RejectedEntry(CompanyBoundByLot):
         verbose_name = 'Reprovado'
         verbose_name_plural = 'Reprovados'
         ordering = ['-created_at']
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
+                name='rejectedentry_bus_width_vocab'),
+            models.CheckConstraint(
+                condition=models.Q(width_class__in=WIDTH_CLASS_VOCAB),
+                name='rejectedentry_width_class_vocab'),
+            models.CheckConstraint(
+                condition=models.Q(bus_width_source__in=BUS_WIDTH_SOURCE_VOCAB),
+                name='rejectedentry_bw_source_vocab'),
+        ]
 
     def __str__(self):
         return f'{self.part_number} × {self.quantity} (reprovado · Lote #{self.lot.number:03d})'

@@ -36,7 +36,7 @@ _REVERT = os.path.join(_REVERT_DIR, "resnapshot_lote_revert.json")
 # CHAVE DE PREÇO da F11.1 + carimbo + data).
 _FIELDS = [
     "chip_type", "brand", "capacity", "emcp_ram", "emcp_nand", "is_emcp",
-    "interface", "classification_source",
+    "interface", "bus_width", "width_class", "bus_width_source", "classification_source",
     "price_kind", "price_gen", "price_tier_value", "price_tier_unit",
     "price_key_reason",
     "snapshot_catalog_version", "last_updated",
@@ -46,7 +46,7 @@ _FIELDS = [
 # lê a chave gravada e só classifica no fallback legado).
 _SNAP_KEYS = [
     "chip_type", "brand", "capacity", "emcp_ram", "emcp_nand", "is_emcp",
-    "interface", "classification_source",
+    "interface", "bus_width", "width_class", "bus_width_source", "classification_source",
     "price_kind", "price_gen", "price_tier_value", "price_tier_unit",
     "price_key_reason",
 ]

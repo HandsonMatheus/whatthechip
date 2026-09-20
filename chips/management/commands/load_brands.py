@@ -48,15 +48,17 @@ _GLOBAL_MAP_OWNER = "samsung"
 # Campos do YAML → ChipFamily (a brand é FK, vem do contexto; doc_page/is_documented
 # ficam no default, igual aos populate_*).
 _FAMILY_FIELDS = [
-    "chip_type", "subtype", "interface", "is_emcp", "active", "priority", "pn_length",
-    "decode_cap_pos", "decode_cap_len", "decode_cap_map", "decode_gen_pos",
-    "decode_gen_map", "decode_gen_len", "decode_density_type", "suffix_rules",
+    "chip_type", "subtype", "interface", "bus_width", "is_emcp", "active", "priority",
+    "pn_length", "decode_cap_pos", "decode_cap_len", "decode_cap_map", "decode_gen_pos",
+    "decode_gen_map", "decode_gen_len", "decode_density_type",
+    "decode_width_pos", "decode_width_len", "decode_width_map", "suffix_rules",
     "tip", "reasoning",
 ]
 # Campos do YAML → KnownPart (brand/family/source FK + part_number_norm derivado ficam fora).
 _KNOWNPART_FIELDS = [
     "chip_type", "subtype", "capacity", "density_gbit", "density_gb", "emcp_ram",
-    "emcp_nand", "interface", "fbga_code", "device", "notes", "source_url", "confidence",
+    "emcp_nand", "interface", "bus_width", "fbga_code", "device", "notes", "source_url",
+    "confidence",
 ]
 
 

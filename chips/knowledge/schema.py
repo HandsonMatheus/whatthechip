@@ -67,7 +67,8 @@ class FamilySpec(BaseModel):
     prefix: str
     chip_type: str
     subtype: str = ""
-    interface: str = ""
+    interface: str = ""          # VERSÃO de protocolo — nunca largura (I2)
+    bus_width: str = ""          # largura FIXA da família, ou vazio
     is_emcp: bool = False
     active: bool = True
     priority: int = 100
@@ -78,6 +79,10 @@ class FamilySpec(BaseModel):
     decode_gen_pos: Optional[int] = None
     decode_gen_map: str = ""
     decode_gen_len: int = 1
+    # Gramática de LARGURA — só família PROVADA pelo coletor declara (I4).
+    decode_width_pos: Optional[int] = None
+    decode_width_len: int = 1
+    decode_width_map: str = ""
     decode_density_type: str = ""
     suffix_rules: str = ""
     tip: str = ""
@@ -161,9 +166,23 @@ class FamilySpec(BaseModel):
         if self.subtype and not _descritivo:
             self.subtype = canonical_gen(self.subtype, self.chip_type)
 
-        # 3. interface NÃO carrega geração de RAM (é largura de barramento x8/x16 ou vazio).
+        # 3. interface NÃO carrega geração de RAM.
         if is_ram_generation(self.interface):
             self.interface = ""
+
+        # 4. LARGURA (2026-09) — REJEITA, não conserta. O chat de marca tem de ver
+        #    a mensagem no dry-run e trocar a chave no yaml (decisão D3): corrigir
+        #    em silêncio esconderia a migração e o yaml seguiria errado no git.
+        from chips.knowledge.convention import bus_width_problem, interface_problem
+        self.bus_width = (self.bus_width or "").strip().lower()
+        for _p in (interface_problem(self.interface),
+                   bus_width_problem(self.chip_type, self.bus_width)):
+            if _p:
+                raise ValueError(f"família '{self.prefix}': {_p}")
+        if self.decode_width_pos is not None and not self.decode_width_map.strip():
+            raise ValueError(
+                f"família '{self.prefix}': decode_width_pos sem decode_width_map — "
+                f"a posição sozinha não decodifica nada.")
 
         return self
 
@@ -181,7 +200,8 @@ class KnownPartSpec(BaseModel):
     density_gb: str = ""     # idem (ex.: "512MB")
     emcp_ram: str = ""
     emcp_nand: str = ""
-    interface: str = ""
+    interface: str = ""          # VERSÃO de protocolo — nunca largura (I2)
+    bus_width: str = ""          # largura de DATASHEET — nunca deduzida do PN (I4)
     fbga_code: str = ""
     device: str = ""
     notes: str = ""
@@ -211,6 +231,14 @@ class KnownPartSpec(BaseModel):
         problemas = measure_problems(self)
         if problemas:
             raise ValueError("; ".join(problemas.values()))
+        # LARGURA — sem grandfather aqui também: submissão é conteúdo NOVO.
+        # Arquivo antigo com `interface: x8` falha de propósito até ser editado
+        # (D3); o valor é o mesmo, só muda a chave.
+        from chips.knowledge.convention import bus_width_problem, interface_problem
+        for _p in (interface_problem(self.interface),
+                   bus_width_problem(self.chip_type, self.bus_width)):
+            if _p:
+                raise ValueError(f"{self.part_number}: {_p}")
         return self
 
 

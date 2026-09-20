@@ -69,7 +69,8 @@ class Command(SafeWriteCommand):
         return category_key(
             chip_type=e.chip_type, capacity=e.capacity,
             emcp_nand=e.emcp_nand, emcp_ram=e.emcp_ram,
-            is_emcp=e.is_emcp, interface=e.interface,
+            is_emcp=e.is_emcp, interface=e.interface, bus_width=e.bus_width,
+            width_class=e.width_class, bus_width_source=e.bus_width_source,
         )
 
     def _get_lot(self, lot_number):
