@@ -42,6 +42,49 @@
 > código, vale o código (CLAUDE.md §10). Todo número daqui que veio de amostra está
 > marcado como amostra; o banco real se mede na Fase 0, antes de qualquer edição.
 
+> ### ESTADO EM 2026-09-23 — leia isto antes de rodar qualquer coisa `[Rev.3]`
+> **O CÓDIGO da Parte 1 está inteiro em produção. Os DADOS de produção não foram tocados.**
+>
+> | | LOCAL | PRODUÇÃO |
+> |---|---|---|
+> | Código (portões, engine, telas, i18n) | ✅ | ✅ |
+> | Migrations `chips/0024` e `estoque/0026` | ✅ | ✅ |
+> | **Dados migrados (F3 backfill, F4 famílias, Samsung +168)** | ✅ | ❌ **nada** |
+>
+> Em prod: `bus_width` vazio, `interface` ainda guarda as ~3.539 larguras, as 25 famílias
+> ainda têm `x16`. Commits `19fda53` · `e59a2b1` · `47a04d6`, pushados; `origin/main` =
+> `47a04d6`. `showmigrations` mostra `[X]` nas duas; `guard_catalog` foi de 9050 a 9059.
+>
+> **Fases:** F0 ✅(ressalva: o baseline é anterior à F1, regravar na F7) · F1 ✅✅ ·
+> F2 ✅✅ · F3 ✅local ❌prod · F4 ✅local ❌prod · **F5 ❌ em lugar nenhum** ·
+> F6 ✅✅ · F7 ❌ · Samsung ✅local ❌prod · **Parte 2 (§10): nada começou.**
+>
+> #### ⚠ O BLOQUEADOR — não rode nenhum import antes de consertar
+> O portão da F2 que recusa largura no `interface` **está ligado em produção**, e três
+> importadores ainda escrevem largura lá dentro. Verificado linha a linha em 2026-09-23:
+> - `import_micron_catalog.py` — `_build_interface()` L156 monta `"x32 @ 1866MHz"`,
+>   usado em L266 e L624; lê `BUS WIDTH` do CSV em L246. **Zero menções a `bus_width`.**
+> - `import_samsung_psg.py` — repassa a coluna `interface` do CSV (`create` L247,
+>   `_set` L300). **Zero menções a `bus_width`.**
+> - `import_chipid.py` — repassa `interface` do banco legado (L190, L275).
+>   **Zero menções a `bus_width`.**
+>
+> Conserto igual nos três: largura → `bus_width`; velocidade → `notes` via
+> `notes_com_speed()` (já existe em `chips/knowledge/convention.py`); `interface` fica só
+> com protocolo.
+>
+> #### Armadilha da ponte (device_bash)
+> O mount proíbe `unlink`, então todo comando de ESCRITA do git deixa `.lock` órfão
+> (`index.lock`, `HEAD.lock`, `refs/heads/main.lock`) que trava o commit seguinte. Ler com
+> `git --no-optional-locks`; depois de escrever, varrer os `.lock`. Em 2026-09-23 o index
+> estava guardando a versão PRÉ-`e9f90fb` de `vendas/templates/vendas/partner_compra.html`
+> e `vendas/tests_rodape_da_conferencia.py` — um `git commit` sem pathspec teria desfeito
+> aquela correção em silêncio. Resolvido com `git reset` (só o index).
+>
+> **Estado detalhado e pendências:** doc do projeto
+> `areas/bus-width-checkpoint-2026-09-23.md`.
+
+
 ---
 
 ## 0. Como usar este plano (leia antes de abrir um arquivo)

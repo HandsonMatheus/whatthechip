@@ -26,6 +26,7 @@ Uso:
 
 import csv
 import os
+import re
 import sys
 
 from django.core.management.base import BaseCommand, CommandError
@@ -91,6 +92,54 @@ _ALL_CSV_FILES = [
 ]
 
 # Mapeamento de chip_type CSV → chip_type no banco
+#: Contadores do mapeamento `organization` → `bus_width`, impressos no fim.
+#: Existem para que nenhuma linha da coluna suma sem aparecer (I5).
+_ORG_STATS: dict[str, int] = {}
+
+#: `512Mx8`, `256Mx4`, `1Gx4` — organização de UM die: linhas × largura.
+#: `fullmatch` é deliberado: para DECIDIR se a string é desse formato usa-se
+#: `fullmatch`, nunca `search` (CLAUDE.md §7). Um `search` acharia "x16" dentro
+#: de "4CH x16" e inventaria uma largura de die que não existe.
+_RX_ORG_DIE = re.compile(r"(\d+)([MG])x(\d+)", re.I)
+
+
+def _bus_width_do_org(org: str, chip_type: str) -> tuple[str, str]:
+    """A coluna ``organization`` do PSG → token de `bus_width`, ou o motivo da recusa.
+
+    O PSG traz a coluna em DOIS formatos, e a divisão entre eles é exata
+    (medido nos 18 CSVs em 2026-09-23):
+
+    - **``512Mx8``, ``256Mx4``, ``128Mx16``** — organização de um die: linhas ×
+      largura. Aparece SEMPRE e SÓ em DDR3/DDR3L/DDR4 (86 linhas). O ``x8`` final
+      é a largura do barramento, publicada pela Samsung — fonte **Tier-1**, e
+      justamente nas gerações onde a largura muda o preço.
+    - **``2CH x16``, ``1CH x32``** — canais × largura POR CANAL. Aparece SEMPRE e
+      SÓ em LPDDR (136 linhas). Não é a largura do die: um LPDDR ``2CH x16`` não
+      é comparável a um DDR3 ``x16``. **Não se mapeia** — seria inventar um
+      número, e largura de LPDDR não interessa ao negócio.
+
+    Devolve ``(largura, motivo)``. Largura vazia COM motivo é recusa contada,
+    nunca descarte em silêncio.
+    """
+    from chips.conventions import BUS_WIDTH_VOCAB, is_bus_width
+    from chips.knowledge.convention import bus_width_problem
+
+    txt = (org or "").strip()
+    if not txt:
+        return ("", "")
+    if "ch" in txt.lower():
+        return ("", "multi-canal (LPDDR): largura por canal, não do die")
+    m = _RX_ORG_DIE.fullmatch(txt)
+    if not m:
+        return ("", f"formato não reconhecido: {org!r}")
+    token = f"x{m.group(3)}".lower()
+    if not is_bus_width(token):
+        return ("", f"fora do vocabulário {{{', '.join(BUS_WIDTH_VOCAB)}}}: {org!r}")
+    if bus_width_problem(chip_type, token):
+        return ("", f"classe não permite largura: {chip_type or '(sem tipo)'}")
+    return (token, "")
+
+
 _CHIP_TYPE_MAP = {
     "DDR":     "DDR",
     "LPDDR2":  "LPDDR2",
@@ -202,6 +251,13 @@ def _import_row(row_dict, brand, source, dry, only_update, only_create, verbosit
     confidence  = (row_dict.get("confidence")  or "confirmed").strip()
     pn_raw      = (row_dict.get("pn_raw")      or pn).strip()
 
+    # A largura sai da coluna `organization` (Tier-1 Samsung) — nunca do
+    # `interface`, que aqui traz protocolo ("eMMC 5.1") ou geração ("DDR3").
+    bus_width, bw_motivo = _bus_width_do_org(org, chip_type)
+    if org:
+        _chave = bw_motivo or "largura mapeada"
+        _ORG_STATS[_chave] = _ORG_STATS.get(_chave, 0) + 1
+
     # Monta nota composta com dados técnicos do PSG para referência futura
     note_parts = []
     if org:
@@ -245,6 +301,7 @@ def _import_row(row_dict, brand, source, dry, only_update, only_create, verbosit
                         density_gbit = density_gbit,
                         density_gb   = density_gb,
                         interface    = interface,
+                        bus_width    = bus_width,
                         notes        = notes_final,
                         confidence   = confidence,
                         source       = source,
@@ -299,6 +356,19 @@ def _import_row(row_dict, brand, source, dry, only_update, only_create, verbosit
     _set("density_gb",   density_gb)
     _set("interface",    interface)
     _set("family",       family)
+
+    # ⚠ `bus_width` NÃO passa pelo `_set`. O `_set` SOBRESCREVE quando a
+    #   confidence é `confirmed`, e a largura tem OUTRA fonte Tier-1 Samsung —
+    #   a submissão do decodificador oficial de part number (§5.0.1). Duas
+    #   fontes Tier-1 da mesma marca discordando é ACHADO, não empate a ser
+    #   resolvido em silêncio pela ordem em que os comandos rodaram.
+    if bus_width:
+        _atual = (existing.bus_width or "").strip()
+        if not _atual:
+            changed["bus_width"] = bus_width
+        elif _atual != bus_width:
+            _k = "⚠ DIVERGÊNCIA com a largura já gravada"
+            _ORG_STATS[_k] = _ORG_STATS.get(_k, 0) + 1
 
     # Promove a confidence se o CSV tem valor mais alto
     if new_prio > existing_prio:
@@ -455,6 +525,17 @@ class Command(BaseCommand):
                 f"pulados={total_skipped} protegidos={total_protected} "
                 f"erros={total_errors}"
             )
+
+        # ── A coluna `organization`, contada (I5) ───────────────────────
+        if _ORG_STATS:
+            self.stdout.write("\n── `organization` → `bus_width` ──")
+            for motivo, n in sorted(_ORG_STATS.items(), key=lambda kv: -kv[1]):
+                self.stdout.write(f"  {n:6d}  {motivo}")
+            if any(k.startswith("⚠") for k in _ORG_STATS):
+                self.stdout.write(self.style.WARNING(
+                    "  ⚠ Divergência entre duas fontes Tier-1 Samsung. A largura "
+                    "que já estava no banco foi MANTIDA; decida no olho."
+                ))
 
         if not dry and (total_created + total_updated) > 0:
             try:

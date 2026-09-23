@@ -6,7 +6,7 @@ operações no banco, nesta ordem:
 
   1. ATUALIZA registros existentes
      Para cada KnownPart Micron já no banco cujo part_number começa com o base PN
-     do CSV, preenche os campos vazios: density_gbit, capacity, interface, notes.
+     do CSV, preenche os campos vazios: density_gbit, capacity, bus_width, notes.
 
   2. CRIA registros novos
      Para base PNs do CSV que ainda não estão no banco, consulta a API FBGA da
@@ -16,8 +16,18 @@ Mapeamento CSV → modelo KnownPart:
   TECHNOLOGY          → chip_type + subtype
   COMPONENT DENSITY   → density_gbit  (ex: "4Gb", "96Gb")
   COMPONENT DENSITY   → capacity      (convertido: "4Gb" → "512MB", "96Gb" → "12GB")
-  BUS WIDTH + SPEED   → interface     (ex: "x32 @ 1866MHz")
-  SPEED, VOLTAGE, PACKAGE, PIN COUNT, STATUS → notes (sumário legível)
+  BUS WIDTH           → bus_width     (ex: "x32") — token puro, vocabulário fechado
+  SPEED + MT/S        → notes          (ex: "Speed: 1866MHz (3733MTPS)")
+  VOLTAGE, PACKAGE, PIN COUNT, PROTOCOL, TEMP, STATUS → notes (sumário legível)
+  (nada)              → interface      — este importador NÃO escreve `interface`
+
+⚠ Até 2026-09-23 a largura e a velocidade iam juntas para `interface` ("x32 @
+  1866MHz"). A separação (PLANO_BUS_WIDTH §3.4) pôs a largura em `bus_width` e a
+  velocidade em `notes`; o portão da F2 RECUSA largura dentro de `interface`, e
+  este importador era o principal canal que a escrevia lá. A largura que o CSV
+  traz e que NÃO vira `bus_width` (vocabulário desconhecido, ou classe que não
+  admite largura — eMMC, eMCP, uMCP) é contada e impressa antes de gravar: não
+  existe descarte em silêncio (I5).
 
 Como obter os CSVs do catálogo Micron:
   Acesse cada página de catálogo no micron.com e clique "Export Full Catalog":
@@ -56,6 +66,10 @@ import logging
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+
+# `convention` não importa models — pode subir no topo (os models deste comando
+# são importados tarde, dentro do handle(), porque o registry ainda não existe).
+from chips.knowledge.convention import notes_com_speed
 
 logger = logging.getLogger(__name__)
 
@@ -153,16 +167,54 @@ def _density_to_capacity(density: str) -> str:
             return f"{gb_total:.1f}GB"
 
 
-def _build_interface(bus_width: str, speed: str, mts: str) -> str:
-    """Monta string de interface a partir dos campos do CSV."""
-    parts = []
-    if bus_width:
-        parts.append(bus_width)
+def _build_speed(speed: str, mts: str) -> str:
+    """A VELOCIDADE do CSV, na forma que vai para `notes`.
+
+    Era a segunda metade do antigo `_build_interface`, que montava
+    ``"x32 @ 1866MHz (3733MTPS)"`` e entregava TUDO no `interface`. Depois da
+    separação (PLANO_BUS_WIDTH §3.4) a largura vai para `bus_width` e a
+    velocidade para `notes`; esta devolve só a parte da velocidade — a MESMA
+    string que o `split_bus_width` extrai de um `interface` legado, para que
+    importar e fazer backfill produzam nota idêntica.
+
+        ('1866MHz', '3733MTPS') → '1866MHz (3733MTPS)'
+        ('800MHz',  '800MHz')   → '800MHz'
+        ('',        '')         → ''
+    """
+    partes = []
     if speed:
-        parts.append(f"@ {speed}")
+        partes.append(speed)
     if mts and mts != speed:
-        parts.append(f"({mts})")
-    return " ".join(parts)
+        partes.append(f"({mts})")
+    return " ".join(partes)
+
+
+def _build_bus_width(raw: str, chip_type: str) -> tuple[str, str]:
+    """Normaliza a coluna ``BUS WIDTH`` do CSV para o vocabulário de `bus_width`.
+
+    Devolve ``(largura, motivo)``. Largura vazia COM motivo não é descarte em
+    silêncio: o comando conta e imprime cada motivo antes de gravar (I5 — mover
+    nunca apaga). Os dois motivos possíveis:
+
+    - **fora do vocabulário** — o CSV trouxe algo que não é x4/x8/x16/x32/x64.
+    - **classe não permite** — eMMC/eMCP/uMCP. Em eMMC a largura é modo do host
+      (JESD84 EXT_CSD[183]); em eMCP/uMCP o pacote tem DOIS barramentos e um
+      campo só seria ambíguo. Quem decide isso é o `bus_width_problem`, não uma
+      lista repetida aqui.
+    """
+    from chips.conventions import BUS_WIDTH_VOCAB, is_bus_width
+    from chips.knowledge.convention import bus_width_problem
+
+    txt = (raw or "").strip().lower()
+    if not txt:
+        return ("", "")
+    if txt.isdigit():                      # o CSV às vezes traz só o número
+        txt = f"x{txt}"
+    if not is_bus_width(txt):
+        return ("", f"fora do vocabulário {{{', '.join(BUS_WIDTH_VOCAB)}}}: {raw!r}")
+    if bus_width_problem(chip_type, txt):
+        return ("", f"classe não permite largura: {chip_type or '(sem tipo)'}")
+    return (txt, "")
 
 
 def _build_notes(row: dict) -> str:
@@ -257,14 +309,26 @@ def _read_catalog_csv(filepath: str) -> dict[str, dict]:
                 cap         = _density_to_capacity(density)
                 density_gb  = cap  # DRAM: COMPONENT DENSITY é por die; cap = conversão por die
 
+            bw_token, bw_motivo = _build_bus_width(bus_width, chip_type)
+
             info = {
                 "chip_type":    chip_type,
                 "subtype":      subtype,
                 "density_gbit": density,
                 "density_gb":   density_gb,
                 "capacity":     cap,
-                "interface":    _build_interface(bus_width, speed, mts),
-                "notes":        _build_notes(row),
+                # ⚠ `interface` NÃO recebe largura (PLANO_BUS_WIDTH §3.4, D3).
+                #   O portão da F2 RECUSA `interface` com largura dentro — este
+                #   importador foi a razão de o portão existir. O protocolo do
+                #   CSV (coluna PROTOCOL: "UFS2.2", "MMC5.1") continua indo para
+                #   `notes` pelo `_build_notes`: passá-lo para `interface` exige
+                #   canonizar "MMC5.1" → "eMMC 5.1", e inventar esse mapa aqui
+                #   seria decidir sozinho o que é decisão do dono.
+                "interface":    "",
+                "bus_width":    bw_token,
+                "bus_width_motivo": bw_motivo,
+                "notes":        notes_com_speed(_build_notes(row),
+                                                _build_speed(speed, mts)),
                 "part_status":  part_stat,
             }
 
@@ -444,6 +508,21 @@ class Command(BaseCommand):
 
         self.stdout.write(f"\nBase PNs únicos no catálogo: {len(catalog)}\n")
 
+        # ── Censo da largura (I5: nada sai do CSV sem aparecer aqui) ─────────
+        com_largura = sum(1 for i in catalog.values() if i.get("bus_width"))
+        motivos: dict[str, int] = {}
+        for i in catalog.values():
+            m = i.get("bus_width_motivo")
+            if m:
+                motivos[m] = motivos.get(m, 0) + 1
+        self.stdout.write("Largura de barramento (`bus_width`):")
+        self.stdout.write(f"  reconhecida ......... {com_largura}")
+        if motivos:
+            self.stdout.write(f"  NÃO migrada ......... {sum(motivos.values())}")
+            for m, n in sorted(motivos.items(), key=lambda kv: -kv[1]):
+                self.stdout.write(f"      {n:6d}  {m}")
+        self.stdout.write("")
+
         # ── Setup DB ──────────────────────────────────────────────────────────
         if not dry:
             micron_source, _ = Source.objects.get_or_create(
@@ -480,6 +559,7 @@ class Command(BaseCommand):
                 .only(
                     "id", "part_number", "density_gbit", "capacity",
                     "interface", "notes", "chip_type", "subtype",
+                    "bus_width",
                 )
             )
 
@@ -502,7 +582,8 @@ class Command(BaseCommand):
                 _maybe_update("density_gbit", info["density_gbit"])
                 _maybe_update("density_gb",   info["density_gb"])
                 _maybe_update("capacity",     info["capacity"])
-                _maybe_update("interface",    info["interface"])
+                # `interface` não é mais escrito por este importador (§3.4).
+                _maybe_update("bus_width",    info["bus_width"])
                 _maybe_update("notes",        info["notes"])
                 # Garante chip_type/subtype se estiver vazio
                 _maybe_update("chip_type",    info["chip_type"])
@@ -602,7 +683,7 @@ class Command(BaseCommand):
                     if dry:
                         self.stdout.write(
                             f"   {fbga}  →  {full_pn}"
-                            f"  [{info['capacity']}]  [{info['interface']}]"
+                            f"  [{info['capacity']}]  [{info['bus_width'] or '—'}]"
                         )
                         crt_counts["created"] += 1
                         continue
@@ -621,7 +702,7 @@ class Command(BaseCommand):
                                 density_gbit=info["density_gbit"],
                                 density_gb=info["density_gb"],
                                 capacity=info["capacity"],
-                                interface=info["interface"],
+                                bus_width=info["bus_width"],
                                 notes=info["notes"],
                                 confidence="confirmed",
                                 source=micron_source,

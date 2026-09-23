@@ -28,6 +28,54 @@ import sqlite3
 from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
+
+from chips.knowledge.convention import (
+    bus_width_problem, notes_com_speed, split_bus_width,
+)
+
+
+#: Contadores do reparte de largura — impressos no fim, para que nenhum valor
+#: do banco legado suma em silêncio (PLANO_BUS_WIDTH I5).
+_bw_stats: dict[str, int] = {}
+
+
+def _reparte_interface(interface: str, chip_type: str, notes: str) -> tuple[str, str, str]:
+    """Reparte um `interface` do banco LEGADO em ``(interface, bus_width, notes)``.
+
+    O chipid_project guardava a largura dentro do `interface` — é de lá que
+    vieram os ``x16`` das 25 famílias que a Fase 4 acabou de limpar. Reimportar
+    sem repartir **desfaz a Fase 4**, e no caso da `ChipFamily` desfaz EM
+    SILÊNCIO: só o `KnownPart` tem `save()` que chama `full_clean()`, a família
+    não — o `clean()` dela existe mas ninguém o executa no caminho deste
+    comando (`update_or_create`).
+
+    Regras, as mesmas do backfill (`normalize_convention`):
+
+    - ``'x16'``              → largura sai, `interface` fica vazio
+    - ``'x16 @ 800MHz'``     → largura sai, velocidade vai para `notes`
+    - ``'eMMC 5.1'``         → intacto (é protocolo, não largura)
+    - ``'x16 (2 dies)'``     → **NÃO migra**: sobra sem destino, decisão humana
+    - largura em classe que não admite (eMMC/eMCP/uMCP) → **não migra**
+    """
+    bw, speed, resto = split_bus_width(interface or "")
+
+    if not bw and not speed:
+        return (interface or "", "", notes or "")
+
+    if bw and resto:                                   # SOBRA SEM DESTINO
+        _bw_stats["sobra sem destino"] = _bw_stats.get("sobra sem destino", 0) + 1
+        return (interface or "", "", notes or "")
+
+    if bw and bus_width_problem(chip_type, bw):        # CLASSE NÃO PERMITE
+        _bw_stats["classe não permite"] = _bw_stats.get("classe não permite", 0) + 1
+        return (interface or "", "", notes or "")
+
+    if bw:
+        _bw_stats["largura movida"] = _bw_stats.get("largura movida", 0) + 1
+    if speed:
+        _bw_stats["velocidade → notes"] = _bw_stats.get("velocidade → notes", 0) + 1
+
+    return (resto, bw, notes_com_speed(notes or "", speed))
 from django.db import transaction
 
 from chips.models import Brand, Source, ChipFamily, DecodeMap, KnownPart
@@ -88,6 +136,18 @@ class Command(BaseCommand):
                     transaction.set_rollback(True)
         finally:
             conn.close()
+
+        # ── O reparte de largura, contado (I5: nada some em silêncio) ───────
+        if _bw_stats:
+            self.stdout.write("\n── Reparte de largura (`interface` → `bus_width`) ──")
+            for motivo, n in sorted(_bw_stats.items(), key=lambda kv: -kv[1]):
+                self.stdout.write(f"  {n:6d}  {motivo}")
+            nao = _bw_stats.get("sobra sem destino", 0) + _bw_stats.get("classe não permite", 0)
+            if nao:
+                self.stdout.write(
+                    f"  ⚠ {nao} registro(s) ficaram com a largura NO `interface` de propósito "
+                    f"— decisão humana, não descarte."
+                )
 
         self.stdout.write(self.style.SUCCESS("\n✅ Importação concluída!"))
         self.stdout.write(
@@ -184,10 +244,18 @@ class Command(BaseCommand):
                 )
                 continue
 
+            # ⚠ O legado guardava largura DENTRO do `interface` — reimportar sem
+            #   repartir desfaz a Fase 4, e aqui desfaz em SILÊNCIO (ChipFamily
+            #   não roda `full_clean()` no `save()`).
+            fam_if, fam_bw, _ = _reparte_interface(
+                row["interface"] or "", row["chip_type"] or "", ""
+            )
+
             defaults = {
                 "chip_type":           row["chip_type"] or "",
                 "subtype":             row["subtype"] or "",
-                "interface":           row["interface"] or "",
+                "interface":           fam_if,
+                "bus_width":           fam_bw,
                 "decode_cap_pos":      row["decode_cap_pos"],
                 "decode_cap_map":      row["decode_cap_map"] or "",
                 "decode_gen_pos":      row["decode_gen_pos"],
@@ -263,6 +331,10 @@ class Command(BaseCommand):
                 row["capacity"] or row["emcp_ram"] or row["emcp_nand"] or row["density_gbit"]
             )
 
+            kp_if, kp_bw, kp_notes = _reparte_interface(
+                row["interface"] or "", row["chip_type"] or "", row["notes"] or ""
+            )
+
             defaults = {
                 "brand":        brand_obj,
                 "chip_type":    row["chip_type"]    or "",
@@ -272,9 +344,10 @@ class Command(BaseCommand):
                 "density_gb":   row["density_gb"]   or "",
                 "emcp_ram":     row["emcp_ram"]      or "",
                 "emcp_nand":    row["emcp_nand"]     or "",
-                "interface":    row["interface"]    or "",
+                "interface":    kp_if,
+                "bus_width":    kp_bw,
                 "device":       row["device"]       or "",
-                "notes":        row["notes"]        or "",
+                "notes":        kp_notes,
                 "confidence":   row["confidence"]   or "estimated",
                 "source":       chipid_source,
                 "source_url":   row["source_url"]   or "",
