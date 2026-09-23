@@ -4363,6 +4363,46 @@ msgstr ""
 msgid "Largura fixa da família, não deste registro."
 msgstr "Fixed width of the family, not of this record."
 
+#: vendas/fotos.py:56
+msgid ""
+"Não consegui ler esta imagem. Envie JPG, PNG ou WEBP — foto de iPhone pode "
+"vir em HEIC, que ainda não lemos."
+msgstr ""
+"I couldn't read this image. Send JPG, PNG or WEBP — an iPhone photo may come"
+" as HEIC, which we can't read yet."
+
+#: vendas/fotos.py:59
+msgid "Arquivo de imagem corrompido."
+msgstr "Corrupted image file."
+
+#: vendas/fotos.py:62
+msgid "Formato %(f)s não aceito. Use JPG, PNG ou WEBP."
+msgstr "Format %(f)s not accepted. Use JPG, PNG or WEBP."
+
+#: vendas/fotos.py:92
+msgid "Arquivo vazio."
+msgstr "Empty file."
+
+#: vendas/fotos.py:95
+msgid "Foto muito grande (%(mb).1f MB). O limite é %(lim)d MB."
+msgstr "Photo too large (%(mb).1f MB). The limit is %(lim)d MB."
+
+#: vendas/views_partner.py:767
+msgid "Preço inválido em %(cat)s."
+msgstr "Invalid price in %(cat)s."
+
+#: vendas/views_partner.py:771
+msgid "%(cat)s: preço fora de faixa (%(v)s)."
+msgstr "%(cat)s: price out of range (%(v)s)."
+
+#: vendas/templates/vendas/partner_compra.html:662
+msgid "Editar preço %(marca)s %(tipo)s %(cap)s"
+msgstr "Edit price %(marca)s %(tipo)s %(cap)s"
+
+#: vendas/templates/vendas/partner_compra.html:667
+msgid "Preço unitário %(marca)s %(tipo)s %(cap)s"
+msgstr "Unit price %(marca)s %(tipo)s %(cap)s"
+
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
 #~ " em US$. Muda só quando o contrato mudar."

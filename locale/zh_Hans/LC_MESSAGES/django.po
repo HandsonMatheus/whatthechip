@@ -4103,7 +4103,7 @@ msgstr "位宽"
 
 #: chips/templates/chips/partials/decode_card.html:98
 msgid "lido do PN"
-msgstr "从料号读出"
+msgstr "从 PN 读出"
 
 #: chips/templates/chips/partials/decode_card.html:98
 msgid "da família"
@@ -4111,11 +4111,49 @@ msgstr "来自系列"
 
 #: chips/templates/chips/partials/decode_card.html:98
 msgid "Largura lida do part number, não de datasheet. Não vale como preço."
-msgstr "位宽由料号推读，非来自数据手册。不作价格依据。"
+msgstr "位宽由 part number 推读，非来自 datasheet。不作价格依据。"
 
 #: chips/templates/chips/partials/decode_card.html:98
 msgid "Largura fixa da família, não deste registro."
 msgstr "该系列的固定位宽，非本条记录。"
+
+#: vendas/fotos.py:56
+msgid ""
+"Não consegui ler esta imagem. Envie JPG, PNG ou WEBP — foto de iPhone pode "
+"vir em HEIC, que ainda não lemos."
+msgstr "无法读取此图片。请发送 JPG、PNG 或 WEBP — iPhone 照片可能为 HEIC 格式，目前尚不支持。"
+
+#: vendas/fotos.py:59
+msgid "Arquivo de imagem corrompido."
+msgstr "图片文件已损坏。"
+
+#: vendas/fotos.py:62
+msgid "Formato %(f)s não aceito. Use JPG, PNG ou WEBP."
+msgstr "不支持 %(f)s 格式。请使用 JPG、PNG 或 WEBP。"
+
+#: vendas/fotos.py:92
+msgid "Arquivo vazio."
+msgstr "文件为空。"
+
+#: vendas/fotos.py:95
+msgid "Foto muito grande (%(mb).1f MB). O limite é %(lim)d MB."
+msgstr "照片过大（%(mb).1f MB）。上限为 %(lim)d MB。"
+
+#: vendas/views_partner.py:767
+msgid "Preço inválido em %(cat)s."
+msgstr "%(cat)s 中的价格无效。"
+
+#: vendas/views_partner.py:771
+msgid "%(cat)s: preço fora de faixa (%(v)s)."
+msgstr "%(cat)s：价格超出范围（%(v)s）。"
+
+#: vendas/templates/vendas/partner_compra.html:662
+msgid "Editar preço %(marca)s %(tipo)s %(cap)s"
+msgstr "编辑价格 %(marca)s %(tipo)s %(cap)s"
+
+#: vendas/templates/vendas/partner_compra.html:667
+msgid "Preço unitário %(marca)s %(tipo)s %(cap)s"
+msgstr "单价 %(marca)s %(tipo)s %(cap)s"
 
 #~ msgid ""
 #~ "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"

@@ -304,6 +304,7 @@ class EngineBusWidthTests(TestCase):
     """
 
     def setUp(self):
+        from chips.engine import clear_engine_cache
         from chips.models import Brand, ChipFamily, DecodeMap
         self.marca = Brand.objects.create(name="TesteEng", code="TEN")
         # Mapa de largura inventado: chave de 2 chars na posição 3.
@@ -319,6 +320,29 @@ class EngineBusWidthTests(TestCase):
             bus_width="x16")
         self.fam_muda = ChipFamily.objects.create(
             brand=self.marca, prefix="ZZWM", chip_type="DDR3", subtype="DDR3")
+
+        # ⚠ SEM ISTO, TODO TESTE DEPOIS DO PRIMEIRO EXPLODE com
+        #   `Brand.DoesNotExist` — e a causa não é óbvia.
+        #
+        #   O cache de famílias do engine é um `lru_cache` chaveado pelo NÚMERO
+        #   do `catalog_version`, e o número sobe por sinal `post_save`. Num
+        #   `TestCase` cada teste roda numa transação que é DESFEITA no fim —
+        #   mas o `lru_cache` é do PROCESSO e não sabe de rollback. Então:
+        #
+        #     teste 1: setUp cria as famílias → versão sobe para N →
+        #              classify() guarda no cache, na chave N, objetos cujo
+        #              `brand_id` aponta para a Brand criada agora.
+        #     rollback: a Brand E o carimbo de versão somem.
+        #     teste 2: setUp cria tudo de novo, do mesmo ponto de partida →
+        #              a versão sobe para N OUTRA VEZ → `classify()` ACERTA o
+        #              cache do teste 1 → `fam.brand` procura uma Brand que foi
+        #              desfeita → explode.
+        #
+        #   A chave do cache colide porque é um contador, e o contador volta
+        #   atrás junto com a transação. Limpar aqui — DEPOIS de criar as
+        #   fixturas, como o resto do projeto faz — força a reconstrução com os
+        #   objetos desta transação.
+        clear_engine_cache()
 
     def _kp(self, pn, **kw):
         from chips.models import KnownPart
@@ -508,9 +532,16 @@ class ProcedenciaDaLarguraNaTelaTests(TestCase):
         'lido do PN' é texto de tela e traduz."""
         from django.utils import translation
         for t in self.CARTOES:
+            # ⚠ O chinês diz «从 PN 读出», com "PN" em letras latinas, e NÃO
+            #   «从料号读出». Não é escolha de estilo: "PN" está no glossário
+            #   DO-NOT-TRANSLATE do `check_translations` (regra 5), que exige o
+            #   termo LITERAL na tradução. A primeira versão traduzia "PN" para
+            #   料号 e o portão de tradução recusava o catálogo inteiro.
+            #   Se mudar a tradução no .po, mude aqui junto — foi assim que
+            #   estas duas ficaram vermelhas em 2026-09-23.
             for idioma, esperado in (("es", "leído del PN"),
                                      ("en", "read from the PN"),
-                                     ("zh-hans", "从料号读出")):
+                                     ("zh-hans", "从 PN 读出")):
                 with self.subTest(template=t, idioma=idioma):
                     with translation.override(idioma):
                         html = self._render(t, bus_width_source="gramatica")
