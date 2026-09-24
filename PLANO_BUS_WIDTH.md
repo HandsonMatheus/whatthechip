@@ -50,14 +50,22 @@
 > `VELOCIDADE_SÓ` no `KnownPart` e na família (só K9C/K9HDG com largura DENTRO de
 > texto); `guard_catalog` OK 9059.
 >
-> **F5 escrita e testada em 2026-09-24 — ainda NÃO commitada.** Ver o bloco
-> "FASE 5 — O QUE MUDOU" dentro da Fase 5. Três correções a este plano, todas
+> **F5 NO AR desde 24/09** (commit `cda9db3`; o build do Render aplicou a
+> `chips/0025_interface_nao_e_largura`; em prod o `pg_constraint` mostra as duas travas
+> com os 10 valores e o `guard_catalog` deu OK 9059). Ver o bloco "FASE 5 — O QUE
+> MUDOU" dentro da Fase 5. Três correções a este plano, todas
 > medidas: (1) o nome da trava não pode ser o mesmo nos dois modelos (models.E032);
 > (2) 12 testes plantavam `x16` no banco e ficaram impossíveis; (3) o
 > `restore_known_parts` — a recuperação de desastre — não movia a largura: com a
 > trava ele restauraria ZERO de qualquer backup anterior a 24/09.
 >
-> **Fases:** F0–F4 ✅✅ · F5 código ✅ local ⏳ prod ⏳ · F6 ✅✅ · F7 ❌ · Parte 2: nada.
+> **F7 FECHADA em 24/09 — a PARTE 1 ESTÁ COMPLETA EM PRODUÇÃO.** Ver o bloco "FASE 7 —
+> O QUE FOI FEITO" dentro da Fase 7. Duas mudanças neste plano: o baseline DEPOIS saiu
+> da F7 e virou o baseline ANTES da P0 (é a mesma foto — decisão do dono, 24/09); e o
+> eMMC **tem** linha Largura na bancada, com "—", como a F2 especificou.
+>
+> **Fases:** F0–F6 ✅✅ · F7 ✅ (verificação em prod, 24/09) · **Parte 1 completa** ·
+> Parte 2: nada — começa pela P0 e pelas decisões do dono (§10.1).
 
 > ### ESTADO EM 2026-09-23 — leia isto antes de rodar qualquer coisa `[Rev.3]`
 > **O CÓDIGO da Parte 1 está inteiro em produção. Os DADOS de produção não foram tocados.**
@@ -1379,10 +1387,10 @@ chat de marca, nem coletor.
 
 ### Fase 7 — Verificação final e entrega
 
-1. **Baseline regravado** depois de tudo (`characterize_baseline --out
+1. `[Rev.4] → P0` **Baseline regravado** depois de tudo (`characterize_baseline --out
    baseline_bus_width_DEPOIS_PROD.json`) — passa a cobrir a coluna `bus_width` daqui em
    diante.
-2. `--diff` ANTES→DEPOIS com `--summary`: **AS TRÊS COLUNAS INTACTAS**; transições de
+2. `[Rev.4] feito em prod em 24/09` `--diff` ANTES→DEPOIS com `--summary`: **AS TRÊS COLUNAS INTACTAS**; transições de
    `interface` só `'xN…' → ''`; nenhum PN adicionado/removido.
 3. `guard_catalog` verde; `MEDIR_bus_width.py` em prod: KnownPart e ChipFamily com
    LARGURA em `interface` = 0; `bus_width` preenchido = nº do relatório do backfill +
@@ -1390,12 +1398,91 @@ chat de marca, nem coletor.
 4. Suíte inteira verde: `python manage.py test chips estoque vendas pricing --settings=core.settings_test`; `check_translations`; `makemigrations --check`.
 5. **Testes de frontend entregues ao dono** (lista concreta, ele roda na bancada):
    `K4B1G0846I` → Largura x8 · `K4B1G1646D` → x16 · um M15T (ESMT) → x16 · um LPDDR5
-   Micron → x64 · `KLMAG2GESD-B03Q` (eMMC) → Interface eMMC 5.1, sem linha Largura ·
+   Micron → x64 · `KLMAG2GESD-B03Q` (eMMC) → Interface eMMC 5.1, Largura "—" na bancada `[Rev.4]` ·
    um eMCP → sem linha · trocar idioma para 中文 → `位宽` · lançar um DDR3 num lote novo
    e conferir no admin `bus_width='x16'`, `interface=''` · abrir um lote **antigo** e
    conferir que a linha de agosto continua `interface='x16'` no admin (D6).
 6. Mutações registradas no PR: para cada classe de teste nova, a mutação que mordeu
    (é a convenção da casa — "garantia que você não tentou desligar não é garantia").
+
+> ### FASE 7 — O QUE FOI FEITO (2026-09-24) `[Rev.4]`
+>
+> **Itens 1–2 (baseline e `--diff`).** O ANTES→DEPOIS da Parte 1 já existe: foi medido em
+> produção na noite de 23→24/09, no mesmo shell do runbook §6.1 — 9.059 PNs, 3.684 mudaram
+> de forma e **zero de valor** (`dest_label`, `dest_category`, `profitable`, `is_dead`,
+> `price_key` e `price_wu-quan` fora da lista de campos alterados). O baseline novo, que
+> cobre `bus_width`/`bus_width_source`, **saiu da F7 por decisão do dono (24/09)** e virou o
+> "Baseline ANTES da Parte 2" da P0 — é a mesma foto. Motivos: tirado agora estaria velho
+> quando a Parte 2 começar (os chats de marca seguem adicionando PNs); o disco do Render é
+> efêmero; rodar do Mac contra prod exige a senha do banco, que ainda não foi rotacionada.
+> A P0 tira a foto da cópia de produção restaurada no Mac.
+>
+> **Item 3.** `guard_catalog` OK 9059 e `MEDIR` de prod com zero largura no `interface`
+> (KnownPart e família) — pré-voo da F5, 24/09. `bus_width` preenchido em prod: 3.584 =
+> 3.416 do backfill + 168 da Samsung (medido em 24/09, 00h50).
+>
+> **Item 4.** Suíte local inteira com o código do `cda9db3`: 1.978 testes, só as 5
+> vermelhas herdadas (4 do pricing + tenancy DefeitoTipo/ProvaFoto). Sobre o mesmo commit,
+> em 24/09: `check_translations` — "Catálogos publicáveis", 992 entradas em es, en e
+> zh-hans — e `makemigrations --check` — "No changes detected".
+>
+> **Item 5 — bancada de produção** (24/09, debug colado pelo dono):
+>
+> | PN | resultado |
+> |---|---|
+> | `K4B1G0846I` | DDR3 Samsung 128MB · Largura **x8** (banco) |
+> | `K4B1G1646D` | DDR3 Samsung 128MB · **x16** (banco) |
+> | `M15T4G16256A` | DDR3L ESMT 4Gb/die · família `M15T4G16256A` · **x16** (banco) |
+> | `MT62F768M64D4WT-031 XT:B` | LPDDR5 Micron 6 GB · **x64** (banco) · `interface` vazio |
+> | `KLMAG2GESD-B03Q` | eMMC 16GB · Interface **eMMC 5.1** · Largura **—** |
+> | `KMFE60012M` | eMCP (eMMC 5.1 16GB + LPDDR3 2GB) · **sem** linha Largura |
+> | 中文 | o rótulo vira **位宽**, com o mesmo x16 (`K4B1G1646D`) |
+>
+> Nenhum "lido do PN". **Correção ao item 5:** o plano esperava o eMMC "sem linha
+> Largura". Na bancada (`confirm_card.html`) a linha existe, com "—", porque a F2 (§2d) a
+> especificou incondicional no ramo não-eMCP; quem esconde a linha vazia é a busca do
+> catálogo (`decode_card.html`, `{% if result.bus_width %}`). **Recomendação para a Parte
+> 2:** na bancada, mostrar a linha só quando a classe do chip tem largura
+> (`BUS_WIDTH_CLASSES`), para o "—" querer dizer só "falta pesquisar" em DRAM.
+>
+> **Lotes (lançamento e D6) — por script, no lugar do admin.** Um script só de leitura no
+> shell de prod (`platform_scope`, transação revertida) separou as linhas de lote de antes
+> e de depois de 24/09 03h50 UTC (00h50 em Assunção, fim da migração):
+>
+> | | antes | depois | total | largura no `interface` (antes / depois) | `bus_width` nas de antes |
+> |---|---|---|---|---|---|
+> | InventoryEntry | 4.091 | 57 | 4.148 | 318 / 0 | 0 |
+> | PendingEntry | 1.031 | 6 | 1.037 | 13 / 0 | 0 |
+> | RejectedEntry | 9.833 | 42 | 9.875 | 1.225 / 0 | 0 |
+>
+> As linhas de antes batem com a medição da noite (totais e 318 / 13 / 1.225): a história
+> dos lotes não foi reescrita (D6) e ninguém rodou o `resnapshot_lote` (zero `bus_width`
+> nelas). Das 57 linhas novas de estoque: DDR3 18 com largura + 2 sem, DDR3L 11 com, DDR4
+> 2 com, LPDDR3 1 com, eMMC 23 sem (18 + 2 + 11 + 2 + 1 + 23 = 57) — nenhuma com largura
+> no `interface`; nos exemplos impressos, fonte `banco` e classe certa: `H5TC2G43BFR` x4 →
+> `narrow`, `NT5CB64M16DP-CF` x16 → `wide` (LOT-2026-0015). O script lê as 15.060 linhas;
+> o admin mostraria os mesmos campos, uma linha por vez — por isso ele substituiu o passo
+> do admin.
+>
+> **Item 6.** As 9 mutações da F5 estão no bloco dela; todas mordem.
+>
+> **Achado no caminho — o botão 📋 Debug da bancada pode trocar o PN.** O handler do
+> `.est-debug-btn` (`estoque.html`) faz `d.pn = pnInput.value`: o texto sai com o PN do
+> campo de busca e os dados do cartão que está na tela. Às 14h42 (Assunção) o dono colou o
+> `M15T4G16256A` e clicou antes de o cartão trocar: o debug saiu com o PN do M15T e os
+> dados do `K4B1G1646D`. O banco estava certo — registro intacto desde a migração (último
+> evento pghistory: 24/09 03h31 UTC, o backfill), famílias ESMT ativas (22), nenhum dos
+> 9.059 PNs com `part_number_norm` ou família trocados, rebusca às 15h29 certa. Risco: o
+> debug é a evidência que os chats de marca usam — um debug assim leva a "corrigir" um
+> registro certo. Conserto em commit separado, depois da F7: o texto usa o PN do cartão e
+> avisa quando o campo tem outro.
+>
+> **Fora do escopo, visto no caminho (não conferido em fonte):** no baseline local de
+> 19/09, 1.008 PNs `MT62F…` estão como LPDDR4X, todos sem `source_url` (os outros 819
+> `MT62F` são LPDDR5) — pode mexer em chave de preço; o `KLMAG2GESD-B03Q` tem fonte da
+> Samsung na pasta `emmc-5-0` e `interface` eMMC 5.1 (a geração muda preço de eMMC); o
+> Micron `MT62F768M64D4WT` mostra "48Gb por die", quando 768M × 64 = 48Gb é o pacote; em
+> 中文, o valor da linha 来源 ("banco de dados") não é traduzido.
 
 ---
 
@@ -1410,7 +1497,7 @@ chat de marca, nem coletor.
 | F4 yaml 25 famílias | F2 no ar (o portão rejeita a chave velha) — recomendado no MESMO PR da F2 | local → push → `load_brands --commit` prod | dry-run das 3 marcas; `MEDIR` = 0 em `ChipFamily` (menos `K9C`/`K9HDG`, largura dentro de texto) |
 | F5 constraint `interface` | F3 **e** F4 fechadas em prod; pré-voo `MEDIR` prod = 0 | local → push (build migra) | build verde na 0025; teste de banco; `guard_catalog` |
 | F6 ferramentas + docs | F5 | local → push | coletor Samsung = 93; docs; memória |
-| F7 verificação | tudo acima | prod | baseline DEPOIS; testes de frontend do dono |
+| F7 verificação | tudo acima | prod | testes de frontend do dono (bancada) + lotes por script; baseline DEPOIS → P0 `[Rev.4]` |
 
 **Sequência de deploys recomendada (3 pushes):** (1) F1+F2+F4 num PR — schema + código +
 yaml; depois o dono roda, em prod, `load_brands --commit` das 3 marcas e o backfill (F3);
@@ -1852,14 +1939,17 @@ python manage.py characterize_baseline --out /tmp/baseline_DEPOIS_PROD.json
 
 ## 9. Definição de pronto (checklist do executor)
 
+> `[Rev.4]` F0–F4 e F6 estão ✅ em prod segundo o ESTADO do topo; os itens abaixo não
+> foram remarcados um a um — só F5 e F7, conferidos em 24/09.
+
 - [ ] F0: censo (KnownPart + ChipFamily + divergências + OUTRO listado) e 2 baselines ANTES, vistos pelo dono.
 - [ ] F1: `bus_width` + constraints de vocabulário em 5 modelos; migrations 0024/0026 geradas (não editadas); espelho `BUS_WIDTH_VOCAB` testado.
 - [ ] F2: `split_bus_width`/`interface_problem`/`bus_width_problem` em `chips/knowledge/convention.py`; `is_bus_width`/`BUS_WIDTH_VOCAB` em `chips/conventions.py`; portão Pydantic rejeita `interface: xN` com a mensagem; `clean()` idem (só valor mudado); engine copia `bus_width` (6 pontos: `_result_from_family`, `_result_from_known`, 1481, 1544, 1591, 1644, 1688); `_clean_interface` tira largura; `_snapshot` grava `bus_width`; card + decode_card + debug com "Largura"; 3 `.po`; admin; 24 canais ensinados (checklist do §2.3 marcado um a um no PR); 8 classes de teste com mutação registrada; baseline IDÊNTICO.
 - [ ] F3: `normalize_convention` = 3ª exceção, `SafeWriteCommand`, `--out`, relatório de NÃO MIGRADOS completo, idempotente, ida-e-volta testada; rodado local (dump) e prod; três colunas intactas; `MEDIR` = 0 em KnownPart.
 - [ ] F4: 25 linhas de yaml; `load_brands` dry-run ×3; commit local e prod; testes 2555/228/201 re-especificados com data; `MEDIR` = 0 em ChipFamily (menos 2 OUTRO).
-- [ ] F5: pré-voo zero; constraint `interface_nao_e_largura` em KnownPart e ChipFamily (nomes próprios — E032); migration 0025; teste de banco; `restore_known_parts` movendo a largura `[Rev.4]`. *(código ✅ 2026-09-24; local e prod pendentes)*
+- [x] F5: pré-voo zero; constraint `interface_nao_e_largura` em KnownPart e ChipFamily (nomes próprios — E032); migration 0025; teste de banco; `restore_known_parts` movendo a largura `[Rev.4]`. *(✅ local e prod em 2026-09-24 — `cda9db3`)*
 - [ ] F6: COLETAR/HANDOFF/PROMPT/check_k4b em `bus_width` (+ canal certo: submit/resolve, não yaml); coletor Samsung = 93; CLAUDE.md §5/§6/§7/§9 + linha 1201; AUTORIA.md; memória do projeto.
-- [ ] F7: baseline DEPOIS gravado; `--diff` ANTES→DEPOIS com três colunas intactas; `guard_catalog`; suíte + `check_translations` + `makemigrations --check` verdes; lista de testes de frontend entregue e rodada pelo dono.
+- [x] F7: ~~baseline DEPOIS gravado~~ (→ P0) e `--diff` ANTES→DEPOIS com três colunas intactas (prod, 24/09) `[Rev.4]`; `guard_catalog`; suíte + `check_translations` + `makemigrations --check` verdes; lista de testes de frontend entregue e rodada pelo dono. *(✅ 2026-09-24)*
 - [ ] **[Rev.1] Emendas E1–E7 na Parte 1:** `decode_width_*` em `ChipFamily`/`FamilySpec`/`_FAMILY_FIELDS` + bloco genérico no engine + portão (pos sem map rejeita) — sem nenhuma família declarada ainda; `bus_width_source` no resultado com a precedência banco > gramática > família > distributor; `bless_base` e a aprovação de `PendingEntry` **nunca** escrevem `bus_width` (testes); os 3 modelos de lote com `bus_width` + `width_class` + `bus_width_source`; `characterize` captura `bus_width_source`; HANDOFF com a Etapa 9.
 - [ ] **Parte 2 (§10):** só depois de tudo acima — checklist próprio em §10.4 P0–P7 e §10.5.
 
@@ -1986,6 +2076,9 @@ sinal de erro no catálogo ou na gramática, e alguém precisa olhar.
   {veredito antes, veredito depois, caixa antes, caixa depois, price_key antes/depois}.
   É contra ela que o `--diff` final é conferido.
 - Baseline ANTES da Parte 2 (`characterize_baseline --out baseline_bus_width_P2_ANTES_PROD.json`).
+  `[Rev.4]` É também o baseline DEPOIS da Parte 1 — saiu da F7 por decisão do dono
+  (24/09) — e a primeira foto que cobre `bus_width`/`bus_width_source`. Tirar da cópia de
+  produção restaurada no Mac (o disco do Render é efêmero).
 - As 4 portas do comprador (§10.1 [ABERTO]) respondidas ou explicitamente adiadas
   (8Gb estreito = sem linha).
 
