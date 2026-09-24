@@ -331,7 +331,7 @@ python manage.py normalize_convention --commit   # migra chip_type legado ("RAM"
 python manage.py check_translations        # read-only: PORTÃO dos catálogos i18n (locale/*.po) — placeholders, HTML, glossário protegido, fuzzy/vazio, .mo fresco. Roda após TODA atualização de tradução (inclusive por IA) e na suíte. Ver I18N.md §7.
 python manage.py characterize_baseline --out antes.json   # READ-ONLY (roda em transação revertida — seguro contra PROD). Congela, por PN, AS TRÊS COLUNAS que o negócio enxerga: DESTINO (dest_label/category), RENTABILIDADE (profitable/is_dead) e PREÇO. Depois da mudança: `--diff antes.json` (+ `--summary`). ⚠ PREÇO em 2 camadas: `price_key` (kind|gen|tier|unidade) é função PURA do classify — se mudar, a culpa é NOSSA; `price_<comprador>` é cotação e muda com câmbio/lista. O veredito separa as duas.
 python manage.py guard_catalog             # TRIPWIRE: roda DEPOIS de todo deploy — falha com alarme se o nº de known_parts despencar (>10% do high-water). Read-only exceto o bump do high-water. `--reset` só após queda legítima e revisada. Ver regra de ouro §2.1b.
-python manage.py restore_known_parts <dump>.json   # RECUPERAÇÃO: gap-fill de known_parts a partir de um dump/backup (cria só os que faltam, mapeia marca, religa família por prefixo; --commit). É o procedimento pós-incidente de perda.
+python manage.py restore_known_parts <dump>.json   # RECUPERAÇÃO: gap-fill de known_parts a partir de um dump/backup (cria só os que faltam, mapeia marca, religa família por prefixo; --commit). É o procedimento pós-incidente de perda. Backup anterior a 24/09/2026 traz a largura DENTRO do `interface`: o restore a move para `bus_width` pela MESMA regra do backfill (`normalize_convention.plano_largura`) e lista o que fica para decisão humana — sem isso, com a trava da chips/0025, o `--commit` inteiro cairia.
 python manage.py bootstrap_tenancy --company eMiner --admin <u> --manager <u> --operator <u>…   # backfill T1 (multi-empresa): cria a Company, dá papéis nominais, seeda o contador de lote, restringe o Django admin à plataforma (tira is_staff de não-super) e derruba sessões. Dry-run padrão; --commit grava (backup antes). Ver PLANO_MULTITENANT.md §16.
 ```
 
@@ -591,7 +591,9 @@ os campos abaixo. **Alimente os campos certos; não mexa no gateway.** Modelo: `
   domínio do chat da marca, não conserto silencioso
 - `subtype` = **SOMENTE** célula (NAND) ou geração (RAM) — nunca densidade, bus width, voltagem, "Mobile", "Multi-Channel", "paralela industrial"
 - `interface` = **VERSÃO DE PROTOCOLO** (`"eMMC 5.1"`, `"UFS 3.1"`, `"Async/ONFI"`) ou
-  vazio. **NUNCA largura** — desde 2026-09 isso é campo próprio, e o portão recusa
+  vazio. **NUNCA largura** — desde 2026-09 isso é campo próprio, o portão recusa e,
+  desde a chips/0025 (2026-09-24), o BANCO também recusa o token exato (`x16`/`X16`),
+  até por `.update()`/`bulk_create`
 - `bus_width` = largura do barramento de DADOS (`"x4"`, `"x8"`, `"x16"`, `"x32"`,
   `"x64"`), vazio quando não se sabe. Só existe em DRAM e NAND cru: em eMMC/UFS a
   largura é MODO do host (JESD84, EXT_CSD[183]) e em eMCP/uMCP há DOIS barramentos —

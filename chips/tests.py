@@ -20,7 +20,7 @@ Como rodar:
 """
 
 from unittest.mock import patch
-from django.test import TestCase, SimpleTestCase
+from django.test import TestCase, SimpleTestCase, TransactionTestCase
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -3800,6 +3800,11 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
     recusa `interface='x16'` em registro novo. Uma fixture que passasse pelo
     `save()` não estaria testando o legado — estaria testando o portão, e passaria
     verde com a migração inteira arrancada.
+
+    ⚠ F5 (2026-09-24): desde a chips/0025 o BANCO recusa o token exato ('x16',
+    'X16') até por `.update()`. Os casos que plantavam esse legado mudaram de
+    camada: o token exato é testado no `_plan`/`plano_largura` EM MEMÓRIA, e o
+    caminho pelo banco usa a forma que ele ainda aceita (' x16', 'x16 @ …').
     """
 
     def _kp(self, pn, chip_type="DDR3", **campos):
@@ -3842,10 +3847,12 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
 
     # ── o move em si ──────────────────────────────────────────────────────
     def test_largura_pura_sai_da_interface_para_o_bus_width(self):
-        self._kp("LARG1", interface="x16")
+        # F5: ' x16' (com espaço) é a largura PURA que o banco ainda aceita — é o
+        # que um .update() sujo produziria. O token exato está em PlanoLarguraTests.
+        self._kp("LARG1", interface=" x16")
         saida = self._roda()                       # dry-run anuncia…
         self.assertIn("LARGURA NO LUGAR CERTO", saida)
-        self.assertEqual(self._get("LARG1").interface, "x16", "dry-run GRAVOU")
+        self.assertEqual(self._get("LARG1").interface, " x16", "dry-run GRAVOU")
         self._roda(commit=True)
         kp = self._get("LARG1")
         self.assertEqual(kp.bus_width, "x16")
@@ -3890,7 +3897,7 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         2026-08-28): sem fill-only o comando reescreve 'x16' por 'x16' — no-op no
         dado, entrada FALSA no relatório e no JSON de reversão. Um backfill que
         se anuncia com 3.539 mudanças na segunda rodada não é auditável."""
-        self._kp("LARG5", interface="x16")
+        self._kp("LARG5", interface=" x16")                   # F5: ver LARG1
         self._kp("LARG6", interface="x32 @ 1866MHz")
         self._roda(commit=True)
         segunda = self._roda()
@@ -3903,8 +3910,11 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         deixar a `interface` suja seria deixar a mesma medida em dois campos — a
         colisão silenciosa que esta tarefa inteira existe para acabar."""
         from chips.management.commands.normalize_convention import _plan
-        kp = self._kp("LARG7", interface="x16", bus_width="x16")
-        kp.refresh_from_db()
+        from chips.models import KnownPart
+        # F5: EM MEMÓRIA — o banco não guarda mais 'x16' no interface.
+        kp = KnownPart(part_number="LARG7", chip_type="DDR3", subtype="DDR3",
+                       capacity="2Gb", density_gbit="2Gb",
+                       interface="x16", bus_width="x16")
         ch, motivo = _plan(kp)
         self.assertEqual(motivo, "")
         self.assertNotIn("bus_width", ch, "reescreveu largura idêntica — não é fill-only")
@@ -3923,11 +3933,11 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         self.assertIn("LARG8", saida, "não migrou e também não avisou — pior dos dois")
 
     def test_largura_diferente_da_que_ja_existe_nao_e_arbitrada(self):
-        self._kp("LARG9", interface="x16", bus_width="x8")
+        self._kp("LARG9", interface="x16 @ 800MHz (1600MTPS)", bus_width="x8")
         saida = self._roda(commit=True)
         kp = self._get("LARG9")
         self.assertEqual(kp.bus_width, "x8", "sobrescreveu a largura que já estava lá")
-        self.assertEqual(kp.interface, "x16")
+        self.assertEqual(kp.interface, "x16 @ 800MHz (1600MTPS)")
         self.assertIn("CONTRADICAO", saida)
         self.assertIn("LARG9", saida)
 
@@ -3936,11 +3946,11 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         suporta 1/4/8 bits. Gravar 'x8' ali seria transformar uma configuração de
         runtime em identidade do chip, e o painel do comprador passaria a separar
         preço por um atributo que não existe."""
-        self._kp("LARG10", chip_type="eMMC", interface="x8")
+        self._kp("LARG10", chip_type="eMMC", interface="x8 @ 52MHz")
         saida = self._roda(commit=True)
         kp = self._get("LARG10")
         self.assertEqual(kp.bus_width, "")
-        self.assertEqual(kp.interface, "x8")
+        self.assertEqual(kp.interface, "x8 @ 52MHz")
         self.assertIn("CLASSE NAO PERMITE", saida)
         self.assertIn("LARG10", saida)
 
@@ -3961,17 +3971,17 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         from chips.models import Brand, ChipFamily
         b, _ = Brand.objects.get_or_create(name="Samsung", defaults={"code": "SAM"})
         f = ChipFamily.objects.create(brand=b, prefix="ZZLARG", chip_type="DDR3")
-        ChipFamily.objects.filter(pk=f.pk).update(interface="x16")
+        ChipFamily.objects.filter(pk=f.pk).update(interface="x16 @ 800MHz (1600MTPS)")
         self._roda(commit=True)
         f.refresh_from_db()
-        self.assertEqual(f.interface, "x16", "o comando mexeu na FAMÍLIA")
+        self.assertEqual(f.interface, "x16 @ 800MHz (1600MTPS)", "o comando mexeu na FAMÍLIA")
         self.assertEqual(f.bus_width, "")
 
     def test_registro_submetido_e_dado_tambem_e_migra(self):
         """`submitted` não é 'sem valor' — é 'sem autoridade'. O backfill move
         dado; não promove ninguém. `confidence` e `review_status` ficam como
         estavam."""
-        self._kp("LARG11", interface="x16", review_status="submitted",
+        self._kp("LARG11", interface="x16 @ 800MHz (1600MTPS)", review_status="submitted",
                  confidence="distributor")
         self._roda(commit=True)
         kp = self._get("LARG11")
@@ -4015,7 +4025,7 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         self.assertEqual(kp.bus_width, "", "eMCP não tem largura de dados (I3)")
 
     def test_sem_cruzamento_a_conferencia_diz_isso(self):
-        self._kp("SOLO1", interface="x16")
+        self._kp("SOLO1", interface="x16 @ 800MHz (1600MTPS)")
         saida = self._roda()
         self.assertIn("(nenhum em dois baldes)", saida)
 
@@ -4056,14 +4066,61 @@ class NormalizeLarguraNoLugarCertoTests(TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             alvo = os.path.join(tmp, "revert_com_nome_proprio.json")
-            self._kp("VOLTA2", interface="x8")
+            self._kp("VOLTA2", interface="x8 @ 800MHz")
             self._roda(commit=True, extra=["--out", alvo])
             self.assertTrue(os.path.exists(alvo), "--out foi ignorado")
             import json as _json
             log = _json.load(open(alvo))
             self.assertEqual([e["changes"]["interface"] for e in log
-                              if e["model"] == "knownpart"], [["x8", ""]],
+                              if e["model"] == "knownpart"], [["x8 @ 800MHz", ""]],
                              "o JSON de reversão não guarda o valor ANTIGO da interface")
+
+
+class RevertDoBackfillDepoisDaF5Tests(TransactionTestCase):
+    """F5 (2026-09-24): desfazer o backfill pelo JSON deixou de ser possível — o
+    revert tentaria devolver 'x16' ao `interface`, e o banco recusa. O que esta
+    trava garante é o COMO: tudo ou nada. Um revert que aplicasse metade do
+    arquivo e parasse deixaria o banco num estado que JSON nenhum descreve.
+    Para desfazer o backfill agora, tira-se a trava antes (uma migration que
+    remove a constraint, pelo build).
+
+    ⚠ `TransactionTestCase`, não `TestCase`: dentro da transação que o TestCase
+    abre em volta de cada teste, o rollback de QUALQUER bloco externo desfaria a
+    metade aplicada por conta própria, e a trava passaria verde com o
+    `transaction.atomic()` do `_revert` arrancado. Aqui não há rede: só o
+    atomic do comando pode desfazer."""
+
+    def _kp(self, pn):
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name="Samsung", defaults={"code": "SAM"})
+        return KnownPart.objects.create(
+            brand=b, part_number=pn, chip_type="DDR3", subtype="DDR3",
+            capacity="2Gb", confidence="confirmed", review_status="approved", notes="")
+
+    def test_revert_que_devolveria_o_token_exato_o_banco_recusa_INTEIRO(self):
+        import json
+        import os
+        import tempfile
+        from io import StringIO
+        from django.core.management import call_command
+        from django.db import IntegrityError
+        from chips.models import KnownPart
+        a = self._kp("REV1")                  # já migrados: interface vazia
+        b = self._kp("REV2")
+        log = [
+            {"model": "knownpart", "pk": a.pk,
+             "changes": {"interface": ["@ 1866MHz", ""], "notes": ["", "Speed: 1866MHz"]}},
+            {"model": "knownpart", "pk": b.pk,
+             "changes": {"interface": ["x16", ""], "bus_width": ["", "x16"]}},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            alvo = os.path.join(tmp, "revert_do_backfill.json")
+            with open(alvo, "w") as fh:
+                json.dump(log, fh)
+            with self.assertRaises(IntegrityError):
+                call_command("normalize_convention", "--revert", alvo, stdout=StringIO())
+        self.assertEqual(KnownPart.objects.get(part_number="REV1").interface, "",
+                         "o revert aplicou METADE do arquivo")
 
 
 class BaselineTresColunasTests(TestCase):

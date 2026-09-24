@@ -65,6 +65,14 @@ def is_ram_generation(text: str) -> bool:
 # da origem do lote (CLAUDE.md §7): vocabulário fechado tem UM dono.
 BUS_WIDTH_VOCAB = ("x4", "x8", "x16", "x32", "x64")
 
+# Os valores que o BANCO recusa em `interface` (F5, 2026-09-24 — CheckConstraint
+# `knownpart_interface_nao_e_largura` e `chipfamily_interface_nao_e_largura`):
+# o token de largura EXATO, nas duas caixas. DERIVADO do vocabulário — nunca
+# escreva a lista à mão. O banco barra só o token exato porque `IN` funciona igual
+# no Postgres e no SQLite da suíte, e regex em CHECK não; o resto ('x16 @ 800MHz',
+# ' x16') é barrado antes, no `clean()` e no portão Pydantic (`interface_problem`).
+INTERFACE_VETADA = BUS_WIDTH_VOCAB + tuple(t.upper() for t in BUS_WIDTH_VOCAB)
+
 # Classe de largura — o eixo COMERCIAL (o comprador paga por classe, não por
 # largura exata): x4/x8 = 'narrow' (78 bolas) · x16 = 'wide' (96 bolas).
 # Mora aqui por ora para que o schema do lote (F1) tenha uma fonte única; na

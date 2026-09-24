@@ -42,6 +42,23 @@
 > código, vale o código (CLAUDE.md §10). Todo número daqui que veio de amostra está
 > marcado como amostra; o banco real se mede na Fase 0, antes de qualquer edição.
 
+> ### ESTADO EM 2026-09-24 — leia isto primeiro `[Rev.4]`
+> **O bloco Rev.3 logo abaixo está SUPERADO num ponto:** os dados de produção FORAM
+> migrados na noite de 23→24/09 (runbook §6.1 inteiro, com Export fresco antes).
+> Medido em prod em 24/09 pelo dono, no shell do Render: `chips` na 0024 e `estoque`
+> na 0026; `KnownPart 9059 · ChipFamily 277`; zero `LARGURA_PURA`/`LARGURA+VELOCIDADE`/
+> `VELOCIDADE_SÓ` no `KnownPart` e na família (só K9C/K9HDG com largura DENTRO de
+> texto); `guard_catalog` OK 9059.
+>
+> **F5 escrita e testada em 2026-09-24 — ainda NÃO commitada.** Ver o bloco
+> "FASE 5 — O QUE MUDOU" dentro da Fase 5. Três correções a este plano, todas
+> medidas: (1) o nome da trava não pode ser o mesmo nos dois modelos (models.E032);
+> (2) 12 testes plantavam `x16` no banco e ficaram impossíveis; (3) o
+> `restore_known_parts` — a recuperação de desastre — não movia a largura: com a
+> trava ele restauraria ZERO de qualquer backup anterior a 24/09.
+>
+> **Fases:** F0–F4 ✅✅ · F5 código ✅ local ⏳ prod ⏳ · F6 ✅✅ · F7 ❌ · Parte 2: nada.
+
 > ### ESTADO EM 2026-09-23 — leia isto antes de rodar qualquer coisa `[Rev.3]`
 > **O CÓDIGO da Parte 1 está inteiro em produção. Os DADOS de produção não foram tocados.**
 >
@@ -265,7 +282,7 @@ para `bus_width` no write-time (usa `split_bus_width`, §3.4); **—** = nada a 
 | `dedupe_known_parts` | `dedupe_known_parts.py:39 _FIELDS` | revert/merge | **T** |
 | `purge_enriched` | `purge_enriched.py:130` | backup JSON | **T** |
 | `restore_purge` | `restore_purge.py:35 FIELDS` | restaura do backup | **T** |
-| `restore_known_parts` | `restore_known_parts.py:22 _FIELDS`, `:79` | gap-fill + `apply_kp_convention` | **T** |
+| `restore_known_parts` | `restore_known_parts.py:22 _FIELDS`, `:79` | gap-fill + `apply_kp_convention` | **T** — e **R** desde a F5 `[Rev.4]`: backup antigo traz a largura no `interface`; o restore usa a mesma regra do backfill (`plano_largura`) |
 | `import_micron_catalog` | `import_micron_catalog.py:156-164, 168-178, 266, 482, 505, 624` | `interface = "x32 @ 1866MHz"` | **T + R**: `bus_width ← BUS WIDTH`; `Speed:` nas notes; `interface` só protocolo |
 | `import_samsung_psg` | `import_samsung_psg.py:126, 194, 247, 300` | coluna `interface` do CSV | **T + R** (`split_bus_width` na leitura) |
 | `normalize_convention` | `normalize_convention.py` (inteiro) | 2 exceções "campo fora do lugar" | **vira a 3ª exceção** (§4 F3) |
@@ -1168,6 +1185,66 @@ banco passa.
 
 **Reversão.** `migrate chips 0024` (remove a constraint; dado intacto).
 
+> ### FASE 5 — O QUE MUDOU EM RELAÇÃO AO TEXTO ACIMA (2026-09-24) `[Rev.4]`
+>
+> Tudo medido numa cópia descartável do repo (Python 3.10 + SQLite), antes de
+> tocar no repo de verdade. Suíte inteira de base: **1.956 testes, 5 vermelhas** —
+> as herdadas de sempre (4 do pricing + tenancy DefeitoTipo/ProvaFoto).
+>
+> **1. O nome.** O trecho acima, colado igual nos dois modelos, o Django recusa
+> (`models.E032`: nome de constraint repetido entre modelos) — nem `makemigrations`
+> roda. A família ficou com `chipfamily_interface_nao_e_largura`. Os 10 tokens
+> vêm de `chips/conventions.py::INTERFACE_VETADA`, derivado do `BUS_WIDTH_VOCAB`
+> (vocabulário tem UM dono). A migration gerada, `0025_interface_nao_e_largura`,
+> tem só os dois `AddConstraint` — `NOT ("interface" IN ('x4', …, 'X64'))`,
+> nada de pghistory, como previsto.
+>
+> **2. 12 testes plantavam `x16` no banco** (9 do backfill, 3 do grandfather) e com
+> a trava deram `CHECK constraint failed` — exatamente os 12 previstos lendo o
+> código. Reescritos: o token exato passou para a camada de script (`_plan` e
+> `plano_largura` em memória), e o caminho pelo banco usa a forma que ele ainda
+> aceita (' x16', 'x16 @ …'). O grandfather do `clean()` continua valendo para
+> essa forma.
+>
+> **3. O `restore_known_parts` — o achado que muda o plano.** Ele grava por
+> `bulk_create`, que pula o portão, e a lista do §2.3 o marcava só como **T**.
+> Medido com o `seed_known_parts.json` (596 PNs, 154 com largura no `interface`):
+> sem a trava, restaurava os 596 e devolvia as 154 larguras ao `interface` em
+> silêncio; com a trava, o `--commit` caía inteiro e restaurava **zero** — com o
+> dry-run antes prometendo "A criar: 596". Vale para qualquer backup anterior a
+> 24/09 (3.539 registros com largura ou velocidade no `interface`). Consertado:
+> a exceção 3 do `normalize_convention` virou função (`plano_largura`, e
+> `canon_do_registro` para a classe), e o restore a usa. O que a regra deixa para
+> decisão humana é listado; o que o banco recusaria (token exato que a regra não
+> move) fica FORA e é listado — o resto do arquivo entra. Com o conserto: 596
+> restaurados, 154 em `bus_width`, 0 no `interface`.
+>
+> **Travas novas: 22.** `InterfaceNaoELarguraNoBancoTests` (7) ·
+> `PlanoLarguraTests` (7) · `RestoreKnownPartsLarguraTests` (7, um deles restaura
+> o seed REAL) · `RevertDoBackfillDepoisDaF5Tests` (1, `TransactionTestCase` —
+> num `TestCase` o rollback externo esconderia a mutação). Suíte com a F5:
+> **1.978 testes, as mesmas 5 vermelhas**. Mutações, todas mordem: trava do
+> KnownPart fora · trava da família fora · restore sem mover · restore sem separar
+> o token exato · revert sem `atomic` · `plano_largura` reescrevendo largura igual
+> · `plano_largura` jogando a velocidade fora · dry-run do restore contando o que
+> o commit não grava · `INTERFACE_VETADA` sem maiúscula.
+>
+> **Consequências que ficam escritas:**
+> - **O revert do backfill pelo JSON acabou.** Ele devolveria 'x16' ao
+>   `interface`, e o banco recusa — tudo ou nada, nada fica pela metade (trava
+>   acima). Em produção esse JSON já tinha morrido com o `/tmp`; a volta real é o
+>   Export.
+> - **Reverter a F5 em produção não é `migrate chips 0024` à mão** (migration em
+>   prod roda só no build): é uma migration NOVA com `RemoveConstraint`, empurrada.
+> - **Export anterior a 24/09 restaurado no banco** volta sem a trava e com a
+>   largura no `interface`; o próximo build reaplicaria a 0025 e falharia (o site
+>   segue no ar, é deploy travado). Nesse caso: `normalize_convention --commit`
+>   ANTES de empurrar qualquer coisa.
+>
+> **Fora do escopo, visto no caminho:** o `setup.sh` num banco vazio para no
+> passo 2 (`sync_index_page` exige a página `index`, que migration nenhuma cria) —
+> o bootstrap de dev já estava quebrado antes da F5.
+
 ### Fase 6 — Ferramentas de largura, documentação e memória
 
 **Objetivo.** Ninguém mais lê nem escreve "largura em `interface`" — nem humano, nem
@@ -1768,7 +1845,7 @@ python manage.py characterize_baseline --out /tmp/baseline_DEPOIS_PROD.json
 | F1 | `migrate chips 0023` / `migrate estoque 0025` (local); em prod, commit anterior + build | não (colunas vazias) |
 | F2/F4 código+yaml | `git revert` + `load_brands --commit` das 3 marcas | não |
 | F3 backfill | `normalize_convention --revert <json do mesmo banco>` | não (JSON tem `interface`, `bus_width`, `notes` antigos) |
-| F5 constraint | `migrate chips 0024` | não |
+| F5 constraint | local: `migrate chips 0024`; prod: migration nova com `RemoveConstraint`, pelo build `[Rev.4]` | não |
 | F6 docs | `git revert` | não |
 
 ---
@@ -1780,7 +1857,7 @@ python manage.py characterize_baseline --out /tmp/baseline_DEPOIS_PROD.json
 - [ ] F2: `split_bus_width`/`interface_problem`/`bus_width_problem` em `chips/knowledge/convention.py`; `is_bus_width`/`BUS_WIDTH_VOCAB` em `chips/conventions.py`; portão Pydantic rejeita `interface: xN` com a mensagem; `clean()` idem (só valor mudado); engine copia `bus_width` (6 pontos: `_result_from_family`, `_result_from_known`, 1481, 1544, 1591, 1644, 1688); `_clean_interface` tira largura; `_snapshot` grava `bus_width`; card + decode_card + debug com "Largura"; 3 `.po`; admin; 24 canais ensinados (checklist do §2.3 marcado um a um no PR); 8 classes de teste com mutação registrada; baseline IDÊNTICO.
 - [ ] F3: `normalize_convention` = 3ª exceção, `SafeWriteCommand`, `--out`, relatório de NÃO MIGRADOS completo, idempotente, ida-e-volta testada; rodado local (dump) e prod; três colunas intactas; `MEDIR` = 0 em KnownPart.
 - [ ] F4: 25 linhas de yaml; `load_brands` dry-run ×3; commit local e prod; testes 2555/228/201 re-especificados com data; `MEDIR` = 0 em ChipFamily (menos 2 OUTRO).
-- [ ] F5: pré-voo zero; constraint `interface_nao_e_largura` em KnownPart e ChipFamily; migration 0025; teste de banco.
+- [ ] F5: pré-voo zero; constraint `interface_nao_e_largura` em KnownPart e ChipFamily (nomes próprios — E032); migration 0025; teste de banco; `restore_known_parts` movendo a largura `[Rev.4]`. *(código ✅ 2026-09-24; local e prod pendentes)*
 - [ ] F6: COLETAR/HANDOFF/PROMPT/check_k4b em `bus_width` (+ canal certo: submit/resolve, não yaml); coletor Samsung = 93; CLAUDE.md §5/§6/§7/§9 + linha 1201; AUTORIA.md; memória do projeto.
 - [ ] F7: baseline DEPOIS gravado; `--diff` ANTES→DEPOIS com três colunas intactas; `guard_catalog`; suíte + `check_translations` + `makemigrations --check` verdes; lista de testes de frontend entregue e rodada pelo dono.
 - [ ] **[Rev.1] Emendas E1–E7 na Parte 1:** `decode_width_*` em `ChipFamily`/`FamilySpec`/`_FAMILY_FIELDS` + bloco genérico no engine + portão (pos sem map rejeita) — sem nenhuma família declarada ainda; `bus_width_source` no resultado com a precedência banco > gramática > família > distributor; `bless_base` e a aprovação de `PendingEntry` **nunca** escrevem `bus_width` (testes); os 3 modelos de lote com `bus_width` + `width_class` + `bus_width_source`; `characterize` captura `bus_width_source`; HANDOFF com a Etapa 9.

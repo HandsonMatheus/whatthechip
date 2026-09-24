@@ -19,7 +19,7 @@ import pghistory
 from django.conf import settings
 from django.db import models
 
-from chips.conventions import BUS_WIDTH_VOCAB
+from chips.conventions import BUS_WIDTH_VOCAB, INTERFACE_VETADA
 
 
 class Brand(models.Model):
@@ -160,13 +160,24 @@ class ChipFamily(models.Model):
             models.CheckConstraint(
                 condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
                 name="chipfamily_bus_width_vocab"),
+            # I2 no BANCO (F5, 2026-09-24): `interface` nunca é o token de
+            # largura — nem por .update()/bulk/SQL cru, que não passam por
+            # clean() nenhum (e a família nem chama full_clean() no save: foi
+            # o perigo do import_chipid). Só o token EXATO (INTERFACE_VETADA);
+            # o resto o clean()/portão barram antes. Nome PRÓPRIO por modelo:
+            # repetido, o Django recusa a subir (models.E032).
+            models.CheckConstraint(
+                condition=~models.Q(interface__in=INTERFACE_VETADA),
+                name="chipfamily_interface_nao_e_largura"),
         ]
 
     def clean(self):
         """PORTÃO mínimo da família (2026-09). Ela não tinha `clean()`: o portão
         Pydantic do `load_brands` cobria o yaml e mais nada — o admin escrevia
         direto. Só as duas regras de largura, com o mesmo grandfather do
-        KnownPart no `interface` (as 25 famílias com `xN` só migram na F4)."""
+        KnownPart no `interface`. As 25 famílias com `xN` migraram na F4; desde a
+        F5 o BANCO recusa o token exato, e o perdão daqui só alcança a forma que
+        ele ainda aceita ('x16 @ 800MHz', ' x16')."""
         from django.core.exceptions import ValidationError
         from chips.knowledge.convention import bus_width_problem, interface_problem
         bw = (self.bus_width or "").strip().lower()
@@ -345,6 +356,10 @@ class KnownPart(models.Model):
             models.CheckConstraint(
                 condition=models.Q(bus_width__in=("",) + BUS_WIDTH_VOCAB),
                 name="knownpart_bus_width_vocab"),
+            # I2 no BANCO (F5, 2026-09-24) — mesma trava da família, nome próprio.
+            models.CheckConstraint(
+                condition=~models.Q(interface__in=INTERFACE_VETADA),
+                name="knownpart_interface_nao_e_largura"),
         ]
 
     def __str__(self):
@@ -386,11 +401,12 @@ class KnownPart(models.Model):
         if conflito:
             raise ValidationError({"chip_type": conflito})
         # LARGURA (2026-09). `bus_width` é campo NOVO: sem legado a perdoar, valida
-        # sempre. `interface` é o inverso — 3.539 registros ainda têm largura ali
-        # esperando o backfill, então vale o MESMO grandfather das medidas: só
-        # rejeita quando o valor MUDOU. Sem isso o re-save de qualquer legado
-        # (resnapshot, bless_base, e o próprio backfill) quebraria antes de a
-        # migração acontecer. Depois da F5 a CheckConstraint fecha o resto.
+        # sempre. `interface` é o inverso — os 3.539 registros com largura ali
+        # esperaram o backfill (F3), então vale o MESMO grandfather das medidas:
+        # só rejeita quando o valor MUDOU. Desde a F5 (2026-09-24) o BANCO recusa
+        # o token exato ('x16', 'X16') até por .update()/bulk; o perdão daqui só
+        # alcança a forma que o banco ainda aceita ('x16 @ 800MHz', ' x16') — e é
+        # este clean() que impede alguém de ESCREVER essa forma de novo.
         prob_bw = bus_width_problem(self.chip_type, self.bus_width)
         if prob_bw:
             raise ValidationError({"bus_width": prob_bw})

@@ -36,6 +36,15 @@ vem do yaml (Fase 4) e o proximo `load_brands` desfaria. Tres motivos de NAO
 migrar, todos reportados com a lista COMPLETA de PNs: SOBRA SEM DESTINO
 ('x16 (2 dies)'), CONTRADICAO (ja tem outra largura em `bus_width`) e CLASSE NAO
 PERMITE (eMMC/eMCP, onde largura de dados nao identifica o dispositivo).
+Desde a F5 (2026-09-24) o BANCO recusa o token exato no `interface` ('x16',
+'X16' — CheckConstraint da chips/0025). Consequencias para este comando: (a) a
+excecao 3 so encontra no banco a forma que ele ainda aceita ('x16 @ 800MHz',
+'@ 1866MHz'), ou um banco restaurado de um Export ANTERIOR a 24/09, que volta
+sem a trava — ai rode este comando ANTES do proximo deploy, senao o build falha
+ao reaplicar a 0025; (b) o `--revert` do backfill passou a ser recusado pelo
+banco, inteiro (tudo ou nada): desfaze-lo exige tirar a trava antes. A regra da
+largura virou FUNCAO (`plano_largura`) porque o `restore_known_parts` tambem a
+usa — um backup antigo traz a largura no `interface`.
 Comportamento (label/rentabilidade) NAO muda — so o chip_type/subtype ARMAZENADO vira
 canonico (o engine ja resolvia em tempo real via canonical_chip_type).
 """
@@ -114,19 +123,15 @@ def _canon_subtype(canon_ct: str, subtype: str) -> str:
     return (subtype or "").strip()
 
 
-def _plan(obj):
-    """Devolve ``(mudancas, motivo)``: ``{campo: [old, new]}`` e, quando a largura
-    NAO migra, o balde do relatorio (`NM_*`) — string vazia quando nada impede.
+def canon_do_registro(obj) -> str:
+    """O chip_type CANONICO que as excecoes do `_plan` usam, com as duas regras
+    que o `canonical_chip_type` sozinho nao sabe: multi-geracao fica generica
+    ("LPDDR2/LPDDR3" nao e forcada a uma) e registro de tipo generico herda o
+    tipo da FAMILIA (a autoridade da geracao no classify).
 
-    ⚠ A assinatura virou tupla na excecao 3: o `motivo` NAO pode entrar no dict de
-    mudancas (viraria campo a gravar) nem descartar o resto do plano — um registro
-    que nao migra a largura ainda pode ter chip_type/densidade/geracao a corrigir.
-
-    Migra SO o chip_type (o campo critico e persistido no estoque). O subtype NAO e
-    migrado: e canonicalizado em tempo de LEITURA por canonical_gen (gateway/engine),
-    e migrar o subtype da FAMILIA quebra a extracao de geracao do engine (eMCP) e
-    perde info de familias multi-geracao (ex.: "LPDDR4X/5X"). Limpeza de subtype no
-    write-time fica para os populate_* (nascer limpo), nao para esta migracao."""
+    Funcao propria desde a F5 (2026-09-24) para o `restore_known_parts` decidir
+    a classe da largura com a MESMA regua do backfill. Serve a ChipFamily
+    tambem: ela nao tem `family`, e o `getattr` devolve None."""
     ct = (obj.chip_type or "").strip()
     st = (obj.subtype or "").strip()
     canon = canonical_chip_type(ct, st)
@@ -140,6 +145,61 @@ def _plan(obj):
         fam_canon = canonical_chip_type(fam.chip_type or "", fam.subtype or "")
         if not is_generic(fam_canon):
             canon = fam_canon
+    return canon
+
+
+def plano_largura(canon: str, interface: str, bus_width: str, notes: str):
+    """Excecao 3 — LARGURA NO LUGAR CERTO — como funcao. Devolve
+    ``(mudancas, motivo)``: ``{campo: [antigo, novo]}`` so em `bus_width`,
+    `interface` e `notes`, e o balde de NAO MIGRADO (`NM_*`) quando a largura nao
+    pode mudar de campo sem decisao humana ("" quando nada impede).
+
+    FONTE UNICA desta regra: o backfill (`_plan`) e o `restore_known_parts` (F5,
+    2026-09-24) chamam esta funcao. Regras (PLANO_BUS_WIDTH §3.4, I5): FILL-ONLY
+    em `bus_width`; a `interface` so esvazia quando TUDO que havia nela teve
+    destino (largura -> `bus_width`, velocidade -> `notes`); `notes` so cresce.
+    """
+    ch = {}
+    bw, sp, sobra = split_bus_width(interface)
+    if bw and sobra:
+        # 'x16 (2 dies)': migrar so a largura APAGARIA o '(2 dies)'. I5.
+        return ch, NM_SOBRA
+    if not (bw or sp):
+        return ch, ""
+    atual = (bus_width or "").strip().lower()
+    if bw and bus_width_problem(canon, bw):
+        return ch, NM_CLASSE
+    if bw and atual and atual != bw:
+        return ch, NM_CONTRA
+    # FILL-ONLY: largura ja identica nao vira "mudanca" (a licao do MIGRA4 —
+    # reescrita no-op suja o relatorio e o JSON de reversao).
+    if bw and not atual:
+        ch["bus_width"] = [bus_width, bw]
+    # So aqui a `interface` e esvaziada: tudo que havia nela teve destino
+    # (largura -> bus_width, velocidade -> notes).
+    ch["interface"] = [interface, ""]
+    if sp:
+        novo = notes_com_speed(notes, sp)
+        if novo != (notes or ""):
+            ch["notes"] = [notes, novo]
+    return ch, ""
+
+
+def _plan(obj):
+    """Devolve ``(mudancas, motivo)``: ``{campo: [old, new]}`` e, quando a largura
+    NAO migra, o balde do relatorio (`NM_*`) — string vazia quando nada impede.
+
+    ⚠ A assinatura virou tupla na excecao 3: o `motivo` NAO pode entrar no dict de
+    mudancas (viraria campo a gravar) nem descartar o resto do plano — um registro
+    que nao migra a largura ainda pode ter chip_type/densidade/geracao a corrigir.
+
+    Migra SO o chip_type (o campo critico e persistido no estoque). O subtype NAO e
+    migrado: e canonicalizado em tempo de LEITURA por canonical_gen (gateway/engine),
+    e migrar o subtype da FAMILIA quebra a extracao de geracao do engine (eMCP) e
+    perde info de familias multi-geracao (ex.: "LPDDR4X/5X"). Limpeza de subtype no
+    write-time fica para os populate_* (nascer limpo), nao para esta migracao."""
+    st = (obj.subtype or "").strip()
+    canon = canon_do_registro(obj)
     ch = {}
     if canon != (obj.chip_type or ""):
         ch["chip_type"] = [obj.chip_type, canon]
@@ -192,28 +252,11 @@ def _plan(obj):
     # proximo `load_brands` desfaria o que este comando escrevesse (dossie §5.1).
     motivo = ""
     if isinstance(obj, KnownPart):
-        bw, sp, sobra = split_bus_width(obj.interface)
-        if bw and sobra:
-            # 'x16 (2 dies)': migrar so a largura APAGARIA o '(2 dies)'. I5.
-            motivo = NM_SOBRA
-        elif bw or sp:
-            atual = (obj.bus_width or "").strip().lower()
-            if bw and bus_width_problem(canon, bw):
-                motivo = NM_CLASSE
-            elif bw and atual and atual != bw:
-                motivo = NM_CONTRA
-            else:
-                # FILL-ONLY: largura ja identica nao vira "mudanca" (a licao do
-                # MIGRA4 — reescrita no-op suja o relatorio e o JSON de reversao).
-                if bw and not atual:
-                    ch["bus_width"] = [obj.bus_width, bw]
-                # So aqui a `interface` e esvaziada: tudo que havia nela teve
-                # destino (largura -> bus_width, velocidade -> notes).
-                ch["interface"] = [obj.interface, ""]
-                if sp:
-                    novo = notes_com_speed(obj.notes, sp)
-                    if novo != (obj.notes or ""):
-                        ch["notes"] = [obj.notes, novo]
+        # A excecao 2 so escreve na `interface` quando ela esta VAZIA, e a
+        # excecao 3 so quando ela carrega largura/velocidade — nunca as duas no
+        # mesmo registro, entao o `update` nao atropela nada.
+        mud, motivo = plano_largura(canon, obj.interface, obj.bus_width, obj.notes)
+        ch.update(mud)
     return ch, motivo
 
 

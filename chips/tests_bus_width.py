@@ -19,6 +19,12 @@ engine. O que elas protegem, em uma frase cada:
   dispositivo: em eMMC ela é MODO do host (JESD84, EXT_CSD[183]).
 * `EngineBusWidthTests` — a precedência, que é onde mora a circularidade:
   banco confirmado > gramática > família > banco não-confirmado.
+* `InterfaceNaoELarguraNoBancoTests` (F5, 2026-09-24) — o CADEADO: o banco
+  recusa o token exato no `interface` até por `.update()`/`bulk_create`, e
+  documenta o que ele deixa passar de propósito.
+* `PlanoLarguraTests` (F5) — a regra do backfill como função, usada também pelo
+  `restore_known_parts`. É a camada onde o token exato ainda se testa: no banco
+  ele virou impossível.
 """
 
 from types import SimpleNamespace
@@ -172,22 +178,29 @@ class InterfaceNaoELarguraTests(TestCase):
             self._kp(interface="x16").save()
         self.assertIn("bus_width", str(ctx.exception.message_dict))
 
+    # ⚠ F5 (2026-09-24): o legado destes três testes era `interface='x16'`.
+    # Desde a chips/0025 o BANCO recusa o token exato até por `bulk_create` —
+    # aquele legado ficou impossível, e a prova disso é a classe
+    # InterfaceNaoELarguraNoBancoTests. O perdão do clean() continua valendo
+    # para a forma que o banco AINDA aceita, e é ela que estes testes plantam.
+    LEGADO = "x16 @ 800MHz (1600MTPS)"
+
     def test_legado_INALTERADO_continua_re_salvavel(self):
         """GRANDFATHER. Grava por baixo do portão (como o legado entrou), depois
         re-salva mexendo em OUTRO campo: tem de passar."""
         from chips.models import KnownPart
-        kp = self._kp(interface="x16")
+        kp = self._kp(interface=self.LEGADO)
         KnownPart.objects.bulk_create([kp])          # pula clean(), como o legado
         kp = KnownPart.objects.get(part_number="TBW0001")
         kp.device = "Galaxy J5"
         kp.save()                                     # NÃO pode levantar
         kp.refresh_from_db()
-        self.assertEqual(kp.interface, "x16", "o portão apagou legado que não devia")
+        self.assertEqual(kp.interface, self.LEGADO, "o portão apagou legado que não devia")
 
     def test_MUDAR_o_interface_legado_PARA_outra_largura_e_rejeitado(self):
         """O perdão é do valor inalterado, não do campo."""
         from chips.models import KnownPart
-        KnownPart.objects.bulk_create([self._kp(interface="x16")])
+        KnownPart.objects.bulk_create([self._kp(interface=self.LEGADO)])
         kp = KnownPart.objects.get(part_number="TBW0001")
         kp.interface = "x8"
         with self.assertRaises(ValidationError):
@@ -197,7 +210,7 @@ class InterfaceNaoELarguraTests(TestCase):
         """É exatamente o que o backfill da F3 faz — se isto travar, a migração
         não roda."""
         from chips.models import KnownPart
-        KnownPart.objects.bulk_create([self._kp(interface="x16")])
+        KnownPart.objects.bulk_create([self._kp(interface=self.LEGADO)])
         kp = KnownPart.objects.get(part_number="TBW0001")
         kp.interface, kp.bus_width = "", "x16"
         kp.save()
@@ -255,6 +268,165 @@ class InterfaceNaoELarguraTests(TestCase):
             self.assertEqual(len(cons), 1, f"{modelo.__name__} sem a constraint")
             self.assertIn(("",) + BUS_WIDTH_VOCAB, list(cons[0].condition.children[0]),
                           f"{modelo.__name__}: a constraint divergiu do vocabulário")
+
+
+class InterfaceNaoELarguraNoBancoTests(TestCase):
+    """F5 (2026-09-24) — o CADEADO: o BANCO recusa largura em `interface`.
+
+    O `clean()` e o portão Pydantic já recusavam desde a F2, mas só para quem
+    passa por eles. `.update()` de queryset, `bulk_create`, SQL cru e a
+    `ChipFamily` — que nem chama `full_clean()` no `save()`, foi o perigo do
+    `import_chipid` — passavam direto. A CheckConstraint da chips/0025 fecha
+    essas portas para o token EXATO; o resto continua sendo do `clean()`, e
+    `test_o_que_o_banco_NAO_barra_e_de_proposito` escreve essa fronteira.
+    """
+
+    def setUp(self):
+        from chips.models import Brand
+        self.marca = Brand.objects.create(name="TesteF5", code="TF5")
+
+    def _kp_salvo(self, **kw):
+        from chips.models import KnownPart
+        base = dict(brand=self.marca, part_number="TF50001", chip_type="DDR3",
+                    confidence="confirmed", review_status="approved")
+        base.update(kw)
+        kp = KnownPart(**base)
+        kp.save()
+        return kp
+
+    def test_update_com_o_token_exato_o_BANCO_recusa(self):
+        """`.update()` não chama save() nem clean(): quem recusa aqui é o banco."""
+        from django.db import IntegrityError, transaction
+        from chips.models import KnownPart
+        kp = self._kp_salvo()
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            KnownPart.objects.filter(pk=kp.pk).update(interface="x16")
+
+    def test_bulk_create_com_o_token_exato_o_BANCO_recusa(self):
+        """Era por aqui que o `restore_known_parts` devolvia a largura ao campo
+        errado sem ninguém ver."""
+        from django.db import IntegrityError, transaction
+        from chips.models import KnownPart
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            KnownPart.objects.bulk_create([KnownPart(
+                brand=self.marca, part_number="TF50002", chip_type="DDR3",
+                interface="x16", confidence="confirmed")])
+
+    def test_cada_token_nas_duas_caixas_e_recusado(self):
+        """Os 10 valores. A lista vem de INTERFACE_VETADA, derivada do
+        vocabulário — e o banco guarda a lista CONGELADA na migration: se o
+        vocabulário crescer, o espelho abaixo é o que avisa."""
+        from django.db import IntegrityError, transaction
+        from chips.conventions import INTERFACE_VETADA
+        from chips.models import KnownPart
+        kp = self._kp_salvo()
+        self.assertEqual(len(INTERFACE_VETADA), 10)
+        for token in INTERFACE_VETADA:
+            with self.subTest(token=token):
+                with self.assertRaises(IntegrityError), transaction.atomic():
+                    KnownPart.objects.filter(pk=kp.pk).update(interface=token)
+
+    def test_protocolo_passa_pelo_banco(self):
+        """A trava não pode morder protocolo — nem o texto da K9C/K9HDG, que tem
+        largura DENTRO e fica por decisão do dono."""
+        from chips.models import KnownPart
+        kp = self._kp_salvo(chip_type="eMMC")
+        for ok in ("eMMC 5.1", "UFS 3.1", "Async/ONFI", "NAND (x8/x16)", ""):
+            with self.subTest(valor=ok):
+                KnownPart.objects.filter(pk=kp.pk).update(interface=ok)
+                self.assertEqual(KnownPart.objects.get(pk=kp.pk).interface, ok)
+
+    def test_familia_tambem_recusa_ate_pelo_save(self):
+        """A família era a porta mais aberta: o `save()` dela não roda clean()."""
+        from django.db import IntegrityError, transaction
+        from chips.models import ChipFamily
+        fam = ChipFamily.objects.create(brand=self.marca, prefix="TF5F", chip_type="DDR3")
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            ChipFamily.objects.filter(pk=fam.pk).update(interface="x16")
+        fam.interface = "X32"
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            fam.save()
+        ChipFamily.objects.filter(pk=fam.pk).update(interface="NAND (x8/x16)")
+        self.assertEqual(ChipFamily.objects.get(pk=fam.pk).interface, "NAND (x8/x16)")
+
+    def test_o_que_o_banco_NAO_barra_e_de_proposito(self):
+        """A FRONTEIRA, por escrito. O banco barra só o token exato: 'x16 @ 800MHz'
+        passa por `.update()`, porque regex em CHECK não funciona igual no SQLite
+        da suíte — é o tipo de trava que passa no local e cai em produção. Quem
+        barra essa forma é o clean(), na hora de ESCREVER. Se um dia alguém quiser
+        a trava mais larga, este teste é o lugar da conversa."""
+        from chips.models import KnownPart
+        kp = self._kp_salvo()
+        KnownPart.objects.filter(pk=kp.pk).update(interface="x16 @ 800MHz")
+        self.assertEqual(KnownPart.objects.get(pk=kp.pk).interface, "x16 @ 800MHz")
+        novo = KnownPart(brand=self.marca, part_number="TF50003", chip_type="DDR3",
+                         interface="x16 @ 800MHz", confidence="confirmed")
+        with self.assertRaises(ValidationError):
+            novo.save()
+
+    def test_a_trava_ESPELHA_a_fonte_unica_e_tem_nome_proprio(self):
+        """Tokens da constraint == INTERFACE_VETADA == o vocabulário nas duas
+        caixas. E um nome POR MODELO: o trecho original do plano usava o mesmo
+        nos dois, e com nome repetido o Django nem sobe (models.E032)."""
+        from chips.conventions import BUS_WIDTH_VOCAB, INTERFACE_VETADA
+        from chips.models import ChipFamily, KnownPart
+        self.assertEqual(set(INTERFACE_VETADA),
+                         set(BUS_WIDTH_VOCAB) | {t.upper() for t in BUS_WIDTH_VOCAB})
+        for modelo, nome in ((KnownPart, "knownpart_interface_nao_e_largura"),
+                             (ChipFamily, "chipfamily_interface_nao_e_largura")):
+            cons = [c for c in modelo._meta.constraints
+                    if c.name.endswith("_interface_nao_e_largura")]
+            self.assertEqual([c.name for c in cons], [nome])
+            self.assertTrue(cons[0].condition.negated, f"{nome}: a trava tem de ser NOT IN")
+            self.assertEqual(cons[0].condition.children,
+                             [("interface__in", INTERFACE_VETADA)],
+                             f"{nome}: a trava divergiu da fonte única")
+
+
+class PlanoLarguraTests(SimpleTestCase):
+    """A regra do backfill COMO FUNÇÃO (F5, 2026-09-24). O `normalize_convention`
+    e o `restore_known_parts` chamam a mesma — duas réguas divergem na primeira
+    alteração. Camada de SCRIPT, sem banco: é aqui que o token exato ainda se
+    testa, porque no banco ele virou impossível."""
+
+    def _p(self, interface, bus_width="", notes="", canon="DDR3"):
+        from chips.management.commands.normalize_convention import plano_largura
+        return plano_largura(canon, interface, bus_width, notes)
+
+    def test_token_exato_muda_de_campo(self):
+        self.assertEqual(self._p("x16"),
+                         ({"bus_width": ["", "x16"], "interface": ["x16", ""]}, ""))
+
+    def test_maiuscula_chega_minuscula(self):
+        mud, motivo = self._p("X16")
+        self.assertEqual((mud["bus_width"], motivo), (["", "x16"], ""))
+
+    def test_largura_mais_velocidade(self):
+        mud, _ = self._p("x16 @ 800MHz (1600MTPS)", notes="Voltage: 1.5V")
+        self.assertEqual(mud["interface"], ["x16 @ 800MHz (1600MTPS)", ""])
+        self.assertEqual(mud["notes"],
+                         ["Voltage: 1.5V", "Voltage: 1.5V | Speed: 800MHz (1600MTPS)"])
+
+    def test_so_velocidade(self):
+        self.assertEqual(self._p("@ 1866MHz"),
+                         ({"interface": ["@ 1866MHz", ""], "notes": ["", "Speed: 1866MHz"]}, ""))
+
+    def test_os_tres_baldes_de_nao_migrado(self):
+        from chips.management.commands.normalize_convention import (
+            NM_CLASSE, NM_CONTRA, NM_SOBRA)
+        self.assertEqual(self._p("x16 (2 dies)"), ({}, NM_SOBRA))
+        self.assertEqual(self._p("x16", bus_width="x8"), ({}, NM_CONTRA))
+        self.assertEqual(self._p("x8", canon="eMMC"), ({}, NM_CLASSE))
+
+    def test_largura_ja_no_lugar_nao_e_reescrita(self):
+        """FILL-ONLY: só a `interface` esvazia; o `bus_width` idêntico não vira
+        mudança (reescrita no-op suja o relatório e o JSON de reversão)."""
+        self.assertEqual(self._p("x16", bus_width="x16"), ({"interface": ["x16", ""]}, ""))
+
+    def test_protocolo_e_vazio_nao_mexem(self):
+        for v in ("eMMC 5.1", "UFS 3.1", "NAND (x8/x16)", ""):
+            with self.subTest(v=v):
+                self.assertEqual(self._p(v), ({}, ""))
 
 
 class ChipFamilyPortaoTests(TestCase):
