@@ -1223,9 +1223,12 @@ table.est-table td { padding: var(--s5) var(--s5); }
       <div class="scan">
         <div class="finder">
           <svg class="finder__mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3"/></svg>
+          {% comment %} hx-include SÓ o próprio campo (dono 2026-09-24). Com "[name='pn']"
+             o preview levava junto o `pn` escondido do cartão na tela, e o Django
+             fica com o ÚLTIMO valor — o do cartão velho. {% endcomment %}
           <input id="pn-input" name="pn" type="text" value=""
                  placeholder="KMQ310006M-B421" spellcheck="false" autocomplete="off" inputmode="text" autofocus
-                 hx-get="{% url 'estoque:preview' lot.pk %}" hx-trigger="pn-ready" hx-target="#confirm-area" hx-swap="innerHTML" hx-include="[name='pn']" />
+                 hx-get="{% url 'estoque:preview' lot.pk %}" hx-trigger="pn-ready" hx-target="#confirm-area" hx-swap="innerHTML" hx-include="#pn-input" />
           <button type="button" id="est-mic-btn" class="wtc-mic-btn finder__mic"
                   data-mic-target="pn-input" data-mic-hint="est-pin-hint" data-mic-cta="est-decode-btn"
                   title="{% trans 'Ditar por voz' %}" aria-label="{% trans 'Ditar por voz' %}"></button>
@@ -1525,6 +1528,20 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     return val.length < PN_MIN && PN_PSEUDO.indexOf(val.toUpperCase()) === -1;
   }
 
+  // O PN como o SERVIDOR o grava — espelho de `_normalise_pn` (estoque/views.py):
+  // maiúsculas, só A-Z, 0-9 e hífen. O portão CartaoVelhoNaBancadaTests confere.
+  function normPn(val) {
+    return (val || '').trim().toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+  }
+
+  // O cartão na tela é de OUTRO PN que não o do campo? O `pn` escondido no form
+  // do cartão é o PN que o servidor classificou — e é ele que o Adicionar posta.
+  // Sem cartão, não há o que comparar.
+  function cartaoDeOutroPn(val) {
+    var inp = document.querySelector('#confirm-area input[name="pn"]');
+    return !!inp && inp.value !== normPn(val);
+  }
+
   function updateEstHint(val) {
     var len = val.length;
     if (estDecodeBtn) estDecodeBtn.disabled = pnTooShort(val);
@@ -1558,7 +1575,11 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
         this.value = upper;
         try { this.setSelectionRange(pos, pos); } catch(e) {}
       }
-      if (pnTooShort(this.value)) {
+      // PN curto demais OU cartão de OUTRO PN (dono 2026-09-24): o cartão na
+      // tela tem que ser do PN que está no campo. Antes, digitar outro PN sem
+      // Enter deixava o cartão do chip anterior (caixa, veredito) e o Adicionar
+      // já postava o PN novo — a peça ia para a caixa do outro chip.
+      if (pnTooShort(this.value) || cartaoDeOutroPn(this.value)) {
         document.getElementById('confirm-area').innerHTML = '';
       }
       updateEstHint(this.value);
@@ -1656,31 +1677,21 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     closeDeleteModal();
   };
 
-  // ── Sync PN no confirm card quando o usuário continua digitando ──
-  // Garante que o card sempre mostre e submeta o PN actual do input
+  // ── O cartão é do PN que o servidor classificou — e só dele ──
+  // (dono 2026-09-24) Aqui havia um "sync" que reescrevia o `pn` escondido do
+  // cartão com o que estivesse no campo, a cada tecla. Como a bancada só
+  // decodifica com Enter/Decodificar, digitar outro PN deixava na tela o cartão
+  // do chip ANTERIOR (caixa, veredito, preço) e o Adicionar postava o PN NOVO: o
+  // servidor gravava um chip e o operador guardava a peça na caixa do outro.
+  // Agora o cartão nunca é reescrito. Se o campo mudar, ele some (listener de
+  // `input` acima); se a resposta do preview chegar quando o campo já é outro,
+  // some também.
   document.addEventListener('htmx:afterSwap', function (e) {
-    if (e.detail.target && e.detail.target.id === 'confirm-area') {
-      syncConfirmPn();
+    if (e.detail.target && e.detail.target.id === 'confirm-area' &&
+        pnInput && cartaoDeOutroPn(pnInput.value)) {
+      e.detail.target.innerHTML = '';
     }
   });
-
-  function syncConfirmPn() {
-    if (!pnInput) return;
-    var val = pnInput.value;
-    var display = document.getElementById('confirm-pn-display');
-    if (display) display.textContent = val;
-    document.querySelectorAll('#confirm-area input[name="pn"]').forEach(function (inp) {
-      inp.value = val;
-    });
-  }
-
-  // Re-sync sempre que o usuário digitar após o card aparecer
-  if (pnInput) {
-    pnInput.addEventListener('input', function () {
-      var card = document.querySelector('#confirm-area .est-confirm');
-      if (card) syncConfirmPn();
-    });
-  }
 
   // ── Debug button: copia diagnóstico completo para o clipboard ──────────────
   function _copyText(text) {
@@ -1704,7 +1715,7 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     });
   }
 
-  function buildDebugText(d) {
+  function buildDebugText(d, avisoCampo) {
     // Dump de DEBUG (clipboard p/ suporte): fica em pt-br de propósito —
     // quem lê é a plataforma. Linhas com acento levam "i18n-ok" p/ o
     // detector de PT não-marcado do check_translations (I18N.md §7.3).
@@ -1713,6 +1724,9 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     var sep   = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
     lines.push('=== WhatTheChip Debug (Estoque) ===');
     lines.push('PN:      ' + (d.pn || ''));
+    if (avisoCampo) {
+      lines.push('⚠ ATENÇÃO: o campo de busca tem "' + avisoCampo + '", mas este debug é do cartão na tela (PN acima). Aperte Enter e copie de novo.');   // i18n-ok (debug)
+    }
     lines.push('Horário: ' + now);                 // i18n-ok (debug)
     lines.push('');
     lines.push(sep + ' RESULTADO VISÍVEL');        // i18n-ok (debug)
@@ -1771,11 +1785,20 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     var rawJson = card.getAttribute('data-debug');
     var d;
     try { d = JSON.parse(rawJson); } catch(err) { return; }
-    // Sincroniza PN com o valor atual do input
-    if (pnInput) d.pn = pnInput.value || d.pn;
+    // O PN do texto é o do CARTÃO — o que o servidor classificou —, nunca o do
+    // campo (dono 2026-09-24: um debug saiu com o PN do M15T e os dados do
+    // K4B1G1646D que ainda estava na tela). Mesmo chip no campo → mostra como foi
+    // digitado; outro PN no campo → o texto avisa.
+    var campo      = pnInput ? pnInput.value.trim() : '';
+    var avisoCampo = '';
+    if (campo && normPn(campo) === d.pn) {
+      d.pn = campo;
+    } else if (campo) {
+      avisoCampo = campo;
+    }
     btn.disabled    = true;
     btn.textContent = '…';
-    _copyText(buildDebugText(d))
+    _copyText(buildDebugText(d, avisoCampo))
       .then(function() {
         btn.textContent = '✓ Copiado!';
         setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);

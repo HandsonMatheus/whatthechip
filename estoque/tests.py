@@ -3064,6 +3064,95 @@ class DelegatedHandlerGuardTests(TestCase):
                          'o rename btn→uib voltou a vazar para o JavaScript')
 
 
+class CartaoVelhoNaBancadaTests(TestCase):
+    """PORTÃO (2026-09-24): o cartão da bancada é SEMPRE do PN que o servidor
+    classificou — o campo de busca nunca o reescreve.
+
+    Incidente: na conferência da F7 o dono colou `M15T4G16256A` no campo e
+    clicou no 📋 Debug sem apertar Enter. O texto saiu com o PN do M15T e TODOS
+    os dados do `K4B1G1646D`, o chip anterior, que ainda estava na tela. O
+    banco estava certo; o Debug trocava o PN do cartão pelo do campo.
+
+    Por baixo havia coisa pior, desde o commit original da bancada (`c68d208b`,
+    13/05/2026): um "sync" reescrevia o `pn` escondido do cartão a cada tecla.
+    Como a bancada só decodifica com Enter/Decodificar, o cartão na tela seguia
+    sendo o do chip ANTERIOR (caixa, veredito, preço), mas o Adicionar já
+    postava o PN NOVO — o servidor gravava um chip e o operador guardava a peça
+    na caixa do outro. Valia também para o cartão mascarado dos operadores. E o
+    `hx-include="[name='pn']"` do campo dependia desse sync: ele levava junto o
+    `pn` escondido do cartão, e o Django fica com o ÚLTIMO valor.
+
+    Regra agora: campo mudou → o cartão some; resposta que chega com o campo já
+    mudado → some também; o preview leva só o campo; o Debug usa o PN do cartão
+    e avisa se o campo tiver outro. Portão estático (o repo não roda navegador),
+    no padrão do DelegatedHandlerGuardTests."""
+
+    def _template(self):
+        import pathlib
+        from django.conf import settings
+        arq = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates' /
+               'estoque' / 'estoque.html')
+        return arq.read_text(encoding='utf-8')
+
+    def test_o_preview_leva_so_o_pn_do_campo(self):
+        import re
+        campo = re.search(r'<input id="pn-input"[^>]*>', self._template(), re.S)
+        self.assertIsNotNone(campo, 'o campo de PN da bancada sumiu')
+        self.assertIn('hx-include="#pn-input"', campo.group(0))
+        self.assertNotIn("[name='pn']", campo.group(0),
+                         'o preview voltou a levar o pn escondido do cartão velho')
+
+    def test_nada_reescreve_o_pn_do_cartao(self):
+        texto = self._template()
+        self.assertNotIn('syncConfirmPn', texto)
+        self.assertNotIn("""querySelectorAll('#confirm-area input[name="pn"]')""", texto,
+                         'voltou código que reescreve o pn escondido do cartão')
+
+    def test_campo_mudado_apaga_o_cartao_velho(self):
+        texto = self._template()
+        self.assertRegex(
+            texto,
+            r"if \(pnTooShort\(this\.value\) \|\| cartaoDeOutroPn\(this\.value\)\) \{\s*"
+            r"document\.getElementById\('confirm-area'\)\.innerHTML = '';")
+        # a resposta do preview que chega com o campo já mudado também some
+        self.assertRegex(
+            texto,
+            r"htmx:afterSwap'[\s\S]{0,200}?cartaoDeOutroPn\(pnInput\.value\)\)\s*\{\s*"
+            r"e\.detail\.target\.innerHTML = '';")
+        # a comparação é com o pn escondido do cartão, normalizado como o servidor
+        self.assertRegex(
+            texto,
+            r"function cartaoDeOutroPn\(val\) \{\s*"
+            r"var inp = document\.querySelector\('#confirm-area input\[name=\"pn\"\]'\);\s*"
+            r"return !!inp && inp\.value !== normPn\(val\);")
+
+    def test_normpn_do_js_espelha_o_servidor(self):
+        import re
+        from estoque.views import _normalise_pn
+        m = re.search(r"function normPn\(val\) \{\s*return \(val \|\| ''\)\.trim\(\)"
+                      r"\.toUpperCase\(\)\.replace\(/(\[[^/]+\])/g, ''\);", self._template())
+        self.assertIsNotNone(m, 'normPn sumiu ou mudou de forma')
+        classe = m.group(1)
+        for amostra in ('  mt62f768m64d4wt-031 xt:b ', 'K4B1G1646D', 'k4b1g1646d-hcf8',
+                        'M15T4G16256A', 'KLMAG2GESD-B03Q', 'k9', 'H5TC2G43BFR/', ''):
+            self.assertEqual(re.sub(classe, '', amostra.strip().upper()),
+                             _normalise_pn(amostra),
+                             f'o JS e o servidor normalizam {amostra!r} diferente')
+
+    def test_debug_usa_o_pn_do_cartao(self):
+        import re
+        texto = self._template()
+        bloco = re.search(r"\.closest\('\.est-debug-btn'\);(.*?)\n  \}\);", texto, re.S)
+        self.assertIsNotNone(bloco, 'handler do 📋 Debug sumiu do template')
+        corpo = bloco.group(1)
+        self.assertNotIn('d.pn = pnInput.value', corpo,
+                         'o Debug voltou a trocar o PN do cartão pelo do campo')
+        self.assertIn('normPn(campo) === d.pn', corpo)
+        self.assertIn('buildDebugText(d, avisoCampo)', corpo)
+        self.assertRegex(texto, r"function buildDebugText\(d, avisoCampo\) \{[\s\S]{0,700}?"
+                                r"if \(avisoCampo\) \{\s*lines\.push\('⚠ ATENÇÃO")
+
+
 class OrigemRamTests(TestCase):
     """Terceira origem de lote: `ram` (módulo de memória) — 2026-08-24.
 
